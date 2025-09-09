@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Services - AI-Powered Solutions</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 50px;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+
+      .service-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+      }
+
+      .service-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .service-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+      }
+
+      .service-icon svg {
+        width: 24px;
+        height: 24px;
+        fill: white;
+      }
+
+      .service-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .service-description {
+        color: #666;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .service-features {
+        list-style: none;
+        margin-bottom: 25px;
+      }
+
+      .service-features li {
+        padding: 8px 0;
+        display: flex;
+        align-items: center;
+        color: #555;
+      }
+
+      .service-features li::before {
+        content: '✓';
+        color: #4caf50;
+        font-weight: bold;
+        margin-right: 10px;
+        width: 16px;
+      }
+
+      .service-pricing {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .delivery-time {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      .order-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .order-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .tier-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .tier-basic {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .tier-professional {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
+
+      .tier-enterprise {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .order-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .status-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .status-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .status-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-left: 15px;
+      }
+
+      .order-lookup {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .lookup-input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      .lookup-btn {
+        padding: 12px 20px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .order-status {
+        display: none;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 15px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-in_progress {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+      .status-completed {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status-delivered {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .service-pricing {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .order-lookup {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Professional AI Services</h1>
+        <p>Boost your business with our AI-powered SEO audits and social media graphics</p>
+      </div>
+
+      <div class="services-grid">
+        <!-- SEO Audit Basic -->
+        <div class="service-card">
+          <div class="tier-badge tier-basic">Basic</div>
+          <div class="service-header">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+                />
+              </svg>
+            </div>
+            <div class="service-title">Basic SEO Audit</div>
+          </div>
+          <div class="service-description">
+            Comprehensive SEO analysis with actionable recommendations to improve your website's search rankings.
+          </div>
+          <ul class="service-features">
+            <li>Technical SEO analysis</li>
+            <li>On-page optimization review</li>
+            <li>Keyword gap analysis</li>
+            <li>Basic competitor comparison</li>
+            <li>Action plan with priorities</li>
+          </ul>
+          <div class="service-pricing">
+            <div class="price">$97</div>
+            <div class="delivery-time">24 hours delivery</div>
+          </div>
+          <button class="order-btn" onclick="openOrderModal('seo_basic')">Order Now</button>
+        </div>
+
+        <!-- SEO Audit Professional -->
+        <div class="service-card">
+          <div class="tier-badge tier-professional">Professional</div>
+          <div class="service-header">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+                />
+              </svg>
+            </div>
+            <div class="service-title">Professional SEO Audit</div>
+          </div>
+          <div class="service-description">
+            In-depth SEO analysis with competitor intelligence and advanced optimization strategies.
+          </div>
+          <ul class="service-features">
+            <li>Everything in Basic</li>
+            <li>Advanced competitor analysis</li>
+            <li>Content strategy recommendations</li>
+            <li>Link building opportunities</li>
+            <li>Local SEO analysis</li>
+            <li>Performance tracking setup</li>
+          </ul>
+          <div class="service-pricing">
+            <div class="price">$297</div>
+            <div class="delivery-time">48 hours delivery</div>
+          </div>
+          <button class="order-btn" onclick="openOrderModal('seo_pro')">Order Now</button>
+        </div>
+
+        <!-- Social Graphics Basic -->
+        <div class="service-card">
+          <div class="tier-badge tier-basic">Basic</div>
+          <div class="service-header">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5,17L9.5,11L13,15.5L15.5,13L19,17H5M2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4H4A2,2 0 0,0 2,6Z"
+                />
+              </svg>
+            </div>
+            <div class="service-title">Social Media Graphics Pack</div>
+          </div>
+          <div class="service-description">
+            Professional social media graphics designed to boost your brand's visual presence.
+          </div>
+          <ul class="service-features">
+            <li>10 custom graphics</li>
+            <li>3 platform formats (Instagram, Facebook, Twitter)</li>
+            <li>Brand color integration</li>
+            <li>High-resolution files</li>
+            <li>Commercial usage rights</li>
+          </ul>
+          <div class="service-pricing">
+            <div class="price">$67</div>
+            <div class="delivery-time">48 hours delivery</div>
+          </div>
+          <button class="order-btn" onclick="openOrderModal('graphics_basic')">Order Now</button>
+        </div>
+
+        <!-- Social Graphics Professional -->
+        <div class="service-card">
+          <div class="tier-badge tier-professional">Professional</div>
+          <div class="service-header">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5,17L9.5,11L13,15.5L15.5,13L19,17H5M2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4H4A2,2 0 0,0 2,6Z"
+                />
+              </svg>
+            </div>
+            <div class="service-title">Premium Graphics Suite</div>
+          </div>
+          <div class="service-description">
+            Complete social media graphics solution with animations and brand guidelines.
+          </div>
+          <ul class="service-features">
+            <li>25 custom graphics</li>
+            <li>All major platform formats</li>
+            <li>Animated versions</li>
+            <li>Story templates</li>
+            <li>Brand style guide</li>
+            <li>Monthly refresh option</li>
+          </ul>
+          <div class="service-pricing">
+            <div class="price">$197</div>
+            <div class="delivery-time">72 hours delivery</div>
+          </div>
+          <button class="order-btn" onclick="openOrderModal('graphics_pro')">Order Now</button>
+        </div>
+      </div>
+
+      <!-- Order Status Section -->
+      <div class="status-section">
+        <div class="status-header">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"
+              />
+            </svg>
+          </div>
+          <div class="status-title">Track Your Order</div>
+        </div>
+        <div class="order-lookup">
+          <input
+            type="text"
+            id="orderIdInput"
+            class="lookup-input"
+            placeholder="Enter your order ID (e.g., ORD_20241225_143022)"
+          />
+          <button class="lookup-btn" onclick="lookupOrder()">Check Status</button>
+        </div>
+        <div id="orderStatus" class="order-status"></div>
+      </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="order-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Place Your Order</div>
+          <button class="close-btn" onclick="closeOrderModal()">&times;</button>
+        </div>
+        <form id="orderForm">
+          <input type="hidden" id="packageId" name="package_id" />
+
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" class="form-input" name="client_email" required />
+          </div>
+
+          <div id="seoRequirements" style="display: none">
+            <div class="form-group">
+              <label class="form-label">Website URL *</label>
+              <input type="url" class="form-input" name="website_url" placeholder="https://yourwebsite.com" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Keywords (one per line)</label>
+              <textarea
+                class="form-input form-textarea"
+                name="target_keywords"
+                placeholder="digital marketing\nseo services\ncontent strategy"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Competitor Websites (optional, one per line)</label>
+              <textarea
+                class="form-input form-textarea"
+                name="competitors"
+                placeholder="https://competitor1.com\nhttps://competitor2.com"
+              ></textarea>
+            </div>
+          </div>
+
+          <div id="graphicsRequirements" style="display: none">
+            <div class="form-group">
+              <label class="form-label">Brand Colors (hex codes)</label>
+              <input type="text" class="form-input" name="brand_colors" placeholder="#1DA1F2, #FFFFFF, #000000" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Content Themes</label>
+              <textarea
+                class="form-input form-textarea"
+                name="content_themes"
+                placeholder="motivational quotes\nbusiness tips\nproduct showcases"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Platforms</label>
+              <input
+                type="text"
+                class="form-input"
+                name="platforms"
+                placeholder="instagram, facebook, twitter, linkedin"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Additional Requirements (optional)</label>
+            <textarea
+              class="form-input form-textarea"
+              name="additional_notes"
+              placeholder="Any specific requirements or preferences..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let currentPackageId = '';
+
+      function openOrderModal(packageId) {
+        currentPackageId = packageId;
+        document.getElementById('packageId').value = packageId;
+
+        // Show/hide relevant requirement fields
+        const seoReqs = document.getElementById('seoRequirements');
+        const graphicsReqs = document.getElementById('graphicsRequirements');
+
+        if (packageId.startsWith('seo_')) {
+          seoReqs.style.display = 'block';
+          graphicsReqs.style.display = 'none';
+        } else if (packageId.startsWith('graphics_')) {
+          seoReqs.style.display = 'none';
+          graphicsReqs.style.display = 'block';
+        }
+
+        document.getElementById('orderModal').style.display = 'flex';
+      }
+
+      function closeOrderModal() {
+        document.getElementById('orderModal').style.display = 'none';
+        document.getElementById('orderForm').reset();
+      }
+
+      document.getElementById('orderForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const orderData = {
+          package_id: formData.get('package_id'),
+          client_email: formData.get('client_email'),
+          requirements: {},
+        };
+
+        // Collect requirements based on service type
+        if (currentPackageId.startsWith('seo_')) {
+          orderData.requirements.website_url = formData.get('website_url');
+          orderData.requirements.target_keywords = formData
+            .get('target_keywords')
+            .split('\n')
+            .filter(k => k.trim());
+          orderData.requirements.competitors = formData
+            .get('competitors')
+            .split('\n')
+            .filter(c => c.trim());
+        } else if (currentPackageId.startsWith('graphics_')) {
+          orderData.requirements.brand_colors = formData
+            .get('brand_colors')
+            .split(',')
+            .map(c => c.trim());
+          orderData.requirements.content_themes = formData
+            .get('content_themes')
+            .split('\n')
+            .filter(t => t.trim());
+          orderData.requirements.platforms = formData
+            .get('platforms')
+            .split(',')
+            .map(p => p.trim());
+        }
+
+        orderData.requirements.additional_notes = formData.get('additional_notes');
+
+        try {
+          const response = await fetch('/api/monetization/create_order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+          });
+
+          const result = await response.json();
+
+          if (result.status === 'success') {
+            alert(
+              `Order placed successfully!\nOrder ID: ${result.order_id}\nEstimated delivery: ${new Date(result.estimated_delivery).toLocaleString()}\nPrice: $${result.price}`
+            );
+            closeOrderModal();
+          } else {
+            alert('Error placing order: ' + result.message);
+          }
+        } catch (error) {
+          alert('Error placing order: ' + error.message);
+        }
+      });
+
+      async function lookupOrder() {
+        const orderId = document.getElementById('orderIdInput').value.trim();
+        if (!orderId) {
+          alert('Please enter an order ID');
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/monetization/order_status?order_id=${orderId}`);
+          const result = await response.json();
+
+          const statusDiv = document.getElementById('orderStatus');
+
+          if (result.status === 'found') {
+            const order = result.order;
+            const createdDate = new Date(order.created_at).toLocaleString();
+            const dueDate = new Date(order.due_date).toLocaleString();
+
+            statusDiv.innerHTML = `
+                        <h3>Order Details</h3>
+                        <p><strong>Order ID:</strong> ${order.order_id}</p>
+                        <p><strong>Service:</strong> ${order.service_package.name}</p>
+                        <p><strong>Status:</strong> <span class="status-badge status-${order.status}">${order.status.replace('_', ' ')}</span></p>
+                        <p><strong>Created:</strong> ${createdDate}</p>
+                        <p><strong>Due Date:</strong> ${dueDate}</p>
+                        <p><strong>Price:</strong> $${order.service_package.price}</p>
+                        ${order.completed_at ? `<p><strong>Completed:</strong> ${new Date(order.completed_at).toLocaleString()}</p>` : ''}
+                        ${order.deliverables_path ? `<p><strong>Deliverables:</strong> Ready for download</p>` : ''}
+                    `;
+            statusDiv.style.display = 'block';
+          } else if (result.status === 'not_found') {
+            statusDiv.innerHTML = '<p>Order not found. Please check your order ID.</p>';
+            statusDiv.style.display = 'block';
+          } else {
+            statusDiv.innerHTML = '<p>Error looking up order. Please try again.</p>';
+            statusDiv.style.display = 'block';
+          }
+        } catch (error) {
+          document.getElementById('orderStatus').innerHTML = '<p>Error looking up order: ' + error.message + '</p>';
+          document.getElementById('orderStatus').style.display = 'block';
+        }
+      }
+
+      // Close modal when clicking outside
+      document.getElementById('orderModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+          closeOrderModal();
+        }
+      });
+    </script>
+  </body>
+</html>

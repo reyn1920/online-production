@@ -1,0 +1,94 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{js,py,ts,tsx,jsx,json,md,html,css,scss,sass,less,yml,yaml}]
+charset = utf-8
+
+# 2 space indentation for web files
+[*.{js,ts,tsx,jsx,json,html,css,scss,sass,less,vue}]
+indent_style = space
+indent_size = 2
+
+# 4 space indentation for Python
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+# 2 space indentation for YAML files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Tab indentation for Makefiles
+[Makefile]
+indent_style = tab
+
+# Shell scripts
+[*.{sh,bash,zsh}]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 100
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+insert_final_newline = false
+
+# Package.json - special formatting
+[package.json]
+indent_style = space
+indent_size = 2
+
+# Docker files
+[Dockerfile*]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[*.{ini,cfg,conf,config}]
+indent_style = space
+indent_size = 2
+
+# SQL files
+[*.sql]
+indent_style = space
+indent_size = 2
+
+# XML files
+[*.{xml,svg}]
+indent_style = space
+indent_size = 2
+
+# Environment files
+[.env*]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+
+# Git files
+[.git*]
+indent_style = space
+indent_size = 2
+
+# Ignore files
+[.*ignore]
+indent_style = space
+indent_size = 2

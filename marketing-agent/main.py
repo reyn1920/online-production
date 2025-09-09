@@ -1,0 +1,1211 @@
+#!/usr/bin/env python3
+"""
+TRAE.AI Marketing Agent
+Comprehensive marketing automation and campaign management service
+"""
+
+import os
+import json
+import asyncio
+import logging
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional, Any
+from pathlib import Path
+import time
+from dataclasses import dataclass
+
+# FastAPI and web framework
+from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings
+
+# Database
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, JSON, Boolean, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+
+# HTTP clients
+import httpx
+import requests
+from aiohttp import ClientSession
+
+# Task queue
+from celery import Celery
+import redis
+
+# Monitoring
+from prometheus_client import Counter, Histogram, Gauge, generate_latest
+import structlog
+
+# Social Media APIs
+import tweepy
+from facebook_business.api import FacebookAdsApi
+from facebook_business.adobjects.adaccount import AdAccount
+from linkedin_api import Linkedin
+
+# Email Marketing
+from mailchimp3 import MailChimp
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+# Analytics
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import RunReportRequest
+
+# SEO and Content
+from bs4 import BeautifulSoup
+import nltk
+from textstat import flesch_reading_ease, flesch_kincaid_grade
+
+# Scheduling
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+
+# Utilities
+from rich.console import Console
+from rich.table import Table
+import pandas as pd
+import numpy as np
+from faker import Faker
+
+# Configuration
+class Config(BaseSettings):
+    # Database
+    DATABASE_URL: str = "postgresql://user:password@localhost:5432/trae_marketing"
+    
+    # Redis
+    REDIS_URL: str = "redis://localhost:6379/0"
+    
+    # API Keys (use environment variables in production)
+    OPENAI_API_KEY: str = ""
+    ANTHROPIC_API_KEY: str = ""
+    GOOGLE_API_KEY: str = ""
+    
+    # Social Media API Keys
+    TWITTER_API_KEY: str = ""
+    TWITTER_API_SECRET: str = ""
+    TWITTER_ACCESS_TOKEN: str = ""
+    TWITTER_ACCESS_TOKEN_SECRET: str = ""
+    
+    FACEBOOK_ACCESS_TOKEN: str = ""
+    FACEBOOK_APP_ID: str = ""
+    FACEBOOK_APP_SECRET: str = ""
+    
+    LINKEDIN_USERNAME: str = ""
+    LINKEDIN_PASSWORD: str = ""
+    
+    YOUTUBE_API_KEY: str = ""
+    
+    # Email Marketing
+    MAILCHIMP_API_KEY: str = ""
+    SENDGRID_API_KEY: str = ""
+    
+    # Analytics
+    GOOGLE_ANALYTICS_PROPERTY_ID: str = ""
+    GOOGLE_ADS_CUSTOMER_ID: str = ""
+    
+    # Environment
+    ENVIRONMENT: str = "production"
+    USE_MOCK: bool = False
+    LOG_LEVEL: str = "INFO"
+    
+    class Config:
+        env_file = ".env"
+
+config = Config()
+
+# Logging setup
+logging.basicConfig(
+    level=getattr(logging, config.LOG_LEVEL),
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = structlog.get_logger()
+console = Console()
+
+# Database setup
+engine = create_engine(config.DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# Database Models
+class Campaign(Base):
+    __tablename__ = "campaigns"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String, nullable=False)
+    campaign_type = Column(String, nullable=False)  # brand_awareness, lead_generation, sales, etc.
+    status = Column(String, default="draft")  # draft, active, paused, completed
+    channels = Column(JSON)  # social_media, email, paid_ads, etc.
+    target_audience = Column(JSON)
+    budget = Column(Float)
+    spent = Column(Float, default=0.0)
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
+    objectives = Column(JSON)
+    kpis = Column(JSON)
+    content_calendar = Column(JSON)
+    performance_metrics = Column(JSON)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class SocialMediaPost(Base):
+    __tablename__ = "social_media_posts"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    campaign_id = Column(UUID(as_uuid=True))
+    platform = Column(String, nullable=False)  # twitter, facebook, instagram, linkedin, youtube
+    content = Column(Text, nullable=False)
+    media_urls = Column(JSON)
+    hashtags = Column(JSON)
+    scheduled_time = Column(DateTime)
+    published_time = Column(DateTime)
+    status = Column(String, default="draft")  # draft, scheduled, published, failed
+    engagement_metrics = Column(JSON)
+    post_id = Column(String)  # Platform-specific post ID
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class EmailCampaign(Base):
+    __tablename__ = "email_campaigns"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    campaign_id = Column(UUID(as_uuid=True))
+    name = Column(String, nullable=False)
+    subject = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+    recipient_list = Column(JSON)
+    send_time = Column(DateTime)
+    status = Column(String, default="draft")
+    open_rate = Column(Float, default=0.0)
+    click_rate = Column(Float, default=0.0)
+    bounce_rate = Column(Float, default=0.0)
+    unsubscribe_rate = Column(Float, default=0.0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Lead(Base):
+    __tablename__ = "leads"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    campaign_id = Column(UUID(as_uuid=True))
+    source = Column(String, nullable=False)  # social_media, email, website, etc.
+    email = Column(String)
+    name = Column(String)
+    phone = Column(String)
+    company = Column(String)
+    lead_score = Column(Integer, default=0)
+    status = Column(String, default="new")  # new, qualified, converted, lost
+    notes = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class AffiliateLink(Base):
+    __tablename__ = "affiliate_links"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    campaign_id = Column(UUID(as_uuid=True))
+    platform = Column(String, nullable=False)  # amazon, gumroad, etc.
+    product_name = Column(String, nullable=False)
+    affiliate_url = Column(String, nullable=False)
+    commission_rate = Column(Float)
+    clicks = Column(Integer, default=0)
+    conversions = Column(Integer, default=0)
+    revenue = Column(Float, default=0.0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# Create tables
+Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Pydantic Models
+class CampaignCreate(BaseModel):
+    name: str
+    campaign_type: str
+    channels: List[str]
+    target_audience: Dict[str, Any]
+    budget: float
+    duration_days: int
+    objectives: List[str]
+
+class CampaignResponse(BaseModel):
+    id: str
+    name: str
+    campaign_type: str
+    status: str
+    channels: List[str]
+    budget: float
+    spent: float
+    performance_metrics: Dict[str, Any]
+    created_at: datetime
+
+class SocialMediaPostCreate(BaseModel):
+    campaign_id: str
+    platform: str
+    content: str
+    media_urls: Optional[List[str]] = []
+    hashtags: Optional[List[str]] = []
+    scheduled_time: Optional[datetime] = None
+
+class EmailCampaignCreate(BaseModel):
+    campaign_id: str
+    name: str
+    subject: str
+    content: str
+    recipient_list: List[str]
+    send_time: Optional[datetime] = None
+
+class MarketingAnalytics(BaseModel):
+    total_campaigns: int
+    active_campaigns: int
+    total_leads: int
+    conversion_rate: float
+    total_revenue: float
+    roi: float
+    top_performing_channels: List[Dict[str, Any]]
+    recent_activities: List[Dict[str, Any]]
+
+# Metrics
+api_request_counter = Counter('marketing_api_requests_total', 'Total API requests', ['endpoint', 'method'])
+api_request_duration = Histogram('marketing_api_request_duration_seconds', 'API request duration')
+campaign_counter = Counter('marketing_campaigns_total', 'Total campaigns', ['type', 'status'])
+lead_counter = Counter('marketing_leads_total', 'Total leads', ['source', 'status'])
+revenue_gauge = Gauge('marketing_revenue_total', 'Total revenue generated')
+error_counter = Counter('marketing_errors_total', 'Total errors', ['error_type'])
+
+# Redis client
+redis_client = redis.from_url(config.REDIS_URL)
+
+# HTTP client
+http_client = httpx.AsyncClient(timeout=30.0)
+
+# Scheduler
+scheduler = AsyncIOScheduler()
+
+# Social Media Manager
+class SocialMediaManager:
+    def __init__(self):
+        self.twitter_api = None
+        self.facebook_api = None
+        self.linkedin_api = None
+        self.setup_apis()
+    
+    def setup_apis(self):
+        """Setup social media APIs"""
+        try:
+            if not config.USE_MOCK:
+                # Twitter API
+                if config.TWITTER_API_KEY:
+                    auth = tweepy.OAuthHandler(
+                        config.TWITTER_API_KEY,
+                        config.TWITTER_API_SECRET
+                    )
+                    auth.set_access_token(
+                        config.TWITTER_ACCESS_TOKEN,
+                        config.TWITTER_ACCESS_TOKEN_SECRET
+                    )
+                    self.twitter_api = tweepy.API(auth)
+                
+                # Facebook API
+                if config.FACEBOOK_ACCESS_TOKEN:
+                    FacebookAdsApi.init(
+                        config.FACEBOOK_APP_ID,
+                        config.FACEBOOK_APP_SECRET,
+                        config.FACEBOOK_ACCESS_TOKEN
+                    )
+                    self.facebook_api = FacebookAdsApi.get_default_api()
+                
+                # LinkedIn API
+                if config.LINKEDIN_USERNAME:
+                    self.linkedin_api = Linkedin(
+                        config.LINKEDIN_USERNAME,
+                        config.LINKEDIN_PASSWORD
+                    )
+        
+        except Exception as e:
+            logger.error(f"Failed to setup social media APIs: {e}")
+    
+    async def post_to_twitter(self, content: str, media_urls: List[str] = None) -> Dict[str, Any]:
+        """Post content to Twitter"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "success": True,
+                    "post_id": f"mock_twitter_{int(time.time())}",
+                    "url": "https://twitter.com/mock/status/123456789"
+                }
+            
+            if not self.twitter_api:
+                raise Exception("Twitter API not configured")
+            
+            # Post tweet
+            tweet = self.twitter_api.update_status(content)
+            
+            return {
+                "success": True,
+                "post_id": str(tweet.id),
+                "url": f"https://twitter.com/user/status/{tweet.id}"
+            }
+        
+        except Exception as e:
+            logger.error(f"Failed to post to Twitter: {e}")
+            return {"success": False, "error": str(e)}
+    
+    async def post_to_facebook(self, content: str, media_urls: List[str] = None) -> Dict[str, Any]:
+        """Post content to Facebook"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "success": True,
+                    "post_id": f"mock_facebook_{int(time.time())}",
+                    "url": "https://facebook.com/mock/posts/123456789"
+                }
+            
+            # Implementation would use Facebook Graph API
+            return {"success": False, "error": "Facebook posting not implemented"}
+        
+        except Exception as e:
+            logger.error(f"Failed to post to Facebook: {e}")
+            return {"success": False, "error": str(e)}
+    
+    async def post_to_linkedin(self, content: str, media_urls: List[str] = None) -> Dict[str, Any]:
+        """Post content to LinkedIn"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "success": True,
+                    "post_id": f"mock_linkedin_{int(time.time())}",
+                    "url": "https://linkedin.com/feed/update/123456789"
+                }
+            
+            # Implementation would use LinkedIn API
+            return {"success": False, "error": "LinkedIn posting not implemented"}
+        
+        except Exception as e:
+            logger.error(f"Failed to post to LinkedIn: {e}")
+            return {"success": False, "error": str(e)}
+    
+    async def get_engagement_metrics(self, platform: str, post_id: str) -> Dict[str, Any]:
+        """Get engagement metrics for a post"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "likes": np.random.randint(10, 1000),
+                    "shares": np.random.randint(1, 100),
+                    "comments": np.random.randint(0, 50),
+                    "views": np.random.randint(100, 10000)
+                }
+            
+            # Implementation would fetch real metrics from each platform
+            return {"likes": 0, "shares": 0, "comments": 0, "views": 0}
+        
+        except Exception as e:
+            logger.error(f"Failed to get engagement metrics: {e}")
+            return {"likes": 0, "shares": 0, "comments": 0, "views": 0}
+
+# Email Marketing Manager
+class EmailMarketingManager:
+    def __init__(self):
+        self.mailchimp_client = None
+        self.sendgrid_client = None
+        self.setup_clients()
+    
+    def setup_clients(self):
+        """Setup email marketing clients"""
+        try:
+            if not config.USE_MOCK:
+                if config.MAILCHIMP_API_KEY:
+                    self.mailchimp_client = MailChimp(mc_api=config.MAILCHIMP_API_KEY)
+                
+                if config.SENDGRID_API_KEY:
+                    self.sendgrid_client = SendGridAPIClient(api_key=config.SENDGRID_API_KEY)
+        
+        except Exception as e:
+            logger.error(f"Failed to setup email clients: {e}")
+    
+    async def send_campaign(self, subject: str, content: str, recipients: List[str]) -> Dict[str, Any]:
+        """Send email campaign"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "success": True,
+                    "campaign_id": f"mock_email_{int(time.time())}",
+                    "sent_count": len(recipients),
+                    "delivery_rate": 0.95
+                }
+            
+            if self.sendgrid_client:
+                # Use SendGrid for transactional emails
+                results = []
+                for recipient in recipients:
+                    message = Mail(
+                        from_email='noreply@trae.ai',
+                        to_emails=recipient,
+                        subject=subject,
+                        html_content=content
+                    )
+                    
+                    response = self.sendgrid_client.send(message)
+                    results.append(response.status_code == 202)
+                
+                success_count = sum(results)
+                return {
+                    "success": True,
+                    "sent_count": success_count,
+                    "total_count": len(recipients),
+                    "delivery_rate": success_count / len(recipients) if recipients else 0
+                }
+            
+            return {"success": False, "error": "No email service configured"}
+        
+        except Exception as e:
+            logger.error(f"Failed to send email campaign: {e}")
+            return {"success": False, "error": str(e)}
+    
+    async def get_campaign_metrics(self, campaign_id: str) -> Dict[str, Any]:
+        """Get email campaign metrics"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "open_rate": round(np.random.uniform(0.15, 0.35), 3),
+                    "click_rate": round(np.random.uniform(0.02, 0.08), 3),
+                    "bounce_rate": round(np.random.uniform(0.01, 0.05), 3),
+                    "unsubscribe_rate": round(np.random.uniform(0.001, 0.01), 3)
+                }
+            
+            # Implementation would fetch real metrics
+            return {"open_rate": 0, "click_rate": 0, "bounce_rate": 0, "unsubscribe_rate": 0}
+        
+        except Exception as e:
+            logger.error(f"Failed to get campaign metrics: {e}")
+            return {"open_rate": 0, "click_rate": 0, "bounce_rate": 0, "unsubscribe_rate": 0}
+
+# SEO Analyzer
+class SEOAnalyzer:
+    def __init__(self):
+        self.fake = Faker()
+    
+    async def analyze_content(self, content: str, keywords: List[str]) -> Dict[str, Any]:
+        """Analyze content for SEO"""
+        try:
+            # Basic readability analysis
+            readability_score = flesch_reading_ease(content)
+            grade_level = flesch_kincaid_grade(content)
+            
+            # Keyword density analysis
+            word_count = len(content.split())
+            keyword_densities = {}
+            
+            for keyword in keywords:
+                count = content.lower().count(keyword.lower())
+                density = (count / word_count) * 100 if word_count > 0 else 0
+                keyword_densities[keyword] = {
+                    "count": count,
+                    "density": round(density, 2)
+                }
+            
+            # SEO score calculation
+            seo_score = min(100, max(0, (
+                (readability_score / 100 * 30) +
+                (min(sum(kd["density"] for kd in keyword_densities.values()), 10) * 5) +
+                (min(word_count / 10, 40))
+            )))
+            
+            return {
+                "seo_score": round(seo_score, 1),
+                "readability_score": round(readability_score, 1),
+                "grade_level": round(grade_level, 1),
+                "word_count": word_count,
+                "keyword_densities": keyword_densities,
+                "recommendations": self._generate_seo_recommendations(seo_score, keyword_densities)
+            }
+        
+        except Exception as e:
+            logger.error(f"SEO analysis failed: {e}")
+            return {"seo_score": 0, "error": str(e)}
+    
+    def _generate_seo_recommendations(self, seo_score: float, keyword_densities: Dict) -> List[str]:
+        """Generate SEO recommendations"""
+        recommendations = []
+        
+        if seo_score < 50:
+            recommendations.append("Improve overall content quality and keyword optimization")
+        
+        for keyword, data in keyword_densities.items():
+            if data["density"] < 1:
+                recommendations.append(f"Increase density of keyword '{keyword}' (currently {data['density']}%)")
+            elif data["density"] > 3:
+                recommendations.append(f"Reduce density of keyword '{keyword}' to avoid keyword stuffing")
+        
+        return recommendations
+
+# Analytics Manager
+class AnalyticsManager:
+    def __init__(self):
+        self.ga_client = None
+        self.setup_analytics()
+    
+    def setup_analytics(self):
+        """Setup analytics clients"""
+        try:
+            if not config.USE_MOCK and config.GOOGLE_ANALYTICS_PROPERTY_ID:
+                self.ga_client = BetaAnalyticsDataClient()
+        except Exception as e:
+            logger.error(f"Failed to setup analytics: {e}")
+    
+    async def get_website_metrics(self) -> Dict[str, Any]:
+        """Get website analytics metrics"""
+        try:
+            if config.USE_MOCK:
+                return {
+                    "sessions": np.random.randint(1000, 10000),
+                    "users": np.random.randint(800, 8000),
+                    "page_views": np.random.randint(2000, 20000),
+                    "bounce_rate": round(np.random.uniform(0.3, 0.7), 3),
+                    "avg_session_duration": np.random.randint(120, 600),
+                    "conversion_rate": round(np.random.uniform(0.01, 0.05), 3)
+                }
+            
+            # Implementation would use Google Analytics API
+            return {
+                "sessions": 0,
+                "users": 0,
+                "page_views": 0,
+                "bounce_rate": 0,
+                "avg_session_duration": 0,
+                "conversion_rate": 0
+            }
+        
+        except Exception as e:
+            logger.error(f"Failed to get website metrics: {e}")
+            return {"error": str(e)}
+
+# Campaign Manager
+class CampaignManager:
+    def __init__(self):
+        self.social_media = SocialMediaManager()
+        self.email_marketing = EmailMarketingManager()
+        self.seo_analyzer = SEOAnalyzer()
+        self.analytics = AnalyticsManager()
+    
+    async def create_campaign(self, campaign_data: CampaignCreate, db: Session) -> Campaign:
+        """Create a new marketing campaign"""
+        try:
+            # Create campaign
+            campaign = Campaign(
+                name=campaign_data.name,
+                campaign_type=campaign_data.campaign_type,
+                channels=campaign_data.channels,
+                target_audience=campaign_data.target_audience,
+                budget=campaign_data.budget,
+                start_date=datetime.utcnow(),
+                end_date=datetime.utcnow() + timedelta(days=campaign_data.duration_days),
+                objectives=campaign_data.objectives,
+                status="active"
+            )
+            
+            db.add(campaign)
+            db.commit()
+            db.refresh(campaign)
+            
+            # Generate initial content calendar
+            content_calendar = await self._generate_content_calendar(
+                campaign, campaign_data.duration_days
+            )
+            
+            campaign.content_calendar = content_calendar
+            db.commit()
+            
+            campaign_counter.labels(type=campaign_data.campaign_type, status="created").inc()
+            
+            logger.info(f"Created campaign: {campaign.name} ({campaign.id})")
+            return campaign
+        
+        except Exception as e:
+            logger.error(f"Failed to create campaign: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+    
+    async def _generate_content_calendar(self, campaign: Campaign, duration_days: int) -> Dict[str, Any]:
+        """Generate content calendar for campaign"""
+        calendar = {"posts": [], "emails": [], "ads": []}
+        
+        # Generate social media posts
+        for day in range(0, duration_days, 2):  # Every 2 days
+            post_date = campaign.start_date + timedelta(days=day)
+            
+            for channel in campaign.channels:
+                if channel == "social_media":
+                    calendar["posts"].append({
+                        "date": post_date.isoformat(),
+                        "platform": "twitter",
+                        "content_type": "promotional",
+                        "status": "planned"
+                    })
+        
+        # Generate email campaigns
+        if "email" in campaign.channels:
+            for week in range(0, duration_days, 7):  # Weekly emails
+                email_date = campaign.start_date + timedelta(days=week)
+                calendar["emails"].append({
+                    "date": email_date.isoformat(),
+                    "type": "newsletter",
+                    "status": "planned"
+                })
+        
+        return calendar
+    
+    async def publish_social_post(self, post_data: SocialMediaPostCreate, db: Session) -> SocialMediaPost:
+        """Publish social media post"""
+        try:
+            # Create post record
+            post = SocialMediaPost(
+                campaign_id=uuid.UUID(post_data.campaign_id),
+                platform=post_data.platform,
+                content=post_data.content,
+                media_urls=post_data.media_urls,
+                hashtags=post_data.hashtags,
+                scheduled_time=post_data.scheduled_time or datetime.utcnow()
+            )
+            
+            # Publish to platform
+            if post_data.platform == "twitter":
+                result = await self.social_media.post_to_twitter(
+                    post_data.content, post_data.media_urls
+                )
+            elif post_data.platform == "facebook":
+                result = await self.social_media.post_to_facebook(
+                    post_data.content, post_data.media_urls
+                )
+            elif post_data.platform == "linkedin":
+                result = await self.social_media.post_to_linkedin(
+                    post_data.content, post_data.media_urls
+                )
+            else:
+                raise ValueError(f"Unsupported platform: {post_data.platform}")
+            
+            if result["success"]:
+                post.status = "published"
+                post.published_time = datetime.utcnow()
+                post.post_id = result["post_id"]
+            else:
+                post.status = "failed"
+            
+            db.add(post)
+            db.commit()
+            db.refresh(post)
+            
+            return post
+        
+        except Exception as e:
+            logger.error(f"Failed to publish social post: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+    
+    async def send_email_campaign(self, email_data: EmailCampaignCreate, db: Session) -> EmailCampaign:
+        """Send email campaign"""
+        try:
+            # Create email campaign record
+            email_campaign = EmailCampaign(
+                campaign_id=uuid.UUID(email_data.campaign_id),
+                name=email_data.name,
+                subject=email_data.subject,
+                content=email_data.content,
+                recipient_list=email_data.recipient_list,
+                send_time=email_data.send_time or datetime.utcnow()
+            )
+            
+            # Send email
+            result = await self.email_marketing.send_campaign(
+                email_data.subject,
+                email_data.content,
+                email_data.recipient_list
+            )
+            
+            if result["success"]:
+                email_campaign.status = "sent"
+            else:
+                email_campaign.status = "failed"
+            
+            db.add(email_campaign)
+            db.commit()
+            db.refresh(email_campaign)
+            
+            return email_campaign
+        
+        except Exception as e:
+            logger.error(f"Failed to send email campaign: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+    
+    async def get_analytics(self, db: Session) -> MarketingAnalytics:
+        """Get marketing analytics"""
+        try:
+            # Get campaign statistics
+            total_campaigns = db.query(Campaign).count()
+            active_campaigns = db.query(Campaign).filter(Campaign.status == "active").count()
+            
+            # Get lead statistics
+            total_leads = db.query(Lead).count()
+            converted_leads = db.query(Lead).filter(Lead.status == "converted").count()
+            conversion_rate = (converted_leads / total_leads) if total_leads > 0 else 0
+            
+            # Calculate revenue and ROI
+            campaigns = db.query(Campaign).all()
+            total_budget = sum(c.budget or 0 for c in campaigns)
+            total_spent = sum(c.spent or 0 for c in campaigns)
+            
+            # Mock revenue calculation
+            total_revenue = total_spent * np.random.uniform(1.2, 3.0) if config.USE_MOCK else 0
+            roi = ((total_revenue - total_spent) / total_spent * 100) if total_spent > 0 else 0
+            
+            # Top performing channels
+            channel_performance = {
+                "social_media": {"leads": np.random.randint(50, 200), "revenue": np.random.uniform(1000, 5000)},
+                "email": {"leads": np.random.randint(30, 150), "revenue": np.random.uniform(800, 4000)},
+                "paid_ads": {"leads": np.random.randint(20, 100), "revenue": np.random.uniform(500, 3000)}
+            }
+            
+            top_channels = sorted(
+                channel_performance.items(),
+                key=lambda x: x[1]["revenue"],
+                reverse=True
+            )
+            
+            # Recent activities
+            recent_posts = db.query(SocialMediaPost).order_by(
+                SocialMediaPost.created_at.desc()
+            ).limit(5).all()
+            
+            recent_activities = [
+                {
+                    "type": "social_post",
+                    "platform": post.platform,
+                    "content": post.content[:100] + "..." if len(post.content) > 100 else post.content,
+                    "timestamp": post.created_at.isoformat()
+                }
+                for post in recent_posts
+            ]
+            
+            return MarketingAnalytics(
+                total_campaigns=total_campaigns,
+                active_campaigns=active_campaigns,
+                total_leads=total_leads,
+                conversion_rate=round(conversion_rate, 3),
+                total_revenue=round(total_revenue, 2),
+                roi=round(roi, 2),
+                top_performing_channels=[
+                    {"channel": ch, "leads": data["leads"], "revenue": round(data["revenue"], 2)}
+                    for ch, data in top_channels
+                ],
+                recent_activities=recent_activities
+            )
+        
+        except Exception as e:
+            logger.error(f"Failed to get analytics: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+# Initialize components
+marketing_agent = CampaignManager()
+
+# FastAPI app
+app = FastAPI(
+    title="TRAE.AI Marketing Agent",
+    description="Comprehensive marketing automation and campaign management",
+    version="1.0.0"
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Health check
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "service": "marketing-agent",
+        "version": "1.0.0"
+    }
+
+# Metrics endpoint
+@app.get("/metrics")
+async def get_metrics():
+    return generate_latest()
+
+# Campaign endpoints
+@app.post("/api/campaigns", response_model=CampaignResponse)
+async def create_campaign(campaign_data: CampaignCreate, db: Session = Depends(get_db)):
+    """Create a new marketing campaign"""
+    api_request_counter.labels(endpoint="create_campaign", method="POST").inc()
+    
+    campaign = await marketing_agent.create_campaign(campaign_data, db)
+    
+    return CampaignResponse(
+        id=str(campaign.id),
+        name=campaign.name,
+        campaign_type=campaign.campaign_type,
+        status=campaign.status,
+        channels=campaign.channels,
+        budget=campaign.budget,
+        spent=campaign.spent,
+        performance_metrics=campaign.performance_metrics or {},
+        created_at=campaign.created_at
+    )
+
+@app.get("/api/campaigns", response_model=List[CampaignResponse])
+async def list_campaigns(db: Session = Depends(get_db)):
+    """List all campaigns"""
+    api_request_counter.labels(endpoint="list_campaigns", method="GET").inc()
+    
+    campaigns = db.query(Campaign).order_by(Campaign.created_at.desc()).all()
+    
+    return [
+        CampaignResponse(
+            id=str(campaign.id),
+            name=campaign.name,
+            campaign_type=campaign.campaign_type,
+            status=campaign.status,
+            channels=campaign.channels,
+            budget=campaign.budget,
+            spent=campaign.spent,
+            performance_metrics=campaign.performance_metrics or {},
+            created_at=campaign.created_at
+        )
+        for campaign in campaigns
+    ]
+
+@app.get("/api/campaigns/{campaign_id}", response_model=CampaignResponse)
+async def get_campaign(campaign_id: str, db: Session = Depends(get_db)):
+    """Get campaign details"""
+    api_request_counter.labels(endpoint="get_campaign", method="GET").inc()
+    
+    campaign = db.query(Campaign).filter(Campaign.id == uuid.UUID(campaign_id)).first()
+    if not campaign:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    
+    return CampaignResponse(
+        id=str(campaign.id),
+        name=campaign.name,
+        campaign_type=campaign.campaign_type,
+        status=campaign.status,
+        channels=campaign.channels,
+        budget=campaign.budget,
+        spent=campaign.spent,
+        performance_metrics=campaign.performance_metrics or {},
+        created_at=campaign.created_at
+    )
+
+# Social media endpoints
+@app.post("/api/social/post")
+async def create_social_post(post_data: SocialMediaPostCreate, db: Session = Depends(get_db)):
+    """Create and publish social media post"""
+    api_request_counter.labels(endpoint="create_social_post", method="POST").inc()
+    
+    post = await marketing_agent.publish_social_post(post_data, db)
+    return {"id": str(post.id), "status": post.status, "post_id": post.post_id}
+
+@app.get("/api/social/posts")
+async def list_social_posts(db: Session = Depends(get_db)):
+    """List social media posts"""
+    api_request_counter.labels(endpoint="list_social_posts", method="GET").inc()
+    
+    posts = db.query(SocialMediaPost).order_by(SocialMediaPost.created_at.desc()).limit(50).all()
+    
+    return [
+        {
+            "id": str(post.id),
+            "platform": post.platform,
+            "content": post.content,
+            "status": post.status,
+            "engagement_metrics": post.engagement_metrics,
+            "created_at": post.created_at.isoformat()
+        }
+        for post in posts
+    ]
+
+# Email marketing endpoints
+@app.post("/api/email/campaign")
+async def create_email_campaign(email_data: EmailCampaignCreate, db: Session = Depends(get_db)):
+    """Create and send email campaign"""
+    api_request_counter.labels(endpoint="create_email_campaign", method="POST").inc()
+    
+    campaign = await marketing_agent.send_email_campaign(email_data, db)
+    return {"id": str(campaign.id), "status": campaign.status}
+
+@app.get("/api/email/campaigns")
+async def list_email_campaigns(db: Session = Depends(get_db)):
+    """List email campaigns"""
+    api_request_counter.labels(endpoint="list_email_campaigns", method="GET").inc()
+    
+    campaigns = db.query(EmailCampaign).order_by(EmailCampaign.created_at.desc()).limit(50).all()
+    
+    return [
+        {
+            "id": str(campaign.id),
+            "name": campaign.name,
+            "subject": campaign.subject,
+            "status": campaign.status,
+            "open_rate": campaign.open_rate,
+            "click_rate": campaign.click_rate,
+            "created_at": campaign.created_at.isoformat()
+        }
+        for campaign in campaigns
+    ]
+
+# Analytics endpoints
+@app.get("/api/analytics", response_model=MarketingAnalytics)
+async def get_analytics(db: Session = Depends(get_db)):
+    """Get marketing analytics"""
+    api_request_counter.labels(endpoint="get_analytics", method="GET").inc()
+    
+    return await marketing_agent.get_analytics(db)
+
+@app.post("/api/seo/analyze")
+async def analyze_seo(content: str, keywords: List[str]):
+    """Analyze content for SEO"""
+    api_request_counter.labels(endpoint="analyze_seo", method="POST").inc()
+    
+    analysis = await marketing_agent.seo_analyzer.analyze_content(content, keywords)
+    return analysis
+
+# Lead management endpoints
+@app.post("/api/leads")
+async def create_lead(lead_data: dict, db: Session = Depends(get_db)):
+    """Create a new lead"""
+    api_request_counter.labels(endpoint="create_lead", method="POST").inc()
+    
+    lead = Lead(
+        campaign_id=uuid.UUID(lead_data.get("campaign_id")) if lead_data.get("campaign_id") else None,
+        source=lead_data["source"],
+        email=lead_data.get("email"),
+        name=lead_data.get("name"),
+        phone=lead_data.get("phone"),
+        company=lead_data.get("company"),
+        lead_score=lead_data.get("lead_score", 0)
+    )
+    
+    db.add(lead)
+    db.commit()
+    db.refresh(lead)
+    
+    lead_counter.labels(source=lead.source, status=lead.status).inc()
+    
+    return {"id": str(lead.id), "status": lead.status}
+
+@app.get("/api/leads")
+async def list_leads(db: Session = Depends(get_db)):
+    """List leads"""
+    api_request_counter.labels(endpoint="list_leads", method="GET").inc()
+    
+    leads = db.query(Lead).order_by(Lead.created_at.desc()).limit(100).all()
+    
+    return [
+        {
+            "id": str(lead.id),
+            "source": lead.source,
+            "email": lead.email,
+            "name": lead.name,
+            "lead_score": lead.lead_score,
+            "status": lead.status,
+            "created_at": lead.created_at.isoformat()
+        }
+        for lead in leads
+    ]
+
+# Affiliate marketing endpoints
+@app.post("/api/affiliate/links")
+async def create_affiliate_link(link_data: dict, db: Session = Depends(get_db)):
+    """Create affiliate link"""
+    api_request_counter.labels(endpoint="create_affiliate_link", method="POST").inc()
+    
+    affiliate_link = AffiliateLink(
+        campaign_id=uuid.UUID(link_data.get("campaign_id")) if link_data.get("campaign_id") else None,
+        platform=link_data["platform"],
+        product_name=link_data["product_name"],
+        affiliate_url=link_data["affiliate_url"],
+        commission_rate=link_data.get("commission_rate", 0.0)
+    )
+    
+    db.add(affiliate_link)
+    db.commit()
+    db.refresh(affiliate_link)
+    
+    return {"id": str(affiliate_link.id), "url": affiliate_link.affiliate_url}
+
+@app.get("/api/affiliate/links")
+async def list_affiliate_links(db: Session = Depends(get_db)):
+    """List affiliate links"""
+    api_request_counter.labels(endpoint="list_affiliate_links", method="GET").inc()
+    
+    links = db.query(AffiliateLink).order_by(AffiliateLink.created_at.desc()).all()
+    
+    return [
+        {
+            "id": str(link.id),
+            "platform": link.platform,
+            "product_name": link.product_name,
+            "clicks": link.clicks,
+            "conversions": link.conversions,
+            "revenue": link.revenue,
+            "created_at": link.created_at.isoformat()
+        }
+        for link in links
+    ]
+
+# Background tasks
+@scheduler.scheduled_job('interval', minutes=15)
+async def update_engagement_metrics():
+    """Update social media engagement metrics"""
+    db = SessionLocal()
+    try:
+        # Get recent posts that need metric updates
+        posts = db.query(SocialMediaPost).filter(
+            SocialMediaPost.status == "published",
+            SocialMediaPost.published_time > datetime.utcnow() - timedelta(days=7)
+        ).all()
+        
+        for post in posts:
+            if post.post_id:
+                metrics = await marketing_agent.social_media.get_engagement_metrics(
+                    post.platform, post.post_id
+                )
+                post.engagement_metrics = metrics
+        
+        db.commit()
+        
+    except Exception as e:
+        logger.error(f"Failed to update engagement metrics: {e}")
+    
+    finally:
+        db.close()
+
+@scheduler.scheduled_job('interval', hours=1)
+async def update_email_metrics():
+    """Update email campaign metrics"""
+    db = SessionLocal()
+    try:
+        # Get recent email campaigns
+        campaigns = db.query(EmailCampaign).filter(
+            EmailCampaign.status == "sent",
+            EmailCampaign.send_time > datetime.utcnow() - timedelta(days=30)
+        ).all()
+        
+        for campaign in campaigns:
+            metrics = await marketing_agent.email_marketing.get_campaign_metrics(
+                str(campaign.id)
+            )
+            
+            campaign.open_rate = metrics["open_rate"]
+            campaign.click_rate = metrics["click_rate"]
+            campaign.bounce_rate = metrics["bounce_rate"]
+            campaign.unsubscribe_rate = metrics["unsubscribe_rate"]
+        
+        db.commit()
+        
+    except Exception as e:
+        logger.error(f"Failed to update email metrics: {e}")
+    
+    finally:
+        db.close()
+
+@scheduler.scheduled_job('interval', hours=6)
+async def update_campaign_performance():
+    """Update campaign performance metrics"""
+    db = SessionLocal()
+    try:
+        campaigns = db.query(Campaign).filter(Campaign.status == "active").all()
+        
+        for campaign in campaigns:
+            # Calculate performance metrics
+            posts = db.query(SocialMediaPost).filter(
+                SocialMediaPost.campaign_id == campaign.id
+            ).all()
+            
+            emails = db.query(EmailCampaign).filter(
+                EmailCampaign.campaign_id == campaign.id
+            ).all()
+            
+            leads = db.query(Lead).filter(
+                Lead.campaign_id == campaign.id
+            ).all()
+            
+            # Aggregate metrics
+            total_engagement = sum(
+                sum(post.engagement_metrics.values()) if post.engagement_metrics else 0
+                for post in posts
+            )
+            
+            avg_open_rate = np.mean([email.open_rate for email in emails if email.open_rate]) if emails else 0
+            lead_count = len(leads)
+            
+            campaign.performance_metrics = {
+                "total_posts": len(posts),
+                "total_emails": len(emails),
+                "total_engagement": total_engagement,
+                "avg_open_rate": round(avg_open_rate, 3),
+                "lead_count": lead_count,
+                "last_updated": datetime.utcnow().isoformat()
+            }
+        
+        db.commit()
+        
+    except Exception as e:
+        logger.error(f"Failed to update campaign performance: {e}")
+    
+    finally:
+        db.close()
+
+# Error handlers
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request, exc):
+    error_counter.labels(error_type="http_error").inc()
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail, "timestamp": datetime.utcnow().isoformat()}
+    )
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request, exc):
+    error_counter.labels(error_type="general_error").inc()
+    logger.error(f"Unhandled exception: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "Internal server error",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    )
+
+if __name__ == "__main__":
+    import uvicorn
+    
+    # Create output directories
+    Path("output").mkdir(exist_ok=True)
+    Path("temp").mkdir(exist_ok=True)
+    Path("logs").mkdir(exist_ok=True)
+    
+    # Start scheduler
+    scheduler.start()
+    
+    logger.info("Starting TRAE.AI Marketing Agent")
+    logger.info(f"Environment: {config.ENVIRONMENT}")
+    logger.info(f"Use Mock: {config.USE_MOCK}")
+    
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8002,
+        reload=config.ENVIRONMENT == "development",
+        log_level=config.LOG_LEVEL.lower()
+    )

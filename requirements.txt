@@ -1,0 +1,421 @@
+# TRAE.AI System Dependencies
+# Production-ready Python package requirements
+# 
+# This file contains all necessary dependencies for the TRAE.AI foundational utilities:
+# - SecretStore with encryption (cryptography)
+# - Centralized logging with rotation
+# - Rule1 content scanning and enforcement
+# - Database operations (SQLite)
+# - CLI interfaces and utilities
+#
+# Install with: pip install -r requirements.txt
+# For development: pip install -r requirements.txt -r requirements-dev.txt
+#
+# Author: TRAE.AI System
+# Version: 1.0.0
+
+# ============================================================================
+# CORE CRYPTOGRAPHY AND SECURITY
+# ============================================================================
+
+# Cryptography library for SecretStore encryption/decryption
+# Provides Fernet (AES) encryption and PBKDF2 key derivation
+cryptography>=41.0.0,<42.0.0
+
+# FastAPI and web framework dependencies
+fastapi>=0.104.0,<1.0.0
+uvicorn[standard]>=0.24.0,<1.0.0
+python-multipart>=0.0.6,<1.0.0
+jinja2>=3.1.0,<4.0.0
+
+# HTTP client and async support
+httpx>=0.25.0,<1.0.0
+aiohttp>=3.9.0,<4.0.0
+aiofiles>=23.2.0,<24.0.0
+
+# Environment and configuration
+python-dotenv>=1.0.0,<2.0.0
+pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0,<3.0.0
+
+# Security and authentication
+passlib[bcrypt]>=1.7.4,<2.0.0
+python-jose[cryptography]>=3.3.0,<4.0.0
+
+# Data processing and validation
+requests>=2.31.0,<3.0.0
+validators>=0.22.0,<1.0.0
+
+# Social Media and Payment Integration Dependencies
+# Required for the new social media platform integrations and payment webhooks
+stripe>=7.0.0,<8.0.0
+paypalrestsdk>=1.13.3,<2.0.0
+
+# Pet Care API integrations (optional)
+# These support the optional pet care features from .env
+petpy>=2.4.0,<3.0.0  # Petfinder API wrapper
+ebird-api>=2.0.0,<3.0.0  # eBird API wrapper
+
+# CORS and middleware
+fastapi-cors>=0.0.6,<1.0.0
+
+# Rate limiting
+slowapi>=0.1.9,<1.0.0
+
+# JSON handling
+orjson>=3.9.0,<4.0.0
+
+# Date and time utilities
+python-dateutil>=2.8.0,<3.0.0
+
+# Secure random number generation and hashing
+# secrets>=1.0.0  # Built-in Python module (no version constraint needed) - COMMENTED OUT: secrets is built into Python
+# hashlib>=1.0.0  # Built-in Python module (no version constraint needed) - COMMENTED OUT: hashlib is built into Python
+
+# ============================================================================
+# DATABASE AND DATA PERSISTENCE
+# ============================================================================
+
+# SQLite is built into Python, but we may need additional utilities
+# SQLite database browser and management tools (optional)
+sqlite-utils>=3.34.0,<4.0.0
+
+# Database migration and schema management
+alembic>=1.12.0,<2.0.0
+
+# ============================================================================
+# LOGGING AND MONITORING
+# ============================================================================
+
+# Enhanced logging capabilities (built-in logging is sufficient for basic needs)
+# But we'll include some useful logging extensions
+coloredlogs>=15.0.1,<16.0.0
+structlog>=23.1.0,<24.0.0
+
+# Performance monitoring and profiling
+psutil>=5.9.0,<6.0.0
+
+# ============================================================================
+# WEB FRAMEWORK AND API
+# ============================================================================
+
+# FastAPI web framework
+fastapi>=0.104.0,<1.0.0
+uvicorn[standard]>=0.24.0,<1.0.0
+
+# HTTP client for affiliate URL validation
+httpx>=0.25.0,<1.0.0
+
+# Pydantic for data validation
+pydantic>=2.4.0,<3.0.0
+
+# ============================================================================
+# CLI AND USER INTERFACE
+# ============================================================================
+
+# Command-line interface framework
+click>=8.1.0,<9.0.0
+
+# Rich text and beautiful formatting for CLI
+rich>=13.5.0,<14.0.0
+
+# Progress bars and status indicators
+tqdm>=4.66.0,<5.0.0
+
+# ============================================================================
+# FILE AND TEXT PROCESSING
+# ============================================================================
+
+# Regular expressions (built-in re module is sufficient)
+# But we'll include regex for advanced pattern matching
+regex>=2023.8.8,<2024.0.0
+
+# File system utilities and path handling
+# pathlib>=1.0.0  # Built-in Python module - COMMENTED OUT: pathlib is built into Python 3.4+
+watchdog>=3.0.0,<4.0.0  # File system monitoring
+
+# Text processing and natural language utilities
+nltk>=3.8.1,<4.0.0
+textblob>=0.17.1,<1.0.0
+
+# ============================================================================
+# CONCURRENCY AND THREADING
+# ============================================================================
+
+# Threading and multiprocessing (built-in modules are sufficient)
+# But we'll include some useful concurrent utilities
+# concurrent-futures>=3.1.1  # Backport for older Python versions - COMMENTED OUT: concurrent.futures is built into Python 3.2+
+# threading-utils>=0.3.0,<1.0.0  # COMMENTED OUT: Package doesn't exist, Python's built-in threading module is sufficient
+
+# ============================================================================
+# DATA SERIALIZATION AND FORMATS
+# ============================================================================
+
+# JSON handling (built-in json module is sufficient)
+# But we'll include some enhanced JSON utilities
+orjson>=3.9.0,<4.0.0  # Fast JSON library
+
+# YAML support for configuration files
+PyYAML>=6.0.1,<7.0.0
+
+# TOML support for modern configuration
+toml>=0.10.2,<1.0.0
+
+# ============================================================================
+# DATE AND TIME UTILITIES
+# ============================================================================
+
+# Enhanced date/time handling
+python-dateutil>=2.8.2,<3.0.0
+pytz>=2023.3,<2024.0
+
+# ============================================================================
+# HTTP AND WEB UTILITIES
+# ============================================================================
+
+# HTTP client for API interactions
+requests>=2.31.0,<3.0.0
+httpx>=0.24.0,<1.0.0  # Modern async HTTP client
+
+# URL parsing and validation
+furl>=2.1.3,<3.0.0
+
+# ============================================================================
+# API INTEGRATIONS AND THIRD-PARTY SERVICES
+# ============================================================================
+
+# Google API client for YouTube integration
+google-api-python-client>=2.100.0,<3.0.0
+
+# Twitter API integration
+tweepy>=4.14.0,<5.0.0
+
+# Google Trends API integration
+pytrends>=4.9.2,<5.0.0
+
+# ============================================================================
+# WEB FRAMEWORK AND DASHBOARD
+# ============================================================================
+
+# Flask web framework for dashboard
+Flask>=2.3.0,<3.0.0
+
+# Production WSGI server
+Waitress>=2.1.0,<3.0.0
+
+# Flask extensions for enhanced functionality
+Flask-CORS>=4.0.0,<5.0.0  # Cross-Origin Resource Sharing
+Flask-Limiter>=3.5.0,<4.0.0  # Rate limiting
+Flask-Caching>=2.1.0,<3.0.0  # Response caching
+
+# Template engine (Jinja2 comes with Flask but pinning version)
+Jinja2>=3.1.0,<4.0.0
+
+# Static file serving and optimization
+Whitenoise>=6.5.0,<7.0.0  # Static file serving for production
+
+# WebSocket support for real-time updates
+Flask-SocketIO>=5.3.0,<6.0.0
+python-socketio>=5.8.0,<6.0.0
+
+# API documentation and validation
+Flask-RESTful>=0.3.10,<1.0.0
+flasgger>=0.9.7,<1.0.0  # Swagger/OpenAPI documentation
+
+# Session management and security
+Flask-Session>=0.5.0,<1.0.0
+Flask-WTF>=1.1.0,<2.0.0  # CSRF protection and form handling
+WTForms>=3.0.0,<4.0.0
+
+# ============================================================================
+# VALIDATION AND SCHEMA
+# ============================================================================
+
+# Data validation and serialization
+pydantic>=2.3.0,<3.0.0
+
+# JSON schema validation
+jsonschema>=4.19.0,<5.0.0
+
+# ============================================================================
+# TESTING AND QUALITY ASSURANCE
+# ============================================================================
+
+# Testing framework
+pytest>=7.4.0,<8.0.0
+pytest-cov>=4.1.0,<5.0.0
+pytest-mock>=3.11.0,<4.0.0
+pytest-asyncio>=0.21.0,<1.0.0
+
+# Code quality and linting
+flake8>=6.0.0,<7.0.0
+black>=23.7.0,<24.0.0
+isort>=5.12.0,<6.0.0
+mypy>=1.5.0,<2.0.0
+
+# Security scanning
+bandit>=1.7.5,<2.0.0
+safety>=2.3.0,<3.0.0
+
+# ============================================================================
+# DEVELOPMENT AND DEBUGGING
+# ============================================================================
+
+# Interactive debugging
+ipdb>=0.13.13,<1.0.0
+
+# Code formatting and style
+autopep8>=2.0.4,<3.0.0
+
+# Documentation generation
+sphinx>=7.1.0,<8.0.0
+sphinx-rtd-theme>=1.3.0,<2.0.0
+
+# ============================================================================
+# PERFORMANCE AND OPTIMIZATION
+# ============================================================================
+
+# Memory profiling
+memory-profiler>=0.61.0,<1.0.0
+
+# Performance timing
+line-profiler>=4.1.0,<5.0.0
+
+# ============================================================================
+# SYSTEM INTEGRATION
+# ============================================================================
+
+# Environment variable management
+python-dotenv>=1.0.0,<2.0.0
+
+# Configuration management
+# configparser>=5.3.0,<6.0.0  # Built-in module - COMMENTED OUT: configparser is built into Python 3.2+
+
+# System information
+# platform>=1.0.0  # Built-in module - COMMENTED OUT: platform is built into Python
+
+# ============================================================================
+# OPTIONAL DEPENDENCIES FOR EXTENDED FUNCTIONALITY
+# ============================================================================
+
+# Image processing (for avatar and media handling)
+Pillow>=10.0.0,<11.0.0
+
+# PDF processing (for document evidence)
+PyPDF2>=3.0.1,<4.0.0
+
+# Excel/CSV processing (for data import/export)
+pandas>=2.0.0,<3.0.0
+openpyxl>=3.1.0,<4.0.0
+
+# Web scraping (for evidence collection)
+beautifulsoup4>=4.12.0,<5.0.0
+selenium>=4.11.0,<5.0.0
+
+# Machine learning (for content analysis)
+scikit-learn>=1.3.0,<2.0.0
+numpy>=1.24.0,<2.0.0
+
+# Natural language processing
+spacy>=3.6.0,<4.0.0
+transformers>=4.32.0,<5.0.0
+textstat>=0.7.3,<1.0.0
+
+# Text-to-speech fallback
+pyttsx3>=2.90,<3.0.0
+
+# PDF generation
+reportlab>=4.0.0,<5.0.0
+
+# ============================================================================
+# PLATFORM-SPECIFIC DEPENDENCIES
+# ============================================================================
+
+# Windows-specific
+colorama>=0.4.6,<1.0.0; sys_platform == "win32"
+
+# macOS-specific
+appnope>=0.1.3,<1.0.0; sys_platform == "darwin"
+
+# Linux-specific
+# (Most Linux dependencies are covered by the general requirements)
+
+# ============================================================================
+# VERSION CONSTRAINTS AND COMPATIBILITY
+# ============================================================================
+
+# Ensure Python version compatibility
+# This requirements.txt is designed for Python 3.8+
+# Some packages may require Python 3.9+ for full functionality
+
+# Pin critical dependencies to avoid breaking changes
+# Use semantic versioning constraints (>=major.minor.patch,<next_major.0.0)
+# This allows patch and minor updates while preventing breaking changes
+
+# ============================================================================
+# TESTING AND DEVELOPMENT DEPENDENCIES
+# ============================================================================
+
+# Testing framework and utilities
+pytest>=7.4.0,<8.0.0
+pytest-asyncio>=0.21.0,<1.0.0
+pytest-cov>=4.1.0,<5.0.0
+
+# Security scanning and code quality
+bandit>=1.7.5,<2.0.0
+safety>=2.3.0,<3.0.0
+flake8>=6.1.0,<7.0.0
+
+# ============================================================================
+# INSTALLATION NOTES
+# ============================================================================
+
+# To install all dependencies:
+# pip install -r requirements.txt
+#
+# To install with development dependencies:
+# pip install -r requirements.txt -r requirements-dev.txt
+#
+# To create a virtual environment:
+# python -m venv venv
+# source venv/bin/activate  # On Windows: venv\Scripts\activate
+# pip install -r requirements.txt
+#
+# To update dependencies:
+# pip install --upgrade -r requirements.txt
+#
+# To check for security vulnerabilities:
+# pip install safety
+# safety check -r requirements.txt
+#
+# To generate a lock file with exact versions:
+# pip freeze > requirements-lock.txt
+
+# ============================================================================
+# PRODUCTION DEPLOYMENT NOTES
+# ============================================================================
+
+# For production deployment, consider:
+# 1. Using pip-tools to generate requirements-lock.txt with exact versions
+# 2. Installing only production dependencies (exclude dev/test packages)
+# 3. Using Docker for consistent deployment environments
+# 4. Regular security updates and vulnerability scanning
+# 5. Monitoring dependency licenses for compliance
+
+# Production-only installation (excluding dev dependencies):
+# pip install cryptography click rich requests pydantic python-dotenv
+
+# Minimal core installation for SecretStore only:
+# pip install cryptography
+
+# Minimal core installation for logging only:
+# pip install coloredlogs structlog
+
+# Minimal core installation for Rule1 scanner only:
+# pip install regex nltk
+
+# Additional packages for production deployment:
+google-api-python-client>=2.181.0
+tweepy>=4.16.0
+pytrends>=4.9.2
+pyttsx3>=2.99
