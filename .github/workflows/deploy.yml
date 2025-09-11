@@ -1,23 +1,25 @@
-name: Deploy to Production
+name: LIVE Production Deployment - NO VIRTUAL ENVIRONMENTS
 
-# Secure deployment workflow following go-live practices
-# Includes validation, testing, security scans, and controlled deployment
+# LIVE deployment workflow - NO VIRTUAL ENVIRONMENTS
+# Production-only deployment with strict authorization requirements
 
 on:
-  pull_request:
-    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
-        description: "Deployment environment"
+        description: "Deployment environment - PRODUCTION ONLY"
         required: true
-        default: "staging"
+        default: "production"
         type: choice
         options:
-          - staging
           - production
+      automation_authorized:
+        description: "Automation explicitly authorized by user"
+        required: true
+        default: false
+        type: boolean
       skip_tests:
-        description: "Skip tests (not recommended for production)"
+        description: "Skip tests (NEVER recommended for live production)"
         required: false
         default: false
         type: boolean
@@ -27,9 +29,9 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  # Phase 1: Security and Configuration Validation
+  # Phase 1: LIVE Production Validation - NO VIRTUAL ENVIRONMENTS
   validate:
-    name: "Validate Configuration & Security"
+    name: "Validate LIVE Production Configuration"
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     outputs:
@@ -40,34 +42,43 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Validate deployment configuration
+      - name: Enforce LIVE deployment rules
         id: validate
         run: |
-          echo "🔍 Validating deployment configuration..."
+          echo "🚨 LIVE PRODUCTION DEPLOYMENT - NO VIRTUAL ENVIRONMENTS"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Automation authorized: ${{ github.event.inputs.automation_authorized }}"
+          echo "Skip tests: ${{ github.event.inputs.skip_tests }}"
           
-          # Validate environment
-          if [[ "${{ github.event.inputs.environment }}" == "production" ]]; then
-            echo "🚨 PRODUCTION DEPLOYMENT DETECTED"
-            echo "environment=production" >> $GITHUB_OUTPUT
-            echo "deploy_url=https://your-production-site.netlify.app" >> $GITHUB_OUTPUT
-            
-            # Production safety checks
-            if [[ "${{ github.ref }}" != "refs/heads/main" ]]; then
-              echo "❌ Production deployments must be from main branch"
-              exit 1
-            fi
-            
-            if [[ "${{ github.event.inputs.skip_tests }}" == "true" ]]; then
-              echo "❌ Cannot skip tests for production deployment"
-              exit 1
-            fi
-          else
-            echo "📦 Staging deployment"
-            echo "environment=staging" >> $GITHUB_OUTPUT
-            echo "deploy_url=https://staging--your-site.netlify.app" >> $GITHUB_OUTPUT
+          # Enforce production-only deployment
+          if [[ "${{ github.event.inputs.environment }}" != "production" ]]; then
+            echo "❌ ERROR: Only production deployments allowed. No virtual environments."
+            exit 1
           fi
           
-          echo "✅ Configuration validated"
+          # Require explicit automation authorization
+          if [[ "${{ github.event.inputs.automation_authorized }}" != "true" ]]; then
+            echo "❌ ERROR: Automation not authorized. User must explicitly authorize deployment."
+            echo "Please check 'Automation explicitly authorized by user' to proceed."
+            exit 1
+          fi
+          
+          echo "🚨 PRODUCTION DEPLOYMENT DETECTED"
+          echo "environment=production" >> $GITHUB_OUTPUT
+          echo "deploy_url=https://your-production-site.netlify.app" >> $GITHUB_OUTPUT
+          
+          # Production safety checks
+          if [[ "${{ github.ref }}" != "refs/heads/main" ]]; then
+            echo "❌ Production deployments must be from main branch"
+            exit 1
+          fi
+          
+          if [[ "${{ github.event.inputs.skip_tests }}" == "true" ]]; then
+            echo "❌ Cannot skip tests for production deployment"
+            exit 1
+          fi
+          
+          echo "✅ LIVE PRODUCTION DEPLOYMENT AUTHORIZED"
       
       - name: Check required secrets
         run: |
