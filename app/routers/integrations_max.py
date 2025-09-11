@@ -18,9 +18,12 @@ METRICS_FILE = "data/metrics.json"
 POLICY_FILE = "data/policy.json"
 
 # Optional secret store functions (implement if needed)
+
+
 def get_secret(key: str) -> Optional[str]:
     """Get secret from environment or secret store"""
     return os.getenv(key)
+
 
 def set_secret(key: str, value: str) -> bool:
     """Set secret in secret store (placeholder)"""
@@ -28,6 +31,8 @@ def set_secret(key: str, value: str) -> bool:
     return True
 
 # JSON load/save helpers
+
+
 def load_json(filepath: str, default: Any = None) -> Any:
     """Load JSON file with default fallback"""
     try:
@@ -37,6 +42,7 @@ def load_json(filepath: str, default: Any = None) -> Any:
     except Exception:
         pass
     return default or {}
+
 
 def save_json(filepath: str, data: Any) -> bool:
     """Save data to JSON file"""
@@ -49,6 +55,8 @@ def save_json(filepath: str, data: Any) -> bool:
         return False
 
 # Models
+
+
 class ProviderIn(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
     category: str = Field(..., min_length=1, max_length=30)
@@ -57,10 +65,12 @@ class ProviderIn(BaseModel):
     auto_disable: bool = True
     priority: int = Field(default=1, ge=1, le=10)
 
+
 class CredentialIn(BaseModel):
     provider_id: str
     key_name: str
     key_value: str
+
 
 class ReportIn(BaseModel):
     provider_id: str
@@ -68,11 +78,13 @@ class ReportIn(BaseModel):
     error_message: Optional[str] = None
     response_time_ms: Optional[int] = None
 
+
 class AffiliateIn(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
     vertical: str = Field(..., min_length=1, max_length=30)
     affiliate_id: str = Field(..., min_length=1, max_length=100)
     enabled: bool = False
+
 
 # Default providers
 DEFAULT_PROVIDERS = {
@@ -272,6 +284,8 @@ DEFAULT_POLICY = {
 }
 
 # State loaders
+
+
 def load_registry() -> Dict:
     """Load provider registry with defaults"""
     registry = load_json(PROVIDERS_FILE, DEFAULT_PROVIDERS.copy())
@@ -280,6 +294,7 @@ def load_registry() -> Dict:
         if key not in registry:
             registry[key] = default_provider
     return registry
+
 
 def load_affiliates() -> Dict:
     """Load affiliates with defaults"""
@@ -290,61 +305,69 @@ def load_affiliates() -> Dict:
             affiliates[key] = default_affiliate
     return affiliates
 
+
 def load_keys() -> Dict:
     """Load API keys"""
     return load_json(KEYS_FILE, {})
 
+
 def load_metrics() -> Dict:
     """Load usage metrics"""
     return load_json(METRICS_FILE, {})
+
 
 def load_policy() -> Dict:
     """Load policy settings"""
     return load_json(POLICY_FILE, DEFAULT_POLICY.copy())
 
 # Status light logic
+
+
 def get_provider_status_color(provider_id: str, provider: Dict) -> str:
     """Get status color for provider"""
     if not provider.get("enabled", False):
         return "gray"  # Disabled
-    
+
     # Check credentials
     if provider.get("requires_key", False):
         keys = load_keys()
         if provider_id not in keys or not keys[provider_id]:
             return "red"  # Missing credentials
-    
+
     # Check auto-disable status
     if provider.get("auto_disable", False):
         metrics = load_metrics()
         provider_metrics = metrics.get(provider_id, {})
-        
+
         # Check recent errors (last 24 hours)
         recent_errors = provider_metrics.get("recent_errors", 0)
         if recent_errors >= 5:
             return "red"  # Too many recent errors
-    
+
     return "green"  # All good
+
 
 def get_affiliate_status_color(affiliate_id: str, affiliate: Dict) -> str:
     """Get status color for affiliate"""
     if not affiliate.get("enabled", False):
         return "gray"  # Disabled
-    
+
     # Check policy for restricted verticals
     vertical = affiliate.get("vertical")
     if vertical == "restricted":
         policy = load_policy()
         if not policy.get("restricted_verticals_enabled", False):
             return "red"  # Policy disabled
-    
+
     # Check affiliate ID
     if not affiliate.get("affiliate_id", "").strip():
         return "red"  # Missing affiliate ID
-    
+
     return "green"  # All good
 
 # Provider routes
+
+
 @router.get("/providers/categories")
 async def list_categories():
     """List all provider categories"""
@@ -352,12 +375,13 @@ async def list_categories():
     categories = list(set(p.get("category", "unknown") for p in registry.values()))
     return {"categories": sorted(categories)}
 
+
 @router.get("/providers")
 async def list_providers():
     """List all providers with status"""
     registry = load_registry()
     result = []
-    
+
     for provider_id, provider in registry.items():
         status_color = get_provider_status_color(provider_id, provider)
         result.append({
@@ -372,20 +396,21 @@ async def list_providers():
             "requires_key": provider.get("requires_key", False),
             "oauth_required": provider.get("oauth_required", False)
         })
-    
+
     return {"providers": sorted(result, key=lambda x: (x["category"], x["priority"]))}
+
 
 @router.post("/providers")
 async def add_provider(provider: ProviderIn):
     """Add a new provider"""
     registry = load_registry()
-    
+
     # Generate ID from name
     provider_id = f"{provider.category}_{provider.name.lower().replace(' ', '_')}"
-    
+
     if provider_id in registry:
         raise HTTPException(status_code=400, detail="Provider already exists")
-    
+
     registry[provider_id] = {
         "name": provider.name,
         "category": provider.category,
@@ -396,58 +421,61 @@ async def add_provider(provider: ProviderIn):
         "requires_key": True,  # Assume new providers need keys
         "free_tier": False     # Assume paid by default
     }
-    
+
     if not save_json(PROVIDERS_FILE, registry):
         raise HTTPException(status_code=500, detail="Failed to save provider")
-    
+
     return {"message": "Provider added", "id": provider_id}
+
 
 @router.post("/providers/{provider_id}/enable")
 async def enable_provider(provider_id: str, enabled: bool = True):
     """Enable/disable a provider"""
     registry = load_registry()
-    
+
     if provider_id not in registry:
         raise HTTPException(status_code=404, detail="Provider not found")
-    
+
     registry[provider_id]["enabled"] = enabled
-    
+
     if not save_json(PROVIDERS_FILE, registry):
         raise HTTPException(status_code=500, detail="Failed to update provider")
-    
+
     return {"message": f"Provider {'enabled' if enabled else 'disabled'}"}
+
 
 @router.post("/providers/{provider_id}/credentials")
 async def upsert_credentials(provider_id: str, credential: CredentialIn):
     """Add/update provider credentials"""
     registry = load_registry()
-    
+
     if provider_id not in registry:
         raise HTTPException(status_code=404, detail="Provider not found")
-    
+
     keys = load_keys()
     if provider_id not in keys:
         keys[provider_id] = {}
-    
+
     keys[provider_id][credential.key_name] = credential.key_value
-    
+
     if not save_json(KEYS_FILE, keys):
         raise HTTPException(status_code=500, detail="Failed to save credentials")
-    
+
     return {"message": "Credentials updated"}
+
 
 @router.get("/providers/active")
 async def get_active_providers():
     """Get active providers by category"""
     registry = load_registry()
     active = {}
-    
+
     for provider_id, provider in registry.items():
         if provider.get("enabled", False):
             category = provider["category"]
             if category not in active:
                 active[category] = []
-            
+
             status_color = get_provider_status_color(provider_id, provider)
             if status_color == "green":  # Only include healthy providers
                 active[category].append({
@@ -455,42 +483,46 @@ async def get_active_providers():
                     "name": provider["name"],
                     "priority": provider.get("priority", 1)
                 })
-    
+
     # Sort by priority
     for category in active:
         active[category].sort(key=lambda x: x["priority"])
-    
+
     return {"active_providers": active}
+
 
 @router.post("/providers/{provider_id}/rotate")
 async def rotate_provider(provider_id: str):
     """Rotate to next provider in category"""
     registry = load_registry()
-    
+
     if provider_id not in registry:
         raise HTTPException(status_code=404, detail="Provider not found")
-    
+
     current_provider = registry[provider_id]
     category = current_provider["category"]
-    
+
     # Find next provider in same category
     category_providers = [
-        (pid, p) for pid, p in registry.items() 
+        (pid, p) for pid, p in registry.items()
         if p["category"] == category and p.get("enabled", False)
     ]
-    
+
     if len(category_providers) <= 1:
-        raise HTTPException(status_code=400, detail="No alternative providers available")
-    
+        raise HTTPException(status_code=400,
+                            detail="No alternative providers available")
+
     # Sort by priority and find next
     category_providers.sort(key=lambda x: x[1].get("priority", 1))
-    current_index = next((i for i, (pid, _) in enumerate(category_providers) if pid == provider_id), -1)
-    
+    current_index = next((i for i, (pid, _) in enumerate(
+        category_providers) if pid == provider_id), -1)
+
     if current_index == -1:
         next_provider_id = category_providers[0][0]
     else:
-        next_provider_id = category_providers[(current_index + 1) % len(category_providers)][0]
-    
+        next_provider_id = category_providers[(
+            current_index + 1) % len(category_providers)][0]
+
     return {
         "message": "Rotated to next provider",
         "from": provider_id,
@@ -498,14 +530,15 @@ async def rotate_provider(provider_id: str):
         "provider_name": registry[next_provider_id]["name"]
     }
 
+
 @router.post("/providers/{provider_id}/report")
 async def report_usage(provider_id: str, report: ReportIn):
     """Report provider usage and errors"""
     registry = load_registry()
-    
+
     if provider_id not in registry:
         raise HTTPException(status_code=404, detail="Provider not found")
-    
+
     metrics = load_metrics()
     if provider_id not in metrics:
         metrics[provider_id] = {
@@ -517,64 +550,70 @@ async def report_usage(provider_id: str, report: ReportIn):
             "last_error": None,
             "avg_response_time": 0
         }
-    
+
     provider_metrics = metrics[provider_id]
     provider_metrics["total_requests"] += 1
-    
+
     if report.success:
         provider_metrics["successful_requests"] += 1
         provider_metrics["last_success"] = datetime.now().isoformat()
-        provider_metrics["recent_errors"] = max(0, provider_metrics["recent_errors"] - 1)
+        provider_metrics["recent_errors"] = max(
+            0, provider_metrics["recent_errors"] - 1)
     else:
         provider_metrics["failed_requests"] += 1
         provider_metrics["last_error"] = datetime.now().isoformat()
         provider_metrics["recent_errors"] += 1
-        
+
         # Auto-disable if too many recent errors
-        if (provider_metrics["recent_errors"] >= 5 and 
-            registry[provider_id].get("auto_disable", False)):
+        if (provider_metrics["recent_errors"] >= 5
+                and registry[provider_id].get("auto_disable", False)):
             registry[provider_id]["enabled"] = False
             save_json(PROVIDERS_FILE, registry)
-    
+
     if report.response_time_ms:
         # Simple moving average
         current_avg = provider_metrics.get("avg_response_time", 0)
         provider_metrics["avg_response_time"] = (
-            (current_avg * (provider_metrics["total_requests"] - 1) + report.response_time_ms) /
-            provider_metrics["total_requests"]
-        )
-    
+            (current_avg
+             * (
+                 provider_metrics["total_requests"]
+                 - 1)
+                + report.response_time_ms)
+            / provider_metrics["total_requests"])
+
     if not save_json(METRICS_FILE, metrics):
         raise HTTPException(status_code=500, detail="Failed to save metrics")
-    
+
     return {"message": "Usage reported"}
 
 # Health/test ping route
+
+
 @router.get("/test-call")
 async def test_call(provider_id: str):
     """Test call to provider's documentation URL"""
     registry = load_registry()
-    
+
     if provider_id not in registry:
         raise HTTPException(status_code=404, detail="Provider not found")
-    
+
     provider = registry[provider_id]
     docs_url = provider["docs_url"]
-    
+
     try:
         start_time = datetime.now()
         response = await http_get_with_backoff(docs_url, method="HEAD")
         end_time = datetime.now()
-        
+
         response_time = int((end_time - start_time).total_seconds() * 1000)
-        
+
         # Report successful test
         await report_usage(provider_id, ReportIn(
             provider_id=provider_id,
             success=True,
             response_time_ms=response_time
         ))
-        
+
         return {
             "provider_id": provider_id,
             "provider_name": provider["name"],
@@ -582,7 +621,7 @@ async def test_call(provider_id: str):
             "response_time_ms": response_time,
             "docs_url": docs_url
         }
-        
+
     except Exception as e:
         # Report failed test
         await report_usage(provider_id, ReportIn(
@@ -590,7 +629,7 @@ async def test_call(provider_id: str):
             success=False,
             error_message=str(e)
         ))
-        
+
         return {
             "provider_id": provider_id,
             "provider_name": provider["name"],
@@ -600,6 +639,8 @@ async def test_call(provider_id: str):
         }
 
 # Affiliate routes
+
+
 @router.get("/affiliates/verticals")
 async def list_verticals():
     """List all affiliate verticals"""
@@ -607,12 +648,13 @@ async def list_verticals():
     verticals = list(set(a.get("vertical", "unknown") for a in affiliates.values()))
     return {"verticals": sorted(verticals)}
 
+
 @router.get("/affiliates")
 async def list_affiliates():
     """List all affiliates with status"""
     affiliates = load_affiliates()
     result = []
-    
+
     for affiliate_id, affiliate in affiliates.items():
         status_color = get_affiliate_status_color(affiliate_id, affiliate)
         result.append({
@@ -623,90 +665,96 @@ async def list_affiliates():
             "status_color": status_color,
             "affiliate_id": affiliate.get("affiliate_id", "")
         })
-    
+
     return {"affiliates": sorted(result, key=lambda x: x["vertical"])}
+
 
 @router.post("/affiliates")
 async def add_affiliate(affiliate: AffiliateIn):
     """Add a new affiliate"""
     affiliates = load_affiliates()
-    
+
     # Generate ID from vertical and name
     affiliate_key = f"{affiliate.vertical}_{affiliate.name.lower().replace(' ', '_')}"
-    
+
     if affiliate_key in affiliates:
         raise HTTPException(status_code=400, detail="Affiliate already exists")
-    
+
     affiliates[affiliate_key] = {
         "name": affiliate.name,
         "vertical": affiliate.vertical,
         "affiliate_id": affiliate.affiliate_id,
         "enabled": affiliate.enabled
     }
-    
+
     if not save_json(AFFILIATES_FILE, affiliates):
         raise HTTPException(status_code=500, detail="Failed to save affiliate")
-    
+
     return {"message": "Affiliate added", "id": affiliate_key}
+
 
 @router.post("/affiliates/{affiliate_key}/enable")
 async def enable_affiliate(affiliate_key: str, enabled: bool = True):
     """Enable/disable an affiliate"""
     affiliates = load_affiliates()
-    
+
     if affiliate_key not in affiliates:
         raise HTTPException(status_code=404, detail="Affiliate not found")
-    
+
     affiliates[affiliate_key]["enabled"] = enabled
-    
+
     if not save_json(AFFILIATES_FILE, affiliates):
         raise HTTPException(status_code=500, detail="Failed to update affiliate")
-    
+
     return {"message": f"Affiliate {'enabled' if enabled else 'disabled'}"}
+
 
 @router.post("/affiliates/{affiliate_key}/credentials")
 async def upsert_affiliate_id(affiliate_key: str, affiliate_id: str):
     """Update affiliate ID"""
     affiliates = load_affiliates()
-    
+
     if affiliate_key not in affiliates:
         raise HTTPException(status_code=404, detail="Affiliate not found")
-    
+
     affiliates[affiliate_key]["affiliate_id"] = affiliate_id
-    
+
     if not save_json(AFFILIATES_FILE, affiliates):
         raise HTTPException(status_code=500, detail="Failed to update affiliate")
-    
+
     return {"message": "Affiliate ID updated"}
 
 # Policy controls
+
+
 @router.get("/policy")
 async def get_policy():
     """Get current policy settings"""
     return load_policy()
 
+
 @router.post("/policy")
 async def set_policy(policy_updates: Dict[str, Any]):
     """Update policy settings"""
     policy = load_policy()
-    
+
     # Update allowed fields
     allowed_fields = [
         "restricted_verticals_enabled",
-        "gambling_enabled", 
+        "gambling_enabled",
         "crypto_enabled",
         "adult_enabled"
     ]
-    
+
     for field in allowed_fields:
         if field in policy_updates:
             policy[field] = policy_updates[field]
-    
+
     policy["last_updated"] = datetime.now().isoformat()
-    
+
     if not save_json(POLICY_FILE, policy):
         raise HTTPException(status_code=500, detail="Failed to save policy")
-    
+
     return {"message": "Policy updated", "policy": policy}
 
 # Channel-specific top affiliate suggestions
@@ -718,20 +766,21 @@ CHANNEL_MAP = {
     "general": ["general_amazon"]
 }
 
+
 @router.get("/affiliates/suggestions/{channel}")
 async def get_top_affiliates(channel: str):
     """Get top affiliate suggestions for channel"""
     if channel not in CHANNEL_MAP:
         raise HTTPException(status_code=404, detail="Channel not found")
-    
+
     affiliates = load_affiliates()
     suggestions = []
-    
+
     for affiliate_key in CHANNEL_MAP[channel]:
         if affiliate_key in affiliates:
             affiliate = affiliates[affiliate_key]
             status_color = get_affiliate_status_color(affiliate_key, affiliate)
-            
+
             suggestions.append({
                 "id": affiliate_key,
                 "name": affiliate["name"],
@@ -739,10 +788,12 @@ async def get_top_affiliates(channel: str):
                 "status_color": status_color,
                 "enabled": affiliate.get("enabled", False)
             })
-    
+
     return {"channel": channel, "suggestions": suggestions}
 
 # Admin UI
+
+
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_ui():
     """Admin interface for managing integrations"""
@@ -776,7 +827,7 @@ async def admin_ui():
 <body>
     <div class="container">
         <h1>Integrations Admin</h1>
-        
+
         <!-- Providers Section -->
         <div class="section">
             <h2>Providers</h2>
@@ -800,7 +851,7 @@ async def admin_ui():
                 <tbody></tbody>
             </table>
         </div>
-        
+
         <!-- Affiliates Section -->
         <div class="section">
             <h2>Affiliates</h2>
@@ -817,7 +868,7 @@ async def admin_ui():
                 <tbody></tbody>
             </table>
         </div>
-        
+
         <!-- Policy Controls -->
         <div class="section">
             <h2>Policy Controls</h2>
@@ -845,7 +896,7 @@ async def admin_ui():
                 <button class="btn-primary" onclick="updatePolicy()">Update Policy</button>
             </div>
         </div>
-        
+
         <!-- Top Affiliates Section -->
         <div class="section">
             <h2>Top Affiliates by Channel</h2>
@@ -858,7 +909,7 @@ async def admin_ui():
             </select>
             <div id="channel-affiliates"></div>
         </div>
-        
+
         <!-- Forms -->
         <div class="section">
             <h3>Add Provider Credentials</h3>
@@ -869,7 +920,7 @@ async def admin_ui():
                 <button class="btn-primary" onclick="addCredentials()">Add Credentials</button>
             </div>
         </div>
-        
+
         <div class="section">
             <h3>Quick Actions</h3>
             <div class="form-group">
@@ -878,7 +929,7 @@ async def admin_ui():
             </div>
         </div>
     </div>
-    
+
     <script>
         // Load data on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -887,14 +938,14 @@ async def admin_ui():
             loadPolicy();
             loadChannelAffiliates();
         });
-        
+
         async function loadProviders() {
             try {
                 const response = await fetch('/integrations/providers');
                 const data = await response.json();
                 const tbody = document.querySelector('#providers-table tbody');
                 tbody.innerHTML = '';
-                
+
                 data.providers.forEach(provider => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -904,7 +955,7 @@ async def admin_ui():
                         <td>${provider.priority}</td>
                         <td>${provider.free_tier ? 'Yes' : 'No'}</td>
                         <td>
-                            <button class="btn-${provider.enabled ? 'danger' : 'success'}" 
+                            <button class="btn-${provider.enabled ? 'danger' : 'success'}"
                                     onclick="toggleProvider('${provider.id}', ${!provider.enabled})">
                                 ${provider.enabled ? 'Disable' : 'Enable'}
                             </button>
@@ -917,14 +968,14 @@ async def admin_ui():
                 console.error('Error loading providers:', error);
             }
         }
-        
+
         async function loadAffiliates() {
             try {
                 const response = await fetch('/integrations/affiliates');
                 const data = await response.json();
                 const tbody = document.querySelector('#affiliates-table tbody');
                 tbody.innerHTML = '';
-                
+
                 data.affiliates.forEach(affiliate => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -933,7 +984,7 @@ async def admin_ui():
                         <td>${affiliate.vertical}</td>
                         <td>${affiliate.affiliate_id || 'Not set'}</td>
                         <td>
-                            <button class="btn-${affiliate.enabled ? 'danger' : 'success'}" 
+                            <button class="btn-${affiliate.enabled ? 'danger' : 'success'}"
                                     onclick="toggleAffiliate('${affiliate.id}', ${!affiliate.enabled})">
                                 ${affiliate.enabled ? 'Disable' : 'Enable'}
                             </button>
@@ -945,12 +996,12 @@ async def admin_ui():
                 console.error('Error loading affiliates:', error);
             }
         }
-        
+
         async function loadPolicy() {
             try {
                 const response = await fetch('/integrations/policy');
                 const policy = await response.json();
-                
+
                 document.getElementById('restricted-verticals').checked = policy.restricted_verticals_enabled;
                 document.getElementById('gambling-enabled').checked = policy.gambling_enabled;
                 document.getElementById('crypto-enabled').checked = policy.crypto_enabled;
@@ -959,14 +1010,14 @@ async def admin_ui():
                 console.error('Error loading policy:', error);
             }
         }
-        
+
         async function loadChannelAffiliates() {
             const channel = document.getElementById('channel-select').value;
             try {
                 const response = await fetch(`/integrations/affiliates/suggestions/${channel}`);
                 const data = await response.json();
                 const container = document.getElementById('channel-affiliates');
-                
+
                 container.innerHTML = data.suggestions.map(affiliate => `
                     <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                         <span class="status-light status-${affiliate.status_color}"></span>
@@ -980,7 +1031,7 @@ async def admin_ui():
                 console.error('Error loading channel affiliates:', error);
             }
         }
-        
+
         async function toggleProvider(providerId, enabled) {
             try {
                 const response = await fetch(`/integrations/providers/${providerId}/enable?enabled=${enabled}`, {
@@ -993,7 +1044,7 @@ async def admin_ui():
                 console.error('Error toggling provider:', error);
             }
         }
-        
+
         async function toggleAffiliate(affiliateId, enabled) {
             try {
                 const response = await fetch(`/integrations/affiliates/${affiliateId}/enable?enabled=${enabled}`, {
@@ -1007,14 +1058,14 @@ async def admin_ui():
                 console.error('Error toggling affiliate:', error);
             }
         }
-        
+
         async function rotateCategory(category) {
             // Find first enabled provider in category and rotate it
             try {
                 const response = await fetch('/integrations/providers');
                 const data = await response.json();
                 const categoryProviders = data.providers.filter(p => p.category === category && p.enabled);
-                
+
                 if (categoryProviders.length > 0) {
                     const rotateResponse = await fetch(`/integrations/providers/${categoryProviders[0].id}/rotate`, {
                         method: 'POST'
@@ -1031,17 +1082,17 @@ async def admin_ui():
                 console.error('Error rotating category:', error);
             }
         }
-        
+
         async function addCredentials() {
             const providerId = document.getElementById('cred-provider-id').value;
             const keyName = document.getElementById('cred-key-name').value;
             const keyValue = document.getElementById('cred-key-value').value;
-            
+
             if (!providerId || !keyName || !keyValue) {
                 alert('Please fill all credential fields');
                 return;
             }
-            
+
             try {
                 const response = await fetch(`/integrations/providers/${providerId}/credentials`, {
                     method: 'POST',
@@ -1052,7 +1103,7 @@ async def admin_ui():
                         key_value: keyValue
                     })
                 });
-                
+
                 if (response.ok) {
                     alert('Credentials added successfully');
                     document.getElementById('cred-provider-id').value = '';
@@ -1064,34 +1115,34 @@ async def admin_ui():
                 console.error('Error adding credentials:', error);
             }
         }
-        
+
         async function testProvider(providerId) {
             if (!providerId) {
                 providerId = document.getElementById('test-provider-id').value;
             }
-            
+
             if (!providerId) {
                 alert('Please enter a provider ID');
                 return;
             }
-            
+
             try {
                 const response = await fetch(`/integrations/test-call?provider_id=${providerId}`);
                 const result = await response.json();
-                
+
                 if (result.status === 'healthy') {
                     alert(`✅ ${result.provider_name} is healthy (${result.response_time_ms}ms)`);
                 } else {
                     alert(`❌ ${result.provider_name} is unhealthy: ${result.error}`);
                 }
-                
+
                 loadProviders();
             } catch (error) {
                 console.error('Error testing provider:', error);
                 alert('Error testing provider');
             }
         }
-        
+
         async function updatePolicy() {
             const policy = {
                 restricted_verticals_enabled: document.getElementById('restricted-verticals').checked,
@@ -1099,14 +1150,14 @@ async def admin_ui():
                 crypto_enabled: document.getElementById('crypto-enabled').checked,
                 adult_enabled: document.getElementById('adult-enabled').checked
             };
-            
+
             try {
                 const response = await fetch('/integrations/policy', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(policy)
                 });
-                
+
                 if (response.ok) {
                     alert('Policy updated successfully');
                     loadAffiliates(); // Reload to update status colors

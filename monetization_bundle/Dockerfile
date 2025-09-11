@@ -30,7 +30,6 @@ RUN mkdir -p /app/logs /app/data /app/output /app/templates
 
 # Set environment variables
 ENV PYTHONPATH=/app
-ENV USE_MOCK=false
 ENV LOG_LEVEL=INFO
 
 # Expose port

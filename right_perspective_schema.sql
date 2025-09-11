@@ -218,15 +218,20 @@ CREATE TABLE IF NOT EXISTS api_orchestration_log (
 -- For tracking API discovery tasks and Research Agent activities
 CREATE TABLE IF NOT EXISTS api_discovery_tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    task_type TEXT NOT NULL, -- 'github_scan', 'forum_scan', 'directory_scan'
-    target_capability TEXT, -- Capability being searched for
-    search_parameters TEXT, -- JSON with search criteria
-    status TEXT DEFAULT 'pending', -- 'pending', 'in_progress', 'completed', 'failed'
-    results_count INTEGER DEFAULT 0,
-    execution_time_seconds INTEGER,
-    error_message TEXT,
+    task_type TEXT NOT NULL,
+    target_capability TEXT,
+    search_parameters TEXT,
+    task_name TEXT,
+    capability_gap TEXT,
+    search_keywords TEXT, -- JSON array of search terms
+    target_domains TEXT, -- JSON array of target domains
+    priority INTEGER DEFAULT 5,
+    status TEXT DEFAULT 'pending',
+    assigned_agent TEXT,
+    progress_notes TEXT,
+    apis_found INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    started_at TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP
 );
 

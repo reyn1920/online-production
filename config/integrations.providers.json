@@ -28,11 +28,11 @@
       "docs_url": "https://blog.gdeltproject.org/gdelt-2-0-our-global-world-in-realtime/",
       "health": {},
       "usage": {},
-      "status": "green",
-      "last_error": null,
+      "status": "red",
+      "last_error": "",
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:25:57Z"
+      "last_ok": "2025-09-10T07:44:04Z"
     },
     {
       "id": "wikimedia",
@@ -45,11 +45,11 @@
       "docs_url": "https://www.mediawiki.org/wiki/API:Main_page",
       "health": {},
       "usage": {},
-      "status": "green",
-      "last_error": null,
+      "status": "red",
+      "last_error": "",
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:52Z"
+      "last_ok": "2025-09-10T07:45:50Z"
     },
     {
       "id": "hackernews",
@@ -62,11 +62,11 @@
       "docs_url": "https://github.com/HackerNews/API",
       "health": {},
       "usage": {},
-      "status": "green",
-      "last_error": null,
+      "status": "red",
+      "last_error": "",
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:53Z"
+      "last_ok": "2025-09-10T07:45:54Z"
     },
     {
       "id": "newsapi",
@@ -185,7 +185,143 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:53Z"
+      "last_ok": "2025-09-10T07:45:55Z"
+    },
+    {
+      "id": "nominatim_osm",
+      "kind": "geocoding",
+      "name": "Nominatim OSM",
+      "enabled": true,
+      "requires_key": false,
+      "key_env": null,
+      "base_url": "https://nominatim.openstreetmap.org",
+      "docs_url": "https://nominatim.org/release-docs/develop/api/Overview/",
+      "health": null,
+      "usage": null,
+      "status": "green",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": "2025-09-10T07:45:58Z"
+    },
+    {
+      "id": "opencage",
+      "kind": "geocoding",
+      "name": "OpenCage Geocoding",
+      "enabled": false,
+      "requires_key": true,
+      "key_env": "OPENCAGE_API_KEY",
+      "base_url": "https://api.opencagedata.com",
+      "docs_url": "https://opencagedata.com/api",
+      "health": null,
+      "usage": null,
+      "status": "purple",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": null
+    },
+    {
+      "id": "overpass_main",
+      "kind": "places",
+      "name": "Overpass API (Main)",
+      "enabled": true,
+      "requires_key": false,
+      "key_env": null,
+      "base_url": "https://overpass-api.de/api",
+      "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+      "health": null,
+      "usage": null,
+      "status": "green",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": "2025-09-10T07:46:00Z"
+    },
+    {
+      "id": "overpass_kumi",
+      "kind": "places",
+      "name": "Overpass API (Kumi)",
+      "enabled": true,
+      "requires_key": false,
+      "key_env": null,
+      "base_url": "https://overpass.kumi.systems/api",
+      "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+      "health": null,
+      "usage": null,
+      "status": "green",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": "2025-09-10T07:46:03Z"
+    },
+    {
+      "id": "overpass_fr",
+      "kind": "places",
+      "name": "Overpass API (France)",
+      "enabled": true,
+      "requires_key": false,
+      "key_env": null,
+      "base_url": "https://overpass.openstreetmap.fr/api",
+      "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+      "health": null,
+      "usage": null,
+      "status": "green",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": "2025-09-10T07:46:05Z"
+    },
+    {
+      "id": "foursquare",
+      "kind": "places",
+      "name": "Foursquare Places",
+      "enabled": false,
+      "requires_key": true,
+      "key_env": "FOURSQUARE_API_KEY",
+      "base_url": "https://api.foursquare.com",
+      "docs_url": "https://developer.foursquare.com/docs",
+      "health": null,
+      "usage": null,
+      "status": "purple",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": null
+    },
+    {
+      "id": "google_places",
+      "kind": "places",
+      "name": "Google Places",
+      "enabled": false,
+      "requires_key": true,
+      "key_env": "GOOGLE_PLACES_API_KEY",
+      "base_url": "https://maps.googleapis.com",
+      "docs_url": "https://developers.google.com/maps/documentation/places/web-service",
+      "health": null,
+      "usage": null,
+      "status": "purple",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": null
+    },
+    {
+      "id": "yelp",
+      "kind": "places",
+      "name": "Yelp Fusion",
+      "enabled": false,
+      "requires_key": true,
+      "key_env": "YELP_API_KEY",
+      "base_url": "https://api.yelp.com",
+      "docs_url": "https://www.yelp.com/developers/documentation/v3",
+      "health": null,
+      "usage": null,
+      "status": "purple",
+      "last_error": null,
+      "required_envs": null,
+      "health_url": null,
+      "last_ok": null
     },
     {
       "id": "youtube",
@@ -198,7 +334,7 @@
       "docs_url": "https://developers.google.com/youtube/v3",
       "health": {},
       "usage": {},
-      "status": "purple",
+      "status": "green",
       "last_error": null,
       "required_envs": [],
       "health_url": null,
@@ -270,24 +406,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:54Z"
-    },
-    {
-      "id": "opencage",
-      "kind": "geocoding",
-      "name": "OpenCage Geocoding",
-      "enabled": false,
-      "requires_key": true,
-      "key_env": "OPENCAGE_KEY",
-      "base_url": "",
-      "docs_url": "https://opencagedata.com/api",
-      "health": {},
-      "usage": {},
-      "status": "purple",
-      "last_error": null,
-      "required_envs": [],
-      "health_url": null,
-      "last_ok": null
+      "last_ok": "2025-09-10T07:46:06Z"
     },
     {
       "id": "nominatim",
@@ -304,7 +423,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:54Z"
+      "last_ok": "2025-09-10T07:46:07Z"
     },
     {
       "id": "openmeteo_geo",
@@ -321,7 +440,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:54Z"
+      "last_ok": "2025-09-10T07:46:09Z"
     },
     {
       "id": "geojs",
@@ -338,7 +457,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:55Z"
+      "last_ok": "2025-09-10T07:46:09Z"
     },
     {
       "id": "coingecko",
@@ -576,7 +695,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:55Z"
+      "last_ok": "2025-09-10T07:46:11Z"
     },
     {
       "id": "github",
@@ -593,7 +712,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:55Z"
+      "last_ok": "2025-09-10T07:46:12Z"
     },
     {
       "id": "producthunt",
@@ -644,7 +763,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:56Z"
+      "last_ok": "2025-09-10T07:46:13Z"
     },
     {
       "id": "petfinder",
@@ -681,7 +800,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:56Z"
+      "last_ok": "2025-09-10T07:46:13Z"
     },
     {
       "id": "thecatapi",
@@ -698,7 +817,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:56Z"
+      "last_ok": "2025-09-10T07:46:16Z"
     },
     {
       "id": "paperswithcode",
@@ -732,7 +851,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-09T00:24:57Z"
+      "last_ok": "2025-09-10T07:46:17Z"
     }
   ]
 }

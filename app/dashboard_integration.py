@@ -4,6 +4,9 @@ Dashboard Integration - Enhanced dashboard with actions, metrics, and monitoring
 Integrates with the Max-Out Pack workflow and provides real-time system monitoring
 """
 
+from scripts.synthesize_release_v3 import SynthesizerV3
+from backend.runner.channel_executor import ChannelExecutor
+from backend.core.secret_store_bridge import get_secret_store
 import os
 import sys
 import json
@@ -20,12 +23,10 @@ from collections import defaultdict, deque
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.core.secret_store_bridge import get_secret_store
-from backend.runner.channel_executor import ChannelExecutor
-from scripts.synthesize_release_v3 import SynthesizerV3
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ActionMetrics:
@@ -40,6 +41,7 @@ class ActionMetrics:
     error_count: int = 0
     avg_duration: float = 0.0
     success_rate: float = 0.0
+
 
 @dataclass
 class SystemMetrics:
@@ -56,25 +58,26 @@ class SystemMetrics:
     bundles_processed: int = 0
     storage_used_mb: float = 0.0
 
+
 class DashboardIntegration:
     """Enhanced dashboard with comprehensive monitoring and actions"""
-    
+
     def __init__(self, base_dir: str = "."):
         self.base_dir = Path(base_dir)
         self.start_time = time.time()
         self.metrics_lock = Lock()
-        
+
         # Initialize components
         self.secret_store = get_secret_store()
         self.synthesizer = SynthesizerV3(str(self.base_dir))
         self.channel_executor = ChannelExecutor()
-        
+
         # Metrics storage
         self.action_metrics: Dict[str, ActionMetrics] = {}
         self.system_metrics = SystemMetrics()
         self.execution_history = deque(maxlen=1000)  # Last 1000 executions
         self.performance_history = deque(maxlen=100)  # Last 100 performance snapshots
-        
+
         # Available actions
         self.available_actions = {
             'synthesize_bundles': self._action_synthesize_bundles,
@@ -88,16 +91,17 @@ class DashboardIntegration:
             'health_check': self._action_health_check,
             'backup_releases': self._action_backup_releases
         }
-        
+
         # Initialize action metrics
         for action_name in self.available_actions.keys():
             self.action_metrics[action_name] = ActionMetrics(name=action_name)
-        
+
         # Start background monitoring
         self._start_monitoring()
-        
-        logger.info(f"Dashboard integration initialized with {len(self.available_actions)} actions")
-    
+
+        logger.info(
+            f"Dashboard integration initialized with {len(self.available_actions)} actions")
+
     def _start_monitoring(self):
         """Start background monitoring thread"""
         def monitor_loop():
@@ -109,39 +113,39 @@ class DashboardIntegration:
                 except Exception as e:
                     logger.error(f"Monitoring error: {e}")
                     time.sleep(60)  # Wait longer on error
-        
+
         monitor_thread = Thread(target=monitor_loop, daemon=True)
         monitor_thread.start()
         logger.info("Background monitoring started")
-    
+
     def _update_system_metrics(self):
         """Update system-wide metrics"""
         with self.metrics_lock:
             self.system_metrics.uptime_seconds = time.time() - self.start_time
             self.system_metrics.total_actions = len(self.available_actions)
-            
+
             # Calculate totals from action metrics
             total_executions = sum(m.executions for m in self.action_metrics.values())
             total_successes = sum(m.successes for m in self.action_metrics.values())
             total_failures = sum(m.failures for m in self.action_metrics.values())
-            
+
             self.system_metrics.total_executions = total_executions
             self.system_metrics.total_successes = total_successes
             self.system_metrics.total_failures = total_failures
-            
+
             # Update storage usage
             self.system_metrics.storage_used_mb = self._calculate_storage_usage()
-            
+
             # Update release count
             releases = self.synthesizer.list_releases()
             self.system_metrics.releases_created = len(releases)
-            
+
             # Calculate bundles processed
             bundles_processed = 0
             for release in releases:
                 bundles_processed += release.get('bundles_count', 0)
             self.system_metrics.bundles_processed = bundles_processed
-            
+
             # Determine system status
             if total_executions == 0:
                 self.system_metrics.system_status = "idle"
@@ -149,7 +153,7 @@ class DashboardIntegration:
                 self.system_metrics.system_status = "degraded"
             else:
                 self.system_metrics.system_status = "healthy"
-    
+
     def _calculate_storage_usage(self) -> float:
         """Calculate storage usage in MB"""
         try:
@@ -163,7 +167,7 @@ class DashboardIntegration:
         except Exception as e:
             logger.warning(f"Failed to calculate storage usage: {e}")
             return 0.0
-    
+
     def _capture_performance_snapshot(self):
         """Capture current performance metrics"""
         snapshot = {
@@ -177,10 +181,11 @@ class DashboardIntegration:
             'active_actions': len([m for m in self.action_metrics.values() if m.last_status == "running"]),
             'system_status': self.system_metrics.system_status
         }
-        
+
         self.performance_history.append(snapshot)
-    
-    def execute_action(self, action_name: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+
+    def execute_action(self, action_name: str,
+                       params: Dict[str, Any] = None) -> Dict[str, Any]:
         """Execute an action with metrics tracking"""
         if action_name not in self.available_actions:
             return {
@@ -188,10 +193,10 @@ class DashboardIntegration:
                 'error': f'Unknown action: {action_name}',
                 'available_actions': list(self.available_actions.keys())
             }
-        
+
         if params is None:
             params = {}
-        
+
         # Update metrics - start execution
         with self.metrics_lock:
             metrics = self.action_metrics[action_name]
@@ -199,17 +204,17 @@ class DashboardIntegration:
             metrics.last_execution = datetime.now().isoformat()
             metrics.last_status = "running"
             self.system_metrics.last_activity = datetime.now().isoformat()
-        
+
         start_time = time.time()
-        
+
         try:
             # Execute the action
             action_func = self.available_actions[action_name]
             result = action_func(params)
-            
+
             # Calculate duration
             duration = time.time() - start_time
-            
+
             # Update metrics - success
             with self.metrics_lock:
                 metrics.successes += 1
@@ -217,7 +222,7 @@ class DashboardIntegration:
                 metrics.avg_duration = metrics.total_duration / metrics.executions
                 metrics.success_rate = (metrics.successes / metrics.executions) * 100
                 metrics.last_status = "success"
-            
+
             # Add to execution history
             execution_record = {
                 'action': action_name,
@@ -228,9 +233,11 @@ class DashboardIntegration:
                 'result_summary': self._summarize_result(result)
             }
             self.execution_history.append(execution_record)
-            
-            logger.info(f"Action '{action_name}' completed successfully in {duration:.2f}s")
-            
+
+            logger.info(
+                f"Action '{action_name}' completed successfully in {
+                    duration:.2f}s")
+
             return {
                 'success': True,
                 'action': action_name,
@@ -238,11 +245,11 @@ class DashboardIntegration:
                 'result': result,
                 'timestamp': execution_record['timestamp']
             }
-            
+
         except Exception as e:
             # Calculate duration
             duration = time.time() - start_time
-            
+
             # Update metrics - failure
             with self.metrics_lock:
                 metrics.failures += 1
@@ -251,7 +258,7 @@ class DashboardIntegration:
                 metrics.avg_duration = metrics.total_duration / metrics.executions
                 metrics.success_rate = (metrics.successes / metrics.executions) * 100
                 metrics.last_status = "failed"
-            
+
             # Add to execution history
             execution_record = {
                 'action': action_name,
@@ -262,9 +269,9 @@ class DashboardIntegration:
                 'error': str(e)
             }
             self.execution_history.append(execution_record)
-            
+
             logger.error(f"Action '{action_name}' failed after {duration:.2f}s: {e}")
-            
+
             return {
                 'success': False,
                 'action': action_name,
@@ -272,7 +279,7 @@ class DashboardIntegration:
                 'error': str(e),
                 'timestamp': execution_record['timestamp']
             }
-    
+
     def _summarize_result(self, result: Any) -> str:
         """Create a brief summary of action result"""
         if isinstance(result, dict):
@@ -287,27 +294,27 @@ class DashboardIntegration:
                 return status
             elif 'error' in result:
                 return f"error - {str(result['error'])[:50]}..."
-        
+
         return str(result)[:100] + "..." if len(str(result)) > 100 else str(result)
-    
+
     # Action implementations
     def _action_synthesize_bundles(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Synthesize bundles into a release"""
         release_version = params.get('release_version')
         return self.synthesizer.synthesize_bundles(release_version)
-    
+
     def _action_execute_channel(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Execute a channel roadmap"""
         roadmap_path = params.get('roadmap_path')
         if not roadmap_path:
             return {'success': False, 'error': 'roadmap_path parameter required'}
-        
+
         try:
             result = asyncio.run(self.channel_executor.execute_roadmap(roadmap_path))
             return result
         except Exception as e:
             return {'success': False, 'error': str(e)}
-    
+
     def _action_list_releases(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """List all available releases"""
         releases = self.synthesizer.list_releases()
@@ -316,7 +323,7 @@ class DashboardIntegration:
             'releases': releases,
             'count': len(releases)
         }
-    
+
     def _action_system_status(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Get comprehensive system status"""
         with self.metrics_lock:
@@ -324,42 +331,44 @@ class DashboardIntegration:
                 'success': True,
                 'system_metrics': asdict(self.system_metrics),
                 'action_metrics': {name: asdict(metrics) for name, metrics in self.action_metrics.items()},
-                'recent_executions': list(self.execution_history)[-10:],  # Last 10 executions
-                'performance_trend': list(self.performance_history)[-5:]   # Last 5 snapshots
+                # Last 10 executions
+                'recent_executions': list(self.execution_history)[-10:],
+                # Last 5 snapshots
+                'performance_trend': list(self.performance_history)[-5:]
             }
-    
+
     def _action_cleanup_temp(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Clean up temporary files"""
         try:
             temp_dir = self.base_dir / "assets" / "temp"
             if not temp_dir.exists():
                 return {'success': True, 'message': 'No temp directory to clean'}
-            
+
             files_removed = 0
             bytes_freed = 0
-            
+
             for file_path in temp_dir.rglob('*'):
                 if file_path.is_file():
                     file_size = file_path.stat().st_size
                     file_path.unlink()
                     files_removed += 1
                     bytes_freed += file_size
-            
+
             # Remove empty directories
             for dir_path in sorted(temp_dir.rglob('*'), reverse=True):
                 if dir_path.is_dir() and not any(dir_path.iterdir()):
                     dir_path.rmdir()
-            
+
             return {
                 'success': True,
                 'files_removed': files_removed,
                 'bytes_freed': bytes_freed,
                 'mb_freed': bytes_freed / (1024 * 1024)
             }
-            
+
         except Exception as e:
             return {'success': False, 'error': str(e)}
-    
+
     def _action_validate_system(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Validate system integrity"""
         validation_results = {
@@ -368,7 +377,7 @@ class DashboardIntegration:
             'warnings': [],
             'errors': []
         }
-        
+
         try:
             # Check directory structure
             required_dirs = [
@@ -380,32 +389,36 @@ class DashboardIntegration:
                 'backend/runner',
                 'scripts'
             ]
-            
+
             for dir_path in required_dirs:
                 full_path = self.base_dir / dir_path
                 if full_path.exists():
-                    validation_results['checks'].append(f"✓ Directory exists: {dir_path}")
+                    validation_results['checks'].append(
+                        f"✓ Directory exists: {dir_path}")
                 else:
-                    validation_results['errors'].append(f"✗ Missing directory: {dir_path}")
-            
+                    validation_results['errors'].append(
+                        f"✗ Missing directory: {dir_path}")
+
             # Check secret store
             try:
                 secret_store = get_secret_store()
                 validation_results['checks'].append("✓ Secret store accessible")
             except Exception as e:
                 validation_results['errors'].append(f"✗ Secret store error: {e}")
-            
+
             # Check releases integrity
             releases = self.synthesizer.list_releases()
             for release in releases[:5]:  # Check last 5 releases
                 manifest = self.synthesizer.get_release_manifest(release['version'])
                 if 'error' in manifest:
                     validation_results['warnings'].append(
-                        f"⚠ Release {release['version']} manifest issue: {manifest['error']}"
-                    )
+                        f"⚠ Release {
+                            release['version']} manifest issue: {
+                            manifest['error']}")
                 else:
-                    validation_results['checks'].append(f"✓ Release {release['version']} valid")
-            
+                    validation_results['checks'].append(
+                        f"✓ Release {release['version']} valid")
+
             # Check system resources
             storage_mb = self._calculate_storage_usage()
             if storage_mb > 10000:  # More than 10GB
@@ -413,8 +426,9 @@ class DashboardIntegration:
                     f"⚠ High storage usage: {storage_mb:.1f} MB"
                 )
             else:
-                validation_results['checks'].append(f"✓ Storage usage normal: {storage_mb:.1f} MB")
-            
+                validation_results['checks'].append(
+                    f"✓ Storage usage normal: {storage_mb:.1f} MB")
+
             # Overall status
             if validation_results['errors']:
                 validation_results['success'] = False
@@ -423,49 +437,56 @@ class DashboardIntegration:
                 validation_results['status'] = 'warnings'
             else:
                 validation_results['status'] = 'healthy'
-            
+
             return validation_results
-            
+
         except Exception as e:
             return {
                 'success': False,
                 'error': str(e),
                 'status': 'error'
             }
-    
+
     def _action_export_metrics(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Export metrics to file"""
         try:
             export_format = params.get('format', 'json')
-            output_path = params.get('output_path', f'metrics_export_{int(time.time())}.json')
-            
+            output_path = params.get('output_path',
+                                     f'metrics_export_{int(time.time())}.json')
+
             with self.metrics_lock:
                 export_data = {
                     'export_timestamp': datetime.now().isoformat(),
-                    'system_metrics': asdict(self.system_metrics),
-                    'action_metrics': {name: asdict(metrics) for name, metrics in self.action_metrics.items()},
-                    'execution_history': list(self.execution_history),
-                    'performance_history': list(self.performance_history)
-                }
-            
+                    'system_metrics': asdict(
+                        self.system_metrics),
+                    'action_metrics': {
+                        name: asdict(metrics) for name,
+                        metrics in self.action_metrics.items()},
+                    'execution_history': list(
+                        self.execution_history),
+                    'performance_history': list(
+                        self.performance_history)}
+
             output_file = self.base_dir / output_path
-            
+
             if export_format.lower() == 'json':
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(export_data, f, indent=2, ensure_ascii=False)
             else:
-                return {'success': False, 'error': f'Unsupported format: {export_format}'}
-            
+                return {
+                    'success': False,
+                    'error': f'Unsupported format: {export_format}'}
+
             return {
                 'success': True,
                 'output_path': str(output_file),
                 'format': export_format,
                 'size_bytes': output_file.stat().st_size
             }
-            
+
         except Exception as e:
             return {'success': False, 'error': str(e)}
-    
+
     def _action_reset_metrics(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Reset metrics (with confirmation)"""
         confirm = params.get('confirm', False)
@@ -474,32 +495,32 @@ class DashboardIntegration:
                 'success': False,
                 'error': 'Confirmation required. Set confirm=True to reset metrics.'
             }
-        
+
         try:
             with self.metrics_lock:
                 # Reset action metrics
                 for action_name in self.action_metrics.keys():
                     self.action_metrics[action_name] = ActionMetrics(name=action_name)
-                
+
                 # Reset system metrics (keep uptime)
                 uptime = self.system_metrics.uptime_seconds
                 self.system_metrics = SystemMetrics()
                 self.system_metrics.uptime_seconds = uptime
                 self.system_metrics.total_actions = len(self.available_actions)
-                
+
                 # Clear history
                 self.execution_history.clear()
                 self.performance_history.clear()
-            
+
             return {
                 'success': True,
                 'message': 'All metrics reset successfully',
                 'reset_timestamp': datetime.now().isoformat()
             }
-            
+
         except Exception as e:
             return {'success': False, 'error': str(e)}
-    
+
     def _action_health_check(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive health check"""
         health_status = {
@@ -508,7 +529,7 @@ class DashboardIntegration:
             'checks': {},
             'timestamp': datetime.now().isoformat()
         }
-        
+
         try:
             # System uptime check
             uptime_hours = self.system_metrics.uptime_seconds / 3600
@@ -517,11 +538,12 @@ class DashboardIntegration:
                 'value': f"{uptime_hours:.1f} hours",
                 'details': 'System running normally'
             }
-            
+
             # Success rate check
             total_executions = self.system_metrics.total_executions
             if total_executions > 0:
-                success_rate = (self.system_metrics.total_successes / total_executions) * 100
+                success_rate = (
+                    self.system_metrics.total_successes / total_executions) * 100
                 if success_rate >= 95:
                     status = 'healthy'
                 elif success_rate >= 80:
@@ -529,13 +551,14 @@ class DashboardIntegration:
                 else:
                     status = 'critical'
                     health_status['overall_status'] = 'degraded'
-                
+
                 health_status['checks']['success_rate'] = {
                     'status': status,
-                    'value': f"{success_rate:.1f}%",
-                    'details': f"{self.system_metrics.total_successes}/{total_executions} successful"
-                }
-            
+                    'value': f"{
+                        success_rate:.1f}%",
+                    'details': f"{
+                        self.system_metrics.total_successes}/{total_executions} successful"}
+
             # Storage check
             storage_mb = self.system_metrics.storage_used_mb
             if storage_mb < 5000:  # Less than 5GB
@@ -545,56 +568,63 @@ class DashboardIntegration:
             else:
                 storage_status = 'critical'
                 health_status['overall_status'] = 'degraded'
-            
+
             health_status['checks']['storage'] = {
                 'status': storage_status,
                 'value': f"{storage_mb:.1f} MB",
                 'details': 'Assets directory usage'
             }
-            
+
             # Recent activity check
             if self.system_metrics.last_activity:
-                last_activity = datetime.fromisoformat(self.system_metrics.last_activity)
+                last_activity = datetime.fromisoformat(
+                    self.system_metrics.last_activity)
                 time_since = datetime.now() - last_activity
-                
+
                 if time_since < timedelta(hours=1):
                     activity_status = 'healthy'
                 elif time_since < timedelta(hours=24):
                     activity_status = 'warning'
                 else:
                     activity_status = 'stale'
-                
+
                 health_status['checks']['activity'] = {
                     'status': activity_status,
                     'value': str(time_since).split('.')[0],  # Remove microseconds
                     'details': f"Last activity: {self.system_metrics.last_activity}"
                 }
-            
+
             # Component availability check
             components_healthy = 0
             total_components = 3
-            
+
             try:
                 self.synthesizer.list_releases()
                 components_healthy += 1
-                health_status['checks']['synthesizer'] = {'status': 'healthy', 'details': 'Synthesizer operational'}
+                health_status['checks']['synthesizer'] = {
+                    'status': 'healthy', 'details': 'Synthesizer operational'}
             except Exception as e:
-                health_status['checks']['synthesizer'] = {'status': 'failed', 'details': str(e)}
-            
+                health_status['checks']['synthesizer'] = {
+                    'status': 'failed', 'details': str(e)}
+
             try:
                 get_secret_store()
                 components_healthy += 1
-                health_status['checks']['secret_store'] = {'status': 'healthy', 'details': 'Secret store accessible'}
+                health_status['checks']['secret_store'] = {
+                    'status': 'healthy', 'details': 'Secret store accessible'}
             except Exception as e:
-                health_status['checks']['secret_store'] = {'status': 'failed', 'details': str(e)}
-            
+                health_status['checks']['secret_store'] = {
+                    'status': 'failed', 'details': str(e)}
+
             try:
                 # Test channel executor initialization
                 components_healthy += 1
-                health_status['checks']['channel_executor'] = {'status': 'healthy', 'details': 'Channel executor ready'}
+                health_status['checks']['channel_executor'] = {
+                    'status': 'healthy', 'details': 'Channel executor ready'}
             except Exception as e:
-                health_status['checks']['channel_executor'] = {'status': 'failed', 'details': str(e)}
-            
+                health_status['checks']['channel_executor'] = {
+                    'status': 'failed', 'details': str(e)}
+
             # Overall component health
             if components_healthy == total_components:
                 health_status['checks']['components'] = {
@@ -609,9 +639,9 @@ class DashboardIntegration:
                     'details': 'Some components unavailable'
                 }
                 health_status['overall_status'] = 'degraded'
-            
+
             return health_status
-            
+
         except Exception as e:
             return {
                 'success': False,
@@ -619,22 +649,23 @@ class DashboardIntegration:
                 'error': str(e),
                 'timestamp': datetime.now().isoformat()
             }
-    
+
     def _action_backup_releases(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Create backup of releases"""
         try:
-            backup_path = params.get('backup_path', f'releases_backup_{int(time.time())}.tar.gz')
+            backup_path = params.get('backup_path',
+                                     f'releases_backup_{int(time.time())}.tar.gz')
             releases_dir = self.base_dir / "assets" / "releases"
-            
+
             if not releases_dir.exists():
                 return {'success': False, 'error': 'No releases directory found'}
-            
+
             import tarfile
             backup_file = self.base_dir / backup_path
-            
+
             with tarfile.open(backup_file, 'w:gz') as tar:
                 tar.add(releases_dir, arcname='releases')
-            
+
             return {
                 'success': True,
                 'backup_path': str(backup_file),
@@ -642,10 +673,10 @@ class DashboardIntegration:
                 'size_mb': backup_file.stat().st_size / (1024 * 1024),
                 'releases_backed_up': len(list(releases_dir.iterdir()))
             }
-            
+
         except Exception as e:
             return {'success': False, 'error': str(e)}
-    
+
     def get_system_metrics(self) -> Dict[str, Any]:
         """Get current system metrics"""
         with self.metrics_lock:
@@ -655,11 +686,11 @@ class DashboardIntegration:
                 'uptime_seconds': self.system_metrics.uptime_seconds,
                 'total_executions': self.system_metrics.total_executions,
                 'success_rate': (
-                    self.system_metrics.total_successes / 
-                    max(self.system_metrics.total_executions, 1)
+                    self.system_metrics.total_successes
+                    / max(self.system_metrics.total_executions, 1)
                 ) * 100 if self.system_metrics.total_executions > 0 else 0
             }
-    
+
     def get_dashboard_data(self) -> Dict[str, Any]:
         """Get comprehensive dashboard data for UI"""
         with self.metrics_lock:
@@ -675,8 +706,8 @@ class DashboardIntegration:
                 'quick_stats': {
                     'uptime_hours': self.system_metrics.uptime_seconds / 3600,
                     'success_rate': (
-                        self.system_metrics.total_successes / 
-                        max(self.system_metrics.total_executions, 1)
+                        self.system_metrics.total_successes
+                        / max(self.system_metrics.total_executions, 1)
                     ) * 100,
                     'avg_execution_time': sum(
                         m.avg_duration for m in self.action_metrics.values()
@@ -685,8 +716,10 @@ class DashboardIntegration:
                 }
             }
 
+
 # Global dashboard instance
 _dashboard_integration = None
+
 
 def get_dashboard_integration(base_dir: str = ".") -> DashboardIntegration:
     """Get or create dashboard integration singleton"""
@@ -695,33 +728,42 @@ def get_dashboard_integration(base_dir: str = ".") -> DashboardIntegration:
         _dashboard_integration = DashboardIntegration(base_dir)
     return _dashboard_integration
 
+
 def main():
     """Command-line interface for dashboard integration"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description='Dashboard Integration - Enhanced monitoring and actions')
-    parser.add_argument('--base-dir', default='.', help='Base directory (default: current)')
+
+    parser = argparse.ArgumentParser(
+        description='Dashboard Integration - Enhanced monitoring and actions')
+    parser.add_argument(
+        '--base-dir',
+        default='.',
+        help='Base directory (default: current)')
     parser.add_argument('--action', help='Action to execute')
     parser.add_argument('--params', help='Action parameters as JSON string')
-    parser.add_argument('--list-actions', action='store_true', help='List available actions')
+    parser.add_argument(
+        '--list-actions',
+        action='store_true',
+        help='List available actions')
     parser.add_argument('--status', action='store_true', help='Show system status')
-    
+
     args = parser.parse_args()
-    
+
     dashboard = DashboardIntegration(args.base_dir)
-    
+
     if args.list_actions:
         print("Available actions:")
         for action_name in dashboard.available_actions.keys():
             metrics = dashboard.action_metrics[action_name]
-            print(f"  {action_name} - {metrics.executions} executions, {metrics.success_rate:.1f}% success")
+            print(
+                f"  {action_name} - {metrics.executions} executions, {metrics.success_rate:.1f}% success")
         return
-    
+
     if args.status:
         result = dashboard.execute_action('system_status')
         print(json.dumps(result, indent=2))
         return
-    
+
     if args.action:
         params = {}
         if args.params:
@@ -730,20 +772,20 @@ def main():
             except json.JSONDecodeError as e:
                 print(f"Invalid JSON parameters: {e}")
                 return
-        
+
         result = dashboard.execute_action(args.action, params)
         print(json.dumps(result, indent=2))
         return
-    
+
     # Interactive mode
     print("Dashboard Integration - Interactive Mode")
     print("Available actions:", list(dashboard.available_actions.keys()))
     print("Type 'help' for more information, 'quit' to exit")
-    
+
     while True:
         try:
             command = input("\n> ").strip()
-            
+
             if command.lower() in ['quit', 'exit', 'q']:
                 break
             elif command.lower() == 'help':
@@ -764,13 +806,14 @@ def main():
                 print(json.dumps(result, indent=2))
             else:
                 print(f"Unknown command: {command}")
-                
+
         except KeyboardInterrupt:
             break
         except Exception as e:
             print(f"Error: {e}")
-    
+
     print("\nGoodbye!")
+
 
 if __name__ == "__main__":
     main()

@@ -62,34 +62,47 @@ except ImportError as e:
     print(f"Warning: Could not import TRAE.AI components: {e}")
     print("Running in standalone mode...")
     TRAE_AI_AVAILABLE = False
-    
+
     # Create fallback functions and classes
     def get_logger(name):
         return logging.getLogger(name)
-    
+
     def setup_logging(log_level='INFO'):
         logging.basicConfig(
             level=getattr(logging, log_level.upper()),
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
-    
+
     # Mock classes for standalone mode
     class TaskQueueManager:
         def __init__(self, db_path):
             self.db_path = db_path
             self.logger = get_logger(__name__)
+
         def get_queue_stats(self):
             return {'pending': 0, 'in_progress': 0, 'completed': 0, 'failed': 0}
+
         def add_task(self, *args, **kwargs):
             return {'task_id': 'mock-task-id', 'status': 'pending'}
+
         def get_recent_tasks(self, limit=10):
             return []
-        def get_tasks(self, status=None, task_type=None, agent_id=None, limit=100, offset=0):
+
+        def get_tasks(
+                self,
+                status=None,
+                task_type=None,
+                agent_id=None,
+                limit=100,
+                offset=0):
             return []
+
         def get_active_tasks(self):
             return []
 
 # ---- Action wiring helpers ---------------------------------
+
+
 def dashboard_action(
     name: Optional[str] = None,
     method: str = "POST",
@@ -107,6 +120,7 @@ def dashboard_action(
             "tags": tags or [],
         }
         setattr(fn, "_dash_action", meta)
+
         @wraps(fn)
         def _wrap(*args, **kwargs):
             return fn(*args, **kwargs)
@@ -115,29 +129,29 @@ def dashboard_action(
 
 
 # ActionRegistry is imported from app.actions - no local definition needed
-    
+
     class TaskStatus:
         PENDING = 'pending'
         IN_PROGRESS = 'in_progress'
         COMPLETED = 'completed'
         FAILED = 'failed'
-    
+
     class TaskPriority:
         LOW = 'low'
         MEDIUM = 'medium'
         HIGH = 'high'
-    
+
     class TaskType:
         VIDEO_CREATION = 'video_creation'
         RESEARCH = 'research'
         CONTENT_AUDIT = 'content_audit'
         MARKETING = 'marketing'
-    
+
     class AgentStatus:
         IDLE = 'idle'
         BUSY = 'busy'
         ERROR = 'error'
-    
+
     class AgentCapability:
         PLANNING = 'planning'
         EXECUTION = 'execution'
@@ -147,16 +161,19 @@ def dashboard_action(
 # ---- Monotonic uptime + verdict normalization (add-only) ----
 START_MONO = START_MONO if 'START_MONO' in globals() else time.monotonic()
 
+
 def uptime_seconds():
     # never negative; round to milliseconds for pretty JSON
     return round(max(0.0, time.monotonic() - START_MONO), 3)
+
 
 def normalize_verdict(v: str) -> str:
     """
     Map various verdict dialects to a single UI-friendly vocabulary.
     Returns: 'operational' | 'degraded' | 'unknown'
     """
-    if not v: return "unknown"
+    if not v:
+        return "unknown"
     v = str(v).strip().lower()
     mapping = {
         # existing audit vocabulary
@@ -172,8 +189,15 @@ def normalize_verdict(v: str) -> str:
     }
     return mapping.get(v, "unknown")
 
+
 def verdict_color(verdict: str) -> str:
-    return {"operational": "green", "degraded": "yellow", "unknown": "gray"}.get(verdict, "gray")
+    return {
+        "operational": "green",
+        "degraded": "yellow",
+        "unknown": "gray"}.get(
+        verdict,
+        "gray")
+
 
 def utc_iso():
     return datetime.now(timezone.utc).isoformat()
@@ -185,7 +209,7 @@ class DashboardConfig:
     host: str = '0.0.0.0'
     port: int = int(os.getenv('DASHBOARD_PORT', os.getenv('PORT', '8080')))
     debug: bool = False
-    secret_key: str = 'trae-ai-dashboard-secret-key-change-in-production'
+    secret_key: str = os.getenv('DASHBOARD_SECRET_KEY', 'dev-dashboard-key-change-in-production')
     database_path: str = 'trae_ai.db'
     intelligence_db_path: str = 'right_perspective.db'
     log_level: str = 'INFO'
@@ -222,23 +246,23 @@ class ProjectInfo:
 
 class DashboardApp:
     """Main dashboard application class with Total Access modules."""
-    
+
     def __init__(self, config: Optional[DashboardConfig] = None, orchestrator=None):
         self.config = config or DashboardConfig()
         self.orchestrator = orchestrator
-        self.app = Flask(__name__, 
-                        static_folder='static',
-                        template_folder='templates')
+        self.app = Flask(__name__,
+                         static_folder='static',
+                         template_folder='templates')
         self.app.secret_key = self.config.secret_key
-        
+
         # Initialize SocketIO for real-time communication
-        self.socketio = SocketIO(self.app, cors_allowed_origins="*", 
-                                logger=True, engineio_logger=True)
-        
+        self.socketio = SocketIO(self.app, cors_allowed_origins="*",
+                                 logger=True, engineio_logger=True)
+
         # Initialize logging
         setup_logging(log_level=self.config.log_level)
         self.logger = get_logger(__name__)
-        
+
         # Initialize action registry
         self.action_registry = ActionRegistry(self.app, self.logger)
         self._wire_actions()
@@ -247,12 +271,14 @@ class DashboardApp:
                 mf = self.action_registry.get_manifest() or {}
                 actions = mf.get("actions", mf.get("manifest", []))
             else:
-                raw = getattr(self.action_registry, "manifest", getattr(self.action_registry, "actions", []))
+                raw = getattr(
+                    self.action_registry, "manifest", getattr(
+                        self.action_registry, "actions", []))
                 actions = raw.get("actions", raw) if isinstance(raw, dict) else raw
             self.logger.info(f"[actions] manifest wired: {len(actions)} actions")
         except Exception as e:
             self.logger.warning(f"[actions] manifest wiring skipped: {e}")
-        
+
         # Initialize task queue manager
         try:
             self.task_manager = TaskQueueManager(self.config.database_path)
@@ -260,16 +286,16 @@ class DashboardApp:
         except Exception as e:
             self.logger.error(f"Failed to initialize TaskQueueManager: {e}")
             self.task_manager = None
-        
+
         self.start_time = datetime.now()
-        
+
         # Initialize agent tracking
         self.agents = {}
         self.agent_processes = {}
-        
+
         # Initialize project tracking
         self.projects = {}
-        
+
         # Initialize smoke test agent
         try:
             if TRAE_AI_AVAILABLE:
@@ -280,10 +306,10 @@ class DashboardApp:
         except Exception as e:
             self.logger.error(f"Failed to initialize SystemSmokeTestAgent: {e}")
             self.smoke_test_agent = None
-        
+
         # Register agents with action registry
         self._register_agents()
-        
+
         # Re-wire actions after registering agents
         self._wire_actions()
         try:
@@ -291,17 +317,21 @@ class DashboardApp:
                 mf = self.action_registry.get_manifest() or {}
                 actions = mf.get("actions", mf.get("manifest", []))
             else:
-                raw = getattr(self.action_registry, "manifest", getattr(self.action_registry, "actions", []))
+                raw = getattr(
+                    self.action_registry, "manifest", getattr(
+                        self.action_registry, "actions", []))
                 actions = raw.get("actions", raw) if isinstance(raw, dict) else raw
-            self.logger.info(f"[actions] manifest updated after agent registration: {len(actions)} actions")
+            self.logger.info(
+                f"[actions] manifest updated after agent registration: {
+                    len(actions)} actions")
         except Exception as e:
             self.logger.warning(f"[actions] manifest update logging skipped: {e}")
-        
+
         try:
             self._setup_routes()
             # Register metrics blueprint
             register_metrics_routes(self.app)
-            
+
             # Register sandbox blueprint
             try:
                 from backend.dashboard.sandbox import sandbox_bp
@@ -309,7 +339,7 @@ class DashboardApp:
                 self.logger.info("Sandbox blueprint registered successfully")
             except ImportError as e:
                 self.logger.warning(f"Could not import sandbox blueprint: {e}")
-            
+
             # Register actions blueprint
             try:
                 from backend.dashboard.actions_api import actions_bp
@@ -317,23 +347,31 @@ class DashboardApp:
                 self.logger.info("Actions blueprint registered successfully")
             except ImportError as e:
                 self.logger.warning(f"Could not import actions blueprint: {e}")
-            
+
+            # Register API discovery blueprint
+            try:
+                from backend.api.api_discovery_routes import api_discovery_bp
+                self.app.register_blueprint(api_discovery_bp)
+                self.logger.info("API discovery blueprint registered successfully")
+            except ImportError as e:
+                self.logger.warning(f"Could not import API discovery blueprint: {e}")
+
             self.logger.info("Routes setup completed successfully")
         except Exception as e:
             self.logger.error(f"Failed to setup routes: {e}")
             raise
-        
+
         self._setup_socketio_events()
         self._setup_error_handlers()
-        
+
         # Initialize database connections
         self._init_databases()
-        
+
         # Start background monitoring
         self._start_monitoring_thread()
-        
+
         self.logger.info("Dashboard application initialized")
-    
+
     def _register_agents(self):
         """Register agents with the action registry."""
         try:
@@ -349,13 +387,16 @@ class DashboardApp:
                 except Exception as e:
                     self.logger.error(f"Failed to register SystemAgent: {e}")
             elif not self.orchestrator:
-                self.logger.warning("No orchestrator provided - SystemAgent not registered")
-                
+                self.logger.warning(
+                    "No orchestrator provided - SystemAgent not registered")
+
                 # Register smoke test agent if available
                 if self.smoke_test_agent:
-                    self.action_registry.register_obj('smoke_test', self.smoke_test_agent)
-                    self.logger.info("SystemSmokeTestAgent registered with action registry")
-                    
+                    self.action_registry.register_obj(
+                        'smoke_test', self.smoke_test_agent)
+                    self.logger.info(
+                        "SystemSmokeTestAgent registered with action registry")
+
                 # Register dashboard utilities
                 self.action_registry.register_obj('dashboard', self)
                 self.logger.info("Dashboard utilities registered with action registry")
@@ -363,8 +404,9 @@ class DashboardApp:
                 self.logger.info("TRAE.AI not available, skipping agent registration")
         except Exception as e:
             self.logger.error(f"Error during agent registration: {e}")
-    
-    @dashboard_action("Get system status", "Returns current system health and statistics")
+
+    @dashboard_action("Get system status",
+                      "Returns current system health and statistics")
     def get_system_status(self):
         """Get current system status and health metrics."""
         try:
@@ -373,7 +415,7 @@ class DashboardApp:
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage('/')
-            
+
             return {
                 'status': 'healthy',
                 'cpu_usage': f"{cpu_percent}%",
@@ -392,15 +434,16 @@ class DashboardApp:
             }
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
-    
-    @dashboard_action(name="Clear task queue", doc="Removes all completed and failed tasks from the queue")
+
+    @dashboard_action(name="Clear task queue",
+                      doc="Removes all completed and failed tasks from the queue")
     def clear_task_queue(self):
         """Clear completed and failed tasks from the queue."""
         try:
             # Simulate some work for demonstration
             import time
             time.sleep(2)
-            
+
             if hasattr(self, 'task_queue_manager'):
                 # This would clear the actual queue in a real implementation
                 cleared_count = 10  # Placeholder
@@ -417,7 +460,7 @@ class DashboardApp:
                 }
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
-    
+
     @dashboard_action("Restart monitoring", "Restarts the system monitoring thread")
     def restart_monitoring(self):
         """Restart the monitoring thread."""
@@ -430,7 +473,7 @@ class DashboardApp:
             }
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
-    
+
     def _get_uptime(self):
         """Get system uptime string."""
         try:
@@ -440,20 +483,22 @@ class DashboardApp:
                 minutes = int((uptime_seconds % 3600) // 60)
                 return f"{hours}h {minutes}m"
             return "Unknown"
-        except:
+        except BaseException:
             return "Unknown"
-    
+
     def _wire_actions(self):
         """Wire dashboard actions to the action registry."""
         # Known agent attributes on the dashboard
         candidates = {
-            "system":      getattr(self, "system_agent", None),
-            "research":    getattr(self, "research_agent", None),
-            "financial":   getattr(self, "financial_agent", None),
-            "evolution":   getattr(self, "evolution_agent", None),
-            "self_repair": getattr(self, "progressive_self_repair_agent", None) or getattr(self, "self_repair_agent", None),
-            "youtube":     getattr(self, "youtube_engagement_agent", None) or getattr(self, "youtube_agent", None),
-        }
+            "system": getattr(
+                self, "system_agent", None), "research": getattr(
+                self, "research_agent", None), "financial": getattr(
+                self, "financial_agent", None), "evolution": getattr(
+                    self, "evolution_agent", None), "self_repair": getattr(
+                        self, "progressive_self_repair_agent", None) or getattr(
+                            self, "self_repair_agent", None), "youtube": getattr(
+                                self, "youtube_engagement_agent", None) or getattr(
+                                    self, "youtube_agent", None), }
         for name, inst in candidates.items():
             if inst:
                 self.action_registry.register_obj(name, inst)
@@ -462,7 +507,7 @@ class DashboardApp:
         registered_slugs = set(candidates.keys())  # Track already registered slugs
         for attr in dir(self):
             inst = getattr(self, attr, None)
-            if not inst or attr.startswith("_"): 
+            if not inst or attr.startswith("_"):
                 continue
             if any(getattr(getattr(inst, m), "_dash_action", None) for m in dir(inst)):
                 slug = attr.replace("_agent", "") or inst.__class__.__name__.lower()
@@ -477,7 +522,8 @@ class DashboardApp:
                 if not attr_name.startswith('_'):
                     func = getattr(maxout_module, attr_name)
                     if callable(func) and hasattr(func, '_dash_action'):
-                        self.action_registry.register_function('maxout', attr_name, func)
+                        self.action_registry.register_function(
+                            'maxout', attr_name, func)
         except ImportError:
             pass  # Module not available
 
@@ -495,28 +541,31 @@ class DashboardApp:
                 mf = self.action_registry.get_manifest() or {}
                 actions = mf.get("actions", mf.get("manifest", []))
             else:
-                raw = getattr(self.action_registry, "manifest", getattr(self.action_registry, "actions", []))
+                raw = getattr(
+                    self.action_registry, "manifest", getattr(
+                        self.action_registry, "actions", []))
                 actions = raw.get("actions", raw) if isinstance(raw, dict) else raw
             return {"count": len(actions)}
         except Exception as e:
             self.logger.warning(f"[actions] reload_actions failed: {e}")
             return {"count": 0, "error": str(e)}
-    
+
     def _init_databases(self):
         """Initialize database connections."""
         try:
             # Ensure intelligence database exists
             intelligence_db_path = Path(self.config.intelligence_db_path)
             if not intelligence_db_path.exists():
-                self.logger.warning(f"Intelligence database not found at {intelligence_db_path}")
-            
+                self.logger.warning(
+                    f"Intelligence database not found at {intelligence_db_path}")
+
             # Test connection
             with sqlite3.connect(self.config.intelligence_db_path) as conn:
                 conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.logger.info("Intelligence database connection established")
         except Exception as e:
             self.logger.error(f"Failed to initialize intelligence database: {e}")
-    
+
     def _start_monitoring_thread(self):
         """Start background thread for monitoring agents and projects."""
         def monitor():
@@ -524,14 +573,14 @@ class DashboardApp:
                 try:
                     self._update_agent_status()
                     self._update_project_status()
-                    
+
                     # Emit real-time updates via SocketIO
                     if hasattr(self, 'socketio'):
                         try:
                             # Emit agent status updates
                             agent_data = self._get_real_time_agent_data()
                             self.socketio.emit('agent_status_update', agent_data)
-                            
+
                             # Emit system statistics
                             system_stats = {
                                 'memory': self._get_memory_usage(),
@@ -540,7 +589,7 @@ class DashboardApp:
                                 'timestamp': datetime.now().isoformat()
                             }
                             self.socketio.emit('system_stats_update', system_stats)
-                            
+
                             # Emit project updates
                             def serialize_project(project):
                                 """Convert project to dict with datetime serialization"""
@@ -550,39 +599,43 @@ class DashboardApp:
                                     if isinstance(value, datetime):
                                         project_dict[key] = value.isoformat()
                                 return project_dict
-                            
+
                             project_data = {
-                                'projects': [serialize_project(project) for project in self.projects.values()],
-                                'total_projects': len(self.projects),
-                                'timestamp': datetime.now().isoformat()
-                            }
+                                'projects': [
+                                    serialize_project(project) for project in self.projects.values()],
+                                'total_projects': len(
+                                    self.projects),
+                                'timestamp': datetime.now().isoformat()}
                             self.socketio.emit('project_status_update', project_data)
-                            
+
                         except Exception as socket_error:
-                            self.logger.error(f"SocketIO emission error: {socket_error}")
-                    
+                            self.logger.error(
+                                f"SocketIO emission error: {socket_error}")
+
                     time.sleep(10)  # Update every 10 seconds
                 except Exception as e:
                     self.logger.error(f"Monitoring thread error: {e}")
                     time.sleep(30)  # Wait longer on error
-        
+
         monitor_thread = threading.Thread(target=monitor, daemon=True)
         monitor_thread.start()
-        self.logger.info("Background monitoring thread started with real-time SocketIO updates")
-    
+        self.logger.info(
+            "Background monitoring thread started with real-time SocketIO updates")
+
     def _setup_routes(self):
         """Setup Flask routes."""
-        
+
         @self.app.route('/')
         def root_passthrough():
-            # Let your static index handler run; this is just to prevent redirects/error noise.
+            # Let your static index handler run; this is just to prevent
+            # redirects/error noise.
             return self.app.send_static_file("index.html")
-        
+
         @self.app.route('/static/<path:filename>')
         def static_files(filename):
             """Serve static files."""
             return send_from_directory('static', filename)
-        
+
         # API Routes
         @self.app.route('/api/health')
         def health_check():
@@ -593,16 +646,19 @@ class DashboardApp:
                 orchestrator_agents = 0
                 try:
                     import sys
-                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                    sys.path.append(
+                        os.path.dirname(
+                            os.path.dirname(
+                                os.path.abspath(__file__))))
                     from launch_live import get_orchestrator_instance
-                    
+
                     orchestrator = get_orchestrator_instance()
                     if orchestrator and hasattr(orchestrator, 'agents'):
                         orchestrator_status = True
                         orchestrator_agents = len(orchestrator.agents)
                 except ImportError:
                     pass
-                
+
                 health_status = {
                     'status': 'healthy',
                     'timestamp': datetime.now(timezone.utc).isoformat(),
@@ -614,7 +670,7 @@ class DashboardApp:
                         'active_agents': orchestrator_agents
                     }
                 }
-                
+
                 return jsonify(health_status)
             except Exception as e:
                 self.logger.error(f"Health check failed: {e}")
@@ -623,26 +679,37 @@ class DashboardApp:
                     'error': str(e),
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 }), 500
-        
+
         # --- Version & build introspection ---
-        import os, sys, time, subprocess
+        import os
+        import sys
+        import time
+        import subprocess
         from flask import jsonify
-        
+
         @self.app.route("/api/version", methods=["GET", "HEAD", "OPTIONS"])
         def api_version():
             def _sh(cmd: str) -> str:
                 try:
-                    return subprocess.check_output(cmd.split(), stderr=subprocess.DEVNULL).decode().strip()
+                    return subprocess.check_output(
+                        cmd.split(), stderr=subprocess.DEVNULL).decode().strip()
                 except Exception:
                     return ""
-            
-            commit = os.getenv("GIT_COMMIT") or _sh("git rev-parse --short HEAD") or "unknown"
-            branch = os.getenv("GIT_BRANCH") or _sh("git rev-parse --abbrev-ref HEAD") or "unknown"
-            build_time = os.getenv("BUILD_TIME") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-            pyver = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+
+            commit = os.getenv("GIT_COMMIT") or _sh(
+                "git rev-parse --short HEAD") or "unknown"
+            branch = os.getenv("GIT_BRANCH") or _sh(
+                "git rev-parse --abbrev-ref HEAD") or "unknown"
+            build_time = os.getenv("BUILD_TIME") or time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            pyver = f"{
+                sys.version_info.major}.{
+                sys.version_info.minor}.{
+                sys.version_info.micro}"
             pid = os.getpid()
-            
-            # Action manifest count — tolerant to either shape ({count} or {actions: [...]})
+
+            # Action manifest count — tolerant to either shape ({count} or {actions:
+            # [...]})
             actions_count = 0
             try:
                 reg = getattr(self, "action_registry", None)
@@ -658,13 +725,13 @@ class DashboardApp:
                             actions_count = len(manifest["actions"])
             except Exception:
                 actions_count = -1  # signals introspection problem, but never crashes
-            
+
             # Route count
             try:
                 routes_count = sum(1 for _ in self.app.url_map.iter_rules())
             except Exception:
                 routes_count = -1
-            
+
             return jsonify({
                 "service": "TRAE.AI Dashboard",
                 "commit": commit,
@@ -675,7 +742,7 @@ class DashboardApp:
                 "routes": routes_count,
                 "actions": actions_count,
             })
-        
+
         # Action Registry Routes
         @self.app.route('/api/actions', methods=['GET'])
         def api_actions_manifest():
@@ -685,19 +752,21 @@ class DashboardApp:
                     mf = self.action_registry.get_manifest() or {}
                     actions = mf.get("actions", mf.get("manifest", []))
                 else:
-                    raw = getattr(self.action_registry, "manifest", getattr(self.action_registry, "actions", []))
+                    raw = getattr(
+                        self.action_registry, "manifest", getattr(
+                            self.action_registry, "actions", []))
                     actions = raw.get("actions", raw) if isinstance(raw, dict) else raw
                 return jsonify({"count": len(actions), "actions": actions}), 200
             except Exception as e:
                 self.logger.exception("failed to build /api/actions manifest")
                 return jsonify({"error": str(e)}), 500
-        
+
         # Test route to verify route registration is working
         @self.app.route('/api/test-route', methods=['GET'])
         def test_route():
             """Test route to verify route registration."""
             return jsonify({"status": "ok", "message": "Route registration is working"})
-        
+
         self.logger.info("Action registry routes registered successfully")
 
         @self.app.route('/api/action/<agent>/<action>', methods=['POST'])
@@ -710,7 +779,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Error executing action {agent}.{action}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Smoke Test API Routes
         @self.app.route('/api/smoke-test/run', methods=['POST'])
         def run_smoke_test():
@@ -718,58 +787,58 @@ class DashboardApp:
             try:
                 if not self.smoke_test_agent:
                     return jsonify({'error': 'Smoke test agent not available'}), 503
-                
-                test_type = request.json.get('test_type', 'full') if request.json else 'full'
+
+                test_type = request.json.get(
+                    'test_type', 'full') if request.json else 'full'
                 result = self.smoke_test_agent.run_smoke_test(test_type)
                 return jsonify(result)
             except Exception as e:
                 self.logger.error(f"Smoke test failed: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/smoke-test/stop', methods=['POST'])
         def stop_smoke_test():
             """Stop running smoke test."""
             try:
                 if not self.smoke_test_agent:
                     return jsonify({'error': 'Smoke test agent not available'}), 503
-                
+
                 result = self.smoke_test_agent.stop_test()
                 return jsonify(result)
             except Exception as e:
                 self.logger.error(f"Failed to stop smoke test: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/smoke-test/status', methods=['GET'])
         def get_smoke_test_status():
             """Get current smoke test status."""
             try:
                 if not self.smoke_test_agent:
                     return jsonify({'error': 'Smoke test agent not available'}), 503
-                
+
                 status = self.smoke_test_agent.get_status()
                 return jsonify(status)
             except Exception as e:
                 self.logger.error(f"Failed to get smoke test status: {e}")
                 return jsonify({'error': str(e)}), 500
-        
 
-        
         @self.app.route('/api/tasks', methods=['GET'])
         def get_tasks():
             """Get task queue status."""
             try:
                 if not self.task_manager:
                     return jsonify({'error': 'Task manager not available'}), 503
-                
+
                 # Get query parameters
                 status = request.args.get('status')
-                limit = min(int(request.args.get('limit', 50)), self.config.max_tasks_display)
-                
+                limit = min(int(request.args.get('limit', 50)),
+                            self.config.max_tasks_display)
+
                 tasks = self.task_manager.get_tasks(
                     status=TaskStatus(status) if status else None,
                     limit=limit
                 )
-                
+
                 task_list = []
                 for task in tasks:
                     task_dict = {
@@ -785,34 +854,34 @@ class DashboardApp:
                         'error_message': task.get('error_message')
                     }
                     task_list.append(task_dict)
-                
+
                 return jsonify({
                     'tasks': task_list,
                     'total': len(task_list),
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-            
+
             except Exception as e:
                 self.logger.error(f"Failed to get tasks: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/tasks', methods=['POST'])
         def create_task():
             """Create a new task."""
             try:
                 if not self.task_manager:
                     return jsonify({'error': 'Task manager not available'}), 503
-                
+
                 data = request.get_json()
                 if not data:
                     raise BadRequest("No JSON data provided")
-                
+
                 # Validate required fields
                 required_fields = ['type', 'payload']
                 for field in required_fields:
                     if field not in data:
                         raise BadRequest(f"Missing required field: {field}")
-                
+
                 # Create task
                 task_id = self.task_manager.add_task(
                     task_type=TaskType(data['type']),
@@ -820,40 +889,42 @@ class DashboardApp:
                     priority=TaskPriority(data.get('priority', 'medium')),
                     assigned_agent=data.get('agent_id')
                 )
-                
+
                 self.logger.info(f"Created task {task_id} of type {data['type']}")
-                
+
                 return jsonify({
                     'task_id': task_id,
                     'status': 'created',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 }), 201
-            
+
             except BadRequest as e:
                 return jsonify({'error': str(e)}), 400
             except Exception as e:
                 self.logger.error(f"Failed to create task: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/tasks/<task_id>', methods=['PUT'])
         def update_task(task_id):
             """Update task status."""
             try:
                 if not self.task_manager:
                     return jsonify({'error': 'Task manager not available'}), 503
-                
+
                 data = request.get_json()
                 if not data or 'status' not in data:
                     raise BadRequest("Status field required")
-                
+
                 success = self.task_manager.update_task_status(
                     task_id=task_id,
                     status=TaskStatus(data['status']),
                     error_message=data.get('error_message')
                 )
-                
+
                 if success:
-                    self.logger.info(f"Updated task {task_id} status to {data['status']}")
+                    self.logger.info(
+                        f"Updated task {task_id} status to {
+                            data['status']}")
                     return jsonify({
                         'task_id': task_id,
                         'status': 'updated',
@@ -861,22 +932,22 @@ class DashboardApp:
                     })
                 else:
                     return jsonify({'error': 'Task not found'}), 404
-            
+
             except BadRequest as e:
                 return jsonify({'error': str(e)}), 400
             except Exception as e:
                 self.logger.error(f"Failed to update task {task_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/stats')
         def get_stats():
             """Get system statistics."""
             try:
                 if not self.task_manager:
                     return jsonify({'error': 'Task manager not available'}), 503
-                
+
                 stats = self.task_manager.get_queue_stats()
-                
+
                 return jsonify({
                     'queue_stats': stats,
                     'system_info': {
@@ -886,32 +957,33 @@ class DashboardApp:
                     },
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-            
+
             except Exception as e:
                 self.logger.error(f"Failed to get stats: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Workflow API endpoints
         @self.app.route('/api/workflows/create-video', methods=['POST'])
         def create_video_workflow():
             """Trigger video creation workflow."""
-            return self._create_workflow_task('video_creation', request.get_json() or {})
-        
+            return self._create_workflow_task(
+                'video_creation', request.get_json() or {})
+
         @self.app.route('/api/workflows/research', methods=['POST'])
         def research_workflow():
             """Trigger research workflow."""
             return self._create_workflow_task('research', request.get_json() or {})
-        
+
         @self.app.route('/api/workflows/content-audit', methods=['POST'])
         def content_audit_workflow():
             """Trigger content audit workflow."""
             return self._create_workflow_task('content_audit', request.get_json() or {})
-        
+
         @self.app.route('/api/workflows/marketing', methods=['POST'])
         def marketing_workflow():
             """Trigger marketing workflow."""
             return self._create_workflow_task('marketing', request.get_json() or {})
-        
+
         # API Suggestions Management endpoints
         @self.app.route('/api/suggestions', methods=['GET'])
         def get_api_suggestions():
@@ -919,17 +991,20 @@ class DashboardApp:
             try:
                 # Import the API Opportunity Finder
                 import sys
-                sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                sys.path.append(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))))
                 from backend.api_opportunity_finder import APIOpportunityFinder
-                
+
                 finder = APIOpportunityFinder(self.config.intelligence_db_path)
-                
+
                 # Get query parameters
                 status = request.args.get('status', 'pending')
                 limit = int(request.args.get('limit', 20))
-                
+
                 suggestions = finder.get_suggestions_by_status(status, limit)
-                
+
                 # Format suggestions for frontend
                 formatted_suggestions = []
                 for suggestion in suggestions:
@@ -948,36 +1023,39 @@ class DashboardApp:
                         'rate_limits': suggestion.get('estimated_daily_limit'),
                         'authentication_method': 'Required' if suggestion.get('authentication_required') else 'Not Required'
                     })
-                
+
                 return jsonify({
                     'suggestions': formatted_suggestions,
                     'total': len(formatted_suggestions),
                     'status': status,
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to get API suggestions: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/suggestions/<suggestion_id>/approve', methods=['POST'])
         def approve_api_suggestion(suggestion_id):
             """Approve an API suggestion and add it to the registry."""
             try:
                 # Import required modules
                 import sys
-                sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                sys.path.append(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))))
                 from api_opportunity_finder import APIOpportunityFinder
                 from api_orchestrator_enhanced import APIOrchestrator
-                
+
                 finder = APIOpportunityFinder(self.config.intelligence_db_path)
                 orchestrator = APIOrchestrator(self.config.intelligence_db_path)
-                
+
                 # Get the suggestion
                 suggestion = finder.get_suggestion_by_id(suggestion_id)
                 if not suggestion:
                     return jsonify({'error': 'Suggestion not found'}), 404
-                
+
                 # Add to API registry
                 api_data = {
                     'service_name': suggestion.api_name,
@@ -991,46 +1069,53 @@ class DashboardApp:
                     'validation_status': 'pending',
                     'tags': f'{suggestion.category},discovered'
                 }
-                
+
                 # Add to registry
                 registry_id = orchestrator._add_api_to_registry(**api_data)
-                
+
                 # Update suggestion status
                 finder.update_suggestion_status(suggestion_id, 'approved')
-                
-                self.logger.info(f"API suggestion {suggestion_id} approved and added to registry as {registry_id}")
-                
+
+                self.logger.info(
+                    f"API suggestion {suggestion_id} approved and added to registry as {registry_id}")
+
                 return jsonify({
                     'success': True,
                     'message': 'API suggestion approved and added to registry',
                     'registry_id': registry_id,
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
-                self.logger.error(f"Failed to approve API suggestion {suggestion_id}: {e}")
+                self.logger.error(
+                    f"Failed to approve API suggestion {suggestion_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/suggestions/<suggestion_id>/reject', methods=['POST'])
         def reject_api_suggestion(suggestion_id):
             """Reject an API suggestion."""
             try:
                 # Import the API Opportunity Finder
                 import sys
-                sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                sys.path.append(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))))
                 from backend.api_opportunity_finder import APIOpportunityFinder
-                
+
                 finder = APIOpportunityFinder(self.config.intelligence_db_path)
-                
+
                 # Get rejection reason from request
                 data = request.get_json() or {}
                 reason = data.get('reason', 'No reason provided')
-                
+
                 # Update suggestion status
-                success = finder.update_suggestion_status(suggestion_id, 'rejected', reason)
-                
+                success = finder.update_suggestion_status(
+                    suggestion_id, 'rejected', reason)
+
                 if success:
-                    self.logger.info(f"API suggestion {suggestion_id} rejected: {reason}")
+                    self.logger.info(
+                        f"API suggestion {suggestion_id} rejected: {reason}")
                     return jsonify({
                         'success': True,
                         'message': 'API suggestion rejected',
@@ -1038,43 +1123,47 @@ class DashboardApp:
                     })
                 else:
                     return jsonify({'error': 'Suggestion not found'}), 404
-                    
+
             except Exception as e:
-                self.logger.error(f"Failed to reject API suggestion {suggestion_id}: {e}")
+                self.logger.error(
+                    f"Failed to reject API suggestion {suggestion_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/discovery/trigger', methods=['POST'])
         def trigger_api_discovery():
             """Manually trigger API discovery process."""
             try:
                 # Import the API Opportunity Finder
                 import sys
-                sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                sys.path.append(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))))
                 from backend.api_opportunity_finder import APIOpportunityFinder
-                
+
                 finder = APIOpportunityFinder(self.config.intelligence_db_path)
-                
+
                 # Get discovery parameters from request
                 data = request.get_json() or {}
                 search_terms = data.get('search_terms', ['API', 'REST', 'GraphQL'])
                 max_results = data.get('max_results', 10)
-                
+
                 # Start discovery task
                 task_id = finder.start_discovery_task(
                     search_terms=search_terms,
                     max_results=max_results,
                     source='manual_trigger'
                 )
-                
+
                 self.logger.info(f"API discovery task {task_id} started manually")
-                
+
                 return jsonify({
                     'success': True,
                     'task_id': task_id,
                     'message': 'API discovery task started',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to trigger API discovery: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1087,29 +1176,29 @@ class DashboardApp:
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
-                
+
                 # Get APIs
                 cursor.execute("""
-                    SELECT id, service_name, capability, api_url, signup_url, 
+                    SELECT id, service_name, capability, api_url, signup_url,
                            last_health_status, is_active, authentication_type,
                            cost_per_request, created_at, updated_at
-                    FROM api_registry 
+                    FROM api_registry
                     ORDER BY service_name
                 """)
                 apis = [dict(row) for row in cursor.fetchall()]
-                
+
                 # Get Affiliates
                 cursor.execute("""
                     SELECT id, program_name, category, commission_rate, signup_url,
                            last_health_status, is_active, tracking_method,
                            minimum_payout, created_at, updated_at
-                    FROM affiliate_programs 
+                    FROM affiliate_programs
                     ORDER BY program_name
                 """)
                 affiliates = [dict(row) for row in cursor.fetchall()]
-                
+
                 conn.close()
-                
+
                 # Format for frontend
                 services = {
                     'apis': [
@@ -1145,7 +1234,7 @@ class DashboardApp:
                         } for affiliate in affiliates
                     ]
                 }
-                
+
                 return jsonify({
                     'success': True,
                     'services': services,
@@ -1153,7 +1242,7 @@ class DashboardApp:
                     'total_affiliates': len(affiliates),
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to get services: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1165,19 +1254,20 @@ class DashboardApp:
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'No data provided'}), 400
-                
+
                 service_type = data.get('type')  # 'api' or 'affiliate'
                 if service_type not in ['api', 'affiliate']:
-                    return jsonify({'error': 'Invalid service type. Must be "api" or "affiliate"'}), 400
-                
+                    return jsonify(
+                        {'error': 'Invalid service type. Must be "api" or "affiliate"'}), 400
+
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 if service_type == 'api':
                     # Add API
                     cursor.execute("""
-                        INSERT INTO api_registry 
-                        (service_name, capability, api_url, signup_url, authentication_type, 
+                        INSERT INTO api_registry
+                        (service_name, capability, api_url, signup_url, authentication_type,
                          cost_per_request, is_active, last_health_status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """, (
@@ -1195,7 +1285,7 @@ class DashboardApp:
                 else:
                     # Add Affiliate
                     cursor.execute("""
-                        INSERT INTO affiliate_programs 
+                        INSERT INTO affiliate_programs
                         (program_name, category, commission_rate, signup_url, tracking_method,
                          minimum_payout, is_active, last_health_status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -1211,20 +1301,22 @@ class DashboardApp:
                         datetime.now(timezone.utc).isoformat(),
                         datetime.now(timezone.utc).isoformat()
                     ))
-                
+
                 service_id = cursor.lastrowid
                 conn.commit()
                 conn.close()
-                
-                self.logger.info(f"Added new {service_type} service: {data.get('name')} (ID: {service_id})")
-                
+
+                self.logger.info(
+                    f"Added new {service_type} service: {
+                        data.get('name')} (ID: {service_id})")
+
                 return jsonify({
                     'success': True,
                     'service_id': service_id,
                     'message': f'{service_type.title()} service added successfully',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 }), 201
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to add service: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1236,52 +1328,60 @@ class DashboardApp:
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'No data provided'}), 400
-                
+
                 service_id = data.get('service_id')
                 service_type = data.get('service_type')  # 'api' or 'affiliate'
                 secret_key = data.get('secret_key')
-                
+
                 if not all([service_id, service_type, secret_key]):
-                    return jsonify({'error': 'Missing required fields: service_id, service_type, secret_key'}), 400
-                
+                    return jsonify(
+                        {'error': 'Missing required fields: service_id, service_type, secret_key'}), 400
+
                 # Store secret using SecretStore
                 try:
                     import sys
-                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                    sys.path.append(
+                        os.path.dirname(
+                            os.path.dirname(
+                                os.path.abspath(__file__))))
                     from backend.secret_store import SecretStore
-                    
+
                     secret_store = SecretStore()
                     secret_key_name = f"{service_type}_{service_id}_key"
                     secret_store.store_secret(secret_key_name, secret_key)
-                    
-                    self.logger.info(f"Stored secret for {service_type} service {service_id}")
-                    
+
+                    self.logger.info(
+                        f"Stored secret for {service_type} service {service_id}")
+
                 except Exception as secret_error:
                     self.logger.error(f"Failed to store secret: {secret_error}")
                     return jsonify({'error': 'Failed to store secret securely'}), 500
-                
+
                 # Trigger immediate health check
                 try:
                     import sys
-                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                    sys.path.append(
+                        os.path.dirname(
+                            os.path.dirname(
+                                os.path.abspath(__file__))))
                     from backend.health_monitor import HealthMonitor
-                    
+
                     health_monitor = HealthMonitor(self.config.intelligence_db_path)
-                    
+
                     # Update database with pending status
                     conn = sqlite3.connect(self.config.intelligence_db_path)
                     cursor = conn.cursor()
-                    
+
                     table_name = 'api_registry' if service_type == 'api' else 'affiliate_programs'
                     cursor.execute(f"""
-                        UPDATE {table_name} 
+                        UPDATE {table_name}
                         SET last_health_status = ?, updated_at = ?
                         WHERE id = ?
                     """, ('checking', datetime.now(timezone.utc).isoformat(), service_id))
-                    
+
                     conn.commit()
                     conn.close()
-                    
+
                     # Perform health check in background
                     def perform_health_check():
                         try:
@@ -1289,43 +1389,44 @@ class DashboardApp:
                             # For now, we'll simulate a basic check
                             import time
                             time.sleep(2)  # Simulate check time
-                            
+
                             # Update with result (this is a placeholder)
                             conn = sqlite3.connect(self.config.intelligence_db_path)
                             cursor = conn.cursor()
                             cursor.execute(f"""
-                                UPDATE {table_name} 
+                                UPDATE {table_name}
                                 SET last_health_status = ?, updated_at = ?
                                 WHERE id = ?
                             """, ('healthy', datetime.now(timezone.utc).isoformat(), service_id))
                             conn.commit()
                             conn.close()
-                            
+
                         except Exception as check_error:
-                            self.logger.error(f"Health check failed for {service_type} {service_id}: {check_error}")
+                            self.logger.error(
+                                f"Health check failed for {service_type} {service_id}: {check_error}")
                             # Update with error status
                             conn = sqlite3.connect(self.config.intelligence_db_path)
                             cursor = conn.cursor()
                             cursor.execute(f"""
-                                UPDATE {table_name} 
+                                UPDATE {table_name}
                                 SET last_health_status = ?, updated_at = ?
                                 WHERE id = ?
                             """, ('error', datetime.now(timezone.utc).isoformat(), service_id))
                             conn.commit()
                             conn.close()
-                    
+
                     # Start health check in background thread
                     threading.Thread(target=perform_health_check, daemon=True).start()
-                    
+
                 except Exception as health_error:
                     self.logger.error(f"Failed to trigger health check: {health_error}")
-                
+
                 return jsonify({
                     'success': True,
                     'message': 'Secret updated and health check initiated',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to update service secret: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1337,40 +1438,43 @@ class DashboardApp:
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'No data provided'}), 400
-                
+
                 service_id = data.get('service_id')
                 service_type = data.get('service_type')  # 'api' or 'affiliate'
                 is_active = data.get('is_active')
-                
-                if not all([service_id is not None, service_type, is_active is not None]):
-                    return jsonify({'error': 'Missing required fields: service_id, service_type, is_active'}), 400
-                
+
+                if not all([service_id is not None, service_type,
+                           is_active is not None]):
+                    return jsonify(
+                        {'error': 'Missing required fields: service_id, service_type, is_active'}), 400
+
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 table_name = 'api_registry' if service_type == 'api' else 'affiliate_programs'
                 cursor.execute(f"""
-                    UPDATE {table_name} 
+                    UPDATE {table_name}
                     SET is_active = ?, updated_at = ?
                     WHERE id = ?
                 """, (1 if is_active else 0, datetime.now(timezone.utc).isoformat(), service_id))
-                
+
                 if cursor.rowcount == 0:
                     conn.close()
                     return jsonify({'error': 'Service not found'}), 404
-                
+
                 conn.commit()
                 conn.close()
-                
+
                 status = 'activated' if is_active else 'deactivated'
-                self.logger.info(f"{service_type.title()} service {service_id} {status}")
-                
+                self.logger.info(
+                    f"{service_type.title()} service {service_id} {status}")
+
                 return jsonify({
                     'success': True,
                     'message': f'Service {status} successfully',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to toggle service status: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1381,12 +1485,12 @@ class DashboardApp:
             try:
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 # Get API suggestions
                 cursor.execute("""
-                    SELECT id, name, description, base_url, pricing_model, 
+                    SELECT id, name, description, base_url, pricing_model,
                            estimated_cost, category, discovered_at, status
-                    FROM api_suggestions 
+                    FROM api_suggestions
                     ORDER BY discovered_at DESC
                 """)
                 api_suggestions = [{
@@ -1401,12 +1505,12 @@ class DashboardApp:
                     'status': row[8],
                     'type': 'api'
                 } for row in cursor.fetchall()]
-                
+
                 # Get affiliate suggestions
                 cursor.execute("""
-                    SELECT id, program_name, description, commission_rate, 
+                    SELECT id, program_name, description, commission_rate,
                            category, signup_url, discovered_at, status
-                    FROM affiliate_suggestions 
+                    FROM affiliate_suggestions
                     ORDER BY discovered_at DESC
                 """)
                 affiliate_suggestions = [{
@@ -1420,97 +1524,99 @@ class DashboardApp:
                     'status': row[7],
                     'type': 'affiliate'
                 } for row in cursor.fetchall()]
-                
+
                 conn.close()
-                
+
                 return jsonify({
                     'api_suggestions': api_suggestions,
                     'affiliate_suggestions': affiliate_suggestions,
                     'total_count': len(api_suggestions) + len(affiliate_suggestions)
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to get suggestions: {e}")
                 return jsonify({'error': str(e)}), 500
 
-        @self.app.route('/api/suggestions/<int:suggestion_id>/approve', methods=['POST'])
+        @self.app.route('/api/suggestions/<int:suggestion_id>/approve',
+                        methods=['POST'])
         def approve_suggestion(suggestion_id):
             """Approve a suggestion and move it to the main registry."""
             try:
                 data = request.get_json() or {}
                 suggestion_type = data.get('type')  # 'api' or 'affiliate'
-                
+
                 if not suggestion_type or suggestion_type not in ['api', 'affiliate']:
                     return jsonify({'error': 'Invalid or missing suggestion type'}), 400
-                
+
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 if suggestion_type == 'api':
                     # Get suggestion details
                     cursor.execute("""
-                        SELECT name, description, base_url, pricing_model, 
+                        SELECT name, description, base_url, pricing_model,
                                estimated_cost, category
                         FROM api_suggestions WHERE id = ?
                     """, (suggestion_id,))
                     suggestion = cursor.fetchone()
-                    
+
                     if not suggestion:
                         conn.close()
                         return jsonify({'error': 'API suggestion not found'}), 404
-                    
+
                     # Move to main registry
                     cursor.execute("""
-                        INSERT INTO api_registry 
-                        (name, description, base_url, pricing_model, estimated_cost, 
+                        INSERT INTO api_registry
+                        (name, description, base_url, pricing_model, estimated_cost,
                          category, is_active, last_health_status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, 1, 'pending', ?, ?)
-                    """, (*suggestion, datetime.now(timezone.utc).isoformat(), 
-                           datetime.now(timezone.utc).isoformat()))
-                    
+                    """, (*suggestion, datetime.now(timezone.utc).isoformat(),
+                          datetime.now(timezone.utc).isoformat()))
+
                     # Update suggestion status
                     cursor.execute("""
                         UPDATE api_suggestions SET status = 'approved' WHERE id = ?
                     """, (suggestion_id,))
-                    
+
                 else:  # affiliate
                     # Get suggestion details
                     cursor.execute("""
-                        SELECT program_name, description, commission_rate, 
+                        SELECT program_name, description, commission_rate,
                                category, signup_url
                         FROM affiliate_suggestions WHERE id = ?
                     """, (suggestion_id,))
                     suggestion = cursor.fetchone()
-                    
+
                     if not suggestion:
                         conn.close()
                         return jsonify({'error': 'Affiliate suggestion not found'}), 404
-                    
+
                     # Move to main registry
                     cursor.execute("""
-                        INSERT INTO affiliate_programs 
-                        (program_name, description, commission_rate, category, 
+                        INSERT INTO affiliate_programs
+                        (program_name, description, commission_rate, category,
                          signup_url, is_active, last_health_status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, 1, 'pending', ?, ?)
-                    """, (*suggestion, datetime.now(timezone.utc).isoformat(), 
-                           datetime.now(timezone.utc).isoformat()))
-                    
+                    """, (*suggestion, datetime.now(timezone.utc).isoformat(),
+                          datetime.now(timezone.utc).isoformat()))
+
                     # Update suggestion status
                     cursor.execute("""
                         UPDATE affiliate_suggestions SET status = 'approved' WHERE id = ?
                     """, (suggestion_id,))
-                
+
                 conn.commit()
                 conn.close()
-                
-                self.logger.info(f"{suggestion_type.title()} suggestion {suggestion_id} approved and moved to registry")
-                
+
+                self.logger.info(
+                    f"{suggestion_type.title()} suggestion {suggestion_id} approved and moved to registry")
+
                 return jsonify({
                     'success': True,
                     'message': f'{suggestion_type.title()} suggestion approved successfully',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to approve suggestion: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1522,35 +1628,37 @@ class DashboardApp:
                 data = request.get_json() or {}
                 suggestion_type = data.get('type')  # 'api' or 'affiliate'
                 reason = data.get('reason', 'No reason provided')
-                
+
                 if not suggestion_type or suggestion_type not in ['api', 'affiliate']:
                     return jsonify({'error': 'Invalid or missing suggestion type'}), 400
-                
+
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 table_name = 'api_suggestions' if suggestion_type == 'api' else 'affiliate_suggestions'
                 cursor.execute(f"""
-                    UPDATE {table_name} 
+                    UPDATE {table_name}
                     SET status = 'rejected', rejection_reason = ?
                     WHERE id = ?
                 """, (reason, suggestion_id))
-                
+
                 if cursor.rowcount == 0:
                     conn.close()
-                    return jsonify({'error': f'{suggestion_type.title()} suggestion not found'}), 404
-                
+                    return jsonify(
+                        {'error': f'{suggestion_type.title()} suggestion not found'}), 404
+
                 conn.commit()
                 conn.close()
-                
-                self.logger.info(f"{suggestion_type.title()} suggestion {suggestion_id} rejected: {reason}")
-                
+
+                self.logger.info(
+                    f"{suggestion_type.title()} suggestion {suggestion_id} rejected: {reason}")
+
                 return jsonify({
                     'success': True,
                     'message': f'{suggestion_type.title()} suggestion rejected successfully',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to reject suggestion: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1560,37 +1668,46 @@ class DashboardApp:
             """Manually trigger opportunity discovery."""
             try:
                 data = request.get_json() or {}
-                discovery_type = data.get('type', 'both')  # 'api', 'affiliate', or 'both'
-                
+                # 'api', 'affiliate', or 'both'
+                discovery_type = data.get('type', 'both')
+
                 # Import and trigger the discovery process
                 import sys
-                sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                sys.path.append(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))))
                 from backend.api_opportunity_finder import APIOpportunityFinder
-                
+
                 finder = APIOpportunityFinder(self.config.intelligence_db_path)
-                
+
                 def run_discovery():
                     try:
                         if discovery_type in ['api', 'both']:
                             api_results = finder.discover_zero_cost_apis()
-                            self.logger.info(f"API discovery completed: {len(api_results)} opportunities found")
-                        
+                            self.logger.info(
+                                f"API discovery completed: {
+                                    len(api_results)} opportunities found")
+
                         if discovery_type in ['affiliate', 'both']:
                             affiliate_results = finder.discover_affiliate_programs()
-                            self.logger.info(f"Affiliate discovery completed: {len(affiliate_results)} opportunities found")
-                            
+                            self.logger.info(
+                                f"Affiliate discovery completed: {
+                                    len(affiliate_results)} opportunities found")
+
                     except Exception as discovery_error:
-                        self.logger.error(f"Discovery process failed: {discovery_error}")
-                
+                        self.logger.error(
+                            f"Discovery process failed: {discovery_error}")
+
                 # Run discovery in background thread
                 threading.Thread(target=run_discovery, daemon=True).start()
-                
+
                 return jsonify({
                     'success': True,
                     'message': f'{discovery_type.title()} discovery initiated',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to trigger discovery: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1600,26 +1717,34 @@ class DashboardApp:
             """Generate a basic video using the basic video generator tool."""
             try:
                 data = request.get_json() or {}
-                
+
                 # Import and use the basic video generator
                 import sys
                 import os
-                sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'tools'))
-                
+                sys.path.append(
+                    os.path.join(
+                        os.path.dirname(
+                            os.path.dirname(
+                                os.path.abspath(__file__))),
+                        'tools'))
+
                 from basic_video_generator import create_basic_video_with_defaults
-                
+
                 # Set default parameters
                 title = data.get('title', 'Test Video')
-                audio_text = data.get('audio_text', 'This is a test video generated by the basic video generator.')
-                
+                audio_text = data.get(
+                    'audio_text',
+                    'This is a test video generated by the basic video generator.')
+
                 # Generate the video
                 # Note: create_basic_video_with_defaults expects an actual audio file path, not text
-                # Create a placeholder audio file path - the function will handle missing audio gracefully
+                # Create a placeholder audio file path - the function will handle
+                # missing audio gracefully
                 placeholder_audio = 'assets/audio/placeholder_silence.mp3'
-                
+
                 # Ensure the assets directory exists
                 os.makedirs('assets/audio', exist_ok=True)
-                
+
                 # Create a silent audio file if it doesn't exist
                 if not os.path.exists(placeholder_audio):
                     try:
@@ -1628,18 +1753,20 @@ class DashboardApp:
                             'ffmpeg', '-y', '-f', 'lavfi', '-i', 'anullsrc=channel_layout=stereo:sample_rate=48000',
                             '-t', '10', '-c:a', 'mp3', placeholder_audio
                         ], check=True, capture_output=True)
-                        self.logger.info(f"Created placeholder audio file: {placeholder_audio}")
+                        self.logger.info(
+                            f"Created placeholder audio file: {placeholder_audio}")
                     except Exception as audio_error:
-                        self.logger.warning(f"Could not create placeholder audio: {audio_error}")
+                        self.logger.warning(
+                            f"Could not create placeholder audio: {audio_error}")
                         # Use a fallback - the video generator will handle missing audio
                         placeholder_audio = None
-                
+
                 result = create_basic_video_with_defaults(
                     audio_path=placeholder_audio or 'nonexistent_audio.mp3',  # Function will handle gracefully
                     title=title,
                     output_dir='output/basic_videos'
                 )
-                
+
                 if result:
                     self.logger.info(f"Basic video generated successfully: {result}")
                     return jsonify({
@@ -1649,12 +1776,13 @@ class DashboardApp:
                         'timestamp': datetime.now(timezone.utc).isoformat()
                     })
                 else:
-                    self.logger.error("Basic video generation failed: No video path returned")
+                    self.logger.error(
+                        "Basic video generation failed: No video path returned")
                     return jsonify({
                         'success': False,
                         'error': 'Video generation failed - check logs for details'
                     }), 500
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to generate basic video: {e}")
                 return jsonify({
@@ -1669,14 +1797,15 @@ class DashboardApp:
                 return "Unknown"
             try:
                 if isinstance(last_updated, str):
-                    last_updated = datetime.fromisoformat(last_updated.replace('Z', '+00:00'))
+                    last_updated = datetime.fromisoformat(
+                        last_updated.replace('Z', '+00:00'))
                 delta = datetime.now() - last_updated
                 hours = int(delta.total_seconds() // 3600)
                 minutes = int((delta.total_seconds() % 3600) // 60)
                 return f"{hours}h {minutes}m"
             except Exception:
                 return "Unknown"
-        
+
         def _get_mock_agent_status_helper():
             """Get mock agent status data."""
             return {
@@ -1721,14 +1850,17 @@ class DashboardApp:
                 # Try to import and access the orchestrator
                 try:
                     import sys
-                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                    sys.path.append(
+                        os.path.dirname(
+                            os.path.dirname(
+                                os.path.abspath(__file__))))
                     from launch_live import get_orchestrator_instance
-                    
+
                     orchestrator = get_orchestrator_instance()
                     if orchestrator and hasattr(orchestrator, 'agent_states'):
                         with orchestrator.agent_state_lock:
                             agent_states = orchestrator.agent_states.copy()
-                        
+
                         # Format agent data for frontend
                         agents = []
                         for agent_id, state in agent_states.items():
@@ -1741,7 +1873,7 @@ class DashboardApp:
                                 'uptime': _calculate_uptime_helper(state.get('last_updated')),
                                 'error_message': state.get('error_message')
                             })
-                        
+
                         return jsonify({
                             'success': True,
                             'agents': agents,
@@ -1750,11 +1882,11 @@ class DashboardApp:
                     else:
                         # Fallback to mock data if orchestrator not available
                         return jsonify(_get_mock_agent_status_helper())
-                        
+
                 except ImportError:
                     # Fallback to mock data if orchestrator not available
                     return jsonify(_get_mock_agent_status_helper())
-                    
+
             except Exception as e:
                 print(f"Failed to get agent status: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -1766,25 +1898,30 @@ class DashboardApp:
                 data = request.get_json()
                 agent_id = data.get('agent_id')
                 action = data.get('action')  # 'pause' or 'restart'
-                
+
                 if not agent_id or not action:
                     return jsonify({'error': 'Missing agent_id or action'}), 400
-                
+
                 if action not in ['pause', 'restart']:
-                    return jsonify({'error': 'Invalid action. Use "pause" or "restart"'}), 400
-                
+                    return jsonify(
+                        {'error': 'Invalid action. Use "pause" or "restart"'}), 400
+
                 # Try to control the agent through orchestrator
                 try:
                     import sys
-                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                    sys.path.append(
+                        os.path.dirname(
+                            os.path.dirname(
+                                os.path.abspath(__file__))))
                     from launch_live import get_orchestrator_instance
-                    
+
                     orchestrator = get_orchestrator_instance()
                     if orchestrator and hasattr(orchestrator, 'control_agent'):
                         success = orchestrator.control_agent(agent_id, action)
-                        
+
                         if success:
-                            print(f"Agent {agent_id} {action} command executed successfully")
+                            print(
+                                f"Agent {agent_id} {action} command executed successfully")
                             return jsonify({
                                 'success': True,
                                 'message': f'Agent {agent_id} {action} command executed',
@@ -1803,7 +1940,7 @@ class DashboardApp:
                             'message': f'Mock: Agent {agent_id} {action} command executed',
                             'timestamp': datetime.now(timezone.utc).isoformat()
                         })
-                        
+
                 except ImportError:
                     # Mock response if orchestrator not available
                     print(f"Mock: Agent {agent_id} {action} command")
@@ -1812,11 +1949,11 @@ class DashboardApp:
                         'message': f'Mock: Agent {agent_id} {action} command executed',
                         'timestamp': datetime.now(timezone.utc).isoformat()
                     })
-                    
+
             except Exception as e:
                 print(f"Failed to control agent: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Monetization API endpoints
         @self.app.route('/api/monetization/toggle', methods=['POST'])
         def toggle_monetization():
@@ -1825,20 +1962,22 @@ class DashboardApp:
                 data = request.get_json()
                 feature = data.get('feature')
                 enabled = data.get('enabled', False)
-                
+
                 # Store monetization settings (placeholder implementation)
-                self.logger.info(f"Monetization {feature} {'enabled' if enabled else 'disabled'}")
-                
+                self.logger.info(
+                    f"Monetization {feature} {
+                        'enabled' if enabled else 'disabled'}")
+
                 return jsonify({
                     'feature': feature,
                     'enabled': enabled,
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-            
+
             except Exception as e:
                 self.logger.error(f"Failed to toggle monetization: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Affiliate Command Center API endpoints
         @self.app.route('/api/affiliates/status', methods=['GET'])
         def get_affiliate_status():
@@ -1846,7 +1985,7 @@ class DashboardApp:
             try:
                 # Calculate KPIs from database
                 kpis = self._calculate_affiliate_kpis()
-                
+
                 return jsonify({
                     'kpis': kpis,
                     'timestamp': datetime.now(timezone.utc).isoformat()
@@ -1854,13 +1993,13 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get affiliate status: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/affiliates/programs', methods=['GET'])
         def get_affiliate_programs():
             """Get all affiliate programs with status lights."""
             try:
                 programs = self._get_affiliate_programs_with_status()
-                
+
                 return jsonify({
                     'programs': programs,
                     'total': len(programs),
@@ -1869,16 +2008,16 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get affiliate programs: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/affiliates/programs/<int:program_id>', methods=['GET'])
         def get_affiliate_program_details(program_id):
             """Get detailed view of a specific affiliate program."""
             try:
                 program_details = self._get_affiliate_program_details(program_id)
-                
+
                 if not program_details:
                     return jsonify({'error': 'Program not found'}), 404
-                
+
                 return jsonify({
                     'program': program_details,
                     'timestamp': datetime.now(timezone.utc).isoformat()
@@ -1886,14 +2025,15 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get program details: {e}")
                 return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/affiliates/programs/<int:program_id>/control', methods=['POST'])
+
+        @self.app.route('/api/affiliates/programs/<int:program_id>/control',
+                        methods=['POST'])
         def control_affiliate_program(program_id):
             """Control affiliate program (activate/pause/update)."""
             try:
                 data = request.get_json()
                 action = data.get('action')
-                
+
                 if action == 'toggle_active':
                     success = self._toggle_affiliate_program(program_id)
                 elif action == 'update_template':
@@ -1901,7 +2041,7 @@ class DashboardApp:
                     success = self._update_affiliate_template(program_id, template)
                 else:
                     return jsonify({'error': 'Invalid action'}), 400
-                
+
                 return jsonify({
                     'success': success,
                     'action': action,
@@ -1911,13 +2051,13 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to control affiliate program: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/affiliates/opportunities', methods=['GET'])
         def get_affiliate_opportunities():
             """Get suggested new affiliate programs from Research Agent."""
             try:
                 opportunities = self._get_affiliate_opportunities()
-                
+
                 return jsonify({
                     'opportunities': opportunities,
                     'total': len(opportunities),
@@ -1926,13 +2066,14 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get affiliate opportunities: {e}")
                 return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/affiliates/opportunities/<int:opportunity_id>/signup', methods=['POST'])
+
+        @self.app.route('/api/affiliates/opportunities/<int:opportunity_id>/signup',
+                        methods=['POST'])
         def signup_affiliate_opportunity(opportunity_id):
             """Task agent to sign up for new affiliate program."""
             try:
                 success = self._task_agent_signup(opportunity_id)
-                
+
                 return jsonify({
                     'success': success,
                     'opportunity_id': opportunity_id,
@@ -1942,7 +2083,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to queue affiliate signup: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # API Command Center endpoints
         @self.app.route('/api/apis/status', methods=['GET'])
         def get_api_status():
@@ -1950,7 +2091,7 @@ class DashboardApp:
             try:
                 # Calculate KPIs from database
                 kpis = self._calculate_api_kpis()
-                
+
                 return jsonify({
                     'kpis': kpis,
                     'timestamp': datetime.now(timezone.utc).isoformat()
@@ -1958,13 +2099,13 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get API status: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/apis/registry', methods=['GET'])
         def get_api_registry():
             """Get all APIs from registry with status lights."""
             try:
                 apis = self._get_api_registry_with_status()
-                
+
                 return jsonify({
                     'apis': apis,
                     'total': len(apis),
@@ -1973,16 +2114,16 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get API registry: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/apis/<int:api_id>', methods=['GET'])
         def get_api_details(api_id):
             """Get detailed view of a specific API."""
             try:
                 api_details = self._get_api_details(api_id)
-                
+
                 if not api_details:
                     return jsonify({'error': 'API not found'}), 404
-                
+
                 return jsonify({
                     'api': api_details,
                     'timestamp': datetime.now(timezone.utc).isoformat()
@@ -1990,14 +2131,14 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get API details: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/apis/<int:api_id>/control', methods=['POST'])
         def control_api(api_id):
             """Control API (activate/pause/update key)."""
             try:
                 data = request.get_json()
                 action = data.get('action')
-                
+
                 if action == 'toggle_active':
                     success = self._toggle_api_status(api_id)
                 elif action == 'update_key':
@@ -2005,7 +2146,7 @@ class DashboardApp:
                     success = self._update_api_key(api_id, api_key)
                 else:
                     return jsonify({'error': 'Invalid action'}), 400
-                
+
                 return jsonify({
                     'success': success,
                     'action': action,
@@ -2015,13 +2156,13 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to control API: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/apis/opportunities', methods=['GET'])
         def get_api_opportunities():
             """Get suggested new APIs from Research Agent."""
             try:
                 opportunities = self._get_api_opportunities()
-                
+
                 return jsonify({
                     'opportunities': opportunities,
                     'total': len(opportunities),
@@ -2030,13 +2171,14 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get API opportunities: {e}")
                 return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/apis/opportunities/<int:opportunity_id>/add', methods=['POST'])
+
+        @self.app.route('/api/apis/opportunities/<int:opportunity_id>/add',
+                        methods=['POST'])
         def add_api_opportunity(opportunity_id):
             """Add new API to registry from opportunity."""
             try:
                 success = self._add_api_from_opportunity(opportunity_id)
-                
+
                 return jsonify({
                     'success': success,
                     'opportunity_id': opportunity_id,
@@ -2046,13 +2188,13 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to add API opportunity: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/apis/usage', methods=['GET'])
         def get_api_usage():
             """Get detailed API usage statistics."""
             try:
                 usage_stats = self._get_api_usage_stats()
-                
+
                 return jsonify({
                     'usage': usage_stats,
                     'timestamp': datetime.now(timezone.utc).isoformat()
@@ -2060,30 +2202,29 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get API usage: {e}")
                 return jsonify({'error': str(e)}), 500
-        
 
-        
         # Channel management endpoints
+
         @self.app.route('/api/channels/status', methods=['GET'])
         def get_channel_status():
             """Get channel status information."""
             try:
                 channels = {}
-                
+
                 # Fetch real channel data from APIs
                 channels['youtube'] = self._fetch_youtube_channel_data()
                 channels['tiktok'] = self._fetch_tiktok_channel_data()
                 channels['instagram'] = self._fetch_instagram_channel_data()
-                
+
                 return jsonify({
                     'channels': channels,
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-            
+
             except Exception as e:
                 self.logger.error(f"Failed to get channel status: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Agent Command Center endpoints
         @self.app.route('/api/agents', methods=['GET'])
         def get_agents():
@@ -2095,7 +2236,7 @@ class DashboardApp:
                     if agent_dict['last_activity']:
                         agent_dict['last_activity'] = agent_dict['last_activity'].isoformat()
                     agent_list.append(agent_dict)
-                
+
                 return jsonify({
                     'agents': agent_list,
                     'total': len(agent_list),
@@ -2104,18 +2245,18 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get agents: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/agents/<agent_id>/control', methods=['POST'])
         def control_agent(agent_id):
             """Control agent (start/stop/restart)."""
             try:
                 data = request.get_json()
                 action = data.get('action')
-                
+
                 success = self.control_agent(agent_id, action)
                 if not success:
                     return jsonify({'error': 'Agent not found or invalid action'}), 404
-                
+
                 return jsonify({
                     'agent_id': agent_id,
                     'action': action,
@@ -2125,14 +2266,14 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to control agent {agent_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/agents/<agent_id>/logs', methods=['GET'])
         def get_agent_logs_endpoint(agent_id):
             """Get logs for a specific agent."""
             try:
                 lines = request.args.get('lines', 100, type=int)
                 logs = self.get_agent_logs(agent_id, lines)
-                
+
                 return jsonify({
                     'agent_id': agent_id,
                     'logs': logs,
@@ -2142,7 +2283,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get logs for agent {agent_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Intelligence Database Explorer endpoints
         @self.app.route('/api/database/tables', methods=['GET'])
         def get_database_tables():
@@ -2152,7 +2293,7 @@ class DashboardApp:
                     cursor = conn.cursor()
                     cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                     tables = [row[0] for row in cursor.fetchall()]
-                
+
                 return jsonify({
                     'tables': tables,
                     'count': len(tables),
@@ -2161,20 +2302,20 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get database tables: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/database/query', methods=['POST'])
         def execute_database_query():
             """Execute SQL query on intelligence database."""
             try:
                 data = request.get_json()
                 query = data.get('query', '').strip()
-                
+
                 if not query:
                     return jsonify({'error': 'Query is required'}), 400
-                
+
                 result = self.execute_database_query(query)
                 result['timestamp'] = datetime.now(timezone.utc).isoformat()
-                
+
                 return jsonify(result)
             except ValueError as e:
                 return jsonify({'error': str(e)}), 400
@@ -2183,23 +2324,24 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to execute query: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/database/evidence', methods=['POST'])
         def add_evidence():
             """Add new evidence entry."""
             try:
                 data = request.get_json()
-                
+
                 title = data.get('title', '').strip()
                 content = data.get('content', '').strip()
                 source = data.get('source', '').strip()
                 category = data.get('category', 'manual').strip()
-                
+
                 if not all([title, content, source]):
-                    return jsonify({'error': 'Title, content, and source are required'}), 400
-                
+                    return jsonify(
+                        {'error': 'Title, content, and source are required'}), 400
+
                 success = self.add_evidence_entry(title, content, source, category)
-                
+
                 if success:
                     return jsonify({
                         'status': 'success',
@@ -2211,7 +2353,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to add evidence: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Digital Product Studio endpoints
         @self.app.route('/api/projects', methods=['GET'])
         def get_projects():
@@ -2230,7 +2372,7 @@ class DashboardApp:
                         'created_at': project.created_at.isoformat(),
                         'last_updated': project.last_updated.isoformat()
                     })
-                
+
                 return jsonify({
                     'projects': projects,
                     'total': len(projects),
@@ -2239,20 +2381,20 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get projects: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/projects', methods=['POST'])
         def create_project():
             """Create new digital product project."""
             try:
                 data = request.get_json()
-                
+
                 name = data.get('name', '').strip()
                 project_type = data.get('type', 'book').strip()
                 total_chapters = data.get('total_chapters', 10)
-                
+
                 if not name:
                     return jsonify({'error': 'Project name is required'}), 400
-                
+
                 project_id = f"{project_type}_{int(time.time())}"
                 project = ProjectInfo(
                     id=project_id,
@@ -2265,11 +2407,11 @@ class DashboardApp:
                     created_at=datetime.now(),
                     last_updated=datetime.now()
                 )
-                
+
                 self.projects[project_id] = project
-                
+
                 self.logger.info(f"Created project {project_id}: {name}")
-                
+
                 return jsonify({
                     'status': 'success',
                     'project_id': project_id,
@@ -2279,17 +2421,17 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to create project: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/projects/<project_id>', methods=['PUT'])
         def update_project(project_id):
             """Update digital product project."""
             try:
                 if project_id not in self.projects:
                     return jsonify({'error': 'Project not found'}), 404
-                
+
                 data = request.get_json()
                 project = self.projects[project_id]
-                
+
                 # Update allowed fields
                 if 'status' in data:
                     project.status = data['status']
@@ -2299,11 +2441,11 @@ class DashboardApp:
                     project.chapters_completed = int(data['chapters_completed'])
                 if 'total_chapters' in data:
                     project.total_chapters = int(data['total_chapters'])
-                
+
                 project.last_updated = datetime.now()
-                
+
                 self.logger.info(f"Updated project {project_id}")
-                
+
                 return jsonify({
                     'status': 'success',
                     'message': 'Project updated successfully',
@@ -2312,17 +2454,19 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to update project {project_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/projects/<project_id>/generate-marketing', methods=['POST'])
+
+        @self.app.route('/api/projects/<project_id>/generate-marketing',
+                        methods=['POST'])
         def generate_marketing_package(project_id):
             """Generate complete marketing package for a digital product project."""
             try:
                 if project_id not in self.projects:
                     return jsonify({'error': 'Project not found'}), 404
-                
+
                 project = self.projects[project_id]
-                
-                # Create marketing task using the MarketingAgent with ecommerce_marketing type
+
+                # Create marketing task using the MarketingAgent with
+                # ecommerce_marketing type
                 if TRAE_AI_AVAILABLE:
                     task_id = self.task_queue.add_task(
                         task_type=TaskType.MARKETING,
@@ -2347,9 +2491,10 @@ class DashboardApp:
                             'project_type': project.type
                         }
                     )
-                    
-                    self.logger.info(f"Created marketing package generation task {task_id} for project {project_id}")
-                    
+
+                    self.logger.info(
+                        f"Created marketing package generation task {task_id} for project {project_id}")
+
                     return jsonify({
                         'status': 'success',
                         'message': 'Marketing package generation started',
@@ -2365,11 +2510,12 @@ class DashboardApp:
                         'project_id': project_id,
                         'timestamp': datetime.now(timezone.utc).isoformat()
                     })
-                    
+
             except Exception as e:
-                self.logger.error(f"Failed to generate marketing package for project {project_id}: {e}")
+                self.logger.error(
+                    f"Failed to generate marketing package for project {project_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # On-Demand Reporting Engine endpoints
         @self.app.route('/api/reports/generate', methods=['POST'])
         def generate_report():
@@ -2377,7 +2523,7 @@ class DashboardApp:
             try:
                 data = request.get_json()
                 report_type = data.get('type')
-                
+
                 if report_type == 'daily':
                     report_data = self._generate_performance_report()
                 elif report_type == 'weekly':
@@ -2392,7 +2538,7 @@ class DashboardApp:
                     report_data = self._generate_financial_report()
                 else:
                     return jsonify({'error': 'Invalid report type'}), 400
-                
+
                 return jsonify({
                     'status': 'success',
                     'report_type': report_type,
@@ -2402,22 +2548,30 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to generate report: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/reports/types', methods=['GET'])
         def get_report_types():
             """Get available report types."""
-            return jsonify({
-                'types': [
-                    {'id': 'daily_performance', 'name': 'Daily Performance Report', 'description': 'Latest performance metrics and task completion'},
-                    {'id': 'weekly_growth', 'name': 'Weekly Growth Report', 'description': 'Weekly trends and growth analysis'},
-                    {'id': 'quarterly_strategic', 'name': 'Quarterly Strategic Brief', 'description': 'Comprehensive quarterly overview and strategic insights'},
-                    {'id': 'affiliate_performance', 'name': 'Affiliate Performance Report', 'description': 'Affiliate program performance and revenue analytics'},
-                    {'id': 'content_analysis', 'name': 'Content Analysis Report', 'description': 'Content creation and publishing statistics'},
-                    {'id': 'system_health', 'name': 'System Health Report', 'description': 'System performance and health metrics'}
-                ],
-                'timestamp': datetime.now(timezone.utc).isoformat()
-            })
-        
+            return jsonify({'types': [{'id': 'daily_performance',
+                                       'name': 'Daily Performance Report',
+                                       'description': 'Latest performance metrics and task completion'},
+                                      {'id': 'weekly_growth',
+                                       'name': 'Weekly Growth Report',
+                                       'description': 'Weekly trends and growth analysis'},
+                                      {'id': 'quarterly_strategic',
+                                       'name': 'Quarterly Strategic Brief',
+                                       'description': 'Comprehensive quarterly overview and strategic insights'},
+                                      {'id': 'affiliate_performance',
+                                       'name': 'Affiliate Performance Report',
+                                       'description': 'Affiliate program performance and revenue analytics'},
+                                      {'id': 'content_analysis',
+                                       'name': 'Content Analysis Report',
+                                       'description': 'Content creation and publishing statistics'},
+                                      {'id': 'system_health',
+                                       'name': 'System Health Report',
+                                       'description': 'System performance and health metrics'}],
+                            'timestamp': datetime.now(timezone.utc).isoformat()})
+
         # Report Center API endpoints
         @self.app.route('/api/report-center/reports', methods=['GET'])
         def list_reports():
@@ -2430,60 +2584,64 @@ class DashboardApp:
                 search = request.args.get('search')
                 sort_by = request.args.get('sort_by', 'created_at')
                 sort_order = request.args.get('sort_order', 'desc')
-                
+
                 # Calculate offset
                 offset = (page - 1) * per_page
-                
+
                 # Build query
                 query = "SELECT * FROM generated_reports WHERE status = 'active'"
                 params = []
-                
+
                 if report_type:
                     query += " AND report_type = ?"
                     params.append(report_type)
-                
+
                 if search:
                     query += " AND (title LIKE ? OR key_headline LIKE ? OR content LIKE ?)"
                     search_term = f"%{search}%"
                     params.extend([search_term, search_term, search_term])
-                
+
                 # Add sorting
-                valid_sort_columns = ['created_at', 'title', 'report_type', 'date_range_start']
+                valid_sort_columns = [
+                    'created_at',
+                    'title',
+                    'report_type',
+                    'date_range_start']
                 if sort_by in valid_sort_columns:
                     query += f" ORDER BY {sort_by} {sort_order.upper()}"
                 else:
                     query += " ORDER BY created_at DESC"
-                
+
                 # Add pagination
                 query += " LIMIT ? OFFSET ?"
                 params.extend([per_page, offset])
-                
+
                 # Execute query
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
-                
+
                 cursor.execute(query, params)
                 reports = [dict(row) for row in cursor.fetchall()]
-                
+
                 # Get total count for pagination
                 count_query = "SELECT COUNT(*) FROM generated_reports WHERE status = 'active'"
                 count_params = []
-                
+
                 if report_type:
                     count_query += " AND report_type = ?"
                     count_params.append(report_type)
-                
+
                 if search:
                     count_query += " AND (title LIKE ? OR key_headline LIKE ? OR content LIKE ?)"
                     search_term = f"%{search}%"
                     count_params.extend([search_term, search_term, search_term])
-                
+
                 cursor.execute(count_query, count_params)
                 total_count = cursor.fetchone()[0]
-                
+
                 conn.close()
-                
+
                 return jsonify({
                     'status': 'success',
                     'reports': reports,
@@ -2495,11 +2653,11 @@ class DashboardApp:
                     },
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to list reports: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/report-center/reports/<int:report_id>', methods=['GET'])
         def get_report(report_id):
             """Get a specific report by ID."""
@@ -2507,29 +2665,29 @@ class DashboardApp:
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
-                
+
                 cursor.execute(
                     "SELECT * FROM generated_reports WHERE id = ? AND status = 'active'",
                     (report_id,)
                 )
                 report = cursor.fetchone()
-                
+
                 if not report:
                     conn.close()
                     return jsonify({'error': 'Report not found'}), 404
-                
+
                 conn.close()
-                
+
                 return jsonify({
                     'status': 'success',
                     'report': dict(report),
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to get report {report_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/report-center/generate', methods=['POST'])
         def generate_and_save_report():
             """Generate a new report and save it to the database."""
@@ -2539,41 +2697,75 @@ class DashboardApp:
                 date_range_start = data.get('date_range_start')
                 date_range_end = data.get('date_range_end')
                 custom_params = data.get('parameters', {})
-                
+
                 if not report_type:
                     return jsonify({'error': 'Report type is required'}), 400
-                
+
                 # Generate report content based on type
                 if report_type == 'daily_performance':
                     report_data = self._generate_performance_report()
-                    title = f"Daily Performance Report - {datetime.now().strftime('%Y-%m-%d')}"
-                    content = self._format_report_as_markdown(report_data, 'Daily Performance')
-                    key_headline = f"System processed {report_data.get('tasks_completed', 0)} tasks with {report_data.get('success_rate', 0)}% success rate"
+                    title = f"Daily Performance Report - {
+                        datetime.now().strftime('%Y-%m-%d')}"
+                    content = self._format_report_as_markdown(
+                        report_data, 'Daily Performance')
+                    key_headline = f"System processed {
+                        report_data.get(
+                            'tasks_completed',
+                            0)} tasks with {
+                        report_data.get(
+                            'success_rate',
+                            0)}% success rate"
                 elif report_type == 'weekly_growth':
                     report_data = self._generate_content_report()
-                    title = f"Weekly Growth Report - Week of {datetime.now().strftime('%Y-%m-%d')}"
-                    content = self._format_report_as_markdown(report_data, 'Weekly Growth')
-                    key_headline = f"Content creation up {report_data.get('growth_rate', 0)}% with {report_data.get('total_content', 0)} pieces published"
+                    title = f"Weekly Growth Report - Week of {
+                        datetime.now().strftime('%Y-%m-%d')}"
+                    content = self._format_report_as_markdown(
+                        report_data, 'Weekly Growth')
+                    key_headline = f"Content creation up {
+                        report_data.get(
+                            'growth_rate',
+                            0)}% with {
+                        report_data.get(
+                            'total_content',
+                            0)} pieces published"
                 elif report_type == 'quarterly_strategic':
                     report_data = self._generate_financial_report()
-                    title = f"Quarterly Strategic Brief - Q{((datetime.now().month-1)//3)+1} {datetime.now().year}"
-                    content = self._format_report_as_markdown(report_data, 'Quarterly Strategic')
-                    key_headline = f"Revenue growth of {report_data.get('revenue_growth', 0)}% with strategic focus on {report_data.get('top_channel', 'content creation')}"
+                    title = f"Quarterly Strategic Brief - Q{((datetime.now().month
+                                                              - 1)
+                                                             // 3)
+                                                            + 1} {datetime.now().year}"
+                    content = self._format_report_as_markdown(
+                        report_data, 'Quarterly Strategic')
+                    key_headline = f"Revenue growth of {
+                        report_data.get(
+                            'revenue_growth',
+                            0)}% with strategic focus on {
+                        report_data.get(
+                            'top_channel',
+                            'content creation')}"
                 elif report_type == 'affiliate_performance':
                     affiliate_data = self._get_affiliate_status()
-                    title = f"Affiliate Performance Report - {datetime.now().strftime('%Y-%m-%d')}"
-                    content = self._format_report_as_markdown(affiliate_data, 'Affiliate Performance')
-                    key_headline = f"Affiliate programs generating ${affiliate_data.get('total_revenue', 0)} with {affiliate_data.get('active_programs', 0)} active programs"
+                    title = f"Affiliate Performance Report - {
+                        datetime.now().strftime('%Y-%m-%d')}"
+                    content = self._format_report_as_markdown(
+                        affiliate_data, 'Affiliate Performance')
+                    key_headline = f"Affiliate programs generating ${
+                        affiliate_data.get(
+                            'total_revenue',
+                            0)} with {
+                        affiliate_data.get(
+                            'active_programs',
+                            0)} active programs"
                 else:
                     return jsonify({'error': 'Invalid report type'}), 400
-                
+
                 # Save to database
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 cursor.execute("""
-                    INSERT INTO generated_reports 
-                    (report_type, title, content, key_headline, date_range_start, date_range_end, 
+                    INSERT INTO generated_reports
+                    (report_type, title, content, key_headline, date_range_start, date_range_end,
                      generated_by, generation_parameters, file_size_bytes, tags)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
@@ -2588,11 +2780,11 @@ class DashboardApp:
                     len(content.encode('utf-8')),
                     f"{report_type},generated,dashboard"
                 ))
-                
+
                 report_id = cursor.lastrowid
                 conn.commit()
                 conn.close()
-                
+
                 return jsonify({
                     'status': 'success',
                     'message': 'Report generated and saved successfully',
@@ -2601,18 +2793,19 @@ class DashboardApp:
                     'key_headline': key_headline,
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to generate and save report: {e}")
                 return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/report-center/reports/<int:report_id>', methods=['DELETE'])
+
+        @self.app.route('/api/report-center/reports/<int:report_id>',
+                        methods=['DELETE'])
         def delete_report(report_id):
             """Delete a report (soft delete by marking as deleted)."""
             try:
                 conn = sqlite3.connect(self.config.intelligence_db_path)
                 cursor = conn.cursor()
-                
+
                 # Check if report exists
                 cursor.execute(
                     "SELECT id FROM generated_reports WHERE id = ? AND status = 'active'",
@@ -2621,26 +2814,26 @@ class DashboardApp:
                 if not cursor.fetchone():
                     conn.close()
                     return jsonify({'error': 'Report not found'}), 404
-                
+
                 # Soft delete
                 cursor.execute(
                     "UPDATE generated_reports SET status = 'deleted', updated_at = CURRENT_TIMESTAMP WHERE id = ?",
                     (report_id,)
                 )
-                
+
                 conn.commit()
                 conn.close()
-                
+
                 return jsonify({
                     'status': 'success',
                     'message': 'Report deleted successfully',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to delete report {report_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Intelligence Database endpoints
         @self.app.route('/api/database/stats', methods=['GET'])
         def get_database_stats():
@@ -2656,13 +2849,13 @@ class DashboardApp:
                     'total_records': 0,
                     'last_updated': datetime.now(timezone.utc).isoformat()
                 }
-                
+
                 # Try to get actual table counts from intelligence database
                 if os.path.exists(self.config.intelligence_db_path):
                     try:
                         with sqlite3.connect(self.config.intelligence_db_path) as conn:
                             cursor = conn.cursor()
-                            
+
                             # Get table counts
                             for table_name in stats['tables'].keys():
                                 try:
@@ -2672,11 +2865,11 @@ class DashboardApp:
                                 except sqlite3.OperationalError:
                                     # Table doesn't exist, keep count as 0
                                     pass
-                            
+
                             stats['total_records'] = sum(stats['tables'].values())
                     except Exception as e:
                         self.logger.warning(f"Could not get database stats: {e}")
-                
+
                 return jsonify({
                     'status': 'success',
                     'stats': stats,
@@ -2685,7 +2878,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get database stats: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/projects/status', methods=['GET'])
         def get_projects_status():
             """Get project status for Digital Product Studio."""
@@ -2703,7 +2896,7 @@ class DashboardApp:
                         'created_at': project.created_at.isoformat(),
                         'last_updated': project.last_updated.isoformat()
                     })
-                
+
                 return jsonify({
                     'status': 'success',
                     'projects': projects,
@@ -2711,9 +2904,9 @@ class DashboardApp:
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
             except Exception as e:
-                 self.logger.error(f"Failed to get project status: {e}")
-                 return jsonify({'error': str(e)}), 500
-        
+                self.logger.error(f"Failed to get project status: {e}")
+                return jsonify({'error': str(e)}), 500
+
         @self.app.route('/api/database/query', methods=['POST'])
         def execute_database_query_endpoint():
             """Execute SQL query on Intelligence Database."""
@@ -2721,19 +2914,19 @@ class DashboardApp:
                 data = request.get_json()
                 if not data or 'query' not in data:
                     return jsonify({'error': 'Query is required'}), 400
-                
+
                 query = data['query'].strip()
-                
+
                 # Basic security check - only allow SELECT statements
                 if not query.upper().startswith('SELECT'):
                     return jsonify({'error': 'Only SELECT queries are allowed'}), 400
-                
+
                 result = self.execute_database_query(query)
                 return jsonify(result)
             except Exception as e:
                 self.logger.error(f"Failed to execute database query: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Creative Sandbox API endpoints
         @self.app.route('/api/sandbox/channels', methods=['GET'])
         def get_sandbox_channels():
@@ -2745,7 +2938,7 @@ class DashboardApp:
                     {'id': 'instagram', 'name': 'Instagram', 'type': 'image', 'status': 'active'},
                     {'id': 'twitter', 'name': 'Twitter/X', 'type': 'text', 'status': 'active'}
                 ]
-                
+
                 return jsonify({
                     'channels': channels,
                     'total': len(channels),
@@ -2754,7 +2947,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get sandbox channels: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/channels/<channel_id>/avatars', methods=['GET'])
         def get_channel_avatars(channel_id):
             """Get available avatars for a specific channel."""
@@ -2762,7 +2955,7 @@ class DashboardApp:
                 # Import avatar animation system
                 if TRAE_AI_AVAILABLE:
                     from backend.content.animate_avatar import AnimateAvatar, AnimationModel
-                    
+
                     avatars = [
                         {'id': 'avatar_1', 'name': 'Professional Host', 'model': 'wav2lip', 'gender': 'neutral'},
                         {'id': 'avatar_2', 'name': 'Casual Presenter', 'model': 'sadtalker', 'gender': 'female'},
@@ -2770,10 +2963,9 @@ class DashboardApp:
                         {'id': 'avatar_4', 'name': 'Creative Artist', 'model': 'sadtalker', 'gender': 'neutral'}
                     ]
                 else:
-                    avatars = [
-                        {'id': 'demo_avatar', 'name': 'Demo Avatar', 'model': 'demo', 'gender': 'neutral'}
-                    ]
-                
+                    avatars = [{'id': 'demo_avatar', 'name': 'Demo Avatar',
+                                'model': 'demo', 'gender': 'neutral'}]
+
                 return jsonify({
                     'avatars': avatars,
                     'channel_id': channel_id,
@@ -2781,9 +2973,10 @@ class DashboardApp:
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
             except Exception as e:
-                self.logger.error(f"Failed to get avatars for channel {channel_id}: {e}")
+                self.logger.error(
+                    f"Failed to get avatars for channel {channel_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/avatars/<avatar_id>/voices', methods=['GET'])
         def get_avatar_voices(avatar_id):
             """Get available voices for a specific avatar."""
@@ -2795,7 +2988,7 @@ class DashboardApp:
                     {'id': 'voice_4', 'name': 'Casual Female', 'language': 'en', 'gender': 'female'},
                     {'id': 'voice_5', 'name': 'Narrator', 'language': 'en', 'gender': 'neutral'}
                 ]
-                
+
                 return jsonify({
                     'voices': voices,
                     'avatar_id': avatar_id,
@@ -2805,7 +2998,7 @@ class DashboardApp:
             except Exception as e:
                 self.logger.error(f"Failed to get voices for avatar {avatar_id}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/generate-script', methods=['POST'])
         def generate_script():
             """Generate script content for creative sandbox."""
@@ -2814,29 +3007,30 @@ class DashboardApp:
                 topic = data.get('topic', '').strip()
                 style = data.get('style', 'professional')
                 duration = data.get('duration', 60)  # seconds
-                
+
                 if not topic:
                     return jsonify({'error': 'Topic is required'}), 400
-                
+
                 # Generate script using AI
                 if TRAE_AI_AVAILABLE:
                     from backend.content.automated_author import AutomatedAuthor
-                    
+
                     author = AutomatedAuthor()
-                    script_content = author._generate_script_content(topic, style, duration)
+                    script_content = author._generate_script_content(
+                        topic, style, duration)
                 else:
                     # Fallback demo script
                     script_content = f"""Welcome to our {style} presentation about {topic}.
-                    
+
 In this {duration}-second segment, we'll explore the key aspects of {topic} and provide valuable insights.
-                    
+
 Let's dive into the main points:
                     1. Introduction to {topic}
                     2. Key benefits and applications
                     3. Best practices and recommendations
-                    
+
 Thank you for watching!"""
-                
+
                 # Create task for script generation
                 task_id = f"script_{int(time.time())}"
                 if TRAE_AI_AVAILABLE:
@@ -2844,9 +3038,11 @@ Thank you for watching!"""
                         task_type=TaskType.VIDEO_CREATION,
                         priority=TaskPriority.MEDIUM,
                         agent_id='content_generator',
-                        payload={'action': 'generate_script', 'topic': topic, 'style': style}
-                    )
-                
+                        payload={
+                            'action': 'generate_script',
+                            'topic': topic,
+                            'style': style})
+
                 return jsonify({
                     'success': True,
                     'script': script_content,
@@ -2858,7 +3054,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to generate script: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/generate-voice', methods=['POST'])
         def generate_voice():
             """Generate voice audio for creative sandbox."""
@@ -2866,21 +3062,21 @@ Thank you for watching!"""
                 data = request.get_json()
                 script = data.get('script', '').strip()
                 voice_id = data.get('voice_id', 'voice_1')
-                
+
                 if not script:
                     return jsonify({'error': 'Script is required'}), 400
-                
+
                 # Generate voice using TTS
                 if TRAE_AI_AVAILABLE:
                     from backend.content.audio_post_production import AudioPostProduction
-                    
+
                     audio_processor = AudioPostProduction()
                     audio_file = audio_processor._generate_tts_audio(script, voice_id)
                     audio_url = f"/api/sandbox/audio/{audio_file}"
                 else:
                     # Mock audio generation
                     audio_url = "/static/demo_audio.mp3"
-                
+
                 # Create task for voice generation
                 task_id = f"voice_{int(time.time())}"
                 if TRAE_AI_AVAILABLE:
@@ -2888,9 +3084,11 @@ Thank you for watching!"""
                         task_type=TaskType.VIDEO_CREATION,
                         priority=TaskPriority.MEDIUM,
                         agent_id='audio_processor',
-                        payload={'action': 'generate_voice', 'script': script, 'voice_id': voice_id}
-                    )
-                
+                        payload={
+                            'action': 'generate_voice',
+                            'script': script,
+                            'voice_id': voice_id})
+
                 return jsonify({
                     'success': True,
                     'audio_url': audio_url,
@@ -2902,7 +3100,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to generate voice: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/generate-avatar', methods=['POST'])
         def generate_avatar():
             """Generate avatar video for creative sandbox."""
@@ -2910,26 +3108,28 @@ Thank you for watching!"""
                 data = request.get_json()
                 avatar_id = data.get('avatar_id', '').strip()
                 audio_url = data.get('audio_url', '').strip()
-                
+
                 if not avatar_id or not audio_url:
-                    return jsonify({'error': 'Avatar ID and audio URL are required'}), 400
-                
+                    return jsonify(
+                        {'error': 'Avatar ID and audio URL are required'}), 400
+
                 # Generate avatar video
                 if TRAE_AI_AVAILABLE:
                     from backend.content.animate_avatar import AnimateAvatar, AnimationConfig
-                    
+
                     animator = AnimateAvatar()
                     config = AnimationConfig(
                         model='wav2lip' if 'wav2lip' in avatar_id else 'sadtalker',
                         quality='high',
                         fps=30
                     )
-                    video_file = animator._generate_avatar_video(avatar_id, audio_url, config)
+                    video_file = animator._generate_avatar_video(
+                        avatar_id, audio_url, config)
                     video_url = f"/api/sandbox/video/{video_file}"
                 else:
                     # Mock video generation
                     video_url = "/static/demo_avatar.mp4"
-                
+
                 # Create task for avatar generation
                 task_id = f"avatar_{int(time.time())}"
                 if TRAE_AI_AVAILABLE:
@@ -2937,9 +3137,11 @@ Thank you for watching!"""
                         task_type=TaskType.VIDEO_CREATION,
                         priority=TaskPriority.HIGH,
                         agent_id='avatar_animator',
-                        payload={'action': 'generate_avatar', 'avatar_id': avatar_id, 'audio_url': audio_url}
-                    )
-                
+                        payload={
+                            'action': 'generate_avatar',
+                            'avatar_id': avatar_id,
+                            'audio_url': audio_url})
+
                 return jsonify({
                     'success': True,
                     'video_url': video_url,
@@ -2951,7 +3153,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to generate avatar: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/generate-scene', methods=['POST'])
         def generate_scene():
             """Generate scene composition for creative sandbox."""
@@ -2960,14 +3162,14 @@ Thank you for watching!"""
                 video_url = data.get('video_url', '').strip()
                 background = data.get('background', 'studio')
                 effects = data.get('effects', [])
-                
+
                 if not video_url:
                     return jsonify({'error': 'Video URL is required'}), 400
-                
+
                 # Generate scene composition
                 if TRAE_AI_AVAILABLE:
                     from backend.content.blender_compositor import BlenderCompositor
-                    
+
                     compositor = BlenderCompositor()
                     scene_config = {
                         'background': background,
@@ -2980,7 +3182,7 @@ Thank you for watching!"""
                 else:
                     # Mock scene generation
                     final_url = "/static/demo_final.mp4"
-                
+
                 # Create task for scene generation
                 task_id = f"scene_{int(time.time())}"
                 if TRAE_AI_AVAILABLE:
@@ -2988,9 +3190,11 @@ Thank you for watching!"""
                         task_type=TaskType.VIDEO_CREATION,
                         priority=TaskPriority.HIGH,
                         agent_id='scene_compositor',
-                        payload={'action': 'generate_scene', 'video_url': video_url, 'background': background}
-                    )
-                
+                        payload={
+                            'action': 'generate_scene',
+                            'video_url': video_url,
+                            'background': background})
+
                 return jsonify({
                     'success': True,
                     'final_url': final_url,
@@ -3003,7 +3207,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to generate scene: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/generate-video', methods=['POST'])
         def generate_video():
             """Generate complete video for creative sandbox."""
@@ -3012,30 +3216,38 @@ Thank you for watching!"""
                 topic = data.get('topic', '').strip()
                 style = data.get('style', 'educational')
                 duration = data.get('duration', 60)
-                
+
                 if not topic:
                     return jsonify({'error': 'Topic is required'}), 400
-                
+
                 # Generate complete video
                 if TRAE_AI_AVAILABLE:
                     try:
                         import sys
-                        sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'tools'))
+                        sys.path.append(
+                            os.path.join(
+                                os.path.dirname(__file__),
+                                '..',
+                                'tools'))
                         from basic_video_generator import generate_basic_video
-                        
+
                         # Create output directory
                         video_output_dir = os.path.join('output', 'sandbox_videos')
                         os.makedirs(video_output_dir, exist_ok=True)
-                        
+
                         # Generate video filename
                         timestamp = int(time.time())
-                        video_filename = f"video_{timestamp}_{topic.replace(' ', '_').lower()}.mp4"
+                        video_filename = f"video_{timestamp}_{
+                            topic.replace(
+                                ' ', '_').lower()}.mp4"
                         video_path = os.path.join(video_output_dir, video_filename)
-                        
+
                         # Use basic video generator with default background
-                        background_path = os.path.join('assets', 'backgrounds', 'default.jpg')
+                        background_path = os.path.join(
+                            'assets', 'backgrounds', 'default.jpg')
                         if not os.path.exists(background_path):
-                            # Create assets directory and default background if not exists
+                            # Create assets directory and default background if not
+                            # exists
                             os.makedirs(os.path.dirname(background_path), exist_ok=True)
                             # Create a simple colored background using PIL if available
                             try:
@@ -3044,11 +3256,12 @@ Thank you for watching!"""
                                 img.save(background_path)
                             except ImportError:
                                 # Fallback: copy from static if exists
-                                static_bg = os.path.join('app', 'static', 'background.jpg')
+                                static_bg = os.path.join(
+                                    'app', 'static', 'background.jpg')
                                 if os.path.exists(static_bg):
                                     import shutil
                                     shutil.copy2(static_bg, background_path)
-                        
+
                         # Generate video
                         success = generate_basic_video(background_path, video_path)
                         if success:
@@ -3061,17 +3274,21 @@ Thank you for watching!"""
                 else:
                     # Mock video generation
                     video_url = "/static/demo_video.mp4"
-                
+
                 # Create task for video generation
                 task_id = f"video_{int(time.time())}"
-                if TRAE_AI_AVAILABLE and hasattr(self, 'task_queue') and self.task_queue:
+                if TRAE_AI_AVAILABLE and hasattr(
+                        self, 'task_queue') and self.task_queue:
                     self.task_queue.add_task(
                         task_type=TaskType.VIDEO_CREATION,
                         priority=TaskPriority.HIGH,
                         agent_id='video_generator',
-                        payload={'action': 'generate_video', 'topic': topic, 'style': style, 'duration': duration}
-                    )
-                
+                        payload={
+                            'action': 'generate_video',
+                            'topic': topic,
+                            'style': style,
+                            'duration': duration})
+
                 return jsonify({
                     'success': True,
                     'video_url': video_url,
@@ -3085,7 +3302,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to generate video: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/send-to-production', methods=['POST'])
         def send_to_production():
             """Send completed content to production queue."""
@@ -3094,13 +3311,14 @@ Thank you for watching!"""
                 video_url = data.get('video_url', '').strip()
                 channel_id = data.get('channel_id', '').strip()
                 metadata = data.get('metadata', {})
-                
+
                 if not video_url or not channel_id:
-                    return jsonify({'error': 'Video URL and channel ID are required'}), 400
-                
+                    return jsonify(
+                        {'error': 'Video URL and channel ID are required'}), 400
+
                 # Add to production queue
                 production_id = f"prod_{int(time.time())}"
-                
+
                 if TRAE_AI_AVAILABLE:
                     # Create production task
                     self.task_queue.add_task(
@@ -3115,7 +3333,7 @@ Thank you for watching!"""
                             'production_id': production_id
                         }
                     )
-                
+
                 return jsonify({
                     'success': True,
                     'production_id': production_id,
@@ -3127,7 +3345,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to send to production: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/sandbox/production-queue', methods=['GET'])
         def get_production_queue():
             """Get current production queue status."""
@@ -3136,15 +3354,19 @@ Thank you for watching!"""
                 if TRAE_AI_AVAILABLE and hasattr(self, 'task_queue'):
                     queue_stats = self.task_queue.get_queue_stats()
                     active_tasks = self.task_queue.get_active_tasks()
-                    
+
                     production_tasks = [
-                        task for task in active_tasks 
+                        task for task in active_tasks
                         if task.get('task_type') == 'CONTENT_PUBLISHING'
                     ]
                 else:
-                    queue_stats = {'total': 0, 'pending': 0, 'processing': 0, 'completed': 0}
+                    queue_stats = {
+                        'total': 0,
+                        'pending': 0,
+                        'processing': 0,
+                        'completed': 0}
                     production_tasks = []
-                
+
                 return jsonify({
                     'queue_stats': queue_stats,
                     'production_tasks': production_tasks,
@@ -3154,7 +3376,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to get production queue: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Code Backup & Export endpoints
         @self.app.route('/api/backup/files', methods=['GET'])
         def get_system_files():
@@ -3165,50 +3387,54 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Error in get_system_files: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/backup/file/<path:file_path>', methods=['GET'])
         def get_file_content(file_path):
             """Get content of a specific file."""
             content = self._read_file_content(file_path)
             return jsonify(content)
-        
+
         @self.app.route('/api/backup/all-code', methods=['GET'])
         def get_all_code():
             """Get concatenated content of all system files."""
             content = self._get_all_code_content()
             return jsonify(content)
-        
+
         @self.app.route('/api/backup/generate-code', methods=['POST'])
         def generate_code_backup():
             """Generate a clean code backup zip file."""
             result = self._generate_code_backup()
             return jsonify(result)
-        
+
         @self.app.route('/api/backup/generate-data', methods=['POST'])
         def generate_data_backup():
             """Generate a complete data backup tar.gz file."""
             result = self._generate_data_backup()
             return jsonify(result)
-        
+
         @self.app.route('/api/backup/download/<filename>', methods=['GET'])
         def download_backup(filename):
             """Download a generated backup file."""
             try:
-                base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                base_path = Path(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))))
                 file_path = base_path / filename
-                
+
                 # Security check: ensure file exists and is a backup file
                 if not file_path.exists():
                     return jsonify({'error': 'File not found'}), 404
-                
-                if not (filename.startswith('trae_ai_code_snapshot_') or filename.startswith('trae_ai_data_backup_')):
+
+                if not (filename.startswith('trae_ai_code_snapshot_')
+                        or filename.startswith('trae_ai_data_backup_')):
                     return jsonify({'error': 'Invalid backup file'}), 403
-                
+
                 return send_file(file_path, as_attachment=True, download_name=filename)
             except Exception as e:
                 self.logger.error(f"Failed to download backup {filename}: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/backup/project-structure', methods=['GET'])
         def get_project_structure():
             """Get complete project structure as a tree."""
@@ -3218,7 +3444,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to get project structure: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Runtime Review Audit Endpoints
         @self.app.route('/api/audit/runtime-review', methods=['POST'])
         def runtime_review_audit():
@@ -3232,13 +3458,13 @@ Thank you for watching!"""
                     'timestamp': datetime.now(timezone.utc).isoformat(),
                     'system_status': 'operational'
                 }
-                
+
                 return jsonify({
                     'status': 'success',
                     'audit_results': audit_results,
                     'evidence_bundle_ready': True
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Runtime review audit failed: {e}")
                 return jsonify({
@@ -3246,28 +3472,28 @@ Thank you for watching!"""
                     'error': str(e),
                     'audit_results': None
                 }), 500
-        
+
         @self.app.route('/api/audit/evidence-bundle', methods=['GET'])
         def download_evidence_bundle():
             """Generate and download comprehensive evidence bundle."""
             try:
                 bundle_data = self._generate_evidence_bundle()
-                
+
                 # Create temporary file
                 import tempfile
                 import json
-                
+
                 with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
                     json.dump(bundle_data, f, indent=2, default=str)
                     temp_path = f.name
-                
+
                 return send_file(
                     temp_path,
                     as_attachment=True,
-                    download_name=f'runtime_review_evidence_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json',
-                    mimetype='application/json'
-                )
-                
+                    download_name=f'runtime_review_evidence_{
+                        datetime.now().strftime("%Y%m%d_%H%M%S")}.json',
+                    mimetype='application/json')
+
             except Exception as e:
                 self.logger.error(f"Evidence bundle generation failed: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -3281,32 +3507,38 @@ Thank you for watching!"""
                     seq = 0
                     while True:
                         # Get current system status and verdict
-                        current = self._current_audit_data() if hasattr(self, '_current_audit_data') else {"data": {}}
-                        v = self._infer_verdict(current.get("data", {})) if hasattr(self, '_infer_verdict') else "operational"
+                        current = self._current_audit_data() if hasattr(
+                            self, '_current_audit_data') else {"data": {}}
+                        v = self._infer_verdict(
+                            current.get(
+                                "data", {})) if hasattr(
+                            self, '_infer_verdict') else "operational"
                         v = normalize_verdict(v)
-                        
+
                         verdict_data = {
                             'timestamp': utc_iso(),
                             'seq': seq,
                             'verdict': v,
                             'system_health': verdict_color(v),
-                            'active_tasks': len(self.task_queue.get_recent_tasks(10)) if hasattr(self, 'task_queue') else 0,
-                            'uptime': uptime_seconds()
-                        }
-                        
+                            'active_tasks': len(
+                                self.task_queue.get_recent_tasks(10)) if hasattr(
+                                self,
+                                'task_queue') else 0,
+                            'uptime': uptime_seconds()}
+
                         seq += 1
                         # Format as SSE event
                         yield f"data: {json.dumps(verdict_data, ensure_ascii=False)}\n\n"
-                        
+
                         # Wait before next update
                         time.sleep(2)
-                        
+
                 except GeneratorExit:
                     self.logger.info("SSE verdict stream client disconnected")
                 except Exception as e:
                     self.logger.error(f"Error in verdict stream: {e}")
                     yield f"data: {{\"error\": \"{str(e)}\"}}\n\n"
-            
+
             return Response(
                 generate_verdict_events(),
                 mimetype='text/event-stream',
@@ -3322,10 +3554,14 @@ Thank you for watching!"""
         def audit_verdict():
             """One-shot verdict endpoint."""
             try:
-                current = self._current_audit_data() if hasattr(self, '_current_audit_data') else {"data": {}}
-                v = self._infer_verdict(current.get("data", {})) if hasattr(self, '_infer_verdict') else "operational"
+                current = self._current_audit_data() if hasattr(
+                    self, '_current_audit_data') else {"data": {}}
+                v = self._infer_verdict(
+                    current.get(
+                        "data", {})) if hasattr(
+                    self, '_infer_verdict') else "operational"
                 v = normalize_verdict(v)
-                
+
                 return jsonify({
                     'timestamp': utc_iso(),
                     'verdict': v,
@@ -3343,12 +3579,12 @@ Thank you for watching!"""
             try:
                 import hashlib
                 import difflib
-                
+
                 # Get evidence files from the evidence directory
                 evidence_dir = Path('evidence')
                 if not evidence_dir.exists():
                     evidence_dir.mkdir(exist_ok=True)
-                
+
                 evidence_files = list(evidence_dir.glob('*.json'))
                 if len(evidence_files) < 2:
                     return jsonify({
@@ -3356,18 +3592,18 @@ Thank you for watching!"""
                         'message': 'Need at least 2 evidence files for diff',
                         'files_found': len(evidence_files)
                     })
-                
+
                 # Sort by modification time, get latest two
                 evidence_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
                 latest_file = evidence_files[0]
                 previous_file = evidence_files[1]
-                
+
                 # Read file contents
                 with open(latest_file, 'r') as f:
                     latest_content = f.read()
                 with open(previous_file, 'r') as f:
                     previous_content = f.read()
-                
+
                 # Generate unified diff
                 diff_lines = list(difflib.unified_diff(
                     previous_content.splitlines(keepends=True),
@@ -3376,13 +3612,13 @@ Thank you for watching!"""
                     tofile=f'latest/{latest_file.name}',
                     n=3
                 ))
-                
+
                 unified_diff = ''.join(diff_lines)
-                
+
                 # Compute pair hash (SHA256 of both files combined)
                 combined_content = previous_content + latest_content
                 pair_hash = hashlib.sha256(combined_content.encode()).hexdigest()
-                
+
                 # UPR Notarize: Create notarization record
                 notarization_record = {
                     'timestamp': datetime.now(timezone.utc).isoformat(),
@@ -3400,15 +3636,16 @@ Thank you for watching!"""
                     'diff_lines': len(diff_lines),
                     'changes_detected': len(diff_lines) > 0
                 }
-                
+
                 # Store notarization record
                 notary_dir = Path('notary')
                 notary_dir.mkdir(exist_ok=True)
-                notary_file = notary_dir / f'evidence_diff_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
-                
+                notary_file = notary_dir / \
+                    f'evidence_diff_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+
                 with open(notary_file, 'w') as f:
                     json.dump(notarization_record, f, indent=2)
-                
+
                 return jsonify({
                     'status': 'success',
                     'pair_hash': pair_hash,
@@ -3420,13 +3657,13 @@ Thank you for watching!"""
                         'latest': str(latest_file)
                     }
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Evidence diff generation failed: {e}")
                 return jsonify({
-                     'status': 'error',
-                     'error': str(e)
-                 }), 500
+                    'status': 'error',
+                    'error': str(e)
+                }), 500
 
         @self.app.route('/api/audit/upr-bundle', methods=['POST'])
         def generate_upr_bundle():
@@ -3436,39 +3673,41 @@ Thank you for watching!"""
                 import tempfile
                 import shutil
                 from io import BytesIO
-                
+
                 # Create temporary directory for bundle preparation
                 with tempfile.TemporaryDirectory() as temp_dir:
                     bundle_dir = Path(temp_dir) / 'upr_evidence_bundle'
                     bundle_dir.mkdir()
-                    
+
                     # Copy all evidence files
                     evidence_dir = Path('evidence')
                     if evidence_dir.exists():
                         evidence_bundle_dir = bundle_dir / 'evidence'
                         shutil.copytree(evidence_dir, evidence_bundle_dir)
-                    
+
                     # Copy all notary files
                     notary_dir = Path('notary')
                     if notary_dir.exists():
                         notary_bundle_dir = bundle_dir / 'notary'
                         shutil.copytree(notary_dir, notary_bundle_dir)
-                    
+
                     # Generate fresh evidence diff if possible
                     diff_data = None
                     try:
                         # Call internal evidence diff logic
-                        evidence_files = list(evidence_dir.glob('*.json')) if evidence_dir.exists() else []
+                        evidence_files = list(
+                            evidence_dir.glob('*.json')) if evidence_dir.exists() else []
                         if len(evidence_files) >= 2:
-                            evidence_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+                            evidence_files.sort(
+                                key=lambda f: f.stat().st_mtime, reverse=True)
                             latest_file = evidence_files[0]
                             previous_file = evidence_files[1]
-                            
+
                             with open(latest_file, 'r') as f:
                                 latest_content = f.read()
                             with open(previous_file, 'r') as f:
                                 previous_content = f.read()
-                            
+
                             import difflib
                             diff_lines = list(difflib.unified_diff(
                                 previous_content.splitlines(keepends=True),
@@ -3477,21 +3716,23 @@ Thank you for watching!"""
                                 tofile=f'latest/{latest_file.name}',
                                 n=3
                             ))
-                            
+
                             unified_diff = ''.join(diff_lines)
-                            
+
                             # Save diff to bundle
                             diff_file = bundle_dir / 'evidence_diff.txt'
                             with open(diff_file, 'w') as f:
                                 f.write(unified_diff)
-                            
+
                             diff_data = {
-                                'files_compared': [str(previous_file), str(latest_file)],
-                                'diff_lines': len(diff_lines)
-                            }
+                                'files_compared': [
+                                    str(previous_file),
+                                    str(latest_file)],
+                                'diff_lines': len(diff_lines)}
                     except Exception as diff_error:
-                        self.logger.warning(f"Could not generate diff for bundle: {diff_error}")
-                    
+                        self.logger.warning(
+                            f"Could not generate diff for bundle: {diff_error}")
+
                     # Generate manifest
                     manifest = {
                         'bundle_type': 'UPR_Evidence_Bundle',
@@ -3504,7 +3745,7 @@ Thank you for watching!"""
                         },
                         'checksums': {}
                     }
-                    
+
                     # Calculate checksums for all files
                     import hashlib
                     for root, dirs, files in os.walk(bundle_dir):
@@ -3513,24 +3754,26 @@ Thank you for watching!"""
                                 continue
                             file_path = Path(root) / file
                             rel_path = file_path.relative_to(bundle_dir)
-                            
+
                             with open(file_path, 'rb') as f:
                                 file_hash = hashlib.sha256(f.read()).hexdigest()
                             manifest['checksums'][str(rel_path)] = file_hash
-                            
+
                             if rel_path.parts[0] == 'evidence':
-                                manifest['contents']['evidence_files'].append(str(rel_path))
+                                manifest['contents']['evidence_files'].append(
+                                    str(rel_path))
                             elif rel_path.parts[0] == 'notary':
-                                manifest['contents']['notary_files'].append(str(rel_path))
-                    
+                                manifest['contents']['notary_files'].append(
+                                    str(rel_path))
+
                     if diff_data:
                         manifest['diff_summary'] = diff_data
-                    
+
                     # Save manifest
                     manifest_file = bundle_dir / 'manifest.json'
                     with open(manifest_file, 'w') as f:
                         json.dump(manifest, f, indent=2)
-                    
+
                     # Create ZIP file in memory
                     zip_buffer = BytesIO()
                     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
@@ -3539,13 +3782,13 @@ Thank you for watching!"""
                                 file_path = Path(root) / file
                                 arc_name = file_path.relative_to(bundle_dir)
                                 zip_file.write(file_path, arc_name)
-                    
+
                     zip_buffer.seek(0)
-                    
+
                     # Generate filename with timestamp
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     filename = f'upr_evidence_bundle_{timestamp}.zip'
-                    
+
                     return Response(
                         zip_buffer.getvalue(),
                         mimetype='application/zip',
@@ -3554,22 +3797,20 @@ Thank you for watching!"""
                             'Content-Type': 'application/zip'
                         }
                     )
-                    
+
             except Exception as e:
                 self.logger.error(f"UPR bundle generation failed: {e}")
                 return jsonify({
-                     'status': 'error',
-                     'error': str(e)
-                 }), 500
-
-
+                    'status': 'error',
+                    'error': str(e)
+                }), 500
 
         @self.app.route('/api/metrics', methods=['GET'])
         def prometheus_metrics_fixed():
             """Prometheus-compatible metrics endpoint for verdict counters and events."""
             try:
                 metrics_lines = []
-                
+
                 # Add metric metadata
                 metrics_lines.extend([
                     '# HELP verdict_total Total number of verdicts by type',
@@ -3581,26 +3822,28 @@ Thank you for watching!"""
                     '# HELP active_connections Current number of active SSE connections',
                     '# TYPE active_connections gauge'
                 ])
-                
-                # Mock verdict counters (in production, these would come from actual metrics store)
+
+                # Mock verdict counters (in production, these would come from actual
+                # metrics store)
                 verdict_types = ['pass', 'fail', 'warning', 'info']
                 for verdict_type in verdict_types:
                     # Simulate some counter values
                     count = hash(verdict_type) % 100  # Mock data
-                    metrics_lines.append(f'verdict_total{{type="{verdict_type}"}} {count}')
-                
+                    metrics_lines.append(
+                        f'verdict_total{{type="{verdict_type}"}} {count}')
+
                 # Add event counters
                 metrics_lines.append('verdict_events_total 42')  # Mock data
-                
+
                 # Add system metrics
                 import time
                 uptime = int(time.time() - getattr(self, '_start_time', time.time()))
                 metrics_lines.append(f'system_uptime_seconds {uptime}')
-                
+
                 # Add connection metrics (mock for now)
                 active_connections = getattr(self, '_active_sse_connections', 0)
                 metrics_lines.append(f'active_connections {active_connections}')
-                
+
                 # Add file-based metrics
                 metrics_lines.extend([
                     '# HELP evidence_files_total Total number of evidence files',
@@ -3608,19 +3851,21 @@ Thank you for watching!"""
                     '# HELP notary_records_total Total number of notary records',
                     '# TYPE notary_records_total gauge'
                 ])
-                
+
                 # Count actual files if directories exist
                 evidence_dir = Path('evidence')
-                evidence_count = len(list(evidence_dir.glob('*.json'))) if evidence_dir.exists() else 0
+                evidence_count = len(list(evidence_dir.glob('*.json'))
+                                     ) if evidence_dir.exists() else 0
                 metrics_lines.append(f'evidence_files_total {evidence_count}')
-                
+
                 notary_dir = Path('notary')
-                notary_count = len(list(notary_dir.glob('*.json'))) if notary_dir.exists() else 0
+                notary_count = len(list(notary_dir.glob('*.json'))
+                                   ) if notary_dir.exists() else 0
                 metrics_lines.append(f'notary_records_total {notary_count}')
-                
+
                 # Join all metrics with newlines
                 metrics_output = '\n'.join(metrics_lines) + '\n'
-                
+
                 return Response(
                     metrics_output,
                     mimetype='text/plain; version=0.0.4; charset=utf-8',
@@ -3630,13 +3875,13 @@ Thank you for watching!"""
                         'Expires': '0'
                     }
                 )
-                
+
             except Exception as e:
                 self.logger.error(f"Metrics generation failed: {e}")
                 return Response(
-                     f'# Error generating metrics: {str(e)}\n',
-                     mimetype='text/plain',
-                     status=500
+                    f'# Error generating metrics: {str(e)}\n',
+                    mimetype='text/plain',
+                    status=500
                 )
 
         @self.app.route('/health/liveness', methods=['GET'])
@@ -3666,7 +3911,7 @@ Thank you for watching!"""
                     'filesystem': True,  # Mock - would check file system access
                     'dependencies': True  # Mock - would check external dependencies
                 }
-                
+
                 # Perform actual readiness checks
                 try:
                     # Check if we can create directories (filesystem access)
@@ -3676,7 +3921,7 @@ Thank you for watching!"""
                     checks['filesystem'] = True
                 except Exception:
                     checks['filesystem'] = False
-                
+
                 # Check if evidence directory is accessible
                 try:
                     evidence_dir = Path('evidence')
@@ -3684,11 +3929,11 @@ Thank you for watching!"""
                     checks['evidence_dir'] = True
                 except Exception:
                     checks['evidence_dir'] = False
-                
+
                 # Overall readiness status
                 all_ready = all(checks.values())
                 status_code = 200 if all_ready else 503
-                
+
                 return jsonify({
                     'status': 'ready' if all_ready else 'not_ready',
                     'timestamp': datetime.now(timezone.utc).isoformat(),
@@ -3696,7 +3941,7 @@ Thank you for watching!"""
                     'checks': checks,
                     'version': '1.0'
                 }), status_code
-                
+
             except Exception as e:
                 return jsonify({
                     'status': 'error',
@@ -3711,20 +3956,20 @@ Thank you for watching!"""
                 # Get both liveness and readiness status
                 liveness_response = liveness_check()
                 readiness_response = readiness_check()
-                
+
                 liveness_data = liveness_response[0].get_json()
                 readiness_data = readiness_response[0].get_json()
-                
+
                 return jsonify({
-                    'status': 'healthy' if (liveness_data.get('status') == 'alive' and 
-                                          readiness_data.get('status') == 'ready') else 'unhealthy',
+                    'status': 'healthy' if (liveness_data.get('status') == 'alive'
+                                            and readiness_data.get('status') == 'ready') else 'unhealthy',
                     'timestamp': datetime.now(timezone.utc).isoformat(),
                     'service': 'dashboard',
                     'liveness': liveness_data,
                     'readiness': readiness_data,
                     'version': '1.0'
                 }), 200
-                
+
             except Exception as e:
                 return jsonify({
                     'status': 'error',
@@ -3737,13 +3982,19 @@ Thank you for watching!"""
         def config_page():
             """Configuration dashboard page."""
             return render_template('config.html')
-        
+
         # Audience Management Routes
         @self.app.route('/audience')
         def audience_page():
             """Audience management dashboard page."""
             return render_template('audience.html')
-        
+
+        # API Discovery Routes
+        @self.app.route('/api-discovery')
+        def api_discovery_page():
+            """API discovery and management page."""
+            return render_template('api_discovery.html')
+
         @self.app.route('/api/audience/stats', methods=['GET'])
         def get_audience_stats():
             """Get audience overview statistics."""
@@ -3758,40 +4009,42 @@ Thank you for watching!"""
                         'engagement_rate': 0,
                         'active_campaigns': 0
                     })
-                
+
                 with sqlite3.connect(db_path) as conn:
                     cursor = conn.cursor()
-                    
+
                     # Get total contacts
                     cursor.execute("SELECT COUNT(*) FROM contacts")
                     total_contacts = cursor.fetchone()[0]
-                    
+
                     # Get active contacts
-                    cursor.execute("SELECT COUNT(*) FROM contacts WHERE status = 'active'")
+                    cursor.execute(
+                        "SELECT COUNT(*) FROM contacts WHERE status = 'active'")
                     active_contacts = cursor.fetchone()[0]
-                    
+
                     # Get email events from last 30 days
                     cursor.execute("""
-                        SELECT 
+                        SELECT
                             SUM(CASE WHEN event_type = 'email_open' THEN 1 ELSE 0 END) as opens,
                             SUM(CASE WHEN event_type = 'link_click' THEN 1 ELSE 0 END) as clicks
-                        FROM contact_events 
+                        FROM contact_events
                         WHERE timestamp >= datetime('now', '-30 days')
                     """)
                     events = cursor.fetchone()
                     email_opens = events[0] or 0
                     link_clicks = events[1] or 0
-                    
+
                     # Calculate engagement rate
                     engagement_rate = 0
                     if total_contacts > 0:
                         engaged_contacts = cursor.execute("""
-                            SELECT COUNT(DISTINCT contact_id) 
-                            FROM contact_events 
+                            SELECT COUNT(DISTINCT contact_id)
+                            FROM contact_events
                             WHERE timestamp >= datetime('now', '-30 days')
                         """).fetchone()[0]
-                        engagement_rate = round((engaged_contacts / total_contacts) * 100, 1)
-                    
+                        engagement_rate = round(
+                            (engaged_contacts / total_contacts) * 100, 1)
+
                     return jsonify({
                         'total_contacts': total_contacts,
                         'active_contacts': active_contacts,
@@ -3800,11 +4053,11 @@ Thank you for watching!"""
                         'engagement_rate': engagement_rate,
                         'active_campaigns': cursor.execute("SELECT COUNT(*) FROM email_campaigns WHERE status = 'sent'").fetchone()[0]
                     })
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to get audience stats: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/contacts', methods=['GET'])
         def get_contacts():
             """Get contacts list."""
@@ -3812,38 +4065,38 @@ Thank you for watching!"""
                 db_path = Path(self.config.intelligence_db_path)
                 if not db_path.exists():
                     return jsonify({'contacts': []})
-                
+
                 with sqlite3.connect(db_path) as conn:
                     cursor = conn.cursor()
-                    
+
                     cursor.execute("""
-                        SELECT 
-                            id, COALESCE(first_name || ' ' || last_name, first_name, last_name, 'N/A') as name, 
+                        SELECT
+                            id, COALESCE(first_name || ' ' || last_name, first_name, last_name, 'N/A') as name,
                             email, phone, status, tags, notes,
                             created_at, updated_at
-                        FROM contacts 
+                        FROM contacts
                         ORDER BY created_at DESC
                     """)
-                    
+
                     contacts = []
                     for row in cursor.fetchall():
                         # Get last activity for this contact
                         cursor.execute("""
-                            SELECT MAX(created_at) 
-                            FROM contact_events 
+                            SELECT MAX(created_at)
+                            FROM contact_events
                             WHERE contact_id = ?
                         """, (row[0],))
                         last_activity = cursor.fetchone()[0]
-                        
+
                         # Calculate engagement score (simplified)
                         cursor.execute("""
-                            SELECT COUNT(*) 
-                            FROM contact_events 
+                            SELECT COUNT(*)
+                            FROM contact_events
                             WHERE contact_id = ? AND created_at >= datetime('now', '-30 days')
                         """, (row[0],))
                         recent_events = cursor.fetchone()[0]
                         engagement_score = min(recent_events * 10, 100)  # Cap at 100%
-                        
+
                         contacts.append({
                             'id': row[0],
                             'name': row[1],
@@ -3857,13 +4110,13 @@ Thank you for watching!"""
                             'last_activity': last_activity,
                             'engagement_score': engagement_score
                         })
-                    
+
                     return jsonify({'contacts': contacts})
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to get contacts: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/contacts', methods=['POST'])
         def add_contact():
             """Add a new contact."""
@@ -3871,16 +4124,18 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data or not data.get('email'):
                     return jsonify({'error': 'Email is required'}), 400
-                
+
                 db_path = Path(self.config.intelligence_db_path)
                 with sqlite3.connect(db_path) as conn:
                     cursor = conn.cursor()
-                    
+
                     # Check if contact already exists
-                    cursor.execute("SELECT id FROM contacts WHERE email = ?", (data['email'],))
+                    cursor.execute(
+                        "SELECT id FROM contacts WHERE email = ?", (data['email'],))
                     if cursor.fetchone():
-                        return jsonify({'error': 'Contact with this email already exists'}), 400
-                    
+                        return jsonify(
+                            {'error': 'Contact with this email already exists'}), 400
+
                     # Insert new contact
                     cursor.execute("""
                         INSERT INTO contacts (name, email, phone, status, tags, notes, created_at, updated_at)
@@ -3893,23 +4148,23 @@ Thank you for watching!"""
                         data.get('tags', ''),
                         data.get('notes', '')
                     ))
-                    
+
                     contact_id = cursor.lastrowid
-                    
+
                     # Log contact creation event
                     cursor.execute("""
                         INSERT INTO contact_events (contact_id, event_type, event_data, created_at)
                         VALUES (?, 'contact_created', '{}', datetime('now'))
                     """, (contact_id,))
-                    
+
                     conn.commit()
-                    
+
                     return jsonify({'success': True, 'contact_id': contact_id})
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to add contact: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/campaigns', methods=['GET'])
         def get_campaigns():
             """Get email campaigns list."""
@@ -3917,26 +4172,26 @@ Thank you for watching!"""
                 db_path = Path(self.config.intelligence_db_path)
                 if not db_path.exists():
                     return jsonify({'campaigns': []})
-                
+
                 with sqlite3.connect(db_path) as conn:
                     cursor = conn.cursor()
-                    
+
                     cursor.execute("""
-                        SELECT 
+                        SELECT
                             id, campaign_id, name, subject, status, campaign_type,
                             total_recipients, delivered_count, opened_count, clicked_count,
                             unsubscribed_count, bounced_count, scheduled_at, sent_at,
                             created_at, updated_at, tags
-                        FROM email_campaigns 
+                        FROM email_campaigns
                         ORDER BY created_at DESC
                     """)
-                    
+
                     campaigns = []
                     for row in cursor.fetchall():
                         # Calculate engagement metrics
                         open_rate = (row[8] / row[6] * 100) if row[6] > 0 else 0
                         click_rate = (row[9] / row[6] * 100) if row[6] > 0 else 0
-                        
+
                         campaigns.append({
                             'id': row[0],
                             'campaign_id': row[1],
@@ -3958,13 +4213,13 @@ Thank you for watching!"""
                             'open_rate': round(open_rate, 2),
                             'click_rate': round(click_rate, 2)
                         })
-                    
+
                     return jsonify({'campaigns': campaigns})
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to get campaigns: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/campaigns', methods=['POST'])
         def create_campaign():
             """Create a new email campaign."""
@@ -3972,18 +4227,18 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data or not data.get('name'):
                     return jsonify({'error': 'Campaign name is required'}), 400
-                
+
                 if not data.get('subject'):
                     return jsonify({'error': 'Campaign subject is required'}), 400
-                
+
                 db_path = Path(self.config.intelligence_db_path)
                 with sqlite3.connect(db_path) as conn:
                     cursor = conn.cursor()
-                    
+
                     # Generate unique campaign ID
                     import uuid
                     campaign_id = f"campaign_{uuid.uuid4().hex[:8]}"
-                    
+
                     # Insert new campaign
                     cursor.execute("""
                         INSERT INTO email_campaigns (
@@ -4004,19 +4259,19 @@ Thank you for watching!"""
                         json.dumps(data.get('segment_criteria', {})),
                         json.dumps(data.get('tags', []))
                     ))
-                    
+
                     conn.commit()
-                    
+
                     return jsonify({
-                        'success': True, 
+                        'success': True,
                         'campaign_id': campaign_id,
                         'message': 'Campaign created successfully'
                     })
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to create campaign: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/segments', methods=['GET'])
         def get_segments():
             """Get audience segments list."""
@@ -4024,10 +4279,10 @@ Thank you for watching!"""
                 conn = sqlite3.connect(self.config.database_path)
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
-                
+
                 # Get all segments with contact counts
                 cursor.execute("""
-                    SELECT 
+                    SELECT
                         s.*,
                         COUNT(sm.contact_id) as actual_contact_count
                     FROM audience_segments s
@@ -4036,35 +4291,36 @@ Thank you for watching!"""
                     GROUP BY s.id
                     ORDER BY s.created_at DESC
                 """)
-                
+
                 segments = []
                 for row in cursor.fetchall():
                     segment = {
                         'id': row['segment_id'],
                         'name': row['name'],
                         'description': row['description'],
-                        'criteria': json.loads(row['criteria']) if row['criteria'] else {},
+                        'criteria': json.loads(
+                            row['criteria']) if row['criteria'] else {},
                         'contact_count': row['actual_contact_count'],
                         'segment_type': row['segment_type'],
                         'created_at': row['created_at'],
                         'updated_at': row['updated_at'],
-                        'tags': json.loads(row['tags']) if row['tags'] else [],
-                        'status': row['status']
-                    }
+                        'tags': json.loads(
+                            row['tags']) if row['tags'] else [],
+                        'status': row['status']}
                     segments.append(segment)
-                
+
                 conn.close()
-                
+
                 return jsonify({
                     'success': True,
                     'segments': segments,
                     'total_segments': len(segments)
                 })
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to get segments: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/segments', methods=['POST'])
         def create_segment():
             """Create a new audience segment."""
@@ -4072,23 +4328,23 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data or not data.get('name'):
                     return jsonify({'error': 'Segment name is required'}), 400
-                
+
                 # Generate unique segment ID
                 segment_id = f"seg_{secrets.token_hex(8)}"
-                
+
                 # Prepare segment data
                 name = data.get('name')
                 description = data.get('description', '')
                 criteria = data.get('criteria', {})
                 segment_type = data.get('segment_type', 'dynamic')
                 tags = data.get('tags', [])
-                
+
                 conn = sqlite3.connect(self.config.database_path)
                 cursor = conn.cursor()
-                
+
                 # Insert new segment
                 cursor.execute("""
-                    INSERT INTO audience_segments 
+                    INSERT INTO audience_segments
                     (segment_id, name, description, criteria, segment_type, tags, created_by)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """, (
@@ -4100,24 +4356,24 @@ Thank you for watching!"""
                     json.dumps(tags),
                     'dashboard_user'  # In production, use actual user ID
                 ))
-                
+
                 conn.commit()
                 conn.close()
-                
+
                 # If it's a dynamic segment, calculate initial membership
                 if segment_type == 'dynamic' and criteria:
                     self._calculate_segment_membership(segment_id, criteria)
-                
+
                 return jsonify({
-                    'success': True, 
+                    'success': True,
                     'segment_id': segment_id,
                     'message': f'Segment "{name}" created successfully'
                 })
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to create segment: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/audience/analytics', methods=['GET'])
         def get_audience_analytics():
             """Get audience analytics data."""
@@ -4125,47 +4381,48 @@ Thank you for watching!"""
                 conn = sqlite3.connect(self.config.database_path)
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
-                
+
                 # Get engagement trends (last 30 days)
                 cursor.execute("""
-                    SELECT 
+                    SELECT
                         DATE(timestamp) as date,
                         event_type,
                         COUNT(*) as count
-                    FROM contact_events 
+                    FROM contact_events
                     WHERE timestamp >= datetime('now', '-30 days')
                     GROUP BY DATE(timestamp), event_type
                     ORDER BY date DESC
                 """)
-                
+
                 engagement_data = cursor.fetchall()
                 engagement_trends = {}
                 for row in engagement_data:
                     date = row['date']
                     if date not in engagement_trends:
-                        engagement_trends[date] = {'opens': 0, 'clicks': 0, 'conversions': 0}
+                        engagement_trends[date] = {
+                            'opens': 0, 'clicks': 0, 'conversions': 0}
                     engagement_trends[date][row['event_type']] = row['count']
-                
+
                 # Get growth metrics
                 cursor.execute("""
-                    SELECT 
+                    SELECT
                         DATE(subscription_date) as date,
                         COUNT(*) as new_subscribers
-                    FROM contacts 
+                    FROM contacts
                     WHERE subscription_date >= datetime('now', '-30 days')
                     GROUP BY DATE(subscription_date)
                     ORDER BY date DESC
                 """)
-                
+
                 growth_data = cursor.fetchall()
                 growth_metrics = [{
                     'date': row['date'],
                     'new_subscribers': row['new_subscribers']
                 } for row in growth_data]
-                
+
                 # Get campaign performance
                 cursor.execute("""
-                    SELECT 
+                    SELECT
                         c.campaign_id,
                         c.name,
                         c.subject,
@@ -4179,7 +4436,7 @@ Thank you for watching!"""
                     GROUP BY c.campaign_id
                     ORDER BY c.sent_at DESC
                 """)
-                
+
                 campaign_data = cursor.fetchall()
                 campaign_performance = []
                 for row in campaign_data:
@@ -4187,7 +4444,7 @@ Thank you for watching!"""
                     opens = row['opens'] or 0
                     clicks = row['clicks'] or 0
                     conversions = row['conversions'] or 0
-                    
+
                     campaign_performance.append({
                         'campaign_id': row['campaign_id'],
                         'name': row['name'],
@@ -4200,10 +4457,10 @@ Thank you for watching!"""
                         'click_rate': round((clicks / sent_count * 100) if sent_count > 0 else 0, 2),
                         'conversion_rate': round((conversions / sent_count * 100) if sent_count > 0 else 0, 2)
                     })
-                
+
                 # Get segment performance
                 cursor.execute("""
-                    SELECT 
+                    SELECT
                         s.segment_id,
                         s.name,
                         COUNT(sm.contact_id) as member_count,
@@ -4214,7 +4471,7 @@ Thank you for watching!"""
                     WHERE s.status = 'active'
                     GROUP BY s.segment_id
                 """)
-                
+
                 segment_data = cursor.fetchall()
                 segment_performance = [{
                     'segment_id': row['segment_id'],
@@ -4222,9 +4479,9 @@ Thank you for watching!"""
                     'member_count': row['member_count'] or 0,
                     'avg_engagement': round(row['avg_engagement'] or 0, 2)
                 } for row in segment_data]
-                
+
                 conn.close()
-                
+
                 return jsonify({
                     'success': True,
                     'engagement_trends': engagement_trends,
@@ -4238,11 +4495,11 @@ Thank you for watching!"""
                         'avg_click_rate': round(sum(c['click_rate'] for c in campaign_performance) / len(campaign_performance) if campaign_performance else 0, 2)
                     }
                 })
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to get audience analytics: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/config', methods=['GET'])
         def get_config():
             """Get current configuration settings."""
@@ -4298,7 +4555,7 @@ Thank you for watching!"""
                             }
                         }
                     }
-                
+
                 return jsonify({
                     'config': config_data,
                     'timestamp': datetime.now(timezone.utc).isoformat()
@@ -4306,7 +4563,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to get configuration: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/config/update', methods=['POST'])
         def update_config():
             """Update configuration settings."""
@@ -4314,28 +4571,28 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'No configuration data provided'}), 400
-                
+
                 config_path = Path('config/state.json')
-                
+
                 # Ensure config directory exists
                 config_path.parent.mkdir(exist_ok=True)
-                
+
                 # Load existing config or create new one
                 if config_path.exists():
                     with open(config_path, 'r') as f:
                         config_data = json.load(f)
                 else:
                     config_data = {}
-                
+
                 # Update configuration with new data
                 config_data.update(data)
-                
+
                 # Save updated configuration
                 with open(config_path, 'w') as f:
                     json.dump(config_data, f, indent=2)
-                
+
                 self.logger.info(f"Configuration updated: {list(data.keys())}")
-                
+
                 return jsonify({
                     'success': True,
                     'message': 'Configuration updated successfully',
@@ -4344,53 +4601,56 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Failed to update configuration: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/config/toggle', methods=['POST'])
         def update_toggle():
             """Update individual toggle settings."""
             try:
                 data = request.get_json()
                 if not data or 'category' not in data or 'key' not in data or 'enabled' not in data:
-                    return jsonify({'error': 'Missing required fields: category, key, enabled'}), 400
-                
+                    return jsonify(
+                        {'error': 'Missing required fields: category, key, enabled'}), 400
+
                 config_path = Path('config/state.json')
-                
+
                 # Load existing config
                 if config_path.exists():
                     with open(config_path, 'r') as f:
                         config_data = json.load(f)
                 else:
                     return jsonify({'error': 'Configuration file not found'}), 404
-                
+
                 category = data['category']
                 key = data['key']
                 enabled = data['enabled']
-                
+
                 # Update the specific toggle
                 if category in config_data and 'toggles' in config_data[category]:
                     if key in config_data[category]['toggles']:
                         config_data[category]['toggles'][key]['enabled'] = enabled
-                        
+
                         # Save updated configuration
                         with open(config_path, 'w') as f:
                             json.dump(config_data, f, indent=2)
-                        
-                        self.logger.info(f"Toggle updated: {category}.{key} = {enabled}")
-                        
+
+                        self.logger.info(
+                            f"Toggle updated: {category}.{key} = {enabled}")
+
                         return jsonify({
                             'success': True,
                             'message': f'Toggle {category}.{key} updated successfully',
                             'timestamp': datetime.now(timezone.utc).isoformat()
                         })
                     else:
-                        return jsonify({'error': f'Toggle key "{key}" not found in category "{category}"'}), 404
+                        return jsonify(
+                            {'error': f'Toggle key "{key}" not found in category "{category}"'}), 404
                 else:
                     return jsonify({'error': f'Category "{category}" not found'}), 404
-                    
+
             except Exception as e:
                 self.logger.error(f"Failed to update toggle: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         # Automation Layer Control Routes
         @self.app.route('/api/automation/community-engagement', methods=['POST'])
         def toggle_community_engagement():
@@ -4398,7 +4658,7 @@ Thank you for watching!"""
             try:
                 data = request.get_json()
                 enabled = data.get('enabled', False)
-                
+
                 if enabled:
                     # Start community engagement tasks
                     if self.task_manager:
@@ -4406,35 +4666,40 @@ Thank you for watching!"""
                             task_type=TaskType('community_engagement'),
                             payload={
                                 'action': 'start_monitoring',
-                                'platforms': ['youtube', 'reddit', 'twitter'],
-                                'engagement_types': ['comment_analysis', 'response_generation', 'community_participation']
-                            },
+                                'platforms': [
+                                    'youtube',
+                                    'reddit',
+                                    'twitter'],
+                                'engagement_types': [
+                                    'comment_analysis',
+                                    'response_generation',
+                                    'community_participation']},
                             priority=TaskPriority.HIGH,
-                            assigned_agent='community_engagement_agent'
-                        )
-                        self.logger.info(f"Community engagement automation started - Task ID: {task_id}")
+                            assigned_agent='community_engagement_agent')
+                        self.logger.info(
+                            f"Community engagement automation started - Task ID: {task_id}")
                 else:
                     # Stop community engagement tasks
                     self.logger.info("Community engagement automation stopped")
-                
+
                 return jsonify({
                     'success': True,
                     'enabled': enabled,
                     'message': f'Community engagement automation {'enabled' if enabled else 'disabled'}',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to toggle community engagement: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/automation/monetization-services', methods=['POST'])
         def toggle_monetization_services():
             """Toggle Direct Monetization Services automation layer."""
             try:
                 data = request.get_json()
                 enabled = data.get('enabled', False)
-                
+
                 if enabled:
                     # Start monetization services
                     if self.task_manager:
@@ -4448,29 +4713,30 @@ Thank you for watching!"""
                             priority=TaskPriority.HIGH,
                             assigned_agent='monetization_services_agent'
                         )
-                        self.logger.info(f"Monetization services automation started - Task ID: {task_id}")
+                        self.logger.info(
+                            f"Monetization services automation started - Task ID: {task_id}")
                 else:
                     # Stop monetization services
                     self.logger.info("Monetization services automation stopped")
-                
+
                 return jsonify({
                     'success': True,
                     'enabled': enabled,
                     'message': f'Monetization services automation {'enabled' if enabled else 'disabled'}',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to toggle monetization services: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/automation/predictive-analytics', methods=['POST'])
         def toggle_predictive_analytics():
             """Toggle Predictive Analytics Engine automation layer."""
             try:
                 data = request.get_json()
                 enabled = data.get('enabled', False)
-                
+
                 if enabled:
                     # Start predictive analytics
                     if self.task_manager:
@@ -4478,35 +4744,37 @@ Thank you for watching!"""
                             task_type=TaskType('predictive_analytics'),
                             payload={
                                 'action': 'start_prediction_engine',
-                                'features': ['viral_prediction', 'success_scoring', 'content_optimization'],
-                                'model_training': True
-                            },
+                                'features': [
+                                    'viral_prediction',
+                                    'success_scoring',
+                                    'content_optimization'],
+                                'model_training': True},
                             priority=TaskPriority.HIGH,
-                            assigned_agent='predictive_analytics_engine'
-                        )
-                        self.logger.info(f"Predictive analytics automation started - Task ID: {task_id}")
+                            assigned_agent='predictive_analytics_engine')
+                        self.logger.info(
+                            f"Predictive analytics automation started - Task ID: {task_id}")
                 else:
                     # Stop predictive analytics
                     self.logger.info("Predictive analytics automation stopped")
-                
+
                 return jsonify({
                     'success': True,
                     'enabled': enabled,
                     'message': f'Predictive analytics automation {'enabled' if enabled else 'disabled'}',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to toggle predictive analytics: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/automation/collaboration-outreach', methods=['POST'])
         def toggle_collaboration_outreach():
             """Toggle Collaboration Outreach automation layer."""
             try:
                 data = request.get_json()
                 enabled = data.get('enabled', False)
-                
+
                 if enabled:
                     # Start collaboration outreach
                     if self.task_manager:
@@ -4514,28 +4782,34 @@ Thank you for watching!"""
                             task_type=TaskType('collaboration_outreach'),
                             payload={
                                 'action': 'start_outreach_campaigns',
-                                'features': ['creator_discovery', 'partnership_matching', 'automated_outreach'],
-                                'platforms': ['youtube', 'instagram', 'tiktok', 'twitter']
-                            },
+                                'features': [
+                                    'creator_discovery',
+                                    'partnership_matching',
+                                    'automated_outreach'],
+                                'platforms': [
+                                    'youtube',
+                                    'instagram',
+                                    'tiktok',
+                                    'twitter']},
                             priority=TaskPriority.HIGH,
-                            assigned_agent='collaboration_outreach_agent'
-                        )
-                        self.logger.info(f"Collaboration outreach automation started - Task ID: {task_id}")
+                            assigned_agent='collaboration_outreach_agent')
+                        self.logger.info(
+                            f"Collaboration outreach automation started - Task ID: {task_id}")
                 else:
                     # Stop collaboration outreach
                     self.logger.info("Collaboration outreach automation stopped")
-                
+
                 return jsonify({
                     'success': True,
                     'enabled': enabled,
                     'message': f'Collaboration outreach automation {'enabled' if enabled else 'disabled'}',
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to toggle collaboration outreach: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/automation/status', methods=['GET'])
         def get_automation_status():
             """Get status of all automation layers."""
@@ -4547,11 +4821,11 @@ Thank you for watching!"""
                     'predictive_analytics': False,
                     'collaboration_outreach': False
                 }
-                
+
                 if config_path.exists():
                     with open(config_path, 'r') as f:
                         config_data = json.load(f)
-                    
+
                     if 'autonomous_directives' in config_data.get('toggles', {}):
                         directives = config_data['toggles']['autonomous_directives']
                         automation_status.update({
@@ -4560,43 +4834,46 @@ Thank you for watching!"""
                             'predictive_analytics': directives.get('predictive_analytics_enabled', False),
                             'collaboration_outreach': directives.get('collaboration_outreach_enabled', False)
                         })
-                
+
                 return jsonify({
                     'success': True,
                     'automation_layers': automation_status,
                     'timestamp': datetime.now(timezone.utc).isoformat()
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to get automation status: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/monetization/create_order', methods=['POST'])
         def create_monetization_order():
             """Create a new monetization service order."""
             try:
                 if not TRAE_AI_AVAILABLE:
-                    return jsonify({'status': 'error', 'message': 'TRAE.AI components not available'}), 503
-                
+                    return jsonify(
+                        {'status': 'error', 'message': 'TRAE.AI components not available'}), 503
+
                 data = request.get_json()
                 if not data:
-                    return jsonify({'status': 'error', 'message': 'No data provided'}), 400
-                
+                    return jsonify(
+                        {'status': 'error', 'message': 'No data provided'}), 400
+
                 required_fields = ['package_id', 'client_email', 'requirements']
                 for field in required_fields:
                     if field not in data:
-                        return jsonify({'status': 'error', 'message': f'Missing required field: {field}'}), 400
-                
+                        return jsonify(
+                            {'status': 'error', 'message': f'Missing required field: {field}'}), 400
+
                 # Import and initialize monetization services agent
                 from backend.agents.monetization_services_agent import MonetizationServicesAgent
-                
+
                 agent = MonetizationServicesAgent()
                 result = agent.create_order(
                     package_id=data['package_id'],
                     client_email=data['client_email'],
                     requirements=data['requirements']
                 )
-                
+
                 if result['status'] == 'success':
                     return jsonify({
                         'status': 'success',
@@ -4605,29 +4882,32 @@ Thank you for watching!"""
                         'price': result['price']
                     })
                 else:
-                    return jsonify({'status': 'error', 'message': result['message']}), 400
-                    
+                    return jsonify(
+                        {'status': 'error', 'message': result['message']}), 400
+
             except Exception as e:
                 self.logger.error(f"Failed to create monetization order: {e}")
                 return jsonify({'status': 'error', 'message': str(e)}), 500
-        
+
         @self.app.route('/api/monetization/order_status', methods=['GET'])
         def get_order_status():
             """Get the status of a monetization service order."""
             try:
                 if not TRAE_AI_AVAILABLE:
-                    return jsonify({'status': 'error', 'message': 'TRAE.AI components not available'}), 503
-                
+                    return jsonify(
+                        {'status': 'error', 'message': 'TRAE.AI components not available'}), 503
+
                 order_id = request.args.get('order_id')
                 if not order_id:
-                    return jsonify({'status': 'error', 'message': 'Order ID is required'}), 400
-                
+                    return jsonify(
+                        {'status': 'error', 'message': 'Order ID is required'}), 400
+
                 # Import and initialize monetization services agent
                 from backend.agents.monetization_services_agent import MonetizationServicesAgent
-                
+
                 agent = MonetizationServicesAgent()
                 result = agent.get_order_status(order_id)
-                
+
                 if result['status'] == 'found':
                     return jsonify({
                         'status': 'found',
@@ -4636,17 +4916,18 @@ Thank you for watching!"""
                 elif result['status'] == 'not_found':
                     return jsonify({'status': 'not_found'})
                 else:
-                    return jsonify({'status': 'error', 'message': result['message']}), 500
-                    
+                    return jsonify(
+                        {'status': 'error', 'message': result['message']}), 500
+
             except Exception as e:
                 self.logger.error(f"Failed to get order status: {e}")
                 return jsonify({'status': 'error', 'message': str(e)}), 500
-        
+
         @self.app.route('/monetization-services')
         def monetization_services_page():
             """Serve the monetization services page."""
             return render_template('monetization_services.html')
-        
+
         # Performance Analytics Routes
         @self.app.route('/api/performance-analytics/dashboard', methods=['GET'])
         def get_performance_analytics_dashboard():
@@ -4654,19 +4935,19 @@ Thank you for watching!"""
             try:
                 # Import performance analytics agent
                 from backend.agents.performance_analytics_agent import PerformanceAnalyticsAgent
-                
+
                 # Initialize performance analytics agent
                 analytics_agent = PerformanceAnalyticsAgent()
-                
+
                 # Get dashboard data
                 dashboard_data = analytics_agent.get_dashboard_data()
-                
+
                 return jsonify(dashboard_data)
-                
+
             except Exception as e:
                 self.logger.error(f"Error getting performance analytics dashboard: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/performance-analytics/predict', methods=['POST'])
         def predict_content_performance():
             """Predict content performance based on features."""
@@ -4674,13 +4955,13 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'No data provided'}), 400
-                
+
                 # Import performance analytics agent
                 from backend.agents.performance_analytics_agent import PerformanceAnalyticsAgent
-                
+
                 # Initialize performance analytics agent
                 analytics_agent = PerformanceAnalyticsAgent()
-                
+
                 # Create content features from request data
                 content_features = {
                     'title': data.get('title', ''),
@@ -4689,21 +4970,22 @@ Thank you for watching!"""
                     'tags': data.get('tags', []),
                     'upload_date': data.get('upload_date')
                 }
-                
+
                 # Predict performance
-                prediction = analytics_agent.predict_content_performance(content_features)
-                
+                prediction = analytics_agent.predict_content_performance(
+                    content_features)
+
                 return jsonify(prediction.__dict__)
-                
+
             except Exception as e:
                 self.logger.error(f"Error predicting content performance: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/performance-analytics')
         def performance_analytics_page():
             """Serve the performance analytics page."""
             return render_template('performance_analytics.html')
-        
+
         # Collaboration Outreach Routes
         @self.app.route('/api/collaboration-outreach/dashboard', methods=['GET'])
         def collaboration_outreach_dashboard():
@@ -4714,7 +4996,8 @@ Thank you for watching!"""
                 dashboard_data = agent.get_dashboard_data()
                 return jsonify(dashboard_data)
             except Exception as e:
-                self.logger.error(f"Error getting collaboration outreach dashboard: {e}")
+                self.logger.error(
+                    f"Error getting collaboration outreach dashboard: {e}")
                 return jsonify({'error': str(e)}), 500
 
         @self.app.route('/api/collaboration-outreach/discover', methods=['GET'])
@@ -4723,15 +5006,15 @@ Thank you for watching!"""
             try:
                 from collaboration_outreach_agent import CollaborationOutreachAgent
                 agent = CollaborationOutreachAgent()
-                
+
                 # Get query parameters
                 niche = request.args.get('niche', '')
                 platform = request.args.get('platform', '')
                 min_followers = int(request.args.get('min_followers', 1000))
-                
+
                 if not niche:
                     return jsonify({'error': 'Niche parameter is required'}), 400
-                
+
                 creators = agent.discover_creators(niche, platform, min_followers)
                 return jsonify(creators)
             except Exception as e:
@@ -4744,11 +5027,11 @@ Thank you for watching!"""
             try:
                 from collaboration_outreach_agent import CollaborationOutreachAgent
                 agent = CollaborationOutreachAgent()
-                
+
                 creator_id = request.args.get('creator_id')
                 if not creator_id:
                     return jsonify({'error': 'Creator ID is required'}), 400
-                
+
                 opportunities = agent.analyze_opportunities(creator_id)
                 return jsonify(opportunities)
             except Exception as e:
@@ -4761,13 +5044,13 @@ Thank you for watching!"""
             try:
                 from collaboration_outreach_agent import CollaborationOutreachAgent
                 agent = CollaborationOutreachAgent()
-                
+
                 data = request.get_json()
                 campaign_id = data.get('campaign_id')
-                
+
                 if not campaign_id:
                     return jsonify({'error': 'Campaign ID is required'}), 400
-                
+
                 result = agent.send_campaign(campaign_id)
                 return jsonify(result)
             except Exception as e:
@@ -4778,7 +5061,7 @@ Thank you for watching!"""
         def collaboration_outreach_page():
             """Serve the collaboration outreach page."""
             return render_template('collaboration_outreach.html')
-        
+
         # Content Evolution Routes
         @self.app.route('/api/content-evolution/dashboard', methods=['GET'])
         def content_evolution_dashboard():
@@ -4791,61 +5074,62 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Error getting content evolution dashboard: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/content-evolution/trends', methods=['GET'])
         def get_format_trends():
             """Get current content format trends."""
             try:
                 from backend.agents.content_evolution_agent import ContentFormatEvolutionAgent
                 agent = ContentFormatEvolutionAgent(self.config)
-                
+
                 platform = request.args.get('platform', '')
                 format_type = request.args.get('format_type', '')
-                
+
                 trends = agent.analyze_format_trends(platform, format_type)
                 return jsonify(trends)
             except Exception as e:
                 self.logger.error(f"Error getting format trends: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/content-evolution/adapt', methods=['POST'])
         def adapt_content_format():
             """Adapt content to new format based on trends."""
             try:
                 from backend.agents.content_evolution_agent import ContentFormatEvolutionAgent
                 agent = ContentFormatEvolutionAgent(self.config)
-                
+
                 data = request.get_json()
                 content_id = data.get('content_id')
                 target_format = data.get('target_format')
-                
+
                 if not content_id or not target_format:
-                    return jsonify({'error': 'Content ID and target format are required'}), 400
-                
+                    return jsonify(
+                        {'error': 'Content ID and target format are required'}), 400
+
                 adaptation = agent.adapt_content_format(content_id, target_format)
                 return jsonify(adaptation)
             except Exception as e:
                 self.logger.error(f"Error adapting content format: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/content-evolution/experiments', methods=['GET'])
         def get_format_experiments():
             """Get active format experiments."""
             try:
                 from backend.agents.content_evolution_agent import ContentFormatEvolutionAgent
                 agent = ContentFormatEvolutionAgent(self.config)
-                
+
                 experiments = agent.get_active_experiments()
                 return jsonify(experiments)
             except Exception as e:
                 self.logger.error(f"Error getting format experiments: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/content-evolution')
         def content_evolution_page():
             """Serve the content evolution page."""
             return render_template('content_evolution.html')
-        
+
         # Niche Domination Routes
         @self.app.route('/api/niche-domination/dashboard', methods=['GET'])
         def niche_domination_dashboard():
@@ -4858,61 +5142,62 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Error getting niche domination dashboard: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/niche-domination/metrics', methods=['GET'])
         def get_growth_metrics():
             """Get current growth metrics and expansion opportunities."""
             try:
                 from backend.agents.niche_domination_agent import ProactiveNicheDominationAgent
                 agent = ProactiveNicheDominationAgent(self.config)
-                
+
                 channel_type = request.args.get('channel_type', '')
                 timeframe = request.args.get('timeframe', '30d')
-                
+
                 metrics = agent.analyze_growth_metrics(channel_type, timeframe)
                 return jsonify(metrics)
             except Exception as e:
                 self.logger.error(f"Error getting growth metrics: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/niche-domination/expand', methods=['POST'])
         def initiate_niche_expansion():
             """Initiate expansion into new niche or channel."""
             try:
                 from backend.agents.niche_domination_agent import ProactiveNicheDominationAgent
                 agent = ProactiveNicheDominationAgent(self.config)
-                
+
                 data = request.get_json()
                 target_niche = data.get('target_niche')
                 expansion_strategy = data.get('expansion_strategy')
-                
+
                 if not target_niche or not expansion_strategy:
-                    return jsonify({'error': 'Target niche and expansion strategy are required'}), 400
-                
+                    return jsonify(
+                        {'error': 'Target niche and expansion strategy are required'}), 400
+
                 expansion = agent.initiate_expansion(target_niche, expansion_strategy)
                 return jsonify(expansion)
             except Exception as e:
                 self.logger.error(f"Error initiating niche expansion: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/niche-domination/opportunities', methods=['GET'])
         def get_expansion_opportunities():
             """Get identified expansion opportunities."""
             try:
                 from backend.agents.niche_domination_agent import ProactiveNicheDominationAgent
                 agent = ProactiveNicheDominationAgent(self.config)
-                
+
                 opportunities = agent.get_expansion_opportunities()
                 return jsonify(opportunities)
             except Exception as e:
                 self.logger.error(f"Error getting expansion opportunities: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/niche-domination')
         def niche_domination_page():
             """Serve the niche domination page."""
             return render_template('niche_domination.html')
-        
+
         # Financial Management Routes
         @self.app.route('/api/financial-management/dashboard', methods=['GET'])
         def financial_management_dashboard():
@@ -4925,73 +5210,74 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Error getting financial management dashboard: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/financial-management/analysis', methods=['GET'])
         def get_financial_analysis():
             """Get comprehensive financial analysis and ROI metrics."""
             try:
                 from backend.agents.financial_management_agent import AutonomousFinancialAgent
                 agent = AutonomousFinancialAgent(self.config)
-                
+
                 timeframe = request.args.get('timeframe', '30d')
                 analysis_type = request.args.get('analysis_type', 'comprehensive')
-                
+
                 analysis = agent.analyze_financial_performance(timeframe, analysis_type)
                 return jsonify(analysis)
             except Exception as e:
                 self.logger.error(f"Error getting financial analysis: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/financial-management/allocate', methods=['POST'])
         def optimize_resource_allocation():
             """Optimize resource allocation based on ROI analysis."""
             try:
                 from backend.agents.financial_management_agent import AutonomousFinancialAgent
                 agent = AutonomousFinancialAgent(self.config)
-                
+
                 data = request.get_json()
                 allocation_strategy = data.get('allocation_strategy')
                 budget_constraints = data.get('budget_constraints', {})
-                
+
                 if not allocation_strategy:
                     return jsonify({'error': 'Allocation strategy is required'}), 400
-                
-                allocation = agent.optimize_resource_allocation(allocation_strategy, budget_constraints)
+
+                allocation = agent.optimize_resource_allocation(
+                    allocation_strategy, budget_constraints)
                 return jsonify(allocation)
             except Exception as e:
                 self.logger.error(f"Error optimizing resource allocation: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/financial-management/alerts', methods=['GET'])
         def get_financial_alerts():
             """Get active financial alerts and recommendations."""
             try:
                 from backend.agents.financial_management_agent import AutonomousFinancialAgent
                 agent = AutonomousFinancialAgent(self.config)
-                
+
                 alerts = agent.get_financial_alerts()
                 return jsonify(alerts)
             except Exception as e:
                 self.logger.error(f"Error getting financial alerts: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/api/financial-management/forecast', methods=['POST'])
         def generate_revenue_forecast():
             """Generate revenue forecast based on current trends."""
             try:
                 from backend.agents.financial_management_agent import AutonomousFinancialAgent
                 agent = AutonomousFinancialAgent(self.config)
-                
+
                 data = request.get_json()
                 forecast_period = data.get('forecast_period', '90d')
                 scenario = data.get('scenario', 'realistic')
-                
+
                 forecast = agent.generate_revenue_forecast(forecast_period, scenario)
                 return jsonify(forecast)
             except Exception as e:
                 self.logger.error(f"Error generating revenue forecast: {e}")
                 return jsonify({'error': str(e)}), 500
-        
+
         @self.app.route('/financial-management')
         def financial_management_page():
             """Serve the financial management page."""
@@ -5090,7 +5376,7 @@ Thank you for watching!"""
                 data = request.get_json()
                 format_type = data.get('format_type')
                 adaptation_strategy = data.get('adaptation_strategy', 'gradual')
-                
+
                 # Simulate adaptation process
                 adaptation_result = {
                     'adaptation_id': f"adapt_{int(time.time())}",
@@ -5105,7 +5391,7 @@ Thank you for watching!"""
                         'Implementing system changes'
                     ]
                 }
-                
+
                 return jsonify(adaptation_result)
             except Exception as e:
                 self.logger.error(f"Error initiating format adaptation: {e}")
@@ -5190,73 +5476,58 @@ Thank you for watching!"""
                     }
                 })
             except Exception as e:
-                self.logger.error(f"Error fetching YouTube engagement dashboard data: {e}")
+                self.logger.error(
+                    f"Error fetching YouTube engagement dashboard data: {e}")
                 return jsonify({'error': str(e)}), 500
 
         @self.app.route('/api/youtube-engagement/comments')
         def youtube_engagement_comments():
             """Get recent comment analysis and replies."""
             try:
-                return jsonify({
-                    'recent_comments': [
-                        {
-                            'comment_id': 'comment_001',
-                            'video_title': 'AI Content Creation Tutorial',
-                            'author': 'CreativeUser123',
-                            'text': 'This is amazing! How do you get such consistent results?',
-                            'sentiment': 'positive',
-                            'engagement_score': 8.7,
-                            'reply_generated': True,
-                            'reply_text': 'Thank you! Consistency comes from following a structured workflow and continuous optimization. What specific aspect would you like to know more about?',
-                            'timestamp': '2024-01-15T10:30:00Z',
-                            'likes': 12,
-                            'replies': 3
-                        },
-                        {
-                            'comment_id': 'comment_002',
-                            'video_title': 'YouTube Growth Strategies',
-                            'author': 'GrowthHacker99',
-                            'text': 'Could you make a video about thumbnail optimization?',
-                            'sentiment': 'neutral',
-                            'engagement_score': 7.2,
-                            'reply_generated': True,
-                            'reply_text': 'Great suggestion! Thumbnail optimization is crucial for click-through rates. I\'ll add it to my content calendar. Thanks for the idea!',
-                            'timestamp': '2024-01-15T09:45:00Z',
-                            'likes': 8,
-                            'replies': 1
-                        },
-                        {
-                            'comment_id': 'comment_003',
-                            'video_title': 'Content Strategy Deep Dive',
-                            'author': 'StrategyMind',
-                            'text': 'The audio quality could be better in this one',
-                            'sentiment': 'negative',
-                            'engagement_score': 6.1,
-                            'reply_generated': True,
-                            'reply_text': 'Thanks for the feedback! Audio quality is definitely important. I\'ve upgraded my setup since this video. Let me know if you notice improvements in the newer content!',
-                            'timestamp': '2024-01-15T08:20:00Z',
-                            'likes': 3,
-                            'replies': 2
-                        }
-                    ],
-                    'pending_replies': [
-                        {
-                            'comment_id': 'comment_004',
-                            'video_title': 'Advanced AI Techniques',
-                            'author': 'TechEnthusiast',
-                            'text': 'What tools do you recommend for beginners?',
-                            'sentiment': 'neutral',
-                            'priority': 'high',
-                            'suggested_reply': 'For beginners, I\'d recommend starting with user-friendly tools like Canva for design and Loom for screen recording. What type of content are you planning to create?'
-                        }
-                    ],
-                    'engagement_metrics': {
-                        'total_interactions': 1203,
-                        'response_time_avg': '2.3 hours',
-                        'community_satisfaction': 9.2,
-                        'conversation_threads': 89
-                    }
-                })
+                return jsonify({'recent_comments': [{'comment_id': 'comment_001',
+                                                     'video_title': 'AI Content Creation Tutorial',
+                                                     'author': 'CreativeUser123',
+                                                     'text': 'This is amazing! How do you get such consistent results?',
+                                                     'sentiment': 'positive',
+                                                     'engagement_score': 8.7,
+                                                     'reply_generated': True,
+                                                     'reply_text': 'Thank you! Consistency comes from following a structured workflow and continuous optimization. What specific aspect would you like to know more about?',
+                                                     'timestamp': '2024-01-15T10:30:00Z',
+                                                     'likes': 12,
+                                                     'replies': 3},
+                                                    {'comment_id': 'comment_002',
+                                                     'video_title': 'YouTube Growth Strategies',
+                                                     'author': 'GrowthHacker99',
+                                                     'text': 'Could you make a video about thumbnail optimization?',
+                                                     'sentiment': 'neutral',
+                                                     'engagement_score': 7.2,
+                                                     'reply_generated': True,
+                                                     'reply_text': 'Great suggestion! Thumbnail optimization is crucial for click-through rates. I\'ll add it to my content calendar. Thanks for the idea!',
+                                                     'timestamp': '2024-01-15T09:45:00Z',
+                                                     'likes': 8,
+                                                     'replies': 1},
+                                                    {'comment_id': 'comment_003',
+                                                     'video_title': 'Content Strategy Deep Dive',
+                                                     'author': 'StrategyMind',
+                                                     'text': 'The audio quality could be better in this one',
+                                                     'sentiment': 'negative',
+                                                     'engagement_score': 6.1,
+                                                     'reply_generated': True,
+                                                     'reply_text': 'Thanks for the feedback! Audio quality is definitely important. I\'ve upgraded my setup since this video. Let me know if you notice improvements in the newer content!',
+                                                     'timestamp': '2024-01-15T08:20:00Z',
+                                                     'likes': 3,
+                                                     'replies': 2}],
+                                'pending_replies': [{'comment_id': 'comment_004',
+                                                     'video_title': 'Advanced AI Techniques',
+                                                     'author': 'TechEnthusiast',
+                                                     'text': 'What tools do you recommend for beginners?',
+                                                     'sentiment': 'neutral',
+                                                     'priority': 'high',
+                                                     'suggested_reply': 'For beginners, I\'d recommend starting with user-friendly tools like Canva for design and Loom for screen recording. What type of content are you planning to create?'}],
+                                'engagement_metrics': {'total_interactions': 1203,
+                                                       'response_time_avg': '2.3 hours',
+                                                       'community_satisfaction': 9.2,
+                                                       'conversation_threads': 89}})
             except Exception as e:
                 self.logger.error(f"Error fetching YouTube engagement comments: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -5269,7 +5540,7 @@ Thank you for watching!"""
                 comment_text = data.get('comment_text')
                 video_context = data.get('video_context', '')
                 tone = data.get('tone', 'friendly')
-                
+
                 # Simulate AI reply generation
                 reply_result = {
                     'reply_id': f"reply_{int(time.time())}",
@@ -5281,7 +5552,7 @@ Thank you for watching!"""
                     'context_relevance': 9.2,
                     'suggested_actions': ['post_reply', 'heart_comment', 'pin_if_valuable']
                 }
-                
+
                 return jsonify(reply_result)
             except Exception as e:
                 self.logger.error(f"Error generating YouTube reply: {e}")
@@ -5345,20 +5616,23 @@ Thank you for watching!"""
                     # Handle PubSubHubbub challenge verification
                     challenge = request.args.get('hub.challenge')
                     if challenge:
-                        self.logger.info(f"YouTube webhook challenge received: {challenge}")
+                        self.logger.info(
+                            f"YouTube webhook challenge received: {challenge}")
                         return challenge
                     return 'OK', 200
-                
+
                 elif request.method == 'POST':
                     # Handle webhook notifications
                     data = request.get_data()
-                    self.logger.info(f"YouTube webhook notification received: {len(data)} bytes")
-                    
+                    self.logger.info(
+                        f"YouTube webhook notification received: {
+                            len(data)} bytes")
+
                     # TODO: Parse XML notification and update dashboard counters
                     # For now, just log the notification
-                    
+
                     return 'OK', 200
-                    
+
             except Exception as e:
                 self.logger.error(f"Error handling YouTube webhook: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -5371,14 +5645,14 @@ Thank you for watching!"""
                 webhook_config_path = os.path.join('config', 'youtube.webhooks.json')
                 if not os.path.exists(webhook_config_path):
                     return jsonify({'error': 'Webhook configuration not found'}), 404
-                
+
                 with open(webhook_config_path, 'r') as f:
                     webhook_config = json.load(f)
-                
+
                 subscriptions = webhook_config.get('subscriptions', [])
                 hub_url = webhook_config.get('hub_url')
                 callback_url = webhook_config.get('callback_url')
-                
+
                 results = []
                 for subscription in subscriptions:
                     channel_id = subscription.get('channel_id')
@@ -5390,14 +5664,15 @@ Thank you for watching!"""
                             'status': 'subscribed',
                             'message': 'Subscription simulated (implementation needed)'
                         })
-                        self.logger.info(f"Simulated subscription for channel: {channel_id}")
-                
+                        self.logger.info(
+                            f"Simulated subscription for channel: {channel_id}")
+
                 return jsonify({
                     'status': 'success',
                     'subscriptions': results,
                     'message': f'Processed {len(results)} channel subscriptions'
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Error subscribing to YouTube webhooks: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -5407,46 +5682,26 @@ Thank you for watching!"""
         def youtube_oauth_start():
             """Start OAuth flow for a specific YouTube channel"""
             try:
+                from youtube_integration import YouTubeIntegration
+
                 channel_id = request.args.get('channel_id')
                 if not channel_id:
                     return jsonify({'error': 'channel_id parameter is required'}), 400
-                    
-                # Load OAuth config
-                oauth_config_path = os.path.join('config', 'youtube.oauth.json')
-                if not os.path.exists(oauth_config_path):
-                    return jsonify({'error': 'YouTube OAuth config not found'}), 404
-                    
-                with open(oauth_config_path, 'r') as f:
-                    oauth_config = json.load(f)
-                    
-                # Validate channel exists in config
-                if channel_id not in oauth_config['channels']:
-                    return jsonify({'error': f'Channel {channel_id} not found in configuration'}), 404
-                    
-                # Build OAuth URL
-                from urllib.parse import urlencode
-                
-                state = secrets.token_urlsafe(32)
-                # In production, store state in session or database for validation
-                
-                oauth_params = {
-                    'client_id': oauth_config['global']['client_id'],
-                    'redirect_uri': oauth_config['global']['redirect_uri'],
-                    'scope': ' '.join(oauth_config['global']['scopes']),
-                    'response_type': 'code',
-                    'access_type': 'offline',
-                    'prompt': 'consent',
-                    'state': f"{channel_id}:{state}"
-                }
-                
-                oauth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(oauth_params)}"
-                
+
+                # Initialize YouTube integration
+                youtube_integration = YouTubeIntegration()
+
+                # Generate OAuth URL
+                oauth_url = youtube_integration.get_oauth_url(channel_id)
+                if not oauth_url:
+                    return jsonify(
+                        {'error': 'Failed to generate OAuth URL. Check credentials and configuration.'}), 500
+
                 return jsonify({
                     'oauth_url': oauth_url,
-                    'channel_id': channel_id,
-                    'state': state
+                    'channel_id': channel_id
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Error starting OAuth flow: {e}")
                 return jsonify({'error': f'Failed to start OAuth flow: {str(e)}'}), 500
@@ -5455,49 +5710,37 @@ Thank you for watching!"""
         def youtube_oauth_callback():
             """Handle OAuth callback and store refresh token"""
             try:
+                from youtube_integration import YouTubeIntegration
+
                 code = request.args.get('code')
                 state = request.args.get('state')
                 error = request.args.get('error')
-                
+
                 if error:
                     return jsonify({'error': f'OAuth error: {error}'}), 400
-                    
+
                 if not code or not state:
                     return jsonify({'error': 'Missing code or state parameter'}), 400
-                    
-                # Parse state to get channel_id
-                try:
-                    channel_id, state_token = state.split(':', 1)
-                except ValueError:
-                    return jsonify({'error': 'Invalid state parameter'}), 400
-                    
-                # Load OAuth config
-                oauth_config_path = os.path.join('config', 'youtube.oauth.json')
-                if not os.path.exists(oauth_config_path):
-                    return jsonify({'error': 'YouTube OAuth config not found'}), 404
-                    
-                with open(oauth_config_path, 'r') as f:
-                    oauth_config = json.load(f)
-                    
-                # In production, exchange code for tokens using Google OAuth API
-                # For now, simulate successful token exchange
-                refresh_token = f"refresh_token_for_{channel_id}_{secrets.token_urlsafe(16)}"
-                
-                # Update config with refresh token
-                oauth_config['channels'][channel_id]['refresh_token'] = refresh_token
-                oauth_config['channels'][channel_id]['authorized_at'] = datetime.now().isoformat()
-                
-                # Save updated config (in production, use secure storage)
-                with open(oauth_config_path, 'w') as f:
-                    json.dump(oauth_config, f, indent=2)
-                    
+
+                # Initialize YouTube integration
+                youtube_integration = YouTubeIntegration()
+
+                # Handle OAuth callback
+                success = youtube_integration.handle_oauth_callback(code, state)
+                if not success:
+                    return jsonify({'error': 'Failed to process OAuth callback'}), 500
+
+                # Get channel info
+                authorized_channels = youtube_integration.get_authorized_channels()
+                channel_info = authorized_channels.get(state, {})
+
                 return jsonify({
-                    'message': f'Successfully authorized channel {channel_id}',
-                    'channel_id': channel_id,
-                    'channel_name': oauth_config['channels'][channel_id].get('note', 'Unknown'),
+                    'message': f'Successfully authorized channel {state}',
+                    'channel_id': state,
+                    'channel_name': channel_info.get('note', 'Unknown'),
                     'authorized': True
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"OAuth callback error: {e}")
                 return jsonify({'error': f'OAuth callback failed: {str(e)}'}), 500
@@ -5509,65 +5752,72 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'JSON data required'}), 400
-                    
+
                 # Required fields
                 channel_id = data.get('channel_id')
                 title = data.get('title')
                 description = data.get('description', '')
-                
+
                 if not channel_id or not title:
                     return jsonify({'error': 'channel_id and title are required'}), 400
-                    
+
                 # Optional fields
                 file_path = data.get('file_path')
                 s3_url = data.get('s3_url')
                 tags = data.get('tags', [])
-                visibility = data.get('visibility', 'private')  # private, unlisted, public
+                # private, unlisted, public
+                visibility = data.get('visibility', 'private')
                 scheduled_time = data.get('scheduled_time')
-                
+
                 if not file_path and not s3_url:
-                    return jsonify({'error': 'Either file_path or s3_url must be provided'}), 400
-                    
+                    return jsonify(
+                        {'error': 'Either file_path or s3_url must be provided'}), 400
+
                 # Load OAuth config to verify channel
                 oauth_config_path = os.path.join('config', 'youtube.oauth.json')
                 if not os.path.exists(oauth_config_path):
                     return jsonify({'error': 'YouTube OAuth config not found'}), 404
-                    
+
                 with open(oauth_config_path, 'r') as f:
                     oauth_config = json.load(f)
-                    
+
                 if channel_id not in oauth_config['channels']:
-                    return jsonify({'error': f'Channel {channel_id} not found in configuration'}), 404
-                    
-                refresh_token = oauth_config['channels'][channel_id].get('refresh_token')
+                    return jsonify(
+                        {'error': f'Channel {channel_id} not found in configuration'}), 404
+
+                refresh_token = oauth_config['channels'][channel_id].get(
+                    'refresh_token')
                 if not refresh_token:
-                    return jsonify({'error': f'Channel {channel_id} not authorized. Please complete OAuth flow first.'}), 401
-                    
+                    return jsonify(
+                        {'error': f'Channel {channel_id} not authorized. Please complete OAuth flow first.'}), 401
+
                 # Load channel-specific settings
                 channel_config_path = os.path.join('config', 'channels.youtube.json')
                 channel_defaults = {}
                 if os.path.exists(channel_config_path):
                     with open(channel_config_path, 'r') as f:
                         channel_config = json.load(f)
-                        channel_defaults = channel_config.get('channels', {}).get(channel_id, {})
-                
+                        channel_defaults = channel_config.get(
+                            'channels', {}).get(channel_id, {})
+
                 # Apply defaults if not provided
                 if not tags and 'default_tags' in channel_defaults:
                     tags = channel_defaults['default_tags']
                 if visibility == 'private' and 'default_visibility' in channel_defaults:
                     visibility = channel_defaults['default_visibility']
-                    
+
                 # Validate file exists if file_path provided
                 if file_path and not os.path.exists(file_path):
                     return jsonify({'error': f'File not found: {file_path}'}), 404
-                    
+
                 # In production, this would use YouTube Data API v3 to upload
                 # For now, simulate upload process
                 upload_id = f"upload_{channel_id}_{secrets.token_urlsafe(8)}"
-                
+
                 upload_result = {
                     'upload_id': upload_id,
-                    'video_id': f"video_{secrets.token_urlsafe(11)}",  # Simulate YouTube video ID
+                    # Simulate YouTube video ID
+                    'video_id': f"video_{secrets.token_urlsafe(11)}",
                     'channel_id': channel_id,
                     'title': title,
                     'description': description,
@@ -5577,21 +5827,70 @@ Thank you for watching!"""
                     'url': f"https://www.youtube.com/watch?v=video_{secrets.token_urlsafe(11)}",
                     'uploaded_at': datetime.now().isoformat()
                 }
-                
+
                 if scheduled_time:
                     upload_result['scheduled_time'] = scheduled_time
                     upload_result['status'] = 'scheduled'
-                    
-                self.logger.info(f"Simulated upload for channel {channel_id}: {title}")
-                
+
+                # Use the new YouTube integration for actual upload
+                from youtube_integration import YouTubeIntegration
+                youtube_integration = YouTubeIntegration()
+
+                # Check if channel is authorized
+                if not youtube_integration.is_channel_authorized(channel_id):
+                    return jsonify(
+                        {'error': f'Channel {channel_id} not authorized. Please complete OAuth flow first.'}), 401
+
+                # Initialize service and upload
+                if youtube_integration.initialize_service(channel_id):
+                    video_id = youtube_integration.upload_video(
+                        video_path=file_path,
+                        title=title,
+                        description=description,
+                        tags=tags,
+                        privacy_status=visibility
+                    )
+
+                    if video_id:
+                        upload_result['video_id'] = video_id
+                        upload_result['url'] = f"https://www.youtube.com/watch?v={video_id}"
+                        upload_result['status'] = 'uploaded'
+                        self.logger.info(
+                            f"Successfully uploaded video {video_id} for channel {channel_id}: {title}")
+                    else:
+                        self.logger.warning(
+                            f"Failed to upload video for channel {channel_id}, falling back to simulation")
+                else:
+                    self.logger.warning(
+                        f"Failed to initialize YouTube service for channel {channel_id}, using simulation")
+
                 return jsonify({
-                    'message': 'Video upload simulated successfully',
+                    'message': 'Video upload completed',
                     'upload': upload_result
                 })
-                
+
             except Exception as e:
                 self.logger.error(f"Error uploading video: {e}")
                 return jsonify({'error': f'Upload failed: {str(e)}'}), 500
+
+        @self.app.route('/youtube/channels', methods=['GET'])
+        def youtube_channels():
+            """Get YouTube channel authorization status"""
+            try:
+                from youtube_integration import YouTubeIntegration
+
+                youtube_integration = YouTubeIntegration()
+                authorized_channels = youtube_integration.get_authorized_channels()
+
+                return jsonify({
+                    'channels': authorized_channels,
+                    'total_channels': len(authorized_channels),
+                    'authorized_count': sum(1 for ch in authorized_channels.values() if ch.get('authorized', False))
+                })
+
+            except Exception as e:
+                self.logger.error(f"Error getting YouTube channels: {e}")
+                return jsonify({'error': f'Failed to get channels: {str(e)}'}), 500
 
         # YouTube Analytics Route
         @self.app.route('/youtube/analytics/summary', methods=['GET'])
@@ -5600,24 +5899,28 @@ Thank you for watching!"""
             try:
                 # Get channel ID from query params or use default
                 channel_id = request.args.get('channel_id', 'default')
-                
+
                 # Load OAuth config to verify authentication
                 oauth_config_path = os.path.join('config', 'youtube.oauth.json')
                 if not os.path.exists(oauth_config_path):
-                    return jsonify({'error': 'OAuth configuration not found. Please authenticate first.'}), 401
-                
+                    return jsonify(
+                        {'error': 'OAuth configuration not found. Please authenticate first.'}), 401
+
                 with open(oauth_config_path, 'r') as f:
                     oauth_config = json.load(f)
-                
+
                 # Check if channel has valid refresh token
                 if channel_id not in oauth_config.get('channels', {}):
-                    return jsonify({'error': f'Channel {channel_id} not authenticated'}), 401
-                
+                    return jsonify(
+                        {'error': f'Channel {channel_id} not authenticated'}), 401
+
                 channel_config = oauth_config['channels'][channel_id]
                 if not channel_config.get('refresh_token'):
-                    return jsonify({'error': f'No refresh token for channel {channel_id}'}), 401
-                
-                # Simulate analytics data (in real implementation, use YouTube Analytics API)
+                    return jsonify(
+                        {'error': f'No refresh token for channel {channel_id}'}), 401
+
+                # Simulate analytics data (in real implementation, use YouTube Analytics
+                # API)
                 analytics_data = {
                     'channel_id': channel_id,
                     'period': '30_days',
@@ -5636,7 +5939,7 @@ Thank you for watching!"""
                             'published': '2024-01-15'
                         },
                         {
-                            'title': 'Top Performing Video 2', 
+                            'title': 'Top Performing Video 2',
                             'views': 18500,
                             'duration': '8:45',
                             'published': '2024-01-10'
@@ -5653,13 +5956,13 @@ Thank you for watching!"""
                         'top_countries': ['US', 'UK', 'CA', 'AU', 'DE']
                     }
                 }
-                
+
                 return jsonify({
                     'success': True,
                     'data': analytics_data,
                     'last_updated': '2024-01-20T10:30:00Z'
                 })
-            
+
             except Exception as e:
                 self.logger.error(f"Error fetching analytics: {e}")
                 return jsonify({'error': f'Analytics fetch failed: {str(e)}'}), 500
@@ -5669,53 +5972,43 @@ Thank you for watching!"""
         def self_repair_dashboard_data():
             """Get Self Repair Agent dashboard data."""
             try:
-                return jsonify({
-                    'status': 'active',
-                    'system_health': {
-                        'overall_score': 94.2,
-                        'components_monitored': 28,
-                        'issues_detected': 3,
-                        'auto_repairs_completed': 147,
-                        'uptime_percentage': 99.7
-                    },
-                    'component_status': {
-                        'database': {'status': 'healthy', 'last_check': '2024-01-15T10:30:00Z'},
-                        'api_services': {'status': 'healthy', 'last_check': '2024-01-15T10:29:45Z'},
-                        'file_system': {'status': 'healthy', 'last_check': '2024-01-15T10:29:30Z'},
-                        'network_connectivity': {'status': 'healthy', 'last_check': '2024-01-15T10:29:15Z'},
-                        'memory_usage': {'status': 'warning', 'last_check': '2024-01-15T10:29:00Z'},
-                        'disk_space': {'status': 'healthy', 'last_check': '2024-01-15T10:28:45Z'}
-                    },
-                    'recent_repairs': [
-                        {
-                            'timestamp': '2024-01-15T09:15:00Z',
-                            'component': 'database',
-                            'issue': 'Connection timeout',
-                            'action': 'Restarted connection pool',
-                            'status': 'resolved'
-                        },
-                        {
-                            'timestamp': '2024-01-15T08:45:00Z',
-                            'component': 'api_services',
-                            'issue': 'Rate limit exceeded',
-                            'action': 'Implemented exponential backoff',
-                            'status': 'resolved'
-                        },
-                        {
-                            'timestamp': '2024-01-15T07:30:00Z',
-                            'component': 'file_system',
-                            'issue': 'Temporary directory cleanup',
-                            'action': 'Cleared old temporary files',
-                            'status': 'resolved'
-                        }
-                    ],
-                    'monitoring_metrics': {
-                        'checks_per_hour': 720,
-                        'average_response_time': '0.3s',
-                        'false_positive_rate': 2.1,
-                        'repair_success_rate': 96.8
-                    }
-                })
+                return jsonify({'status': 'active',
+                                'system_health': {'overall_score': 94.2,
+                                                  'components_monitored': 28,
+                                                  'issues_detected': 3,
+                                                  'auto_repairs_completed': 147,
+                                                  'uptime_percentage': 99.7},
+                                'component_status': {'database': {'status': 'healthy',
+                                                                  'last_check': '2024-01-15T10:30:00Z'},
+                                                     'api_services': {'status': 'healthy',
+                                                                      'last_check': '2024-01-15T10:29:45Z'},
+                                                     'file_system': {'status': 'healthy',
+                                                                     'last_check': '2024-01-15T10:29:30Z'},
+                                                     'network_connectivity': {'status': 'healthy',
+                                                                              'last_check': '2024-01-15T10:29:15Z'},
+                                                     'memory_usage': {'status': 'warning',
+                                                                      'last_check': '2024-01-15T10:29:00Z'},
+                                                     'disk_space': {'status': 'healthy',
+                                                                    'last_check': '2024-01-15T10:28:45Z'}},
+                                'recent_repairs': [{'timestamp': '2024-01-15T09:15:00Z',
+                                                    'component': 'database',
+                                                    'issue': 'Connection timeout',
+                                                    'action': 'Restarted connection pool',
+                                                    'status': 'resolved'},
+                                                   {'timestamp': '2024-01-15T08:45:00Z',
+                                                    'component': 'api_services',
+                                                    'issue': 'Rate limit exceeded',
+                                                    'action': 'Implemented exponential backoff',
+                                                    'status': 'resolved'},
+                                                   {'timestamp': '2024-01-15T07:30:00Z',
+                                                    'component': 'file_system',
+                                                    'issue': 'Temporary directory cleanup',
+                                                    'action': 'Cleared old temporary files',
+                                                    'status': 'resolved'}],
+                                'monitoring_metrics': {'checks_per_hour': 720,
+                                                       'average_response_time': '0.3s',
+                                                       'false_positive_rate': 2.1,
+                                                       'repair_success_rate': 96.8}})
             except Exception as e:
                 self.logger.error(f"Error fetching Self Repair dashboard data: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -5782,7 +6075,7 @@ Thank you for watching!"""
                 data = request.get_json()
                 component = data.get('component')
                 action = data.get('action')
-                
+
                 # Simulate repair action
                 return jsonify({
                     'status': 'initiated',
@@ -5881,7 +6174,8 @@ Thank you for watching!"""
                     }
                 })
             except Exception as e:
-                self.logger.error(f"Error fetching stealth automation dashboard data: {e}")
+                self.logger.error(
+                    f"Error fetching stealth automation dashboard data: {e}")
                 return jsonify({'error': str(e)}), 500
 
         @self.app.route('/api/stealth-automation/tasks')
@@ -5936,13 +6230,14 @@ Thank you for watching!"""
                 task_type = data.get('task_type')
                 target_url = data.get('target_url')
                 parameters = data.get('parameters', {})
-                
+
                 if not task_type or not target_url:
-                    return jsonify({'error': 'Task type and target URL are required'}), 400
-                
+                    return jsonify(
+                        {'error': 'Task type and target URL are required'}), 400
+
                 # Mock task execution
                 task_id = f"task_{int(time.time())}"
-                
+
                 return jsonify({
                     'task_id': task_id,
                     'status': 'queued',
@@ -6001,13 +6296,18 @@ Thank you for watching!"""
         def get_rss_feeds():
             """Get all RSS feeds from configuration file."""
             try:
-                feeds_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'rss_feeds_example.json')
+                feeds_file = os.path.join(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))),
+                    'rss_feeds_example.json')
                 if os.path.exists(feeds_file):
                     with open(feeds_file, 'r') as f:
                         feeds_data = json.load(f)
                     return jsonify(feeds_data)
                 else:
-                    return jsonify({'feeds': [], 'last_updated': None, 'version': '1.0'})
+                    return jsonify(
+                        {'feeds': [], 'last_updated': None, 'version': '1.0'})
             except Exception as e:
                 self.logger.error(f"Error fetching RSS feeds: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -6019,20 +6319,24 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data or 'url' not in data:
                     return jsonify({'error': 'URL is required'}), 400
-                
-                feeds_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'rss_feeds_example.json')
-                
+
+                feeds_file = os.path.join(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))),
+                    'rss_feeds_example.json')
+
                 # Load existing feeds
                 feeds_data = {'feeds': [], 'last_updated': None, 'version': '1.0'}
                 if os.path.exists(feeds_file):
                     with open(feeds_file, 'r') as f:
                         feeds_data = json.load(f)
-                
+
                 # Check if URL already exists
                 for feed in feeds_data['feeds']:
                     if feed['url'] == data['url']:
                         return jsonify({'error': 'Feed URL already exists'}), 409
-                
+
                 # Add new feed
                 new_feed = {
                     'name': data.get('name', data['url']),
@@ -6042,15 +6346,17 @@ Thank you for watching!"""
                 }
                 feeds_data['feeds'].append(new_feed)
                 feeds_data['last_updated'] = datetime.now(timezone.utc).isoformat()
-                
+
                 # Save updated feeds
                 with open(feeds_file, 'w') as f:
                     json.dump(feeds_data, f, indent=2)
-                
+
                 # Signal Research Agent to reload feeds (if available)
                 self._signal_research_agent_reload()
-                
-                return jsonify({'status': 'success', 'message': 'RSS feed added successfully', 'feed': new_feed})
+
+                return jsonify({'status': 'success',
+                                'message': 'RSS feed added successfully',
+                                'feed': new_feed})
             except Exception as e:
                 self.logger.error(f"Error adding RSS feed: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -6059,30 +6365,36 @@ Thank you for watching!"""
         def delete_rss_feed(feed_index):
             """Delete an RSS feed by index."""
             try:
-                feeds_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'rss_feeds_example.json')
-                
+                feeds_file = os.path.join(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))),
+                    'rss_feeds_example.json')
+
                 if not os.path.exists(feeds_file):
                     return jsonify({'error': 'Feeds file not found'}), 404
-                
+
                 # Load existing feeds
                 with open(feeds_file, 'r') as f:
                     feeds_data = json.load(f)
-                
+
                 if feed_index < 0 or feed_index >= len(feeds_data['feeds']):
                     return jsonify({'error': 'Invalid feed index'}), 400
-                
+
                 # Remove feed
                 removed_feed = feeds_data['feeds'].pop(feed_index)
                 feeds_data['last_updated'] = datetime.now(timezone.utc).isoformat()
-                
+
                 # Save updated feeds
                 with open(feeds_file, 'w') as f:
                     json.dump(feeds_data, f, indent=2)
-                
+
                 # Signal Research Agent to reload feeds (if available)
                 self._signal_research_agent_reload()
-                
-                return jsonify({'status': 'success', 'message': 'RSS feed deleted successfully', 'removed_feed': removed_feed})
+
+                return jsonify({'status': 'success',
+                                'message': 'RSS feed deleted successfully',
+                                'removed_feed': removed_feed})
             except Exception as e:
                 self.logger.error(f"Error deleting RSS feed: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -6094,19 +6406,23 @@ Thank you for watching!"""
                 data = request.get_json()
                 if not data:
                     return jsonify({'error': 'No data provided'}), 400
-                
-                feeds_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'rss_feeds_example.json')
-                
+
+                feeds_file = os.path.join(
+                    os.path.dirname(
+                        os.path.dirname(
+                            os.path.abspath(__file__))),
+                    'rss_feeds_example.json')
+
                 if not os.path.exists(feeds_file):
                     return jsonify({'error': 'Feeds file not found'}), 404
-                
+
                 # Load existing feeds
                 with open(feeds_file, 'r') as f:
                     feeds_data = json.load(f)
-                
+
                 if feed_index < 0 or feed_index >= len(feeds_data['feeds']):
                     return jsonify({'error': 'Invalid feed index'}), 400
-                
+
                 # Update feed
                 feed = feeds_data['feeds'][feed_index]
                 feed['name'] = data.get('name', feed['name'])
@@ -6114,15 +6430,16 @@ Thank you for watching!"""
                 feed['category'] = data.get('category', feed['category'])
                 feed['active'] = data.get('active', feed['active'])
                 feeds_data['last_updated'] = datetime.now(timezone.utc).isoformat()
-                
+
                 # Save updated feeds
                 with open(feeds_file, 'w') as f:
                     json.dump(feeds_data, f, indent=2)
-                
+
                 # Signal Research Agent to reload feeds (if available)
                 self._signal_research_agent_reload()
-                
-                return jsonify({'status': 'success', 'message': 'RSS feed updated successfully', 'feed': feed})
+
+                return jsonify(
+                    {'status': 'success', 'message': 'RSS feed updated successfully', 'feed': feed})
             except Exception as e:
                 self.logger.error(f"Error updating RSS feed: {e}")
                 return jsonify({'error': str(e)}), 500
@@ -6144,21 +6461,22 @@ Thank you for watching!"""
         """Fetch real YouTube channel data using YouTube Data API."""
         try:
             if not TRAE_AI_AVAILABLE:
-                return {'status': 'unavailable', 'error': 'TRAE.AI components not available'}
-            
+                return {'status': 'unavailable',
+                        'error': 'TRAE.AI components not available'}
+
             # Import secret store
             from backend.integrations.secret_store import SecretStore
             import requests
-            
+
             # Get API credentials from secret store
             with SecretStore() as store:
                 api_key = store.get_secret('YOUTUBE_API_KEY')
                 channel_id = store.get_secret('YOUTUBE_CHANNEL_ID')
-                
+
                 if not api_key or not channel_id:
                     self.logger.warning("YouTube API credentials not configured")
                     return {'status': 'not_configured', 'subscribers': 0, 'videos': 0}
-                
+
                 # Fetch channel statistics
                 url = 'https://www.googleapis.com/youtube/v3/channels'
                 params = {
@@ -6166,17 +6484,17 @@ Thank you for watching!"""
                     'id': channel_id,
                     'key': api_key
                 }
-                
+
                 response = requests.get(url, params=params, timeout=10)
                 response.raise_for_status()
                 data = response.json()
-                
+
                 if not data.get('items'):
                     return {'status': 'not_found', 'subscribers': 0, 'videos': 0}
-                
+
                 channel = data['items'][0]
                 stats = channel['statistics']
-                
+
                 return {
                     'status': 'active',
                     'subscribers': int(stats.get('subscriberCount', 0)),
@@ -6184,30 +6502,31 @@ Thank you for watching!"""
                     'views': int(stats.get('viewCount', 0)),
                     'title': channel['snippet'].get('title', 'Unknown Channel')
                 }
-                
+
         except Exception as e:
             self.logger.error(f"Error fetching YouTube data: {e}")
             return {'status': 'error', 'error': str(e), 'subscribers': 0, 'videos': 0}
-    
+
     def _fetch_tiktok_channel_data(self) -> Dict[str, Any]:
         """Fetch real TikTok channel data using TikTok API."""
         try:
             if not TRAE_AI_AVAILABLE:
-                return {'status': 'unavailable', 'error': 'TRAE.AI components not available'}
-            
+                return {'status': 'unavailable',
+                        'error': 'TRAE.AI components not available'}
+
             # Import secret store
             from backend.integrations.secret_store import SecretStore
             import requests
-            
+
             # Get API credentials from secret store
             with SecretStore() as store:
                 access_token = store.get_secret('TIKTOK_ACCESS_TOKEN')
                 username = store.get_secret('TIKTOK_USERNAME')
-                
+
                 if not access_token or not username:
                     self.logger.warning("TikTok API credentials not configured")
                     return {'status': 'not_configured', 'followers': 0, 'videos': 0}
-                
+
                 # Fetch user info from TikTok API
                 url = 'https://open-api.tiktok.com/user/info/'
                 headers = {
@@ -6215,17 +6534,21 @@ Thank you for watching!"""
                     'Content-Type': 'application/json'
                 }
                 params = {'username': username}
-                
+
                 response = requests.get(url, headers=headers, params=params, timeout=10)
                 response.raise_for_status()
                 data = response.json()
-                
+
                 if data.get('error'):
-                    return {'status': 'error', 'error': data['error']['message'], 'followers': 0, 'videos': 0}
-                
+                    return {
+                        'status': 'error',
+                        'error': data['error']['message'],
+                        'followers': 0,
+                        'videos': 0}
+
                 user_data = data.get('data', {}).get('user', {})
                 stats = user_data.get('stats', {})
-                
+
                 return {
                     'status': 'active',
                     'followers': stats.get('follower_count', 0),
@@ -6233,46 +6556,49 @@ Thank you for watching!"""
                     'likes': stats.get('heart_count', 0),
                     'display_name': user_data.get('display_name', 'Unknown User')
                 }
-                
+
         except Exception as e:
             self.logger.error(f"Error fetching TikTok data: {e}")
             return {'status': 'error', 'error': str(e), 'followers': 0, 'videos': 0}
-
-
 
     def _fetch_instagram_channel_data(self) -> Dict[str, Any]:
         """Fetch real Instagram channel data using Instagram Basic Display API."""
         try:
             if not TRAE_AI_AVAILABLE:
-                return {'status': 'unavailable', 'error': 'TRAE.AI components not available'}
-            
+                return {'status': 'unavailable',
+                        'error': 'TRAE.AI components not available'}
+
             # Import secret store
             from backend.integrations.secret_store import SecretStore
             import requests
-            
+
             # Get API credentials from secret store
             with SecretStore() as store:
                 access_token = store.get_secret('INSTAGRAM_ACCESS_TOKEN')
                 user_id = store.get_secret('INSTAGRAM_USER_ID')
-                
+
                 if not access_token or not user_id:
                     self.logger.warning("Instagram API credentials not configured")
                     return {'status': 'not_configured', 'followers': 0, 'posts': 0}
-                
+
                 # Fetch user data from Instagram Basic Display API
                 url = f'https://graph.instagram.com/{user_id}'
                 params = {
                     'fields': 'account_type,media_count,username',
                     'access_token': access_token
                 }
-                
+
                 response = requests.get(url, params=params, timeout=10)
                 response.raise_for_status()
                 data = response.json()
-                
+
                 if data.get('error'):
-                    return {'status': 'error', 'error': data['error']['message'], 'followers': 0, 'posts': 0}
-                
+                    return {
+                        'status': 'error',
+                        'error': data['error']['message'],
+                        'followers': 0,
+                        'posts': 0}
+
                 # Note: Instagram Basic Display API doesn't provide follower count
                 # For follower count, you'd need Instagram Graph API (business accounts)
                 return {
@@ -6283,41 +6609,41 @@ Thank you for watching!"""
                     'account_type': data.get('account_type', 'PERSONAL'),
                     'note': 'Follower count requires Instagram Graph API (business account)'
                 }
-                
+
         except Exception as e:
             self.logger.error(f"Error fetching Instagram data: {e}")
             return {'status': 'error', 'error': str(e), 'followers': 0, 'posts': 0}
 
     def _setup_error_handlers(self):
         """Setup error handlers."""
-        
+
         @self.app.errorhandler(404)
         def not_found(error):
             return jsonify({'error': 'Not found'}), 404
-        
+
         @self.app.errorhandler(500)
         def internal_error(error):
             self.logger.error(f"Internal server error: {error}")
             return jsonify({'error': 'Internal server error'}), 500
-        
+
         @self.app.errorhandler(BadRequest)
         def bad_request(error):
             return jsonify({'error': str(error)}), 400
-    
+
     def _setup_socketio_events(self):
         """Setup SocketIO event handlers for real-time communication."""
-        
+
         @self.socketio.on('connect')
         def handle_connect():
             """Handle client connection."""
             self.logger.info(f"Client connected: {request.sid}")
             emit('status', {'message': 'Connected to TRAE.AI Dashboard'})
-        
+
         @self.socketio.on('disconnect')
         def handle_disconnect():
             """Handle client disconnection."""
             self.logger.info(f"Client disconnected: {request.sid}")
-        
+
         @self.socketio.on('join_room')
         def handle_join_room(data):
             """Handle client joining a specific room for targeted updates."""
@@ -6325,7 +6651,7 @@ Thank you for watching!"""
             join_room(room)
             self.logger.info(f"Client {request.sid} joined room: {room}")
             emit('status', {'message': f'Joined room: {room}'})
-        
+
         @self.socketio.on('leave_room')
         def handle_leave_room(data):
             """Handle client leaving a room."""
@@ -6333,7 +6659,7 @@ Thank you for watching!"""
             leave_room(room)
             self.logger.info(f"Client {request.sid} left room: {room}")
             emit('status', {'message': f'Left room: {room}'})
-        
+
         @self.socketio.on('request_agent_status')
         def handle_agent_status_request():
             """Handle real-time agent status request."""
@@ -6344,7 +6670,7 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Error handling agent status request: {e}")
                 emit('error', {'message': 'Failed to get agent status'})
-        
+
         @self.socketio.on('request_system_stats')
         def handle_system_stats_request():
             """Handle real-time system statistics request."""
@@ -6359,71 +6685,77 @@ Thank you for watching!"""
             except Exception as e:
                 self.logger.error(f"Error handling system stats request: {e}")
                 emit('error', {'message': 'Failed to get system stats'})
-        
+
         @self.socketio.on('smoke_test_run')
         def handle_smoke_test_run(data):
             """Handle smoke test run request via SocketIO."""
             try:
                 if not self.smoke_test_agent:
-                    emit('smoke_test_error', {'error': 'Smoke test agent not available'})
+                    emit('smoke_test_error',
+                         {'error': 'Smoke test agent not available'})
                     return
-                
+
                 test_type = data.get('test_type', 'full')
                 # Join smoke test room for updates
                 join_room('smoke_test')
-                
+
                 # Run smoke test in background
                 def run_test():
                     try:
                         result = self.smoke_test_agent.run_smoke_test(test_type)
-                        self.socketio.emit('smoke_test_complete', result, room='smoke_test')
+                        self.socketio.emit(
+                            'smoke_test_complete', result, room='smoke_test')
                     except Exception as e:
                         self.logger.error(f"Smoke test execution failed: {e}")
-                        self.socketio.emit('smoke_test_error', {'error': str(e)}, room='smoke_test')
-                
+                        self.socketio.emit(
+                            'smoke_test_error', {
+                                'error': str(e)}, room='smoke_test')
+
                 threading.Thread(target=run_test, daemon=True).start()
                 emit('smoke_test_started', {'test_type': test_type})
-                
+
             except Exception as e:
                 self.logger.error(f"Error handling smoke test run: {e}")
                 emit('smoke_test_error', {'error': str(e)})
-        
+
         @self.socketio.on('smoke_test_stop')
         def handle_smoke_test_stop():
             """Handle smoke test stop request via SocketIO."""
             try:
                 if not self.smoke_test_agent:
-                    emit('smoke_test_error', {'error': 'Smoke test agent not available'})
+                    emit('smoke_test_error',
+                         {'error': 'Smoke test agent not available'})
                     return
-                
+
                 result = self.smoke_test_agent.stop_test()
                 emit('smoke_test_stopped', result)
-                
+
             except Exception as e:
                 self.logger.error(f"Error stopping smoke test: {e}")
                 emit('smoke_test_error', {'error': str(e)})
-        
+
         @self.socketio.on('smoke_test_status')
         def handle_smoke_test_status():
             """Handle smoke test status request via SocketIO."""
             try:
                 if not self.smoke_test_agent:
-                    emit('smoke_test_error', {'error': 'Smoke test agent not available'})
+                    emit('smoke_test_error',
+                         {'error': 'Smoke test agent not available'})
                     return
-                
+
                 status = self.smoke_test_agent.get_status()
                 emit('smoke_test_status_update', status)
-                
+
             except Exception as e:
                 self.logger.error(f"Error getting smoke test status: {e}")
                 emit('smoke_test_error', {'error': str(e)})
-    
+
     def _create_workflow_task(self, workflow_type: str, payload: Dict[str, Any]):
         """Helper method to create workflow tasks."""
         try:
             if not self.task_manager:
                 return jsonify({'error': 'Task manager not available'}), 503
-            
+
             # Map workflow types to TaskType enum values
             task_type_mapping = {
                 'video_creation': TaskType.VIDEO_CREATION,
@@ -6431,9 +6763,9 @@ Thank you for watching!"""
                 'content_audit': TaskType.CONTENT_AUDIT,
                 'marketing': TaskType.MARKETING
             }
-            
+
             task_type = task_type_mapping.get(workflow_type, TaskType.VIDEO_CREATION)
-            
+
             task_id = self.task_manager.add_task(
                 task_type=task_type,
                 payload={
@@ -6443,20 +6775,20 @@ Thank you for watching!"""
                 },
                 priority=TaskPriority.HIGH
             )
-            
+
             self.logger.info(f"Created {workflow_type} workflow task {task_id}")
-            
+
             return jsonify({
                 'task_id': task_id,
                 'workflow_type': workflow_type,
                 'status': 'queued',
                 'timestamp': datetime.now(timezone.utc).isoformat()
             }), 201
-        
+
         except Exception as e:
             self.logger.error(f"Failed to create {workflow_type} workflow: {e}")
             return jsonify({'error': str(e)}), 500
-    
+
     def _check_database_health(self) -> bool:
         """Check database connectivity."""
         try:
@@ -6467,7 +6799,7 @@ Thank you for watching!"""
             return False
         except Exception:
             return False
-    
+
     def _get_uptime(self) -> str:
         """Get application uptime."""
         if hasattr(self, 'start_time'):
@@ -6477,7 +6809,7 @@ Thank you for watching!"""
             minutes, _ = divmod(remainder, 60)
             return f"{days}d {hours}h {minutes}m"
         return "0d 0h 0m"
-    
+
     def _get_memory_usage(self) -> Dict[str, Any]:
         """Get memory usage information."""
         try:
@@ -6485,11 +6817,11 @@ Thank you for watching!"""
             process = psutil.Process()
             memory_info = process.memory_info()
             system_memory = psutil.virtual_memory()
-            
+
             used_mb = memory_info.rss / 1024 / 1024
             available_mb = system_memory.available / 1024 / 1024
             percentage = (memory_info.rss / system_memory.total) * 100
-            
+
             return {
                 'used': f'{used_mb:.1f} MB',
                 'available': f'{available_mb:.1f} MB',
@@ -6509,7 +6841,7 @@ Thank you for watching!"""
                 'percentage': 0,
                 'error': str(e)
             }
-    
+
     def _update_agent_status(self):
         """Update agent status information."""
         try:
@@ -6521,7 +6853,7 @@ Thank you for watching!"""
                 {'id': 'auditor-001', 'name': 'Content Auditor', 'status': 'idle'},
                 {'id': 'marketer-001', 'name': 'Marketing Agent', 'status': 'idle'}
             ]
-            
+
             for agent_data in mock_agents:
                 agent_id = agent_data['id']
                 if agent_id not in self.agents:
@@ -6536,7 +6868,7 @@ Thank you for watching!"""
                     self.agents[agent_id].last_activity = datetime.now()
         except Exception as e:
             self.logger.error(f"Failed to update agent status: {e}")
-    
+
     def _update_project_status(self):
         """Update project status information."""
         try:
@@ -6547,7 +6879,7 @@ Thank you for watching!"""
                 {'id': 'proj-002', 'name': 'Marketing Campaign', 'status': 'planning', 'progress': 0.25},
                 {'id': 'proj-003', 'name': 'Content Audit', 'status': 'completed', 'progress': 1.0}
             ]
-            
+
             for project_data in mock_projects:
                 project_id = project_data['id']
                 if project_id not in self.projects:
@@ -6568,7 +6900,7 @@ Thank you for watching!"""
                     self.projects[project_id].last_updated = datetime.now()
         except Exception as e:
             self.logger.error(f"Failed to update project status: {e}")
-    
+
     def _get_real_time_agent_data(self) -> Dict[str, Any]:
         """Get real-time agent data for SocketIO emission."""
         try:
@@ -6581,7 +6913,7 @@ Thank you for watching!"""
                     return orchestrator.get_agent_status()
             except (ImportError, AttributeError):
                 pass
-            
+
             # Fallback to mock data with realistic variations
             import random
             agents_data = []
@@ -6590,7 +6922,7 @@ Thank you for watching!"""
                 statuses = ['idle', 'busy', 'processing']
                 if random.random() < 0.1:  # 10% chance of status change
                     agent.status = random.choice(statuses)
-                
+
                 agents_data.append({
                     'id': agent.id,
                     'name': agent.name,
@@ -6600,7 +6932,7 @@ Thank you for watching!"""
                     'current_task': agent.current_task_id,
                     'error_message': agent.error_message
                 })
-            
+
             return {
                 'agents': agents_data,
                 'total_agents': len(agents_data),
@@ -6616,7 +6948,7 @@ Thank you for watching!"""
                 'error': str(e),
                 'timestamp': datetime.now().isoformat()
             }
-    
+
     def _generate_performance_report(self) -> Dict[str, Any]:
         """Generate performance report."""
         return {
@@ -6630,7 +6962,7 @@ Thank you for watching!"""
             'uptime': self._get_uptime(),
             'memory': self._get_memory_usage()
         }
-    
+
     def _generate_content_report(self) -> Dict[str, Any]:
         """Generate content report."""
         return {
@@ -6645,7 +6977,7 @@ Thank you for watching!"""
                 'instagram': {'status': 'active', 'posts': 67}
             }
         }
-    
+
     def _generate_financial_report(self) -> Dict[str, Any]:
         """Generate financial report."""
         return {
@@ -6665,29 +6997,29 @@ Thank you for watching!"""
                 'last_month': 355.00
             }
         }
-    
+
     def _get_affiliate_status(self) -> Dict[str, Any]:
         """Get affiliate program status and KPIs."""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             # Get affiliate programs with status
             cursor.execute("""
-                SELECT id, program_name, category, commission_rate, conversion_rate, 
+                SELECT id, program_name, category, commission_rate, conversion_rate,
                        status, signup_url, created_at, updated_at
-                FROM affiliate_programs 
+                FROM affiliate_programs
                 ORDER BY updated_at DESC
             """)
             programs = cursor.fetchall()
-            
+
             # Calculate KPIs (mock data for now)
             total_revenue = 2450.75
             top_program = "Amazon Associates" if programs else "None"
             best_link = "Tech Gadgets - Wireless Headphones" if programs else "None"
-            
+
             conn.close()
-            
+
             return {
                 'kpis': {
                     'total_revenue': total_revenue,
@@ -6720,91 +7052,164 @@ Thank you for watching!"""
                 },
                 'programs': []
             }
-    
-    def _format_report_as_markdown(self, data: Dict[str, Any], report_title: str) -> str:
+
+    def _format_report_as_markdown(
+            self, data: Dict[str, Any], report_title: str) -> str:
         """Format report data as Markdown content."""
         try:
             markdown_content = f"# {report_title}\n\n"
-            markdown_content += f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}\n\n"
-            
+            markdown_content += f"**Generated:** {
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}\n\n"
+
             if report_title == "Daily Performance":
                 markdown_content += "## System Performance Overview\n\n"
-                markdown_content += f"- **Tasks Completed:** {data.get('tasks_completed', 0)}\n"
-                markdown_content += f"- **Success Rate:** {data.get('success_rate', 0)}%\n"
-                markdown_content += f"- **Average Processing Time:** {data.get('avg_processing_time', 0)} seconds\n"
-                markdown_content += f"- **Active Agents:** {data.get('active_agents', 0)}\n\n"
-                
+                markdown_content += f"- **Tasks Completed:** {
+                    data.get(
+                        'tasks_completed', 0)}\n"
+                markdown_content += f"- **Success Rate:** {
+                    data.get(
+                        'success_rate',
+                        0)}%\n"
+                markdown_content += f"- **Average Processing Time:** {
+                    data.get(
+                        'avg_processing_time',
+                        0)} seconds\n"
+                markdown_content += f"- **Active Agents:** {
+                    data.get(
+                        'active_agents',
+                        0)}\n\n"
+
                 markdown_content += "## Key Metrics\n\n"
-                markdown_content += f"- **Queue Length:** {data.get('queue_length', 0)} pending tasks\n"
-                markdown_content += f"- **System Uptime:** {data.get('uptime', 'N/A')}\n"
-                markdown_content += f"- **Memory Usage:** {data.get('memory_usage', 0)}%\n\n"
-                
+                markdown_content += f"- **Queue Length:** {
+                    data.get(
+                        'queue_length',
+                        0)} pending tasks\n"
+                markdown_content += f"- **System Uptime:** {
+                    data.get(
+                        'uptime',
+                        'N/A')}\n"
+                markdown_content += f"- **Memory Usage:** {
+                    data.get(
+                        'memory_usage',
+                        0)}%\n\n"
+
             elif report_title == "Weekly Growth":
                 markdown_content += "## Content Creation Summary\n\n"
-                markdown_content += f"- **Total Content Pieces:** {data.get('total_content', 0)}\n"
-                markdown_content += f"- **Growth Rate:** {data.get('growth_rate', 0)}%\n"
-                markdown_content += f"- **Top Performing Channel:** {data.get('top_channel', 'N/A')}\n"
-                markdown_content += f"- **Engagement Rate:** {data.get('engagement_rate', 0)}%\n\n"
-                
+                markdown_content += f"- **Total Content Pieces:** {
+                    data.get(
+                        'total_content',
+                        0)}\n"
+                markdown_content += f"- **Growth Rate:** {
+                    data.get(
+                        'growth_rate',
+                        0)}%\n"
+                markdown_content += f"- **Top Performing Channel:** {
+                    data.get(
+                        'top_channel',
+                        'N/A')}\n"
+                markdown_content += f"- **Engagement Rate:** {
+                    data.get(
+                        'engagement_rate',
+                        0)}%\n\n"
+
                 markdown_content += "## Weekly Highlights\n\n"
-                markdown_content += f"- **New Subscribers:** {data.get('new_subscribers', 0)}\n"
-                markdown_content += f"- **Video Views:** {data.get('video_views', 0):,}\n"
-                markdown_content += f"- **Content Published:** {data.get('content_published', 0)} pieces\n\n"
-                
+                markdown_content += f"- **New Subscribers:** {
+                    data.get(
+                        'new_subscribers', 0)}\n"
+                markdown_content += f"- **Video Views:** {
+                    data.get(
+                        'video_views', 0):,}\n"
+                markdown_content += f"- **Content Published:** {
+                    data.get(
+                        'content_published',
+                        0)} pieces\n\n"
+
             elif report_title == "Quarterly Strategic":
                 markdown_content += "## Financial Performance\n\n"
-                markdown_content += f"- **Revenue Growth:** {data.get('revenue_growth', 0)}%\n"
-                markdown_content += f"- **Total Revenue:** ${data.get('total_revenue', 0):,.2f}\n"
-                markdown_content += f"- **Top Revenue Channel:** {data.get('top_channel', 'N/A')}\n"
-                markdown_content += f"- **Profit Margin:** {data.get('profit_margin', 0)}%\n\n"
-                
+                markdown_content += f"- **Revenue Growth:** {
+                    data.get(
+                        'revenue_growth',
+                        0)}%\n"
+                markdown_content += f"- **Total Revenue:** ${
+                    data.get(
+                        'total_revenue',
+                        0):,.2f}\n"
+                markdown_content += f"- **Top Revenue Channel:** {
+                    data.get(
+                        'top_channel',
+                        'N/A')}\n"
+                markdown_content += f"- **Profit Margin:** {
+                    data.get(
+                        'profit_margin',
+                        0)}%\n\n"
+
                 markdown_content += "## Strategic Recommendations\n\n"
                 markdown_content += "- Focus on high-performing content categories\n"
                 markdown_content += "- Expand affiliate partnerships in top-converting niches\n"
                 markdown_content += "- Optimize content production workflow for efficiency\n\n"
-                
+
             elif report_title == "Affiliate Performance":
                 kpis = data.get('kpis', {})
                 markdown_content += "## Affiliate Program Overview\n\n"
-                markdown_content += f"- **Active Programs:** {kpis.get('active_programs', 0)}\n"
-                markdown_content += f"- **Total Revenue:** ${kpis.get('total_revenue', 0):,.2f}\n"
-                markdown_content += f"- **Top Performer:** {kpis.get('top_program', 'N/A')}\n"
-                markdown_content += f"- **Best Converting Link:** {kpis.get('best_link', 'N/A')}\n\n"
-                
+                markdown_content += f"- **Active Programs:** {
+                    kpis.get(
+                        'active_programs', 0)}\n"
+                markdown_content += f"- **Total Revenue:** ${
+                    kpis.get(
+                        'total_revenue',
+                        0):,.2f}\n"
+                markdown_content += f"- **Top Performer:** {
+                    kpis.get(
+                        'top_program',
+                        'N/A')}\n"
+                markdown_content += f"- **Best Converting Link:** {
+                    kpis.get(
+                        'best_link',
+                        'N/A')}\n\n"
+
                 markdown_content += "## Performance Metrics\n\n"
                 programs = data.get('programs', [])
                 if programs:
                     markdown_content += "### Active Programs\n\n"
                     for program in programs[:5]:  # Show top 5
-                        markdown_content += f"- **{program.get('program_name', 'Unknown')}:** "
-                        markdown_content += f"{program.get('commission_rate', 0)}% commission, "
-                        markdown_content += f"{program.get('conversion_rate', 0)}% conversion\n"
+                        markdown_content += f"- **{
+                            program.get(
+                                'program_name',
+                                'Unknown')}:** "
+                        markdown_content += f"{
+                            program.get(
+                                'commission_rate',
+                                0)}% commission, "
+                        markdown_content += f"{
+                            program.get(
+                                'conversion_rate',
+                                0)}% conversion\n"
                     markdown_content += "\n"
-            
+
             markdown_content += "---\n\n"
             markdown_content += "*This report was automatically generated by the TRAE.AI system.*\n"
-            
+
             return markdown_content
-            
+
         except Exception as e:
             self.logger.error(f"Failed to format report as markdown: {e}")
             return f"# {report_title}\n\nError generating report content: {str(e)}\n"
-    
+
     def _get_affiliate_programs(self) -> List[Dict[str, Any]]:
         """Get all affiliate programs."""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
-                SELECT id, program_name, product_category, commission_rate, conversion_rate, 
+                SELECT id, program_name, product_category, commission_rate, conversion_rate,
                        is_active, signup_url
-                FROM affiliate_programs 
+                FROM affiliate_programs
                 ORDER BY program_name
             """)
             programs = cursor.fetchall()
             conn.close()
-            
+
             return [
                 {
                     'id': p[0],
@@ -6819,17 +7224,18 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Failed to get affiliate programs: {e}")
             return []
-    
+
     def _get_affiliate_programs_with_status(self) -> Dict[str, Any]:
         """Get affiliate programs with enhanced status information."""
         try:
             programs = self._get_affiliate_programs()
-            
+
             # Calculate summary statistics
             total_programs = len(programs)
             active_programs = len([p for p in programs if p['status'] == 'active'])
-            total_revenue = sum(p.get('commission_rate', 0) * 100 for p in programs)  # Mock calculation
-            
+            total_revenue = sum(p.get('commission_rate', 0)
+                                * 100 for p in programs)  # Mock calculation
+
             return {
                 'programs': programs,
                 'summary': {
@@ -6850,25 +7256,25 @@ Thank you for watching!"""
                     'estimated_monthly_revenue': 0
                 }
             }
-    
+
     def _get_affiliate_program_details(self, program_id: int) -> Dict[str, Any]:
         """Get detailed information for a specific affiliate program."""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
-                SELECT id, program_name, product_category, commission_rate, conversion_rate, 
+                SELECT id, program_name, product_category, commission_rate, conversion_rate,
                        is_active, signup_url, created_at, updated_at
-                FROM affiliate_programs 
+                FROM affiliate_programs
                 WHERE id = ?
             """, (program_id,))
             program = cursor.fetchone()
-            
+
             if not program:
                 conn.close()
                 return {'error': 'Program not found'}
-            
+
             # Mock performance data
             performance_data = {
                 'clicks_30d': 1250,
@@ -6880,9 +7286,9 @@ Thank you for watching!"""
                     {'title': 'Productivity Tools Review', 'clicks': 195, 'conversions': 6}
                 ]
             }
-            
+
             conn.close()
-            
+
             return {
                 'program': {
                     'id': program[0],
@@ -6900,13 +7306,14 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Failed to get affiliate program details: {e}")
             return {'error': 'Failed to load program details'}
-    
-    def _control_affiliate_program(self, program_id: int, action: str) -> Dict[str, Any]:
+
+    def _control_affiliate_program(
+            self, program_id: int, action: str) -> Dict[str, Any]:
         """Control affiliate program (activate, pause, update)."""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             if action == 'activate':
                 cursor.execute(
                     "UPDATE affiliate_programs SET status = 'active', updated_at = ? WHERE id = ?",
@@ -6920,20 +7327,20 @@ Thank you for watching!"""
             else:
                 conn.close()
                 return {'success': False, 'message': 'Invalid action'}
-            
+
             conn.commit()
             conn.close()
-            
+
             return {'success': True, 'message': f'Program {action}d successfully'}
         except Exception as e:
             self.logger.error(f"Failed to control affiliate program: {e}")
             return {'success': False, 'message': 'Failed to update program'}
-    
+
     def _calculate_affiliate_kpis(self) -> Dict[str, Any]:
         """Calculate comprehensive affiliate program KPIs."""
         try:
             programs = self._get_affiliate_programs()
-            
+
             if not programs:
                 return {
                     'total_programs': 0,
@@ -6943,19 +7350,24 @@ Thank you for watching!"""
                     'top_performing_program': 'N/A',
                     'programs_needing_attention': 0
                 }
-            
+
             total_programs = len(programs)
             active_programs = len([p for p in programs if p['status'] == 'active'])
-            total_revenue = sum(p.get('commission_rate', 0) * 100 for p in programs)  # Mock calculation
-            avg_commission = sum(p.get('commission_rate', 0) for p in programs) / total_programs
-            
+            total_revenue = sum(p.get('commission_rate', 0)
+                                * 100 for p in programs)  # Mock calculation
+            avg_commission = sum(p.get('commission_rate', 0)
+                                 for p in programs) / total_programs
+
             # Find top performing program (highest commission rate)
-            top_program = max(programs, key=lambda x: x.get('commission_rate', 0), default=None)
+            top_program = max(
+                programs, key=lambda x: x.get(
+                    'commission_rate', 0), default=None)
             top_program_name = top_program['program_name'] if top_program else 'N/A'
-            
+
             # Programs needing attention (inactive or low conversion)
-            needing_attention = len([p for p in programs if p['status'] != 'active' or p.get('conversion_rate', 0) < 0.01])
-            
+            needing_attention = len(
+                [p for p in programs if p['status'] != 'active' or p.get('conversion_rate', 0) < 0.01])
+
             return {
                 'total_programs': total_programs,
                 'active_programs': active_programs,
@@ -6974,10 +7386,11 @@ Thank you for watching!"""
                 'top_performing_program': 'N/A',
                 'programs_needing_attention': 0
             }
-    
+
     def _get_affiliate_opportunities(self) -> List[Dict[str, Any]]:
         """Get affiliate opportunities from Research Agent."""
-        # Mock opportunities data - in real implementation, this would query the Research Agent
+        # Mock opportunities data - in real implementation, this would query the
+        # Research Agent
         return [
             {
                 'id': 1,
@@ -7000,21 +7413,25 @@ Thank you for watching!"""
                 'found_date': datetime.now().isoformat()
             }
         ]
-    
+
     def _signup_for_opportunity(self, opportunity_id: int) -> Dict[str, Any]:
         """Task agent to sign up for affiliate opportunity."""
-        # Mock response - in real implementation, this would task the Stealth Automation Agent
+        # Mock response - in real implementation, this would task the Stealth
+        # Automation Agent
         return {
             'success': True,
             'message': f'Stealth Automation Agent tasked to sign up for opportunity {opportunity_id}',
             'task_id': f'signup-{opportunity_id}-{int(time.time())}'
         }
-    
+
     def _get_system_files(self) -> List[Dict[str, Any]]:
         """Get list of critical system files for backup."""
         try:
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
+
             # Define critical system files
             critical_files = [
                 'launch_live.py',
@@ -7028,25 +7445,26 @@ Thank you for watching!"""
                 'requirements.txt',
                 'requirements_creative.txt'
             ]
-            
+
             # Add all agent files
             agents_dir = base_path / 'backend' / 'agents'
             if agents_dir.exists():
                 for agent_file in agents_dir.glob('*.py'):
                     critical_files.append(f'backend/agents/{agent_file.name}')
-            
+
             # Add all integration files
             integrations_dir = base_path / 'backend' / 'integrations'
             if integrations_dir.exists():
                 for integration_file in integrations_dir.glob('*.py'):
-                    critical_files.append(f'backend/integrations/{integration_file.name}')
-            
+                    critical_files.append(
+                        f'backend/integrations/{integration_file.name}')
+
             # Add all content processing files
             content_dir = base_path / 'backend' / 'content'
             if content_dir.exists():
                 for content_file in content_dir.glob('*.py'):
                     critical_files.append(f'backend/content/{content_file.name}')
-            
+
             # Build file list with metadata
             file_list = []
             for file_path in critical_files:
@@ -7060,12 +7478,12 @@ Thank you for watching!"""
                         'modified': datetime.fromtimestamp(stat.st_mtime).isoformat(),
                         'category': self._get_file_category(file_path)
                     })
-            
+
             return sorted(file_list, key=lambda x: x['category'])
         except Exception as e:
             self.logger.error(f"Failed to get system files: {e}")
             return []
-    
+
     def _get_file_category(self, file_path: str) -> str:
         """Categorize file based on its path."""
         if file_path.startswith('backend/agents/'):
@@ -7082,23 +7500,26 @@ Thank you for watching!"""
             return 'Dependencies'
         else:
             return 'Core System'
-    
+
     def _read_file_content(self, file_path: str) -> Dict[str, Any]:
         """Read content of a specific file."""
         try:
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
             full_path = base_path / file_path
-            
+
             if not full_path.exists():
                 return {'error': 'File not found'}
-            
+
             # Security check: ensure file is within project directory
             if not str(full_path.resolve()).startswith(str(base_path.resolve())):
                 return {'error': 'Access denied: file outside project directory'}
-            
+
             with open(full_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             return {
                 'path': file_path,
                 'content': content,
@@ -7108,27 +7529,27 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Failed to read file {file_path}: {e}")
             return {'error': str(e)}
-    
+
     def _get_all_code_content(self) -> Dict[str, Any]:
         """Get concatenated content of all system files."""
         try:
             files = self._get_system_files()
             all_content = []
             total_lines = 0
-            
+
             for file_info in files:
                 file_data = self._read_file_content(file_info['path'])
                 if 'content' in file_data:
-                    all_content.append(f"\n{'='*80}")
+                    all_content.append(f"\n{'=' * 80}")
                     all_content.append(f"FILE: {file_info['path']}")
                     all_content.append(f"CATEGORY: {file_info['category']}")
                     all_content.append(f"SIZE: {file_info['size']} bytes")
-                    all_content.append(f"{'='*80}\n")
+                    all_content.append(f"{'=' * 80}\n")
                     all_content.append(file_data['content'])
                     total_lines += file_data['lines']
-            
+
             combined_content = '\n'.join(all_content)
-            
+
             return {
                 'content': combined_content,
                 'total_files': len([f for f in files if self._read_file_content(f['path']).get('content')]),
@@ -7138,20 +7559,23 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Failed to get all code content: {e}")
             return {'error': str(e)}
-    
+
     def _generate_code_backup(self) -> Dict[str, Any]:
         """Generate a clean code backup using Git."""
         try:
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             backup_name = f'trae_ai_code_snapshot_{timestamp}.zip'
-            
+
             # Use git archive to create clean backup
             result = subprocess.run([
-                'git', 'archive', '--format=zip', 
+                'git', 'archive', '--format=zip',
                 f'--output={backup_name}', 'HEAD'
             ], cwd=base_path, capture_output=True, text=True)
-            
+
             if result.returncode == 0:
                 backup_path = base_path / backup_name
                 if backup_path.exists():
@@ -7161,18 +7585,18 @@ Thank you for watching!"""
                         'size': backup_path.stat().st_size,
                         'path': str(backup_path)
                     }
-            
+
             # Fallback: create manual zip if git fails
             import zipfile
             backup_path = base_path / backup_name
-            
+
             with zipfile.ZipFile(backup_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 files = self._get_system_files()
                 for file_info in files:
                     file_path = base_path / file_info['path']
                     if file_path.exists():
                         zipf.write(file_path, file_info['path'])
-            
+
             return {
                 'success': True,
                 'filename': backup_name,
@@ -7182,17 +7606,20 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Failed to generate code backup: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     def _generate_data_backup(self) -> Dict[str, Any]:
         """Generate a complete data backup including databases and configs."""
         try:
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             backup_name = f'trae_ai_data_backup_{timestamp}.tar.gz'
-            
+
             import tarfile
             backup_path = base_path / backup_name
-            
+
             with tarfile.open(backup_path, 'w:gz') as tar:
                 # Add databases
                 db_files = ['right_perspective.db', 'trae_ai.db', 'secrets.sqlite']
@@ -7200,19 +7627,19 @@ Thank you for watching!"""
                     db_path = base_path / db_file
                     if db_path.exists():
                         tar.add(db_path, arcname=db_file)
-                
+
                 # Add configuration files
                 config_files = ['.env.example', 'channels.json', 'netlify.toml']
                 for config_file in config_files:
                     config_path = base_path / config_file
                     if config_path.exists():
                         tar.add(config_path, arcname=config_file)
-                
+
                 # Add data directory
                 data_dir = base_path / 'data'
                 if data_dir.exists():
                     tar.add(data_dir, arcname='data')
-            
+
             return {
                 'success': True,
                 'filename': backup_name,
@@ -7222,12 +7649,15 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Failed to generate data backup: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     def _build_project_structure(self) -> Dict[str, Any]:
         """Build complete project structure as a hierarchical tree."""
         try:
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
+
             # Define directories to include in the structure
             include_dirs = [
                 'app',
@@ -7238,25 +7668,25 @@ Thank you for watching!"""
                 'data',
                 'logs'
             ]
-            
+
             # Define file extensions to include
             include_extensions = {
-                '.py', '.js', '.html', '.css', '.json', '.sql', '.md', '.txt', 
+                '.py', '.js', '.html', '.css', '.json', '.sql', '.md', '.txt',
                 '.yml', '.yaml', '.toml', '.env', '.gitignore', '.sh'
             }
-            
+
             # Build the tree structure
             def build_tree_node(path: Path, name: str = None) -> Dict[str, Any]:
                 """Recursively build tree node."""
                 if name is None:
                     name = path.name
-                
+
                 node = {
                     'name': name,
                     'path': str(path.relative_to(base_path)),
                     'type': 'directory' if path.is_dir() else 'file'
                 }
-                
+
                 if path.is_file():
                     try:
                         stat = path.stat()
@@ -7275,67 +7705,94 @@ Thank you for watching!"""
                     # Directory - add children
                     children = []
                     try:
-                        for child in sorted(path.iterdir(), key=lambda x: (x.is_file(), x.name.lower())):
-                            # Skip hidden files and directories (except .env, .gitignore)
-                            if child.name.startswith('.') and child.name not in {'.env', '.gitignore', '.env.example'}:
+                        for child in sorted(
+                            path.iterdir(), key=lambda x: (
+                                x.is_file(), x.name.lower())):
+                            # Skip hidden files and directories (except .env,
+                            # .gitignore)
+                            if child.name.startswith('.') and child.name not in {
+                                    '.env', '.gitignore', '.env.example'}:
                                 continue
-                            
+
                             # Skip common ignore patterns
-                            if child.name in {'__pycache__', '.git', 'node_modules', '.vscode', '.idea', 'venv', '.pytest_cache'}:
+                            if child.name in {
+                                '__pycache__',
+                                '.git',
+                                'node_modules',
+                                '.vscode',
+                                '.idea',
+                                'venv',
+                                    '.pytest_cache'}:
                                 continue
-                            
+
                             # For files, check extension
                             if child.is_file():
                                 if child.suffix.lower() not in include_extensions:
                                     continue
-                            
-                            # For directories, check if it's in include list or has relevant files
+
+                            # For directories, check if it's in include list or has
+                            # relevant files
                             elif child.is_dir():
                                 if child.name not in include_dirs:
                                     # Check if directory contains relevant files
                                     has_relevant_files = any(
-                                        f.suffix.lower() in include_extensions 
+                                        f.suffix.lower() in include_extensions
                                         for f in child.rglob('*') if f.is_file()
                                     )
                                     if not has_relevant_files:
                                         continue
-                            
+
                             children.append(build_tree_node(child))
                     except (OSError, PermissionError):
                         pass
-                    
+
                     node['children'] = children
-                    node['file_count'] = sum(1 for child in children if child['type'] == 'file')
-                    node['dir_count'] = sum(1 for child in children if child['type'] == 'directory')
-                
+                    node['file_count'] = sum(
+                        1 for child in children if child['type'] == 'file')
+                    node['dir_count'] = sum(
+                        1 for child in children if child['type'] == 'directory')
+
                 return node
-            
+
             # Build root structure
             root_children = []
-            
+
             # Add root-level files
-            for item in sorted(base_path.iterdir(), key=lambda x: (x.is_file(), x.name.lower())):
-                if item.name.startswith('.') and item.name not in {'.env', '.gitignore', '.env.example'}:
+            for item in sorted(
+                base_path.iterdir(),
+                key=lambda x: (
+                    x.is_file(),
+                    x.name.lower())):
+                if item.name.startswith('.') and item.name not in {
+                        '.env', '.gitignore', '.env.example'}:
                     continue
-                
-                if item.name in {'__pycache__', '.git', 'node_modules', '.vscode', '.idea', 'venv', '.pytest_cache'}:
+
+                if item.name in {
+                    '__pycache__',
+                    '.git',
+                    'node_modules',
+                    '.vscode',
+                    '.idea',
+                    'venv',
+                        '.pytest_cache'}:
                     continue
-                
+
                 if item.is_file():
                     if item.suffix.lower() in include_extensions:
                         root_children.append(build_tree_node(item))
                 elif item.is_dir():
                     if item.name in include_dirs:
                         root_children.append(build_tree_node(item))
-            
+
             # Calculate statistics
             def count_files_recursive(node):
                 if node['type'] == 'file':
                     return 1
-                return sum(count_files_recursive(child) for child in node.get('children', []))
-            
+                return sum(count_files_recursive(child)
+                           for child in node.get('children', []))
+
             total_files = sum(count_files_recursive(child) for child in root_children)
-            
+
             return {
                 'name': 'TRAE.AI Project',
                 'path': '',
@@ -7362,21 +7819,21 @@ Thank you for watching!"""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             # Get API registry data
             cursor.execute("""
                 SELECT service_name, api_key_hash, status, last_used, usage_count, rate_limit
-                FROM api_registry 
+                FROM api_registry
                 ORDER BY last_used DESC
             """)
             apis = cursor.fetchall()
             conn.close()
-            
+
             # Calculate API KPIs
             total_apis = len(apis)
             active_apis = len([a for a in apis if a[2] == 'active'])
             total_calls = sum(a[4] or 0 for a in apis)
-            
+
             return {
                 'kpis': {
                     'total_apis': total_apis,
@@ -7405,21 +7862,21 @@ Thank you for watching!"""
                 },
                 'apis': []
             }
-    
+
     def _get_api_usage(self) -> Dict[str, Any]:
         """Get detailed API usage statistics."""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 SELECT service_name, usage_count, rate_limit, last_used, status
-                FROM api_registry 
+                FROM api_registry
                 ORDER BY usage_count DESC
             """)
             apis = cursor.fetchall()
             conn.close()
-            
+
             return {
                 'usage_stats': [
                     {
@@ -7446,32 +7903,33 @@ Thank you for watching!"""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             # Get total APIs registered
             cursor.execute("SELECT COUNT(*) FROM api_registry")
             total_apis = cursor.fetchone()[0]
-            
+
             # Get healthy APIs (assuming 'active' status means healthy)
             cursor.execute("SELECT COUNT(*) FROM api_registry WHERE status = 'active'")
             healthy_apis = cursor.fetchone()[0]
-            
+
             # Get most frequently used API
             cursor.execute("""
-                SELECT service_name, call_count 
-                FROM api_registry 
-                WHERE call_count IS NOT NULL 
-                ORDER BY call_count DESC 
+                SELECT service_name, call_count
+                FROM api_registry
+                WHERE call_count IS NOT NULL
+                ORDER BY call_count DESC
                 LIMIT 1
             """)
             most_used_result = cursor.fetchone()
             most_used_api = most_used_result[0] if most_used_result else "N/A"
-            
+
             # Get total call count for last 30 days
-            cursor.execute("SELECT SUM(call_count) FROM api_registry WHERE call_count IS NOT NULL")
+            cursor.execute(
+                "SELECT SUM(call_count) FROM api_registry WHERE call_count IS NOT NULL")
             total_calls = cursor.fetchone()[0] or 0
-            
+
             conn.close()
-            
+
             return {
                 'total_apis': total_apis,
                 'healthy_apis': healthy_apis,
@@ -7486,19 +7944,19 @@ Thank you for watching!"""
                 'most_used_api': 'N/A',
                 'total_calls_30d': 0
             }
-    
+
     def _calculate_api_kpis(self) -> Dict[str, Any]:
         """Calculate comprehensive API KPIs for dashboard display."""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             # Check column names dynamically
             cursor.execute("PRAGMA table_info(api_registry)")
             columns = [col[1] for col in cursor.fetchall()]
-            
+
             service_name_col = 'service_name' if 'service_name' in columns else 'name'
-            
+
             # Get comprehensive API statistics
             cursor.execute("""
                 SELECT COUNT(*) as total,
@@ -7508,27 +7966,27 @@ Thank you for watching!"""
                 FROM api_registry
             """)
             stats = cursor.fetchone()
-            
+
             # Get top performing API
             cursor.execute(f"""
                 SELECT {service_name_col}, call_count
-                FROM api_registry 
+                FROM api_registry
                 WHERE call_count IS NOT NULL AND call_count > 0
-                ORDER BY call_count DESC 
+                ORDER BY call_count DESC
                 LIMIT 1
             """)
             top_api_result = cursor.fetchone()
-            
+
             # Get APIs with high error rates
             cursor.execute("""
-                SELECT COUNT(*) 
-                FROM api_registry 
+                SELECT COUNT(*)
+                FROM api_registry
                 WHERE error_rate IS NOT NULL AND error_rate > 5.0
             """)
             high_error_apis = cursor.fetchone()[0]
-            
+
             conn.close()
-            
+
             return {
                 'total_apis': stats[0] if stats else 0,
                 'active_apis': stats[1] if stats else 0,
@@ -7555,45 +8013,48 @@ Thank you for watching!"""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             # First check if service_name column exists, if not use name column
             cursor.execute("PRAGMA table_info(api_registry)")
             columns = [col[1] for col in cursor.fetchall()]
-            
+
             service_name_col = 'service_name' if 'service_name' in columns else 'name'
             api_key_col = 'api_key_hash' if 'api_key_hash' in columns else 'api_key'
-            
+
             cursor.execute(f"""
-                SELECT {service_name_col}, {api_key_col}, status, last_used, 
+                SELECT {service_name_col}, {api_key_col}, status, last_used,
                        usage_count, rate_limit, call_count, error_rate
-                FROM api_registry 
+                FROM api_registry
                 ORDER BY {service_name_col}
             """)
             apis = cursor.fetchall()
             conn.close()
-            
+
             registry = []
             for api in apis:
                 # Handle both tuple and object access patterns
                 if hasattr(api, 'status'):
                     # APIEndpoint object
                     status_light = 'green' if api.status == 'active' else 'red'
-                    if hasattr(api, 'total_errors') and hasattr(api, 'total_requests') and api.total_requests > 0:
+                    if hasattr(
+                            api, 'total_errors') and hasattr(
+                            api, 'total_requests') and api.total_requests > 0:
                         error_rate = (api.total_errors / api.total_requests) * 100
                         if error_rate > 10:
                             status_light = 'yellow'
-                    
-                    key_status = 'Set' if hasattr(api, 'configuration') and api.configuration else 'Missing'
-                    
+
+                    key_status = 'Set' if hasattr(
+                        api, 'configuration') and api.configuration else 'Missing'
+
                     capability_map = {
                         'openai': 'text-generation',
-                        'anthropic': 'text-generation', 
+                        'anthropic': 'text-generation',
                         'google': 'search',
                         'weather': 'weather-data',
                         'ollama': 'local-llm'
                     }
                     capability = capability_map.get(api.api_name.lower(), 'general')
-                    
+
                     registry.append({
                         'service_name': api.api_name,
                         'capability': capability,
@@ -7609,18 +8070,18 @@ Thank you for watching!"""
                     status_light = 'green' if api[2] == 'active' else 'red'
                     if len(api) > 7 and api[7] and api[7] > 10:  # error_rate > 10%
                         status_light = 'yellow'
-                    
+
                     key_status = 'Set' if len(api) > 1 and api[1] else 'Missing'
-                    
+
                     capability_map = {
                         'openai': 'text-generation',
-                        'anthropic': 'text-generation', 
+                        'anthropic': 'text-generation',
                         'google': 'search',
                         'weather': 'weather-data',
                         'ollama': 'local-llm'
                     }
                     capability = capability_map.get(api[0].lower(), 'general')
-                    
+
                     registry.append({
                         'service_name': api[0],
                         'capability': capability,
@@ -7631,7 +8092,7 @@ Thank you for watching!"""
                         'last_used': api[3] if len(api) > 3 else None,
                         'status': api[2] if len(api) > 2 else 'unknown'
                     })
-            
+
             return {'registry': registry}
         except Exception as e:
             self.logger.error(f"Failed to get API registry: {e}")
@@ -7642,24 +8103,24 @@ Thank you for watching!"""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
-                SELECT * FROM api_registry 
+                SELECT * FROM api_registry
                 WHERE service_name = ?
             """, (api_name,))
             api = cursor.fetchone()
             conn.close()
-            
+
             if not api:
                 return {'error': 'API not found'}
-            
+
             # Mock historical data for demonstration
             historical_data = {
                 'call_volume': [45, 52, 38, 61, 49, 55, 42, 58, 44, 67],
                 'error_rates': [2.1, 1.8, 3.2, 1.5, 2.7, 1.9, 2.3, 1.6, 2.8, 1.4],
                 'response_times': [245, 198, 312, 189, 267, 223, 201, 234, 278, 192]
             }
-            
+
             # Mock agent usage data
             agent_usage = [
                 {'agent_name': 'Research Agent', 'usage_count': 156, 'percentage': 45},
@@ -7667,7 +8128,7 @@ Thank you for watching!"""
                 {'agent_name': 'Marketing Agent', 'usage_count': 67, 'percentage': 19},
                 {'agent_name': 'System Agent', 'usage_count': 34, 'percentage': 10}
             ]
-            
+
             return {
                 'api_info': {
                     'service_name': api[1],
@@ -7690,31 +8151,31 @@ Thank you for watching!"""
         try:
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             if action == 'activate':
                 cursor.execute("""
-                    UPDATE api_registry 
-                    SET status = 'active' 
+                    UPDATE api_registry
+                    SET status = 'active'
                     WHERE service_name = ?
                 """, (api_name,))
                 message = f'API {api_name} activated successfully'
-                
+
             elif action == 'pause':
                 cursor.execute("""
-                    UPDATE api_registry 
-                    SET status = 'paused' 
+                    UPDATE api_registry
+                    SET status = 'paused'
                     WHERE service_name = ?
                 """, (api_name,))
                 message = f'API {api_name} paused successfully'
-                
+
             elif action == 'update_key':
                 new_key = kwargs.get('api_key', '')
                 if new_key:
                     # In real implementation, hash the key
                     key_hash = f'hash_{len(new_key)}'
                     cursor.execute("""
-                        UPDATE api_registry 
-                        SET api_key_hash = ? 
+                        UPDATE api_registry
+                        SET api_key_hash = ?
                         WHERE service_name = ?
                     """, (key_hash, api_name))
                     message = f'API key updated for {api_name}'
@@ -7722,10 +8183,10 @@ Thank you for watching!"""
                     return {'success': False, 'message': 'API key is required'}
             else:
                 return {'success': False, 'message': 'Invalid action'}
-            
+
             conn.commit()
             conn.close()
-            
+
             return {'success': True, 'message': message}
         except Exception as e:
             self.logger.error(f"Failed to control API {api_name}: {e}")
@@ -7733,40 +8194,33 @@ Thank you for watching!"""
 
     def _get_api_opportunities(self) -> Dict[str, Any]:
         """Get API opportunities discovered by Research Agent."""
-        # Mock data for demonstration - in real implementation, this would query a database
-        opportunities = [
-            {
-                'id': 1,
-                'api_name': 'NewsAPI',
-                'capability': 'news-data',
-                'description': 'Access to breaking news and headlines from thousands of sources',
-                'free_tier': 'Yes - 1000 requests/day',
-                'match_score': 92,
-                'signup_url': 'https://newsapi.org/register',
-                'found_date': datetime.now().isoformat()
-            },
-            {
-                'id': 2,
-                'api_name': 'CoinGecko API',
-                'capability': 'crypto-data',
-                'description': 'Comprehensive cryptocurrency data including prices, market cap, and trends',
-                'free_tier': 'Yes - 50 calls/minute',
-                'match_score': 87,
-                'signup_url': 'https://coingecko.com/api',
-                'found_date': datetime.now().isoformat()
-            },
-            {
-                'id': 3,
-                'api_name': 'Unsplash API',
-                'capability': 'image-data',
-                'description': 'High-quality stock photos for content creation and marketing',
-                'free_tier': 'Yes - 5000 requests/hour',
-                'match_score': 84,
-                'signup_url': 'https://unsplash.com/developers',
-                'found_date': datetime.now().isoformat()
-            }
-        ]
-        
+        # Mock data for demonstration - in real implementation, this would query a
+        # database
+        opportunities = [{'id': 1,
+                          'api_name': 'NewsAPI',
+                          'capability': 'news-data',
+                          'description': 'Access to breaking news and headlines from thousands of sources',
+                          'free_tier': 'Yes - 1000 requests/day',
+                          'match_score': 92,
+                          'signup_url': 'https://newsapi.org/register',
+                          'found_date': datetime.now().isoformat()},
+                         {'id': 2,
+                          'api_name': 'CoinGecko API',
+                          'capability': 'crypto-data',
+                          'description': 'Comprehensive cryptocurrency data including prices, market cap, and trends',
+                          'free_tier': 'Yes - 50 calls/minute',
+                          'match_score': 87,
+                          'signup_url': 'https://coingecko.com/api',
+                          'found_date': datetime.now().isoformat()},
+                         {'id': 3,
+                          'api_name': 'Unsplash API',
+                          'capability': 'image-data',
+                          'description': 'High-quality stock photos for content creation and marketing',
+                          'free_tier': 'Yes - 5000 requests/hour',
+                          'match_score': 84,
+                          'signup_url': 'https://unsplash.com/developers',
+                          'found_date': datetime.now().isoformat()}]
+
         return {'opportunities': opportunities}
 
     def _add_api_from_opportunity(self, opportunity_id: int) -> Dict[str, Any]:
@@ -7774,41 +8228,43 @@ Thank you for watching!"""
         try:
             # Get opportunity details (mock data)
             opportunities = self._get_api_opportunities()['opportunities']
-            opportunity = next((o for o in opportunities if o['id'] == opportunity_id), None)
-            
+            opportunity = next(
+                (o for o in opportunities if o['id'] == opportunity_id), None)
+
             if not opportunity:
                 return {'success': False, 'message': 'Opportunity not found'}
-            
+
             conn = sqlite3.connect(self.config.intelligence_db_path)
             cursor = conn.cursor()
-            
+
             # Check if API already exists
             cursor.execute("""
-                SELECT COUNT(*) FROM api_registry 
+                SELECT COUNT(*) FROM api_registry
                 WHERE service_name = ?
             """, (opportunity['api_name'],))
-            
+
             if cursor.fetchone()[0] > 0:
                 conn.close()
                 return {'success': False, 'message': 'API already exists in registry'}
-            
+
             # Add new API to registry
             cursor.execute("""
-                INSERT INTO api_registry 
+                INSERT INTO api_registry
                 (service_name, api_key_hash, status, last_used, usage_count, rate_limit, call_count, error_rate)
                 VALUES (?, NULL, 'inactive', NULL, 0, 1000, 0, 0.0)
             """, (opportunity['api_name'],))
-            
+
             conn.commit()
             conn.close()
-            
+
             return {
-                'success': True, 
-                'message': f'API {opportunity["api_name"]} added to registry successfully',
-                'next_step': 'Please update the API key to activate'
-            }
+                'success': True,
+                'message': f'API {
+                    opportunity["api_name"]} added to registry successfully',
+                'next_step': 'Please update the API key to activate'}
         except Exception as e:
-            self.logger.error(f"Failed to add API from opportunity {opportunity_id}: {e}")
+            self.logger.error(
+                f"Failed to add API from opportunity {opportunity_id}: {e}")
             return {'success': False, 'message': str(e)}
 
     def get_agent_logs(self, agent_id: str, lines: int = 100) -> List[str]:
@@ -7817,22 +8273,22 @@ Thank you for watching!"""
             log_file = Path(self.config.log_directory) / f"{agent_id}.log"
             if not log_file.exists():
                 return [f"No log file found for agent {agent_id}"]
-            
+
             with open(log_file, 'r') as f:
                 all_lines = f.readlines()
                 return all_lines[-lines:] if len(all_lines) > lines else all_lines
         except Exception as e:
             self.logger.error(f"Failed to read logs for agent {agent_id}: {e}")
             return [f"Error reading logs: {str(e)}"]
-    
+
     def control_agent(self, agent_id: str, action: str) -> bool:
         """Control agent operations (start/stop/restart)."""
         try:
             if agent_id not in self.agents:
                 return False
-            
+
             agent = self.agents[agent_id]
-            
+
             if action == 'start':
                 # In a real implementation, this would start the agent process
                 agent.status = 'busy'
@@ -7851,28 +8307,29 @@ Thank you for watching!"""
                 self.logger.info(f"Restarted agent {agent_id}")
             else:
                 return False
-            
+
             agent.last_activity = datetime.now()
             return True
         except Exception as e:
             self.logger.error(f"Failed to control agent {agent_id}: {e}")
             return False
-    
+
     def execute_database_query(self, query: str) -> Dict[str, Any]:
         """Execute a read-only query on the intelligence database."""
         try:
             # Security check: only allow SELECT statements
             if not query.strip().upper().startswith('SELECT'):
                 raise ValueError("Only SELECT queries are allowed")
-            
+
             with sqlite3.connect(self.config.intelligence_db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(query)
-                
+
                 rows = cursor.fetchall()
-                columns = [description[0] for description in cursor.description] if cursor.description else []
-                
+                columns = [description[0]
+                           for description in cursor.description] if cursor.description else []
+
                 return {
                     'columns': columns,
                     'data': [dict(row) for row in rows],
@@ -7881,7 +8338,7 @@ Thank you for watching!"""
         except Exception as e:
             self.logger.error(f"Database query failed: {e}")
             raise
-    
+
     def _get_mock_agent_status(self):
         """Return mock agent status data when orchestrator is not available."""
         mock_agents = [
@@ -7913,22 +8370,23 @@ Thank you for watching!"""
                 'error_message': None
             }
         ]
-        
+
         return jsonify({
             'success': True,
             'agents': mock_agents,
             'timestamp': datetime.now(timezone.utc).isoformat()
         })
-    
+
     def _calculate_uptime(self, last_updated):
         """Calculate uptime string from last updated timestamp."""
         if not last_updated:
             return '0h 0m'
-        
+
         try:
             if isinstance(last_updated, str):
-                last_updated = datetime.fromisoformat(last_updated.replace('Z', '+00:00'))
-            
+                last_updated = datetime.fromisoformat(
+                    last_updated.replace('Z', '+00:00'))
+
             uptime_delta = datetime.now(timezone.utc) - last_updated
             hours = int(uptime_delta.total_seconds() // 3600)
             minutes = int((uptime_delta.total_seconds() % 3600) // 60)
@@ -7936,7 +8394,12 @@ Thank you for watching!"""
         except Exception:
             return '0h 0m'
 
-    def add_evidence_entry(self, title: str, content: str, source: str, category: str = 'manual') -> bool:
+    def add_evidence_entry(
+            self,
+            title: str,
+            content: str,
+            source: str,
+            category: str = 'manual') -> bool:
         """Add a new entry to the evidence table."""
         try:
             with sqlite3.connect(self.config.intelligence_db_path) as conn:
@@ -7946,31 +8409,31 @@ Thank you for watching!"""
                     (title, content, source, category, datetime.now().isoformat())
                 )
                 conn.commit()
-                
+
             self.logger.info(f"Added evidence entry: {title}")
             return True
         except Exception as e:
             self.logger.error(f"Failed to add evidence entry: {e}")
             return False
-    
+
     def _signal_research_agent_reload(self):
         """Signal the Research Agent to reload RSS feeds."""
         try:
             # In a real implementation, this would send a signal to the Research Agent
             # For now, we'll log the reload request
             self.logger.info("RSS feeds updated - signaling Research Agent to reload")
-            
+
             # Future implementation could use:
             # - Message queue (Redis, RabbitMQ)
             # - HTTP endpoint to Research Agent
             # - File-based signal mechanism
             # - Database flag that Research Agent monitors
-            
+
             return True
         except Exception as e:
             self.logger.error(f"Failed to signal Research Agent reload: {e}")
             return False
-    
+
     def _current_audit_data(self) -> Dict[str, Any]:
         """Get current audit data for verdict calculation."""
         try:
@@ -7982,36 +8445,36 @@ Thank you for watching!"""
                 'database_health': True,  # Simplified for now
                 'uptime': uptime_seconds()
             }
-            
+
             return {
                 'data': {
                     'system_stats': stats,
-                    'agents': {agent_id: asdict(agent) for agent_id, agent in self.agents.items()},
-                    'timestamp': utc_iso()
-                }
-            }
+                    'agents': {
+                        agent_id: asdict(agent) for agent_id,
+                        agent in self.agents.items()},
+                    'timestamp': utc_iso()}}
         except Exception as e:
             self.logger.error(f"Error getting audit data: {e}")
             return {'data': {}}
-    
+
     def _infer_verdict(self, audit_data: Dict[str, Any]) -> str:
         """Infer system verdict from audit data."""
         try:
             if not audit_data:
                 return 'unknown'
-            
+
             system_stats = audit_data.get('system_stats', {})
             agents = audit_data.get('agents', {})
-            
+
             # Check for critical issues
             error_agents = [a for a in agents.values() if a.get('status') == 'error']
             if error_agents:
                 return 'degraded'
-            
+
             # Check system health indicators
             active_agents = system_stats.get('active_agents', 0)
             total_agents = system_stats.get('total_agents', 1)
-            
+
             if active_agents == 0:
                 return 'critical'
             elif active_agents < total_agents * 0.5:
@@ -8020,7 +8483,7 @@ Thank you for watching!"""
                 return 'operational'
             else:
                 return 'operational'
-                
+
         except Exception as e:
             self.logger.error(f"Error inferring verdict: {e}")
             return 'unknown'
@@ -8030,82 +8493,89 @@ Thank you for watching!"""
         try:
             conn = sqlite3.connect(self.config.database_path)
             cursor = conn.cursor()
-            
+
             # Clear existing memberships for this segment
-            cursor.execute("DELETE FROM segment_memberships WHERE segment_id = ?", (segment_id,))
-            
+            cursor.execute(
+                "DELETE FROM segment_memberships WHERE segment_id = ?", (segment_id,))
+
             # Build SQL query based on criteria
             where_conditions = []
             params = []
-            
+
             if criteria.get('lifecycle_stage'):
                 where_conditions.append("lifecycle_stage = ?")
                 params.append(criteria['lifecycle_stage'])
-            
+
             if criteria.get('source'):
                 where_conditions.append("source = ?")
                 params.append(criteria['source'])
-            
+
             if criteria.get('status'):
                 where_conditions.append("status = ?")
                 params.append(criteria['status'])
-            
+
             if criteria.get('engagement_score_min'):
                 where_conditions.append("engagement_score >= ?")
                 params.append(criteria['engagement_score_min'])
-            
+
             if criteria.get('days_since_last_engagement'):
-                days_ago = datetime.now() - timedelta(days=criteria['days_since_last_engagement'])
+                days_ago = datetime.now() - \
+                    timedelta(days=criteria['days_since_last_engagement'])
                 where_conditions.append("last_engagement_at >= ?")
                 params.append(days_ago.isoformat())
-            
+
             # If no criteria, don't add any contacts
             if not where_conditions:
                 conn.close()
                 return
-            
+
             # Get matching contacts
             where_clause = " AND ".join(where_conditions)
             query = f"SELECT id FROM contacts WHERE {where_clause}"
-            
+
             cursor.execute(query, params)
             matching_contacts = cursor.fetchall()
-            
+
             # Add contacts to segment
             for contact in matching_contacts:
                 cursor.execute("""
                     INSERT INTO segment_memberships (segment_id, contact_id, added_by)
                     VALUES (?, ?, ?)
                 """, (segment_id, contact[0], 'system'))
-            
+
             # Update segment contact count
             cursor.execute("""
-                UPDATE audience_segments 
+                UPDATE audience_segments
                 SET contact_count = ?, last_calculated_at = CURRENT_TIMESTAMP
                 WHERE segment_id = ?
             """, (len(matching_contacts), segment_id))
-            
+
             conn.commit()
             conn.close()
-            
-            self.logger.info(f"Updated segment {segment_id} with {len(matching_contacts)} contacts")
-            
+
+            self.logger.info(
+                f"Updated segment {segment_id} with {
+                    len(matching_contacts)} contacts")
+
         except Exception as e:
             self.logger.error(f"Failed to calculate segment membership: {e}")
-    
+
     def _perform_rule1_scan(self):
         """Perform Rule-1 content scanning audit."""
         try:
             # Import Rule1 scanner
             sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             from utils.rule1_scanner import Rule1DeepScanner
-            
+
             scanner = Rule1DeepScanner()
-            
+
             # Scan key system files
             scan_results = []
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
+
             # Scan critical files
             critical_files = [
                 'launch_live.py',
@@ -8113,13 +8583,13 @@ Thank you for watching!"""
                 'backend/system_agent.py',
                 'utils/rule1_scanner.py'
             ]
-            
+
             for file_path in critical_files:
                 full_path = base_path / file_path
                 if full_path.exists():
                     with open(full_path, 'r', encoding='utf-8') as f:
                         content = f.read()
-                    
+
                     result = scanner.deep_scan_content(content, str(full_path))
                     scan_results.append({
                         'file': file_path,
@@ -8127,26 +8597,26 @@ Thank you for watching!"""
                         'violations': len(result.violations),
                         'risk_score': result.risk_score
                     })
-            
+
             return {
                 'status': 'completed',
                 'files_scanned': len(scan_results),
                 'total_violations': sum(r['violations'] for r in scan_results),
                 'results': scan_results
             }
-            
+
         except Exception as e:
             return {
                 'status': 'error',
                 'error': str(e),
                 'files_scanned': 0
             }
-    
+
     def _check_deletion_protection(self):
         """Check system deletion protection mechanisms."""
         try:
             protections = []
-            
+
             # Check database backup mechanisms
             db_path = Path(self.config.intelligence_db_path)
             if db_path.exists():
@@ -8155,11 +8625,17 @@ Thank you for watching!"""
                     'status': 'protected',
                     'details': 'Database files exist and are accessible'
                 })
-            
+
             # Check critical system files
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            critical_files = ['launch_live.py', 'app/dashboard.py', 'backend/system_agent.py']
-            
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
+            critical_files = [
+                'launch_live.py',
+                'app/dashboard.py',
+                'backend/system_agent.py']
+
             for file_path in critical_files:
                 full_path = base_path / file_path
                 if full_path.exists():
@@ -8168,63 +8644,69 @@ Thank you for watching!"""
                         'status': 'protected',
                         'details': 'File exists and is readable'
                     })
-            
+
             return {
                 'status': 'operational',
                 'protections_active': len(protections),
                 'details': protections
             }
-            
+
         except Exception as e:
             return {
                 'status': 'error',
                 'error': str(e)
             }
-    
+
     def _validate_async_architecture(self):
         """Validate asynchronous architecture implementation."""
         try:
             validations = []
-            
+
             # Check if asyncio is properly imported and used
-            base_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_path = Path(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))
             launch_file = base_path / 'launch_live.py'
-            
+
             if launch_file.exists():
                 with open(launch_file, 'r') as f:
                     content = f.read()
-                
+
                 async_checks = [
-                    ('asyncio import', 'import asyncio' in content),
-                    ('async main function', 'async def main(' in content),
-                    ('event loop management', 'asyncio.run(' in content or 'asyncio.get_event_loop()' in content),
-                    ('async task creation', 'asyncio.create_task(' in content or 'asyncio.ensure_future(' in content)
-                ]
-                
+                    ('asyncio import',
+                     'import asyncio' in content),
+                    ('async main function',
+                     'async def main(' in content),
+                    ('event loop management',
+                     'asyncio.run(' in content or 'asyncio.get_event_loop()' in content),
+                    ('async task creation',
+                     'asyncio.create_task(' in content or 'asyncio.ensure_future(' in content)]
+
                 for check_name, passed in async_checks:
                     validations.append({
                         'check': check_name,
                         'status': 'pass' if passed else 'fail',
                         'component': 'launch_live.py'
                     })
-            
+
             return {
                 'status': 'completed',
                 'architecture_valid': all(v['status'] == 'pass' for v in validations),
                 'validations': validations
             }
-            
+
         except Exception as e:
             return {
                 'status': 'error',
                 'error': str(e)
             }
-    
+
     def _verify_database_schema(self):
         """Verify database schema integrity."""
         try:
             schema_checks = []
-            
+
             # Check main database
             db_path = Path(self.config.database_path)
             if db_path.exists():
@@ -8232,14 +8714,14 @@ Thank you for watching!"""
                     cursor = conn.cursor()
                     cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                     tables = [row[0] for row in cursor.fetchall()]
-                    
+
                     schema_checks.append({
                         'database': 'main',
                         'status': 'operational',
                         'tables': len(tables),
                         'table_list': tables
                     })
-            
+
             # Check intelligence database
             intel_db_path = Path(self.config.intelligence_db_path)
             if intel_db_path.exists():
@@ -8247,27 +8729,27 @@ Thank you for watching!"""
                     cursor = conn.cursor()
                     cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                     tables = [row[0] for row in cursor.fetchall()]
-                    
+
                     schema_checks.append({
                         'database': 'intelligence',
                         'status': 'operational',
                         'tables': len(tables),
                         'table_list': tables
                     })
-            
+
             return {
                 'status': 'completed',
                 'databases_checked': len(schema_checks),
-                'all_operational': all(check['status'] == 'operational' for check in schema_checks),
-                'details': schema_checks
-            }
-            
+                'all_operational': all(
+                    check['status'] == 'operational' for check in schema_checks),
+                'details': schema_checks}
+
         except Exception as e:
             return {
                 'status': 'error',
                 'error': str(e)
             }
-    
+
     def _generate_evidence_bundle(self):
         """Generate comprehensive evidence bundle for audit."""
         try:
@@ -8294,15 +8776,15 @@ Thank you for watching!"""
                     'log_level': self.config.log_level
                 }
             }
-            
+
             return bundle
-            
+
         except Exception as e:
             return {
                 'error': f'Evidence bundle generation failed: {str(e)}',
                 'timestamp': datetime.now(timezone.utc).isoformat()
             }
-    
+
     def _get_active_processes(self):
         """Get information about active system processes."""
         try:
@@ -8312,13 +8794,16 @@ Thank you for watching!"""
                 if 'python' in proc.info['name'].lower():
                     processes.append(proc.info)
             return processes[:10]  # Limit to top 10
-        except:
+        except BaseException:
             return [{'info': 'Process information unavailable'}]
-    
+
     def run(self, use_waitress: bool = True):
         """Run the dashboard application with SocketIO support."""
         if use_waitress:
-            self.logger.info(f"Starting Total Access Command Center with SocketIO on {self.config.host}:{self.config.port}")
+            self.logger.info(
+                f"Starting Total Access Command Center with SocketIO on {
+                    self.config.host}:{
+                    self.config.port}")
             # Use SocketIO with Waitress for production
             self.socketio.run(
                 self.app,
@@ -8329,7 +8814,10 @@ Thank you for watching!"""
                 log_output=True
             )
         else:
-            self.logger.info(f"Starting Total Access Command Center dev server with SocketIO on {self.config.host}:{self.config.port}")
+            self.logger.info(
+                f"Starting Total Access Command Center dev server with SocketIO on {
+                    self.config.host}:{
+                    self.config.port}")
             # Use SocketIO development server
             self.socketio.run(
                 self.app,
@@ -8357,20 +8845,21 @@ def main():
             with SecretStore() as store:
                 secret_key = store.get_secret('DASHBOARD_KEY')
         except Exception as e:
-            print(f"Warning: Could not retrieve DASHBOARD_SECRET_KEY from SecretStore: {e}")
-    
+            print(
+                f"Warning: Could not retrieve DASHBOARD_SECRET_KEY from SecretStore: {e}")
+
     if not secret_key:
         secret_key = os.getenv('DASHBOARD_SECRET_KEY')
-    
+
     if not secret_key:
         secret_key = secrets.token_urlsafe(32)
         print("WARNING: No DASHBOARD_SECRET_KEY found in SecretStore or environment. Generated random key for this session.")
         print("For production, use: python scripts/secrets_cli.py add DASHBOARD_SECRET_KEY <your-secret-key>")
-    
+
     host = os.getenv("HOST", "127.0.0.1")
     # start at 8080 unless PORT is set
     port = int(os.getenv("PORT", "8080"))
-    
+
     # bump to the next free port if needed
     def first_free(start, max_tries=50):
         p = start
@@ -8383,10 +8872,10 @@ def main():
                 except OSError:
                     p += 1
         raise RuntimeError("No free port found")
-    
+
     port = first_free(port)
     print(f"Dashboard app starting on http://{host}:{port}")
-    
+
     config = DashboardConfig(
         host=host,
         port=port,
@@ -8395,10 +8884,10 @@ def main():
         database_path=os.getenv('DATABASE_PATH', 'trae_ai.db'),
         log_level=os.getenv('LOG_LEVEL', 'INFO')
     )
-    
+
     # Create and run dashboard
     dashboard = DashboardApp(config)
-    
+
     try:
         # turn off debug auto-reloader to avoid double binds
         dashboard.run(use_waitress=True)

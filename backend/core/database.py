@@ -3,10 +3,11 @@
 TRAE.AI Database Connection Manager
 
 This module provides database connection management and utilities for the TRAE.AI system.
-It handles SQLite database connections, connection pooling, and database initialization.
+It handles both SQLite (development) and PostgreSQL (production) database connections,
+connection pooling, and database initialization.
 
 Author: TRAE.AI System
-Version: 1.0.0
+Version: 2.0.0
 Date: 2024
 """
 
@@ -20,6 +21,13 @@ import logging
 
 # Import utilities
 from utils.logger import get_logger
+
+# Import production database manager
+try:
+    from .database_production import ProductionDatabaseManager
+    PRODUCTION_DB_AVAILABLE = True
+except ImportError:
+    PRODUCTION_DB_AVAILABLE = False
 
 logger = get_logger(__name__)
 
@@ -134,13 +142,35 @@ class DatabaseManager:
             conn.executescript(script)
             conn.commit()
 
+# Initialize appropriate database manager based on environment
+def _get_database_manager():
+    """Get the appropriate database manager based on DATABASE_URL"""
+    database_url = os.getenv('DATABASE_URL', 'data/trae_master.db')
+    
+    # Use production manager for PostgreSQL URLs or when explicitly requested
+    if (PRODUCTION_DB_AVAILABLE and 
+        (database_url.startswith('postgresql://') or 
+         os.getenv('USE_PRODUCTION_DB', '').lower() == 'true')):
+        logger.info("Using ProductionDatabaseManager for PostgreSQL")
+        return ProductionDatabaseManager(database_url)
+    else:
+        logger.info("Using legacy DatabaseManager for SQLite")
+        return DatabaseManager(database_url if not database_url.startswith('postgresql://') else 'data/trae_master.db')
+
 # Global database manager instance
-db_manager = DatabaseManager()
+db_manager = _get_database_manager()
 
 # Convenience functions
 def get_db_connection():
     """Get database connection context manager"""
     return db_manager.get_connection()
+
+def get_db_session():
+    """Get SQLAlchemy session context manager (production only)"""
+    if hasattr(db_manager, 'get_session'):
+        return db_manager.get_session()
+    else:
+        raise NotImplementedError("SQLAlchemy sessions only available with ProductionDatabaseManager")
 
 def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:
     """Execute a SELECT query"""
@@ -149,3 +179,16 @@ def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:
 def execute_update(query: str, params: tuple = ()) -> int:
     """Execute an INSERT/UPDATE/DELETE query"""
     return db_manager.execute_update(query, params)
+
+def database_health_check() -> Dict[str, Any]:
+    """Perform database health check"""
+    if hasattr(db_manager, 'health_check'):
+        return db_manager.health_check()
+    else:
+        # Fallback health check for legacy manager
+        try:
+            with get_db_connection() as conn:
+                conn.execute("SELECT 1")
+            return {'status': 'healthy', 'database_type': 'sqlite'}
+        except Exception as e:
+            return {'status': 'unhealthy', 'error': str(e), 'database_type': 'sqlite'}

@@ -40,23 +40,28 @@ _registry = IntegrationRegistry()
 _monitor = IntegrationMonitor(_registry)
 
 # Request/Response Models
+
+
 class LocationRequest(BaseModel):
     """Request model for location queries"""
-    query: str = Field(..., min_length=1, max_length=200, description="Location search query")
+    query: str = Field(..., min_length=1, max_length=200,
+                       description="Location search query")
     limit: int = Field(10, ge=1, le=50, description="Maximum number of results")
-    
+
     @validator('query')
     def validate_query(cls, v):
         if not v.strip():
             raise ValueError('Query cannot be empty')
         return v.strip()
 
+
 class PlaceSearchRequest(BaseModel):
     """Request model for place searches"""
     location: str = Field(..., min_length=1, max_length=200)
     place_type: str = Field("restaurant", min_length=1, max_length=50)
     radius: int = Field(1000, ge=100, le=50000, description="Search radius in meters")
-    
+
+
 class PlaceResponse(BaseModel):
     """Response model for place data"""
     success: bool
@@ -66,10 +71,13 @@ class PlaceResponse(BaseModel):
     count: Optional[int] = None
 
 # Rate limiting (basic implementation)
+
+
 def check_rate_limit(request: Request) -> bool:
     """Basic rate limiting check"""
     # In production, implement proper rate limiting with Redis or similar
     return True
+
 
 def rate_limit_dependency(request: Request):
     """FastAPI dependency for rate limiting"""
@@ -81,6 +89,8 @@ def rate_limit_dependency(request: Request):
     return True
 
 # Endpoints
+
+
 @router.get("/search", response_model=PlaceResponse)
 async def search_places(
     request: Request,
@@ -92,7 +102,7 @@ async def search_places(
     try:
         # Validate input
         location_request = LocationRequest(query=query, limit=limit)
-        
+
         # Mock response - in production, integrate with actual geocoding/places APIs
         mock_places = [
             {
@@ -106,7 +116,7 @@ async def search_places(
             }
             for i in range(1, min(location_request.limit + 1, 6))
         ]
-        
+
         return PlaceResponse(
             success=True,
             data={
@@ -118,7 +128,7 @@ async def search_places(
             timestamp=datetime.now(),
             count=len(mock_places)
         )
-        
+
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
@@ -127,6 +137,7 @@ async def search_places(
             status_code=500,
             detail="Internal server error while searching places"
         )
+
 
 @router.get("/nearby", response_model=PlaceResponse)
 async def get_nearby_places(
@@ -153,7 +164,7 @@ async def get_nearby_places(
             }
             for i in range(1, 4)
         ]
-        
+
         return PlaceResponse(
             success=True,
             data={
@@ -166,7 +177,7 @@ async def get_nearby_places(
             timestamp=datetime.now(),
             count=len(mock_nearby)
         )
-        
+
     except Exception as e:
         logger.error(f"Error getting nearby places: {str(e)}")
         raise HTTPException(
@@ -174,12 +185,14 @@ async def get_nearby_places(
             detail="Internal server error while retrieving nearby places"
         )
 
+
 @router.get("/geocode", response_model=PlaceResponse)
-async def geocode_address(
-    request: Request,
-    address: str = Query(..., min_length=1, max_length=300, description="Address to geocode"),
-    _: bool = Depends(rate_limit_dependency)
-):
+async def geocode_address(request: Request,
+                          address: str = Query(...,
+                                               min_length=1,
+                                               max_length=300,
+                                               description="Address to geocode"),
+                          _: bool = Depends(rate_limit_dependency)):
     """Geocode an address to coordinates"""
     try:
         # Mock geocoding response - in production, integrate with geocoding APIs
@@ -198,7 +211,7 @@ async def geocode_address(
                 "postal_code": "10001"
             }
         }
-        
+
         return PlaceResponse(
             success=True,
             data=mock_geocode,
@@ -206,13 +219,14 @@ async def geocode_address(
             timestamp=datetime.now(),
             count=1
         )
-        
+
     except Exception as e:
         logger.error(f"Error geocoding address: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail="Internal server error while geocoding address"
         )
+
 
 @router.get("/reverse-geocode", response_model=PlaceResponse)
 async def reverse_geocode(
@@ -237,7 +251,7 @@ async def reverse_geocode(
             },
             "accuracy": "high"
         }
-        
+
         return PlaceResponse(
             success=True,
             data=mock_reverse,
@@ -245,7 +259,7 @@ async def reverse_geocode(
             timestamp=datetime.now(),
             count=1
         )
-        
+
     except Exception as e:
         logger.error(f"Error reverse geocoding: {str(e)}")
         raise HTTPException(
@@ -254,6 +268,8 @@ async def reverse_geocode(
         )
 
 # --- NEW: lightweight provider status for the UI ---
+
+
 @router.get("/providers/status")
 async def provider_status():
     await _monitor.check_all()
@@ -278,13 +294,17 @@ async def provider_status():
     return out
 
 # --- NEW: page route for the map UI ---
+
+
 @router.get("/locator", response_class=HTMLResponse)
 async def places_locator(request: Request):
     return templates.TemplateResponse("locator.html", {"request": request})
 
+
 @router.get("/locator/mini", response_class=HTMLResponse)
 async def places_mini_locator(request: Request):
     return templates.TemplateResponse("mini_locator.html", {"request": request})
+
 
 @router.get("/health")
 async def health_check():
@@ -295,6 +315,7 @@ async def health_check():
         "service": "places-api"
     }
 
+
 @router.get("/dashboard")
 async def places_dashboard():
     """Serve the places status dashboard HTML page"""
@@ -303,6 +324,7 @@ async def places_dashboard():
         return FileResponse(dashboard_path, media_type="text/html")
     else:
         raise HTTPException(status_code=404, detail="Dashboard not found")
+
 
 @router.get("/providers")
 async def get_providers_status():
@@ -319,7 +341,7 @@ async def get_providers_status():
         {"id": "google_places", "name": "Google Places API", "status": "red", "type": "places"},
         {"id": "yelp", "name": "Yelp Fusion API", "status": "purple", "type": "places"}
     ]
-    
+
     return {
         "providers": providers,
         "last_updated": datetime.now().isoformat(),

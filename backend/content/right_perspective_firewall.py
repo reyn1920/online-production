@@ -80,10 +80,10 @@ class RightPerspectiveFirewall:
     # The protected channel ID - this should never change
     RIGHT_PERSPECTIVE_CHANNEL_ID = "right_perspective"
     
-    def __init__(self, db_path: str = "data/right_perspective.db"):
+    def __init__(self, db_path: str = "data/right_perspective.db", protocol=None):
         self.db_path = db_path
         self.logger = logging.getLogger(__name__)
-        self.protocol = get_protocol()
+        self.protocol = protocol  # Accept protocol as parameter to avoid circular dependency
         self._initialize_firewall_tables()
         self._setup_default_rules()
         
@@ -92,6 +92,10 @@ class RightPerspectiveFirewall:
         self._violation_cache = []
         
         self.logger.info("Right Perspective Firewall initialized with maximum security")
+    
+    def set_protocol(self, protocol):
+        """Set the protocol instance after initialization to avoid circular dependency"""
+        self.protocol = protocol
     
     def _initialize_firewall_tables(self):
         """Initialize firewall database tables"""

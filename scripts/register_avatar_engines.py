@@ -9,14 +9,16 @@ import json
 import os
 from datetime import datetime
 
+
 def get_database_path():
     """Get the database path from environment or use default."""
     return os.getenv('DATABASE_PATH', 'intelligence.db')
 
+
 def register_avatar_engines():
     """Register both avatar engines in the API registry."""
     db_path = get_database_path()
-    
+
     # Avatar engine configurations
     engines = [
         {
@@ -66,11 +68,11 @@ def register_avatar_engines():
             'created_by': 'system'
         }
     ]
-    
+
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        
+
         # Check if engines already exist
         for engine in engines:
             cursor.execute(
@@ -78,7 +80,7 @@ def register_avatar_engines():
                 (engine['api_name'],)
             )
             existing = cursor.fetchone()
-            
+
             if existing:
                 # Update existing engine
                 cursor.execute("""
@@ -136,30 +138,30 @@ def register_avatar_engines():
                     engine['created_by']
                 ))
                 print(f"✅ Registered new avatar engine: {engine['api_name']}")
-        
+
         conn.commit()
-        
+
         # Verify registration
         cursor.execute("""
-            SELECT api_name, capability, priority, status 
-            FROM api_registry 
+            SELECT api_name, capability, priority, status
+            FROM api_registry
             WHERE capability = 'avatar-generation'
             ORDER BY priority ASC
         """)
-        
+
         registered_engines = cursor.fetchall()
         print("\n🎯 Avatar Generation Engines Registered:")
         for engine in registered_engines:
             name, capability, priority, status = engine
             print(f"  • {name} (Priority: {priority}, Status: {status})")
-        
+
         print("\n🚀 Avatar engine registration completed successfully!")
         print("\n📋 Integration Summary:")
         print("  • Primary Engine: Linly-Talker (Priority 1) - High quality, enhanced features")
         print("  • Fallback Engine: Talking Heads (Priority 10) - Reliable backup option")
         print("  • Capability: 'avatar-generation' - Used by API Orchestrator for intelligent selection")
         print("  • Failover: Automatic - System will switch to fallback if primary fails")
-        
+
     except sqlite3.Error as e:
         print(f"❌ Database error: {e}")
         return False
@@ -169,15 +171,16 @@ def register_avatar_engines():
     finally:
         if conn:
             conn.close()
-    
+
     return True
+
 
 if __name__ == "__main__":
     print("🎬 TRAE AI Avatar Engine Registration")
     print("=" * 50)
-    
+
     success = register_avatar_engines()
-    
+
     if success:
         print("\n✨ Avatar engines are now ready for production use!")
         print("\n🔧 Next Steps:")

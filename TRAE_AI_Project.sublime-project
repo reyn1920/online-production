@@ -1,0 +1,48 @@
+{
+  "folders": [
+    {
+      "path": "/Users/thomasbrianreynolds/online production",
+      "folder_exclude_patterns": [
+        "node_modules",
+        "venv",
+        "__pycache__",
+        ".git",
+        "models/linly_talker",
+        "cache",
+        "test_outputs"
+      ],
+      "file_exclude_patterns": [
+        "*.pyc",
+        "*.log",
+        "*.pid",
+        "*.sqlite"
+      ]
+    }
+  ],
+  "settings": {
+    "tab_size": 4,
+    "translate_tabs_to_spaces": true,
+    "trim_trailing_white_space_on_save": true,
+    "ensure_newline_at_eof_on_save": true
+  },
+  "build_systems": [
+    {
+      "name": "TRAE AI - Run Tests",
+      "cmd": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/"
+      ],
+      "working_dir": "/Users/thomasbrianreynolds/online production"
+    },
+    {
+      "name": "TRAE AI - Start Development Server",
+      "cmd": [
+        "python",
+        "main.py"
+      ],
+      "working_dir": "/Users/thomasbrianreynolds/online production"
+    }
+  ]
+}

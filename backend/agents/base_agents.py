@@ -28,10 +28,7 @@ import json
 import logging
 
 # Import utilities
-try:
-    from backend.secret_store import SecretStore
-except ImportError:
-    from backend.mock_secret_store import SecretStore
+from backend.secret_store import SecretStore
 from utils.logger import get_logger, PerformanceTimer
 from backend.agents.base44_agent_protocol import Base44AgentProtocol, TaskContext, AgentMode, ConfirmationLevel
 from backend.integrations.ollama_integration import OllamaIntegration
@@ -1771,8 +1768,10 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             if (self.rss_intelligence['last_intelligence_update'] is None or 
                 current_time - self.rss_intelligence['last_intelligence_update'] > self.rss_intelligence['intelligence_refresh_interval']):
                 
-                # Initialize RSS intelligence engine if needed
-                rss_engine = BreakingNewsWatcher()
+                # Use singleton RSS intelligence engine to prevent redundant loading
+                if not hasattr(self, '_rss_engine_singleton'):
+                    self._rss_engine_singleton = BreakingNewsWatcher()
+                rss_engine = self._rss_engine_singleton
                 
                 # Get trending topics
                 trending_topics = rss_engine.get_trending_topics(limit=10)

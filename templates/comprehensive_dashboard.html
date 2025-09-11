@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRAE.AI - Comprehensive Production Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #4a9eff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            color: #4a9eff;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card-title {
+            color: #4a9eff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .card-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-healthy { background: #4caf50; }
+        .status-warning { background: #ff9800; }
+        .status-error { background: #f44336; }
+        .status-unknown { background: #9e9e9e; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4a9eff;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-container {
+            height: 250px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .service-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #4a9eff;
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-details {
+            font-size: 0.8rem;
+            color: #ccc;
+            margin-top: 0.25rem;
+        }
+
+        .revenue-streams {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .revenue-stream {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .stream-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: capitalize;
+        }
+
+        .stream-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .stream-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 0.3s ease;
+        }
+
+        .stream-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .integration-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .integration-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .integration-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .integration-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4a9eff;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            z-index: 1001;
+            display: none;
+        }
+
+        .alert-banner {
+            background: linear-gradient(90deg, #f44336, #d32f2f);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .alert-banner.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 0.25rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: #4a9eff;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header-info {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .metric {
+                padding: 12px;
+            }
+            
+            .metric-value {
+                font-size: 1.5rem;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 8px;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .card-title {
+                font-size: 16px;
+            }
+            
+            .integration-status {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .service-list {
+                gap: 8px;
+            }
+            
+            .service-item {
+                padding: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .integration-status {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                min-width: auto;
+                width: 100%;
+                margin-bottom: 4px;
+            }
+            
+            .service-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .service-info {
+                width: 100%;
+            }
+            
+            .card-status {
+                align-self: flex-end;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .tab {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .refresh-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            🚀 TRAE.AI Production Dashboard
+            <div class="status-indicator" id="system-status"></div>
+        </h1>
+        <div class="header-info">
+            <div>🕒 <span id="current-time"></span></div>
+            <div>⚡ Uptime: <span id="system-uptime">--</span></div>
+            <div>🔄 Last Update: <span id="last-update">--</span></div>
+        </div>
+    </div>
+
+    <div class="refresh-indicator" id="refresh-indicator">Updating...</div>
+    
+    <div class="alert-banner" id="alert-banner">
+        <strong>System Alert:</strong> <span id="alert-message"></span>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">📊 Overview</button>
+            <button class="tab" onclick="showTab('revenue')">💰 Revenue</button>
+            <button class="tab" onclick="showTab('services')">🔧 Services</button>
+            <button class="tab" onclick="showTab('integrations')">🔗 Integrations</button>
+            <button class="tab" onclick="showTab('analytics')">📈 Analytics</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📊 System Overview</h3>
+                        <span class="card-status status-healthy" id="system-health">Healthy</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value" id="cpu-usage">--</div>
+                            <div class="metric-label">CPU Usage</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="memory-usage">--</div>
+                            <div class="metric-label">Memory</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="disk-usage">--</div>
+                            <div class="metric-label">Disk</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="active-connections">--</div>
+                            <div class="metric-label">Connections</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="health-score">100</div>
+                            <div class="metric-label">Health Score</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="system-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 Revenue Summary</h3>
+                        <span class="card-status status-healthy" id="revenue-status">On Track</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value" id="total-revenue">$0</div>
+                            <div class="metric-label">Total Revenue</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="monthly-target">$0</div>
+                            <div class="metric-label">Monthly Target</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="revenue-progress">0%</div>
+                            <div class="metric-label">Progress</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="active-streams">0</div>
+                            <div class="metric-label">Active Streams</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenue-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔧 Services Status</h3>
+                        <span class="card-status status-healthy" id="services-status">All Online</span>
+                    </div>
+                    <div class="service-list" id="services-list">
+                        <!-- Services will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔗 Integration Health</h3>
+                        <span class="card-status status-healthy" id="integrations-status">Connected</span>
+                    </div>
+                    <div class="integration-status" id="integrations-grid">
+                        <!-- Integrations will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🚨 System Alerts</h3>
+                        <span class="card-status status-healthy" id="alerts-status">No Issues</span>
+                    </div>
+                    <div class="service-list" id="alerts-container">
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="status-indicator status-healthy"></div>
+                                <div>
+                                    <div>System monitoring active</div>
+                                    <div class="service-details">All systems operational</div>
+                                </div>
+                            </div>
+                            <div class="card-status status-healthy">Info</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🏥 Health Components</h3>
+                        <span class="card-status status-healthy" id="components-status">All Healthy</span>
+                    </div>
+                    <div class="integration-status" id="components-grid">
+                        <!-- Health components will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Tab -->
+        <div id="revenue" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 Revenue Streams</h3>
+                        <span class="card-status status-healthy">11 Active</span>
+                    </div>
+                    <div class="revenue-streams" id="revenue-streams">
+                        <!-- Revenue streams will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📈 Revenue Analytics</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenue-analytics-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎯 Performance Metrics</h3>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value" id="conversion-rate">--</div>
+                            <div class="metric-label">Conversion Rate</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="avg-order-value">--</div>
+                            <div class="metric-label">Avg Order Value</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="customer-ltv">--</div>
+                            <div class="metric-label">Customer LTV</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="churn-rate">--</div>
+                            <div class="metric-label">Churn Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Tab -->
+        <div id="services" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🖥️ Application Services</h3>
+                    </div>
+                    <div class="service-list" id="app-services-list">
+                        <!-- Application services will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💳 Payment Services</h3>
+                    </div>
+                    <div class="service-list" id="payment-services-list">
+                        <!-- Payment services will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📊 Analytics Services</h3>
+                    </div>
+                    <div class="service-list" id="analytics-services-list">
+                        <!-- Analytics services will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integrations Tab -->
+        <div id="integrations" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💳 Payment Integrations</h3>
+                    </div>
+                    <div class="integration-status" id="payment-integrations">
+                        <!-- Payment integrations will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🛒 E-commerce Platforms</h3>
+                    </div>
+                    <div class="integration-status" id="ecommerce-integrations">
+                        <!-- E-commerce integrations will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📧 Marketing Tools</h3>
+                    </div>
+                    <div class="integration-status" id="marketing-integrations">
+                        <!-- Marketing integrations will be populated here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🤝 Affiliate Networks</h3>
+                    </div>
+                    <div class="integration-status" id="affiliate-integrations">
+                        <!-- Affiliate integrations will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📈 Performance Trends</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performance-trends-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎯 Conversion Funnel</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="conversion-funnel-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🌍 Traffic Sources</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="traffic-sources-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💡 Key Insights</h3>
+                    </div>
+                    <div id="insights-list">
+                        <!-- Insights will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let socket;
+        let charts = {};
+        let dashboardData = {};
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            initializeWebSocket();
+            loadInitialData();
+            startTimeUpdater();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(refreshDashboard, 30000);
+        });
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // System performance chart
+            const systemCtx = document.getElementById('system-chart').getContext('2d');
+            charts.system = new Chart(systemCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'CPU %',
+                        data: [],
+                        borderColor: '#4a9eff',
+                        backgroundColor: 'rgba(74, 158, 255, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Memory %',
+                        data: [],
+                        borderColor: '#ff9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#ccc' } },
+                        y: { ticks: { color: '#ccc' }, beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+
+            // Revenue chart
+            const revenueCtx = document.getElementById('revenue-chart').getContext('2d');
+            charts.revenue = new Chart(revenueCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#4caf50', '#2196f3', '#ff9800', '#f44336',
+                            '#9c27b0', '#00bcd4', '#8bc34a', '#ffc107',
+                            '#e91e63', '#607d8b', '#795548'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            labels: { color: '#fff' },
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Revenue analytics chart
+            const revenueAnalyticsCtx = document.getElementById('revenue-analytics-chart').getContext('2d');
+            charts.revenueAnalytics = new Chart(revenueAnalyticsCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: [],
+                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
+                        borderColor: '#4caf50',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#ccc' } },
+                        y: { ticks: { color: '#ccc' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Performance trends chart
+            const performanceTrendsCtx = document.getElementById('performance-trends-chart').getContext('2d');
+            charts.performanceTrends = new Chart(performanceTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Response Time (ms)',
+                        data: [],
+                        borderColor: '#4a9eff',
+                        backgroundColor: 'rgba(74, 158, 255, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#ccc' } },
+                        y: { ticks: { color: '#ccc' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Conversion funnel chart
+            const conversionFunnelCtx = document.getElementById('conversion-funnel-chart').getContext('2d');
+            charts.conversionFunnel = new Chart(conversionFunnelCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Visitors', 'Leads', 'Prospects', 'Customers'],
+                    datasets: [{
+                        label: 'Count',
+                        data: [1000, 500, 200, 50],
+                        backgroundColor: [
+                            'rgba(74, 158, 255, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(244, 67, 54, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#ccc' } },
+                        y: { ticks: { color: '#ccc' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Traffic sources chart
+            const trafficSourcesCtx = document.getElementById('traffic-sources-chart').getContext('2d');
+            charts.trafficSources = new Chart(trafficSourcesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Direct', 'Search', 'Social', 'Referral', 'Email'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: [
+                            '#4a9eff', '#4caf50', '#ff9800', '#f44336', '#9c27b0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            labels: { color: '#fff' },
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize WebSocket connection
+        function initializeWebSocket() {
+            try {
+                socket = io();
+                
+                socket.on('connect', function() {
+                    console.log('Connected to dashboard WebSocket');
+                    updateSystemStatus('healthy');
+                });
+
+                socket.on('disconnect', function() {
+                    console.log('Disconnected from dashboard WebSocket');
+                    updateSystemStatus('error');
+                });
+
+                socket.on('dashboard_update', function(data) {
+                    updateDashboard(data);
+                });
+
+                socket.on('alert', function(alert) {
+                    showAlert(alert.message, alert.severity);
+                });
+            } catch (error) {
+                console.error('WebSocket initialization failed:', error);
+                updateSystemStatus('error');
+            }
+        }
+
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                showRefreshIndicator();
+                
+                // Load system metrics
+                const systemResponse = await fetch('/api/system/metrics');
+                if (systemResponse.ok) {
+                    const systemData = await systemResponse.json();
+                    updateSystemMetrics(systemData);
+                }
+
+                // Load revenue data
+                const revenueResponse = await fetch('/api/revenue/dashboard');
+                if (revenueResponse.ok) {
+                    const revenueData = await revenueResponse.json();
+                    updateRevenueData(revenueData);
+                }
+
+                // Load services status
+                const servicesResponse = await fetch('/api/services/status');
+                if (servicesResponse.ok) {
+                    const servicesData = await servicesResponse.json();
+                    updateServicesStatus(servicesData);
+                }
+
+                // Load integrations status
+                const integrationsResponse = await fetch('/api/integrations/status');
+                if (integrationsResponse.ok) {
+                    const integrationsData = await integrationsResponse.json();
+                    updateIntegrationsStatus(integrationsData);
+                }
+
+                hideRefreshIndicator();
+            } catch (error) {
+                console.error('Failed to load initial data:', error);
+                showAlert('Failed to load dashboard data', 'error');
+                hideRefreshIndicator();
+            }
+        }
+
+        // Update dashboard with new data
+        function updateDashboard(data) {
+            showRefreshIndicator();
+            
+            if (data.system) updateSystemMetrics(data.system);
+            if (data.revenue) updateRevenueData(data.revenue);
+            if (data.services) updateServicesStatus(data.services);
+            if (data.integrations) updateIntegrationsStatus(data.integrations);
+            
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+            
+            setTimeout(hideRefreshIndicator, 1000);
+        }
+
+        // Update system metrics
+        function updateSystemMetrics(data) {
+            document.getElementById('cpu-usage').textContent = data.cpu_percent?.toFixed(1) + '%' || '--';
+            document.getElementById('memory-usage').textContent = data.memory_percent?.toFixed(1) + '%' || '--';
+            document.getElementById('disk-usage').textContent = data.disk_percent?.toFixed(1) + '%' || '--';
+            document.getElementById('active-connections').textContent = data.active_connections || '--';
+            document.getElementById('system-uptime').textContent = formatUptime(data.uptime_seconds);
+            
+            // Update health score
+             const currentHealthScore = data.health_score || calculateHealthScore(data);
+             document.getElementById('health-score').textContent = currentHealthScore.toFixed(0);
+            
+            // Update dashboard health status
+            updateDashboardHealth(data);
+            
+            // Update alerts if present
+            if (data.alerts) {
+                updateSystemAlerts(data.alerts);
+            }
+            
+            // Update health components if present
+            if (data.components) {
+                updateHealthComponents(data.components);
+            }
+
+            // Update system chart
+            if (charts.system && data.cpu_percent !== undefined) {
+                const now = new Date().toLocaleTimeString();
+                charts.system.data.labels.push(now);
+                charts.system.data.datasets[0].data.push(data.cpu_percent);
+                charts.system.data.datasets[1].data.push(data.memory_percent);
+
+                if (charts.system.data.labels.length > 20) {
+                    charts.system.data.labels.shift();
+                    charts.system.data.datasets[0].data.shift();
+                    charts.system.data.datasets[1].data.shift();
+                }
+
+                charts.system.update('none');
+            }
+
+            // Update system health status
+            const healthScore = calculateHealthScore(data);
+            updateSystemHealth(healthScore);
+        }
+
+        // Update revenue data
+        function updateRevenueData(data) {
+            document.getElementById('total-revenue').textContent = '$' + (data.total_current_revenue?.toFixed(2) || '0');
+            document.getElementById('monthly-target').textContent = '$' + (data.total_monthly_target?.toFixed(2) || '0');
+            document.getElementById('revenue-progress').textContent = (data.overall_progress?.toFixed(1) || '0') + '%';
+            document.getElementById('active-streams').textContent = Object.keys(data.revenue_by_stream || {}).length;
+
+            // Update revenue streams
+            updateRevenueStreams(data.revenue_by_stream || {});
+
+            // Update revenue chart
+            if (charts.revenue && data.revenue_by_stream) {
+                const streams = Object.keys(data.revenue_by_stream);
+                const revenues = streams.map(stream => data.revenue_by_stream[stream].current);
+                
+                charts.revenue.data.labels = streams.map(s => s.replace('_', ' ').toUpperCase());
+                charts.revenue.data.datasets[0].data = revenues;
+                charts.revenue.update('none');
+            }
+
+            // Update revenue analytics chart
+            if (charts.revenueAnalytics && data.recent_revenue) {
+                const streams = Object.keys(data.recent_revenue);
+                const revenues = Object.values(data.recent_revenue);
+                
+                charts.revenueAnalytics.data.labels = streams.map(s => s.replace('_', ' ').toUpperCase());
+                charts.revenueAnalytics.data.datasets[0].data = revenues;
+                charts.revenueAnalytics.update('none');
+            }
+
+            // Update revenue status
+            const progressPercent = data.overall_progress || 0;
+            let status = 'On Track';
+            let statusClass = 'status-healthy';
+            
+            if (progressPercent < 50) {
+                status = 'Behind';
+                statusClass = 'status-warning';
+            } else if (progressPercent < 25) {
+                status = 'Critical';
+                statusClass = 'status-error';
+            }
+            
+            const revenueStatusEl = document.getElementById('revenue-status');
+            revenueStatusEl.textContent = status;
+            revenueStatusEl.className = 'card-status ' + statusClass;
+        }
+
+        // Update revenue streams display
+        function updateRevenueStreams(streams) {
+            const container = document.getElementById('revenue-streams');
+            container.innerHTML = '';
+
+            Object.entries(streams).forEach(([streamName, data]) => {
+                const streamDiv = document.createElement('div');
+                streamDiv.className = 'revenue-stream';
+                streamDiv.innerHTML = `
+                    <div class="stream-name">${streamName.replace('_', ' ')}</div>
+                    <div class="stream-progress">
+                        <div class="stream-progress-bar" style="width: ${data.progress}%"></div>
+                    </div>
+                    <div class="stream-stats">
+                        <span>$${data.current.toFixed(2)}</span>
+                        <span>$${data.target.toFixed(2)}</span>
+                    </div>
+                `;
+                container.appendChild(streamDiv);
+            });
+        }
+
+        // Update services status
+        function updateServicesStatus(services) {
+            const servicesList = document.getElementById('services-list');
+            const appServicesList = document.getElementById('app-services-list');
+            const paymentServicesList = document.getElementById('payment-services-list');
+            const analyticsServicesList = document.getElementById('analytics-services-list');
+
+            // Clear existing content
+            [servicesList, appServicesList, paymentServicesList, analyticsServicesList].forEach(list => {
+                if (list) list.innerHTML = '';
+            });
+
+            let healthyCount = 0;
+            let totalCount = 0;
+
+            Object.entries(services).forEach(([serviceName, serviceData]) => {
+                totalCount++;
+                if (serviceData.status === 'healthy' || serviceData.status === 'running') {
+                    healthyCount++;
+                }
+
+                const statusClass = getStatusClass(serviceData.status);
+                const serviceDiv = document.createElement('div');
+                serviceDiv.className = 'service-item';
+                serviceDiv.innerHTML = `
+                    <div class="service-info">
+                        <div class="status-indicator ${statusClass}"></div>
+                        <div>
+                            <div>${serviceName}</div>
+                            <div class="service-details">
+                                CPU: ${serviceData.cpu_percent?.toFixed(1) || 0}% | 
+                                Memory: ${serviceData.memory_mb?.toFixed(0) || 0}MB | 
+                                Response: ${serviceData.response_time_ms?.toFixed(0) || 0}ms
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-status ${statusClass}">${serviceData.status}</div>
+                `;
+
+                // Add to appropriate service list
+                if (servicesList) servicesList.appendChild(serviceDiv.cloneNode(true));
+                
+                // Categorize services
+                if (serviceName.includes('app') || serviceName.includes('web') || serviceName.includes('api')) {
+                    if (appServicesList) appServicesList.appendChild(serviceDiv.cloneNode(true));
+                } else if (serviceName.includes('payment') || serviceName.includes('stripe') || serviceName.includes('paypal')) {
+                    if (paymentServicesList) paymentServicesList.appendChild(serviceDiv.cloneNode(true));
+                } else if (serviceName.includes('analytics') || serviceName.includes('tracking')) {
+                    if (analyticsServicesList) analyticsServicesList.appendChild(serviceDiv.cloneNode(true));
+                }
+            });
+
+            // Update services status
+            const servicesStatusEl = document.getElementById('services-status');
+            if (servicesStatusEl) {
+                if (healthyCount === totalCount) {
+                    servicesStatusEl.textContent = 'All Online';
+                    servicesStatusEl.className = 'card-status status-healthy';
+                } else if (healthyCount > totalCount * 0.8) {
+                    servicesStatusEl.textContent = 'Mostly Online';
+                    servicesStatusEl.className = 'card-status status-warning';
+                } else {
+                    servicesStatusEl.textContent = 'Issues Detected';
+                    servicesStatusEl.className = 'card-status status-error';
+                }
+            }
+        }
+
+        // Update integrations status
+        function updateIntegrationsStatus(integrations) {
+            const integrationsGrid = document.getElementById('integrations-grid');
+            const paymentIntegrations = document.getElementById('payment-integrations');
+            const ecommerceIntegrations = document.getElementById('ecommerce-integrations');
+            const marketingIntegrations = document.getElementById('marketing-integrations');
+            const affiliateIntegrations = document.getElementById('affiliate-integrations');
+
+            // Clear existing content
+            [integrationsGrid, paymentIntegrations, ecommerceIntegrations, marketingIntegrations, affiliateIntegrations].forEach(grid => {
+                if (grid) grid.innerHTML = '';
+            });
+
+            let connectedCount = 0;
+            let totalCount = 0;
+
+            Object.entries(integrations).forEach(([integrationName, integrationData]) => {
+                totalCount++;
+                if (integrationData.status === 'connected' || integrationData.status === 'active') {
+                    connectedCount++;
+                }
+
+                const statusClass = getStatusClass(integrationData.status);
+                const integrationDiv = document.createElement('div');
+                integrationDiv.className = 'integration-item';
+                integrationDiv.innerHTML = `
+                    <div class="integration-icon">${getIntegrationIcon(integrationName)}</div>
+                    <div class="integration-name">${integrationName}</div>
+                    <div class="card-status ${statusClass}">${integrationData.status}</div>
+                `;
+
+                // Add to main grid
+                if (integrationsGrid) integrationsGrid.appendChild(integrationDiv.cloneNode(true));
+
+                // Categorize integrations
+                if (integrationName.toLowerCase().includes('stripe') || integrationName.toLowerCase().includes('paypal') || integrationName.toLowerCase().includes('payment')) {
+                    if (paymentIntegrations) paymentIntegrations.appendChild(integrationDiv.cloneNode(true));
+                } else if (integrationName.toLowerCase().includes('shopify') || integrationName.toLowerCase().includes('woocommerce') || integrationName.toLowerCase().includes('ecommerce')) {
+                    if (ecommerceIntegrations) ecommerceIntegrations.appendChild(integrationDiv.cloneNode(true));
+                } else if (integrationName.toLowerCase().includes('email') || integrationName.toLowerCase().includes('marketing') || integrationName.toLowerCase().includes('mailchimp')) {
+                    if (marketingIntegrations) marketingIntegrations.appendChild(integrationDiv.cloneNode(true));
+                } else if (integrationName.toLowerCase().includes('affiliate') || integrationName.toLowerCase().includes('commission')) {
+                    if (affiliateIntegrations) affiliateIntegrations.appendChild(integrationDiv.cloneNode(true));
+                }
+            });
+
+            // Update integrations status
+            const integrationsStatusEl = document.getElementById('integrations-status');
+            if (integrationsStatusEl) {
+                if (connectedCount === totalCount) {
+                    integrationsStatusEl.textContent = 'All Connected';
+                    integrationsStatusEl.className = 'card-status status-healthy';
+                } else if (connectedCount > totalCount * 0.8) {
+                    integrationsStatusEl.textContent = 'Mostly Connected';
+                    integrationsStatusEl.className = 'card-status status-warning';
+                } else {
+                    integrationsStatusEl.textContent = 'Connection Issues';
+                    integrationsStatusEl.className = 'card-status status-error';
+                }
+            }
+        }
+
+        // Utility functions
+        function getStatusClass(status) {
+            switch (status?.toLowerCase()) {
+                case 'healthy':
+                case 'running':
+                case 'connected':
+                case 'active':
+                    return 'status-healthy';
+                case 'warning':
+                case 'degraded':
+                case 'slow':
+                    return 'status-warning';
+                case 'error':
+                case 'down':
+                case 'failed':
+                case 'disconnected':
+                    return 'status-error';
+                default:
+                    return 'status-unknown';
+            }
+        }
+
+        function getIntegrationIcon(name) {
+            const icons = {
+                'stripe': '💳',
+                'paypal': '💰',
+                'shopify': '🛒',
+                'woocommerce': '🏪',
+                'mailchimp': '📧',
+                'google': '🔍',
+                'facebook': '📘',
+                'twitter': '🐦',
+                'linkedin': '💼',
+                'affiliate': '🤝',
+                'analytics': '📊'
+            };
+            
+            for (const [key, icon] of Object.entries(icons)) {
+                if (name.toLowerCase().includes(key)) {
+                    return icon;
+                }
+            }
+            return '🔗';
+        }
+
+        function calculateHealthScore(data) {
+            let score = 100;
+            if (data.cpu_percent > 80) score -= 20;
+            if (data.memory_percent > 80) score -= 20;
+            if (data.disk_percent > 90) score -= 30;
+            if (data.response_time_ms > 1000) score -= 15;
+            return Math.max(0, score);
+        }
+
+        function updateSystemHealth(score) {
+            const healthEl = document.getElementById('system-health');
+            const statusEl = document.getElementById('system-status');
+            
+            if (score >= 80) {
+                healthEl.textContent = 'Healthy';
+                healthEl.className = 'card-status status-healthy';
+                statusEl.className = 'status-indicator status-healthy';
+            } else if (score >= 60) {
+                healthEl.textContent = 'Warning';
+                healthEl.className = 'card-status status-warning';
+                statusEl.className = 'status-indicator status-warning';
+            } else {
+                healthEl.textContent = 'Critical';
+                healthEl.className = 'card-status status-error';
+                statusEl.className = 'status-indicator status-error';
+            }
+        }
+
+        function updateSystemStatus(status) {
+            const statusEl = document.getElementById('system-status');
+            statusEl.className = 'status-indicator ' + getStatusClass(status);
+        }
+
+        // Update dashboard health
+        function updateDashboardHealth(data) {
+            const healthStatus = document.getElementById('health-status');
+            const healthIcon = document.getElementById('health-icon');
+            const healthScoreElement = document.getElementById('health-score');
+            
+            // Update health score if available
+            if (data.health_score !== undefined) {
+                healthScoreElement.textContent = `Score: ${Math.round(data.health_score)}`;
+            }
+            
+            if (data.status === 'healthy') {
+                healthStatus.textContent = 'Healthy';
+                healthStatus.style.color = '#10b981';
+                healthIcon.textContent = '💚';
+            } else if (data.status === 'warning') {
+                healthStatus.textContent = 'Warning';
+                healthStatus.style.color = '#f59e0b';
+                healthIcon.textContent = '⚠️';
+            } else if (data.status === 'error' || data.status === 'critical') {
+                healthStatus.textContent = 'Critical';
+                healthStatus.style.color = '#ef4444';
+                healthIcon.textContent = '🔴';
+            } else {
+                healthStatus.textContent = 'Unknown';
+                healthStatus.style.color = '#6b7280';
+                healthIcon.textContent = '❓';
+            }
+        }
+
+        function formatUptime(seconds) {
+            if (!seconds) return '--';
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `${days}d ${hours}h ${minutes}m`;
+        }
+
+        function showAlert(message, severity = 'info') {
+            const alertBanner = document.getElementById('alert-banner');
+            const alertMessage = document.getElementById('alert-message');
+            
+            alertMessage.textContent = message;
+            alertBanner.className = `alert-banner show alert-${severity}`;
+            
+            setTimeout(() => {
+                alertBanner.classList.remove('show');
+            }, 5000);
+        }
+
+        function showRefreshIndicator() {
+            document.getElementById('refresh-indicator').style.display = 'block';
+        }
+
+        function hideRefreshIndicator() {
+            document.getElementById('refresh-indicator').style.display = 'none';
+        }
+
+        function startTimeUpdater() {
+            function updateTime() {
+                document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        function refreshDashboard() {
+            loadInitialData();
+        }
+
+        // Update system alerts
+        function updateSystemAlerts(alerts) {
+            const alertsContainer = document.getElementById('alerts-container');
+            const alertsStatus = document.getElementById('alerts-status');
+            
+            if (!alerts || alerts.length === 0) {
+                alertsContainer.innerHTML = `
+                    <div class="service-item">
+                        <div class="service-info">
+                            <div class="status-indicator status-healthy"></div>
+                            <div>
+                                <div>System monitoring active</div>
+                                <div class="service-details">All systems operational</div>
+                            </div>
+                        </div>
+                        <div class="card-status status-healthy">Info</div>
+                    </div>
+                `;
+                alertsStatus.textContent = 'No Issues';
+                alertsStatus.className = 'card-status status-healthy';
+                return;
+            }
+            
+            alertsContainer.innerHTML = '';
+            let criticalCount = 0;
+            let warningCount = 0;
+            
+            alerts.forEach(alert => {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'service-item';
+                
+                const statusClass = getStatusClass(alert.severity);
+                if (alert.severity === 'critical' || alert.severity === 'error') criticalCount++;
+                if (alert.severity === 'warning') warningCount++;
+                
+                alertDiv.innerHTML = `
+                    <div class="service-info">
+                        <div class="status-indicator ${statusClass}"></div>
+                        <div>
+                            <div>${alert.component || 'System'}</div>
+                            <div class="service-details">${alert.message}</div>
+                        </div>
+                    </div>
+                    <div class="card-status ${statusClass}">${alert.severity}</div>
+                `;
+                
+                alertsContainer.appendChild(alertDiv);
+            });
+            
+            // Update alerts status
+            if (criticalCount > 0) {
+                alertsStatus.textContent = `${criticalCount} Critical`;
+                alertsStatus.className = 'card-status status-error';
+            } else if (warningCount > 0) {
+                alertsStatus.textContent = `${warningCount} Warnings`;
+                alertsStatus.className = 'card-status status-warning';
+            } else {
+                alertsStatus.textContent = 'No Issues';
+                alertsStatus.className = 'card-status status-healthy';
+            }
+        }
+        
+        // Update health components
+        function updateHealthComponents(components) {
+            const componentsGrid = document.getElementById('components-grid');
+            const componentsStatus = document.getElementById('components-status');
+            
+            componentsGrid.innerHTML = '';
+            let healthyCount = 0;
+            let totalCount = 0;
+            
+            Object.entries(components).forEach(([componentName, componentData]) => {
+                totalCount++;
+                if (componentData.status === 'healthy') healthyCount++;
+                
+                const statusClass = getStatusClass(componentData.status);
+                const componentDiv = document.createElement('div');
+                componentDiv.className = 'integration-item';
+                componentDiv.innerHTML = `
+                    <div class="integration-icon">${getComponentIcon(componentName)}</div>
+                    <div class="integration-name">${componentName}</div>
+                    <div class="card-status ${statusClass}">${componentData.status}</div>
+                `;
+                
+                componentsGrid.appendChild(componentDiv);
+            });
+            
+            // Update components status
+            if (healthyCount === totalCount) {
+                componentsStatus.textContent = 'All Healthy';
+                componentsStatus.className = 'card-status status-healthy';
+            } else if (healthyCount > totalCount * 0.8) {
+                componentsStatus.textContent = 'Mostly Healthy';
+                componentsStatus.className = 'card-status status-warning';
+            } else {
+                componentsStatus.textContent = 'Issues Detected';
+                componentsStatus.className = 'card-status status-error';
+            }
+        }
+        
+        function getComponentIcon(name) {
+            const icons = {
+                'database': '🗄️',
+                'api': '🔌',
+                'cache': '⚡',
+                'queue': '📋',
+                'storage': '💾',
+                'network': '🌐',
+                'security': '🔒',
+                'monitoring': '📊'
+            };
+            
+            for (const [key, icon] of Object.entries(icons)) {
+                if (name.toLowerCase().includes(key)) {
+                    return icon;
+                }
+            }
+            return '⚙️';
+        }
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Dashboard error:', e.error);
+            showAlert('Dashboard error occurred', 'error');
+        });
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                refreshDashboard();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1394,3 +1394,68 @@ class MonetizationServicesAgent(BaseAgent):
         """Validate rephrase accuracy - required abstract method implementation"""
         # For now, always return True as basic validation
         return True
+    
+    def perform_seo_audit(self, website_url: str, target_keywords: Optional[List[str]] = None, 
+                         competitors: Optional[List[str]] = None) -> Dict[str, Any]:
+        """Perform SEO audit workflow.
+        
+        Args:
+            website_url: The website URL to audit
+            target_keywords: Optional list of target keywords to analyze
+            competitors: Optional list of competitor URLs to analyze
+            
+        Returns:
+            Dict containing audit results and recommendations
+        """
+        try:
+            # Validate input
+            if not website_url:
+                return {"status": "error", "message": "Website URL is required"}
+            
+            # Create service order for SEO audit
+            order_data = {
+                "service_type": "seo_audit",
+                "tier": "professional",
+                "client_email": "system@audit.local",
+                "requirements": {
+                    "website_url": website_url,
+                    "target_keywords": target_keywords or [],
+                    "competitors": competitors or []
+                }
+            }
+            
+            # Process the audit synchronously for immediate results
+            import asyncio
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+            try:
+                # Create order
+                order_result = loop.run_until_complete(self._create_service_order(order_data))
+                if order_result.get("status") != "success":
+                    return order_result
+                
+                order_id = order_result.get("order_id")
+                
+                # Process SEO audit
+                audit_result = loop.run_until_complete(self._process_seo_audit(order_id))
+                
+                if audit_result.get("status") == "success":
+                    return {
+                        "status": "success",
+                        "audit_data": audit_result.get("audit_result", {}),
+                        "deliverables_path": audit_result.get("deliverables_path"),
+                        "message": "SEO audit completed successfully"
+                    }
+                else:
+                    return audit_result
+                    
+            finally:
+                loop.close()
+                
+        except Exception as e:
+            self.logger.error(f"Error in perform_seo_audit: {e}")
+            return {
+                "status": "error", 
+                "message": f"SEO audit failed: {str(e)}"
+            }

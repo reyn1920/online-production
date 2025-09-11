@@ -9,11 +9,27 @@ Usage:
 
 import os
 import socket
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, send_file
 from werkzeug.exceptions import HTTPException
+from werkzeug.utils import secure_filename
 import requests, math, time
+import shutil
+from pathlib import Path
 
 app = Flask(__name__)
+
+# Configure upload settings
+UPLOAD_FOLDER = os.path.expanduser('~/Downloads')
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
+# Allowed file extensions
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx', 'py', 'js', 'html', 'css', 'json', 'xml', 'zip'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ---------- BEGIN PATCH: Places + JSON errors + Dev stubs ----------
 # In-memory provider status (for lights)
@@ -98,6 +114,169 @@ def create_paste():
         
     except Exception as e:
         return jsonify({"error": f"Failed to create paste: {str(e)}"}), 500
+
+# --------- Downloads Integration API ----------
+@app.route("/upload", methods=["POST"])
+@app.route("/api/upload", methods=["POST"])  # alias
+def upload_file():
+    """Upload file to downloads folder"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            # Handle custom filename from form data
+            custom_filename = request.form.get('filename')
+            if custom_filename:
+                filename = secure_filename(custom_filename)
+            
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            return jsonify({
+                "success": True,
+                "filename": filename,
+                "filepath": filepath,
+                "message": "File uploaded successfully"
+            }), 201
+        else:
+            return jsonify({"error": "File type not allowed"}), 400
+            
+    except Exception as e:
+        return jsonify({"error": f"Upload failed: {str(e)}"}), 500
+
+@app.route("/downloads/list", methods=["GET"])
+@app.route("/api/downloads/list", methods=["GET"])  # alias
+def list_downloads():
+    """List files in downloads folder"""
+    try:
+        downloads_path = Path(app.config['UPLOAD_FOLDER'])
+        if not downloads_path.exists():
+            return jsonify({"files": []})
+        
+        files = []
+        for file_path in downloads_path.iterdir():
+            if file_path.is_file():
+                stat = file_path.stat()
+                files.append({
+                    "name": file_path.name,
+                    "size": stat.st_size,
+                    "modified": stat.st_mtime,
+                    "extension": file_path.suffix.lower()
+                })
+        
+        # Sort by modification time (newest first)
+        files.sort(key=lambda x: x['modified'], reverse=True)
+        
+        return jsonify({
+            "success": True,
+            "files": files,
+            "count": len(files)
+        })
+        
+    except Exception as e:
+        return jsonify({"error": f"Failed to list files: {str(e)}"}), 500
+
+@app.route("/downloads/process", methods=["POST"])
+@app.route("/api/downloads/process", methods=["POST"])  # alias
+def process_downloads_file():
+    """Process a file from downloads folder"""
+    try:
+        data = request.get_json()
+        if not data or 'filename' not in data:
+            return jsonify({"error": "Filename is required"}), 400
+        
+        filename = secure_filename(data['filename'])
+        action = data.get('action', 'read')
+        
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        if not os.path.exists(filepath):
+            return jsonify({"error": "File not found"}), 404
+        
+        if action == 'read':
+            # Read file content (for text files)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                return jsonify({
+                    "success": True,
+                    "filename": filename,
+                    "content": content,
+                    "action": "read"
+                })
+            except UnicodeDecodeError:
+                return jsonify({
+                    "success": True,
+                    "filename": filename,
+                    "content": "[Binary file - cannot display content]",
+                    "action": "read",
+                    "is_binary": True
+                })
+        
+        elif action == 'download':
+            # Send file for download
+            return send_file(filepath, as_attachment=True)
+        
+        elif action == 'delete':
+            # Delete file
+            os.remove(filepath)
+            return jsonify({
+                "success": True,
+                "filename": filename,
+                "action": "delete",
+                "message": "File deleted successfully"
+            })
+        
+        else:
+            return jsonify({"error": f"Unknown action: {action}"}), 400
+            
+    except Exception as e:
+        return jsonify({"error": f"File processing failed: {str(e)}"}), 500
+
+@app.route("/paste/avatar", methods=["POST"])
+@app.route("/api/paste/avatar", methods=["POST"])  # alias
+def paste_avatar():
+    """Avatar generation endpoint for paste integration"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON data provided"}), 400
+        
+        content = data.get('content', '')
+        avatar_type = data.get('avatar_type', 'professional')
+        voice_style = data.get('voice_style', 'natural')
+        quality = data.get('quality', 'high')
+        template = data.get('template', 'professional_presenter')
+        
+        # Simulate avatar generation (in real implementation, this would call actual avatar service)
+        avatar_result = {
+            "id": int(time.time() * 1000),
+            "content": content,
+            "avatar_type": avatar_type,
+            "voice_style": voice_style,
+            "quality": quality,
+            "template": template,
+            "status": "generated",
+            "url": f"/avatar/{int(time.time() * 1000)}.mp4",
+            "thumbnail": f"/avatar/thumb_{int(time.time() * 1000)}.jpg",
+            "duration": len(content.split()) * 0.5,  # Rough estimate
+            "created_at": time.time()
+        }
+        
+        return jsonify({
+            "success": True,
+            "avatar": avatar_result,
+            "message": "Avatar generated successfully"
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": f"Avatar generation failed: {str(e)}"}), 500
 
 # --------- Places search (free Overpass) ----------
 # category -> OSM tag mapping (add more as you like)
@@ -472,4 +651,6 @@ def first_free(start, max_tries=50):
     raise RuntimeError(f"No free port found after trying {max_tries} ports starting from {start}")
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8080, debug=False)
+    port = first_free(8081)
+    print(f"Starting paste app on port {port}")
+    app.run(host="0.0.0.0", port=port, debug=False)

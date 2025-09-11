@@ -60,8 +60,6 @@ Base = declarative_base()
 class RevenueConfig:
     """Configuration for the revenue tracker"""
     def __init__(self):
-        self.use_mock = os.getenv('USE_MOCK', 'false').lower() == 'true'
-        
         # YouTube Analytics
         self.youtube_api_key = os.getenv('YOUTUBE_API_KEY')
         self.youtube_channel_id = os.getenv('YOUTUBE_CHANNEL_ID')
@@ -190,7 +188,7 @@ class YouTubeAnalytics:
     
     def _initialize_youtube_service(self):
         """Initialize YouTube Analytics API service"""
-        if not self.config.use_mock and self.config.youtube_api_key:
+        if self.config.youtube_api_key:
             try:
                 self.service = build('youtubeAnalytics', 'v2', developerKey=self.config.youtube_api_key)
                 logger.info("✅ YouTube Analytics service initialized")
@@ -199,8 +197,9 @@ class YouTubeAnalytics:
     
     async def get_revenue_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get YouTube revenue data"""
-        if self.config.use_mock or not self.service:
-            return self._generate_mock_youtube_data(start_date, end_date)
+        if not self.service:
+            logger.error("YouTube Analytics service not initialized")
+            raise Exception("YouTube Analytics service required")
         
         try:
             # Get monetization data
@@ -226,28 +225,9 @@ class YouTubeAnalytics:
             
         except Exception as e:
             logger.error(f"YouTube revenue data fetch failed: {e}")
-            return self._generate_mock_youtube_data(start_date, end_date)
+            raise
     
-    def _generate_mock_youtube_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
-        """Generate mock YouTube revenue data"""
-        data = []
-        current_date = start_date
-        
-        while current_date <= end_date:
-            # Generate realistic mock data
-            base_revenue = np.random.normal(50, 15)  # Average $50/day with variation
-            revenue = max(0, base_revenue)
-            
-            data.append({
-                'date': current_date,
-                'revenue': round(revenue, 2),
-                'monetized_playbacks': int(np.random.normal(1000, 300)),
-                'cpm': round(np.random.normal(2.5, 0.5), 2)
-            })
-            
-            current_date += timedelta(days=1)
-        
-        return data
+
 
 class GumroadAnalytics:
     """Gumroad sales and revenue tracker"""
@@ -258,8 +238,9 @@ class GumroadAnalytics:
     
     async def get_sales_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get Gumroad sales data"""
-        if self.config.use_mock or not self.config.gumroad_access_token:
-            return self._generate_mock_gumroad_data(start_date, end_date)
+        if not self.config.gumroad_access_token:
+            logger.error("Gumroad access token not configured")
+            raise Exception("Gumroad access token required")
         
         try:
             headers = {
@@ -292,37 +273,13 @@ class GumroadAnalytics:
                 return processed_data
             else:
                 logger.error(f"Gumroad API error: {response.text}")
-                return self._generate_mock_gumroad_data(start_date, end_date)
+                raise Exception(f"Gumroad API error: {response.status_code}")
                 
         except Exception as e:
             logger.error(f"Gumroad sales data fetch failed: {e}")
-            return self._generate_mock_gumroad_data(start_date, end_date)
+            raise
     
-    def _generate_mock_gumroad_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
-        """Generate mock Gumroad sales data"""
-        data = []
-        current_date = start_date
-        
-        products = ['AI Automation Guide', 'Content Creation Toolkit', 'Marketing Masterclass']
-        prices = [9.99, 19.99, 49.99]
-        
-        while current_date <= end_date:
-            # Random number of sales per day (0-5)
-            num_sales = np.random.poisson(1.5)
-            
-            for _ in range(num_sales):
-                product_idx = np.random.randint(0, len(products))
-                data.append({
-                    'date': current_date + timedelta(hours=np.random.randint(0, 24)),
-                    'amount': prices[product_idx],
-                    'product_name': products[product_idx],
-                    'transaction_id': f"mock_{int(datetime.now().timestamp())}_{np.random.randint(1000, 9999)}",
-                    'currency': 'USD'
-                })
-            
-            current_date += timedelta(days=1)
-        
-        return data
+
 
 class AffiliateTracker:
     """Affiliate marketing revenue tracker"""
@@ -332,39 +289,12 @@ class AffiliateTracker:
     
     async def get_affiliate_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get affiliate marketing revenue data"""
-        if self.config.use_mock:
-            return self._generate_mock_affiliate_data(start_date, end_date)
-        
         # In a real implementation, this would integrate with various affiliate networks
         # Amazon Associates, Commission Junction, ShareASale, etc.
-        return self._generate_mock_affiliate_data(start_date, end_date)
+        logger.warning("Affiliate data integration not yet implemented")
+        raise NotImplementedError("Affiliate network integrations need to be configured")
     
-    def _generate_mock_affiliate_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
-        """Generate mock affiliate revenue data"""
-        data = []
-        current_date = start_date
-        
-        networks = ['Amazon Associates', 'Commission Junction', 'ShareASale', 'ClickBank']
-        
-        while current_date <= end_date:
-            # Random affiliate commissions
-            num_commissions = np.random.poisson(2)
-            
-            for _ in range(num_commissions):
-                network = np.random.choice(networks)
-                commission = np.random.exponential(25)  # Average $25 commission
-                
-                data.append({
-                    'date': current_date + timedelta(hours=np.random.randint(0, 24)),
-                    'amount': round(commission, 2),
-                    'network': network,
-                    'commission_type': 'sale',
-                    'transaction_id': f"aff_{int(datetime.now().timestamp())}_{np.random.randint(1000, 9999)}"
-                })
-            
-            current_date += timedelta(days=1)
-        
-        return data
+
 
 class RevenueForecaster:
     """Advanced revenue forecasting using multiple models"""

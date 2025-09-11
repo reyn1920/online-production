@@ -30,6 +30,13 @@ except ImportError:
     HypocrisyFinding = None
     logging.warning("HypocrisyDatabaseManager not available. Hypocrisy tracking will be limited.")
 
+# Import performance analytics agent
+try:
+    from backend.agents.performance_analytics_agent import PerformanceAnalyticsAgent
+except ImportError:
+    PerformanceAnalyticsAgent = None
+    logging.warning("PerformanceAnalyticsAgent not available. Performance analytics will be limited.")
+
 try:
     import feedparser
     import requests
@@ -191,18 +198,27 @@ class BreakingNewsWatcher:
         self.evidence_db_path = self.config.get('evidence_db', 'data/right_perspective.db')
         self.trend_analysis_cache = {}
         
-        # Initialize hypocrisy database manager
-        self.hypocrisy_db = None
-        if HypocrisyDatabaseManager:
-            try:
-                self.hypocrisy_db = HypocrisyDatabaseManager()
-                self.logger.info("Hypocrisy database manager initialized successfully")
-            except Exception as e:
-                self.logger.error(f"Failed to initialize hypocrisy database manager: {e}")
+        # Get singleton hypocrisy database manager
+        try:
+            from backend.database.db_singleton import get_hypocrisy_db_manager
+            self.hypocrisy_db = get_hypocrisy_db_manager()
+        except ImportError:
+            self.hypocrisy_db = None
+            self.logger.warning("Database singleton not available")
         self._initialize_intelligence_db()
         
     def _load_rss_feeds(self) -> List[Dict[str, str]]:
-        """Load RSS feeds from configuration file or use defaults"""
+        """Load RSS feeds using singleton manager to prevent redundant loading"""
+        try:
+            from backend.utils.rss_singleton import get_rss_feed_manager
+            rss_manager = get_rss_feed_manager()
+            return rss_manager.get_rss_feeds()
+        except ImportError:
+            self.logger.warning("RSS singleton manager not available, falling back to direct loading")
+            return self._load_rss_feeds_direct()
+    
+    def _load_rss_feeds_direct(self) -> List[Dict[str, str]]:
+        """Direct RSS feed loading (fallback method)"""
         try:
             rss_config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'rss_feeds_example.json')
             
@@ -217,7 +233,7 @@ class BreakingNewsWatcher:
                                 'category': self._map_category(feed.get('category', 'general')),
                                 'name': feed.get('name', 'Unknown')
                             })
-                    self.logger.info(f"Loaded {len(feeds)} RSS feeds from configuration")
+                    self.logger.info(f"Loaded {len(feeds)} RSS feeds from configuration (direct)")
                     return feeds
             else:
                 self.logger.warning("RSS config file not found, using default feeds")

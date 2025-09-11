@@ -472,28 +472,83 @@ class DaVinciResolveAPI:
             return {"status": "error", "progress": 0}
 
 
+@dataclass
+class BatchRenderJob:
+    """Represents a batch render job."""
+    id: str
+    project_name: str
+    timeline_name: str
+    render_settings: RenderSettings
+    priority: int = 1  # 1=high, 2=medium, 3=low
+    status: str = "pending"  # pending, processing, completed, failed
+    created_at: datetime = None
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    error_message: Optional[str] = None
+    progress: float = 0.0
+    estimated_time: Optional[float] = None
+    
+    def __post_init__(self):
+        if self.created_at is None:
+            self.created_at = datetime.now()
+
+
+@dataclass
+class AutomationPreset:
+    """Automation preset for common workflows."""
+    name: str
+    description: str
+    project_settings: ProjectSettings
+    color_grade_preset: str
+    render_settings: RenderSettings
+    auto_effects: List[str] = None
+    audio_processing: Dict[str, Any] = None
+    title_templates: List[str] = None
+
+
 class DaVinciResolveIntegration:
-    """Main DaVinci Resolve integration class for TRAE.AI."""
+    """Enhanced DaVinci Resolve integration class for TRAE.AI with full API automation and batch processing."""
     
     def __init__(self, resolve_path: Optional[str] = None,
-                 projects_dir: Optional[str] = None):
-        """Initialize DaVinci Resolve integration.
+                 projects_dir: Optional[str] = None,
+                 enable_distributed: bool = False,
+                 max_concurrent_renders: int = 2):
+        """Initialize enhanced DaVinci Resolve integration.
         
         Args:
             resolve_path: Path to DaVinci Resolve executable
             projects_dir: Directory for storing project files
+            enable_distributed: Enable distributed rendering across multiple machines
+            max_concurrent_renders: Maximum concurrent render jobs
         """
         self.resolve_path = self._find_resolve(resolve_path)
         self.projects_dir = Path(projects_dir) if projects_dir else Path.home() / "Documents" / "DaVinci Resolve" / "Projects"
         self.projects_dir.mkdir(parents=True, exist_ok=True)
         
+        # Enhanced features
+        self.enable_distributed = enable_distributed
+        self.max_concurrent_renders = max_concurrent_renders
+        self.render_queue: List[BatchRenderJob] = []
+        self.active_renders: Dict[str, BatchRenderJob] = {}
+        self.render_history: List[BatchRenderJob] = []
+        
         # Initialize API
         self.api = DaVinciResolveAPI()
         
-        # Predefined color grades
+        # Predefined color grades and automation presets
         self.color_presets = self._load_color_presets()
+        self.automation_presets = self._load_automation_presets()
         
-        logger.info("DaVinci Resolve integration initialized")
+        # Performance monitoring
+        self.performance_stats = {
+            "total_renders": 0,
+            "successful_renders": 0,
+            "failed_renders": 0,
+            "average_render_time": 0.0,
+            "total_render_time": 0.0
+        }
+        
+        logger.info(f"Enhanced DaVinci Resolve integration initialized with {max_concurrent_renders} concurrent renders")
     
     def _find_resolve(self, provided_path: Optional[str]) -> Optional[str]:
         """Find DaVinci Resolve installation."""
@@ -570,6 +625,414 @@ class DaVinciResolveIntegration:
         }
         
         return presets
+    
+    def _load_automation_presets(self) -> Dict[str, AutomationPreset]:
+        """Load predefined automation presets for common workflows."""
+        presets = {
+            "youtube_video": AutomationPreset(
+                name="YouTube Video",
+                description="Optimized for YouTube content creation",
+                project_settings=ProjectSettings(
+                    name="YouTube_Project",
+                    timeline_resolution=(1920, 1080),
+                    timeline_frame_rate=24.0,
+                    color_space="Rec.709"
+                ),
+                color_grade_preset="warm_natural",
+                render_settings=RenderSettings(
+                    format="mp4",
+                    codec="H.264",
+                    resolution=(1920, 1080),
+                    frame_rate=24.0,
+                    quality="high",
+                    audio_codec="AAC",
+                    audio_bitrate=192
+                ),
+                auto_effects=["noise_reduction", "stabilization"],
+                audio_processing={"normalize": True, "noise_gate": -40}
+            ),
+            "podcast_video": AutomationPreset(
+                name="Podcast Video",
+                description="Optimized for podcast video content",
+                project_settings=ProjectSettings(
+                    name="Podcast_Project",
+                    timeline_resolution=(1920, 1080),
+                    timeline_frame_rate=30.0
+                ),
+                color_grade_preset="cinematic",
+                render_settings=RenderSettings(
+                    format="mp4",
+                    codec="H.264",
+                    resolution=(1920, 1080),
+                    frame_rate=30.0,
+                    quality="high"
+                ),
+                auto_effects=["audio_sync", "multicam_sync"],
+                audio_processing={"normalize": True, "compressor": True, "eq": "voice"}
+            ),
+            "social_media": AutomationPreset(
+                name="Social Media",
+                description="Optimized for social media platforms",
+                project_settings=ProjectSettings(
+                    name="Social_Project",
+                    timeline_resolution=(1080, 1920),  # Vertical format
+                    timeline_frame_rate=30.0
+                ),
+                color_grade_preset="high_contrast",
+                render_settings=RenderSettings(
+                    format="mp4",
+                    codec="H.264",
+                    resolution=(1080, 1920),
+                    frame_rate=30.0,
+                    quality="high",
+                    bitrate=8
+                ),
+                auto_effects=["auto_crop", "dynamic_zoom"],
+                title_templates=["social_lower_third", "call_to_action"]
+            ),
+            "professional_film": AutomationPreset(
+                name="Professional Film",
+                description="High-end film production workflow",
+                project_settings=ProjectSettings(
+                    name="Film_Project",
+                    timeline_resolution=(4096, 2160),  # 4K DCI
+                    timeline_frame_rate=24.0,
+                    color_space="DaVinci Wide Gamut",
+                    gamma="DaVinci Intermediate",
+                    working_luminance=1000
+                ),
+                color_grade_preset="cinematic",
+                render_settings=RenderSettings(
+                    format="mov",
+                    codec="ProRes",
+                    resolution=(4096, 2160),
+                    frame_rate=24.0,
+                    quality="best"
+                ),
+                auto_effects=["film_grain", "lens_distortion_correction"]
+            )
+        }
+        
+        return presets
+    
+    def add_batch_render_job(self, project_name: str, timeline_name: str, 
+                           render_settings: RenderSettings, priority: int = 2) -> str:
+        """Add a new batch render job to the queue.
+        
+        Args:
+            project_name: Name of the project to render
+            timeline_name: Name of the timeline to render
+            render_settings: Render configuration
+            priority: Job priority (1=high, 2=medium, 3=low)
+            
+        Returns:
+            Job ID for tracking
+        """
+        job_id = f"render_{int(time.time())}_{len(self.render_queue)}"
+        
+        job = BatchRenderJob(
+            id=job_id,
+            project_name=project_name,
+            timeline_name=timeline_name,
+            render_settings=render_settings,
+            priority=priority
+        )
+        
+        # Insert job based on priority
+        inserted = False
+        for i, existing_job in enumerate(self.render_queue):
+            if job.priority < existing_job.priority:
+                self.render_queue.insert(i, job)
+                inserted = True
+                break
+        
+        if not inserted:
+            self.render_queue.append(job)
+        
+        logger.info(f"Added batch render job {job_id} with priority {priority}")
+        return job_id
+    
+    def process_render_queue(self) -> Dict[str, Any]:
+        """Process pending render jobs in the queue.
+        
+        Returns:
+            Status information about queue processing
+        """
+        if not self.render_queue:
+            return {"status": "empty_queue", "active_renders": len(self.active_renders)}
+        
+        # Check if we can start new renders
+        available_slots = self.max_concurrent_renders - len(self.active_renders)
+        
+        if available_slots <= 0:
+            return {
+                "status": "queue_full", 
+                "active_renders": len(self.active_renders),
+                "pending_jobs": len(self.render_queue)
+            }
+        
+        # Start new render jobs
+        started_jobs = []
+        
+        for _ in range(min(available_slots, len(self.render_queue))):
+            job = self.render_queue.pop(0)  # Get highest priority job
+            
+            if self._start_render_job(job):
+                self.active_renders[job.id] = job
+                started_jobs.append(job.id)
+                logger.info(f"Started render job {job.id}")
+            else:
+                job.status = "failed"
+                job.error_message = "Failed to start render"
+                self.render_history.append(job)
+        
+        return {
+            "status": "processing",
+            "started_jobs": started_jobs,
+            "active_renders": len(self.active_renders),
+            "pending_jobs": len(self.render_queue)
+        }
+    
+    def _start_render_job(self, job: BatchRenderJob) -> bool:
+        """Start a specific render job.
+        
+        Args:
+            job: Batch render job to start
+            
+        Returns:
+            True if job started successfully
+        """
+        try:
+            # Open the project
+            if not self.api.open_project(job.project_name):
+                logger.error(f"Failed to open project {job.project_name}")
+                return False
+            
+            # Set the timeline
+            if not self.api.current_project:
+                return False
+            
+            timelines = self.api.current_project.GetTimelineList()
+            target_timeline = None
+            
+            for timeline in timelines:
+                if timeline.GetName() == job.timeline_name:
+                    target_timeline = timeline
+                    break
+            
+            if not target_timeline:
+                logger.error(f"Timeline {job.timeline_name} not found")
+                return False
+            
+            self.api.current_timeline = target_timeline
+            
+            # Start the render
+            if self.api.start_render(job.render_settings):
+                job.status = "processing"
+                job.started_at = datetime.now()
+                return True
+            else:
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error starting render job {job.id}: {e}")
+            job.error_message = str(e)
+            return False
+    
+    def check_render_progress(self) -> Dict[str, Any]:
+        """Check progress of all active render jobs.
+        
+        Returns:
+            Progress information for all active renders
+        """
+        progress_info = {
+            "active_jobs": {},
+            "completed_jobs": [],
+            "failed_jobs": []
+        }
+        
+        completed_jobs = []
+        
+        for job_id, job in self.active_renders.items():
+            # Get render status from API
+            status = self.api.get_render_status()
+            
+            job.progress = status.get("progress", 0)
+            
+            if status["status"] == "Complete":
+                job.status = "completed"
+                job.completed_at = datetime.now()
+                job.progress = 100.0
+                
+                # Update performance stats
+                self._update_performance_stats(job, success=True)
+                
+                progress_info["completed_jobs"].append(job_id)
+                completed_jobs.append(job_id)
+                
+            elif status["status"] == "Failed":
+                job.status = "failed"
+                job.completed_at = datetime.now()
+                job.error_message = "Render failed"
+                
+                # Update performance stats
+                self._update_performance_stats(job, success=False)
+                
+                progress_info["failed_jobs"].append(job_id)
+                completed_jobs.append(job_id)
+                
+            else:
+                progress_info["active_jobs"][job_id] = {
+                    "progress": job.progress,
+                    "status": job.status,
+                    "started_at": job.started_at.isoformat() if job.started_at else None,
+                    "estimated_time": job.estimated_time
+                }
+        
+        # Move completed jobs to history
+        for job_id in completed_jobs:
+            job = self.active_renders.pop(job_id)
+            self.render_history.append(job)
+        
+        return progress_info
+    
+    def _update_performance_stats(self, job: BatchRenderJob, success: bool):
+        """Update performance statistics.
+        
+        Args:
+            job: Completed render job
+            success: Whether the job completed successfully
+        """
+        self.performance_stats["total_renders"] += 1
+        
+        if success:
+            self.performance_stats["successful_renders"] += 1
+        else:
+            self.performance_stats["failed_renders"] += 1
+        
+        if job.started_at and job.completed_at:
+            render_time = (job.completed_at - job.started_at).total_seconds()
+            self.performance_stats["total_render_time"] += render_time
+            
+            # Update average
+            total_successful = self.performance_stats["successful_renders"]
+            if total_successful > 0:
+                self.performance_stats["average_render_time"] = (
+                    self.performance_stats["total_render_time"] / total_successful
+                )
+    
+    def get_queue_status(self) -> Dict[str, Any]:
+        """Get current status of the render queue.
+        
+        Returns:
+            Comprehensive queue status information
+        """
+        return {
+            "pending_jobs": len(self.render_queue),
+            "active_renders": len(self.active_renders),
+            "completed_jobs": len([j for j in self.render_history if j.status == "completed"]),
+            "failed_jobs": len([j for j in self.render_history if j.status == "failed"]),
+            "performance_stats": self.performance_stats.copy(),
+            "queue_details": [
+                {
+                    "id": job.id,
+                    "project": job.project_name,
+                    "priority": job.priority,
+                    "created_at": job.created_at.isoformat()
+                }
+                for job in self.render_queue
+            ],
+            "active_details": [
+                {
+                    "id": job.id,
+                    "project": job.project_name,
+                    "progress": job.progress,
+                    "started_at": job.started_at.isoformat() if job.started_at else None
+                }
+                for job in self.active_renders.values()
+            ]
+        }
+    
+    def create_project_from_preset(self, preset_name: str, project_name: str, 
+                                 assets: List[VideoAsset]) -> str:
+        """Create a project using an automation preset.
+        
+        Args:
+            preset_name: Name of the automation preset to use
+            project_name: Name for the new project
+            assets: List of video assets to include
+            
+        Returns:
+            Path to the created project or render output
+        """
+        if preset_name not in self.automation_presets:
+            raise ValueError(f"Unknown automation preset: {preset_name}")
+        
+        preset = self.automation_presets[preset_name]
+        
+        # Update project settings with custom name
+        project_settings = preset.project_settings
+        project_settings.name = project_name
+        
+        # Apply automation preset
+        logger.info(f"Creating project '{project_name}' using preset '{preset_name}'")
+        
+        # Create the project with preset settings
+        return self.create_video_project(
+            project_name=project_name,
+            assets=assets,
+            color_grades={asset.name: preset.color_grade_preset for asset in assets},
+            render_settings=preset.render_settings
+        )
+    
+    def batch_process_projects(self, project_configs: List[Dict[str, Any]]) -> List[str]:
+        """Process multiple projects in batch mode.
+        
+        Args:
+            project_configs: List of project configuration dictionaries
+            
+        Returns:
+            List of job IDs for tracking
+        """
+        job_ids = []
+        
+        for config in project_configs:
+            try:
+                # Extract configuration
+                project_name = config["project_name"]
+                preset_name = config.get("preset", "youtube_video")
+                assets = config["assets"]
+                priority = config.get("priority", 2)
+                
+                # Create project using preset
+                if preset_name in self.automation_presets:
+                    preset = self.automation_presets[preset_name]
+                    
+                    # Create project first
+                    self.create_project_from_preset(preset_name, project_name, assets)
+                    
+                    # Add to render queue
+                    job_id = self.add_batch_render_job(
+                        project_name=project_name,
+                        timeline_name=f"{project_name}_timeline",
+                        render_settings=preset.render_settings,
+                        priority=priority
+                    )
+                    
+                    job_ids.append(job_id)
+                    logger.info(f"Added project '{project_name}' to batch processing queue")
+                    
+                else:
+                    logger.error(f"Unknown preset '{preset_name}' for project '{project_name}'")
+                    
+            except Exception as e:
+                logger.error(f"Error processing project config: {e}")
+                continue
+        
+        # Start processing the queue
+        self.process_render_queue()
+        
+        return job_ids
     
     def create_video_project(self, project_name: str, assets: List[VideoAsset],
                            color_grades: Optional[Dict[str, str]] = None,

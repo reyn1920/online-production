@@ -56,6 +56,7 @@ class PromptTemplate(Enum):
     RISK_ANALYSIS = "risk_analysis"
     CONTENT_STRATEGY = "content_strategy"
     FINANCIAL_ANALYSIS = "financial_analysis"
+    RESEARCH_SYNTHESIS = "research_synthesis"
 
 class ResponseQuality(Enum):
     """Response quality levels"""

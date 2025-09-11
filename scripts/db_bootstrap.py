@@ -45,6 +45,7 @@ DDL = {
     """,
 }
 
+
 def main():
     DB.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(DB)
@@ -54,6 +55,7 @@ def main():
     con.commit()
     con.close()
     print(f"OK: ensured tables exist in {DB}")
+
 
 if __name__ == "__main__":
     main()

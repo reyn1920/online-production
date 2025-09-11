@@ -253,6 +253,14 @@ class UniversalChannelProtocol:
             "asset_sharing_allowed": False,
             "content_repurposing_allowed": False
         })
+        
+        # Initialize the firewall instance after protocol is ready
+        try:
+            from .right_perspective_firewall import RightPerspectiveFirewall
+            self._right_perspective_firewall = RightPerspectiveFirewall(protocol=self)
+        except Exception as e:
+            self.logger.error(f"Failed to initialize Right Perspective Firewall: {e}")
+            self._right_perspective_firewall = None
     
     def create_channel(self, 
                       channel_id: str,
@@ -571,6 +579,10 @@ class UniversalChannelProtocol:
         """Get all channel configurations"""
         return self.channels.copy()
     
+    def get_right_perspective_firewall(self):
+        """Get the Right Perspective Firewall instance"""
+        return getattr(self, '_right_perspective_firewall', None)
+
     def get_channel_config(self, channel_id: str) -> Optional[ChannelConfig]:
         """Get configuration for a specific channel"""
         return self.channels.get(channel_id)

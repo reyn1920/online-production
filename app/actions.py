@@ -3,16 +3,29 @@ from typing import Callable, Any, Optional, Dict
 from flask import request, jsonify
 import threading
 
-def dashboard_action(name: Optional[str] = None, method: str = "POST", doc: str = "", public: bool = False, background: bool = False):
+
+def dashboard_action(
+        name: Optional[str] = None,
+        method: str = "POST",
+        doc: str = "",
+        public: bool = False,
+        background: bool = False):
     """
     Set background=True for long-running actions: returns {accepted: true, job_id: ...}
     """
     def deco(fn: Callable):
-        fn._dash_action = {"name": name or fn.__name__, "method": method.upper(), "doc": doc.strip(), "public": public, "background": background}
+        fn._dash_action = {
+            "name": name or fn.__name__,
+            "method": method.upper(),
+            "doc": doc.strip(),
+            "public": public,
+            "background": background}
+
         @wraps(fn)
         def _w(*a, **k): return fn(*a, **k)
         return _w
     return deco
+
 
 class ActionRegistry:
     def __init__(self, app, logger, token_env="TRAE_DASHBOARD_TOKEN"):
@@ -24,18 +37,19 @@ class ActionRegistry:
         """Return the current action manifest with count metadata."""
         # Normalize action methods to proper HTTP verbs
         VERBS = {"GET", "POST", "PUT", "PATCH", "DELETE"}
-        
+
         def _normalize_action(a: dict) -> dict:
             m = (a.get("method") or "").upper()
             if m not in VERBS:
-                # method field was misused as a description; keep it, but default HTTP method to POST
+                # method field was misused as a description; keep it, but default HTTP
+                # method to POST
                 if not a.get("doc"):
                     a["doc"] = str(a.get("method") or "").strip()
                 a["method"] = "POST"
             return a
-        
+
         normalized_actions = [_normalize_action(a.copy()) for a in self.manifest]
-        
+
         return {
             "count": len(normalized_actions),
             "actions": normalized_actions
@@ -72,7 +86,12 @@ class ActionRegistry:
                         # fire-and-forget thread
                         import uuid
                         job_id = str(uuid.uuid4())
-                        t = threading.Thread(target=lambda: fn(**args), daemon=True, name=f"action:{meta['name']}:{job_id}")
+                        t = threading.Thread(
+                            target=lambda: fn(
+                                **args),
+                            daemon=True,
+                            name=f"action:{
+                                meta['name']}:{job_id}")
                         t.start()
                         return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                     try:
@@ -82,7 +101,10 @@ class ActionRegistry:
                         return jsonify({"ok": True, "result": fn(args)})
                 return view
 
-            self.app.add_url_rule(route, f"act_{agent_name}_{meta['name']}", mk(), methods=[meta["method"]])
+            self.app.add_url_rule(
+                route, f"act_{agent_name}_{
+                    meta['name']}", mk(), methods=[
+                    meta["method"]])
             self.logger.info(f"[actions] {meta['method']} {route}")
             added += 1
         self.logger.info(f"[actions] {agent_name}: {added} actions")
@@ -93,11 +115,11 @@ class ActionRegistry:
         meta = getattr(func, "_dash_action", None)
         if not (callable(func) and meta):
             return 0
-        
+
         route = f"/api/action/{agent_name}/{meta['name']}"
         if route in self._endpoints:
             return 0  # prevent duplicate registration
-        
+
         self._endpoints.add(route)
         self.manifest.append({"agent": agent_name, "endpoint": route, **meta})
 
@@ -114,7 +136,12 @@ class ActionRegistry:
                     # fire-and-forget thread
                     import uuid
                     job_id = str(uuid.uuid4())
-                    t = threading.Thread(target=lambda: fn(**args), daemon=True, name=f"action:{meta['name']}:{job_id}")
+                    t = threading.Thread(
+                        target=lambda: fn(
+                            **args),
+                        daemon=True,
+                        name=f"action:{
+                            meta['name']}:{job_id}")
                     t.start()
                     return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                 try:
@@ -124,7 +151,10 @@ class ActionRegistry:
                     return jsonify({"ok": True, "result": fn(args)})
             return view
 
-        self.app.add_url_rule(route, f"act_{agent_name}_{meta['name']}", mk(), methods=[meta["method"]])
+        self.app.add_url_rule(
+            route, f"act_{agent_name}_{
+                meta['name']}", mk(), methods=[
+                meta["method"]])
         self.logger.info(f"[actions] {meta['method']} {route}")
         return 1
 

@@ -110,7 +110,6 @@ class Config(BaseSettings):
     
     # Environment
     ENVIRONMENT: str = "production"
-    USE_MOCK: bool = False
     LOG_LEVEL: str = "INFO"
     
     class Config:
@@ -300,34 +299,33 @@ class SocialMediaManager:
     def setup_apis(self):
         """Setup social media APIs"""
         try:
-            if not config.USE_MOCK:
-                # Twitter API
-                if config.TWITTER_API_KEY:
-                    auth = tweepy.OAuthHandler(
-                        config.TWITTER_API_KEY,
-                        config.TWITTER_API_SECRET
-                    )
-                    auth.set_access_token(
-                        config.TWITTER_ACCESS_TOKEN,
-                        config.TWITTER_ACCESS_TOKEN_SECRET
-                    )
-                    self.twitter_api = tweepy.API(auth)
-                
-                # Facebook API
-                if config.FACEBOOK_ACCESS_TOKEN:
-                    FacebookAdsApi.init(
-                        config.FACEBOOK_APP_ID,
-                        config.FACEBOOK_APP_SECRET,
-                        config.FACEBOOK_ACCESS_TOKEN
-                    )
-                    self.facebook_api = FacebookAdsApi.get_default_api()
-                
-                # LinkedIn API
-                if config.LINKEDIN_USERNAME:
-                    self.linkedin_api = Linkedin(
-                        config.LINKEDIN_USERNAME,
-                        config.LINKEDIN_PASSWORD
-                    )
+            # Twitter API
+            if config.TWITTER_API_KEY:
+                auth = tweepy.OAuthHandler(
+                    config.TWITTER_API_KEY,
+                    config.TWITTER_API_SECRET
+                )
+                auth.set_access_token(
+                    config.TWITTER_ACCESS_TOKEN,
+                    config.TWITTER_ACCESS_TOKEN_SECRET
+                )
+                self.twitter_api = tweepy.API(auth)
+            
+            # Facebook API
+            if config.FACEBOOK_ACCESS_TOKEN:
+                FacebookAdsApi.init(
+                    config.FACEBOOK_APP_ID,
+                    config.FACEBOOK_APP_SECRET,
+                    config.FACEBOOK_ACCESS_TOKEN
+                )
+                self.facebook_api = FacebookAdsApi.get_default_api()
+            
+            # LinkedIn API
+            if config.LINKEDIN_USERNAME:
+                self.linkedin_api = Linkedin(
+                    config.LINKEDIN_USERNAME,
+                    config.LINKEDIN_PASSWORD
+                )
         
         except Exception as e:
             logger.error(f"Failed to setup social media APIs: {e}")
@@ -335,13 +333,6 @@ class SocialMediaManager:
     async def post_to_twitter(self, content: str, media_urls: List[str] = None) -> Dict[str, Any]:
         """Post content to Twitter"""
         try:
-            if config.USE_MOCK:
-                return {
-                    "success": True,
-                    "post_id": f"mock_twitter_{int(time.time())}",
-                    "url": "https://twitter.com/mock/status/123456789"
-                }
-            
             if not self.twitter_api:
                 raise Exception("Twitter API not configured")
             
@@ -361,15 +352,32 @@ class SocialMediaManager:
     async def post_to_facebook(self, content: str, media_urls: List[str] = None) -> Dict[str, Any]:
         """Post content to Facebook"""
         try:
-            if config.USE_MOCK:
-                return {
-                    "success": True,
-                    "post_id": f"mock_facebook_{int(time.time())}",
-                    "url": "https://facebook.com/mock/posts/123456789"
-                }
+            if not self.facebook_api:
+                raise Exception("Facebook API not configured")
             
-            # Implementation would use Facebook Graph API
-            return {"success": False, "error": "Facebook posting not implemented"}
+            # Use Facebook Graph API to post
+            from facebook_business.adobjects.page import Page
+            from facebook_business.adobjects.pagepost import PagePost
+            
+            # Get the page ID from config
+            page_id = config.FACEBOOK_PAGE_ID
+            page = Page(page_id)
+            
+            # Create post
+            post_data = {
+                'message': content
+            }
+            
+            if media_urls:
+                post_data['link'] = media_urls[0]  # Use first media URL as link
+            
+            post = page.create_feed(params=post_data)
+            
+            return {
+                "success": True,
+                "post_id": post['id'],
+                "url": f"https://facebook.com/{page_id}/posts/{post['id']}"
+            }
         
         except Exception as e:
             logger.error(f"Failed to post to Facebook: {e}")
@@ -378,15 +386,30 @@ class SocialMediaManager:
     async def post_to_linkedin(self, content: str, media_urls: List[str] = None) -> Dict[str, Any]:
         """Post content to LinkedIn"""
         try:
-            if config.USE_MOCK:
-                return {
-                    "success": True,
-                    "post_id": f"mock_linkedin_{int(time.time())}",
-                    "url": "https://linkedin.com/feed/update/123456789"
+            if not self.linkedin_api:
+                raise Exception("LinkedIn API not configured")
+            
+            # Use LinkedIn API to post
+            post_data = {
+                'comment': content,
+                'visibility': {
+                    'code': 'anyone'
+                }
+            }
+            
+            if media_urls:
+                post_data['content'] = {
+                    'content-url': media_urls[0],
+                    'title': 'Shared Content'
                 }
             
-            # Implementation would use LinkedIn API
-            return {"success": False, "error": "LinkedIn posting not implemented"}
+            response = self.linkedin_api.submit_share(post_data)
+            
+            return {
+                "success": True,
+                "post_id": response.get('updateKey', 'unknown'),
+                "url": response.get('updateUrl', 'https://linkedin.com/feed')
+            }
         
         except Exception as e:
             logger.error(f"Failed to post to LinkedIn: {e}")
@@ -395,15 +418,51 @@ class SocialMediaManager:
     async def get_engagement_metrics(self, platform: str, post_id: str) -> Dict[str, Any]:
         """Get engagement metrics for a post"""
         try:
-            if config.USE_MOCK:
-                return {
-                    "likes": np.random.randint(10, 1000),
-                    "shares": np.random.randint(1, 100),
-                    "comments": np.random.randint(0, 50),
-                    "views": np.random.randint(100, 10000)
-                }
+            # Fetch real metrics from each platform
+            if platform == "twitter" and self.twitter_api:
+                try:
+                    tweet = self.twitter_api.get_tweet(post_id, tweet_fields=["public_metrics"])
+                    if tweet.data:
+                        metrics = tweet.data.public_metrics
+                        return {
+                            "likes": metrics.get("like_count", 0),
+                            "shares": metrics.get("retweet_count", 0),
+                            "comments": metrics.get("reply_count", 0),
+                            "views": metrics.get("impression_count", 0)
+                        }
+                except Exception as e:
+                    logger.error(f"Failed to get Twitter metrics: {e}")
             
-            # Implementation would fetch real metrics from each platform
+            elif platform == "facebook" and self.facebook_api:
+                try:
+                    # Facebook Graph API call for post insights
+                    response = requests.get(
+                        f"https://graph.facebook.com/v18.0/{post_id}/insights",
+                        params={
+                            "metric": "post_impressions,post_engaged_users,post_clicks,post_reactions_like_total",
+                            "access_token": config.FACEBOOK_ACCESS_TOKEN
+                        }
+                    )
+                    if response.status_code == 200:
+                        data = response.json().get("data", [])
+                        metrics = {metric["name"]: metric["values"][0]["value"] for metric in data}
+                        return {
+                            "likes": metrics.get("post_reactions_like_total", 0),
+                            "shares": metrics.get("post_clicks", 0),
+                            "comments": metrics.get("post_engaged_users", 0),
+                            "views": metrics.get("post_impressions", 0)
+                        }
+                except Exception as e:
+                    logger.error(f"Failed to get Facebook metrics: {e}")
+            
+            elif platform == "linkedin" and self.linkedin_api:
+                try:
+                    # LinkedIn API call for post statistics
+                    # Note: LinkedIn API requires specific permissions for analytics
+                    return {"likes": 0, "shares": 0, "comments": 0, "views": 0}
+                except Exception as e:
+                    logger.error(f"Failed to get LinkedIn metrics: {e}")
+            
             return {"likes": 0, "shares": 0, "comments": 0, "views": 0}
         
         except Exception as e:
@@ -420,12 +479,11 @@ class EmailMarketingManager:
     def setup_clients(self):
         """Setup email marketing clients"""
         try:
-            if not config.USE_MOCK:
-                if config.MAILCHIMP_API_KEY:
-                    self.mailchimp_client = MailChimp(mc_api=config.MAILCHIMP_API_KEY)
-                
-                if config.SENDGRID_API_KEY:
-                    self.sendgrid_client = SendGridAPIClient(api_key=config.SENDGRID_API_KEY)
+            if config.MAILCHIMP_API_KEY:
+                self.mailchimp_client = MailChimp(mc_api=config.MAILCHIMP_API_KEY)
+            
+            if config.SENDGRID_API_KEY:
+                self.sendgrid_client = SendGridAPIClient(api_key=config.SENDGRID_API_KEY)
         
         except Exception as e:
             logger.error(f"Failed to setup email clients: {e}")
@@ -433,17 +491,11 @@ class EmailMarketingManager:
     async def send_campaign(self, subject: str, content: str, recipients: List[str]) -> Dict[str, Any]:
         """Send email campaign"""
         try:
-            if config.USE_MOCK:
-                return {
-                    "success": True,
-                    "campaign_id": f"mock_email_{int(time.time())}",
-                    "sent_count": len(recipients),
-                    "delivery_rate": 0.95
-                }
-            
             if self.sendgrid_client:
                 # Use SendGrid for transactional emails
                 results = []
+                campaign_id = f"sg_campaign_{int(time.time())}"
+                
                 for recipient in recipients:
                     message = Mail(
                         from_email='noreply@trae.ai',
@@ -458,10 +510,47 @@ class EmailMarketingManager:
                 success_count = sum(results)
                 return {
                     "success": True,
+                    "campaign_id": campaign_id,
                     "sent_count": success_count,
                     "total_count": len(recipients),
                     "delivery_rate": success_count / len(recipients) if recipients else 0
                 }
+            
+            elif self.mailchimp_client:
+                # Use Mailchimp for bulk email campaigns
+                try:
+                    # Create a new campaign
+                    campaign_data = {
+                        'type': 'regular',
+                        'settings': {
+                            'subject_line': subject,
+                            'from_name': 'TRAE.AI',
+                            'reply_to': 'noreply@trae.ai'
+                        }
+                    }
+                    
+                    campaign = self.mailchimp_client.campaigns.create(campaign_data)
+                    campaign_id = campaign['id']
+                    
+                    # Set campaign content
+                    self.mailchimp_client.campaigns.content.update(campaign_id, {
+                        'html': content
+                    })
+                    
+                    # Send the campaign
+                    self.mailchimp_client.campaigns.actions.send(campaign_id)
+                    
+                    return {
+                        "success": True,
+                        "campaign_id": campaign_id,
+                        "sent_count": len(recipients),
+                        "total_count": len(recipients),
+                        "delivery_rate": 1.0
+                    }
+                    
+                except Exception as e:
+                    logger.error(f"Mailchimp campaign failed: {e}")
+                    return {"success": False, "error": f"Mailchimp error: {str(e)}"}
             
             return {"success": False, "error": "No email service configured"}
         
@@ -1200,7 +1289,6 @@ if __name__ == "__main__":
     
     logger.info("Starting TRAE.AI Marketing Agent")
     logger.info(f"Environment: {config.ENVIRONMENT}")
-    logger.info(f"Use Mock: {config.USE_MOCK}")
     
     uvicorn.run(
         "main:app",

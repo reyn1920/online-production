@@ -37,7 +37,6 @@ load_dotenv()
 class ContentConfig:
     """Configuration for the content agent"""
     def __init__(self):
-        self.use_mock = os.getenv('USE_MOCK', 'false').lower() == 'true'
         self.openai_api_key = os.getenv('OPENAI_API_KEY')
         self.coqui_api_key = os.getenv('COQUI_API_KEY')
         self.youtube_api_key = os.getenv('YOUTUBE_API_KEY')
@@ -119,9 +118,6 @@ class ScriptGenerator:
     
     async def generate_script(self, topic: str, duration: int, style: str = 'educational') -> Dict[str, str]:
         """Generate a video script for the given topic"""
-        if self.config.use_mock:
-            return self._generate_mock_script(topic, duration)
-        
         try:
             prompt = f"""
 Create a compelling {duration}-second video script about: {topic}
@@ -174,17 +170,14 @@ Return JSON with:
                 
         except Exception as e:
             logger.error(f"Script generation failed: {e}")
-            return self._generate_mock_script(topic, duration)
-    
-    def _generate_mock_script(self, topic: str, duration: int) -> Dict[str, str]:
-        """Generate a mock script for testing"""
-        return {
-            'title': f"Breaking Analysis: {topic}",
-            'description': f"Deep dive into {topic} and its implications",
-            'script': f"Welcome to today's analysis of {topic}. This is a fascinating development that could change everything. Let me break down what this means for you and why it matters. [Pause] The key insight here is that {topic} represents a significant shift in how we think about technology and society. What do you think about this development? Let me know in the comments below.",
-            'key_points': [topic, 'analysis', 'implications'],
-            'tags': ['#breaking', '#analysis', '#tech']
-        }
+            # Return a basic fallback script structure
+            return {
+                'title': f"Analysis: {topic}",
+                'description': f"Insights on {topic}",
+                'script': f"Today we're exploring {topic}. This topic is important because it affects many aspects of our daily lives. Let's dive into the key details and understand what this means for the future.",
+                'key_points': [topic],
+                'tags': ['#analysis', '#education']
+            }
 
 class TTSEngine:
     """Text-to-Speech engine using Coqui TTS"""
@@ -206,8 +199,9 @@ class TTSEngine:
     
     async def generate_audio(self, text: str, output_path: str, voice: str = 'default') -> str:
         """Generate audio from text"""
-        if self.config.use_mock or not self.tts:
-            return self._generate_mock_audio(text, output_path)
+        if not self.tts:
+            logger.error("TTS engine not initialized")
+            raise Exception("TTS engine not available")
         
         try:
             # Generate audio using Coqui TTS
@@ -217,27 +211,9 @@ class TTSEngine:
             
         except Exception as e:
             logger.error(f"Audio generation failed: {e}")
-            return self._generate_mock_audio(text, output_path)
+            raise e
     
-    def _generate_mock_audio(self, text: str, output_path: str) -> str:
-        """Generate mock audio file for testing"""
-        # Create a silent audio file for testing
-        duration = len(text.split()) * 0.5  # Rough estimate: 0.5 seconds per word
-        
-        # Generate silent audio using ffmpeg
-        try:
-            (
-                ffmpeg
-                .input('anullsrc=channel_layout=stereo:sample_rate=44100', f='lavfi', t=duration)
-                .output(output_path)
-                .overwrite_output()
-                .run(quiet=True)
-            )
-            logger.info(f"✅ Mock audio generated: {output_path}")
-            return output_path
-        except Exception as e:
-            logger.error(f"Mock audio generation failed: {e}")
-            return output_path
+
 
 class AvatarGenerator:
     """Generates 3D avatars and visual content"""

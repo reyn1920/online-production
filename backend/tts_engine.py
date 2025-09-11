@@ -35,9 +35,17 @@ try:
     from TTS.api import TTS
     from TTS.utils.manage import ModelManager
     from TTS.utils.synthesizer import Synthesizer
+    TTS_AVAILABLE = True
 except ImportError:
     print("Coqui TTS not installed. Install with: pip install TTS")
-    sys.exit(1)
+    TTS_AVAILABLE = False
+    # Create dummy classes to prevent import errors
+    class TTS:
+        pass
+    class ModelManager:
+        pass
+    class Synthesizer:
+        pass
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -79,6 +87,15 @@ class TTSEngine:
         Args:
             cache_dir: Directory to cache models and audio files
         """
+        self.tts_available = TTS_AVAILABLE
+        
+        if not self.tts_available:
+            logger.warning("TTS Engine initialized in disabled mode - Coqui TTS not available")
+            self.models_cache = {}
+            self.available_models = {}
+            self.default_config = None
+            return
+            
         self.cache_dir = Path(cache_dir) if cache_dir else Path.home() / ".trae_tts_cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
@@ -96,6 +113,9 @@ class TTSEngine:
     
     def _get_available_models(self) -> Dict[str, Dict[str, Any]]:
         """Get list of available TTS models."""
+        if not self.tts_available:
+            return {}
+            
         try:
             manager = ModelManager()
             models = manager.list_models()
@@ -155,6 +175,9 @@ class TTSEngine:
         Returns:
             SynthesisResult with audio file path and metadata
         """
+        if not self.tts_available:
+            raise RuntimeError("TTS Engine is not available - Coqui TTS not installed")
+            
         if not text.strip():
             raise ValueError("Text cannot be empty")
         

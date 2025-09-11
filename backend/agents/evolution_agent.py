@@ -148,6 +148,16 @@ class EvolutionAgent(BaseAgent):
         # Database setup
         self._setup_evolution_database()
         
+        # Agent capabilities configuration
+        self._capabilities = getattr(self, "_capabilities", {})
+        self._capabilities.update({
+            "tool_generation": True,
+            "innovation_tracking": True,
+            "platform_analysis": True,
+            "capability_evolution": True,
+            "adaptation_automation": True
+        })
+        
         logger.info(f"EvolutionAgent initialized monitoring {len(self.monitoring_platforms)} platforms")
     
     def _initialize_evolution_tools(self):
@@ -668,16 +678,17 @@ class EvolutionAgent(BaseAgent):
                 await asyncio.sleep(300)  # Wait 5 minutes before retry
     
     @property
-    def capabilities(self) -> List[str]:
+    def capabilities(self) -> Dict[str, bool]:
         """Return the capabilities of this agent"""
-        return [
-            'trend_monitoring',
-            'format_detection', 
-            'self_improvement',
-            'content_creation',
-            'analysis',
-            'research'
-        ]
+        # Update capabilities with the new ones
+        self._capabilities.update({
+            "tool_generation": True,
+            "innovation_tracking": True,
+            "platform_analysis": True,
+            "capability_evolution": True,
+            "adaptation_automation": True
+        })
+        return self._capabilities
     
     async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
         """Execute task with monitoring - required abstract method implementation"""

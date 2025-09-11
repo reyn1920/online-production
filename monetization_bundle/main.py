@@ -32,7 +32,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RL
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-from weasyprint import HTML, CSS
+# from weasyprint import HTML, CSS  # Optional dependency
 import markdown
 from jinja2 import Template
 from docx import Document
@@ -64,7 +64,6 @@ Base = declarative_base()
 class MonetizationConfig:
     """Configuration for the monetization bundle"""
     def __init__(self):
-        self.use_mock = os.getenv('USE_MOCK', 'false').lower() == 'true'
         
         # E-commerce APIs
         self.gumroad_access_token = os.getenv('GUMROAD_ACCESS_TOKEN')
@@ -213,7 +212,7 @@ class EbookGenerator:
                 
         except Exception as e:
             logger.error(f"Ebook generation failed: {e}")
-            return await self._generate_mock_ebook(title, format)
+            raise
     
     async def _generate_pdf_ebook(self, title: str, content: str, author: str) -> str:
         """Generate PDF ebook using ReportLab"""
@@ -359,17 +358,6 @@ class EbookGenerator:
         
         logger.info(f"✅ DOCX ebook generated: {filepath}")
         return str(filepath)
-    
-    async def _generate_mock_ebook(self, title: str, format: str) -> str:
-        """Generate mock ebook for testing"""
-        filename = f"mock_ebook_{int(datetime.now().timestamp())}.{format}"
-        filepath = self.config.output_dir / filename
-        
-        # Create empty file
-        filepath.touch()
-        
-        logger.info(f"✅ Mock ebook generated: {filepath}")
-        return str(filepath)
 
 class GumroadPublisher:
     """Publishes products to Gumroad"""
@@ -380,8 +368,9 @@ class GumroadPublisher:
     
     async def publish_product(self, name: str, price: float, file_path: str, description: str = "") -> Dict[str, Any]:
         """Publish product to Gumroad"""
-        if self.config.use_mock or not self.config.gumroad_access_token:
-            return self._mock_gumroad_response(name, price)
+        if not self.config.gumroad_access_token:
+            logger.error("Gumroad access token not configured")
+            raise ValueError("Gumroad access token is required for publishing")
         
         try:
             # Upload file and create product
@@ -418,21 +407,13 @@ class GumroadPublisher:
                 }
             else:
                 logger.error(f"Gumroad API error: {response.text}")
-                return self._mock_gumroad_response(name, price)
+                raise HTTPException(status_code=response.status_code, detail=f"Gumroad API error: {response.text}")
                 
         except Exception as e:
             logger.error(f"Gumroad publishing failed: {e}")
-            return self._mock_gumroad_response(name, price)
+            raise
     
-    def _mock_gumroad_response(self, name: str, price: float) -> Dict[str, Any]:
-        """Mock Gumroad response for testing"""
-        return {
-            'success': True,
-            'product_id': f"mock_{int(datetime.now().timestamp())}",
-            'url': f"https://gumroad.com/l/mock_{name.lower().replace(' ', '_')}",
-            'name': name,
-            'price': price
-        }
+
 
 class NewsletterBot:
     """Automated newsletter creation and sending"""
@@ -445,22 +426,31 @@ class NewsletterBot:
     
     def _initialize_email_clients(self):
         """Initialize email clients"""
-        if not self.config.use_mock:
-            try:
-                if self.config.mailchimp_api_key:
-                    self.mailchimp_client = mailchimp3.MailChimp(
-                        mc_api=self.config.mailchimp_api_key
-                    )
-                    logger.info("✅ Mailchimp client initialized")
+        try:
+            if self.config.mailchimp_api_key:
+                self.mailchimp_client = mailchimp3.MailChimp(
+                    mc_api=self.config.mailchimp_api_key
+                )
+                logger.info("✅ Mailchimp client initialized")
+            
+            if self.config.sendgrid_api_key:
+                self.sendgrid_client = SendGridAPIClient(
+                    api_key=self.config.sendgrid_api_key
+                )
+                logger.info("✅ SendGrid client initialized")
+            else:
+                # Check if we're in development mode
+                environment = os.getenv('ENVIRONMENT', 'development')
+                if environment == 'production':
+                    logger.error("SendGrid API key not configured")
+                    raise ValueError("SendGrid API key is required for production mode")
+                else:
+                    logger.warning("SendGrid API key not configured - email features disabled in development mode")
+                    self.sendgrid_client = None
                 
-                if self.config.sendgrid_api_key:
-                    self.sendgrid_client = SendGridAPIClient(
-                        api_key=self.config.sendgrid_api_key
-                    )
-                    logger.info("✅ SendGrid client initialized")
-                    
-            except Exception as e:
-                logger.error(f"Email client initialization failed: {e}")
+        except Exception as e:
+            logger.error(f"Failed to initialize email clients: {e}")
+            raise
     
     async def create_and_send_newsletter(self, subject: str, content: str, subscribers: List[str], include_affiliate_links: bool = True) -> Dict[str, Any]:
         """Create and send newsletter with affiliate links"""
@@ -473,8 +463,9 @@ class NewsletterBot:
             html_content = await self._create_newsletter_html(subject, content)
             
             # Send newsletter
-            if self.config.use_mock or not self.sendgrid_client:
-                return self._mock_newsletter_response(subject, subscribers)
+            if not self.sendgrid_client:
+                logger.error("SendGrid client not configured")
+                raise ValueError("SendGrid API key is required for sending newsletters")
             
             sent_count = 0
             for subscriber in subscribers:
@@ -502,7 +493,7 @@ class NewsletterBot:
             
         except Exception as e:
             logger.error(f"Newsletter sending failed: {e}")
-            return self._mock_newsletter_response(subject, subscribers)
+            raise
     
     async def _inject_affiliate_links(self, content: str) -> str:
         """Inject affiliate links into content"""
@@ -560,14 +551,7 @@ class NewsletterBot:
             content=content_html
         )
     
-    def _mock_newsletter_response(self, subject: str, subscribers: List[str]) -> Dict[str, Any]:
-        """Mock newsletter response for testing"""
-        return {
-            'success': True,
-            'sent_count': len(subscribers),
-            'total_subscribers': len(subscribers),
-            'subject': subject
-        }
+
 
 class MerchBot:
     """Automated merchandise design and publishing"""
@@ -583,7 +567,7 @@ class MerchBot:
             
         except Exception as e:
             logger.error(f"Merch design creation failed: {e}")
-            return await self._create_mock_design(design_name, product_type)
+            raise
     
     async def _create_text_design(self, design_name: str, product_type: str, design_prompt: str) -> str:
         """Create simple text-based design"""
@@ -617,40 +601,24 @@ class MerchBot:
         logger.info(f"✅ Merch design created: {filepath}")
         return str(filepath)
     
-    async def _create_mock_design(self, design_name: str, product_type: str) -> str:
-        """Create mock design for testing"""
-        filename = f"mock_design_{int(datetime.now().timestamp())}.png"
-        filepath = self.config.output_dir / filename
-        
-        # Create minimal image
-        image = Image.new('RGB', (100, 100), color='blue')
-        image.save(filepath)
-        
-        return str(filepath)
+
     
     async def publish_to_printful(self, design_path: str, product_type: str, price: float) -> Dict[str, Any]:
         """Publish design to Printful"""
-        if self.config.use_mock or not self.config.printful_api_key:
-            return self._mock_printful_response(design_path, product_type, price)
+        if not self.config.printful_api_key:
+            logger.error("Printful API key not configured")
+            raise ValueError("Printful API key is required for live publishing")
         
         try:
             # Printful API integration would go here
-            # For now, return mock response
-            return self._mock_printful_response(design_path, product_type, price)
+            logger.error("Printful API integration not yet implemented")
+            raise NotImplementedError("Printful API integration pending")
             
         except Exception as e:
             logger.error(f"Printful publishing failed: {e}")
-            return self._mock_printful_response(design_path, product_type, price)
+            raise
     
-    def _mock_printful_response(self, design_path: str, product_type: str, price: float) -> Dict[str, Any]:
-        """Mock Printful response for testing"""
-        return {
-            'success': True,
-            'product_id': f"printful_{int(datetime.now().timestamp())}",
-            'product_url': f"https://printful.com/mock-product-{product_type}",
-            'design_path': design_path,
-            'price': price
-        }
+
 
 class SEOPublisher:
     """Publishes SEO-optimized content to various platforms"""
@@ -674,11 +642,12 @@ class SEOPublisher:
             elif platform.lower() == 'medium':
                 return await self._publish_to_medium(title, optimized_content)
             else:
-                return self._mock_publish_response(title, platform)
+                logger.error(f"Unsupported platform: {platform}")
+                raise ValueError(f"Platform '{platform}' is not supported")
                 
         except Exception as e:
             logger.error(f"Blog post publishing failed: {e}")
-            return self._mock_publish_response(title, platform)
+            raise
     
     async def _optimize_content_for_seo(self, content: str, keywords: List[str]) -> str:
         """Optimize content for SEO"""
@@ -712,39 +681,35 @@ class SEOPublisher:
     
     async def _publish_to_wordpress(self, title: str, content: str) -> Dict[str, Any]:
         """Publish to WordPress"""
-        if self.config.use_mock or not self.config.wordpress_api_url:
-            return self._mock_publish_response(title, 'wordpress')
+        if not self.config.wordpress_api_url:
+            logger.error("WordPress API URL not configured")
+            raise ValueError("WordPress API URL is required for live publishing")
         
         try:
             # WordPress API integration would go here
-            return self._mock_publish_response(title, 'wordpress')
+            logger.error("WordPress API integration not yet implemented")
+            raise NotImplementedError("WordPress API integration pending")
             
         except Exception as e:
             logger.error(f"WordPress publishing failed: {e}")
-            return self._mock_publish_response(title, 'wordpress')
+            raise
     
     async def _publish_to_medium(self, title: str, content: str) -> Dict[str, Any]:
         """Publish to Medium"""
-        if self.config.use_mock or not self.config.medium_access_token:
-            return self._mock_publish_response(title, 'medium')
+        if not self.config.medium_access_token:
+            logger.error("Medium access token not configured")
+            raise ValueError("Medium access token is required for live publishing")
         
         try:
             # Medium API integration would go here
-            return self._mock_publish_response(title, 'medium')
+            logger.error("Medium API integration not yet implemented")
+            raise NotImplementedError("Medium API integration pending")
             
         except Exception as e:
             logger.error(f"Medium publishing failed: {e}")
-            return self._mock_publish_response(title, 'medium')
+            raise
     
-    def _mock_publish_response(self, title: str, platform: str) -> Dict[str, Any]:
-        """Mock publish response for testing"""
-        return {
-            'success': True,
-            'post_id': f"{platform}_{int(datetime.now().timestamp())}",
-            'url': f"https://{platform}.com/mock-post-{title.lower().replace(' ', '-')}",
-            'title': title,
-            'platform': platform
-        }
+
 
 class MonetizationBundle:
     """Main monetization bundle that orchestrates all revenue generation"""
@@ -1011,7 +976,6 @@ class MonetizationBundle:
         import uvicorn
         
         logger.info("💰 Starting TRAE.AI Monetization Bundle")
-        logger.info(f"📊 Mock mode: {self.config.use_mock}")
         logger.info(f"🛒 Gumroad configured: {bool(self.config.gumroad_access_token)}")
         logger.info(f"📧 Email configured: {bool(self.config.sendgrid_api_key)}")
         

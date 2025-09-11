@@ -1,7 +1,12 @@
 # ADD-ONLY: Metrics aggregator + /api/metrics route
 # Safe on systems without psutil; falls back to stdlib.
 from __future__ import annotations
-import os, json, time, glob, traceback, shutil
+import os
+import json
+import time
+import glob
+import traceback
+import shutil
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from flask import Blueprint, jsonify, current_app
@@ -13,8 +18,10 @@ except Exception:  # pragma: no cover
 
 metrics_bp = Blueprint("metrics_bp", __name__)
 
+
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
 
 def _safe(fn, default=None):
     try:
@@ -22,6 +29,7 @@ def _safe(fn, default=None):
     except Exception:
         current_app.logger.debug("metrics error:\n%s", traceback.format_exc())
         return default
+
 
 def _system_stats() -> Dict[str, Any]:
     # CPU / MEM / DISK (best-effort)
@@ -40,9 +48,11 @@ def _system_stats() -> Dict[str, Any]:
         ),
     }
 
+
 def _db_inventory() -> Dict[str, Any]:
     # Discover *.db under common locations; size + mtime
-    roots = list({os.getenv("TRAE_DB_DIR", "data"), "data", "backend/database", "db", "."})
+    roots = list({os.getenv("TRAE_DB_DIR", "data"),
+                 "data", "backend/database", "db", "."})
     found: List[Dict[str, Any]] = []
     for root in roots:
         for path in glob.glob(os.path.join(root, "**", "*.db"), recursive=True):
@@ -56,11 +66,14 @@ def _db_inventory() -> Dict[str, Any]:
             except FileNotFoundError:
                 continue
             except Exception:
-                current_app.logger.debug("db stat error %s\n%s", path, traceback.format_exc())
+                current_app.logger.debug(
+                    "db stat error %s\n%s", path, traceback.format_exc())
     return {
         "count": len(found),
-        "databases": sorted(found, key=lambda x: x["path"])[:20],  # cap to keep payload light
+        # cap to keep payload light
+        "databases": sorted(found, key=lambda x: x["path"])[:20],
     }
+
 
 def _latest_backup() -> Optional[Dict[str, Any]]:
     backup_dir = os.getenv("TRAE_BACKUP_DIR", "backups")
@@ -73,15 +86,20 @@ def _latest_backup() -> Optional[Dict[str, Any]]:
         try:
             st = os.stat(p)
             if not best or st.st_mtime > best["st_mtime"]:
-                best = {"path": os.path.relpath(p), "st_mtime": st.st_mtime, "size_bytes": st.st_size}
+                best = {
+                    "path": os.path.relpath(p),
+                    "st_mtime": st.st_mtime,
+                    "size_bytes": st.st_size}
         except Exception:
             continue
     if not best:
         return None
-    best["timestamp"] = datetime.fromtimestamp(best["st_mtime"], tz=timezone.utc).isoformat()
+    best["timestamp"] = datetime.fromtimestamp(
+        best["st_mtime"], tz=timezone.utc).isoformat()
     best["age_seconds"] = max(0, time.time() - best["st_mtime"])
     del best["st_mtime"]
     return best
+
 
 def _version_info() -> Dict[str, Any]:
     # Reuse /api/version if available (non-blocking)
@@ -100,6 +118,7 @@ def _version_info() -> Dict[str, Any]:
         "pid": os.getpid(),
     }
 
+
 def _agent_snapshot() -> Dict[str, Any]:
     """
     Best-effort: if orchestrator exports a snapshot provider, use it.
@@ -113,8 +132,15 @@ def _agent_snapshot() -> Dict[str, Any]:
         return {"total": None, "active": None, "agents": None}
     # Normalize minimal shape
     total = _safe(lambda: len(snap.get("agents", [])))
-    active = _safe(lambda: sum(1 for a in snap.get("agents", []) if a.get("status") in {"busy","processing"}))
+    active = _safe(
+        lambda: sum(
+            1 for a in snap.get(
+                "agents",
+                []) if a.get("status") in {
+                "busy",
+                "processing"}))
     return {"total": total, "active": active, "agents": snap.get("agents")}
+
 
 @metrics_bp.route("/api/metrics", methods=["GET"])
 def metrics_route():
@@ -129,6 +155,7 @@ def metrics_route():
         "errors": _safe(lambda: _tail_error_count(), default=None),
     }
     return jsonify(payload), 200
+
 
 def _tail_error_count(lines: int = 2000) -> Dict[str, Any]:
     path = os.getenv("TRAE_RUNLOG_PATH", "run.log")
@@ -150,6 +177,7 @@ def _tail_error_count(lines: int = 2000) -> Dict[str, Any]:
     except Exception:
         current_app.logger.debug("tail error\n%s", traceback.format_exc())
     return {"file": path, "present": True, "errors_last_chunk": cnt}
+
 
 def register_metrics_routes(app):
     # ADD-ONLY hook

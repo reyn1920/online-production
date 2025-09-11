@@ -34,12 +34,17 @@
     "content_generation": {
       "auto_posting_enabled": false,
       "content_optimization_enabled": true,
-      "seo_enhancement_enabled": true
+      "seo_enhancement_enabled": true,
+      "paste_enabled": true
     },
     "system_settings": {
       "debug_mode_enabled": false,
       "performance_monitoring_enabled": true,
       "auto_backup_enabled": true
+    },
+    "app_features": {
+      "girlfriend_boyfriend_app_sales_enabled": false,
+      "app_video_manager_host_enabled": true
     }
   },
   "legacy_settings": {

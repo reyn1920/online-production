@@ -95,7 +95,7 @@ class TotalAccessDashboard:
         self.app = Flask(__name__, 
                         template_folder='templates',
                         static_folder='static')
-        self.app.config['SECRET_KEY'] = 'trae_dashboard_secret_2024'
+        self.app.config['SECRET_KEY'] = os.environ.get('TOTAL_ACCESS_SECRET_KEY', os.urandom(24).hex())
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
         
         # Database connection

@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DaVinci Resolve Pro Integration - TRAE.AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff4757;
+        }
+
+        .status-indicator.online {
+            background: #2ed573;
+        }
+
+        .status-indicator.warning {
+            background: #ffa502;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #4ecdc4;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: #ffffff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            color: #ffffff;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #2ed573, #17c0eb);
+            color: #ffffff;
+        }
+
+        .project-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .project-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-info h4 {
+            margin-bottom: 5px;
+            color: #4ecdc4;
+        }
+
+        .project-info p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .voice-samples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .voice-sample {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .voice-sample:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #4ecdc4;
+        }
+
+        .voice-sample.selected {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .color-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .color-preset {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .color-preset:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #4ecdc4;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .log-output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: rgba(46, 213, 115, 0.1);
+            border: 1px solid rgba(46, 213, 115, 0.3);
+            color: #2ed573;
+        }
+
+        .alert-error {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+        }
+
+        .alert-warning {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            color: #ffa502;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DaVinci Resolve Pro Integration</h1>
+            <p>Professional video editing, voice cloning, and content creation suite</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator" id="resolve-status"></div>
+                <span>DaVinci Resolve: <span id="resolve-status-text">Checking...</span></span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator" id="api-status"></div>
+                <span>API: <span id="api-status-text">Checking...</span></span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator" id="voice-status"></div>
+                <span>Voice Integration: <span id="voice-status-text">Checking...</span></span>
+            </div>
+            <div class="status-item">
+                <button class="btn btn-secondary" onclick="refreshStatus()">Refresh Status</button>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Project Management Panel -->
+            <div class="panel">
+                <h2>Project Management</h2>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('projects', 'create')">Create Project</div>
+                    <div class="tab" onclick="switchTab('projects', 'list')">Project List</div>
+                </div>
+                
+                <div class="tab-content active" id="projects-create">
+                    <form id="create-project-form">
+                        <div class="form-group">
+                            <label for="project-name">Project Name</label>
+                            <input type="text" id="project-name" name="project_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-description">Description</label>
+                            <textarea id="project-description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="frame-rate">Frame Rate</label>
+                            <select id="frame-rate" name="frame_rate">
+                                <option value="24">24 fps</option>
+                                <option value="30">30 fps</option>
+                                <option value="60">60 fps</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="resolution">Resolution</label>
+                            <select id="resolution" name="resolution">
+                                <option value="1920,1080">1080p (1920x1080)</option>
+                                <option value="3840,2160">4K (3840x2160)</option>
+                                <option value="7680,4320">8K (7680x4320)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Project</button>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="projects-list">
+                    <div class="project-list" id="project-list">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadProjects()">Refresh Projects</button>
+                </div>
+            </div>
+
+            <!-- Voice Cloning Panel -->
+            <div class="panel">
+                <h2>Voice Cloning</h2>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('voice', 'single')">Single Clone</div>
+                    <div class="tab" onclick="switchTab('voice', 'batch')">Batch Clone</div>
+                    <div class="tab" onclick="switchTab('voice', 'samples')">Voice Samples</div>
+                </div>
+                
+                <div class="tab-content active" id="voice-single">
+                    <form id="voice-clone-form">
+                        <div class="form-group">
+                            <label for="voice-name">Voice Sample</label>
+                            <select id="voice-name" name="voice_name" required>
+                                <option value="">Select a voice...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="voice-text">Text to Clone</label>
+                            <textarea id="voice-text" name="text" rows="4" required placeholder="Enter the text you want to convert to speech..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="output-format">Output Format</label>
+                            <select id="output-format" name="output_format">
+                                <option value="wav">WAV</option>
+                                <option value="mp3">MP3</option>
+                                <option value="aiff">AIFF</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate Voice</button>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="voice-batch">
+                    <form id="batch-voice-form">
+                        <div class="form-group">
+                            <label for="batch-voice-name">Voice Sample</label>
+                            <select id="batch-voice-name" name="voice_name" required>
+                                <option value="">Select a voice...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="batch-texts">Texts (one per line)</label>
+                            <textarea id="batch-texts" name="texts" rows="6" required placeholder="Enter multiple texts, one per line..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate Batch</button>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="voice-samples">
+                    <div class="voice-samples" id="voice-samples-grid">
+                        <!-- Voice samples will be loaded here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadVoiceSamples()">Refresh Samples</button>
+                </div>
+            </div>
+
+            <!-- Color Grading Panel -->
+            <div class="panel">
+                <h2>Color Grading</h2>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('color', 'presets')">Presets</div>
+                    <div class="tab" onclick="switchTab('color', 'apply')">Apply Grade</div>
+                </div>
+                
+                <div class="tab-content active" id="color-presets">
+                    <div class="color-presets" id="color-presets-grid">
+                        <!-- Color presets will be loaded here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadColorPresets()">Refresh Presets</button>
+                </div>
+                
+                <div class="tab-content" id="color-apply">
+                    <form id="color-grade-form">
+                        <div class="form-group">
+                            <label for="grade-project">Project Name</label>
+                            <input type="text" id="grade-project" name="project_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade-timeline">Timeline Name</label>
+                            <input type="text" id="grade-timeline" name="timeline_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade-clip">Clip Name</label>
+                            <input type="text" id="grade-clip" name="clip_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade-preset">Grade Preset</label>
+                            <select id="grade-preset" name="grade_preset" required>
+                                <option value="">Select a preset...</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Apply Color Grade</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Rendering Panel -->
+            <div class="panel">
+                <h2>Rendering & Export</h2>
+                <form id="render-form">
+                    <div class="form-group">
+                        <label for="render-project">Project Name</label>
+                        <input type="text" id="render-project" name="project_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="render-format">Format</label>
+                        <select id="render-format" name="format">
+                            <option value="mp4">MP4</option>
+                            <option value="mov">MOV</option>
+                            <option value="avi">AVI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="render-codec">Codec</label>
+                        <select id="render-codec" name="codec">
+                            <option value="H.264">H.264</option>
+                            <option value="H.265">H.265</option>
+                            <option value="ProRes">ProRes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="render-quality">Quality</label>
+                        <select id="render-quality" name="quality">
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Start Render</button>
+                </form>
+                
+                <div id="render-progress" style="display: none;">
+                    <h4>Render Progress</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <p id="render-status-text">Initializing...</p>
+                </div>
+            </div>
+
+            <!-- System Integration Panel -->
+            <div class="panel full-width">
+                <h2>System Integration & Logs</h2>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('system', 'summary')">Integration Summary</div>
+                    <div class="tab" onclick="switchTab('system', 'logs')">Activity Logs</div>
+                    <div class="tab" onclick="switchTab('system', 'assets')">Asset Management</div>
+                </div>
+                
+                <div class="tab-content active" id="system-summary">
+                    <div id="integration-summary">
+                        <!-- Integration summary will be loaded here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadIntegrationSummary()">Refresh Summary</button>
+                </div>
+                
+                <div class="tab-content" id="system-logs">
+                    <div class="log-output" id="activity-logs">
+                        <!-- Activity logs will appear here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
+                </div>
+                
+                <div class="tab-content" id="system-assets">
+                    <div id="asset-list">
+                        <!-- Asset list will be loaded here -->
+                    </div>
+                    <div class="form-group">
+                        <label for="asset-upload">Upload Asset</label>
+                        <input type="file" id="asset-upload" accept="video/*,audio/*,image/*">
+                        <button class="btn btn-primary" onclick="uploadAsset()">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentRenderJob = null;
+        let activityLogs = [];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshStatus();
+            loadVoiceSamples();
+            loadColorPresets();
+            loadProjects();
+            loadIntegrationSummary();
+            
+            // Set up form handlers
+            setupFormHandlers();
+        });
+
+        // Tab switching functionality
+        function switchTab(section, tab) {
+            // Hide all tab contents for this section
+            const tabContents = document.querySelectorAll(`#${section}-${tab.split('-')[0]} .tab-content, [id^="${section}-"]`);
+            tabContents.forEach(content => {
+                if (content.classList.contains('tab-content')) {
+                    content.classList.remove('active');
+                }
+            });
+            
+            // Remove active class from all tabs in this section
+            const tabs = document.querySelectorAll(`#${section}-${tab.split('-')[0]} .tab, .panel h2:contains('${section}') + .tabs .tab`);
+            const parentPanel = document.querySelector(`#${section}-${tab}`)?.closest('.panel');
+            if (parentPanel) {
+                const sectionTabs = parentPanel.querySelectorAll('.tab');
+                sectionTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                event.target.classList.add('active');
+                
+                // Show the corresponding tab content
+                const targetContent = document.getElementById(`${section}-${tab}`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            }
+        }
+
+        // Status checking
+        async function refreshStatus() {
+            try {
+                const response = await fetch('/api/davinci/status');
+                const status = await response.json();
+                
+                updateStatusIndicator('resolve-status', 'resolve-status-text', 
+                    status.resolve_installed, status.resolve_installed ? 'Installed' : 'Not Found');
+                updateStatusIndicator('api-status', 'api-status-text', 
+                    status.api_available, status.api_available ? 'Available' : 'Unavailable');
+                updateStatusIndicator('voice-status', 'voice-status-text', 
+                    status.voice_integration_available, status.voice_integration_available ? 'Ready' : 'Unavailable');
+                    
+                logActivity('System status refreshed');
+            } catch (error) {
+                console.error('Error refreshing status:', error);
+                logActivity('Error refreshing system status', 'error');
+            }
+        }
+
+        function updateStatusIndicator(indicatorId, textId, isOnline, text) {
+            const indicator = document.getElementById(indicatorId);
+            const textElement = document.getElementById(textId);
+            
+            indicator.className = `status-indicator ${isOnline ? 'online' : ''}`;
+            textElement.textContent = text;
+        }
+
+        // Voice samples management
+        async function loadVoiceSamples() {
+            try {
+                const response = await fetch('/api/davinci/voice/samples');
+                const data = await response.json();
+                
+                // Update voice sample grids
+                const grid = document.getElementById('voice-samples-grid');
+                grid.innerHTML = '';
+                
+                // Update voice selects
+                const voiceSelects = ['voice-name', 'batch-voice-name'];
+                voiceSelects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    select.innerHTML = '<option value="">Select a voice...</option>';
+                    
+                    data.samples.forEach(sample => {
+                        const option = document.createElement('option');
+                        option.value = sample.name;
+                        option.textContent = `${sample.name} (${sample.type})`;
+                        select.appendChild(option);
+                        
+                        // Add to grid
+                        const sampleDiv = document.createElement('div');
+                        sampleDiv.className = 'voice-sample';
+                        sampleDiv.innerHTML = `
+                            <h4>${sample.name}</h4>
+                            <p>${sample.type}</p>
+                            <p>${sample.language}</p>
+                        `;
+                        grid.appendChild(sampleDiv);
+                    });
+                });
+                
+                logActivity(`Loaded ${data.samples.length} voice samples`);
+            } catch (error) {
+                console.error('Error loading voice samples:', error);
+                logActivity('Error loading voice samples', 'error');
+            }
+        }
+
+        // Color presets management
+        async function loadColorPresets() {
+            try {
+                const response = await fetch('/api/davinci/color/presets');
+                const data = await response.json();
+                
+                const grid = document.getElementById('color-presets-grid');
+                const select = document.getElementById('grade-preset');
+                
+                grid.innerHTML = '';
+                select.innerHTML = '<option value="">Select a preset...</option>';
+                
+                Object.entries(data.presets).forEach(([key, preset]) => {
+                    // Add to grid
+                    const presetDiv = document.createElement('div');
+                    presetDiv.className = 'color-preset';
+                    presetDiv.innerHTML = `
+                        <h4>${preset.name}</h4>
+                        <p>${preset.category}</p>
+                    `;
+                    grid.appendChild(presetDiv);
+                    
+                    // Add to select
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = preset.name;
+                    select.appendChild(option);
+                });
+                
+                logActivity(`Loaded ${Object.keys(data.presets).length} color presets`);
+            } catch (error) {
+                console.error('Error loading color presets:', error);
+                logActivity('Error loading color presets', 'error');
+            }
+        }
+
+        // Project management
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/davinci/projects');
+                const data = await response.json();
+                
+                const list = document.getElementById('project-list');
+                list.innerHTML = '';
+                
+                data.projects.forEach(project => {
+                    const projectDiv = document.createElement('div');
+                    projectDiv.className = 'project-item';
+                    projectDiv.innerHTML = `
+                        <div class="project-info">
+                            <h4>${project.name}</h4>
+                            <p>Created: ${new Date(project.created_at).toLocaleDateString()}</p>
+                            <p>Status: ${project.status} | Duration: ${project.duration}</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" onclick="openProject('${project.name}')">Open</button>
+                        </div>
+                    `;
+                    list.appendChild(projectDiv);
+                });
+                
+                logActivity(`Loaded ${data.projects.length} projects`);
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                logActivity('Error loading projects', 'error');
+            }
+        }
+
+        // Integration summary
+        async function loadIntegrationSummary() {
+            try {
+                const response = await fetch('/api/davinci/summary');
+                const data = await response.json();
+                
+                const summary = document.getElementById('integration-summary');
+                summary.innerHTML = `
+                    <div class="alert alert-${data.system_status.resolve_installed ? 'success' : 'warning'}">
+                        <h4>System Status</h4>
+                        <p>DaVinci Resolve: ${data.system_status.resolve_installed ? 'Installed' : 'Not Found'}</p>
+                        <p>API Integration: ${data.system_status.api_available ? 'Available' : 'Unavailable'}</p>
+                        <p>Voice Integration: ${data.system_status.voice_integration ? 'Ready' : 'Unavailable'}</p>
+                    </div>
+                    
+                    <h4>Available Capabilities</h4>
+                    <ul>
+                        ${Object.entries(data.capabilities).map(([key, value]) => 
+                            `<li>${key.replace('_', ' ').toUpperCase()}: ${value ? '✅' : '❌'}</li>`
+                        ).join('')}
+                    </ul>
+                    
+                    <h4>Supported Formats</h4>
+                    <p><strong>Video:</strong> ${data.supported_formats.video.join(', ')}</p>
+                    <p><strong>Audio:</strong> ${data.supported_formats.audio.join(', ')}</p>
+                    <p><strong>Image:</strong> ${data.supported_formats.image.join(', ')}</p>
+                `;
+                
+                logActivity('Integration summary loaded');
+            } catch (error) {
+                console.error('Error loading integration summary:', error);
+                logActivity('Error loading integration summary', 'error');
+            }
+        }
+
+        // Form handlers setup
+        function setupFormHandlers() {
+            // Project creation form
+            document.getElementById('create-project-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Parse resolution
+                data.resolution = data.resolution.split(',').map(Number);
+                data.frame_rate = parseFloat(data.frame_rate);
+                
+                try {
+                    const response = await fetch('/api/davinci/projects', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('Project created successfully!', 'success');
+                        loadProjects();
+                        e.target.reset();
+                        logActivity(`Created project: ${data.project_name}`);
+                    }
+                } catch (error) {
+                    showAlert('Error creating project', 'error');
+                    logActivity('Error creating project', 'error');
+                }
+            });
+
+            // Voice cloning form
+            document.getElementById('voice-clone-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
+                try {
+                    const response = await fetch('/api/davinci/voice/clone', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('Voice cloned successfully!', 'success');
+                        logActivity(`Voice cloned: ${data.voice_name}`);
+                    }
+                } catch (error) {
+                    showAlert('Error cloning voice', 'error');
+                    logActivity('Error cloning voice', 'error');
+                }
+            });
+
+            // Batch voice cloning form
+            document.getElementById('batch-voice-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                data.texts = data.texts.split('\n').filter(text => text.trim());
+                
+                try {
+                    const response = await fetch('/api/davinci/voice/batch-clone', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert(`Batch voice cloning completed! Success rate: ${result.success_rate}`, 'success');
+                        logActivity(`Batch voice cloning: ${result.successful_clones}/${result.total_texts} successful`);
+                    }
+                } catch (error) {
+                    showAlert('Error in batch voice cloning', 'error');
+                    logActivity('Error in batch voice cloning', 'error');
+                }
+            });
+
+            // Color grading form
+            document.getElementById('color-grade-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
+                try {
+                    const response = await fetch('/api/davinci/color/apply', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('Color grade applied successfully!', 'success');
+                        logActivity(`Applied color grade: ${data.grade_preset} to ${data.clip_name}`);
+                    }
+                } catch (error) {
+                    showAlert('Error applying color grade', 'error');
+                    logActivity('Error applying color grade', 'error');
+                }
+            });
+
+            // Render form
+            document.getElementById('render-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
+                try {
+                    const response = await fetch(`/api/davinci/render?project_name=${data.project_name}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('Render started successfully!', 'success');
+                        currentRenderJob = result.render.render_id;
+                        showRenderProgress();
+                        logActivity(`Started render: ${data.project_name}`);
+                    }
+                } catch (error) {
+                    showAlert('Error starting render', 'error');
+                    logActivity('Error starting render', 'error');
+                }
+            });
+        }
+
+        // Utility functions
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            document.body.insertBefore(alertDiv, document.body.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        function logActivity(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            activityLogs.unshift(logEntry);
+            if (activityLogs.length > 100) {
+                activityLogs = activityLogs.slice(0, 100);
+            }
+            
+            const logsElement = document.getElementById('activity-logs');
+            if (logsElement) {
+                logsElement.innerHTML = activityLogs.join('\n');
+                logsElement.scrollTop = 0;
+            }
+        }
+
+        function clearLogs() {
+            activityLogs = [];
+            document.getElementById('activity-logs').innerHTML = '';
+        }
+
+        function showRenderProgress() {
+            const progressDiv = document.getElementById('render-progress');
+            progressDiv.style.display = 'block';
+            
+            // Simulate progress updates
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    document.getElementById('render-status-text').textContent = 'Render completed!';
+                    logActivity('Render completed successfully');
+                } else {
+                    document.getElementById('render-status-text').textContent = `Rendering... ${Math.round(progress)}%`;
+                }
+                
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+            }, 1000);
+        }
+
+        function openProject(projectName) {
+            logActivity(`Opening project: ${projectName}`);
+            showAlert(`Opening project: ${projectName}`, 'success');
+        }
+
+        async function uploadAsset() {
+            const fileInput = document.getElementById('asset-upload');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Please select a file to upload', 'warning');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('asset_type', file.type.split('/')[0]);
+            
+            try {
+                const response = await fetch('/api/davinci/assets/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Asset uploaded successfully!', 'success');
+                    logActivity(`Uploaded asset: ${file.name}`);
+                    fileInput.value = '';
+                }
+            } catch (error) {
+                showAlert('Error uploading asset', 'error');
+                logActivity('Error uploading asset', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

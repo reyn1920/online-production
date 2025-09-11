@@ -28,10 +28,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 try:
-    from backend.database.hypocrisy_db_manager import HypocrisyDatabaseManager, HypocrisyFinding
+    from backend.database.hypocrisy_db_manager import HypocrisyFinding
+    from backend.database.db_singleton import get_hypocrisy_db_manager
 except ImportError:
-    HypocrisyDatabaseManager = None
     HypocrisyFinding = None
+    get_hypocrisy_db_manager = None
     logging.warning("HypocrisyDatabaseManager not available. Hypocrisy engine will be limited.")
 
 try:
@@ -74,14 +75,10 @@ class HypocrisyEngine:
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
         
-        # Initialize database manager
+        # Get singleton database manager
         self.db_manager = None
-        if HypocrisyDatabaseManager:
-            try:
-                self.db_manager = HypocrisyDatabaseManager()
-                self.logger.info("Hypocrisy database manager initialized successfully")
-            except Exception as e:
-                self.logger.error(f"Failed to initialize hypocrisy database manager: {e}")
+        if get_hypocrisy_db_manager:
+            self.db_manager = get_hypocrisy_db_manager()
         
         # Configuration
         self.min_confidence_threshold = self.config.get('min_confidence', 0.7)

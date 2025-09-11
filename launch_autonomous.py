@@ -160,48 +160,48 @@ class AutonomousSystemLauncher:
     def register_agents_with_queue(self):
         """Register all agents with the task queue"""
         try:
-            # Register System Agent
+            # Register System Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type='SystemAgent',
                 agent_instance=self.agents['system'],
                 capabilities=['system_health', 'diagnostics', 'repair', 'monitoring'],
-                max_concurrent_tasks=2
+                max_concurrent_tasks=8
             )
             self.agent_workers['system'] = worker_id
             
-            # Register Planner Agent
+            # Register Planner Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type='PlannerAgent',
                 agent_instance=self.agents['planner'],
                 capabilities=['strategy', 'planning', 'optimization', 'feedback_processing'],
-                max_concurrent_tasks=1
+                max_concurrent_tasks=4
             )
             self.agent_workers['planner'] = worker_id
             
-            # Register Research Agent
+            # Register Research Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type='ResearchAgent',
                 agent_instance=self.agents['research'],
                 capabilities=['trend_analysis', 'api_discovery', 'hypocrisy_detection', 'market_intelligence'],
-                max_concurrent_tasks=3
+                max_concurrent_tasks=12
             )
             self.agent_workers['research'] = worker_id
             
-            # Register Marketing Agent
+            # Register Marketing Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type='MarketingAgent',
                 agent_instance=self.agents['marketing'],
                 capabilities=['campaign_management', 'seo_optimization', 'affiliate_monitoring', 'content_promotion'],
-                max_concurrent_tasks=2
+                max_concurrent_tasks=8
             )
             self.agent_workers['marketing'] = worker_id
             
-            # Register Content Agent
+            # Register Content Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type='ContentAgent',
                 agent_instance=self.agents['content'],
                 capabilities=['video_creation', 'voice_synthesis', 'avatar_generation', 'graphics_creation'],
-                max_concurrent_tasks=1  # Resource-intensive tasks
+                max_concurrent_tasks=4  # Resource-intensive tasks but maxed out
             )
             self.agent_workers['content'] = worker_id
             

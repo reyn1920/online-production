@@ -1953,16 +1953,16 @@ class ResearchAgent(BaseAgent):
         try:
             # Initialize RSS Intelligence Engine (BreakingNewsWatcher)
             from .research_tools import BreakingNewsWatcher
-            from ..database.hypocrisy_db_manager import HypocrisyDatabaseManager
+            from ..database.db_singleton import get_hypocrisy_db_manager
             from ..engines.hypocrisy_engine import HypocrisyEngine
             from ..integrations.research_validation_service import ResearchValidationService
             
-            # Initialize breaking news monitoring
+            # Initialize breaking news monitoring (uses RSS singleton internally)
             self.rss_intelligence = BreakingNewsWatcher()
             self.intelligence_feeds_active = True
             
-            # Initialize hypocrisy database and engine
-            self.hypocrisy_db = HypocrisyDatabaseManager()
+            # Initialize hypocrisy database and engine (using singleton)
+            self.hypocrisy_db = get_hypocrisy_db_manager()
             self.hypocrisy_engine = HypocrisyEngine()
             self.hypocrisy_monitoring_active = True
             
@@ -1972,7 +1972,7 @@ class ResearchAgent(BaseAgent):
             # Start background monitoring
             self._start_intelligence_monitoring()
             
-            self.logger.info("Intelligence systems initialized successfully")
+            self.logger.info("Intelligence systems initialized successfully (using singletons)")
         except Exception as e:
             self.logger.error(f"Failed to initialize intelligence systems: {e}")
             self.intelligence_feeds_active = False
@@ -3805,20 +3805,20 @@ class ContentAgent(BaseAgent):
             from backend.content.dedicated_knowledge_bases import DedicatedKnowledgeBases
             from backend.content.right_perspective_firewall import RightPerspectiveFirewall
             
-            # Initialize Universal Channel Protocol
+            # Initialize Universal Channel Protocol first
             self.universal_protocol = UniversalChannelProtocol()
             
-            # Initialize channel-specific systems
+            # Initialize the protocol system before other components
+            self.universal_protocol.initialize_protocol()
+            
+            # Initialize channel-specific systems after protocol is ready
             self.channel_intelligence = ChannelIntelligenceFeeds()
             self.channel_personas = ChannelPersonas()
             self.knowledge_bases = DedicatedKnowledgeBases()
-            self.right_perspective_firewall = RightPerspectiveFirewall()
             
-            # Initialize the protocol system
-            self.universal_protocol.initialize_protocol()
-            
-            # Set up Right Perspective firewall
+            # Set up Right Perspective firewall through protocol (not direct instantiation)
             self.universal_protocol.initialize_right_perspective_firewall()
+            self.right_perspective_firewall = self.universal_protocol.get_right_perspective_firewall()
             
             self.logger.info("Universal Channel Protocol initialized successfully")
             
@@ -6905,10 +6905,7 @@ class MarketingAgent(BaseAgent):
     def _initialize_ecommerce_layer(self):
         """Initialize EcommerceMarketingLayer as primary tool."""
         try:
-            import sys
-            import os
-            sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-            from ecommerce_marketing_layer import EcommerceMarketingLayer
+            from backend.ecommerce_marketing_layer import EcommerceMarketingLayer
             
             self.ecommerce_layer = EcommerceMarketingLayer()
             self.ecommerce_marketing = self.ecommerce_layer  # Alias for consistency
@@ -10867,7 +10864,7 @@ class QAAgent(BaseAgent):
         else:
             return f"Execute content creation task of type '{task_type}' with the provided parameters?"
     
-    async def _validate_rephrase_accuracy(self, original_task: Dict[str, Any], rephrased_task: str, context) -> bool:
+    async def _validate_rephrase_accuracy(self, original_task: Dict[str, Any], rephrased: str, context) -> bool:
         """Validate that the rephrased task accurately represents the original content task."""
         try:
             # Extract key elements from original task
@@ -10875,7 +10872,7 @@ class QAAgent(BaseAgent):
             original_topic = original_task.get('topic', '').lower()
             
             # Check if rephrased task contains essential elements
-            rephrased_lower = rephrased_task.lower()
+            rephrased_lower = rephrased.lower()
             
             # Validate task type is represented
             type_keywords = {

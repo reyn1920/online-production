@@ -21,7 +21,7 @@ from performance_monitor import PerformanceMonitor
 from error_tracker import ErrorTracker
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('MONITORING_SECRET_KEY', 'monitoring-dev-key-change-in-production')
+app.secret_key = os.environ.get('MONITORING_SECRET_KEY', os.urandom(24).hex())
 
 # Initialize monitoring components
 performance_monitor = PerformanceMonitor()

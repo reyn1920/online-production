@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TRAE.AI E2E Verification Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 5px; }
+        .summary { background: #ecf0f1; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .category-section { margin: 20px 0; border: 1px solid #bdc3c7; border-radius: 5px; }
+        .category-title { background: #34495e; color: white; padding: 10px; }
+        .test-result { padding: 10px; border-bottom: 1px solid #ecf0f1; }
+        .passed { background: #d5f4e6; }
+        .failed { background: #f8d7da; }
+        .error { background: #f5c6cb; }
+        .skipped { background: #fff3cd; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>TRAE.AI End-to-End Verification Report</h1>
+        <p>Generated: 2025-09-09 01:02:36</p>
+    </div>
+    
+    <div class="summary">
+        <h2>Summary</h2>
+        <p><strong>Overall Status:</strong> <span class="error">ERROR</span></p>
+        <p><strong>Success Rate:</strong> 46.7%</p>
+        <p><strong>Tests:</strong> 7/15 passed</p>
+        <p><strong>Duration:</strong> 27.45 seconds</p>
+    </div>
+    
+    
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>System Health</h2>
+                    <span>(5/5 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>cpu_usage_check</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 1.001s<br>
+                    Message: CPU usage: 72.0%
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>memory_usage_check</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 0.000s<br>
+                    Message: Memory usage: 72.2%
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>disk_usage_check</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 0.000s<br>
+                    Message: Disk usage: 2.4%
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>database_connectivity</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 0.000s<br>
+                    Message: Database connection successful
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>network_connectivity</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 1.008s<br>
+                    Message: Network test: HTTP 200
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Orchestrator</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.ERROR">
+                    <strong>orchestrator_initialization</strong><br>
+                    Status: TestStatus.ERROR<br>
+                    Duration: 0.000s<br>
+                    Message: Failed to initialize orchestrator: name 'TraeAIOrchestrator' is not defined
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Creative Pipeline</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.ERROR">
+                    <strong>creative_pipeline_initialization</strong><br>
+                    Status: TestStatus.ERROR<br>
+                    Duration: 0.000s<br>
+                    Message: Failed to initialize creative pipeline: name 'HollywoodCreativePipeline' is not defined
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Marketing Engine</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.ERROR">
+                    <strong>marketing_engine_initialization</strong><br>
+                    Status: TestStatus.ERROR<br>
+                    Duration: 0.000s<br>
+                    Message: Failed to initialize marketing engine: name 'MarketingMonetizationEngine' is not defined
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Agentic Protocol</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.ERROR">
+                    <strong>agentic_protocol_initialization</strong><br>
+                    Status: TestStatus.ERROR<br>
+                    Duration: 0.000s<br>
+                    Message: Failed to initialize agentic protocol: name 'AgenticProtocol' is not defined
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Diagnosis Repair</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.ERROR">
+                    <strong>diagnosis_repair_initialization</strong><br>
+                    Status: TestStatus.ERROR<br>
+                    Duration: 0.000s<br>
+                    Message: Failed to initialize diagnosis and repair: name 'AutonomousDiagnosisRepair' is not defined
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Zero Cost Stack</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.ERROR">
+                    <strong>zero_cost_stack_initialization</strong><br>
+                    Status: TestStatus.ERROR<br>
+                    Duration: 0.000s<br>
+                    Message: Failed to initialize zero cost stack: name 'ZeroCostStackManager' is not defined
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Integration</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.FAILED">
+                    <strong>component_integration</strong><br>
+                    Status: TestStatus.FAILED<br>
+                    Duration: 0.000s<br>
+                    Message: Component integration: 0/6 components initialized
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Security</h2>
+                    <span>(0/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.FAILED">
+                    <strong>secret_scanning</strong><br>
+                    Status: TestStatus.FAILED<br>
+                    Duration: 24.702s<br>
+                    Message: Found 29 potential secrets
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>Performance</h2>
+                    <span>(1/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>system_response_time</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 0.001s<br>
+                    Message: System response time: 0.001s
+                </div>
+                
+            </div>
+            
+            <div class="category-section">
+                <div class="category-title">
+                    <h2>End To End</h2>
+                    <span>(1/1 passed)</span>
+                </div>
+                
+                <div class="test-result TestStatus.PASSED">
+                    <strong>end_to_end_workflow</strong><br>
+                    Status: TestStatus.PASSED<br>
+                    Duration: 0.720s<br>
+                    Message: End-to-end workflow: 7/7 steps completed (100.0%)
+                </div>
+                
+            </div>
+            
+</body>
+</html>
+        

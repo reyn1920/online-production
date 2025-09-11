@@ -1555,11 +1555,21 @@ CREATE TABLE IF NOT EXISTS enforcement_actions (
 -- API and Integration Tables
 CREATE TABLE IF NOT EXISTS api_discovery_tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    task_name TEXT NOT NULL,
-    discovery_criteria JSON,
-    results JSON,
+    task_type TEXT NOT NULL,
+    target_capability TEXT,
+    search_parameters TEXT,
+    task_name TEXT,
+    capability_gap TEXT,
+    search_keywords TEXT, -- JSON array of search terms
+    target_domains TEXT, -- JSON array of target domains
+    priority INTEGER DEFAULT 5,
     status TEXT DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    assigned_agent TEXT,
+    progress_notes TEXT,
+    apis_found INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS api_suggestions (
@@ -1799,6 +1809,137 @@ CREATE INDEX IF NOT EXISTS idx_generated_reports_generated_at ON generated_repor
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_name ON performance_metrics(metric_name);
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_timestamp ON performance_metrics(timestamp);
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_type ON performance_metrics(metric_type);
+
+-- ============================================================================
+-- CLOUD SOFTWARE INTEGRATION MANAGEMENT
+-- ============================================================================
+
+-- Cloud Software Products table - Manage integrated cloud software and tools
+CREATE TABLE IF NOT EXISTS cloud_software (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    software_name TEXT UNIQUE NOT NULL,
+    display_name TEXT NOT NULL,
+    category TEXT NOT NULL CHECK (category IN ('voice_generation', 'video_editing', 'thumbnail_creation', 'script_writing', 'background_music', 'training', 'automation', 'bonus_tools')),
+    provider TEXT,
+    version TEXT,
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'maintenance', 'deprecated')),
+    integration_type TEXT CHECK (integration_type IN ('api', 'rpa', 'manual', 'webhook', 'cli')),
+    api_endpoint TEXT,
+    authentication_method TEXT CHECK (authentication_method IN ('api_key', 'oauth2', 'username_password', 'token', 'none')),
+    credentials_stored BOOLEAN DEFAULT FALSE,
+    rate_limit_per_hour INTEGER,
+    rate_limit_per_day INTEGER,
+    current_usage_hour INTEGER DEFAULT 0,
+    current_usage_day INTEGER DEFAULT 0,
+    last_usage_reset TIMESTAMP,
+    configuration JSON, -- Software-specific configuration
+    capabilities JSON, -- Array of capabilities this software provides
+    dependencies JSON, -- Array of other software this depends on
+    installation_status TEXT DEFAULT 'not_installed' CHECK (installation_status IN ('not_installed', 'installing', 'installed', 'failed', 'updating')),
+    installation_path TEXT,
+    license_type TEXT CHECK (license_type IN ('free', 'paid', 'subscription', 'one_time', 'trial')),
+    license_expires_at TIMESTAMP,
+    subscription_status TEXT CHECK (subscription_status IN ('active', 'expired', 'cancelled', 'trial', 'none')),
+    monthly_cost DECIMAL(10,2),
+    annual_cost DECIMAL(10,2),
+    usage_metrics JSON, -- Track usage statistics
+    performance_metrics JSON, -- Track performance data
+    last_health_check TIMESTAMP,
+    health_status TEXT DEFAULT 'unknown' CHECK (health_status IN ('healthy', 'degraded', 'unhealthy', 'unknown')),
+    documentation_url TEXT,
+    support_url TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by TEXT,
+    notes TEXT,
+    metadata JSON
+);
+
+-- Software Usage Logs table - Track usage of cloud software
+CREATE TABLE IF NOT EXISTS software_usage_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    software_id INTEGER NOT NULL,
+    usage_type TEXT NOT NULL, -- 'api_call', 'rpa_execution', 'manual_use', 'batch_process'
+    operation TEXT, -- Specific operation performed
+    input_data JSON, -- Input parameters or data
+    output_data JSON, -- Results or output
+    execution_time_ms INTEGER,
+    status TEXT CHECK (status IN ('success', 'failed', 'timeout', 'cancelled')),
+    error_message TEXT,
+    cost DECIMAL(10,4), -- Cost for this usage if applicable
+    user_id TEXT,
+    session_id TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metadata JSON,
+    FOREIGN KEY (software_id) REFERENCES cloud_software(id) ON DELETE CASCADE
+);
+
+-- Software Integration Status table - Track integration health and status
+CREATE TABLE IF NOT EXISTS software_integration_status (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    software_id INTEGER NOT NULL,
+    check_type TEXT NOT NULL, -- 'health_check', 'auth_test', 'rate_limit_check', 'feature_test'
+    status TEXT CHECK (status IN ('pass', 'fail', 'warning', 'skip')),
+    message TEXT,
+    response_time_ms INTEGER,
+    checked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    checked_by TEXT, -- 'system' or user ID
+    details JSON,
+    FOREIGN KEY (software_id) REFERENCES cloud_software(id) ON DELETE CASCADE
+);
+
+-- Indexes for cloud_software
+CREATE INDEX IF NOT EXISTS idx_cloud_software_name ON cloud_software(software_name);
+CREATE INDEX IF NOT EXISTS idx_cloud_software_category ON cloud_software(category);
+CREATE INDEX IF NOT EXISTS idx_cloud_software_status ON cloud_software(status);
+CREATE INDEX IF NOT EXISTS idx_cloud_software_integration_type ON cloud_software(integration_type);
+CREATE INDEX IF NOT EXISTS idx_cloud_software_installation ON cloud_software(installation_status);
+CREATE INDEX IF NOT EXISTS idx_cloud_software_health ON cloud_software(health_status);
+
+-- Indexes for software_usage_logs
+CREATE INDEX IF NOT EXISTS idx_software_usage_software_id ON software_usage_logs(software_id);
+CREATE INDEX IF NOT EXISTS idx_software_usage_type ON software_usage_logs(usage_type);
+CREATE INDEX IF NOT EXISTS idx_software_usage_timestamp ON software_usage_logs(timestamp);
+CREATE INDEX IF NOT EXISTS idx_software_usage_status ON software_usage_logs(status);
+CREATE INDEX IF NOT EXISTS idx_software_usage_user ON software_usage_logs(user_id);
+
+-- Indexes for software_integration_status
+CREATE INDEX IF NOT EXISTS idx_software_integration_software_id ON software_integration_status(software_id);
+CREATE INDEX IF NOT EXISTS idx_software_integration_type ON software_integration_status(check_type);
+CREATE INDEX IF NOT EXISTS idx_software_integration_status ON software_integration_status(status);
+CREATE INDEX IF NOT EXISTS idx_software_integration_checked ON software_integration_status(checked_at);
+
+-- Insert the cloud software products mentioned by the user
+INSERT OR REPLACE INTO cloud_software (
+    software_name, display_name, category, provider, status, integration_type, 
+    authentication_method, capabilities, license_type, created_by, notes
+) VALUES 
+    ('lingo_blaster', 'Lingo Blaster', 'automation', 'Lingo Blaster Inc', 'active', 'rpa', 'username_password', 
+     '["language_processing", "content_translation", "multilingual_support"]', 'subscription', 'system', 'Language processing and translation tool'),
+    
+    ('captionizer', 'Captionizer', 'video_editing', 'Captionizer Pro', 'active', 'api', 'api_key', 
+     '["subtitle_generation", "caption_creation", "video_processing"]', 'subscription', 'system', 'Automated caption and subtitle generation'),
+    
+    ('thumbnail_blaster', 'Thumbnail Blaster', 'thumbnail_creation', 'Thumbnail Blaster', 'active', 'rpa', 'username_password', 
+     '["thumbnail_creation", "image_editing", "template_processing"]', 'subscription', 'system', 'Automated thumbnail creation and editing'),
+    
+    ('speechelo', 'Speechelo', 'voice_generation', 'Speechelo', 'active', 'rpa', 'username_password', 
+     '["text_to_speech", "voice_synthesis", "audio_generation"]', 'one_time', 'system', 'Text-to-speech voice generation software'),
+    
+    ('voice_generator', 'Voice Generator', 'voice_generation', 'Voice Generator Pro', 'active', 'api', 'api_key', 
+     '["voice_synthesis", "custom_voices", "audio_processing"]', 'subscription', 'system', 'Advanced voice generation and synthesis'),
+    
+    ('background_music', 'Background Music', 'background_music', 'Music Library Pro', 'active', 'api', 'api_key', 
+     '["music_library", "royalty_free_music", "audio_mixing"]', 'subscription', 'system', 'Royalty-free background music library'),
+    
+    ('voiceover_cash_machine', 'Voiceover Cash Machine', 'bonus_tools', 'Voiceover Cash Machine', 'active', 'manual', 'none', 
+     '["voiceover_training", "business_strategies", "monetization"]', 'one_time', 'system', 'BONUS: Voiceover business training and strategies'),
+    
+    ('training', 'Training', 'training', 'Training Academy', 'active', 'manual', 'none', 
+     '["video_training", "tutorials", "skill_development"]', 'subscription', 'system', 'Comprehensive training modules and tutorials'),
+    
+    ('scriptelo', 'Scriptelo', 'script_writing', 'Scriptelo', 'active', 'rpa', 'username_password', 
+     '["script_generation", "content_writing", "template_processing"]', 'subscription', 'system', 'Automated script writing and content generation');
 
 -- ============================================================================
 -- SOVEREIGN AUDIENCE & GROWTH ENGINE - CRM FOUNDATION

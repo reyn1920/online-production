@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Customization</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .avatar-preview {
+            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .color-picker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-picker:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-picker.selected {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        
+        .style-card {
+            transition: all 0.3s ease;
+        }
+        
+        .style-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .style-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        .slider-container {
+            position: relative;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-user-circle text-blue-600 mr-3"></i>
+                Avatar Customization
+            </h1>
+            <p class="text-gray-600">Create and customize your perfect avatar using golden ratio principles</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Avatar Preview -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-eye mr-2 text-blue-600"></i>
+                        Preview
+                    </h2>
+                    
+                    <div class="avatar-preview rounded-lg p-4 mb-4 flex items-center justify-center" style="min-height: 300px;">
+                        <div id="avatarPreview" class="max-w-full max-h-full">
+                            <div class="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-gray-400 text-6xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button id="generateBtn" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-magic mr-2"></i>
+                            Generate
+                        </button>
+                        <button id="downloadBtn" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-download mr-2"></i>
+                            Download
+                        </button>
+                    </div>
+                    
+                    <div id="loadingIndicator" class="hidden flex items-center justify-center mt-4">
+                        <div class="loading-spinner"></div>
+                        <span class="ml-3 text-gray-600">Generating avatar...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customization Options -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-6 text-gray-800">
+                        <i class="fas fa-sliders-h mr-2 text-blue-600"></i>
+                        Customization Options
+                    </h2>
+                    
+                    <!-- Upload Custom Image -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium mb-4 text-gray-700">
+                            <i class="fas fa-upload mr-2 text-green-600"></i>
+                            Upload Custom Image
+                        </h3>
+                        
+                        <div id="uploadArea" class="upload-area rounded-lg p-8 text-center cursor-pointer">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-2">Drag and drop an image here, or click to select</p>
+                            <p class="text-sm text-gray-500">Background will be automatically removed</p>
+                            <input type="file" id="imageUpload" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+                    
+                    <!-- Style Selection -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium mb-4 text-gray-700">
+                            <i class="fas fa-palette mr-2 text-purple-600"></i>
+                            Avatar Style
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="geometric">
+                                <div class="text-center">
+                                    <i class="fas fa-shapes text-2xl text-blue-600 mb-2"></i>
+                                    <p class="font-medium">Geometric</p>
+                                    <p class="text-sm text-gray-500">Clean shapes</p>
+                                </div>
+                            </div>
+                            
+                            <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="organic">
+                                <div class="text-center">
+                                    <i class="fas fa-leaf text-2xl text-green-600 mb-2"></i>
+                                    <p class="font-medium">Organic</p>
+                                    <p class="text-sm text-gray-500">Natural forms</p>
+                                </div>
+                            </div>
+                            
+                            <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="professional">
+                                <div class="text-center">
+                                    <i class="fas fa-briefcase text-2xl text-gray-600 mb-2"></i>
+                                    <p class="font-medium">Professional</p>
+                                    <p class="text-sm text-gray-500">Business look</p>
+                                </div>
+                            </div>
+                            
+                            <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="artistic">
+                                <div class="text-center">
+                                    <i class="fas fa-paint-brush text-2xl text-red-600 mb-2"></i>
+                                    <p class="font-medium">Artistic</p>
+                                    <p class="text-sm text-gray-500">Creative flair</p>
+                                </div>
+                            </div>
+                            
+                            <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="minimal">
+                                <div class="text-center">
+                                    <i class="fas fa-circle text-2xl text-gray-400 mb-2"></i>
+                                    <p class="font-medium">Minimal</p>
+                                    <p class="text-sm text-gray-500">Simple design</p>
+                                </div>
+                            </div>
+                            
+                            <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="golden_ratio">
+                                <div class="text-center">
+                                    <i class="fas fa-star text-2xl text-yellow-600 mb-2"></i>
+                                    <p class="font-medium">Golden Ratio</p>
+                                    <p class="text-sm text-gray-500">Perfect proportions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Color Scheme -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium mb-4 text-gray-700">
+                            <i class="fas fa-tint mr-2 text-blue-600"></i>
+                            Color Scheme
+                        </h3>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <div class="color-picker" style="background: linear-gradient(45deg, #000, #fff);" data-scheme="monochrome" title="Monochrome"></div>
+                            <div class="color-picker" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4);" data-scheme="complementary" title="Complementary"></div>
+                            <div class="color-picker" style="background: linear-gradient(120deg, #ff6b6b, #4ecdc4, #45b7d1);" data-scheme="triadic" title="Triadic"></div>
+                            <div class="color-picker" style="background: linear-gradient(45deg, #ff9a56, #ff6b6b);" data-scheme="warm" title="Warm"></div>
+                            <div class="color-picker" style="background: linear-gradient(45deg, #4ecdc4, #45b7d1);" data-scheme="cool" title="Cool"></div>
+                            <div class="color-picker" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);" data-scheme="vibrant" title="Vibrant"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Settings -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium mb-4 text-gray-700">
+                            <i class="fas fa-cogs mr-2 text-gray-600"></i>
+                            Advanced Settings
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Complexity</label>
+                                <div class="slider-container">
+                                    <input type="range" id="complexitySlider" class="slider w-full" min="0" max="100" value="60">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>Simple</span>
+                                        <span>Complex</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Symmetry</label>
+                                <div class="slider-container">
+                                    <input type="range" id="symmetrySlider" class="slider w-full" min="0" max="100" value="80">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>Asymmetric</span>
+                                        <span>Symmetric</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Golden Ratio Emphasis</label>
+                                <div class="slider-container">
+                                    <input type="range" id="goldenRatioSlider" class="slider w-full" min="0" max="100" value="80">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>Subtle</span>
+                                        <span>Prominent</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Size (px)</label>
+                                <select id="sizeSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="200">200x200</option>
+                                    <option value="400" selected>400x400</option>
+                                    <option value="600">600x600</option>
+                                    <option value="800">800x800</option>
+                                    <option value="1000">1000x1000</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="transparentBg" class="mr-2" checked>
+                                <span class="text-sm text-gray-700">Transparent Background</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-3">
+                        <button id="randomizeBtn" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-random mr-2"></i>
+                            Randomize
+                        </button>
+                        
+                        <button id="resetBtn" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-undo mr-2"></i>
+                            Reset
+                        </button>
+                        
+                        <button id="saveBtn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Avatar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Channel Selection Modal -->
+        <div id="channelModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Select Channel</h3>
+                <div id="channelList" class="space-y-2 mb-4">
+                    <!-- Channel options will be populated here -->
+                </div>
+                <div class="flex space-x-3">
+                    <button id="cancelChannelBtn" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="confirmChannelBtn" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/avatar_customization.js"></script>
+</body>
+</html>

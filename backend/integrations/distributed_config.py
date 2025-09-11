@@ -1,0 +1,298 @@
+#!/usr/bin/env python3
+"""
+Distributed Processing Configuration
+
+Centralized configuration management for the distributed processing system.
+Handles environment-specific settings, worker configurations, and security.
+"""
+
+import os
+import platform
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass, field
+from pathlib import Path
+import yaml
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+@dataclass
+class BrokerConfig:
+    """Message broker configuration"""
+    type: str = "redis"  # redis, rabbitmq, sqs
+    host: str = "localhost"
+    port: int = 6379
+    username: Optional[str] = None
+    password: Optional[str] = None
+    database: int = 0
+    ssl: bool = False
+    connection_pool_size: int = 10
+    
+    def get_url(self) -> str:
+        """Generate broker URL"""
+        if self.type == "redis":
+            auth = f"{self.username}:{self.password}@" if self.username and self.password else ""
+            protocol = "rediss" if self.ssl else "redis"
+            return f"{protocol}://{auth}{self.host}:{self.port}/{self.database}"
+        elif self.type == "rabbitmq":
+            auth = f"{self.username}:{self.password}@" if self.username and self.password else ""
+            protocol = "amqps" if self.ssl else "amqp"
+            return f"{protocol}://{auth}{self.host}:{self.port}//"
+        else:
+            raise ValueError(f"Unsupported broker type: {self.type}")
+
+@dataclass
+class WorkerConfig:
+    """Worker node configuration"""
+    name: str
+    platform: str
+    max_workers: int = 4
+    capabilities: List[str] = field(default_factory=list)
+    resource_limits: Dict[str, Any] = field(default_factory=dict)
+    queues: List[str] = field(default_factory=lambda: ["default"])
+    prefetch_multiplier: int = 1
+    max_tasks_per_child: int = 1000
+    
+@dataclass
+class SecurityConfig:
+    """Security and authentication configuration"""
+    enable_auth: bool = True
+    secret_key: str = ""
+    token_expiry: int = 3600  # seconds
+    allowed_hosts: List[str] = field(default_factory=list)
+    ssl_cert_path: Optional[str] = None
+    ssl_key_path: Optional[str] = None
+    
+@dataclass
+class MonitoringConfig:
+    """Monitoring and logging configuration"""
+    enable_prometheus: bool = True
+    prometheus_port: int = 9090
+    log_level: str = "INFO"
+    log_format: str = "json"
+    metrics_retention: int = 7  # days
+    health_check_interval: int = 30  # seconds
+
+class DistributedConfig:
+    """Main configuration class for distributed processing"""
+    
+    def __init__(self, config_file: Optional[str] = None):
+        self.config_file = config_file or self._get_default_config_path()
+        self._load_config()
+        
+    def _get_default_config_path(self) -> str:
+        """Get default configuration file path"""
+        base_dir = Path(__file__).parent.parent.parent
+        return str(base_dir / "config" / "distributed.yaml")
+        
+    def _load_config(self):
+        """Load configuration from file and environment"""
+        # Default configuration
+        self.broker = BrokerConfig(
+            type=os.getenv("CELERY_BROKER_TYPE", "redis"),
+            host=os.getenv("CELERY_BROKER_HOST", "localhost"),
+            port=int(os.getenv("CELERY_BROKER_PORT", "6379")),
+            username=os.getenv("CELERY_BROKER_USERNAME"),
+            password=os.getenv("CELERY_BROKER_PASSWORD"),
+            database=int(os.getenv("CELERY_BROKER_DB", "0")),
+            ssl=os.getenv("CELERY_BROKER_SSL", "false").lower() == "true"
+        )
+        
+        self.security = SecurityConfig(
+            enable_auth=os.getenv("ENABLE_AUTH", "true").lower() == "true",
+            secret_key=os.getenv("SECRET_KEY", ""),
+            token_expiry=int(os.getenv("TOKEN_EXPIRY", "3600")),
+            allowed_hosts=os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
+        )
+        
+        self.monitoring = MonitoringConfig(
+            enable_prometheus=os.getenv("ENABLE_PROMETHEUS", "true").lower() == "true",
+            prometheus_port=int(os.getenv("PROMETHEUS_PORT", "9090")),
+            log_level=os.getenv("LOG_LEVEL", "INFO"),
+            log_format=os.getenv("LOG_FORMAT", "json")
+        )
+        
+        # Load from YAML file if exists
+        if os.path.exists(self.config_file):
+            self._load_from_yaml()
+            
+        # Auto-detect worker configuration
+        self.worker = self._detect_worker_config()
+        
+    def _load_from_yaml(self):
+        """Load configuration from YAML file"""
+        try:
+            with open(self.config_file, 'r') as f:
+                config_data = yaml.safe_load(f)
+                
+            # Update broker config
+            if 'broker' in config_data:
+                broker_data = config_data['broker']
+                for key, value in broker_data.items():
+                    if hasattr(self.broker, key):
+                        setattr(self.broker, key, value)
+                        
+            # Update security config
+            if 'security' in config_data:
+                security_data = config_data['security']
+                for key, value in security_data.items():
+                    if hasattr(self.security, key):
+                        setattr(self.security, key, value)
+                        
+            # Update monitoring config
+            if 'monitoring' in config_data:
+                monitoring_data = config_data['monitoring']
+                for key, value in monitoring_data.items():
+                    if hasattr(self.monitoring, key):
+                        setattr(self.monitoring, key, value)
+                        
+        except Exception as e:
+            print(f"Warning: Could not load config file {self.config_file}: {e}")
+            
+    def _detect_worker_config(self) -> WorkerConfig:
+        """Auto-detect worker configuration based on system"""
+        system = platform.system().lower()
+        machine = platform.machine().lower()
+        
+        # Detect capabilities based on system
+        capabilities = ["general"]
+        
+        if system == "darwin":
+            capabilities.extend(["video_editing", "audio_processing", "image_processing"])
+            if "arm" in machine or "m1" in machine or "m2" in machine:
+                capabilities.append("apple_silicon")
+        elif system == "windows":
+            capabilities.extend(["video_editing", "gaming", "windows_specific"])
+        elif system == "linux":
+            capabilities.extend(["server_tasks", "containerization"])
+            
+        # Detect resource limits
+        try:
+            import psutil
+            cpu_count = psutil.cpu_count()
+            memory_gb = psutil.virtual_memory().total // (1024**3)
+            
+            resource_limits = {
+                "max_cpu_percent": 80,
+                "max_memory_gb": max(1, memory_gb * 0.7),
+                "max_disk_usage_gb": 10
+            }
+            
+            max_workers = max(1, cpu_count - 1)
+            
+        except ImportError:
+            resource_limits = {
+                "max_cpu_percent": 80,
+                "max_memory_gb": 4,
+                "max_disk_usage_gb": 10
+            }
+            max_workers = 2
+            
+        return WorkerConfig(
+            name=f"{system}_{platform.node()}",
+            platform=system,
+            max_workers=max_workers,
+            capabilities=capabilities,
+            resource_limits=resource_limits
+        )
+        
+    def get_celery_config(self) -> Dict[str, Any]:
+        """Generate Celery configuration dictionary"""
+        return {
+            'broker_url': self.broker.get_url(),
+            'result_backend': self.broker.get_url(),
+            'task_serializer': 'json',
+            'accept_content': ['json'],
+            'result_serializer': 'json',
+            'timezone': 'UTC',
+            'enable_utc': True,
+            'worker_prefetch_multiplier': self.worker.prefetch_multiplier,
+            'worker_max_tasks_per_child': self.worker.max_tasks_per_child,
+            'task_routes': self._generate_task_routes(),
+            'worker_send_task_events': True,
+            'task_send_sent_event': True,
+        }
+        
+    def _generate_task_routes(self) -> Dict[str, Dict[str, str]]:
+        """Generate task routing configuration"""
+        routes = {}
+        
+        # Route tasks based on capabilities
+        if "video_editing" in self.worker.capabilities:
+            routes.update({
+                'video_tasks.*': {'queue': 'video_processing'},
+                'davinci_resolve.*': {'queue': 'video_processing'},
+                'obs.*': {'queue': 'video_processing'}
+            })
+            
+        if "audio_processing" in self.worker.capabilities:
+            routes.update({
+                'audio_tasks.*': {'queue': 'audio_processing'},
+                'audacity.*': {'queue': 'audio_processing'}
+            })
+            
+        if "image_processing" in self.worker.capabilities:
+            routes.update({
+                'image_tasks.*': {'queue': 'image_processing'},
+                'gimp.*': {'queue': 'image_processing'}
+            })
+            
+        return routes
+        
+    def save_config(self, file_path: Optional[str] = None):
+        """Save current configuration to YAML file"""
+        file_path = file_path or self.config_file
+        
+        config_data = {
+            'broker': {
+                'type': self.broker.type,
+                'host': self.broker.host,
+                'port': self.broker.port,
+                'database': self.broker.database,
+                'ssl': self.broker.ssl
+            },
+            'worker': {
+                'name': self.worker.name,
+                'platform': self.worker.platform,
+                'max_workers': self.worker.max_workers,
+                'capabilities': self.worker.capabilities,
+                'resource_limits': self.worker.resource_limits,
+                'queues': self.worker.queues
+            },
+            'security': {
+                'enable_auth': self.security.enable_auth,
+                'token_expiry': self.security.token_expiry,
+                'allowed_hosts': self.security.allowed_hosts
+            },
+            'monitoring': {
+                'enable_prometheus': self.monitoring.enable_prometheus,
+                'prometheus_port': self.monitoring.prometheus_port,
+                'log_level': self.monitoring.log_level,
+                'log_format': self.monitoring.log_format
+            }
+        }
+        
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        with open(file_path, 'w') as f:
+            yaml.dump(config_data, f, default_flow_style=False, indent=2)
+            
+# Global configuration instance
+config = DistributedConfig()
+
+# Example usage and testing
+if __name__ == "__main__":
+    print("Distributed Processing Configuration")
+    print(f"Worker: {config.worker.name}")
+    print(f"Platform: {config.worker.platform}")
+    print(f"Capabilities: {config.worker.capabilities}")
+    print(f"Max Workers: {config.worker.max_workers}")
+    print(f"Broker URL: {config.broker.get_url()}")
+    print(f"Resource Limits: {config.worker.resource_limits}")
+    
+    # Save example configuration
+    example_config_path = "/tmp/distributed_example.yaml"
+    config.save_config(example_config_path)
+    print(f"Example configuration saved to: {example_config_path}")

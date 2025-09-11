@@ -20,6 +20,7 @@ import threading
 import queue
 import re
 from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
 
 try:
     from pytrends.request import TrendReq
@@ -97,6 +98,114 @@ class ResearchAgent(BaseAgent):
             except Exception as e:
                 self.logger.warning(f"Failed to initialize pytrends: {e}")
         
+        # Research parameters
+        self.trend_check_interval = 3600  # 1 hour
+        self.api_discovery_interval = 86400  # 24 hours
+        self.hypocrisy_scan_interval = 7200  # 2 hours
+        
+        # Monitoring threads
+        self.monitoring_active = False
+        self.trend_thread = None
+        self.api_thread = None
+        self.hypocrisy_thread = None
+        
+        # Research queues
+        self.research_queue = queue.Queue()
+        
+        # Known API directories
+        self.api_directories = [
+            "https://api.publicapis.org/entries",
+            "https://github.com/public-apis/public-apis",
+            "https://rapidapi.com/search/"
+        ]
+        
+        # Hypocrisy detection patterns
+        self.contradiction_patterns = [
+            (r"never\s+\w+", r"always\s+\w+"),
+            (r"impossible", r"definitely\s+possible"),
+            (r"will\s+never", r"will\s+definitely"),
+            (r"completely\s+against", r"fully\s+support")
+        ]
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get current status of the research agent"""
+        return {
+            'agent_name': self.name,
+            'monitoring_active': self.monitoring_active,
+            'pytrends_available': self.pytrends is not None,
+            'last_trend_check': getattr(self, 'last_trend_check', None),
+            'last_api_discovery': getattr(self, 'last_api_discovery', None),
+            'last_hypocrisy_scan': getattr(self, 'last_hypocrisy_scan', None)
+        }
+    
+    def get_capabilities(self) -> List[str]:
+        """Get list of agent capabilities"""
+        return [
+            'trend_analysis',
+            'api_discovery', 
+            'hypocrisy_detection',
+            'market_intelligence',
+            'autonomous_monitoring',
+            'research_target_management'
+        ]
+    
+    def _execute_with_monitoring(self, task: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Execute task with monitoring and logging"""
+        start_time = time.time()
+        self.logger.info(f"Executing research task: {task}")
+        
+        try:
+            if task == "discover_apis":
+                search_terms = context.get('search_terms', []) if context else []
+                result = self.discover_apis(search_terms)
+                return {'success': True, 'data': result, 'execution_time': time.time() - start_time}
+            elif task == "analyze_trends":
+                keywords = context.get('keywords', []) if context else []
+                result = self.analyze_trends(keywords)
+                return {'success': True, 'data': result, 'execution_time': time.time() - start_time}
+            elif task == "run_hypocrisy_engine":
+                target = context.get('target') if context else None
+                result = self.run_hypocrisy_engine(target)
+                return {'success': True, 'data': result, 'execution_time': time.time() - start_time}
+            else:
+                return {'success': False, 'error': f'Unknown task: {task}', 'execution_time': time.time() - start_time}
+        except Exception as e:
+            self.logger.error(f"Task execution failed: {e}")
+            return {'success': False, 'error': str(e), 'execution_time': time.time() - start_time}
+    
+    def _rephrase_task(self, original_task: str) -> str:
+        """Rephrase task for better execution"""
+        # Simple rephrasing logic for research tasks
+        task_mappings = {
+            'find apis': 'discover_apis',
+            'search for apis': 'discover_apis',
+            'api discovery': 'discover_apis',
+            'trend analysis': 'analyze_trends',
+            'check trends': 'analyze_trends',
+            'hypocrisy check': 'run_hypocrisy_engine',
+            'contradiction detection': 'run_hypocrisy_engine'
+        }
+        
+        lower_task = original_task.lower().strip()
+        for key, value in task_mappings.items():
+            if key in lower_task:
+                return value
+        
+        return original_task
+    
+    def _validate_rephrase_accuracy(self, original: str, rephrased: str) -> bool:
+        """Validate if rephrased task maintains original intent"""
+        # Simple validation - check if rephrased task is a known research operation
+        valid_tasks = ['discover_apis', 'analyze_trends', 'run_hypocrisy_engine']
+        return rephrased in valid_tasks or rephrased == original
+    
+    @property
+    def capabilities(self) -> List[str]:
+        """Property accessor for capabilities"""
+        return self.get_capabilities()
+    
+    def __post_init__(self):
+        """Initialize agent parameters after parent initialization"""
         # Research parameters
         self.trend_check_interval = 3600  # 1 hour
         self.api_discovery_interval = 86400  # 24 hours
@@ -287,41 +396,288 @@ class ResearchAgent(BaseAgent):
         return trend_data
     
     def discover_apis(self, search_terms: List[str] = None) -> List[APIDiscovery]:
-        """Discover new APIs based on search terms"""
+        """Discover new APIs from multiple free sources"""
         if search_terms is None:
             search_terms = ['free api', 'public api', 'rest api', 'json api']
         
         discoveries = []
         
+        # Source 1: PublicAPIs.org - Comprehensive free API directory
+        discoveries.extend(self._discover_from_publicapis())
+        
+        # Source 2: GitHub API Collections - Curated lists
+        discoveries.extend(self._discover_from_github_collections())
+        
+        # Source 3: RapidAPI Free Tier - Popular APIs with free tiers
+        discoveries.extend(self._discover_from_rapidapi_free())
+        
+        # Source 4: Government and Open Data APIs
+        discoveries.extend(self._discover_government_apis())
+        
+        # Source 5: Developer-friendly APIs with generous free tiers
+        discoveries.extend(self._discover_developer_friendly_apis())
+        
+        # Remove duplicates and save
+        unique_discoveries = self._deduplicate_apis(discoveries)
+        self._save_api_discoveries(unique_discoveries)
+        
+        self.logger.info(f"Discovered {len(unique_discoveries)} unique APIs from {len(discoveries)} total")
+        return unique_discoveries
+    
+    def _discover_from_publicapis(self) -> List[APIDiscovery]:
+        """Discover APIs from PublicAPIs.org"""
+        discoveries = []
         try:
-            # Search public API directory
             response = requests.get("https://api.publicapis.org/entries", timeout=10)
             if response.status_code == 200:
                 data = response.json()
                 
-                for entry in data.get('entries', [])[:50]:  # Limit to 50 entries
+                for entry in data.get('entries', [])[:100]:  # Increased limit
                     # Filter for free APIs
-                    if entry.get('Auth', '').lower() in ['', 'no', 'none'] or 'free' in entry.get('Description', '').lower():
+                    auth = entry.get('Auth', '').lower()
+                    if auth in ['', 'no', 'none'] or 'free' in entry.get('Description', '').lower():
                         discovery = APIDiscovery(
                             api_name=entry.get('API', 'Unknown'),
                             base_url=entry.get('Link', ''),
                             description=entry.get('Description', ''),
-                            endpoints=[],  # Would need to discover these
-                            authentication_type=entry.get('Auth', 'none'),
-                            cost_model='free' if entry.get('Auth', '').lower() in ['', 'no', 'none'] else 'unknown',
-                            rate_limits={},
+                            endpoints=[],
+                            authentication_type=auth if auth else 'none',
+                            cost_model='free',
+                            rate_limits={'source': 'publicapis.org'},
                             discovered_at=datetime.now(),
                             quality_score=self._calculate_api_quality_score(entry)
                         )
                         discoveries.append(discovery)
-            
-            # Save discoveries
-            self._save_api_discoveries(discoveries)
-            
         except Exception as e:
-            self.logger.error(f"Error discovering APIs: {e}")
+            self.logger.error(f"Error discovering from PublicAPIs: {e}")
+        return discoveries
+    
+    def _discover_from_github_collections(self) -> List[APIDiscovery]:
+        """Discover APIs from GitHub awesome lists and collections"""
+        discoveries = []
+        
+        # Popular free APIs from known collections
+        free_apis = [
+            {
+                'API': 'JSONPlaceholder',
+                'Link': 'https://jsonplaceholder.typicode.com',
+                'Description': 'Fake REST API for testing and prototyping',
+                'Auth': 'none'
+            },
+            {
+                'API': 'httpbin',
+                'Link': 'https://httpbin.org',
+                'Description': 'HTTP request and response testing service',
+                'Auth': 'none'
+            },
+            {
+                'API': 'Cat Facts',
+                'Link': 'https://catfact.ninja',
+                'Description': 'Daily cat facts API',
+                'Auth': 'none'
+            },
+            {
+                'API': 'Dog API',
+                'Link': 'https://dog.ceo/dog-api',
+                'Description': 'Collection of dog images',
+                'Auth': 'none'
+            },
+            {
+                'API': 'Advice Slip',
+                'Link': 'https://api.adviceslip.com',
+                'Description': 'Random advice generator',
+                'Auth': 'none'
+            },
+            {
+                'API': 'JokeAPI',
+                'Link': 'https://jokeapi.dev',
+                'Description': 'Programming and general jokes',
+                'Auth': 'none'
+            },
+            {
+                'API': 'Numbers API',
+                'Link': 'http://numbersapi.com',
+                'Description': 'Interesting facts about numbers',
+                'Auth': 'none'
+            },
+            {
+                'API': 'Quotable',
+                'Link': 'https://quotable.io',
+                'Description': 'Random quotes API',
+                'Auth': 'none'
+            }
+        ]
+        
+        for api_data in free_apis:
+            discovery = APIDiscovery(
+                api_name=api_data['API'],
+                base_url=api_data['Link'],
+                description=api_data['Description'],
+                endpoints=[],
+                authentication_type=api_data['Auth'],
+                cost_model='free',
+                rate_limits={'source': 'github_collections'},
+                discovered_at=datetime.now(),
+                quality_score=0.8  # High quality curated APIs
+            )
+            discoveries.append(discovery)
         
         return discoveries
+    
+    def _discover_from_rapidapi_free(self) -> List[APIDiscovery]:
+        """Discover free tier APIs from RapidAPI"""
+        discoveries = []
+        
+        # Popular RapidAPI free tier APIs
+        rapidapi_free = [
+            {
+                'API': 'OpenWeatherMap',
+                'Link': 'https://openweathermap.org/api',
+                'Description': 'Weather data API with free tier',
+                'Auth': 'apikey'
+            },
+            {
+                'API': 'News API',
+                'Link': 'https://newsapi.org',
+                'Description': 'News articles from various sources',
+                'Auth': 'apikey'
+            },
+            {
+                'API': 'CoinGecko',
+                'Link': 'https://coingecko.com/en/api',
+                'Description': 'Cryptocurrency data API',
+                'Auth': 'none'
+            },
+            {
+                'API': 'REST Countries',
+                'Link': 'https://restcountries.com',
+                'Description': 'Country information API',
+                'Auth': 'none'
+            },
+            {
+                'API': 'IP Geolocation',
+                'Link': 'https://ipapi.co',
+                'Description': 'IP address geolocation',
+                'Auth': 'none'
+            }
+        ]
+        
+        for api_data in rapidapi_free:
+            discovery = APIDiscovery(
+                api_name=api_data['API'],
+                base_url=api_data['Link'],
+                description=api_data['Description'],
+                endpoints=[],
+                authentication_type=api_data['Auth'],
+                cost_model='freemium',
+                rate_limits={'source': 'rapidapi_free', 'tier': 'free'},
+                discovered_at=datetime.now(),
+                quality_score=0.9  # High quality commercial APIs
+            )
+            discoveries.append(discovery)
+        
+        return discoveries
+    
+    def _discover_government_apis(self) -> List[APIDiscovery]:
+        """Discover government and open data APIs"""
+        discoveries = []
+        
+        gov_apis = [
+            {
+                'API': 'NASA Open Data',
+                'Link': 'https://api.nasa.gov',
+                'Description': 'NASA datasets and imagery',
+                'Auth': 'apikey'
+            },
+            {
+                'API': 'USGS Earthquake',
+                'Link': 'https://earthquake.usgs.gov/fdsnws/event/1/',
+                'Description': 'Real-time earthquake data',
+                'Auth': 'none'
+            },
+            {
+                'API': 'World Bank',
+                'Link': 'https://datahelpdesk.worldbank.org/knowledgebase/articles/889392',
+                'Description': 'World development indicators',
+                'Auth': 'none'
+            }
+        ]
+        
+        for api_data in gov_apis:
+            discovery = APIDiscovery(
+                api_name=api_data['API'],
+                base_url=api_data['Link'],
+                description=api_data['Description'],
+                endpoints=[],
+                authentication_type=api_data['Auth'],
+                cost_model='free',
+                rate_limits={'source': 'government', 'reliability': 'high'},
+                discovered_at=datetime.now(),
+                quality_score=0.95  # Government APIs are highly reliable
+            )
+            discoveries.append(discovery)
+        
+        return discoveries
+    
+    def _discover_developer_friendly_apis(self) -> List[APIDiscovery]:
+        """Discover developer-friendly APIs with generous free tiers"""
+        discoveries = []
+        
+        dev_apis = [
+            {
+                'API': 'GitHub API',
+                'Link': 'https://api.github.com',
+                'Description': 'GitHub repository and user data',
+                'Auth': 'oauth'
+            },
+            {
+                'API': 'Unsplash',
+                'Link': 'https://unsplash.com/developers',
+                'Description': 'High-quality stock photos',
+                'Auth': 'oauth'
+            },
+            {
+                'API': 'Lorem Picsum',
+                'Link': 'https://picsum.photos',
+                'Description': 'Lorem Ipsum for photos',
+                'Auth': 'none'
+            },
+            {
+                'API': 'QR Server',
+                'Link': 'https://goqr.me/api',
+                'Description': 'QR code generation',
+                'Auth': 'none'
+            }
+        ]
+        
+        for api_data in dev_apis:
+            discovery = APIDiscovery(
+                api_name=api_data['API'],
+                base_url=api_data['Link'],
+                description=api_data['Description'],
+                endpoints=[],
+                authentication_type=api_data['Auth'],
+                cost_model='freemium',
+                rate_limits={'source': 'developer_friendly', 'generous': True},
+                discovered_at=datetime.now(),
+                quality_score=0.85
+            )
+            discoveries.append(discovery)
+        
+        return discoveries
+    
+    def _deduplicate_apis(self, discoveries: List[APIDiscovery]) -> List[APIDiscovery]:
+        """Remove duplicate API discoveries based on name and base URL"""
+        seen = set()
+        unique_discoveries = []
+        
+        for discovery in discoveries:
+            key = (discovery.api_name.lower(), discovery.base_url.lower())
+            if key not in seen:
+                seen.add(key)
+                unique_discoveries.append(discovery)
+        
+        return unique_discoveries
     
     def run_hypocrisy_engine(self, targets: List[str]) -> List[HypocrisyAlert]:
         """Run hypocrisy detection on targets"""

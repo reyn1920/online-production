@@ -1,10 +1,13 @@
 # TRAE.AI - The Ultimate AI-Powered Content & Marketing Automation Platform
+## + Conservative Media Research System for The Right Perspective
 
 🚀 **Transform Ideas into Revenue-Generating Content Automatically**
 
 TRAE.AI is a comprehensive, production-ready platform that combines advanced AI agents,
 Hollywood-level content creation, and automated marketing to build a complete digital business
-ecosystem.
+ecosystem. Now enhanced with a specialized **Conservative Media Research System** designed
+for The Right Perspective to track Democratic hypocrisy, analyze conservative host styles,
+and generate targeted political content.
 
 ## 🎯 What TRAE.AI Does
 
@@ -13,6 +16,16 @@ ecosystem.
 - **📈 11-Point Marketing Engine**: Complete monetization across all channels
 - **💰 Revenue Tracking**: Real-time analytics and forecasting
 - **🎛️ Unified Dashboard**: Master control center for everything
+
+## 🎯 Conservative Research System Features
+
+- **🔍 Democratic Hypocrisy Tracking**: Automated detection of contradictory statements
+- **📰 Multi-Source News Scraping**: Fox News, CNN, MSNBC, Drudge Report analysis
+- **🎭 Conservative Host Style Analysis**: Greg Gutfeld, Jesse Watters, Dan Bongino patterns
+- **📺 YouTube Content Mining**: Conservative channel analysis and recommendations
+- **📝 Weekly Content Generation**: Hypocrisy alerts, media lies compilations
+- **🎪 Cross-Marketing Strategy**: Promote conservative channels while staying neutral
+- **💾 Evidence Database**: Comprehensive tracking with source verification
 
 ## 🏗️ System Architecture
 
@@ -23,6 +36,14 @@ ecosystem.
 - **📢 Marketing Agent** (`port 8002`) - Multi-channel marketing automation
 - **💰 Monetization Bundle** (`port 8003`) - Revenue generation and product management
 - **📊 Revenue Tracker** (`port 8004`) - Real-time analytics and forecasting
+
+### Conservative Research Services
+
+- **🔍 Research Agent** - Democratic hypocrisy detection and documentation
+- **📰 News Scraper** - Multi-source news analysis and bias detection
+- **📺 YouTube Analyzer** - Conservative host style analysis and content mining
+- **📝 Content Generator** - Weekly conservative content creation for The Right Perspective
+- **💾 Evidence Database** - SQLite-based storage with comprehensive indexing
 
 ### Infrastructure Services
 

@@ -24,6 +24,8 @@ from backend.pipelines.resolve_handoff import (
     create_resolve_project, create_resolve_timeline, export_resolve_timeline,
     list_resolve_projects, get_resolve_project_info
 )
+from routers.davinci_resolve import router as davinci_resolve_router
+from routers.system_software import router as system_software_router
 from backend.services.rss_watcher import RSSWatcherService
 from backend.agents.marketing_tools import (
     RelentlessOptimizationLoop, AffiliateManager, CrossPromotionManager,
@@ -34,6 +36,12 @@ from backend.ecommerce_marketing_layer import EcommerceMarketingLayer
 from datetime import datetime
 
 app = FastAPI(title="TRAE.AI Production System", version="1.0.0")
+
+# Include DaVinci Resolve Pro Router
+app.include_router(davinci_resolve_router)
+
+# Include System Software Integration Router
+app.include_router(system_software_router)
 
 # Global service instances
 rss_watcher = None
@@ -1648,6 +1656,26 @@ async def get_metrics():
         },
         "timestamp": datetime.now().isoformat()
     }
+
+# DaVinci Resolve Pro Frontend Interface
+@app.get("/davinci-resolve-pro", response_class=HTMLResponse)
+async def serve_davinci_resolve_pro():
+    """Serve the DaVinci Resolve Pro integration interface"""
+    frontend_path = Path(__file__).parent.parent / "frontend" / "davinci-resolve-pro.html"
+    if frontend_path.exists():
+        return frontend_path.read_text()
+    else:
+        return "<h1>DaVinci Resolve Pro Interface Not Found</h1><p>Please ensure the frontend file exists.</p>"
+
+# System Software Hub Frontend Interface
+@app.get("/system-software-hub", response_class=HTMLResponse)
+async def serve_system_software_hub():
+    """Serve the System Software Hub integration interface"""
+    frontend_path = Path(__file__).parent.parent / "frontend" / "system-software-hub.html"
+    if frontend_path.exists():
+        return frontend_path.read_text()
+    else:
+        return "<h1>System Software Hub Interface Not Found</h1><p>Please ensure the frontend file exists.</p>"
 
 def _run_rule_1_scan():
     """Scan for Rule-1 compliance (no functionality removal)"""

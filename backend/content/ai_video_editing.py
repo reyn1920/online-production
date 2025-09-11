@@ -16,6 +16,7 @@ import sys
 import json
 import time
 import re
+import shutil
 from typing import Dict, List, Optional, Any, Tuple, Union
 from dataclasses import dataclass, asdict
 from enum import Enum
