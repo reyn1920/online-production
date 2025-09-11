@@ -19,57 +19,63 @@ Version: 1.0.0
 """
 
 import asyncio
+import base64
+import hashlib
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, field
-from enum import Enum
-import sqlite3
 import random
-import time
-from pathlib import Path
-import hashlib
-import base64
-from urllib.parse import urljoin, urlparse
 import re
+import sqlite3
+import time
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urljoin, urlparse
 
 # Import base agent and automation tools
 from .base_agents import BaseAgent
-from .web_automation_tools import (
-    WebAutomationAgent, AutomationTarget, AutomationAction,
-    ActionType, StealthLevel
-)
+from .web_automation_tools import (ActionType, AutomationAction, AutomationTarget,
+                                   StealthLevel, WebAutomationAgent)
 
 logger = logging.getLogger(__name__)
 
+
 class AutomationMode(Enum):
     """Web automation operation modes"""
+
     STEALTH_MAXIMUM = "stealth_maximum"
     STEALTH_HIGH = "stealth_high"
     STEALTH_MEDIUM = "stealth_medium"
     NORMAL = "normal"
     AGGRESSIVE = "aggressive"
 
+
 class DetectionRisk(Enum):
     """Detection risk levels"""
+
     MINIMAL = "minimal"
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
 
+
 class SessionStatus(Enum):
     """Automation session status"""
+
     ACTIVE = "active"
     PAUSED = "paused"
     COMPLETED = "completed"
     FAILED = "failed"
     DETECTED = "detected"
 
+
 @dataclass
 class StealthProfile:
     """Stealth automation profile configuration"""
+
     profile_id: str
     user_agent: str
     viewport_size: Tuple[int, int]
@@ -91,9 +97,11 @@ class StealthProfile:
     detection_count: int = 0
     success_rate: float = 1.0
 
+
 @dataclass
 class AutomationSession:
     """Web automation session tracking"""
+
     session_id: str
     target_site: str
     automation_mode: AutomationMode
@@ -107,9 +115,11 @@ class AutomationSession:
     success: bool = False
     error_message: Optional[str] = None
 
+
 @dataclass
 class AffiliateDashboard:
     """Affiliate dashboard configuration"""
+
     dashboard_id: str
     program_name: str
     dashboard_url: str
@@ -125,9 +135,11 @@ class AffiliateDashboard:
     success_rate: float = 1.0
     risk_level: DetectionRisk = DetectionRisk.LOW
 
+
 @dataclass
 class PayoutRecord:
     """Payout verification record"""
+
     record_id: str
     dashboard_id: str
     payout_date: datetime
@@ -139,75 +151,79 @@ class PayoutRecord:
     verification_date: Optional[datetime] = None
     notes: str = ""
 
+
 class StealthAutomationAgent(BaseAgent):
     """
     Advanced Stealth Web Automation Agent
-    
+
     Implements sophisticated stealth techniques for affiliate monitoring,
     payment verification, and covert market research operations.
     """
-    
+
     def __init__(self, config: Dict[str, Any]):
         super().__init__()
         self.config = config
         self.agent_type = "stealth_automation"
-        self.default_mode = AutomationMode(config.get('default_mode', 'stealth_high'))
-        self.max_concurrent_sessions = config.get('max_concurrent_sessions', 3)
-        self.session_timeout = config.get('session_timeout', 1800)  # 30 minutes
-        self.detection_cooldown = config.get('detection_cooldown', 86400)  # 24 hours
-        
+        self.default_mode = AutomationMode(config.get("default_mode", "stealth_high"))
+        self.max_concurrent_sessions = config.get("max_concurrent_sessions", 3)
+        self.session_timeout = config.get("session_timeout", 1800)  # 30 minutes
+        self.detection_cooldown = config.get("detection_cooldown", 86400)  # 24 hours
+
         # Stealth configuration
-        self.profile_rotation_interval = config.get('profile_rotation', 7)  # days
-        self.human_behavior_enabled = config.get('human_behavior', True)
-        self.captcha_solving_enabled = config.get('captcha_solving', True)
-        
+        self.profile_rotation_interval = config.get("profile_rotation", 7)  # days
+        self.human_behavior_enabled = config.get("human_behavior", True)
+        self.captcha_solving_enabled = config.get("captcha_solving", True)
+
         # Tracking data
         self.active_sessions: Dict[str, AutomationSession] = {}
         self.stealth_profiles: Dict[str, StealthProfile] = {}
         self.affiliate_dashboards: Dict[str, AffiliateDashboard] = {}
         self.payout_records: Dict[str, PayoutRecord] = {}
-        
+
         # Initialize automation tools
         self._initialize_stealth_tools()
-        
+
         # Database setup
         self._setup_stealth_database()
-        
+
         # Load stealth profiles
         self._load_stealth_profiles()
-        
-        logger.info(f"StealthAutomationAgent initialized with {self.default_mode.value} mode")
-    
+
+        logger.info(
+            f"StealthAutomationAgent initialized with {self.default_mode.value} mode"
+        )
+
     def _initialize_stealth_tools(self):
         """Initialize stealth automation tools and engines"""
         try:
             # Advanced web automation engine
             self.web_engine = WebAutomationAgent()
-            
+
             # Human behavior simulator
             self.behavior_simulator = self._setup_behavior_simulator()
-            
+
             # Fingerprint manager
             self.fingerprint_manager = self._setup_fingerprint_manager()
-            
+
             # Captcha solver (if enabled)
             if self.captcha_solving_enabled:
                 self.captcha_solver = self._setup_captcha_solver()
-            
+
             logger.info("Stealth automation tools initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize stealth tools: {e}")
-    
+
     def _setup_stealth_database(self):
         """Setup database tables for stealth automation tracking"""
         try:
-            db_path = Path(self.config.get('database_path', 'right_perspective.db'))
-            
+            db_path = Path(self.config.get("database_path", "right_perspective.db"))
+
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
-                
+
                 # Stealth profiles table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS stealth_profiles (
                         profile_id TEXT PRIMARY KEY,
                         user_agent TEXT NOT NULL,
@@ -230,10 +246,12 @@ class StealthAutomationAgent(BaseAgent):
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         last_used TIMESTAMP
                     )
-                """)
-                
+                """
+                )
+
                 # Automation sessions table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS automation_sessions (
                         session_id TEXT PRIMARY KEY,
                         target_site TEXT NOT NULL,
@@ -249,10 +267,12 @@ class StealthAutomationAgent(BaseAgent):
                         error_message TEXT,
                         FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
                     )
-                """)
-                
+                """
+                )
+
                 # Affiliate dashboards table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS affiliate_dashboards (
                         dashboard_id TEXT PRIMARY KEY,
                         program_name TEXT NOT NULL,
@@ -270,10 +290,12 @@ class StealthAutomationAgent(BaseAgent):
                         last_accessed TIMESTAMP,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
-                
+                """
+                )
+
                 # Payout records table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS payout_records (
                         record_id TEXT PRIMARY KEY,
                         dashboard_id TEXT NOT NULL,
@@ -288,10 +310,12 @@ class StealthAutomationAgent(BaseAgent):
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (dashboard_id) REFERENCES affiliate_dashboards (dashboard_id)
                     )
-                """)
-                
+                """
+                )
+
                 # Detection events table
-                cursor.execute("""
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS detection_events (
                         event_id TEXT PRIMARY KEY,
                         session_id TEXT NOT NULL,
@@ -305,128 +329,135 @@ class StealthAutomationAgent(BaseAgent):
                         FOREIGN KEY (session_id) REFERENCES automation_sessions (session_id),
                         FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
                     )
-                """)
-                
+                """
+                )
+
                 conn.commit()
                 logger.info("Stealth automation database tables created successfully")
-                
+
         except Exception as e:
             logger.error(f"Failed to setup stealth database: {e}")
-    
+
     def _setup_behavior_simulator(self):
         """Setup human behavior simulator for stealth operations"""
         try:
-            from .web_automation_tools import StealthOperations, StealthLevel
-            
+            from .web_automation_tools import StealthLevel, StealthOperations
+
             # Create behavior simulator based on automation mode
-            stealth_level = StealthLevel.MAXIMUM if self.default_mode == AutomationMode.STEALTH_MAXIMUM else StealthLevel.MODERATE
-            
+            stealth_level = (
+                StealthLevel.MAXIMUM
+                if self.default_mode == AutomationMode.STEALTH_MAXIMUM
+                else StealthLevel.MODERATE
+            )
+
             behavior_simulator = {
-                'stealth_ops': StealthOperations(stealth_level),
-                'human_delays': {
-                    'typing': (0.05, 0.2),  # seconds per character
-                    'mouse_move': (0.1, 0.3),  # seconds for movement
-                    'click_delay': (0.1, 0.5),  # seconds before/after click
-                    'page_load': (2, 5),  # seconds to wait for page load
-                    'thinking': (1, 3)  # random thinking pauses
+                "stealth_ops": StealthOperations(stealth_level),
+                "human_delays": {
+                    "typing": (0.05, 0.2),  # seconds per character
+                    "mouse_move": (0.1, 0.3),  # seconds for movement
+                    "click_delay": (0.1, 0.5),  # seconds before/after click
+                    "page_load": (2, 5),  # seconds to wait for page load
+                    "thinking": (1, 3),  # random thinking pauses
                 },
-                'error_simulation': {
-                    'typo_rate': 0.02 if self.human_behavior_enabled else 0,
-                    'backspace_rate': 0.01 if self.human_behavior_enabled else 0,
-                    'mouse_jitter': self.human_behavior_enabled
+                "error_simulation": {
+                    "typo_rate": 0.02 if self.human_behavior_enabled else 0,
+                    "backspace_rate": 0.01 if self.human_behavior_enabled else 0,
+                    "mouse_jitter": self.human_behavior_enabled,
                 },
-                'patterns': {
-                    'scroll_behavior': 'human_like',
-                    'mouse_curves': True,
-                    'variable_speed': True
-                }
+                "patterns": {
+                    "scroll_behavior": "human_like",
+                    "mouse_curves": True,
+                    "variable_speed": True,
+                },
             }
-            
+
             logger.info("Human behavior simulator initialized successfully")
             return behavior_simulator
-            
+
         except Exception as e:
             logger.error(f"Failed to setup behavior simulator: {e}")
             return None
-    
+
     def _setup_fingerprint_manager(self):
         """Setup fingerprint management system for anti-detection"""
         try:
             fingerprint_manager = {
-                'canvas_spoofing': True,
-                'webgl_spoofing': True,
-                'audio_spoofing': True,
-                'font_spoofing': True,
-                'timezone_spoofing': True,
-                'language_spoofing': True,
-                'screen_spoofing': True,
-                'user_agent_rotation': True,
-                'header_randomization': True,
-                'cookie_management': {
-                    'clear_on_rotation': True,
-                    'selective_persistence': True
+                "canvas_spoofing": True,
+                "webgl_spoofing": True,
+                "audio_spoofing": True,
+                "font_spoofing": True,
+                "timezone_spoofing": True,
+                "language_spoofing": True,
+                "screen_spoofing": True,
+                "user_agent_rotation": True,
+                "header_randomization": True,
+                "cookie_management": {
+                    "clear_on_rotation": True,
+                    "selective_persistence": True,
                 },
-                'fingerprint_entropy': {
-                    'canvas_noise': 0.1,
-                    'audio_noise': 0.05,
-                    'timing_variance': 0.2
-                }
+                "fingerprint_entropy": {
+                    "canvas_noise": 0.1,
+                    "audio_noise": 0.05,
+                    "timing_variance": 0.2,
+                },
             }
-            
+
             logger.info("Fingerprint manager initialized successfully")
             return fingerprint_manager
-            
+
         except Exception as e:
             logger.error(f"Failed to setup fingerprint manager: {e}")
             return None
-    
+
     def _setup_captcha_solver(self):
         """Setup captcha solving capabilities"""
         try:
             captcha_solver = {
-                'enabled': self.captcha_solving_enabled,
-                'services': {
-                    'recaptcha_v2': True,
-                    'recaptcha_v3': True,
-                    'hcaptcha': True,
-                    'image_captcha': True
+                "enabled": self.captcha_solving_enabled,
+                "services": {
+                    "recaptcha_v2": True,
+                    "recaptcha_v3": True,
+                    "hcaptcha": True,
+                    "image_captcha": True,
                 },
-                'solving_methods': {
-                    'audio_challenge': True,
-                    'image_recognition': True,
-                    'behavioral_analysis': True
+                "solving_methods": {
+                    "audio_challenge": True,
+                    "image_recognition": True,
+                    "behavioral_analysis": True,
                 },
-                'fallback_options': {
-                    'manual_intervention': False,
-                    'skip_on_failure': True,
-                    'retry_attempts': 3
+                "fallback_options": {
+                    "manual_intervention": False,
+                    "skip_on_failure": True,
+                    "retry_attempts": 3,
                 },
-                'detection_evasion': {
-                    'mouse_movement': True,
-                    'timing_randomization': True,
-                    'human_like_solving': True
-                }
+                "detection_evasion": {
+                    "mouse_movement": True,
+                    "timing_randomization": True,
+                    "human_like_solving": True,
+                },
             }
-            
+
             logger.info("Captcha solver initialized successfully")
             return captcha_solver
-            
+
         except Exception as e:
             logger.error(f"Failed to setup captcha solver: {e}")
             return None
-    
+
     def _load_stealth_profiles(self):
         """Load or generate stealth profiles"""
         try:
             # Load existing profiles from database
-            db_path = Path(self.config.get('database_path', 'right_perspective.db'))
-            
+            db_path = Path(self.config.get("database_path", "right_perspective.db"))
+
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute("SELECT * FROM stealth_profiles ORDER BY success_rate DESC")
-                
+                cursor.execute(
+                    "SELECT * FROM stealth_profiles ORDER BY success_rate DESC"
+                )
+
                 profiles = cursor.fetchall()
-                
+
                 if not profiles:
                     # Generate initial stealth profiles
                     self._generate_initial_profiles()
@@ -435,12 +466,12 @@ class StealthAutomationAgent(BaseAgent):
                     for profile_data in profiles:
                         profile = self._create_profile_from_data(profile_data)
                         self.stealth_profiles[profile.profile_id] = profile
-            
+
             logger.info(f"Loaded {len(self.stealth_profiles)} stealth profiles")
-            
+
         except Exception as e:
             logger.error(f"Failed to load stealth profiles: {e}")
-    
+
     def _generate_initial_profiles(self):
         """Generate initial set of stealth profiles"""
         try:
@@ -450,30 +481,40 @@ class StealthAutomationAgent(BaseAgent):
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             ]
-            
+
             # Common screen resolutions
             resolutions = [
-                (1920, 1080), (1366, 768), (1536, 864), (1440, 900),
-                (1280, 720), (2560, 1440), (3840, 2160)
+                (1920, 1080),
+                (1366, 768),
+                (1536, 864),
+                (1440, 900),
+                (1280, 720),
+                (2560, 1440),
+                (3840, 2160),
             ]
-            
+
             # Generate 10 diverse profiles
             for i in range(10):
                 profile_id = f"profile_{i+1:02d}_{datetime.now().strftime('%Y%m%d')}"
-                
+
                 # Randomize profile characteristics
                 user_agent = random.choice(user_agents)
                 resolution = random.choice(resolutions)
-                viewport = (resolution[0] - random.randint(0, 100), resolution[1] - random.randint(0, 100))
-                
+                viewport = (
+                    resolution[0] - random.randint(0, 100),
+                    resolution[1] - random.randint(0, 100),
+                )
+
                 profile = StealthProfile(
                     profile_id=profile_id,
                     user_agent=user_agent,
                     viewport_size=viewport,
-                    timezone=random.choice(['UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo']),
-                    language=random.choice(['en-US', 'en-GB', 'en-CA']),
+                    timezone=random.choice(
+                        ["UTC", "America/New_York", "Europe/London", "Asia/Tokyo"]
+                    ),
+                    language=random.choice(["en-US", "en-GB", "en-CA"]),
                     platform=self._extract_platform_from_ua(user_agent),
                     screen_resolution=resolution,
                     color_depth=random.choice([24, 32]),
@@ -484,109 +525,123 @@ class StealthAutomationAgent(BaseAgent):
                     canvas_fingerprint=self._generate_canvas_fingerprint(),
                     audio_fingerprint=self._generate_audio_fingerprint(),
                     fonts_list=self._generate_fonts_list(),
-                    plugins_list=self._generate_plugins_list()
+                    plugins_list=self._generate_plugins_list(),
                 )
-                
+
                 self.stealth_profiles[profile_id] = profile
                 self._save_stealth_profile(profile)
-            
-            logger.info(f"Generated {len(self.stealth_profiles)} initial stealth profiles")
-            
+
+            logger.info(
+                f"Generated {len(self.stealth_profiles)} initial stealth profiles"
+            )
+
         except Exception as e:
             logger.error(f"Failed to generate initial profiles: {e}")
-    
+
     def _extract_platform_from_ua(self, user_agent: str) -> str:
         """Extract platform information from user agent string"""
         try:
             if not user_agent:
                 return "unknown"
-            
+
             user_agent = user_agent.lower()
-            
+
             # Check for mobile platforms
-            if 'android' in user_agent:
+            if "android" in user_agent:
                 return "android"
-            elif 'iphone' in user_agent or 'ipad' in user_agent:
+            elif "iphone" in user_agent or "ipad" in user_agent:
                 return "ios"
-            
+
             # Check for desktop platforms
-            elif 'windows' in user_agent:
+            elif "windows" in user_agent:
                 return "windows"
-            elif 'macintosh' in user_agent or 'mac os' in user_agent:
+            elif "macintosh" in user_agent or "mac os" in user_agent:
                 return "macos"
-            elif 'linux' in user_agent:
+            elif "linux" in user_agent:
                 return "linux"
-            
+
             # Check for browsers
-            elif 'chrome' in user_agent:
+            elif "chrome" in user_agent:
                 return "chrome"
-            elif 'firefox' in user_agent:
+            elif "firefox" in user_agent:
                 return "firefox"
-            elif 'safari' in user_agent:
+            elif "safari" in user_agent:
                 return "safari"
-            elif 'edge' in user_agent:
+            elif "edge" in user_agent:
                 return "edge"
-            
+
             return "unknown"
-            
+
         except Exception as e:
             logger.error(f"Error extracting platform from user agent: {e}")
             return "unknown"
-    
+
     def _generate_webgl_vendor(self) -> str:
         """Generate realistic WebGL vendor string"""
-        vendors = [
-            "Google Inc.",
-            "Mozilla",
-            "WebKit",
-            "Microsoft Corporation"
-        ]
+        vendors = ["Google Inc.", "Mozilla", "WebKit", "Microsoft Corporation"]
         return random.choice(vendors)
-    
+
     def _generate_webgl_renderer(self) -> str:
         """Generate realistic WebGL renderer string"""
         renderers = [
             "ANGLE (Intel, Intel(R) HD Graphics 620 Direct3D11 vs_5_0 ps_5_0, D3D11-27.20.100.8476)",
             "ANGLE (NVIDIA, NVIDIA GeForce GTX 1060 Direct3D11 vs_5_0 ps_5_0, D3D11-27.21.14.5671)",
             "WebKit WebGL",
-            "Mozilla -- ANGLE (Intel, Intel(R) UHD Graphics 620 Direct3D11 vs_5_0 ps_5_0)"
+            "Mozilla -- ANGLE (Intel, Intel(R) UHD Graphics 620 Direct3D11 vs_5_0 ps_5_0)",
         ]
         return random.choice(renderers)
-    
+
     def _generate_canvas_fingerprint(self) -> str:
         """Generate unique canvas fingerprint"""
         # Generate a pseudo-random canvas fingerprint
         base_string = f"{random.randint(1000000, 9999999)}_{datetime.now().microsecond}"
         return hashlib.md5(base_string.encode()).hexdigest()[:16]
-    
+
     def _generate_audio_fingerprint(self) -> str:
         """Generate unique audio fingerprint"""
         # Generate a pseudo-random audio fingerprint
-        base_string = f"audio_{random.randint(100000, 999999)}_{datetime.now().microsecond}"
+        base_string = (
+            f"audio_{random.randint(100000, 999999)}_{datetime.now().microsecond}"
+        )
         return hashlib.sha256(base_string.encode()).hexdigest()[:24]
-    
+
     def _generate_fonts_list(self) -> List[str]:
         """Generate realistic fonts list"""
         common_fonts = [
-            "Arial", "Helvetica", "Times New Roman", "Courier New", "Verdana",
-            "Georgia", "Palatino", "Garamond", "Bookman", "Comic Sans MS",
-            "Trebuchet MS", "Arial Black", "Impact", "Lucida Sans Unicode",
-            "Tahoma", "Lucida Console", "Monaco", "Courier", "Times"
+            "Arial",
+            "Helvetica",
+            "Times New Roman",
+            "Courier New",
+            "Verdana",
+            "Georgia",
+            "Palatino",
+            "Garamond",
+            "Bookman",
+            "Comic Sans MS",
+            "Trebuchet MS",
+            "Arial Black",
+            "Impact",
+            "Lucida Sans Unicode",
+            "Tahoma",
+            "Lucida Console",
+            "Monaco",
+            "Courier",
+            "Times",
         ]
         # Return a random subset of fonts
         num_fonts = random.randint(15, len(common_fonts))
         return random.sample(common_fonts, num_fonts)
-    
+
     def _generate_plugins_list(self) -> List[str]:
         """Generate realistic plugins list"""
         common_plugins = [
             "Chrome PDF Plugin",
             "Chrome PDF Viewer",
             "Native Client",
-            "Widevine Content Decryption Module"
+            "Widevine Content Decryption Module",
         ]
         return common_plugins
-    
+
     def _create_profile_from_data(self, profile_data: tuple) -> StealthProfile:
         """Create StealthProfile object from database data"""
         try:
@@ -609,22 +664,31 @@ class StealthAutomationAgent(BaseAgent):
                 plugins_list=json.loads(profile_data[15]) if profile_data[15] else [],
                 detection_count=profile_data[16],
                 success_rate=profile_data[17],
-                created_at=datetime.fromisoformat(profile_data[18]) if profile_data[18] else datetime.now(),
-                last_used=datetime.fromisoformat(profile_data[19]) if profile_data[19] else None
+                created_at=(
+                    datetime.fromisoformat(profile_data[18])
+                    if profile_data[18]
+                    else datetime.now()
+                ),
+                last_used=(
+                    datetime.fromisoformat(profile_data[19])
+                    if profile_data[19]
+                    else None
+                ),
             )
         except Exception as e:
             logger.error(f"Error creating profile from data: {e}")
             return None
-    
+
     def _save_stealth_profile(self, profile: StealthProfile):
         """Save stealth profile to database"""
         try:
-            db_path = Path(self.config.get('database_path', 'right_perspective.db'))
-            
+            db_path = Path(self.config.get("database_path", "right_perspective.db"))
+
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
-                
-                cursor.execute("""
+
+                cursor.execute(
+                    """
                     INSERT OR REPLACE INTO stealth_profiles (
                         profile_id, user_agent, viewport_size, timezone, language,
                         platform, screen_resolution, color_depth, device_memory,
@@ -632,203 +696,230 @@ class StealthAutomationAgent(BaseAgent):
                         canvas_fingerprint, audio_fingerprint, fonts_list,
                         plugins_list, detection_count, success_rate, created_at, last_used
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    profile.profile_id, profile.user_agent, str(profile.viewport_size),
-                    profile.timezone, profile.language, profile.platform,
-                    str(profile.screen_resolution), profile.color_depth, profile.device_memory,
-                    profile.hardware_concurrency, profile.webgl_vendor, profile.webgl_renderer,
-                    profile.canvas_fingerprint, profile.audio_fingerprint,
-                    json.dumps(profile.fonts_list), json.dumps(profile.plugins_list),
-                    profile.detection_count, profile.success_rate,
-                    profile.created_at.isoformat(), 
-                    profile.last_used.isoformat() if profile.last_used else None
-                ))
-                
+                """,
+                    (
+                        profile.profile_id,
+                        profile.user_agent,
+                        str(profile.viewport_size),
+                        profile.timezone,
+                        profile.language,
+                        profile.platform,
+                        str(profile.screen_resolution),
+                        profile.color_depth,
+                        profile.device_memory,
+                        profile.hardware_concurrency,
+                        profile.webgl_vendor,
+                        profile.webgl_renderer,
+                        profile.canvas_fingerprint,
+                        profile.audio_fingerprint,
+                        json.dumps(profile.fonts_list),
+                        json.dumps(profile.plugins_list),
+                        profile.detection_count,
+                        profile.success_rate,
+                        profile.created_at.isoformat(),
+                        profile.last_used.isoformat() if profile.last_used else None,
+                    ),
+                )
+
                 conn.commit()
-                
+
         except Exception as e:
             logger.error(f"Error saving stealth profile: {e}")
-    
+
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process stealth automation tasks"""
         # Check if stealth automation is enabled
-        if not self.config.get('stealth_automation_enabled', False):
+        if not self.config.get("stealth_automation_enabled", False):
             return {
-                'status': 'disabled',
-                'message': 'Stealth automation is currently disabled in configuration'
+                "status": "disabled",
+                "message": "Stealth automation is currently disabled in configuration",
             }
-        
-        task_type = task.get('type', '')
-        
+
+        task_type = task.get("type", "")
+
         try:
-            if task_type == 'monitor_affiliate':
-                return await self._monitor_affiliate_dashboard(task.get('dashboard_id'))
-            elif task_type == 'verify_payouts':
-                return await self._verify_affiliate_payouts(task.get('dashboard_id'))
-            elif task_type == 'stealth_research':
-                return await self._conduct_stealth_research(task.get('target_url'), task.get('research_params'))
-            elif task_type == 'rotate_profiles':
+            if task_type == "monitor_affiliate":
+                return await self._monitor_affiliate_dashboard(task.get("dashboard_id"))
+            elif task_type == "verify_payouts":
+                return await self._verify_affiliate_payouts(task.get("dashboard_id"))
+            elif task_type == "stealth_research":
+                return await self._conduct_stealth_research(
+                    task.get("target_url"), task.get("research_params")
+                )
+            elif task_type == "rotate_profiles":
                 return await self._rotate_stealth_profiles()
-            elif task_type == 'test_detection':
-                return await self._test_detection_evasion(task.get('target_site'))
+            elif task_type == "test_detection":
+                return await self._test_detection_evasion(task.get("target_site"))
             else:
-                return {
-                    'status': 'error',
-                    'message': f'Unknown task type: {task_type}'
-                }
-                
+                return {"status": "error", "message": f"Unknown task type: {task_type}"}
+
         except Exception as e:
             logger.error(f"Error processing stealth task {task_type}: {e}")
-            return {
-                'status': 'error',
-                'message': str(e)
-            }
-    
+            return {"status": "error", "message": str(e)}
+
     async def _monitor_affiliate_dashboard(self, dashboard_id: str) -> Dict[str, Any]:
         """Monitor affiliate dashboard with maximum stealth"""
         logger.info(f"Starting stealth monitoring of dashboard {dashboard_id}")
-        
+
         try:
             if dashboard_id not in self.affiliate_dashboards:
-                return {'status': 'error', 'message': 'Dashboard not found'}
-            
+                return {"status": "error", "message": "Dashboard not found"}
+
             dashboard = self.affiliate_dashboards[dashboard_id]
-            
+
             # Check if it's safe to access (not too frequent)
             if self._is_access_too_frequent(dashboard):
                 return {
-                    'status': 'delayed',
-                    'message': 'Access delayed to avoid detection',
-                    'next_safe_access': self._calculate_next_safe_access(dashboard)
+                    "status": "delayed",
+                    "message": "Access delayed to avoid detection",
+                    "next_safe_access": self._calculate_next_safe_access(dashboard),
                 }
-            
+
             # Select optimal stealth profile
             profile = self._select_optimal_profile(dashboard)
-            
+
             # Create automation session
             session = self._create_automation_session(dashboard.dashboard_url, profile)
-            
+
             # Execute stealth monitoring
-            monitoring_result = await self._execute_stealth_monitoring(session, dashboard)
-            
+            monitoring_result = await self._execute_stealth_monitoring(
+                session, dashboard
+            )
+
             # Update dashboard access record
             dashboard.last_accessed = datetime.now()
             await self._save_affiliate_dashboard(dashboard)
-            
+
             return monitoring_result
-            
+
         except Exception as e:
             logger.error(f"Dashboard monitoring failed for {dashboard_id}: {e}")
-            return {'status': 'error', 'message': str(e)}
-    
-    async def _execute_stealth_monitoring(self, session: AutomationSession, dashboard: AffiliateDashboard) -> Dict[str, Any]:
+            return {"status": "error", "message": str(e)}
+
+    async def _execute_stealth_monitoring(
+        self, session: AutomationSession, dashboard: AffiliateDashboard
+    ) -> Dict[str, Any]:
         """Execute stealth monitoring session"""
         try:
             # Initialize stealth browser session
-            browser_config = self._create_stealth_browser_config(session.stealth_profile)
-            
+            browser_config = self._create_stealth_browser_config(
+                session.stealth_profile
+            )
+
             # Navigate to login page with human-like behavior
             await self._stealth_navigate(session, dashboard.login_url)
-            
+
             # Perform human-like login sequence
             login_success = await self._stealth_login(session, dashboard)
-            
+
             if not login_success:
                 session.status = SessionStatus.FAILED
                 session.error_message = "Login failed"
-                return {'status': 'error', 'message': 'Login failed'}
-            
+                return {"status": "error", "message": "Login failed"}
+
             # Navigate to dashboard sections
             dashboard_data = await self._extract_dashboard_data(session, dashboard)
-            
+
             # Perform human-like browsing behavior
             await self._simulate_human_browsing(session)
-            
+
             # Extract payout information
             payout_data = await self._extract_payout_data(session, dashboard)
-            
+
             # Clean logout
             await self._stealth_logout(session)
-            
+
             session.status = SessionStatus.COMPLETED
             session.success = True
             session.data_extracted = {
-                'dashboard_data': dashboard_data,
-                'payout_data': payout_data,
-                'extraction_time': datetime.now().isoformat()
+                "dashboard_data": dashboard_data,
+                "payout_data": payout_data,
+                "extraction_time": datetime.now().isoformat(),
             }
-            
+
             return {
-                'status': 'success',
-                'data': session.data_extracted,
-                'session_id': session.session_id
+                "status": "success",
+                "data": session.data_extracted,
+                "session_id": session.session_id,
             }
-            
+
         except Exception as e:
             session.status = SessionStatus.FAILED
             session.error_message = str(e)
             logger.error(f"Stealth monitoring execution failed: {e}")
-            return {'status': 'error', 'message': str(e)}
-    
-    async def _stealth_login(self, session: AutomationSession, dashboard: AffiliateDashboard) -> bool:
+            return {"status": "error", "message": str(e)}
+
+    async def _stealth_login(
+        self, session: AutomationSession, dashboard: AffiliateDashboard
+    ) -> bool:
         """Perform stealth login with human-like behavior"""
         try:
             # Wait for page load with random delay
             await self._human_delay(2, 5)
-            
+
             # Find and interact with username field
-            username_selector = dashboard.selectors.get('username', 'input[type="email"], input[name="username"]')
+            username_selector = dashboard.selectors.get(
+                "username", 'input[type="email"], input[name="username"]'
+            )
             await self._human_type(session, username_selector, dashboard.username)
-            
+
             # Random pause between fields
             await self._human_delay(1, 3)
-            
+
             # Find and interact with password field
-            password_selector = dashboard.selectors.get('password', 'input[type="password"]')
+            password_selector = dashboard.selectors.get(
+                "password", 'input[type="password"]'
+            )
             await self._human_type(session, password_selector, dashboard.password)
-            
+
             # Handle potential captcha
             if await self._detect_captcha(session):
                 captcha_solved = await self._solve_captcha(session)
                 if not captcha_solved:
                     return False
-            
+
             # Random delay before submit
             await self._human_delay(1, 2)
-            
+
             # Submit login form
-            submit_selector = dashboard.selectors.get('submit', 'button[type="submit"], input[type="submit"]')
+            submit_selector = dashboard.selectors.get(
+                "submit", 'button[type="submit"], input[type="submit"]'
+            )
             await self._human_click(session, submit_selector)
-            
+
             # Wait for login result
             await self._human_delay(3, 7)
-            
+
             # Verify login success
             success_indicators = dashboard.expected_elements
-            login_success = await self._verify_login_success(session, success_indicators)
-            
+            login_success = await self._verify_login_success(
+                session, success_indicators
+            )
+
             if login_success:
-                session.actions_performed.append('login_success')
+                session.actions_performed.append("login_success")
                 logger.info(f"Stealth login successful for {dashboard.program_name}")
             else:
-                session.actions_performed.append('login_failed')
+                session.actions_performed.append("login_failed")
                 logger.warning(f"Stealth login failed for {dashboard.program_name}")
-            
+
             return login_success
-            
+
         except Exception as e:
             logger.error(f"Stealth login error: {e}")
             return False
-    
+
     async def _human_delay(self, min_seconds: float, max_seconds: float):
         """Simulate human-like delay with natural variation"""
         if self.human_behavior_enabled:
             # Use normal distribution for more natural timing
             mean_delay = (min_seconds + max_seconds) / 2
             std_dev = (max_seconds - min_seconds) / 6  # 99.7% within range
-            delay = max(min_seconds, min(max_seconds, random.normalvariate(mean_delay, std_dev)))
+            delay = max(
+                min_seconds, min(max_seconds, random.normalvariate(mean_delay, std_dev))
+            )
             await asyncio.sleep(delay)
-    
+
     async def _human_type(self, session: AutomationSession, selector: str, text: str):
         """Type text with human-like timing and errors"""
         try:
@@ -837,62 +928,62 @@ class StealthAutomationAgent(BaseAgent):
                 for i, char in enumerate(text):
                     # Random typing speed variation
                     char_delay = random.uniform(0.05, 0.2)
-                    
+
                     # Occasional longer pauses (thinking)
                     if random.random() < 0.1:
                         char_delay += random.uniform(0.5, 1.5)
-                    
+
                     # Simulate occasional typos and corrections
                     if random.random() < 0.02 and i > 0:  # 2% chance of typo
                         # Type wrong character then backspace
-                        wrong_char = random.choice('abcdefghijklmnopqrstuvwxyz')
+                        wrong_char = random.choice("abcdefghijklmnopqrstuvwxyz")
                         await self._type_character(session, selector, wrong_char)
                         await asyncio.sleep(random.uniform(0.1, 0.3))
                         await self._send_backspace(session, selector)
                         await asyncio.sleep(random.uniform(0.1, 0.2))
-                    
+
                     await self._type_character(session, selector, char)
                     await asyncio.sleep(char_delay)
             else:
                 # Fast typing for non-human mode
                 await self._type_text_fast(session, selector, text)
-            
-            session.actions_performed.append(f'typed_text:{selector}')
-            
+
+            session.actions_performed.append(f"typed_text:{selector}")
+
         except Exception as e:
             logger.error(f"Human typing error: {e}")
-    
+
     async def start_autonomous_stealth_operations(self):
         """Start autonomous stealth operations loop"""
         logger.info("Starting autonomous stealth operations")
-        
+
         while True:
             try:
                 # Monitor all affiliate dashboards
                 for dashboard_id in self.affiliate_dashboards:
                     dashboard = self.affiliate_dashboards[dashboard_id]
-                    
+
                     # Check if monitoring is due
                     if self._is_monitoring_due(dashboard):
                         await self._monitor_affiliate_dashboard(dashboard_id)
-                        
+
                         # Stagger requests to avoid pattern detection
                         await asyncio.sleep(random.uniform(300, 900))  # 5-15 minutes
-                
+
                 # Rotate stealth profiles periodically
                 if self._should_rotate_profiles():
                     await self._rotate_stealth_profiles()
-                
+
                 # Clean up old sessions
                 await self._cleanup_old_sessions()
-                
+
                 # Wait before next cycle
                 await asyncio.sleep(3600)  # 1 hour
-                
+
             except Exception as e:
                 logger.error(f"Autonomous stealth operations error: {e}")
                 await asyncio.sleep(300)  # Wait 5 minutes before retry
-    
+
     @property
     def capabilities(self) -> List[str]:
         """Return list of agent capabilities"""
@@ -906,20 +997,26 @@ class StealthAutomationAgent(BaseAgent):
             "captcha_solving",
             "session_management",
             "covert_research",
-            "profile_rotation"
+            "profile_rotation",
         ]
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
-        active_sessions = len([s for s in self.active_sessions.values() if s.status == SessionStatus.ACTIVE])
-        
+        active_sessions = len(
+            [
+                s
+                for s in self.active_sessions.values()
+                if s.status == SessionStatus.ACTIVE
+            ]
+        )
+
         return {
-            'agent_type': self.agent_type,
-            'active_sessions': active_sessions,
-            'stealth_profiles': len(self.stealth_profiles),
-            'monitored_dashboards': len(self.affiliate_dashboards),
-            'automation_mode': self.default_mode.value,
-            'human_behavior_enabled': self.human_behavior_enabled,
-            'captcha_solving_enabled': self.captcha_solving_enabled,
-            'capabilities': self.capabilities
+            "agent_type": self.agent_type,
+            "active_sessions": active_sessions,
+            "stealth_profiles": len(self.stealth_profiles),
+            "monitored_dashboards": len(self.affiliate_dashboards),
+            "automation_mode": self.default_mode.value,
+            "human_behavior_enabled": self.human_behavior_enabled,
+            "captcha_solving_enabled": self.captcha_solving_enabled,
+            "capabilities": self.capabilities,
         }

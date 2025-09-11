@@ -3,14 +3,16 @@
 Lightweight logger tuner to reduce console noise from verbose frameworks.
 Enabled by env: TRAE_QUIET_LOGS=1 (default off).
 """
-import os, logging
+import logging
+import os
 
 TARGETS = [
-    "socketio.server",     # "emitting event ..." spam
+    "socketio.server",  # "emitting event ..." spam
     "engineio.server",
-    "werkzeug",            # request line spam
-    "uvicorn.access",      # if applicable
+    "werkzeug",  # request line spam
+    "uvicorn.access",  # if applicable
 ]
+
 
 def tune_chatty_loggers():
     if os.getenv("TRAE_QUIET_LOGS", "0") != "1":

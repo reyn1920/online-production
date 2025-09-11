@@ -1,11 +1,14 @@
 import sys
+
 sys.path.append(".")  # repo root if needed
 
 from backend.agents.specialized_agents import SystemAgent
 
+
 def test_system_agent_has_health_summary():
     a = SystemAgent()
     assert hasattr(a, "_health_summary") or hasattr(a, "health_summary")
+
 
 def test_system_agent_summary_returns_string():
     a = SystemAgent()

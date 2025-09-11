@@ -11,7 +11,7 @@
       "posting_schedule": "daily at 6 PM EST",
       "target_length": "12-15 minutes",
       "platforms": ["youtube"],
-      "email": "brianinpty@gmail.com",
+      "email": "test@example.com",
       "voice": "Matthew (Speechelo)",
       "monetization": ["high-value ads", "merchandise", "affiliate marketing"],
       "is_primary": true
@@ -27,7 +27,7 @@
       "posting_schedule": "daily at 8 PM EST",
       "target_length": "10-12 minutes",
       "platforms": ["youtube"],
-      "email": "brianinpty@gmail.com",
+      "email": "test@example.com",
       "voice": "David (Speechelo)",
       "monetization": ["tech affiliate marketing", "sponsored reviews"],
       "is_primary": false
@@ -43,7 +43,7 @@
       "posting_schedule": "daily at 4 PM EST",
       "target_length": "12-15 minutes",
       "platforms": ["youtube"],
-      "email": "brianinpty@gmail.com",
+      "email": "test@example.com",
       "voice": "Brian (Speechelo)",
       "monetization": ["eco-friendly product partnerships", "wellness services"],
       "is_primary": false
@@ -59,7 +59,7 @@
       "posting_schedule": "daily at 7 PM EST",
       "target_length": "15-18 minutes",
       "platforms": ["youtube"],
-      "email": "brianinpty@gmail.com",
+      "email": "test@example.com",
       "voice": "Alex (Speechelo)",
       "monetization": ["AI tool affiliate marketing", "course partnerships"],
       "is_primary": false

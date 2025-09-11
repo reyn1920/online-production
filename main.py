@@ -1,34 +1,37 @@
 # main.py - FastAPI application with integrations hub
-from fastapi import FastAPI, Query, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.staticfiles import StaticFiles
+import asyncio
+import json
+import logging
+from datetime import datetime
+from typing import Optional
+
+import httpx
+import socketio
+# Load environment variables
+from dotenv import load_dotenv
+from fastapi import (FastAPI, HTTPException, Query, Request, WebSocket,
+                     WebSocketDisconnect)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.security import HTTPBearer
-from integrations_hub import wire_integrations, _state, _petfinder_token, lifespan
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
 from content_sources import router as content_router
-from typing import Optional
-import httpx
+from integrations_hub import _petfinder_token, _state, lifespan, wire_integrations
 from shared_utils import get_secret
-import logging
-from datetime import datetime
-import asyncio
-import json
-import socketio
 
-# Load environment variables
-from dotenv import load_dotenv
 load_dotenv()
-
-# Import production initialization
-from backend.production_init import initialize_production_sync, get_production_manager
 
 # Set up logging first
 import logging
+
+# Import production initialization
+from backend.production_init import get_production_manager, initialize_production_sync
+
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -36,18 +39,84 @@ logger = logging.getLogger(__name__)
 import importlib
 
 ROUTER_CONFIGS = [
-    {"modules": ["backend.api.pet_endpoints", "api.pet_endpoints"], "attr": "router", "name": "pet_router", "prefix": "/api/v1", "tags": ["pets"]},
-    {"modules": ["app.routers.places"], "attr": "router", "name": "places_router", "prefix": "/places", "tags": ["places"]},
-    {"modules": ["backend.routers.social"], "attr": "router", "name": "social_router", "tags": ["social"]},
-    {"modules": ["app.routers.chat", "backend.routers.chat"], "attr": "router", "name": "chat_router", "tags": ["chat"]},
-    {"modules": ["backend.routers.payment_webhooks"], "attr": "router", "name": "webhooks_router", "tags": ["webhooks"]},
-    {"modules": ["backend.routers.analytics_hub"], "attr": "router", "name": "analytics_router", "tags": ["analytics"]},
-    {"modules": ["app.routers.integrations_max"], "attr": "router", "name": "integrations_max_router", "tags": ["integrations"]},
-    {"modules": ["app.routers.oauth"], "attr": "router", "name": "oauth_router", "tags": ["oauth"]},
-    {"modules": ["app.routers.paste"], "attr": "router", "name": "paste_router", "prefix": "/paste", "tags": ["paste"]},
-    {"modules": ["app.routers.avatar_api"], "attr": "router", "name": "avatar_api_router", "prefix": "/api/avatar", "tags": ["avatar-api"]},
-    {"modules": ["master_orchestrator.main"], "attr": "router", "name": "master_orchestrator_router", "prefix": "/api/orchestrator", "tags": ["orchestrator"]},
-    {"modules": ["app.routers.affiliate_credentials"], "attr": "router", "name": "affiliate_credentials_router", "prefix": "/api/affiliate", "tags": ["affiliate-credentials"]}
+    {
+        "modules": ["backend.api.pet_endpoints", "api.pet_endpoints"],
+        "attr": "router",
+        "name": "pet_router",
+        "prefix": "/api/v1",
+        "tags": ["pets"],
+    },
+    {
+        "modules": ["app.routers.places"],
+        "attr": "router",
+        "name": "places_router",
+        "prefix": "/places",
+        "tags": ["places"],
+    },
+    {
+        "modules": ["backend.routers.social"],
+        "attr": "router",
+        "name": "social_router",
+        "tags": ["social"],
+    },
+    {
+        "modules": ["app.routers.chat", "backend.routers.chat"],
+        "attr": "router",
+        "name": "chat_router",
+        "tags": ["chat"],
+    },
+    {
+        "modules": ["backend.routers.payment_webhooks"],
+        "attr": "router",
+        "name": "webhooks_router",
+        "tags": ["webhooks"],
+    },
+    {
+        "modules": ["backend.routers.analytics_hub"],
+        "attr": "router",
+        "name": "analytics_router",
+        "tags": ["analytics"],
+    },
+    {
+        "modules": ["app.routers.integrations_max"],
+        "attr": "router",
+        "name": "integrations_max_router",
+        "tags": ["integrations"],
+    },
+    {
+        "modules": ["app.routers.oauth"],
+        "attr": "router",
+        "name": "oauth_router",
+        "tags": ["oauth"],
+    },
+    {
+        "modules": ["app.routers.paste"],
+        "attr": "router",
+        "name": "paste_router",
+        "prefix": "/paste",
+        "tags": ["paste"],
+    },
+    {
+        "modules": ["app.routers.avatar_api"],
+        "attr": "router",
+        "name": "avatar_api_router",
+        "prefix": "/api/avatar",
+        "tags": ["avatar-api"],
+    },
+    {
+        "modules": ["master_orchestrator.main"],
+        "attr": "router",
+        "name": "master_orchestrator_router",
+        "prefix": "/api/orchestrator",
+        "tags": ["orchestrator"],
+    },
+    {
+        "modules": ["app.routers.affiliate_credentials"],
+        "attr": "router",
+        "name": "affiliate_credentials_router",
+        "prefix": "/api/affiliate",
+        "tags": ["affiliate-credentials"],
+    },
 ]
 
 # Load routers dynamically
@@ -63,24 +132,72 @@ for config in ROUTER_CONFIGS:
             break
         except ImportError:
             continue
-    
+
     if not router_loaded:
         loaded_routers[config["name"]] = None
         logger.warning(f"⚠️ {config['name']} not available")
 
 # Extract individual routers for backward compatibility
-pet_router = loaded_routers.get("pet_router", {}).get("router") if loaded_routers.get("pet_router") else None
-places_router = loaded_routers.get("places_router", {}).get("router") if loaded_routers.get("places_router") else None
-social_router = loaded_routers.get("social_router", {}).get("router") if loaded_routers.get("social_router") else None
-chat_router = loaded_routers.get("chat_router", {}).get("router") if loaded_routers.get("chat_router") else None
-webhooks_router = loaded_routers.get("webhooks_router", {}).get("router") if loaded_routers.get("webhooks_router") else None
-analytics_router = loaded_routers.get("analytics_router", {}).get("router") if loaded_routers.get("analytics_router") else None
-integrations_max_router = loaded_routers.get("integrations_max_router", {}).get("router") if loaded_routers.get("integrations_max_router") else None
-oauth_router = loaded_routers.get("oauth_router", {}).get("router") if loaded_routers.get("oauth_router") else None
-paste_router = loaded_routers.get("paste_router", {}).get("router") if loaded_routers.get("paste_router") else None
-avatar_api_router = loaded_routers.get("avatar_api_router", {}).get("router") if loaded_routers.get("avatar_api_router") else None
-master_orchestrator_router = loaded_routers.get("master_orchestrator_router", {}).get("router") if loaded_routers.get("master_orchestrator_router") else None
-affiliate_credentials_router = loaded_routers.get("affiliate_credentials_router", {}).get("router") if loaded_routers.get("affiliate_credentials_router") else None
+pet_router = (
+    loaded_routers.get("pet_router", {}).get("router")
+    if loaded_routers.get("pet_router")
+    else None
+)
+places_router = (
+    loaded_routers.get("places_router", {}).get("router")
+    if loaded_routers.get("places_router")
+    else None
+)
+social_router = (
+    loaded_routers.get("social_router", {}).get("router")
+    if loaded_routers.get("social_router")
+    else None
+)
+chat_router = (
+    loaded_routers.get("chat_router", {}).get("router")
+    if loaded_routers.get("chat_router")
+    else None
+)
+webhooks_router = (
+    loaded_routers.get("webhooks_router", {}).get("router")
+    if loaded_routers.get("webhooks_router")
+    else None
+)
+analytics_router = (
+    loaded_routers.get("analytics_router", {}).get("router")
+    if loaded_routers.get("analytics_router")
+    else None
+)
+integrations_max_router = (
+    loaded_routers.get("integrations_max_router", {}).get("router")
+    if loaded_routers.get("integrations_max_router")
+    else None
+)
+oauth_router = (
+    loaded_routers.get("oauth_router", {}).get("router")
+    if loaded_routers.get("oauth_router")
+    else None
+)
+paste_router = (
+    loaded_routers.get("paste_router", {}).get("router")
+    if loaded_routers.get("paste_router")
+    else None
+)
+avatar_api_router = (
+    loaded_routers.get("avatar_api_router", {}).get("router")
+    if loaded_routers.get("avatar_api_router")
+    else None
+)
+master_orchestrator_router = (
+    loaded_routers.get("master_orchestrator_router", {}).get("router")
+    if loaded_routers.get("master_orchestrator_router")
+    else None
+)
+affiliate_credentials_router = (
+    loaded_routers.get("affiliate_credentials_router", {}).get("router")
+    if loaded_routers.get("affiliate_credentials_router")
+    else None
+)
 
 # Logger already configured above
 
@@ -102,6 +219,7 @@ except Exception as e:
 # Import avatar router
 try:
     from app.routers import avatar
+
     avatar_router = avatar.router
 except ImportError:
     avatar_router = None
@@ -110,6 +228,7 @@ except ImportError:
 # Import content router
 try:
     from app.routers import content
+
     content_router_new = content.router
     logger.info("✅ Content router imported successfully")
 except ImportError as e:
@@ -119,6 +238,7 @@ except ImportError as e:
 # Import monetization router
 try:
     from app.routers import monetization
+
     monetization_router = monetization.router
     logger.info("✅ Monetization router imported successfully")
 except ImportError as e:
@@ -127,7 +247,9 @@ except ImportError as e:
 
 # Import monetization platform APIs
 try:
-    from monetization import MonetizationManager, EtsyAPI, PaddleAPI, SendOwlAPI, GumroadAPI
+    from monetization import (EtsyAPI, GumroadAPI, MonetizationManager, PaddleAPI,
+                              SendOwlAPI)
+
     logger.info("✅ Monetization platform APIs imported successfully")
 except ImportError as e:
     MonetizationManager = None
@@ -136,6 +258,7 @@ except ImportError as e:
 # Import financial router
 try:
     from app.routers.financial import router as financial_router
+
     logger.info("Financial router imported successfully")
 except ImportError as e:
     financial_router = None
@@ -144,6 +267,7 @@ except ImportError as e:
 # Import dashboard router
 try:
     from app.routers.dashboard import router as dashboard_router
+
     logger.info("Dashboard router imported successfully")
 except ImportError as e:
     dashboard_router = None
@@ -152,6 +276,7 @@ except ImportError as e:
 # Import comprehensive dashboard router
 try:
     from routers.comprehensive_dashboard import router as comprehensive_dashboard_router
+
     logger.info("Comprehensive dashboard router imported successfully")
 except ImportError as e:
     comprehensive_dashboard_router = None
@@ -160,6 +285,7 @@ except ImportError as e:
 # Import auth manager
 try:
     from app.auth import auth_manager
+
     logger.info("Auth manager imported successfully")
 except ImportError as e:
     auth_manager = None
@@ -167,8 +293,8 @@ except ImportError as e:
 
 # Import configuration validator
 try:
-    from config.validator import validate_startup_config
     from config.environment import config
+    from config.validator import validate_startup_config
 except ImportError:
     validate_startup_config = None
     config = None
@@ -195,7 +321,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs" if __name__ == "__main__" else None,  # Disable docs in production
     redoc_url="/redoc" if __name__ == "__main__" else None,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Create Socket.IO server for dashboard real-time updates
@@ -203,54 +329,66 @@ sio = socketio.AsyncServer(
     cors_allowed_origins=[
         "http://localhost:3000",
         "http://localhost:8000",
-        "https://*.netlify.app"
+        "https://*.netlify.app",
     ],
     async_mode="asgi",
     logger=True,
-    engineio_logger=False
+    engineio_logger=False,
 )
+
 
 # Socket.IO event handlers
 @sio.event
 async def connect(sid, environ):
     logger.info(f"Socket.IO client connected: {sid}")
-    await sio.emit('connection_status', {'status': 'connected', 'sid': sid}, room=sid)
+    await sio.emit("connection_status", {"status": "connected", "sid": sid}, room=sid)
+
 
 @sio.event
 async def disconnect(sid):
     logger.info(f"Socket.IO client disconnected: {sid}")
 
-@sio.on('agent_update')
+
+@sio.on("agent_update")
 async def handle_agent_update(sid, data):
     logger.info(f"Agent update from {sid}: {data}")
     # Broadcast to all connected clients
-    await sio.emit('agent_update', data)
+    await sio.emit("agent_update", data)
 
-@sio.on('task_update')
+
+@sio.on("task_update")
 async def handle_task_update(sid, data):
     logger.info(f"Task update from {sid}: {data}")
-    await sio.emit('task_update', data)
+    await sio.emit("task_update", data)
 
-@sio.on('system_alert')
+
+@sio.on("system_alert")
 async def handle_system_alert(sid, data):
     logger.info(f"System alert from {sid}: {data}")
-    await sio.emit('system_alert', data)
+    await sio.emit("system_alert", data)
 
-@sio.on('log_update')
+
+@sio.on("log_update")
 async def handle_log_update(sid, data):
-    await sio.emit('log_update', data)
+    await sio.emit("log_update", data)
 
-@sio.on('performance_update')
+
+@sio.on("performance_update")
 async def handle_performance_update(sid, data):
-    await sio.emit('performance_update', data)
+    await sio.emit("performance_update", data)
+
 
 # Initialize security
 security = HTTPBearer()
 
 # Security middleware
 app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.netlify.app"]  # Configure for production
+    TrustedHostMiddleware,
+    allowed_hosts=[
+        "localhost",
+        "127.0.0.1",
+        "*.netlify.app",
+    ],  # Configure for production
 )
 
 # Configure CORS with security considerations
@@ -259,12 +397,12 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:8000",
-        "https://*.netlify.app"  # Configure appropriately for production
+        "https://*.netlify.app",  # Configure appropriately for production
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
-    max_age=600  # Cache preflight requests for 10 minutes
+    max_age=600,  # Cache preflight requests for 10 minutes
 )
 
 # Mount static files
@@ -382,7 +520,11 @@ else:
 
 # Mount comprehensive dashboard router
 if comprehensive_dashboard_router:
-    app.include_router(comprehensive_dashboard_router, prefix="/api/comprehensive", tags=["comprehensive-dashboard"])
+    app.include_router(
+        comprehensive_dashboard_router,
+        prefix="/api/comprehensive",
+        tags=["comprehensive-dashboard"],
+    )
     logger.info("Comprehensive dashboard router mounted at /api/comprehensive")
 else:
     logger.warning("Comprehensive dashboard router not mounted - service unavailable")
@@ -391,6 +533,7 @@ else:
 if auth_manager:
     try:
         from app.routers.auth import router as auth_router
+
         app.include_router(auth_router, prefix="/api/auth", tags=["authentication"])
         logger.info("Auth endpoints mounted at /api/auth")
     except ImportError:
@@ -400,17 +543,25 @@ else:
 
 # Mount Master Orchestrator router
 if master_orchestrator_router:
-    app.include_router(master_orchestrator_router, prefix="/api/orchestrator", tags=["orchestrator"])
+    app.include_router(
+        master_orchestrator_router, prefix="/api/orchestrator", tags=["orchestrator"]
+    )
     logger.info("✅ Master Orchestrator endpoints mounted at /api/orchestrator")
 else:
     logger.warning("⚠️ Master Orchestrator endpoints not mounted - router not available")
 
 # Mount affiliate credentials router
 if affiliate_credentials_router:
-    app.include_router(affiliate_credentials_router, prefix="/api/affiliate", tags=["affiliate-credentials"])
+    app.include_router(
+        affiliate_credentials_router,
+        prefix="/api/affiliate",
+        tags=["affiliate-credentials"],
+    )
     logger.info("✅ Affiliate Credentials endpoints mounted at /api/affiliate")
 else:
-    logger.warning("⚠️ Affiliate Credentials endpoints not mounted - router not available")
+    logger.warning(
+        "⚠️ Affiliate Credentials endpoints not mounted - router not available"
+    )
 
 # Initialize monetization manager
 monetization_manager = None
@@ -424,6 +575,7 @@ if MonetizationManager:
 # Import backend app routes if available
 try:
     from backend.app import app as backend_app
+
     # Copy all routes from backend app to main app
     for route in backend_app.routes:
         app.routes.append(route)
@@ -433,18 +585,19 @@ except ImportError as e:
 except Exception as e:
     logger.warning(f"⚠️ Backend app integration failed: {e}")
 
+
 # WebSocket manager for real-time updates
 class WebSocketManager:
     def __init__(self):
         self.active_connections = []
         self.client_connections = {}
-    
+
     async def connect(self, websocket: WebSocket, client_id: str = None):
         await websocket.accept()
         self.active_connections.append(websocket)
         if client_id:
             self.client_connections[client_id] = websocket
-    
+
     def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
             self.active_connections.remove(websocket)
@@ -453,13 +606,13 @@ class WebSocketManager:
             if ws == websocket:
                 del self.client_connections[client_id]
                 break
-    
+
     async def send_personal_message(self, message: dict, websocket: WebSocket):
         try:
             await websocket.send_text(json.dumps(message))
         except Exception as e:
             logger.error(f"Failed to send WebSocket message: {e}")
-    
+
     async def broadcast(self, message: dict):
         for connection in self.active_connections.copy():
             try:
@@ -467,33 +620,37 @@ class WebSocketManager:
             except Exception as e:
                 logger.error(f"Failed to broadcast message: {e}")
                 self.disconnect(connection)
-    
+
     async def handle_client_message(self, websocket: WebSocket, message: dict):
         # Handle different message types
         msg_type = message.get("type")
         if msg_type == "ping":
             await self.send_personal_message({"type": "pong"}, websocket)
         elif msg_type == "subscribe":
-            await self.send_personal_message({
-                "type": "subscribed",
-                "channel": message.get("channel", "dashboard")
-            }, websocket)
-    
+            await self.send_personal_message(
+                {"type": "subscribed", "channel": message.get("channel", "dashboard")},
+                websocket,
+            )
+
     def get_connection_count(self):
         return len(self.active_connections)
-    
+
     def get_connection_info(self):
         return {
             "total": len(self.active_connections),
-            "clients": list(self.client_connections.keys())
+            "clients": list(self.client_connections.keys()),
         }
-    
+
     async def start_heartbeat(self):
         while True:
             await asyncio.sleep(30)  # Send heartbeat every 30 seconds
-            await self.broadcast({"type": "heartbeat", "timestamp": datetime.now().isoformat()})
+            await self.broadcast(
+                {"type": "heartbeat", "timestamp": datetime.now().isoformat()}
+            )
+
 
 websocket_manager = WebSocketManager()
+
 
 # Simulate real-time updates
 async def simulate_real_time_updates():
@@ -504,10 +661,11 @@ async def simulate_real_time_updates():
             "timestamp": datetime.now().isoformat(),
             "data": {
                 "active_users": len(websocket_manager.active_connections),
-                "system_status": "healthy"
-            }
+                "system_status": "healthy",
+            },
         }
         await websocket_manager.broadcast(update_data)
+
 
 # WebSocket endpoint for real-time dashboard updates
 @app.websocket("/ws/dashboard")
@@ -521,15 +679,15 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str = None):
                 message = json.loads(data)
                 await websocket_manager.handle_client_message(websocket, message)
             except json.JSONDecodeError:
-                await websocket_manager.send_personal_message({
-                    "type": "error",
-                    "message": "Invalid JSON format"
-                }, websocket)
+                await websocket_manager.send_personal_message(
+                    {"type": "error", "message": "Invalid JSON format"}, websocket
+                )
     except WebSocketDisconnect:
         websocket_manager.disconnect(websocket)
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
         websocket_manager.disconnect(websocket)
+
 
 # WebSocket info endpoint
 @app.get("/ws/info")
@@ -537,8 +695,9 @@ async def websocket_info():
     """Get information about active WebSocket connections"""
     return {
         "active_connections": websocket_manager.get_connection_count(),
-        "connections": websocket_manager.get_connection_info()
+        "connections": websocket_manager.get_connection_info(),
     }
+
 
 # Chat page route
 @app.get("/chat", response_class=HTMLResponse)
@@ -546,23 +705,32 @@ async def chat_page(request: Request):
     """Serve the chat interface"""
     return templates.TemplateResponse("chat.html", {"request": request})
 
+
 # Paste page route
 @app.get("/paste", response_class=HTMLResponse)
 async def paste_page(request: Request):
     """Serve the paste interface"""
     # Redirect to the paste router's main interface
     from fastapi.responses import RedirectResponse
+
     return RedirectResponse(url="/paste/", status_code=302)
+
 
 @app.get("/comprehensive-dashboard", response_class=HTMLResponse)
 async def comprehensive_dashboard_page(request: Request):
     """Serve the comprehensive dashboard page"""
-    return templates.TemplateResponse("comprehensive_dashboard.html", {"request": request})
+    return templates.TemplateResponse(
+        "comprehensive_dashboard.html", {"request": request}
+    )
+
 
 @app.get("/affiliate-credentials", response_class=HTMLResponse)
 async def affiliate_credentials_page(request: Request):
     """Serve the affiliate credentials page"""
-    return templates.TemplateResponse("affiliate_credentials.html", {"request": request})
+    return templates.TemplateResponse(
+        "affiliate_credentials.html", {"request": request}
+    )
+
 
 # Add pets search endpoint
 @app.get("/pets/search")
@@ -578,7 +746,10 @@ async def pets_search(
             key = get_secret("DOG_API_KEY")
             headers = {"x-api-key": key} if key else {}
             async with httpx.AsyncClient(timeout=12) as client:
-                r = await client.get(f"https://api.thedogapi.com/v1/images/search?limit={limit}&has_breeds=1", headers=headers)
+                r = await client.get(
+                    f"https://api.thedogapi.com/v1/images/search?limit={limit}&has_breeds=1",
+                    headers=headers,
+                )
                 r.raise_for_status()
                 return {"provider": "thedogapi", "data": r.json()}
         except Exception as e:
@@ -588,11 +759,15 @@ async def pets_search(
             key = get_secret("CAT_API_KEY")
             headers = {"x-api-key": key} if key else {}
             async with httpx.AsyncClient(timeout=12) as client:
-                r = await client.get(f"https://api.thecatapi.com/v1/images/search?limit={limit}&has_breeds=1", headers=headers)
+                r = await client.get(
+                    f"https://api.thecatapi.com/v1/images/search?limit={limit}&has_breeds=1",
+                    headers=headers,
+                )
                 r.raise_for_status()
                 return {"provider": "thecatapi", "data": r.json()}
         except Exception as e:
             raise HTTPException(500, f"Failed to fetch cat data: {str(e)}")
+
 
 # Add configuration status endpoint
 @app.get("/api/status")
@@ -605,17 +780,20 @@ async def get_configuration_status():
                 "success": True,
                 "timestamp": datetime.now().isoformat(),
                 "configuration": status_data,
-                "message": "Configuration status retrieved successfully"
+                "message": "Configuration status retrieved successfully",
             }
         else:
             return {
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
-                "message": "Configuration not available"
+                "message": "Configuration not available",
             }
     except Exception as e:
         logger.error(f"Configuration status error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Configuration status service unavailable")
+        raise HTTPException(
+            status_code=500, detail="Configuration status service unavailable"
+        )
+
 
 @app.get("/pets/types")
 async def pets_types():
@@ -626,19 +804,27 @@ async def pets_types():
         token = await _petfinder_token()
         if token:
             async with httpx.AsyncClient(timeout=12) as client:
-                r = await client.get("https://api.petfinder.com/v2/types",
-                                     headers={"Authorization": f"Bearer {token}"})
+                r = await client.get(
+                    "https://api.petfinder.com/v2/types",
+                    headers={"Authorization": f"Bearer {token}"},
+                )
                 if r.status_code < 400:
                     return {"provider": "petfinder", "types": r.json().get("types", [])}
     # Fallback static set
     return {
         "provider": "static",
         "types": [
-            {"name": "Dog"}, {"name": "Cat"}, {"name": "Bird"}, {"name": "Rabbit"},
-            {"name": "Small & Furry"}, {"name": "Scales, Fins & Other"},
-            {"name": "Horse"}, {"name": "Barnyard"}
+            {"name": "Dog"},
+            {"name": "Cat"},
+            {"name": "Bird"},
+            {"name": "Rabbit"},
+            {"name": "Small & Furry"},
+            {"name": "Scales, Fins & Other"},
+            {"name": "Horse"},
+            {"name": "Barnyard"},
         ],
     }
+
 
 @app.get("/health")
 async def health_check():
@@ -647,21 +833,23 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "version": "1.0.0",
-        "service": "main_app"
+        "service": "main_app",
     }
+
 
 @app.get("/health/detailed")
 async def detailed_health_check():
     """Detailed health check with system metrics"""
-    import psutil
     import os
-    
+
+    import psutil
+
     try:
         # System metrics
         cpu_percent = psutil.cpu_percent(interval=1)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
-        
+        disk = psutil.disk_usage("/")
+
         # Process info
         process = psutil.Process(os.getpid())
         process_info = {
@@ -669,14 +857,15 @@ async def detailed_health_check():
             "cpu_percent": process.cpu_percent(),
             "memory_percent": process.memory_percent(),
             "create_time": datetime.fromtimestamp(process.create_time()).isoformat(),
-            "status": process.status()
+            "status": process.status(),
         }
-        
+
         # Database connectivity (if applicable)
         db_status = "unknown"
         try:
             # Check if database file exists and is accessible
             from pathlib import Path
+
             db_path = Path("data/businesses.db")
             if db_path.exists():
                 db_status = "connected"
@@ -684,27 +873,27 @@ async def detailed_health_check():
                 db_status = "no_database"
         except Exception:
             db_status = "error"
-        
+
         # Determine overall health
         health_status = "healthy"
         issues = []
-        
+
         if cpu_percent > 90:
             health_status = "degraded"
             issues.append(f"High CPU usage: {cpu_percent:.1f}%")
-        
+
         if memory.percent > 90:
             health_status = "degraded"
             issues.append(f"High memory usage: {memory.percent:.1f}%")
-        
+
         if disk.percent > 95:
             health_status = "degraded"
             issues.append(f"High disk usage: {disk.percent:.1f}%")
-        
+
         if db_status == "error":
             health_status = "unhealthy"
             issues.append("Database connection error")
-        
+
         return {
             "status": health_status,
             "timestamp": datetime.now().isoformat(),
@@ -715,24 +904,25 @@ async def detailed_health_check():
                 "memory_percent": memory.percent,
                 "memory_available_gb": round(memory.available / (1024**3), 2),
                 "disk_percent": disk.percent,
-                "disk_free_gb": round(disk.free / (1024**3), 2)
+                "disk_free_gb": round(disk.free / (1024**3), 2),
             },
             "process": process_info,
-            "database": {
-                "status": db_status
-            },
+            "database": {"status": db_status},
             "issues": issues,
-            "uptime_seconds": (datetime.now() - datetime.fromtimestamp(process.create_time())).total_seconds()
+            "uptime_seconds": (
+                datetime.now() - datetime.fromtimestamp(process.create_time())
+            ).total_seconds(),
         }
-        
+
     except Exception as e:
         return {
             "status": "unhealthy",
             "timestamp": datetime.now().isoformat(),
             "version": "1.0.0",
             "service": "main_app",
-            "error": str(e)
+            "error": str(e),
         }
+
 
 @app.get("/health/ready")
 async def readiness_check():
@@ -741,21 +931,25 @@ async def readiness_check():
         # Check critical dependencies
         ready = True
         checks = {}
-        
+
         # Check if all routers are loaded
-        checks["routers_loaded"] = len(app.routes) > 2  # More than just health endpoints
-        
+        checks["routers_loaded"] = (
+            len(app.routes) > 2
+        )  # More than just health endpoints
+
         # Check database accessibility
         try:
             from pathlib import Path
+
             db_path = Path("data/businesses.db")
             checks["database_accessible"] = db_path.parent.exists()
         except Exception:
             checks["database_accessible"] = False
-        
+
         # Check if we can write to logs
         try:
             from pathlib import Path
+
             log_path = Path("logs")
             log_path.mkdir(exist_ok=True)
             test_file = log_path / "readiness_test.tmp"
@@ -764,73 +958,84 @@ async def readiness_check():
             checks["logs_writable"] = True
         except Exception:
             checks["logs_writable"] = False
-        
+
         # Overall readiness
         ready = all(checks.values())
-        
+
         return {
             "ready": ready,
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
-            "checks": checks
+            "checks": checks,
         }
-        
+
     except Exception as e:
         return {
             "ready": False,
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
-            "error": str(e)
+            "error": str(e),
         }
+
 
 @app.get("/health/live")
 async def liveness_check():
     """Liveness check - indicates if service is alive and should not be restarted"""
     try:
         # Simple liveness check - if we can respond, we're alive
-        import threading
         import os
-        
+        import threading
+
         return {
             "alive": True,
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
             "thread_count": threading.active_count(),
-            "pid": os.getpid()
+            "pid": os.getpid(),
         }
-        
+
     except Exception as e:
         return {
             "alive": False,
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
-            "error": str(e)
+            "error": str(e),
         }
+
 
 # Version endpoint for production monitoring
 @app.get("/api/version")
 async def get_version():
     import os
+
     return {
         "version": "1.0.0",
         "environment": os.getenv("ENVIRONMENT", "development"),
         "build_time": datetime.now().isoformat(),
-        "status": "production-ready"
+        "status": "production-ready",
     }
+
+
+# Version endpoint alias for compatibility
+@app.get("/version")
+async def get_version_alias():
+    return await get_version()
+
 
 # Add direct system metrics endpoint for dashboard compatibility
 @app.get("/api/system/metrics")
 async def get_system_metrics_direct():
     """Get system metrics - direct endpoint for dashboard compatibility"""
     try:
-        import psutil
         import time
-        
+
+        import psutil
+
         # Get system metrics
         cpu_percent = psutil.cpu_percent(interval=1)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
-        
+        disk = psutil.disk_usage("/")
+
         return {
             "cpu_percent": cpu_percent,
             "memory_percent": memory.percent,
@@ -843,11 +1048,15 @@ async def get_system_metrics_direct():
             "uptime_seconds": int(time.time()),
             "response_time_ms": 50,
             "health_score": 100,
-            "load_average": list(psutil.getloadavg()) if hasattr(psutil, 'getloadavg') else [0, 0, 0],
+            "load_average": (
+                list(psutil.getloadavg())
+                if hasattr(psutil, "getloadavg")
+                else [0, 0, 0]
+            ),
             "process_count": len(psutil.pids()),
             "network_bytes_sent": 0,
             "network_bytes_recv": 0,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
     except ImportError:
         # Fallback if psutil is not available
@@ -867,11 +1076,12 @@ async def get_system_metrics_direct():
             "process_count": 25,
             "network_bytes_sent": 0,
             "network_bytes_recv": 0,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
     except Exception as e:
         logger.error(f"Error getting system metrics: {e}")
         raise HTTPException(status_code=500, detail="Failed to get system metrics")
+
 
 @app.get("/api/services")
 async def get_services_status():
@@ -880,17 +1090,25 @@ async def get_services_status():
         "services": {
             "main_api": {"status": "active", "uptime": "1h 23m"},
             "database": {"status": "active", "uptime": "1h 23m"},
-            "websocket": {"status": "active", "connections": len(websocket_manager.active_connections)},
-            "socketio": {"status": "active", "connections": len(websocket_manager.active_connections)}
+            "websocket": {
+                "status": "active",
+                "connections": len(websocket_manager.active_connections),
+            },
+            "socketio": {
+                "status": "active",
+                "connections": len(websocket_manager.active_connections),
+            },
         },
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
+
 
 @app.get("/api/system-info")
 async def get_system_info():
     """Get system information for dashboard"""
     try:
         import platform
+
         return {
             "system": {
                 "platform": platform.system(),
@@ -898,29 +1116,27 @@ async def get_system_info():
                 "platform_version": platform.version(),
                 "architecture": platform.machine(),
                 "hostname": platform.node(),
-                "python_version": platform.python_version()
+                "python_version": platform.python_version(),
             },
             "application": {
                 "name": "Online Production API",
                 "version": "1.0.0",
-                "environment": "development"
+                "environment": "development",
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
     except Exception as e:
         logger.error(f"Error getting system info: {e}")
         return {
-            "system": {
-                "platform": "Unknown",
-                "hostname": "localhost"
-            },
+            "system": {"platform": "Unknown", "hostname": "localhost"},
             "application": {
                 "name": "Online Production API",
                 "version": "1.0.0",
-                "environment": "development"
+                "environment": "development",
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
+
 
 # Dashboard-specific endpoints with /dashboard prefix
 @app.get("/dashboard/api/metrics")
@@ -928,15 +1144,18 @@ async def get_dashboard_metrics():
     """Get system metrics for dashboard with /dashboard prefix"""
     return await get_system_metrics_direct()
 
+
 @app.get("/dashboard/api/services")
 async def get_dashboard_services():
     """Get services status for dashboard with /dashboard prefix"""
     return await get_services_status()
 
+
 @app.get("/dashboard/api/system-info")
 async def get_dashboard_system_info():
     """Get system information for dashboard with /dashboard prefix"""
     return await get_system_info()
+
 
 # Background task for real-time updates
 @app.on_event("startup")
@@ -946,7 +1165,7 @@ async def startup_event():
     asyncio.create_task(simulate_real_time_updates())
     # Start WebSocket heartbeat
     asyncio.create_task(websocket_manager.start_heartbeat())
-    
+
     # Initialize auth manager on startup
     if auth_manager:
         # Create default admin user if none exists
@@ -956,40 +1175,45 @@ async def startup_event():
                 email="admin@dashboard.local",
                 full_name="System Administrator",
                 password="admin123",  # Change this in production!
-                role="ADMIN"
+                role="ADMIN",
             )
             logger.info(f"Created default admin user: {admin_user.username}")
-            logger.warning("Default password: admin123 - Please change this immediately!")
-        
+            logger.warning(
+                "Default password: admin123 - Please change this immediately!"
+            )
+
         logger.info("Authentication system initialized")
-    
+
     logger.info("🚀 Dashboard with real-time features started")
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on application shutdown"""
     logger.info("🛑 Dashboard shutting down")
 
+
 # Wrap FastAPI app with Socket.IO
 socketio_app = socketio.ASGIApp(sio, app)
 
 if __name__ == "__main__":
-    import uvicorn
     import os
-    
+
+    import uvicorn
+
     # Get configuration from environment
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "8000"))
-    
+
     logger.info(f"🚀 Starting server on {host}:{port}")
     logger.info(f"📖 API docs: http://{host}:{port}/docs")
     logger.info(f"❤️ Health check: http://{host}:{port}/health")
-    
+
     # Use socketio_app for Socket.IO support, but ensure health checks work
     uvicorn.run(
-        socketio_app, 
-        host=host, 
+        socketio_app,
+        host=host,
         port=port,
         reload=False,  # Disable reload in production
-        log_level="info"
+        log_level="info",
     )

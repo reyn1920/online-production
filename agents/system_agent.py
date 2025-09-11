@@ -1,13 +1,15 @@
 # agents/system_agent.py
-import threading, time
+import threading
+import time
+
 
 class SystemAgent(threading.Thread):
     def __init__(self, bridge, emit_fn=None, interval=60):
         super().__init__(daemon=True)
-        self.bridge   = bridge
-        self.emit_fn  = emit_fn
+        self.bridge = bridge
+        self.emit_fn = emit_fn
         self.interval = interval
-        self._stop    = threading.Event()
+        self._stop = threading.Event()
 
     async def _async_collect(self):
         # Put your async work here (e.g., aiohttp, async DB, etc.)

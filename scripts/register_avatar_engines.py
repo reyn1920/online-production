@@ -4,15 +4,15 @@ Avatar Engine Registration Script
 Registers Linly-Talker and Talking Heads as avatar generation engines in the API registry.
 """
 
-import sqlite3
 import json
 import os
+import sqlite3
 from datetime import datetime
 
 
 def get_database_path():
     """Get the database path from environment or use default."""
-    return os.getenv('DATABASE_PATH', 'intelligence.db')
+    return os.getenv("DATABASE_PATH", "intelligence.db")
 
 
 def register_avatar_engines():
@@ -22,51 +22,55 @@ def register_avatar_engines():
     # Avatar engine configurations
     engines = [
         {
-            'api_name': 'linly-talker-enhanced',
-            'base_url': 'http://localhost:7860',  # Default Gradio port
-            'api_version': '1.0',
-            'capability': 'avatar-generation',
-            'authentication_type': 'none',
-            'status': 'active',
-            'health_check_url': 'http://localhost:7860/health',
-            'health_status': 'unknown',
-            'allow_automatic_failover': True,
-            'failover_priority': 1,  # Legacy field
-            'priority': 1,  # Primary engine (highest priority)
-            'configuration': json.dumps({
-                'engine_type': 'linly-talker',
-                'quality': 'high',
-                'features': ['lip_sync', 'emotion_control', 'voice_cloning'],
-                'max_duration': 300,  # 5 minutes
-                'supported_formats': ['mp4', 'avi'],
-                'default_voice': 'default',
-                'enhancement_level': 'maximum'
-            }),
-            'created_by': 'system'
+            "api_name": "linly-talker-enhanced",
+            "base_url": "http://localhost:7860",  # Default Gradio port
+            "api_version": "1.0",
+            "capability": "avatar-generation",
+            "authentication_type": "none",
+            "status": "active",
+            "health_check_url": "http://localhost:7860/health",
+            "health_status": "unknown",
+            "allow_automatic_failover": True,
+            "failover_priority": 1,  # Legacy field
+            "priority": 1,  # Primary engine (highest priority)
+            "configuration": json.dumps(
+                {
+                    "engine_type": "linly-talker",
+                    "quality": "high",
+                    "features": ["lip_sync", "emotion_control", "voice_cloning"],
+                    "max_duration": 300,  # 5 minutes
+                    "supported_formats": ["mp4", "avi"],
+                    "default_voice": "default",
+                    "enhancement_level": "maximum",
+                }
+            ),
+            "created_by": "system",
         },
         {
-            'api_name': 'talking-heads-fallback',
-            'base_url': 'http://localhost:8000',  # Alternative port
-            'api_version': '1.0',
-            'capability': 'avatar-generation',
-            'authentication_type': 'none',
-            'status': 'active',
-            'health_check_url': 'http://localhost:8000/health',
-            'health_status': 'unknown',
-            'allow_automatic_failover': True,
-            'failover_priority': 10,  # Legacy field
-            'priority': 10,  # Secondary engine (lower priority)
-            'configuration': json.dumps({
-                'engine_type': 'talking-heads',
-                'quality': 'medium',
-                'features': ['basic_lip_sync', 'stable_generation'],
-                'max_duration': 180,  # 3 minutes
-                'supported_formats': ['mp4'],
-                'fallback_mode': True,
-                'reliability': 'high'
-            }),
-            'created_by': 'system'
-        }
+            "api_name": "talking-heads-fallback",
+            "base_url": "http://localhost:8000",  # Alternative port
+            "api_version": "1.0",
+            "capability": "avatar-generation",
+            "authentication_type": "none",
+            "status": "active",
+            "health_check_url": "http://localhost:8000/health",
+            "health_status": "unknown",
+            "allow_automatic_failover": True,
+            "failover_priority": 10,  # Legacy field
+            "priority": 10,  # Secondary engine (lower priority)
+            "configuration": json.dumps(
+                {
+                    "engine_type": "talking-heads",
+                    "quality": "medium",
+                    "features": ["basic_lip_sync", "stable_generation"],
+                    "max_duration": 180,  # 3 minutes
+                    "supported_formats": ["mp4"],
+                    "fallback_mode": True,
+                    "reliability": "high",
+                }
+            ),
+            "created_by": "system",
+        },
     ]
 
     try:
@@ -76,14 +80,14 @@ def register_avatar_engines():
         # Check if engines already exist
         for engine in engines:
             cursor.execute(
-                "SELECT id FROM api_registry WHERE api_name = ?",
-                (engine['api_name'],)
+                "SELECT id FROM api_registry WHERE api_name = ?", (engine["api_name"],)
             )
             existing = cursor.fetchone()
 
             if existing:
                 # Update existing engine
-                cursor.execute("""
+                cursor.execute(
+                    """
                     UPDATE api_registry SET
                         base_url = ?,
                         api_version = ?,
@@ -98,56 +102,63 @@ def register_avatar_engines():
                         configuration = ?,
                         updated_at = CURRENT_TIMESTAMP
                     WHERE api_name = ?
-                """, (
-                    engine['base_url'],
-                    engine['api_version'],
-                    engine['capability'],
-                    engine['authentication_type'],
-                    engine['status'],
-                    engine['health_check_url'],
-                    engine['health_status'],
-                    engine['allow_automatic_failover'],
-                    engine['failover_priority'],
-                    engine['priority'],
-                    engine['configuration'],
-                    engine['api_name']
-                ))
+                """,
+                    (
+                        engine["base_url"],
+                        engine["api_version"],
+                        engine["capability"],
+                        engine["authentication_type"],
+                        engine["status"],
+                        engine["health_check_url"],
+                        engine["health_status"],
+                        engine["allow_automatic_failover"],
+                        engine["failover_priority"],
+                        engine["priority"],
+                        engine["configuration"],
+                        engine["api_name"],
+                    ),
+                )
                 print(f"✅ Updated existing avatar engine: {engine['api_name']}")
             else:
                 # Insert new engine
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO api_registry (
                         api_name, base_url, api_version, capability,
                         authentication_type, status, health_check_url,
                         health_status, allow_automatic_failover,
                         failover_priority, priority, configuration, created_by
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    engine['api_name'],
-                    engine['base_url'],
-                    engine['api_version'],
-                    engine['capability'],
-                    engine['authentication_type'],
-                    engine['status'],
-                    engine['health_check_url'],
-                    engine['health_status'],
-                    engine['allow_automatic_failover'],
-                    engine['failover_priority'],
-                    engine['priority'],
-                    engine['configuration'],
-                    engine['created_by']
-                ))
+                """,
+                    (
+                        engine["api_name"],
+                        engine["base_url"],
+                        engine["api_version"],
+                        engine["capability"],
+                        engine["authentication_type"],
+                        engine["status"],
+                        engine["health_check_url"],
+                        engine["health_status"],
+                        engine["allow_automatic_failover"],
+                        engine["failover_priority"],
+                        engine["priority"],
+                        engine["configuration"],
+                        engine["created_by"],
+                    ),
+                )
                 print(f"✅ Registered new avatar engine: {engine['api_name']}")
 
         conn.commit()
 
         # Verify registration
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT api_name, capability, priority, status
             FROM api_registry
             WHERE capability = 'avatar-generation'
             ORDER BY priority ASC
-        """)
+        """
+        )
 
         registered_engines = cursor.fetchall()
         print("\n🎯 Avatar Generation Engines Registered:")
@@ -157,10 +168,18 @@ def register_avatar_engines():
 
         print("\n🚀 Avatar engine registration completed successfully!")
         print("\n📋 Integration Summary:")
-        print("  • Primary Engine: Linly-Talker (Priority 1) - High quality, enhanced features")
-        print("  • Fallback Engine: Talking Heads (Priority 10) - Reliable backup option")
-        print("  • Capability: 'avatar-generation' - Used by API Orchestrator for intelligent selection")
-        print("  • Failover: Automatic - System will switch to fallback if primary fails")
+        print(
+            "  • Primary Engine: Linly-Talker (Priority 1) - High quality, enhanced features"
+        )
+        print(
+            "  • Fallback Engine: Talking Heads (Priority 10) - Reliable backup option"
+        )
+        print(
+            "  • Capability: 'avatar-generation' - Used by API Orchestrator for intelligent selection"
+        )
+        print(
+            "  • Failover: Automatic - System will switch to fallback if primary fails"
+        )
 
     except sqlite3.Error as e:
         print(f"❌ Database error: {e}")

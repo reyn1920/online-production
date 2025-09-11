@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, Field
-from typing import Dict, List, Optional, Any
 import json
 import os
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
 import httpx
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel, Field
 from utils.http import http_get_with_backoff
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
@@ -30,6 +31,7 @@ def set_secret(key: str, value: str) -> bool:
     # In production, implement proper secret storage
     return True
 
+
 # JSON load/save helpers
 
 
@@ -37,7 +39,7 @@ def load_json(filepath: str, default: Any = None) -> Any:
     """Load JSON file with default fallback"""
     try:
         if os.path.exists(filepath):
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 return json.load(f)
     except Exception:
         pass
@@ -48,11 +50,12 @@ def save_json(filepath: str, data: Any) -> bool:
     """Save data to JSON file"""
     try:
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             json.dump(data, f, indent=2)
         return True
     except Exception:
         return False
+
 
 # Models
 
@@ -60,7 +63,7 @@ def save_json(filepath: str, data: Any) -> bool:
 class ProviderIn(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
     category: str = Field(..., min_length=1, max_length=30)
-    docs_url: str = Field(..., pattern=r'^https?://')
+    docs_url: str = Field(..., pattern=r"^https?://")
     enabled: bool = False
     auto_disable: bool = True
     priority: int = Field(default=1, ge=1, le=10)
@@ -96,7 +99,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 1,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "images_pixabay": {
         "name": "Pixabay",
@@ -106,7 +109,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 2,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "news_guardian": {
         "name": "Guardian",
@@ -116,7 +119,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 1,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "news_newsapi": {
         "name": "NewsAPI",
@@ -126,7 +129,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 2,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "geo_openstreet": {
         "name": "OpenStreetMap",
@@ -136,7 +139,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": False,
         "priority": 1,
         "requires_key": False,
-        "free_tier": True
+        "free_tier": True,
     },
     "pets_catapi": {
         "name": "TheCatAPI",
@@ -146,7 +149,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 1,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "pets_dogapi": {
         "name": "TheDogAPI",
@@ -156,7 +159,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 2,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "weather_openmeteo": {
         "name": "Open-Meteo",
@@ -166,7 +169,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": False,
         "priority": 1,
         "requires_key": False,
-        "free_tier": True
+        "free_tier": True,
     },
     "weather_openweather": {
         "name": "OpenWeather",
@@ -176,7 +179,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 2,
         "requires_key": True,
-        "free_tier": True
+        "free_tier": True,
     },
     "social_instagram": {
         "name": "Instagram",
@@ -187,7 +190,7 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": False,
-        "oauth_required": True
+        "oauth_required": True,
     },
     "social_tiktok": {
         "name": "TikTok",
@@ -198,7 +201,7 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": False,
-        "oauth_required": True
+        "oauth_required": True,
     },
     "ai_openai": {
         "name": "OpenAI",
@@ -208,7 +211,7 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 1,
         "requires_key": True,
-        "free_tier": False
+        "free_tier": False,
     },
     "email_sendgrid": {
         "name": "SendGrid",
@@ -218,8 +221,8 @@ DEFAULT_PROVIDERS = {
         "auto_disable": True,
         "priority": 1,
         "requires_key": True,
-        "free_tier": True
-    }
+        "free_tier": True,
+    },
 }
 
 # Default affiliates (all disabled)
@@ -228,50 +231,50 @@ DEFAULT_AFFILIATES = {
         "name": "Amazon Associates",
         "vertical": "general",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "tech_bestbuy": {
         "name": "Best Buy",
         "vertical": "tech",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "wellness_iherb": {
         "name": "iHerb",
         "vertical": "wellness",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "ai_openai_partner": {
         "name": "OpenAI Partner",
         "vertical": "ai",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "pets_chewy": {
         "name": "Chewy",
         "vertical": "pets",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "restricted_gambling": {
         "name": "Gambling Site",
         "vertical": "restricted",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "restricted_crypto": {
         "name": "Crypto Exchange",
         "vertical": "restricted",
         "affiliate_id": "",
-        "enabled": False
+        "enabled": False,
     },
     "restricted_adult": {
         "name": "Adult Content",
         "vertical": "restricted",
         "affiliate_id": "",
-        "enabled": False
-    }
+        "enabled": False,
+    },
 }
 
 # Default policy (all restricted verticals disabled)
@@ -280,7 +283,7 @@ DEFAULT_POLICY = {
     "gambling_enabled": False,
     "crypto_enabled": False,
     "adult_enabled": False,
-    "last_updated": datetime.now().isoformat()
+    "last_updated": datetime.now().isoformat(),
 }
 
 # State loaders
@@ -319,6 +322,7 @@ def load_metrics() -> Dict:
 def load_policy() -> Dict:
     """Load policy settings"""
     return load_json(POLICY_FILE, DEFAULT_POLICY.copy())
+
 
 # Status light logic
 
@@ -365,6 +369,7 @@ def get_affiliate_status_color(affiliate_id: str, affiliate: Dict) -> str:
 
     return "green"  # All good
 
+
 # Provider routes
 
 
@@ -384,18 +389,20 @@ async def list_providers():
 
     for provider_id, provider in registry.items():
         status_color = get_provider_status_color(provider_id, provider)
-        result.append({
-            "id": provider_id,
-            "name": provider["name"],
-            "category": provider["category"],
-            "enabled": provider.get("enabled", False),
-            "status_color": status_color,
-            "docs_url": provider["docs_url"],
-            "priority": provider.get("priority", 1),
-            "free_tier": provider.get("free_tier", False),
-            "requires_key": provider.get("requires_key", False),
-            "oauth_required": provider.get("oauth_required", False)
-        })
+        result.append(
+            {
+                "id": provider_id,
+                "name": provider["name"],
+                "category": provider["category"],
+                "enabled": provider.get("enabled", False),
+                "status_color": status_color,
+                "docs_url": provider["docs_url"],
+                "priority": provider.get("priority", 1),
+                "free_tier": provider.get("free_tier", False),
+                "requires_key": provider.get("requires_key", False),
+                "oauth_required": provider.get("oauth_required", False),
+            }
+        )
 
     return {"providers": sorted(result, key=lambda x: (x["category"], x["priority"]))}
 
@@ -419,7 +426,7 @@ async def add_provider(provider: ProviderIn):
         "auto_disable": provider.auto_disable,
         "priority": provider.priority,
         "requires_key": True,  # Assume new providers need keys
-        "free_tier": False     # Assume paid by default
+        "free_tier": False,  # Assume paid by default
     }
 
     if not save_json(PROVIDERS_FILE, registry):
@@ -478,11 +485,13 @@ async def get_active_providers():
 
             status_color = get_provider_status_color(provider_id, provider)
             if status_color == "green":  # Only include healthy providers
-                active[category].append({
-                    "id": provider_id,
-                    "name": provider["name"],
-                    "priority": provider.get("priority", 1)
-                })
+                active[category].append(
+                    {
+                        "id": provider_id,
+                        "name": provider["name"],
+                        "priority": provider.get("priority", 1),
+                    }
+                )
 
     # Sort by priority
     for category in active:
@@ -504,30 +513,34 @@ async def rotate_provider(provider_id: str):
 
     # Find next provider in same category
     category_providers = [
-        (pid, p) for pid, p in registry.items()
+        (pid, p)
+        for pid, p in registry.items()
         if p["category"] == category and p.get("enabled", False)
     ]
 
     if len(category_providers) <= 1:
-        raise HTTPException(status_code=400,
-                            detail="No alternative providers available")
+        raise HTTPException(
+            status_code=400, detail="No alternative providers available"
+        )
 
     # Sort by priority and find next
     category_providers.sort(key=lambda x: x[1].get("priority", 1))
-    current_index = next((i for i, (pid, _) in enumerate(
-        category_providers) if pid == provider_id), -1)
+    current_index = next(
+        (i for i, (pid, _) in enumerate(category_providers) if pid == provider_id), -1
+    )
 
     if current_index == -1:
         next_provider_id = category_providers[0][0]
     else:
-        next_provider_id = category_providers[(
-            current_index + 1) % len(category_providers)][0]
+        next_provider_id = category_providers[
+            (current_index + 1) % len(category_providers)
+        ][0]
 
     return {
         "message": "Rotated to next provider",
         "from": provider_id,
         "to": next_provider_id,
-        "provider_name": registry[next_provider_id]["name"]
+        "provider_name": registry[next_provider_id]["name"],
     }
 
 
@@ -548,7 +561,7 @@ async def report_usage(provider_id: str, report: ReportIn):
             "recent_errors": 0,
             "last_success": None,
             "last_error": None,
-            "avg_response_time": 0
+            "avg_response_time": 0,
         }
 
     provider_metrics = metrics[provider_id]
@@ -558,15 +571,17 @@ async def report_usage(provider_id: str, report: ReportIn):
         provider_metrics["successful_requests"] += 1
         provider_metrics["last_success"] = datetime.now().isoformat()
         provider_metrics["recent_errors"] = max(
-            0, provider_metrics["recent_errors"] - 1)
+            0, provider_metrics["recent_errors"] - 1
+        )
     else:
         provider_metrics["failed_requests"] += 1
         provider_metrics["last_error"] = datetime.now().isoformat()
         provider_metrics["recent_errors"] += 1
 
         # Auto-disable if too many recent errors
-        if (provider_metrics["recent_errors"] >= 5
-                and registry[provider_id].get("auto_disable", False)):
+        if provider_metrics["recent_errors"] >= 5 and registry[provider_id].get(
+            "auto_disable", False
+        ):
             registry[provider_id]["enabled"] = False
             save_json(PROVIDERS_FILE, registry)
 
@@ -574,17 +589,15 @@ async def report_usage(provider_id: str, report: ReportIn):
         # Simple moving average
         current_avg = provider_metrics.get("avg_response_time", 0)
         provider_metrics["avg_response_time"] = (
-            (current_avg
-             * (
-                 provider_metrics["total_requests"]
-                 - 1)
-                + report.response_time_ms)
-            / provider_metrics["total_requests"])
+            current_avg * (provider_metrics["total_requests"] - 1)
+            + report.response_time_ms
+        ) / provider_metrics["total_requests"]
 
     if not save_json(METRICS_FILE, metrics):
         raise HTTPException(status_code=500, detail="Failed to save metrics")
 
     return {"message": "Usage reported"}
+
 
 # Health/test ping route
 
@@ -608,35 +621,36 @@ async def test_call(provider_id: str):
         response_time = int((end_time - start_time).total_seconds() * 1000)
 
         # Report successful test
-        await report_usage(provider_id, ReportIn(
-            provider_id=provider_id,
-            success=True,
-            response_time_ms=response_time
-        ))
+        await report_usage(
+            provider_id,
+            ReportIn(
+                provider_id=provider_id, success=True, response_time_ms=response_time
+            ),
+        )
 
         return {
             "provider_id": provider_id,
             "provider_name": provider["name"],
             "status": "healthy",
             "response_time_ms": response_time,
-            "docs_url": docs_url
+            "docs_url": docs_url,
         }
 
     except Exception as e:
         # Report failed test
-        await report_usage(provider_id, ReportIn(
-            provider_id=provider_id,
-            success=False,
-            error_message=str(e)
-        ))
+        await report_usage(
+            provider_id,
+            ReportIn(provider_id=provider_id, success=False, error_message=str(e)),
+        )
 
         return {
             "provider_id": provider_id,
             "provider_name": provider["name"],
             "status": "unhealthy",
             "error": str(e),
-            "docs_url": docs_url
+            "docs_url": docs_url,
         }
+
 
 # Affiliate routes
 
@@ -657,14 +671,16 @@ async def list_affiliates():
 
     for affiliate_id, affiliate in affiliates.items():
         status_color = get_affiliate_status_color(affiliate_id, affiliate)
-        result.append({
-            "id": affiliate_id,
-            "name": affiliate["name"],
-            "vertical": affiliate["vertical"],
-            "enabled": affiliate.get("enabled", False),
-            "status_color": status_color,
-            "affiliate_id": affiliate.get("affiliate_id", "")
-        })
+        result.append(
+            {
+                "id": affiliate_id,
+                "name": affiliate["name"],
+                "vertical": affiliate["vertical"],
+                "enabled": affiliate.get("enabled", False),
+                "status_color": status_color,
+                "affiliate_id": affiliate.get("affiliate_id", ""),
+            }
+        )
 
     return {"affiliates": sorted(result, key=lambda x: x["vertical"])}
 
@@ -684,7 +700,7 @@ async def add_affiliate(affiliate: AffiliateIn):
         "name": affiliate.name,
         "vertical": affiliate.vertical,
         "affiliate_id": affiliate.affiliate_id,
-        "enabled": affiliate.enabled
+        "enabled": affiliate.enabled,
     }
 
     if not save_json(AFFILIATES_FILE, affiliates):
@@ -724,6 +740,7 @@ async def upsert_affiliate_id(affiliate_key: str, affiliate_id: str):
 
     return {"message": "Affiliate ID updated"}
 
+
 # Policy controls
 
 
@@ -743,7 +760,7 @@ async def set_policy(policy_updates: Dict[str, Any]):
         "restricted_verticals_enabled",
         "gambling_enabled",
         "crypto_enabled",
-        "adult_enabled"
+        "adult_enabled",
     ]
 
     for field in allowed_fields:
@@ -757,13 +774,14 @@ async def set_policy(policy_updates: Dict[str, Any]):
 
     return {"message": "Policy updated", "policy": policy}
 
+
 # Channel-specific top affiliate suggestions
 CHANNEL_MAP = {
     "tech": ["tech_bestbuy", "general_amazon"],
     "wellness": ["wellness_iherb", "general_amazon"],
     "pets": ["pets_chewy", "general_amazon"],
     "ai": ["ai_openai_partner", "tech_bestbuy"],
-    "general": ["general_amazon"]
+    "general": ["general_amazon"],
 }
 
 
@@ -781,15 +799,18 @@ async def get_top_affiliates(channel: str):
             affiliate = affiliates[affiliate_key]
             status_color = get_affiliate_status_color(affiliate_key, affiliate)
 
-            suggestions.append({
-                "id": affiliate_key,
-                "name": affiliate["name"],
-                "vertical": affiliate["vertical"],
-                "status_color": status_color,
-                "enabled": affiliate.get("enabled", False)
-            })
+            suggestions.append(
+                {
+                    "id": affiliate_key,
+                    "name": affiliate["name"],
+                    "vertical": affiliate["vertical"],
+                    "status_color": status_color,
+                    "enabled": affiliate.get("enabled", False),
+                }
+            )
 
     return {"channel": channel, "suggestions": suggestions}
+
 
 # Admin UI
 

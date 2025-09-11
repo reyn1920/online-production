@@ -17,22 +17,27 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-import os
-import json
 import asyncio
+import json
+import os
 import threading
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
 from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import sys
+
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from backend.task_queue_manager import TaskQueueManager, TaskStatus, TaskPriority, TaskType
-    from backend.agents.base_agents import BaseAgent, PlannerAgent, ExecutorAgent, AuditorAgent, AgentCapability
-    from backend.agents.specialized_agents import SystemAgent, ResearchAgent, ContentAgent, MarketingAgent, QAAgent
-    from utils.logger import get_logger, TraeLogger
+    from utils.logger import TraeLogger, get_logger
+
+    from backend.agents.base_agents import (AgentCapability, AuditorAgent, BaseAgent,
+                                            ExecutorAgent, PlannerAgent)
+    from backend.agents.specialized_agents import (ContentAgent, MarketingAgent,
+                                                   QAAgent, ResearchAgent, SystemAgent)
+    from backend.task_queue_manager import (TaskPriority, TaskQueueManager, TaskStatus,
+                                            TaskType)
 except ImportError as e:
     print(f"Warning: Could not import TRAE.AI components: {e}")
     print("Running in standalone mode...")
@@ -47,11 +52,9 @@ class DefaultContentAgent(ContentAgent):
 
     async def _rephrase_task(self, task, context=None):
         """Minimal pass-through implementation."""
-        return task.get(
-            'description',
-            str(task)) if isinstance(
-            task,
-            dict) else str(task)
+        return (
+            task.get("description", str(task)) if isinstance(task, dict) else str(task)
+        )
 
     async def _validate_rephrase_accuracy(self, original, rephrased, context=None):
         """Always return True for basic validation."""
@@ -59,13 +62,14 @@ class DefaultContentAgent(ContentAgent):
 
     async def _execute_with_monitoring(self, task, context=None):
         """Minimal noop execution."""
-        if hasattr(self, 'logger'):
+        if hasattr(self, "logger"):
             self.logger.debug("DefaultContentAgent noop execute: %r", task)
         return {"ok": True, "result": "noop"}
 
 
 class WorkflowType(Enum):
     """Supported workflow types."""
+
     VIDEO_CREATION = "video_creation"
     RESEARCH = "research"
     CONTENT_AUDIT = "content_audit"
@@ -76,6 +80,7 @@ class WorkflowType(Enum):
 
 class MonetizationFeature(Enum):
     """Monetization features that can be toggled."""
+
     ADSENSE = "adsense"
     AFFILIATE = "affiliate"
     SPONSORED = "sponsored"
@@ -87,6 +92,7 @@ class MonetizationFeature(Enum):
 @dataclass
 class SystemHealth:
     """System health status information."""
+
     status: str
     timestamp: datetime
     components: Dict[str, bool]
@@ -99,6 +105,7 @@ class SystemHealth:
 @dataclass
 class ChannelMetrics:
     """Channel performance metrics."""
+
     platform: str
     status: str
     followers: int
@@ -141,14 +148,14 @@ class SystemBridge:
         try:
             # Initialize base agents
             self.agents = {
-                'planner': PlannerAgent(agent_id="planner-001"),
-                'executor': ExecutorAgent(agent_id="executor-001"),
-                'auditor': AuditorAgent(agent_id="auditor-001"),
-                'system': SystemAgent(agent_id="system-001"),
-                'research': ResearchAgent(agent_id="research-001"),
-                'content': DefaultContentAgent(agent_id="content-001"),
-                'marketing': MarketingAgent(agent_id="marketing-001"),
-                'qa': QAAgent(agent_id="qa-001")
+                "planner": PlannerAgent(agent_id="planner-001"),
+                "executor": ExecutorAgent(agent_id="executor-001"),
+                "auditor": AuditorAgent(agent_id="auditor-001"),
+                "system": SystemAgent(agent_id="system-001"),
+                "research": ResearchAgent(agent_id="research-001"),
+                "content": DefaultContentAgent(agent_id="content-001"),
+                "marketing": MarketingAgent(agent_id="marketing-001"),
+                "qa": QAAgent(agent_id="qa-001"),
             }
 
             self.logger.info(f"Initialized {len(self.agents)} agents")
@@ -166,23 +173,27 @@ class SystemBridge:
                 MonetizationFeature.SPONSORED.value: False,
                 MonetizationFeature.MERCHANDISE.value: False,
                 MonetizationFeature.PATREON.value: False,
-                MonetizationFeature.MEMBERSHIPS.value: False
+                MonetizationFeature.MEMBERSHIPS.value: False,
             }
 
             # Load from database if available
             try:
                 import sqlite3
+
                 conn = sqlite3.connect(self.database_path)
                 cursor = conn.cursor()
-                cursor.execute('''
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS monetization_settings (
                         feature_name TEXT PRIMARY KEY,
                         enabled BOOLEAN,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                ''')
+                """
+                )
                 cursor.execute(
-                    'SELECT feature_name, enabled FROM monetization_settings')
+                    "SELECT feature_name, enabled FROM monetization_settings"
+                )
                 results = cursor.fetchall()
                 conn.close()
 
@@ -193,10 +204,12 @@ class SystemBridge:
 
                 self.logger.info(
                     f"Loaded {
-                        len(results)} monetization settings from database")
+                        len(results)} monetization settings from database"
+                )
             except Exception as db_error:
                 self.logger.warning(
-                    f"Could not load from database, using defaults: {db_error}")
+                    f"Could not load from database, using defaults: {db_error}"
+                )
 
             self.monetization_settings = default_settings
             self.logger.info("Monetization settings loaded")
@@ -206,11 +219,9 @@ class SystemBridge:
 
     # Workflow Management Methods
 
-    def trigger_workflow(self,
-                         workflow_type: str,
-                         parameters: Dict[str,
-                                          Any] = None) -> Dict[str,
-                                                               Any]:
+    def trigger_workflow(
+        self, workflow_type: str, parameters: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Trigger a workflow and return task information."""
         try:
             if not self.task_manager:
@@ -224,10 +235,10 @@ class SystemBridge:
 
             # Prepare task payload
             payload = {
-                'workflow_type': workflow_type,
-                'parameters': parameters or {},
-                'triggered_by': 'dashboard',
-                'timestamp': datetime.now(timezone.utc).isoformat()
+                "workflow_type": workflow_type,
+                "parameters": parameters or {},
+                "triggered_by": "dashboard",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
 
             # Determine appropriate agent
@@ -238,18 +249,19 @@ class SystemBridge:
                 task_type=TaskType.WORKFLOW,
                 payload=payload,
                 priority=TaskPriority.HIGH,
-                agent_id=agent_id
+                agent_id=agent_id,
             )
 
             self.logger.info(
-                f"Triggered {workflow_type} workflow with task ID {task_id}")
+                f"Triggered {workflow_type} workflow with task ID {task_id}"
+            )
 
             return {
-                'task_id': task_id,
-                'workflow_type': workflow_type,
-                'status': 'queued',
-                'agent_id': agent_id,
-                'timestamp': datetime.now(timezone.utc).isoformat()
+                "task_id": task_id,
+                "workflow_type": workflow_type,
+                "status": "queued",
+                "agent_id": agent_id,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
 
         except Exception as e:
@@ -259,20 +271,21 @@ class SystemBridge:
     def _get_workflow_agent(self, workflow_type: WorkflowType) -> str:
         """Get the appropriate agent for a workflow type."""
         agent_mapping = {
-            WorkflowType.VIDEO_CREATION: 'content',
-            WorkflowType.RESEARCH: 'research',
-            WorkflowType.CONTENT_AUDIT: 'qa',
-            WorkflowType.MARKETING: 'marketing',
-            WorkflowType.SYSTEM_MAINTENANCE: 'system',
-            WorkflowType.QUALITY_ASSURANCE: 'qa'
+            WorkflowType.VIDEO_CREATION: "content",
+            WorkflowType.RESEARCH: "research",
+            WorkflowType.CONTENT_AUDIT: "qa",
+            WorkflowType.MARKETING: "marketing",
+            WorkflowType.SYSTEM_MAINTENANCE: "system",
+            WorkflowType.QUALITY_ASSURANCE: "qa",
         }
 
-        return agent_mapping.get(workflow_type, 'executor')
+        return agent_mapping.get(workflow_type, "executor")
 
     # Task Management Methods
 
-    def get_tasks(self, status: Optional[str] = None,
-                  limit: int = 50) -> List[Dict[str, Any]]:
+    def get_tasks(
+        self, status: Optional[str] = None, limit: int = 50
+    ) -> List[Dict[str, Any]]:
         """Get tasks from the queue."""
         try:
             if not self.task_manager:
@@ -284,16 +297,16 @@ class SystemBridge:
             task_list = []
             for task in tasks:
                 task_dict = {
-                    'id': task[0],
-                    'type': task[1],
-                    'priority': task[2],
-                    'status': task[3],
-                    'agent_id': task[4],
-                    'payload': json.loads(task[5]) if task[5] else {},
-                    'created_at': task[6],
-                    'updated_at': task[7],
-                    'retry_count': task[8],
-                    'error_message': task[9]
+                    "id": task[0],
+                    "type": task[1],
+                    "priority": task[2],
+                    "status": task[3],
+                    "agent_id": task[4],
+                    "payload": json.loads(task[5]) if task[5] else {},
+                    "created_at": task[6],
+                    "updated_at": task[7],
+                    "retry_count": task[8],
+                    "error_message": task[9],
                 }
                 task_list.append(task_dict)
 
@@ -304,19 +317,15 @@ class SystemBridge:
             return []
 
     def update_task_status(
-            self,
-            task_id: str,
-            status: str,
-            error_message: Optional[str] = None) -> bool:
+        self, task_id: str, status: str, error_message: Optional[str] = None
+    ) -> bool:
         """Update task status."""
         try:
             if not self.task_manager:
                 return False
 
             return self.task_manager.update_task_status(
-                task_id=task_id,
-                status=TaskStatus(status),
-                error_message=error_message
+                task_id=task_id, status=TaskStatus(status), error_message=error_message
             )
 
         except Exception as e:
@@ -332,12 +341,16 @@ class SystemBridge:
             stats = self.task_manager.get_queue_stats()
 
             # Add additional statistics
-            stats.update({
-                'active_agents': len([a for a in self.agents.values() if a.status.value == 'active']),
-                'total_agents': len(self.agents),
-                'uptime': self._calculate_uptime(),
-                'system_health': self._get_system_health_score()
-            })
+            stats.update(
+                {
+                    "active_agents": len(
+                        [a for a in self.agents.values() if a.status.value == "active"]
+                    ),
+                    "total_agents": len(self.agents),
+                    "uptime": self._calculate_uptime(),
+                    "system_health": self._get_system_health_score(),
+                }
+            )
 
             return stats
 
@@ -348,7 +361,8 @@ class SystemBridge:
     # Monetization Management Methods
 
     def toggle_monetization_feature(
-            self, feature: str, enabled: bool) -> Dict[str, Any]:
+        self, feature: str, enabled: bool
+    ) -> Dict[str, Any]:
         """Toggle a monetization feature."""
         try:
             # Validate feature
@@ -363,40 +377,48 @@ class SystemBridge:
             # Persist changes to database
             try:
                 import sqlite3
+
                 conn = sqlite3.connect(self.database_path)
                 cursor = conn.cursor()
-                cursor.execute('''
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS monetization_settings (
                         feature_name TEXT PRIMARY KEY,
                         enabled BOOLEAN,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                ''')
-                cursor.execute('''
+                """
+                )
+                cursor.execute(
+                    """
                     INSERT OR REPLACE INTO monetization_settings (feature_name, enabled, updated_at)
                     VALUES (?, ?, ?)
-                ''', (feature, enabled, datetime.now(timezone.utc).isoformat()))
+                """,
+                    (feature, enabled, datetime.now(timezone.utc).isoformat()),
+                )
                 conn.commit()
                 conn.close()
                 self.logger.info(
-                    f"Monetization feature {feature} persisted to database")
+                    f"Monetization feature {feature} persisted to database"
+                )
             except Exception as db_error:
                 self.logger.error(f"Failed to persist monetization setting: {db_error}")
 
             # Log the change
             self.logger.info(
                 f"Monetization feature {feature} {
-                    'enabled' if enabled else 'disabled'}")
+                    'enabled' if enabled else 'disabled'}"
+            )
 
             # Create audit task for significant changes
-            if feature in ['adsense', 'sponsored'] and enabled:
+            if feature in ["adsense", "sponsored"] and enabled:
                 self._create_audit_task(f"Monetization feature {feature} enabled")
 
             return {
-                'feature': feature,
-                'enabled': enabled,
-                'timestamp': datetime.now(timezone.utc).isoformat(),
-                'status': 'success'
+                "feature": feature,
+                "enabled": enabled,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "status": "success",
             }
 
         except Exception as e:
@@ -407,15 +429,15 @@ class SystemBridge:
         """Get current monetization settings and revenue data."""
         try:
             return {
-                'settings': self.monetization_settings.copy(),
-                'revenue': self._get_revenue_data(),
-                'performance': self._get_monetization_performance(),
-                'timestamp': datetime.now(timezone.utc).isoformat()
+                "settings": self.monetization_settings.copy(),
+                "revenue": self._get_revenue_data(),
+                "performance": self._get_monetization_performance(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
 
         except Exception as e:
             self.logger.error(f"Failed to get monetization status: {e}")
-            return {'settings': {}, 'revenue': {}, 'performance': {}}
+            return {"settings": {}, "revenue": {}, "performance": {}}
 
     # Channel Management Methods
 
@@ -427,9 +449,11 @@ class SystemBridge:
             # Try to get real channel data from database first
             try:
                 import sqlite3
+
                 conn = sqlite3.connect(self.database_path)
                 cursor = conn.cursor()
-                cursor.execute('''
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS channels (
                         platform TEXT PRIMARY KEY,
                         status TEXT,
@@ -438,9 +462,11 @@ class SystemBridge:
                         engagement_rate REAL,
                         last_updated TIMESTAMP
                     )
-                ''')
+                """
+                )
                 cursor.execute(
-                    'SELECT platform, status, followers, content_count, engagement_rate, last_updated FROM channels')
+                    "SELECT platform, status, followers, content_count, engagement_rate, last_updated FROM channels"
+                )
                 results = cursor.fetchall()
                 conn.close()
 
@@ -451,40 +477,45 @@ class SystemBridge:
                         followers=row[2] or 0,
                         content_count=row[3] or 0,
                         engagement_rate=row[4] or 0.0,
-                        last_updated=datetime.fromisoformat(row[5]) if row[5] else datetime.now(timezone.utc)
+                        last_updated=(
+                            datetime.fromisoformat(row[5])
+                            if row[5]
+                            else datetime.now(timezone.utc)
+                        ),
                     )
 
             except Exception as db_error:
                 self.logger.warning(
-                    f"Could not fetch channel data from database: {db_error}")
+                    f"Could not fetch channel data from database: {db_error}"
+                )
 
             # Fallback to mock data if database is empty or unavailable
             if not channels:
                 channels = {
-                    'youtube': ChannelMetrics(
-                        platform='YouTube',
-                        status='active',
+                    "youtube": ChannelMetrics(
+                        platform="YouTube",
+                        status="active",
                         followers=1250,
                         content_count=45,
                         engagement_rate=4.2,
-                        last_updated=datetime.now(timezone.utc)
+                        last_updated=datetime.now(timezone.utc),
                     ),
-                    'tiktok': ChannelMetrics(
-                        platform='TikTok',
-                        status='active',
+                    "tiktok": ChannelMetrics(
+                        platform="TikTok",
+                        status="active",
                         followers=3200,
                         content_count=78,
                         engagement_rate=6.8,
-                        last_updated=datetime.now(timezone.utc)
+                        last_updated=datetime.now(timezone.utc),
                     ),
-                    'instagram': ChannelMetrics(
-                        platform='Instagram',
-                        status='pending',
+                    "instagram": ChannelMetrics(
+                        platform="Instagram",
+                        status="pending",
                         followers=890,
                         content_count=23,
                         engagement_rate=3.1,
-                        last_updated=datetime.now(timezone.utc) - timedelta(hours=2)
-                    )
+                        last_updated=datetime.now(timezone.utc) - timedelta(hours=2),
+                    ),
                 }
 
             return {k: asdict(v) for k, v in channels.items()}
@@ -498,9 +529,11 @@ class SystemBridge:
         try:
             # Update channel metrics in database
             import sqlite3
+
             conn = sqlite3.connect(self.database_path)
             cursor = conn.cursor()
-            cursor.execute('''
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS channels (
                     platform TEXT PRIMARY KEY,
                     status TEXT,
@@ -509,18 +542,23 @@ class SystemBridge:
                     engagement_rate REAL,
                     last_updated TIMESTAMP
                 )
-            ''')
+            """
+            )
             cursor.execute(
-                '''
+                """
                 INSERT OR REPLACE INTO channels
                 (platform, status, followers, content_count, engagement_rate, last_updated)
                 VALUES (?, ?, ?, ?, ?, ?)
-            ''', (platform, metrics.get(
-                    'status', 'active'), metrics.get(
-                    'followers', 0), metrics.get(
-                    'content_count', 0), metrics.get(
-                    'engagement_rate', 0.0), datetime.now(
-                        timezone.utc).isoformat()))
+            """,
+                (
+                    platform,
+                    metrics.get("status", "active"),
+                    metrics.get("followers", 0),
+                    metrics.get("content_count", 0),
+                    metrics.get("engagement_rate", 0.0),
+                    datetime.now(timezone.utc).isoformat(),
+                ),
+            )
             conn.commit()
             conn.close()
 
@@ -537,32 +575,34 @@ class SystemBridge:
         """Get comprehensive system health information."""
         try:
             components = {
-                'task_manager': self.task_manager is not None,
-                'database': self._check_database_health(),
-                'agents': len(self.agents) > 0,
-                'logger': True  # If we're here, logger is working
+                "task_manager": self.task_manager is not None,
+                "database": self._check_database_health(),
+                "agents": len(self.agents) > 0,
+                "logger": True,  # If we're here, logger is working
             }
 
             return SystemHealth(
-                status='healthy' if all(components.values()) else 'degraded',
+                status="healthy" if all(components.values()) else "degraded",
                 timestamp=datetime.now(timezone.utc),
                 components=components,
                 uptime=self._calculate_uptime(),
                 memory_usage=self._get_memory_usage(),
-                active_agents=len([a for a in self.agents.values() if hasattr(a, 'status')]),
-                queue_size=len(self.get_tasks()) if self.task_manager else 0
+                active_agents=len(
+                    [a for a in self.agents.values() if hasattr(a, "status")]
+                ),
+                queue_size=len(self.get_tasks()) if self.task_manager else 0,
             )
 
         except Exception as e:
             self.logger.error(f"Failed to get system health: {e}")
             return SystemHealth(
-                status='unhealthy',
+                status="unhealthy",
                 timestamp=datetime.now(timezone.utc),
                 components={},
-                uptime='unknown',
+                uptime="unknown",
                 memory_usage={},
                 active_agents=0,
-                queue_size=0
+                queue_size=0,
             )
 
     def _check_database_health(self) -> bool:
@@ -596,27 +636,25 @@ class SystemBridge:
         """Get memory usage information."""
         try:
             import psutil
+
             process = psutil.Process()
             memory_info = process.memory_info()
 
             return {
-                'used': f"{
+                "used": f"{
                     memory_info.rss
                     / 1024
                     / 1024:.1f} MB",
-                'available': f"{
+                "available": f"{
                     psutil.virtual_memory().available
                     / 1024
                     / 1024:.1f} MB",
-                'percentage': process.memory_percent()}
-        except ImportError:
-            return {
-                'used': '45.2 MB',
-                'available': '512 MB',
-                'percentage': 8.8
+                "percentage": process.memory_percent(),
             }
+        except ImportError:
+            return {"used": "45.2 MB", "available": "512 MB", "percentage": 8.8}
         except Exception:
-            return {'used': 'unknown', 'available': 'unknown', 'percentage': 0}
+            return {"used": "unknown", "available": "unknown", "percentage": 0}
 
     def _get_system_health_score(self) -> float:
         """Calculate overall system health score (0-100)."""
@@ -624,8 +662,9 @@ class SystemBridge:
             health = self.get_system_health()
 
             # Calculate score based on component health
-            component_score = sum(health.components.values()) / \
-                len(health.components) * 100
+            component_score = (
+                sum(health.components.values()) / len(health.components) * 100
+            )
 
             # Adjust based on queue size (too many pending tasks reduce score)
             queue_penalty = min(health.queue_size * 2, 20)  # Max 20 point penalty
@@ -643,11 +682,12 @@ class SystemBridge:
                 self.task_manager.add_task(
                     task_type=TaskType.AUDIT,
                     payload={
-                        'description': description,
-                        'timestamp': datetime.now(
-                            timezone.utc).isoformat()},
+                        "description": description,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    },
                     priority=TaskPriority.MEDIUM,
-                    agent_id='auditor')
+                    agent_id="auditor",
+                )
         except Exception as e:
             self.logger.error(f"Failed to create audit task: {e}")
 
@@ -655,33 +695,39 @@ class SystemBridge:
         """Get revenue data from various sources."""
         try:
             import sqlite3
+
             conn = sqlite3.connect(self.database_path)
             cursor = conn.cursor()
 
             # Create revenue table if it doesn't exist
-            cursor.execute('''
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS revenue_data (
                     source TEXT PRIMARY KEY,
                     amount REAL,
                     currency TEXT DEFAULT 'USD',
                     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
-            ''')
+            """
+            )
 
             # Get revenue data from database
-            cursor.execute('SELECT source, amount FROM revenue_data')
+            cursor.execute("SELECT source, amount FROM revenue_data")
             results = cursor.fetchall()
             conn.close()
 
             if results:
                 revenue_data = {row[0]: row[1] for row in results}
-                revenue_data.update({
-                    'currency': 'USD',
-                    'last_updated': datetime.now(timezone.utc).isoformat()
-                })
+                revenue_data.update(
+                    {
+                        "currency": "USD",
+                        "last_updated": datetime.now(timezone.utc).isoformat(),
+                    }
+                )
                 self.logger.info(
                     f"Retrieved revenue data from database: {
-                        len(results)} sources")
+                        len(results)} sources"
+                )
                 return revenue_data
 
         except Exception as e:
@@ -689,62 +735,69 @@ class SystemBridge:
 
         # Fallback to placeholder data
         return {
-            'total_monthly': 1250.75,
-            'adsense': 450.25,
-            'affiliate': 320.50,
-            'sponsored': 480.00,
-            'currency': 'USD',
-            'last_updated': datetime.now(timezone.utc).isoformat()
+            "total_monthly": 1250.75,
+            "adsense": 450.25,
+            "affiliate": 320.50,
+            "sponsored": 480.00,
+            "currency": "USD",
+            "last_updated": datetime.now(timezone.utc).isoformat(),
         }
 
     def _get_monetization_performance(self) -> Dict[str, Any]:
         """Get monetization performance metrics."""
         try:
             import sqlite3
+
             conn = sqlite3.connect(self.database_path)
             cursor = conn.cursor()
 
             # Create performance metrics table if it doesn't exist
-            cursor.execute('''
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS monetization_performance (
                     metric_name TEXT PRIMARY KEY,
                     value REAL,
                     unit TEXT,
                     last_calculated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
-            ''')
+            """
+            )
 
             # Get performance metrics from database
-            cursor.execute('SELECT metric_name, value FROM monetization_performance')
+            cursor.execute("SELECT metric_name, value FROM monetization_performance")
             results = cursor.fetchall()
             conn.close()
 
             if results:
                 performance_data = {row[0]: row[1] for row in results}
-                performance_data['last_updated'] = datetime.now(
-                    timezone.utc).isoformat()
+                performance_data["last_updated"] = datetime.now(
+                    timezone.utc
+                ).isoformat()
                 self.logger.info(
                     f"Retrieved performance metrics from database: {
-                        len(results)} metrics")
+                        len(results)} metrics"
+                )
                 return performance_data
 
         except Exception as e:
             self.logger.warning(
-                f"Could not fetch performance metrics from database: {e}")
+                f"Could not fetch performance metrics from database: {e}"
+            )
 
         # Fallback to calculated/placeholder data
         revenue_data = self._get_revenue_data()
-        total_revenue = sum(v for k, v in revenue_data.items()
-                            if isinstance(v, (int, float)))
+        total_revenue = sum(
+            v for k, v in revenue_data.items() if isinstance(v, (int, float))
+        )
 
         return {
-            'cpm': 2.45,
-            'ctr': 3.2,
-            'conversion_rate': 1.8,
-            'top_performing_content': 'AI Tutorial Series',
-            'total_revenue': total_revenue,
-            'revenue_growth_rate': 12.5,
-            'last_updated': datetime.now(timezone.utc).isoformat()
+            "cpm": 2.45,
+            "ctr": 3.2,
+            "conversion_rate": 1.8,
+            "top_performing_content": "AI Tutorial Series",
+            "total_revenue": total_revenue,
+            "revenue_growth_rate": 12.5,
+            "last_updated": datetime.now(timezone.utc).isoformat(),
         }
 
 
@@ -769,7 +822,7 @@ def initialize_bridge(database_path: str = "trae_ai.db") -> SystemBridge:
     return _bridge_instance
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Test the bridge functionality
     bridge = SystemBridge()
 
@@ -777,7 +830,7 @@ if __name__ == '__main__':
 
     # Test workflow trigger
     try:
-        result = bridge.trigger_workflow('research', {'topic': 'AI trends'})
+        result = bridge.trigger_workflow("research", {"topic": "AI trends"})
         print(f"Workflow triggered: {result}")
     except Exception as e:
         print(f"Workflow test failed: {e}")
@@ -791,7 +844,7 @@ if __name__ == '__main__':
 
     # Test monetization toggle
     try:
-        result = bridge.toggle_monetization_feature('adsense', True)
+        result = bridge.toggle_monetization_feature("adsense", True)
         print(f"Monetization toggle: {result}")
     except Exception as e:
         print(f"Monetization test failed: {e}")

@@ -1,29 +1,36 @@
-from functools import wraps
-from typing import Callable, Any, Optional, Dict
-from flask import request, jsonify
 import threading
+from functools import wraps
+from typing import Any, Callable, Dict, Optional
+
+from flask import jsonify, request
 
 
 def dashboard_action(
-        name: Optional[str] = None,
-        method: str = "POST",
-        doc: str = "",
-        public: bool = False,
-        background: bool = False):
+    name: Optional[str] = None,
+    method: str = "POST",
+    doc: str = "",
+    public: bool = False,
+    background: bool = False,
+):
     """
     Set background=True for long-running actions: returns {accepted: true, job_id: ...}
     """
+
     def deco(fn: Callable):
         fn._dash_action = {
             "name": name or fn.__name__,
             "method": method.upper(),
             "doc": doc.strip(),
             "public": public,
-            "background": background}
+            "background": background,
+        }
 
         @wraps(fn)
-        def _w(*a, **k): return fn(*a, **k)
+        def _w(*a, **k):
+            return fn(*a, **k)
+
         return _w
+
     return deco
 
 
@@ -31,7 +38,7 @@ class ActionRegistry:
     def __init__(self, app, logger, token_env="TRAE_DASHBOARD_TOKEN"):
         self.app, self.logger, self.token_env = app, logger, token_env
         self.manifest: list[Dict[str, Any]] = []
-        self._endpoints: set[str] = set()   # avoid duplicate add_url_rule
+        self._endpoints: set[str] = set()  # avoid duplicate add_url_rule
 
     def get_manifest(self):
         """Return the current action manifest with count metadata."""
@@ -50,13 +57,11 @@ class ActionRegistry:
 
         normalized_actions = [_normalize_action(a.copy()) for a in self.manifest]
 
-        return {
-            "count": len(normalized_actions),
-            "actions": normalized_actions
-        }
+        return {"count": len(normalized_actions), "actions": normalized_actions}
 
     def _guard(self):
         import os
+
         want = os.getenv(self.token_env)
         return True if not want else request.headers.get("X-Admin-Token") == want
 
@@ -85,13 +90,14 @@ class ActionRegistry:
                     if meta.get("background"):
                         # fire-and-forget thread
                         import uuid
+
                         job_id = str(uuid.uuid4())
                         t = threading.Thread(
-                            target=lambda: fn(
-                                **args),
+                            target=lambda: fn(**args),
                             daemon=True,
                             name=f"action:{
-                                meta['name']}:{job_id}")
+                                meta['name']}:{job_id}",
+                        )
                         t.start()
                         return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                     try:
@@ -99,12 +105,16 @@ class ActionRegistry:
                     except TypeError:
                         # fallback: pass a single dict if signature expects one
                         return jsonify({"ok": True, "result": fn(args)})
+
                 return view
 
             self.app.add_url_rule(
-                route, f"act_{agent_name}_{
-                    meta['name']}", mk(), methods=[
-                    meta["method"]])
+                route,
+                f"act_{agent_name}_{
+                    meta['name']}",
+                mk(),
+                methods=[meta["method"]],
+            )
             self.logger.info(f"[actions] {meta['method']} {route}")
             added += 1
         self.logger.info(f"[actions] {agent_name}: {added} actions")
@@ -135,13 +145,14 @@ class ActionRegistry:
                 if meta.get("background"):
                     # fire-and-forget thread
                     import uuid
+
                     job_id = str(uuid.uuid4())
                     t = threading.Thread(
-                        target=lambda: fn(
-                            **args),
+                        target=lambda: fn(**args),
                         daemon=True,
                         name=f"action:{
-                            meta['name']}:{job_id}")
+                            meta['name']}:{job_id}",
+                    )
                     t.start()
                     return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                 try:
@@ -149,12 +160,16 @@ class ActionRegistry:
                 except TypeError:
                     # fallback: pass a single dict if signature expects one
                     return jsonify({"ok": True, "result": fn(args)})
+
             return view
 
         self.app.add_url_rule(
-            route, f"act_{agent_name}_{
-                meta['name']}", mk(), methods=[
-                meta["method"]])
+            route,
+            f"act_{agent_name}_{
+                meta['name']}",
+            mk(),
+            methods=[meta["method"]],
+        )
         self.logger.info(f"[actions] {meta['method']} {route}")
         return 1
 

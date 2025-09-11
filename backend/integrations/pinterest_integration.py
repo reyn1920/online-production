@@ -1,7 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional, Dict, Any
+
 import os
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
 
 @dataclass
 class PinterestClient:
@@ -18,15 +20,28 @@ class PinterestClient:
         return bool(self.access_token)
 
     # --- Stubs (no network calls yet) ---
-    def create_pin(self, title: str, media_url: str, board_id: str = "") -> Dict[str, Any]:
+    def create_pin(
+        self, title: str, media_url: str, board_id: str = ""
+    ) -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("Pinterest not configured")
-        return {"ok": True, "id": "pin_stub", "title": title[:80], "media": media_url, "board": board_id}
+        return {
+            "ok": True,
+            "id": "pin_stub",
+            "title": title[:80],
+            "media": media_url,
+            "board": board_id,
+        }
 
     def create_board(self, name: str, description: str = "") -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("Pinterest not configured")
-        return {"ok": True, "id": "board_stub", "name": name, "description": description}
+        return {
+            "ok": True,
+            "id": "board_stub",
+            "name": name,
+            "description": description,
+        }
 
     def insights(self) -> Dict[str, Any]:
         if not self.ready():

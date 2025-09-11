@@ -13,7 +13,7 @@ print(f"\n🐞 Processing Error: {error_msg}")
 fix_suggestion = debugger.enhanced_debug_and_fix(error_msg)
 print(fix_suggestion)
 
-print("\n" + "="*50)
+print("\n" + "=" * 50)
 print("✅ Debugging completed!")
 print("The debugger provided:")
 print("   • Error categorization")

@@ -15,12 +15,15 @@ Author: TRAE.AI Production System
 Version: 1.0.0
 """
 
-from backend.content.animate_avatar import AnimationConfig, AnimationQuality, EmotionType
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, Tuple
+
+from backend.content.animate_avatar import (AnimationConfig, AnimationQuality,
+                                            EmotionType)
+
 
 class RealisticLinlyConfig:
     """Configuration class for ultra-realistic Linly-Talker generation."""
-    
+
     @staticmethod
     def get_ultra_realistic_config() -> AnimationConfig:
         """Get configuration for maximum realism without extra cost."""
@@ -29,77 +32,72 @@ class RealisticLinlyConfig:
             quality=AnimationQuality.ULTRA,
             fps=30,  # Higher FPS for smoother motion
             resolution=(1920, 1080),  # Full HD for crisp details
-            
             # Face enhancement - critical for realism
             enhance_face=True,
-            
             # Video stabilization - prevents artificial jitter
             stabilize_video=True,
-            
             # Audio sync - tight sync for natural feel
             audio_sync_threshold=0.05,  # Very tight sync
-            
             # GPU optimization
             use_gpu=True,
             batch_size=2,  # Balanced for quality vs speed
-            
             # Emotion and expression control
             emotion=EmotionType.NEUTRAL,  # Start neutral, can be adjusted
-            
             # Advanced realism parameters
             lip_sync_strength=1.2,  # Slightly enhanced lip movement
             head_pose_strength=0.6,  # Subtle head movement
             eye_blink_frequency=0.25,  # Natural blink rate
-            
             # Quality control
             quality_threshold=0.85,  # High quality threshold
-            
             # Performance optimization
             enable_caching=True,
             max_cache_size=50,
-            real_time_processing=False  # Prioritize quality over speed
+            real_time_processing=False,  # Prioritize quality over speed
         )
-    
+
     @staticmethod
     def get_conversational_config() -> AnimationConfig:
         """Get configuration optimized for natural conversation."""
         config = RealisticLinlyConfig.get_ultra_realistic_config()
-        
+
         # Adjust for more conversational feel
         config.lip_sync_strength = 1.0
         config.head_pose_strength = 0.8  # More natural head movement
         config.eye_blink_frequency = 0.3  # Slightly more frequent blinking
-        
+
         return config
-    
+
     @staticmethod
     def get_professional_config() -> AnimationConfig:
         """Get configuration for professional/business content."""
         config = RealisticLinlyConfig.get_ultra_realistic_config()
-        
+
         # Professional adjustments
         config.head_pose_strength = 0.4  # Minimal head movement
         config.eye_blink_frequency = 0.2  # Less frequent blinking
         config.emotion = EmotionType.NEUTRAL
-        
+
         return config
-    
+
     @staticmethod
-    def get_expressive_config(emotion: EmotionType = EmotionType.HAPPY) -> AnimationConfig:
+    def get_expressive_config(
+        emotion: EmotionType = EmotionType.HAPPY,
+    ) -> AnimationConfig:
         """Get configuration for expressive/emotional content."""
         config = RealisticLinlyConfig.get_ultra_realistic_config()
-        
+
         # Expressive adjustments
         config.emotion = emotion
         config.lip_sync_strength = 1.3  # Enhanced expression
         config.head_pose_strength = 0.9  # More dynamic movement
         config.eye_blink_frequency = 0.35  # More animated blinking
-        
+
         return config
+
 
 class RealisticOptimizations:
     """Additional optimizations for realistic avatar generation."""
-    
+
     @staticmethod
     def get_script_optimization_tips() -> Dict[str, str]:
         """Get tips for optimizing scripts for natural speech."""
@@ -109,9 +107,9 @@ class RealisticOptimizations:
             "contractions": "Use contractions: 'don't', 'can't', 'we'll' instead of formal forms",
             "breathing": "Add breathing spaces: 'Hello... *pause* ...how are you today?'",
             "emphasis": "Use CAPS for emphasis on key words, but sparingly",
-            "pronunciation": "Spell difficult words phonetically: 'Kah-reen' for 'Karine'"
+            "pronunciation": "Spell difficult words phonetically: 'Kah-reen' for 'Karine'",
         }
-    
+
     @staticmethod
     def get_image_preparation_tips() -> Dict[str, str]:
         """Get tips for preparing source images for maximum realism."""
@@ -121,9 +119,9 @@ class RealisticOptimizations:
             "angle": "Use front-facing or slight 3/4 angle shots",
             "expression": "Start with neutral expression for best results",
             "background": "Clean, simple backgrounds work best",
-            "quality": "Avoid blurry, pixelated, or heavily compressed images"
+            "quality": "Avoid blurry, pixelated, or heavily compressed images",
         }
-    
+
     @staticmethod
     def get_audio_optimization_tips() -> Dict[str, str]:
         """Get tips for optimizing audio for realistic lip-sync."""
@@ -133,9 +131,9 @@ class RealisticOptimizations:
             "pacing": "Speak at natural conversational pace (150-160 WPM)",
             "volume": "Maintain consistent volume levels",
             "format": "Use WAV or high-quality MP3 (320kbps)",
-            "length": "Keep segments under 2 minutes for best processing"
+            "length": "Keep segments under 2 minutes for best processing",
         }
-    
+
     @staticmethod
     def get_post_processing_enhancements() -> Dict[str, Any]:
         """Get post-processing settings for camera-like realism."""
@@ -144,29 +142,30 @@ class RealisticOptimizations:
                 "enabled": True,
                 "type": "subtle_zoom",  # Gentle zoom in/out
                 "intensity": 0.02,  # Very subtle
-                "duration": 10  # 10-second cycles
+                "duration": 10,  # 10-second cycles
             },
             "lighting_simulation": {
                 "enabled": True,
                 "type": "soft_shadows",
-                "intensity": 0.15
+                "intensity": 0.15,
             },
             "background_audio": {
                 "enabled": True,
                 "type": "room_tone",
-                "volume": 0.05  # Very quiet ambient sound
+                "volume": 0.05,  # Very quiet ambient sound
             },
             "color_grading": {
                 "enabled": True,
                 "warmth": 1.05,  # Slightly warm
                 "contrast": 1.02,  # Subtle contrast boost
-                "saturation": 0.98  # Slightly desaturated for realism
-            }
+                "saturation": 0.98,  # Slightly desaturated for realism
+            },
         }
+
 
 class RealisticWorkflow:
     """Complete workflow for creating ultra-realistic avatars."""
-    
+
     @staticmethod
     def get_step_by_step_workflow() -> Dict[str, Any]:
         """Get complete step-by-step workflow for realistic avatar creation."""
@@ -177,8 +176,8 @@ class RealisticWorkflow:
                     "Select high-resolution image (1080p+)",
                     "Ensure good lighting and clear facial features",
                     "Use front-facing or slight angle",
-                    "Clean background preferred"
-                ]
+                    "Clean background preferred",
+                ],
             },
             "step_2_script": {
                 "title": "Optimize Script for Natural Speech",
@@ -186,8 +185,8 @@ class RealisticWorkflow:
                     "Add natural pauses with punctuation",
                     "Include conversational filler words",
                     "Use contractions and natural language",
-                    "Keep segments under 2 minutes"
-                ]
+                    "Keep segments under 2 minutes",
+                ],
             },
             "step_3_audio": {
                 "title": "Generate or Prepare High-Quality Audio",
@@ -195,8 +194,8 @@ class RealisticWorkflow:
                     "Use high-quality TTS or recording",
                     "Maintain consistent volume",
                     "Add subtle room tone background",
-                    "Export as WAV or high-quality MP3"
-                ]
+                    "Export as WAV or high-quality MP3",
+                ],
             },
             "step_4_generation": {
                 "title": "Generate Avatar with Optimal Settings",
@@ -204,8 +203,8 @@ class RealisticWorkflow:
                     "Use RealisticLinlyConfig.get_ultra_realistic_config()",
                     "Enable all enhancement features",
                     "Set quality to ULTRA",
-                    "Use GPU acceleration if available"
-                ]
+                    "Use GPU acceleration if available",
+                ],
             },
             "step_5_post_processing": {
                 "title": "Apply Camera-Like Post-Processing",
@@ -213,11 +212,11 @@ class RealisticWorkflow:
                     "Add subtle camera motion effects",
                     "Apply soft lighting simulation",
                     "Include background room tone",
-                    "Apply natural color grading"
-                ]
-            }
+                    "Apply natural color grading",
+                ],
+            },
         }
-    
+
     @staticmethod
     def get_quality_checklist() -> Dict[str, bool]:
         """Get quality checklist for realistic avatar validation."""
@@ -231,8 +230,9 @@ class RealisticWorkflow:
             "video_quality_high": False,  # Check resolution and clarity
             "no_artifacts": False,  # Verify no visual glitches
             "natural_pacing": False,  # Check speech pacing
-            "professional_output": False  # Overall professional quality
+            "professional_output": False,  # Overall professional quality
         }
+
 
 # Example usage configurations
 REALISTIC_CONFIGS = {
@@ -240,13 +240,15 @@ REALISTIC_CONFIGS = {
     "conversational": RealisticLinlyConfig.get_conversational_config(),
     "professional": RealisticLinlyConfig.get_professional_config(),
     "expressive_happy": RealisticLinlyConfig.get_expressive_config(EmotionType.HAPPY),
-    "expressive_neutral": RealisticLinlyConfig.get_expressive_config(EmotionType.NEUTRAL)
+    "expressive_neutral": RealisticLinlyConfig.get_expressive_config(
+        EmotionType.NEUTRAL
+    ),
 }
 
 # Export for easy import
 __all__ = [
-    'RealisticLinlyConfig',
-    'RealisticOptimizations', 
-    'RealisticWorkflow',
-    'REALISTIC_CONFIGS'
+    "RealisticLinlyConfig",
+    "RealisticOptimizations",
+    "RealisticWorkflow",
+    "REALISTIC_CONFIGS",
 ]

@@ -5,164 +5,156 @@ Web-based dashboard for monitoring RouteLL API usage, credits, and performance
 """
 
 import json
-import sqlite3
-from datetime import datetime, timedelta
-from flask import Flask, render_template, jsonify, request
-from typing import Dict, List
 import os
+import sqlite3
 import sys
+from datetime import datetime, timedelta
+from typing import Dict, List
+
+from flask import Flask, jsonify, render_template, request
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from monitoring.routellm_monitor import CreditMonitor
 from integrations.routellm_client import RouteLL_Client
+from monitoring.routellm_monitor import CreditMonitor
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('ROUTELLM_SECRET_KEY', os.urandom(24).hex())
+app.secret_key = os.environ.get("ROUTELLM_SECRET_KEY", os.urandom(24).hex())
 
 # Initialize components
 monitor = CreditMonitor()
 client = RouteLL_Client()
 
-@app.route('/')
+
+@app.route("/")
 def dashboard():
     """Main dashboard page"""
-    return render_template('dashboard.html')
+    return render_template("dashboard.html")
 
-@app.route('/api/status')
+
+@app.route("/api/status")
 def api_status():
     """Get current API status and usage"""
     try:
         client_status = client.get_status()
         usage_summary = monitor.get_usage_summary(days=1)
         recent_alerts = monitor.get_recent_alerts(hours=24)
-        
-        return jsonify({
-            'success': True,
-            'data': {
-                'client_status': client_status,
-                'usage_summary': usage_summary,
-                'recent_alerts': recent_alerts,
-                'timestamp': datetime.now().isoformat()
-            }
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
 
-@app.route('/api/usage/<int:days>')
+        return jsonify(
+            {
+                "success": True,
+                "data": {
+                    "client_status": client_status,
+                    "usage_summary": usage_summary,
+                    "recent_alerts": recent_alerts,
+                    "timestamp": datetime.now().isoformat(),
+                },
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/usage/<int:days>")
 def usage_data(days):
     """Get usage data for specified number of days"""
     try:
         if days > 90:  # Limit to 90 days
             days = 90
-        
-        usage_summary = monitor.get_usage_summary(days=days)
-        return jsonify({
-            'success': True,
-            'data': usage_summary
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
 
-@app.route('/api/alerts/<int:hours>')
+        usage_summary = monitor.get_usage_summary(days=days)
+        return jsonify({"success": True, "data": usage_summary})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/alerts/<int:hours>")
 def alerts_data(hours):
     """Get alerts for specified number of hours"""
     try:
         if hours > 720:  # Limit to 30 days
             hours = 720
-        
-        alerts = monitor.get_recent_alerts(hours=hours)
-        return jsonify({
-            'success': True,
-            'data': alerts
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
 
-@app.route('/api/optimization')
+        alerts = monitor.get_recent_alerts(hours=hours)
+        return jsonify({"success": True, "data": alerts})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/optimization")
 def optimization_recommendations():
     """Get optimization recommendations"""
     try:
         recommendations = client.optimize_for_credits()
-        return jsonify({
-            'success': True,
-            'data': recommendations
-        })
+        return jsonify({"success": True, "data": recommendations})
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+        return jsonify({"success": False, "error": str(e)}), 500
 
-@app.route('/api/test_request', methods=['POST'])
+
+@app.route("/api/test_request", methods=["POST"])
 def test_request():
     """Test API request endpoint"""
     try:
         data = request.get_json()
-        message = data.get('message', 'Hello, this is a test message.')
-        model = data.get('model', 'route-llm')
-        
-        messages = [
-            {"role": "user", "content": message}
-        ]
-        
-        response = client.chat_completion(messages, model=model)
-        
-        return jsonify({
-            'success': True,
-            'data': {
-                'response': response.__dict__ if hasattr(response, '__dict__') else str(response),
-                'timestamp': datetime.now().isoformat()
-            }
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+        message = data.get("message", "Hello, this is a test message.")
+        model = data.get("model", "route-llm")
 
-@app.route('/api/models')
+        messages = [{"role": "user", "content": message}]
+
+        response = client.chat_completion(messages, model=model)
+
+        return jsonify(
+            {
+                "success": True,
+                "data": {
+                    "response": (
+                        response.__dict__
+                        if hasattr(response, "__dict__")
+                        else str(response)
+                    ),
+                    "timestamp": datetime.now().isoformat(),
+                },
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/models")
 def available_models():
     """Get available models information"""
     try:
-        config_path = "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
-        with open(config_path, 'r') as f:
+        config_path = (
+            "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
+        )
+        with open(config_path, "r") as f:
             config = json.load(f)
-        
-        unlimited_models = config['credit_system']['unlimited_models']
-        premium_models = config['credit_system']['high_cost_models']
-        
-        return jsonify({
-            'success': True,
-            'data': {
-                'unlimited_models': unlimited_models,
-                'premium_models': premium_models,
-                'default_model': config['api_settings']['default_model']
-            }
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
 
-if __name__ == '__main__':
+        unlimited_models = config["credit_system"]["unlimited_models"]
+        premium_models = config["credit_system"]["high_cost_models"]
+
+        return jsonify(
+            {
+                "success": True,
+                "data": {
+                    "unlimited_models": unlimited_models,
+                    "premium_models": premium_models,
+                    "default_model": config["api_settings"]["default_model"],
+                },
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+if __name__ == "__main__":
     # Create templates directory and HTML template
-    templates_dir = os.path.join(os.path.dirname(__file__), 'templates')
+    templates_dir = os.path.join(os.path.dirname(__file__), "templates")
     os.makedirs(templates_dir, exist_ok=True)
-    
+
     # Create the dashboard HTML template
-    dashboard_html = '''
+    dashboard_html = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -730,11 +722,11 @@ if __name__ == '__main__':
     </script>
 </body>
 </html>
-    '''
-    
-    with open(os.path.join(templates_dir, 'dashboard.html'), 'w') as f:
+    """
+
+    with open(os.path.join(templates_dir, "dashboard.html"), "w") as f:
         f.write(dashboard_html)
-    
+
     print("🚀 Starting RouteLL Dashboard...")
     print("📊 Dashboard will be available at: http://localhost:5000")
     print("🔄 Auto-refresh enabled every 30 seconds")
@@ -744,12 +736,12 @@ if __name__ == '__main__':
     print("   - Alert management")
     print("   - API testing interface")
     print("   - Model optimization recommendations")
-    
+
     # Start monitoring in background
     monitor.start_monitoring()
-    
+
     try:
-        app.run(debug=True, host='0.0.0.0', port=5000)
+        app.run(debug=True, host="0.0.0.0", port=5000)
     except KeyboardInterrupt:
         print("\n🛑 Shutting down dashboard...")
     finally:

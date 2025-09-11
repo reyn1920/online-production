@@ -12,11 +12,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load production environment variables
-load_dotenv('.env.production', override=True)
+load_dotenv(".env.production", override=True)
 
 # Set environment to production
-os.environ['ENVIRONMENT'] = 'production'
-os.environ['USE_MOCK'] = 'false'
+os.environ["ENVIRONMENT"] = "production"
+os.environ["USE_MOCK"] = "false"
 
 print("🚀 Starting TRAE.AI in Production Mode...")
 print(f"Environment: {os.getenv('ENVIRONMENT')}")
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     try:
         # Import main after environment is set
         import main
+
         print("✅ Production environment loaded successfully")
     except Exception as e:
         print(f"❌ Failed to start production application: {e}")

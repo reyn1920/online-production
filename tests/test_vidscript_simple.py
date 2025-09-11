@@ -3,8 +3,8 @@
 Simple VidScriptPro Test
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # Add backend to path
@@ -14,15 +14,16 @@ logging.basicConfig(level=logging.INFO)
 
 try:
     from backend.content.vidscript_pro import VidScriptPro
+
     print("✅ VidScriptPro imports successful")
-    
+
     script_gen = VidScriptPro()
     print("✅ VidScriptPro initialized successfully")
-    
+
     # Check available attributes
-    attrs = [attr for attr in dir(script_gen) if not attr.startswith('_')]
+    attrs = [attr for attr in dir(script_gen) if not attr.startswith("_")]
     print(f"📊 Available attributes: {attrs[:10]}...")  # Show first 10
-    
+
     # Test simple script generation
     print("\n🎬 Testing script generation...")
     try:
@@ -31,8 +32,9 @@ try:
         print(f"Sample: {result[:100]}...")
     except Exception as e:
         print(f"❌ Script generation failed: {e}")
-        
+
 except Exception as e:
     print(f"❌ Test failed: {e}")
     import traceback
+
     traceback.print_exc()

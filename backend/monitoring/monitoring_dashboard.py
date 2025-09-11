@@ -6,312 +6,355 @@ Provides real-time monitoring, alerting, and system status visualization
 
 import asyncio
 import json
-import time
-from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
-from pathlib import Path
 import logging
 import os
-from flask import Flask, render_template, jsonify, request, Response
+import statistics
+import threading
+import time
+from collections import defaultdict
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from alert_manager import AlertCategory, AlertSeverity, AlertStatus, alert_manager
+from audit_logger import audit_logger
+from compliance_monitor import compliance_monitor
+from flask import Flask, Response, jsonify, render_template, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
-import threading
-from collections import defaultdict
-import statistics
+from health_monitor import HealthStatus, health_monitor
 
-from alert_manager import alert_manager, AlertSeverity, AlertCategory, AlertStatus
-from health_monitor import health_monitor, HealthStatus
-from compliance_monitor import compliance_monitor
-from audit_logger import audit_logger
 
 class MonitoringDashboard:
     """Web-based monitoring dashboard"""
-    
-    def __init__(self, host: str = '0.0.0.0', port: int = 8080, debug: bool = False):
+
+    def __init__(self, host: str = "0.0.0.0", port: int = 8080, debug: bool = False):
         self.host = host
         self.port = port
         self.debug = debug
-        
+
         # Initialize Flask app
-        self.app = Flask(__name__, 
-                        template_folder='templates',
-                        static_folder='static')
-        self.app.config['SECRET_KEY'] = os.getenv('DASHBOARD_SECRET_KEY', 'monitoring-dashboard-secret')
-        
+        self.app = Flask(__name__, template_folder="templates", static_folder="static")
+        self.app.config["SECRET_KEY"] = os.getenv(
+            "DASHBOARD_SECRET_KEY", "monitoring-dashboard-secret"
+        )
+
         # Enable CORS
         CORS(self.app)
-        
+
         # Initialize SocketIO for real-time updates
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
-        
+
         # Setup logging
-        self.logger = logging.getLogger('monitoring_dashboard')
+        self.logger = logging.getLogger("monitoring_dashboard")
         self.logger.setLevel(logging.INFO)
-        
+
         # Dashboard state
         self.connected_clients = set()
         self.last_broadcast = 0
         self.broadcast_interval = 5  # seconds
-        
+
         # Setup routes
         self._setup_routes()
         self._setup_socketio_events()
-        
+
         # Start background tasks
         self._start_background_tasks()
-    
+
     def _setup_routes(self):
         """Setup Flask routes"""
-        
-        @self.app.route('/')
+
+        @self.app.route("/")
         def dashboard():
             """Main dashboard page"""
             return self._render_dashboard_template()
-        
-        @self.app.route('/api/health')
+
+        @self.app.route("/api/health")
         def api_health():
             """Health check endpoint"""
-            return jsonify({
-                'status': 'healthy',
-                'timestamp': datetime.now().isoformat(),
-                'version': '1.0.0'
-            })
-        
-        @self.app.route('/api/alerts')
+            return jsonify(
+                {
+                    "status": "healthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "version": "1.0.0",
+                }
+            )
+
+        @self.app.route("/api/alerts")
         def api_alerts():
             """Get alerts"""
-            status_filter = request.args.get('status', 'active')
-            limit = int(request.args.get('limit', 100))
-            
-            if status_filter == 'active':
+            status_filter = request.args.get("status", "active")
+            limit = int(request.args.get("limit", 100))
+
+            if status_filter == "active":
                 alerts = alert_manager.get_active_alerts()
-            elif status_filter == 'history':
+            elif status_filter == "history":
                 alerts = alert_manager.get_alert_history(limit)
             else:
-                alerts = alert_manager.get_active_alerts() + alert_manager.get_alert_history(limit)
-            
-            return jsonify({
-                'alerts': [self._serialize_alert(alert) for alert in alerts],
-                'total': len(alerts),
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.app.route('/api/alerts/<alert_id>/acknowledge', methods=['POST'])
+                alerts = (
+                    alert_manager.get_active_alerts()
+                    + alert_manager.get_alert_history(limit)
+                )
+
+            return jsonify(
+                {
+                    "alerts": [self._serialize_alert(alert) for alert in alerts],
+                    "total": len(alerts),
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
+
+        @self.app.route("/api/alerts/<alert_id>/acknowledge", methods=["POST"])
         def api_acknowledge_alert(alert_id):
             """Acknowledge an alert"""
             data = request.get_json() or {}
-            acknowledged_by = data.get('acknowledged_by', 'dashboard_user')
-            
+            acknowledged_by = data.get("acknowledged_by", "dashboard_user")
+
             success = alert_manager.acknowledge_alert(alert_id, acknowledged_by)
-            
-            return jsonify({
-                'success': success,
-                'message': 'Alert acknowledged' if success else 'Alert not found',
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.app.route('/api/metrics')
+
+            return jsonify(
+                {
+                    "success": success,
+                    "message": "Alert acknowledged" if success else "Alert not found",
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
+
+        @self.app.route("/api/metrics")
         def api_metrics():
             """Get system metrics"""
-            metric_name = request.args.get('metric')
-            duration_hours = int(request.args.get('duration', 1))
-            
+            metric_name = request.args.get("metric")
+            duration_hours = int(request.args.get("duration", 1))
+
             if metric_name:
                 metrics = self._get_metric_history(metric_name, duration_hours)
             else:
                 metrics = self._get_all_current_metrics()
-            
-            return jsonify({
-                'metrics': metrics,
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.app.route('/api/system-status')
+
+            return jsonify(
+                {"metrics": metrics, "timestamp": datetime.now().isoformat()}
+            )
+
+        @self.app.route("/api/system-status")
         def api_system_status():
             """Get system status"""
             return jsonify(self._get_system_status())
-        
-        @self.app.route('/api/compliance')
+
+        @self.app.route("/api/compliance")
         def api_compliance():
             """Get compliance status"""
             report = compliance_monitor.get_compliance_report()
-            return jsonify({
-                'compliance': report,
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.app.route('/api/monitoring-report')
+            return jsonify(
+                {"compliance": report, "timestamp": datetime.now().isoformat()}
+            )
+
+        @self.app.route("/api/monitoring-report")
         def api_monitoring_report():
             """Get comprehensive monitoring report"""
             report = alert_manager.get_monitoring_report()
             return jsonify(report)
-        
-        @self.app.route('/api/alert-rules')
+
+        @self.app.route("/api/alert-rules")
         def api_alert_rules():
             """Get alert rules"""
             rules = []
             for rule_id, rule in alert_manager.alert_rules.items():
-                rules.append({
-                    'rule_id': rule_id,
-                    'name': rule.name,
-                    'description': rule.description,
-                    'category': rule.category.value,
-                    'severity': rule.severity.value,
-                    'enabled': rule.enabled,
-                    'threshold': rule.threshold,
-                    'duration_seconds': rule.duration_seconds,
-                    'cooldown_seconds': rule.cooldown_seconds,
-                    'tags': rule.tags
-                })
-            
-            return jsonify({
-                'rules': rules,
-                'total': len(rules),
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.app.route('/api/create-test-alert', methods=['POST'])
+                rules.append(
+                    {
+                        "rule_id": rule_id,
+                        "name": rule.name,
+                        "description": rule.description,
+                        "category": rule.category.value,
+                        "severity": rule.severity.value,
+                        "enabled": rule.enabled,
+                        "threshold": rule.threshold,
+                        "duration_seconds": rule.duration_seconds,
+                        "cooldown_seconds": rule.cooldown_seconds,
+                        "tags": rule.tags,
+                    }
+                )
+
+            return jsonify(
+                {
+                    "rules": rules,
+                    "total": len(rules),
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
+
+        @self.app.route("/api/create-test-alert", methods=["POST"])
         def api_create_test_alert():
             """Create a test alert for demonstration"""
             data = request.get_json() or {}
-            
+
             from alert_manager import create_custom_alert
-            
+
             alert_id = create_custom_alert(
-                title=data.get('title', 'Test Alert'),
-                description=data.get('description', 'This is a test alert created from the dashboard'),
-                severity=AlertSeverity(data.get('severity', 'warning')),
-                category=AlertCategory(data.get('category', 'application'))
+                title=data.get("title", "Test Alert"),
+                description=data.get(
+                    "description", "This is a test alert created from the dashboard"
+                ),
+                severity=AlertSeverity(data.get("severity", "warning")),
+                category=AlertCategory(data.get("category", "application")),
             )
-            
-            return jsonify({
-                'success': True,
-                'alert_id': alert_id,
-                'message': 'Test alert created successfully',
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.app.route('/api/export-data')
+
+            return jsonify(
+                {
+                    "success": True,
+                    "alert_id": alert_id,
+                    "message": "Test alert created successfully",
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
+
+        @self.app.route("/api/export-data")
         def api_export_data():
             """Export monitoring data"""
-            export_type = request.args.get('type', 'json')
-            
+            export_type = request.args.get("type", "json")
+
             data = {
-                'export_timestamp': datetime.now().isoformat(),
-                'system_status': self._get_system_status(),
-                'active_alerts': [self._serialize_alert(alert) for alert in alert_manager.get_active_alerts()],
-                'alert_history': [self._serialize_alert(alert) for alert in alert_manager.get_alert_history(1000)],
-                'compliance_report': compliance_monitor.get_compliance_report(),
-                'monitoring_report': alert_manager.get_monitoring_report()
+                "export_timestamp": datetime.now().isoformat(),
+                "system_status": self._get_system_status(),
+                "active_alerts": [
+                    self._serialize_alert(alert)
+                    for alert in alert_manager.get_active_alerts()
+                ],
+                "alert_history": [
+                    self._serialize_alert(alert)
+                    for alert in alert_manager.get_alert_history(1000)
+                ],
+                "compliance_report": compliance_monitor.get_compliance_report(),
+                "monitoring_report": alert_manager.get_monitoring_report(),
             }
-            
-            if export_type == 'json':
+
+            if export_type == "json":
                 response = Response(
                     json.dumps(data, indent=2),
-                    mimetype='application/json',
-                    headers={'Content-Disposition': f'attachment; filename=monitoring_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'}
+                    mimetype="application/json",
+                    headers={
+                        "Content-Disposition": f'attachment; filename=monitoring_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+                    },
                 )
             else:
                 # Could add CSV export here
-                response = jsonify({'error': 'Unsupported export type'})
-            
+                response = jsonify({"error": "Unsupported export type"})
+
             return response
-    
+
     def _setup_socketio_events(self):
         """Setup SocketIO events for real-time updates"""
-        
-        @self.socketio.on('connect')
+
+        @self.socketio.on("connect")
         def handle_connect():
             """Handle client connection"""
             self.connected_clients.add(request.sid)
             self.logger.info(f"Client connected: {request.sid}")
-            
+
             # Send initial data
-            emit('system_status', self._get_system_status())
-            emit('alerts_update', {
-                'active_alerts': [self._serialize_alert(alert) for alert in alert_manager.get_active_alerts()],
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        @self.socketio.on('disconnect')
+            emit("system_status", self._get_system_status())
+            emit(
+                "alerts_update",
+                {
+                    "active_alerts": [
+                        self._serialize_alert(alert)
+                        for alert in alert_manager.get_active_alerts()
+                    ],
+                    "timestamp": datetime.now().isoformat(),
+                },
+            )
+
+        @self.socketio.on("disconnect")
         def handle_disconnect():
             """Handle client disconnection"""
             self.connected_clients.discard(request.sid)
             self.logger.info(f"Client disconnected: {request.sid}")
-        
-        @self.socketio.on('subscribe_metrics')
+
+        @self.socketio.on("subscribe_metrics")
         def handle_subscribe_metrics(data):
             """Handle metrics subscription"""
-            metric_names = data.get('metrics', [])
+            metric_names = data.get("metrics", [])
             # Store subscription preferences per client
             # This could be expanded to send only requested metrics
-            emit('metrics_update', self._get_all_current_metrics())
-        
-        @self.socketio.on('acknowledge_alert')
+            emit("metrics_update", self._get_all_current_metrics())
+
+        @self.socketio.on("acknowledge_alert")
         def handle_acknowledge_alert(data):
             """Handle alert acknowledgment via WebSocket"""
-            alert_id = data.get('alert_id')
-            acknowledged_by = data.get('acknowledged_by', 'dashboard_user')
-            
+            alert_id = data.get("alert_id")
+            acknowledged_by = data.get("acknowledged_by", "dashboard_user")
+
             if alert_id:
                 success = alert_manager.acknowledge_alert(alert_id, acknowledged_by)
-                emit('alert_acknowledged', {
-                    'alert_id': alert_id,
-                    'success': success,
-                    'timestamp': datetime.now().isoformat()
-                })
-                
+                emit(
+                    "alert_acknowledged",
+                    {
+                        "alert_id": alert_id,
+                        "success": success,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                )
+
                 # Broadcast update to all clients
                 self._broadcast_alerts_update()
-    
+
     def _start_background_tasks(self):
         """Start background tasks for real-time updates"""
+
         def broadcast_loop():
             """Background task to broadcast updates to connected clients"""
             while True:
                 try:
-                    if self.connected_clients and time.time() - self.last_broadcast >= self.broadcast_interval:
+                    if (
+                        self.connected_clients
+                        and time.time() - self.last_broadcast >= self.broadcast_interval
+                    ):
                         self._broadcast_system_updates()
                         self.last_broadcast = time.time()
-                    
+
                     time.sleep(1)
-                    
+
                 except Exception as e:
                     self.logger.error(f"Error in broadcast loop: {str(e)}")
                     time.sleep(5)
-        
+
         # Start broadcast thread
         broadcast_thread = threading.Thread(target=broadcast_loop, daemon=True)
         broadcast_thread.start()
-    
+
     def _broadcast_system_updates(self):
         """Broadcast system updates to all connected clients"""
         if not self.connected_clients:
             return
-        
+
         try:
             # Broadcast system status
-            self.socketio.emit('system_status', self._get_system_status())
-            
+            self.socketio.emit("system_status", self._get_system_status())
+
             # Broadcast metrics
-            self.socketio.emit('metrics_update', self._get_all_current_metrics())
-            
+            self.socketio.emit("metrics_update", self._get_all_current_metrics())
+
             # Broadcast alerts if there are changes
             self._broadcast_alerts_update()
-            
+
         except Exception as e:
             self.logger.error(f"Error broadcasting updates: {str(e)}")
-    
+
     def _broadcast_alerts_update(self):
         """Broadcast alerts update"""
         try:
-            self.socketio.emit('alerts_update', {
-                'active_alerts': [self._serialize_alert(alert) for alert in alert_manager.get_active_alerts()],
-                'timestamp': datetime.now().isoformat()
-            })
+            self.socketio.emit(
+                "alerts_update",
+                {
+                    "active_alerts": [
+                        self._serialize_alert(alert)
+                        for alert in alert_manager.get_active_alerts()
+                    ],
+                    "timestamp": datetime.now().isoformat(),
+                },
+            )
         except Exception as e:
             self.logger.error(f"Error broadcasting alerts update: {str(e)}")
-    
+
     def _render_dashboard_template(self) -> str:
         """Render dashboard HTML template"""
         # For now, return a simple HTML template
@@ -636,153 +679,165 @@ class MonitoringDashboard:
 </body>
 </html>
         """
-    
+
     def _serialize_alert(self, alert) -> Dict[str, Any]:
         """Serialize alert object to dictionary"""
         return {
-            'alert_id': alert.alert_id,
-            'rule_id': alert.rule_id,
-            'title': alert.title,
-            'description': alert.description,
-            'category': alert.category.value,
-            'severity': alert.severity.value,
-            'status': alert.status.value,
-            'created_at': alert.created_at,
-            'updated_at': alert.updated_at,
-            'resolved_at': alert.resolved_at,
-            'acknowledged_at': alert.acknowledged_at,
-            'acknowledged_by': alert.acknowledged_by,
-            'current_value': alert.current_value,
-            'threshold': alert.threshold,
-            'metadata': alert.metadata,
-            'escalation_level': alert.escalation_level
+            "alert_id": alert.alert_id,
+            "rule_id": alert.rule_id,
+            "title": alert.title,
+            "description": alert.description,
+            "category": alert.category.value,
+            "severity": alert.severity.value,
+            "status": alert.status.value,
+            "created_at": alert.created_at,
+            "updated_at": alert.updated_at,
+            "resolved_at": alert.resolved_at,
+            "acknowledged_at": alert.acknowledged_at,
+            "acknowledged_by": alert.acknowledged_by,
+            "current_value": alert.current_value,
+            "threshold": alert.threshold,
+            "metadata": alert.metadata,
+            "escalation_level": alert.escalation_level,
         }
-    
+
     def _get_system_status(self) -> Dict[str, Any]:
         """Get current system status"""
         from alert_manager import get_system_health_summary
-        
+
         health_summary = get_system_health_summary()
         health_status = health_monitor.get_system_health()
-        
+
         return {
-            'cpu_percent': health_summary.get('cpu_percent', 0),
-            'memory_percent': health_summary.get('memory_percent', 0),
-            'disk_percent': health_summary.get('disk_percent', 0),
-            'health_score': health_summary.get('health_score', 0),
-            'active_alerts': health_summary.get('active_alerts', 0),
-            'monitoring_active': health_summary.get('monitoring_active', False),
-            'uptime_hours': getattr(health_status, 'uptime_hours', 0),
-            'response_time_ms': getattr(health_status, 'response_time_ms', 0),
-            'compliance_score': alert_manager._get_latest_metric_value('compliance.score', 0),
-            'timestamp': datetime.now().isoformat()
+            "cpu_percent": health_summary.get("cpu_percent", 0),
+            "memory_percent": health_summary.get("memory_percent", 0),
+            "disk_percent": health_summary.get("disk_percent", 0),
+            "health_score": health_summary.get("health_score", 0),
+            "active_alerts": health_summary.get("active_alerts", 0),
+            "monitoring_active": health_summary.get("monitoring_active", False),
+            "uptime_hours": getattr(health_status, "uptime_hours", 0),
+            "response_time_ms": getattr(health_status, "response_time_ms", 0),
+            "compliance_score": alert_manager._get_latest_metric_value(
+                "compliance.score", 0
+            ),
+            "timestamp": datetime.now().isoformat(),
         }
-    
+
     def _get_all_current_metrics(self) -> Dict[str, Any]:
         """Get all current metrics"""
         metrics = {}
-        
+
         for metric_name, metric_buffer in alert_manager.metrics_buffer.items():
             if metric_buffer:
                 latest_point = metric_buffer[-1]
                 metrics[metric_name] = {
-                    'value': latest_point.value,
-                    'timestamp': latest_point.timestamp,
-                    'labels': latest_point.labels
+                    "value": latest_point.value,
+                    "timestamp": latest_point.timestamp,
+                    "labels": latest_point.labels,
                 }
-        
+
         # Add calculated metrics
-        metrics['cpu_percent'] = alert_manager._get_latest_metric_value('system.cpu_percent', 0)
-        metrics['memory_percent'] = alert_manager._get_latest_metric_value('system.memory_percent', 0)
-        metrics['disk_percent'] = alert_manager._get_latest_metric_value('system.disk_percent', 0)
-        metrics['health_score'] = alert_manager._get_latest_metric_value('health.overall_score', 0)
-        
+        metrics["cpu_percent"] = alert_manager._get_latest_metric_value(
+            "system.cpu_percent", 0
+        )
+        metrics["memory_percent"] = alert_manager._get_latest_metric_value(
+            "system.memory_percent", 0
+        )
+        metrics["disk_percent"] = alert_manager._get_latest_metric_value(
+            "system.disk_percent", 0
+        )
+        metrics["health_score"] = alert_manager._get_latest_metric_value(
+            "health.overall_score", 0
+        )
+
         return metrics
-    
-    def _get_metric_history(self, metric_name: str, duration_hours: int) -> List[Dict[str, Any]]:
+
+    def _get_metric_history(
+        self, metric_name: str, duration_hours: int
+    ) -> List[Dict[str, Any]]:
         """Get metric history for specified duration"""
         if metric_name not in alert_manager.metrics_buffer:
             return []
-        
+
         cutoff_time = time.time() - (duration_hours * 3600)
         history = []
-        
+
         for point in alert_manager.metrics_buffer[metric_name]:
             if point.timestamp >= cutoff_time:
-                history.append({
-                    'timestamp': point.timestamp,
-                    'value': point.value,
-                    'labels': point.labels
-                })
-        
+                history.append(
+                    {
+                        "timestamp": point.timestamp,
+                        "value": point.value,
+                        "labels": point.labels,
+                    }
+                )
+
         return history
-    
+
     def run(self):
         """Run the dashboard server"""
         self.logger.info(f"Starting monitoring dashboard on {self.host}:{self.port}")
-        
+
         # Log audit event
         audit_logger.log_security_event(
-            event_type='dashboard_started',
-            severity='info',
-            additional_data={
-                'host': self.host,
-                'port': self.port,
-                'debug': self.debug
-            }
+            event_type="dashboard_started",
+            severity="info",
+            additional_data={"host": self.host, "port": self.port, "debug": self.debug},
         )
-        
+
         try:
             self.socketio.run(
                 self.app,
                 host=self.host,
                 port=self.port,
                 debug=self.debug,
-                allow_unsafe_werkzeug=True  # For development only
+                allow_unsafe_werkzeug=True,  # For development only
             )
         except Exception as e:
             self.logger.error(f"Error running dashboard: {str(e)}")
             raise
-    
+
     def stop(self):
         """Stop the dashboard server"""
         self.logger.info("Stopping monitoring dashboard")
-        
+
         # Log audit event
         audit_logger.log_security_event(
-            event_type='dashboard_stopped',
-            severity='info',
-            additional_data={}
+            event_type="dashboard_stopped", severity="info", additional_data={}
         )
+
 
 # Global dashboard instance
 dashboard = None
 
-def start_dashboard(host: str = '0.0.0.0', port: int = 8080, debug: bool = False):
+
+def start_dashboard(host: str = "0.0.0.0", port: int = 8080, debug: bool = False):
     """Start the monitoring dashboard"""
     global dashboard
-    
+
     if dashboard is None:
         dashboard = MonitoringDashboard(host=host, port=port, debug=debug)
-    
+
     dashboard.run()
+
 
 def stop_dashboard():
     """Stop the monitoring dashboard"""
     global dashboard
-    
+
     if dashboard:
         dashboard.stop()
         dashboard = None
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import argparse
-    
-    parser = argparse.ArgumentParser(description='System Monitoring Dashboard')
-    parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
-    parser.add_argument('--port', type=int, default=8080, help='Port to bind to')
-    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
-    
+
+    parser = argparse.ArgumentParser(description="System Monitoring Dashboard")
+    parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
+    parser.add_argument("--port", type=int, default=8080, help="Port to bind to")
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
+
     args = parser.parse_args()
-    
+
     start_dashboard(host=args.host, port=args.port, debug=args.debug)

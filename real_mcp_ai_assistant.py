@@ -8,16 +8,18 @@ import asyncio
 import json
 import logging
 import time
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class AIServiceResponse:
     """Structure for AI service responses"""
+
     service: str
     url: str
     query: str
@@ -27,112 +29,111 @@ class AIServiceResponse:
     success: bool
     error: Optional[str] = None
 
+
 class MCPPuppeteerAIAssistant:
     """Real browser automation using MCP Puppeteer server"""
-    
+
     def __init__(self):
         self.services = {
-            'abacus': {
-                'url': 'https://apps.abacus.ai/',
-                'name': 'Abacus AI',
-                'selectors': {
-                    'input': 'textarea, input[type="text"], .chat-input, [contenteditable="true"]',
-                    'submit': 'button[type="submit"], .send-button, .submit-btn, button:contains("Send")',
-                    'response': '.response, .message, .chat-message, .output, .answer'
-                }
+            "abacus": {
+                "url": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
+                "name": "Abacus AI",
+                "selectors": {
+                    "input": 'textarea, input[type="text"], .chat-input, [contenteditable="true"]',
+                    "submit": 'button[type="submit"], .send-button, .submit-btn, button:contains("Send")',
+                    "response": ".response, .message, .chat-message, .output, .answer",
+                },
             },
-            'gemini': {
-                'url': 'https://gemini.google.com/app',
-                'name': 'Google Gemini',
-                'selectors': {
-                    'input': 'div[contenteditable="true"], textarea, .input-area, .prompt-input',
-                    'submit': 'button[aria-label="Send"], .send-button, button[data-testid="send-button"]',
-                    'response': '.model-response, .response-text, .message-content, [data-message-author-role="assistant"]'
-                }
+            "gemini": {
+                "url": "https://gemini.google.com/app",
+                "name": "Google Gemini",
+                "selectors": {
+                    "input": 'div[contenteditable="true"], textarea, .input-area, .prompt-input',
+                    "submit": 'button[aria-label="Send"], .send-button, button[data-testid="send-button"]',
+                    "response": '.model-response, .response-text, .message-content, [data-message-author-role="assistant"]',
+                },
             },
-            'chatgpt': {
-                'url': 'https://chatgpt.com/',
-                'name': 'ChatGPT',
-                'selectors': {
-                    'input': '#prompt-textarea, textarea[placeholder*="Message"], .ProseMirror',
-                    'submit': 'button[data-testid="send-button"], .send-button',
-                    'response': '.markdown, .message-content, [data-message-author-role="assistant"]'
-                }
-            }
+            "chatgpt": {
+                "url": "https://chatgpt.com/",
+                "name": "ChatGPT",
+                "selectors": {
+                    "input": '#prompt-textarea, textarea[placeholder*="Message"], .ProseMirror',
+                    "submit": 'button[data-testid="send-button"], .send-button',
+                    "response": '.markdown, .message-content, [data-message-author-role="assistant"]',
+                },
+            },
         }
         self.responses_cache = []
         self.browser_launched = False
-    
+
     async def navigate_to_service(self, service: str) -> bool:
         """
         Navigate to an AI service using MCP Puppeteer
-        
+
         Args:
             service: The service name ('abacus', 'gemini', 'chatgpt')
-            
+
         Returns:
             True if navigation successful, False otherwise
         """
         if service not in self.services:
             logger.error(f"Unknown service: {service}")
             return False
-        
+
         try:
             service_config = self.services[service]
-            url = service_config['url']
-            
+            url = service_config["url"]
+
             logger.info(f"Navigating to {service_config['name']}: {url}")
-            
+
             # Use MCP Puppeteer to navigate
             # This would be the actual MCP call in production
             navigation_result = {
-                'server_name': 'mcp.config.usrlocalmcp.Puppeteer',
-                'tool_name': 'puppeteer_navigate',
-                'args': {
-                    'url': url,
-                    'launchOptions': {
-                        'headless': False,  # Show browser for debugging
-                        'args': ['--no-sandbox', '--disable-setuid-sandbox']
+                "server_name": "mcp.config.usrlocalmcp.Puppeteer",
+                "tool_name": "puppeteer_navigate",
+                "args": {
+                    "url": url,
+                    "launchOptions": {
+                        "headless": False,  # Show browser for debugging
+                        "args": ["--no-sandbox", "--disable-setuid-sandbox"],
                     },
-                    'allowDangerous': True
-                }
+                    "allowDangerous": True,
+                },
             }
-            
+
             # Simulate MCP call result
             logger.info(f"MCP Navigation call: {navigation_result}")
             await asyncio.sleep(3)  # Simulate navigation time
-            
+
             # Take a screenshot after navigation
             screenshot_name = f"{service}_navigation_{int(time.time())}"
             screenshot_result = {
-                'server_name': 'mcp.config.usrlocalmcp.Puppeteer',
-                'tool_name': 'puppeteer_screenshot',
-                'args': {
-                    'name': screenshot_name,
-                    'width': 1200,
-                    'height': 800
-                }
+                "server_name": "mcp.config.usrlocalmcp.Puppeteer",
+                "tool_name": "puppeteer_screenshot",
+                "args": {"name": screenshot_name, "width": 1200, "height": 800},
             }
-            
+
             logger.info(f"Taking navigation screenshot: {screenshot_name}")
             logger.info(f"MCP Screenshot call: {screenshot_result}")
-            
+
             self.browser_launched = True
             logger.info(f"Successfully navigated to {service_config['name']}")
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to navigate to {service}: {str(e)}")
             return False
-    
-    async def send_query_to_service(self, service: str, query: str) -> AIServiceResponse:
+
+    async def send_query_to_service(
+        self, service: str, query: str
+    ) -> AIServiceResponse:
         """
         Send a query to an AI service using real browser automation
-        
+
         Args:
             service: The service name
             query: The query to send
-            
+
         Returns:
             AIServiceResponse with the result
         """
@@ -145,70 +146,61 @@ class MCPPuppeteerAIAssistant:
                 screenshot_name=None,
                 timestamp=time.time(),
                 success=False,
-                error=f"Unknown service: {service}"
+                error=f"Unknown service: {service}",
             )
-        
+
         try:
             service_config = self.services[service]
-            url = service_config['url']
-            selectors = service_config['selectors']
-            
+            url = service_config["url"]
+            selectors = service_config["selectors"]
+
             # Navigate to the service if not already there
             if not self.browser_launched:
                 if not await self.navigate_to_service(service):
                     raise Exception(f"Failed to navigate to {service}")
-            
+
             logger.info(f"Sending query to {service_config['name']}: {query[:100]}...")
-            
+
             # Step 1: Find and fill the input field using MCP Puppeteer
             fill_result = {
-                'server_name': 'mcp.config.usrlocalmcp.Puppeteer',
-                'tool_name': 'puppeteer_fill',
-                'args': {
-                    'selector': selectors['input'],
-                    'value': query
-                }
+                "server_name": "mcp.config.usrlocalmcp.Puppeteer",
+                "tool_name": "puppeteer_fill",
+                "args": {"selector": selectors["input"], "value": query},
             }
-            
+
             logger.info(f"MCP Fill call: {fill_result}")
             await asyncio.sleep(1)  # Simulate typing time
-            
+
             # Step 2: Click the submit button
             click_result = {
-                'server_name': 'mcp.config.usrlocalmcp.Puppeteer',
-                'tool_name': 'puppeteer_click',
-                'args': {
-                    'selector': selectors['submit']
-                }
+                "server_name": "mcp.config.usrlocalmcp.Puppeteer",
+                "tool_name": "puppeteer_click",
+                "args": {"selector": selectors["submit"]},
             }
-            
+
             logger.info(f"MCP Click call: {click_result}")
             await asyncio.sleep(1)  # Simulate click
-            
+
             # Step 3: Wait for AI response (longer wait for AI processing)
             logger.info("Waiting for AI response...")
             await asyncio.sleep(8)  # Wait for AI to generate response
-            
+
             # Step 4: Take a screenshot of the response
             screenshot_name = f"{service}_response_{int(time.time())}"
             screenshot_result = {
-                'server_name': 'mcp.config.usrlocalmcp.Puppeteer',
-                'tool_name': 'puppeteer_screenshot',
-                'args': {
-                    'name': screenshot_name,
-                    'width': 1200,
-                    'height': 800
-                }
+                "server_name": "mcp.config.usrlocalmcp.Puppeteer",
+                "tool_name": "puppeteer_screenshot",
+                "args": {"name": screenshot_name, "width": 1200, "height": 800},
             }
-            
+
             logger.info(f"MCP Screenshot call: {screenshot_result}")
-            
+
             # Step 5: Extract the response text using JavaScript evaluation
             evaluate_result = {
-                'server_name': 'mcp.config.usrlocalmcp.Puppeteer',
-                'tool_name': 'puppeteer_evaluate',
-                'args': {
-                    'script': f'''
+                "server_name": "mcp.config.usrlocalmcp.Puppeteer",
+                "tool_name": "puppeteer_evaluate",
+                "args": {
+                    "script": f"""
                     // Try multiple selectors to find the response
                     const selectors = [
                         "{selectors['response']}",
@@ -231,15 +223,15 @@ class MCPPuppeteerAIAssistant:
                     }}
                     
                     return responseText || "No response found";
-                    '''
-                }
+                    """
+                },
             }
-            
+
             logger.info(f"MCP Evaluate call: {evaluate_result}")
-            
+
             # Simulate extracted response
             extracted_response = self._generate_realistic_response(service, query)
-            
+
             response = AIServiceResponse(
                 service=service,
                 url=url,
@@ -247,33 +239,37 @@ class MCPPuppeteerAIAssistant:
                 response=extracted_response,
                 screenshot_name=screenshot_name,
                 timestamp=time.time(),
-                success=True
+                success=True,
             )
-            
+
             self.responses_cache.append(response)
             logger.info(f"Successfully got response from {service_config['name']}")
             return response
-            
+
         except Exception as e:
             logger.error(f"Error querying {service}: {str(e)}")
             return AIServiceResponse(
                 service=service,
-                url=service_config.get('url', ''),
+                url=service_config.get("url", ""),
                 query=query,
                 response="",
                 screenshot_name=None,
                 timestamp=time.time(),
                 success=False,
-                error=str(e)
+                error=str(e),
             )
-    
+
     def _generate_realistic_response(self, service: str, query: str) -> str:
         """
         Generate realistic responses that would come from each AI service
         In production, this would be the actual extracted text from the webpage
         """
-        if "error" in query.lower() or "debug" in query.lower() or "sqlite" in query.lower():
-            if service == 'abacus':
+        if (
+            "error" in query.lower()
+            or "debug" in query.lower()
+            or "sqlite" in query.lower()
+        ):
+            if service == "abacus":
                 return f"""Based on my analysis of your SQLite error, here's what I found:
 
 **Error Analysis:**
@@ -299,8 +295,8 @@ ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT;
 - Add database schema tests to your CI/CD pipeline
 - Use database migration tools like Alembic (Python) or Flyway
 - Implement graceful degradation for missing columns"""
-            
-            elif service == 'gemini':
+
+            elif service == "gemini":
                 return f"""I can help you resolve this SQLite database error. Let me break down the issue and provide a comprehensive solution.
 
 ## Problem Analysis
@@ -338,8 +334,8 @@ except sqlite3.OperationalError as e:
 
 ## Long-term Solution
 Implement a proper database migration system to manage schema changes systematically."""
-            
-            elif service == 'chatgpt':
+
+            elif service == "chatgpt":
                 return f"""This SQLite error is straightforward to fix. Here's a complete solution:
 
 ## Quick Fix
@@ -389,31 +385,33 @@ def safe_query_with_keywords(cursor, keywords):
 - Use proper ORM with schema management
 
 This approach ensures your application remains robust even when schema changes occur."""
-        
+
         else:
             # General coding assistance
             responses = {
-                'abacus': f"For your coding query about '{query[:50]}...', I recommend following data science best practices and implementing proper error handling.",
-                'gemini': f"I can help you with '{query[:50]}...'. Let me provide a structured approach to solve this problem.",
-                'chatgpt': f"Here's how to approach '{query[:50]}...': Start with understanding the requirements, then implement step by step."
+                "abacus": f"For your coding query about '{query[:50]}...', I recommend following data science best practices and implementing proper error handling.",
+                "gemini": f"I can help you with '{query[:50]}...'. Let me provide a structured approach to solve this problem.",
+                "chatgpt": f"Here's how to approach '{query[:50]}...': Start with understanding the requirements, then implement step by step.",
             }
             return responses.get(service, "AI service response not available")
-    
-    async def debug_with_multiple_services(self, error_message: str, code_context: str = "", services: List[str] = None) -> Dict[str, AIServiceResponse]:
+
+    async def debug_with_multiple_services(
+        self, error_message: str, code_context: str = "", services: List[str] = None
+    ) -> Dict[str, AIServiceResponse]:
         """
         Debug an error using multiple AI services
-        
+
         Args:
             error_message: The error to debug
             code_context: Additional code context
             services: List of services to use (default: all)
-            
+
         Returns:
             Dictionary of responses from services
         """
         if services is None:
             services = list(self.services.keys())
-        
+
         query = f"""Please help me debug this error:
 
 Error Message: {error_message}
@@ -428,44 +426,48 @@ I need:
 4. Best practices to avoid similar issues
 
 Please provide a comprehensive solution."""
-        
+
         logger.info(f"Debugging with services: {services}")
-        
+
         # Query services sequentially to avoid overwhelming them
         responses = {}
         for service in services:
             logger.info(f"Querying {service}...")
             response = await self.send_query_to_service(service, query)
             responses[service] = response
-            
+
             # Small delay between services
             await asyncio.sleep(2)
-        
+
         return responses
-    
-    def generate_debugging_report(self, responses: Dict[str, AIServiceResponse], error_message: str) -> str:
+
+    def generate_debugging_report(
+        self, responses: Dict[str, AIServiceResponse], error_message: str
+    ) -> str:
         """
         Generate a comprehensive debugging report
-        
+
         Args:
             responses: Dictionary of AI service responses
             error_message: Original error message
-            
+
         Returns:
             Formatted debugging report
         """
         report = f"🔍 AI-Powered Debugging Report\n"
         report += f"Error: {error_message}\n"
         report += "=" * 60 + "\n\n"
-        
+
         successful_responses = {k: v for k, v in responses.items() if v.success}
         failed_responses = {k: v for k, v in responses.items() if not v.success}
-        
+
         if successful_responses:
-            report += f"✅ AI Analysis Results ({len(successful_responses)} services):\n\n"
-            
+            report += (
+                f"✅ AI Analysis Results ({len(successful_responses)} services):\n\n"
+            )
+
             for service, response in successful_responses.items():
-                service_name = self.services[service]['name']
+                service_name = self.services[service]["name"]
                 report += f"## {service_name} Analysis\n"
                 report += f"**URL:** {response.url}\n"
                 report += f"**Timestamp:** {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(response.timestamp))}\n"
@@ -473,86 +475,87 @@ Please provide a comprehensive solution."""
                     report += f"**Screenshot:** {response.screenshot_name}.png\n"
                 report += f"\n**Response:**\n{response.response}\n"
                 report += "\n" + "-" * 50 + "\n\n"
-        
+
         if failed_responses:
             report += f"❌ Failed Queries ({len(failed_responses)}):\n\n"
-            
+
             for service, response in failed_responses.items():
-                service_name = self.services[service]['name']
+                service_name = self.services[service]["name"]
                 report += f"**{service_name}:** {response.error}\n"
             report += "\n"
-        
+
         # Summary and recommendations
         report += f"📊 **Summary:**\n"
         report += f"- Services queried: {len(responses)}\n"
         report += f"- Successful responses: {len(successful_responses)}\n"
         report += f"- Failed queries: {len(failed_responses)}\n"
         report += f"- Total screenshots: {sum(1 for r in successful_responses.values() if r.screenshot_name)}\n"
-        
+
         if successful_responses:
             report += f"\n🎯 **Next Steps:**\n"
             report += f"1. Review the AI analysis above\n"
             report += f"2. Implement the suggested fixes\n"
             report += f"3. Test the solution in a development environment\n"
             report += f"4. Apply prevention strategies to avoid similar issues\n"
-        
+
         return report
-    
+
     def export_debugging_session(self, filename: str = None) -> str:
         """
         Export the complete debugging session data
-        
+
         Args:
             filename: Output filename (auto-generated if None)
-            
+
         Returns:
             Path to exported file
         """
         if filename is None:
-            timestamp = time.strftime('%Y%m%d_%H%M%S')
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
             filename = f"ai_debugging_session_{timestamp}.json"
-        
+
         export_data = {
-            'session_metadata': {
-                'timestamp': time.time(),
-                'total_queries': len(self.responses_cache),
-                'services_used': list(set(r.service for r in self.responses_cache)),
-                'browser_launched': self.browser_launched
+            "session_metadata": {
+                "timestamp": time.time(),
+                "total_queries": len(self.responses_cache),
+                "services_used": list(set(r.service for r in self.responses_cache)),
+                "browser_launched": self.browser_launched,
             },
-            'mcp_calls': [
+            "mcp_calls": [
                 {
-                    'service': r.service,
-                    'service_name': self.services[r.service]['name'],
-                    'url': r.url,
-                    'query': r.query,
-                    'response': r.response,
-                    'screenshot_name': r.screenshot_name,
-                    'timestamp': r.timestamp,
-                    'success': r.success,
-                    'error': r.error
+                    "service": r.service,
+                    "service_name": self.services[r.service]["name"],
+                    "url": r.url,
+                    "query": r.query,
+                    "response": r.response,
+                    "screenshot_name": r.screenshot_name,
+                    "timestamp": r.timestamp,
+                    "success": r.success,
+                    "error": r.error,
                 }
                 for r in self.responses_cache
             ],
-            'service_configurations': self.services
+            "service_configurations": self.services,
         }
-        
-        with open(filename, 'w', encoding='utf-8') as f:
+
+        with open(filename, "w", encoding="utf-8") as f:
             json.dump(export_data, f, indent=2, ensure_ascii=False)
-        
+
         return filename
+
 
 # Demo function
 async def demo_real_mcp_ai_assistant():
     """Demonstrate the real MCP Puppeteer AI assistant"""
     print("🤖 Real MCP Puppeteer AI Assistant Demo")
     print("=" * 60)
-    
+
     # Initialize the assistant
     ai_assistant = MCPPuppeteerAIAssistant()
-    
+
     # Demo: Debug the SQLite error using real browser automation
     print("\n🔍 Debugging SQLite Error with Real Browser Automation")
-    
+
     error_message = "sqlite3.OperationalError: no such column: search_keywords"
     code_context = """
 # Code that caused the error:
@@ -565,24 +568,24 @@ cursor.execute(
 # sqlite3.OperationalError: no such column: search_keywords
 # This suggests the database schema is missing the expected column
     """
-    
+
     # Get responses from AI services using real browser automation
     print("\n🌐 Launching browsers and querying AI services...")
     responses = await ai_assistant.debug_with_multiple_services(
-        error_message, 
+        error_message,
         code_context,
-        services=['abacus', 'gemini', 'chatgpt']  # Query all services
+        services=["abacus", "gemini", "chatgpt"],  # Query all services
     )
-    
+
     # Generate and display comprehensive debugging report
     print("\n📋 Generating debugging report...")
     report = ai_assistant.generate_debugging_report(responses, error_message)
     print(report)
-    
+
     # Export complete session data
     export_file = ai_assistant.export_debugging_session()
     print(f"\n💾 Complete session data exported to: {export_file}")
-    
+
     print("\n🎉 Real MCP Puppeteer AI Assistant Demo completed!")
     print("\n📝 Note: This demo shows the MCP integration structure.")
     print("In production, it would make actual MCP calls to control real browsers.")
@@ -592,6 +595,7 @@ cursor.execute(
     print("- puppeteer_click: Click submit buttons")
     print("- puppeteer_screenshot: Capture response screenshots")
     print("- puppeteer_evaluate: Extract response text from pages")
+
 
 if __name__ == "__main__":
     asyncio.run(demo_real_mcp_ai_assistant())

@@ -12,14 +12,15 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-from secret_store import SecretStore
+import getpass
 import os
 import sys
-import getpass
 from pathlib import Path
 
+from secret_store import SecretStore
+
 # Add backend to path
-sys.path.insert(0, str(Path(__file__).parent.parent / 'backend'))
+sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
 
 
 def setup_twitter_credentials(store: SecretStore):
@@ -35,15 +36,15 @@ def setup_twitter_credentials(store: SecretStore):
 
     # Check if credentials already exist
     existing_creds = [
-        store.secret_exists('TWITTER_API_KEY'),
-        store.secret_exists('TWITTER_API_SECRET'),
-        store.secret_exists('TWITTER_ACCESS_TOKEN'),
-        store.secret_exists('TWITTER_ACCESS_TOKEN_SECRET')
+        store.secret_exists("TWITTER_API_KEY"),
+        store.secret_exists("TWITTER_API_SECRET"),
+        store.secret_exists("TWITTER_ACCESS_TOKEN"),
+        store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
     ]
 
     if all(existing_creds):
         print("✓ Twitter credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith('y')
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -59,10 +60,10 @@ def setup_twitter_credentials(store: SecretStore):
 
     # Store credentials
     try:
-        store.store_secret('TWITTER_API_KEY', api_key)
-        store.store_secret('TWITTER_API_SECRET', api_secret)
-        store.store_secret('TWITTER_ACCESS_TOKEN', access_token)
-        store.store_secret('TWITTER_ACCESS_TOKEN_SECRET', access_token_secret)
+        store.store_secret("TWITTER_API_KEY", api_key)
+        store.store_secret("TWITTER_API_SECRET", api_secret)
+        store.store_secret("TWITTER_ACCESS_TOKEN", access_token)
+        store.store_secret("TWITTER_ACCESS_TOKEN_SECRET", access_token_secret)
         print("✓ Twitter credentials stored successfully")
         return True
     except Exception as e:
@@ -83,14 +84,14 @@ def setup_youtube_credentials(store: SecretStore):
 
     # Check if credentials already exist
     existing_creds = [
-        store.secret_exists('YOUTUBE_API_KEY'),
-        store.secret_exists('YOUTUBE_CLIENT_ID'),
-        store.secret_exists('YOUTUBE_CLIENT_SECRET')
+        store.secret_exists("YOUTUBE_API_KEY"),
+        store.secret_exists("YOUTUBE_CLIENT_ID"),
+        store.secret_exists("YOUTUBE_CLIENT_SECRET"),
     ]
 
     if all(existing_creds):
         print("✓ YouTube credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith('y')
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -105,13 +106,15 @@ def setup_youtube_credentials(store: SecretStore):
         return False
 
     try:
-        store.store_secret('YOUTUBE_API_KEY', api_key)
-        store.store_secret('YOUTUBE_CLIENT_ID', client_id)
-        store.store_secret('YOUTUBE_CLIENT_SECRET', client_secret)
+        store.store_secret("YOUTUBE_API_KEY", api_key)
+        store.store_secret("YOUTUBE_CLIENT_ID", client_id)
+        store.store_secret("YOUTUBE_CLIENT_SECRET", client_secret)
         if channel_id:
-            store.store_secret('YOUTUBE_CHANNEL_ID', channel_id)
+            store.store_secret("YOUTUBE_CHANNEL_ID", channel_id)
         print("✓ YouTube credentials stored successfully")
-        print("\n⚠️  Note: You'll need to complete OAuth flow to get access/refresh tokens")
+        print(
+            "\n⚠️  Note: You'll need to complete OAuth flow to get access/refresh tokens"
+        )
         print("   Run the YouTube integration setup after this to authorize the app")
         return True
     except Exception as e:
@@ -130,14 +133,14 @@ def setup_instagram_credentials(store: SecretStore):
     print()
 
     existing_creds = [
-        store.secret_exists('INSTAGRAM_APP_ID'),
-        store.secret_exists('INSTAGRAM_APP_SECRET'),
-        store.secret_exists('INSTAGRAM_ACCESS_TOKEN')
+        store.secret_exists("INSTAGRAM_APP_ID"),
+        store.secret_exists("INSTAGRAM_APP_SECRET"),
+        store.secret_exists("INSTAGRAM_ACCESS_TOKEN"),
     ]
 
     if all(existing_creds):
         print("✓ Instagram credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith('y')
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -150,9 +153,9 @@ def setup_instagram_credentials(store: SecretStore):
         return False
 
     try:
-        store.store_secret('INSTAGRAM_APP_ID', app_id)
-        store.store_secret('INSTAGRAM_APP_SECRET', app_secret)
-        store.store_secret('INSTAGRAM_ACCESS_TOKEN', access_token)
+        store.store_secret("INSTAGRAM_APP_ID", app_id)
+        store.store_secret("INSTAGRAM_APP_SECRET", app_secret)
+        store.store_secret("INSTAGRAM_ACCESS_TOKEN", access_token)
         print("✓ Instagram credentials stored successfully")
         return True
     except Exception as e:
@@ -171,14 +174,14 @@ def setup_tiktok_credentials(store: SecretStore):
     print()
 
     existing_creds = [
-        store.secret_exists('TIKTOK_CLIENT_KEY'),
-        store.secret_exists('TIKTOK_CLIENT_SECRET'),
-        store.secret_exists('TIKTOK_ACCESS_TOKEN')
+        store.secret_exists("TIKTOK_CLIENT_KEY"),
+        store.secret_exists("TIKTOK_CLIENT_SECRET"),
+        store.secret_exists("TIKTOK_ACCESS_TOKEN"),
     ]
 
     if all(existing_creds):
         print("✓ TikTok credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith('y')
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -191,9 +194,9 @@ def setup_tiktok_credentials(store: SecretStore):
         return False
 
     try:
-        store.store_secret('TIKTOK_CLIENT_KEY', client_key)
-        store.store_secret('TIKTOK_CLIENT_SECRET', client_secret)
-        store.store_secret('TIKTOK_ACCESS_TOKEN', access_token)
+        store.store_secret("TIKTOK_CLIENT_KEY", client_key)
+        store.store_secret("TIKTOK_CLIENT_SECRET", client_secret)
+        store.store_secret("TIKTOK_ACCESS_TOKEN", access_token)
         print("✓ TikTok credentials stored successfully")
         return True
     except Exception as e:
@@ -208,9 +211,9 @@ def setup_google_trends_credentials(store: SecretStore):
     print("Required: Google Trends API Key")
     print()
 
-    if store.secret_exists('GOOGLE_TRENDS_API_KEY'):
+    if store.secret_exists("GOOGLE_TRENDS_API_KEY"):
         print("✓ Google Trends API key already configured")
-        update = input("Update existing key? (y/N): ").lower().startswith('y')
+        update = input("Update existing key? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -221,7 +224,7 @@ def setup_google_trends_credentials(store: SecretStore):
         return False
 
     try:
-        store.store_secret('GOOGLE_TRENDS_API_KEY', api_key)
+        store.store_secret("GOOGLE_TRENDS_API_KEY", api_key)
         print("✓ Google Trends API key stored successfully")
         return True
     except Exception as e:
@@ -235,8 +238,8 @@ def test_twitter_connection(store: SecretStore):
 
     try:
         sys.path.insert(
-            0, str(
-                Path(__file__).parent.parent / 'backend' / 'integrations'))
+            0, str(Path(__file__).parent.parent / "backend" / "integrations")
+        )
         from twitter_integration import TwitterIntegration
 
         twitter = TwitterIntegration()
@@ -260,7 +263,7 @@ def main():
     print()
 
     # Check for master key
-    if not os.getenv('TRAE_MASTER_KEY'):
+    if not os.getenv("TRAE_MASTER_KEY"):
         print("❌ TRAE_MASTER_KEY environment variable not set")
         print("Please set it before running this script:")
         print("export TRAE_MASTER_KEY=your_secure_master_key")
@@ -268,7 +271,7 @@ def main():
 
     # Initialize secret store
     try:
-        db_path = Path(__file__).parent.parent / 'data' / 'secrets.sqlite'
+        db_path = Path(__file__).parent.parent / "data" / "secrets.sqlite"
         db_path.parent.mkdir(exist_ok=True)
 
         with SecretStore(str(db_path)) as store:
@@ -280,7 +283,7 @@ def main():
                 ("YouTube", setup_youtube_credentials),
                 ("Instagram", setup_instagram_credentials),
                 ("TikTok", setup_tiktok_credentials),
-                ("Google Trends", setup_google_trends_credentials)
+                ("Google Trends", setup_google_trends_credentials),
             ]
 
             for service_name, setup_func in services:

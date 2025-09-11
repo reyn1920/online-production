@@ -14,44 +14,46 @@ This system provides:
 """
 
 import asyncio
+import hashlib
 import json
 import logging
 import os
-import sys
-import subprocess
-import time
-import sqlite3
-import yaml
-import requests
-import hashlib
 import secrets
-from datetime import datetime, timedelta
+import smtplib
+import sqlite3
+import subprocess
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Tuple, Union
+from datetime import datetime, timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from enum import Enum
 from pathlib import Path
-import threading
-import schedule
-from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import psutil
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
+import schedule
+import yaml
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('deployment_orchestrator.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler("deployment_orchestrator.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
 
 class SystemHealth(Enum):
     """System health status enumeration"""
+
     HEALTHY = "healthy"
     WARNING = "warning"
     CRITICAL = "critical"
@@ -61,6 +63,7 @@ class SystemHealth(Enum):
 
 class RevenueStream(Enum):
     """Revenue stream types"""
+
     MERCHANDISE = "merchandise"
     SUBSCRIPTIONS = "subscriptions"
     ADVERTISING = "advertising"
@@ -72,6 +75,7 @@ class RevenueStream(Enum):
 @dataclass
 class MonitoringMetrics:
     """System monitoring metrics"""
+
     uptime_percentage: float = 0.0
     response_time_ms: float = 0.0
     error_rate: float = 0.0
@@ -87,6 +91,7 @@ class MonitoringMetrics:
 @dataclass
 class RevenueMetrics:
     """Revenue tracking metrics"""
+
     total_revenue: float = 0.0
     merchandise_revenue: float = 0.0
     subscription_revenue: float = 0.0
@@ -118,14 +123,16 @@ class DeploymentOrchestrator:
         self.current_health = SystemHealth.HEALTHY
         self.health_history = []
         self.alert_thresholds = {
-            'response_time': 2000,  # ms
-            'error_rate': 0.05,     # 5%
-            'cpu_usage': 80,        # %
-            'memory_usage': 85,     # %
-            'uptime': 99.9          # %
+            "response_time": 2000,  # ms
+            "error_rate": 0.05,  # 5%
+            "cpu_usage": 80,  # %
+            "memory_usage": 85,  # %
+            "uptime": 99.9,  # %
         }
 
-        logger.info(f"🚀 Deployment Orchestrator initialized - ID: {self.deployment_id}")
+        logger.info(
+            f"🚀 Deployment Orchestrator initialized - ID: {self.deployment_id}"
+        )
 
     def _generate_deployment_id(self) -> str:
         """Generate unique deployment ID"""
@@ -139,7 +146,8 @@ class DeploymentOrchestrator:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS system_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 deployment_id TEXT,
@@ -153,9 +161,11 @@ class DeploymentOrchestrator:
                 active_users INTEGER,
                 health_status TEXT
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS alerts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 deployment_id TEXT,
@@ -165,7 +175,8 @@ class DeploymentOrchestrator:
                 message TEXT,
                 resolved BOOLEAN DEFAULT FALSE
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -176,7 +187,8 @@ class DeploymentOrchestrator:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS revenue_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 deployment_id TEXT,
@@ -187,9 +199,11 @@ class DeploymentOrchestrator:
                 user_count INTEGER,
                 optimization_score REAL
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS revenue_optimization (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 deployment_id TEXT,
@@ -199,7 +213,8 @@ class DeploymentOrchestrator:
                 after_value REAL,
                 improvement_percentage REAL
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -210,7 +225,8 @@ class DeploymentOrchestrator:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS qa_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 deployment_id TEXT,
@@ -222,9 +238,11 @@ class DeploymentOrchestrator:
                 engagement_rate REAL,
                 boost_multiplier REAL
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS qa_boost_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 deployment_id TEXT,
@@ -234,7 +252,8 @@ class DeploymentOrchestrator:
                 output_increase REAL,
                 success BOOLEAN
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -281,7 +300,8 @@ class DeploymentOrchestrator:
         try:
             # Import and run the production deployment system
             sys.path.append(str(self.project_root / "scripts"))
-            from production_deployment import ProductionDeploymentSystem, DeploymentConfig
+            from production_deployment import (DeploymentConfig,
+                                               ProductionDeploymentSystem)
 
             config = DeploymentConfig(
                 project_name="conservative-research-system",
@@ -291,7 +311,7 @@ class DeploymentOrchestrator:
                 security_scan_enabled=True,
                 performance_optimization=True,
                 revenue_activation=True,
-                qa_generation_boost=True
+                qa_generation_boost=True,
             )
 
             deployment_system = ProductionDeploymentSystem(config)
@@ -344,14 +364,17 @@ class DeploymentOrchestrator:
 
             if health != self.current_health:
                 logger.info(
-                    f"Health status changed: {self.current_health.value} -> {health.value}")
+                    f"Health status changed: {self.current_health.value} -> {health.value}"
+                )
                 self.current_health = health
 
-            self.health_history.append({
-                'timestamp': datetime.now(),
-                'health': health.value,
-                'metrics': metrics.__dict__
-            })
+            self.health_history.append(
+                {
+                    "timestamp": datetime.now(),
+                    "health": health.value,
+                    "metrics": metrics.__dict__,
+                }
+            )
 
             # Keep only last 100 health records
             if len(self.health_history) > 100:
@@ -364,7 +387,7 @@ class DeploymentOrchestrator:
         """Perform performance check"""
         try:
             response_time = self._test_site_response_time()
-            if response_time > self.alert_thresholds['response_time']:
+            if response_time > self.alert_thresholds["response_time"]:
                 self._trigger_performance_alert(response_time)
         except Exception as e:
             logger.error(f"Performance check error: {str(e)}")
@@ -374,7 +397,8 @@ class DeploymentOrchestrator:
         try:
             # Check for security headers
             security_score = self._test_security_headers(
-                "https://therightperspective.com")
+                "https://therightperspective.com"
+            )
             if security_score < 0.8:
                 self._trigger_security_alert(security_score)
         except Exception as e:
@@ -387,10 +411,10 @@ class DeploymentOrchestrator:
 
             # Check all systems
             checks = {
-                'monitoring': self.monitoring_active,
-                'self_healing': self.self_healing_active,
-                'revenue_optimization': self.revenue_optimization_active,
-                'qa_boost': self.qa_boost_active
+                "monitoring": self.monitoring_active,
+                "self_healing": self.self_healing_active,
+                "revenue_optimization": self.revenue_optimization_active,
+                "qa_boost": self.qa_boost_active,
             }
 
             for system, status in checks.items():
@@ -428,7 +452,7 @@ class DeploymentOrchestrator:
             # Get system stats
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
+            disk = psutil.disk_usage("/")
 
             # Test site response time
             response_time = self._test_site_response_time()
@@ -445,7 +469,7 @@ class DeploymentOrchestrator:
                 disk_usage=disk.percent,
                 active_users=self._get_active_users(),
                 revenue_per_hour=self._get_current_revenue_rate(),
-                qa_generation_rate=self._get_qa_generation_rate()
+                qa_generation_rate=self._get_qa_generation_rate(),
             )
 
         except Exception as e:
@@ -511,10 +535,13 @@ class DeploymentOrchestrator:
 
             # Get revenue from last hour
             one_hour_ago = datetime.now() - timedelta(hours=1)
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT SUM(revenue_amount) FROM revenue_metrics
                 WHERE timestamp > ? AND deployment_id = ?
-            """, (one_hour_ago, self.deployment_id))
+            """,
+                (one_hour_ago, self.deployment_id),
+            )
 
             result = cursor.fetchone()
             conn.close()
@@ -534,10 +561,13 @@ class DeploymentOrchestrator:
 
             # Get Q&A generated in last hour
             one_hour_ago = datetime.now() - timedelta(hours=1)
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT SUM(questions_generated + answers_generated) FROM qa_metrics
                 WHERE timestamp > ? AND deployment_id = ?
-            """, (one_hour_ago, self.deployment_id))
+            """,
+                (one_hour_ago, self.deployment_id),
+            )
 
             result = cursor.fetchone()
             conn.close()
@@ -568,11 +598,13 @@ class DeploymentOrchestrator:
 
                 if health_status == SystemHealth.CRITICAL:
                     logger.warning(
-                        "🚨 Critical system health detected - initiating self-healing")
+                        "🚨 Critical system health detected - initiating self-healing"
+                    )
                     self._execute_self_healing()
                 elif health_status == SystemHealth.WARNING:
                     logger.info(
-                        "⚠️ System warning detected - applying preventive measures")
+                        "⚠️ System warning detected - applying preventive measures"
+                    )
                     self._apply_preventive_measures()
 
                 time.sleep(60)  # Check every minute
@@ -587,16 +619,20 @@ class DeploymentOrchestrator:
             metrics = self._collect_system_metrics()
 
             # Critical conditions
-            if (metrics.response_time_ms > 10000
+            if (
+                metrics.response_time_ms > 10000
                 or metrics.error_rate > 0.1
-                    or metrics.uptime_percentage < 95.0):
+                or metrics.uptime_percentage < 95.0
+            ):
                 return SystemHealth.CRITICAL
 
             # Warning conditions
-            if (metrics.response_time_ms > 5000
+            if (
+                metrics.response_time_ms > 5000
                 or metrics.error_rate > 0.05
                 or metrics.cpu_usage > 85
-                    or metrics.memory_usage > 90):
+                or metrics.memory_usage > 90
+            ):
                 return SystemHealth.WARNING
 
             return SystemHealth.HEALTHY
@@ -646,25 +682,28 @@ class DeploymentOrchestrator:
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO monitoring_metrics
                 (deployment_id, uptime_percentage, response_time_ms, error_rate,
                  cpu_usage, memory_usage, disk_usage, active_users,
                  revenue_per_hour, qa_generation_rate, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                self.deployment_id,
-                metrics.uptime_percentage,
-                metrics.response_time_ms,
-                metrics.error_rate,
-                metrics.cpu_usage,
-                metrics.memory_usage,
-                metrics.disk_usage,
-                metrics.active_users,
-                metrics.revenue_per_hour,
-                metrics.qa_generation_rate,
-                metrics.timestamp
-            ))
+            """,
+                (
+                    self.deployment_id,
+                    metrics.uptime_percentage,
+                    metrics.response_time_ms,
+                    metrics.error_rate,
+                    metrics.cpu_usage,
+                    metrics.memory_usage,
+                    metrics.disk_usage,
+                    metrics.active_users,
+                    metrics.revenue_per_hour,
+                    metrics.qa_generation_rate,
+                    metrics.timestamp,
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -679,7 +718,8 @@ class DeploymentOrchestrator:
             if metrics.response_time_ms > 3000:
                 logger.warning(
                     f"High response time detected: {
-                        metrics.response_time_ms}ms")
+                        metrics.response_time_ms}ms"
+                )
 
             # Check resource usage
             if metrics.cpu_usage > 80:
@@ -705,11 +745,13 @@ class DeploymentOrchestrator:
         """Determine if an alert should be triggered"""
         try:
             # Critical conditions that require immediate attention
-            if (metrics.uptime_percentage < 99.0
+            if (
+                metrics.uptime_percentage < 99.0
                 or metrics.response_time_ms > 5000
                 or metrics.error_rate > 0.05
                 or metrics.cpu_usage > 90
-                    or metrics.memory_usage > 95):
+                or metrics.memory_usage > 95
+            ):
                 return True
 
             return False
@@ -753,22 +795,22 @@ class DeploymentOrchestrator:
         """Send email alert"""
         try:
             # Email configuration (would be in environment variables)
-            smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
-            smtp_port = int(os.getenv('SMTP_PORT', '587'))
-            email_user = os.getenv('ALERT_EMAIL_USER')
-            email_pass = os.getenv('ALERT_EMAIL_PASS')
-            alert_recipients = os.getenv('ALERT_RECIPIENTS', '').split(',')
+            smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+            smtp_port = int(os.getenv("SMTP_PORT", "587"))
+            email_user = os.getenv("ALERT_EMAIL_USER")
+            email_pass = os.getenv("ALERT_EMAIL_PASS")
+            alert_recipients = os.getenv("ALERT_RECIPIENTS", "").split(",")
 
             if not email_user or not email_pass or not alert_recipients:
                 logger.warning("Email alert configuration missing")
                 return
 
             msg = MIMEMultipart()
-            msg['From'] = email_user
-            msg['To'] = ', '.join(alert_recipients)
-            msg['Subject'] = 'Conservative Research System Alert'
+            msg["From"] = email_user
+            msg["To"] = ", ".join(alert_recipients)
+            msg["Subject"] = "Conservative Research System Alert"
 
-            msg.attach(MIMEText(message, 'plain'))
+            msg.attach(MIMEText(message, "plain"))
 
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
@@ -788,7 +830,8 @@ class DeploymentOrchestrator:
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     deployment_id TEXT,
@@ -798,18 +841,22 @@ class DeploymentOrchestrator:
                     metrics_snapshot TEXT,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO alerts (deployment_id, alert_type, severity, message, metrics_snapshot)
                 VALUES (?, ?, ?, ?, ?)
-            """, (
-                self.deployment_id,
-                'system_performance',
-                'critical',
-                'System performance alert triggered',
-                json.dumps(metrics.__dict__, default=str)
-            ))
+            """,
+                (
+                    self.deployment_id,
+                    "system_performance",
+                    "critical",
+                    "System performance alert triggered",
+                    json.dumps(metrics.__dict__, default=str),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -841,9 +888,11 @@ class DeploymentOrchestrator:
         try:
             # Check if system is in critical state requiring rollback
             metrics = self._collect_system_metrics()
-            return (metrics.error_rate > 0.2
-                    or metrics.response_time_ms > 15000
-                    or metrics.uptime_percentage < 90.0)
+            return (
+                metrics.error_rate > 0.2
+                or metrics.response_time_ms > 15000
+                or metrics.uptime_percentage < 90.0
+            )
         except Exception:
             return True  # Rollback on uncertainty
 
@@ -863,6 +912,7 @@ class DeploymentOrchestrator:
             logger.info("💾 Optimizing memory usage...")
             # Clear unused memory, optimize garbage collection
             import gc
+
             gc.collect()
         except Exception as e:
             logger.error(f"Memory optimization failed: {str(e)}")
@@ -872,7 +922,7 @@ class DeploymentOrchestrator:
         try:
             logger.info("🗑️ Cleaning temporary files...")
             # Remove temporary files, logs, caches
-            temp_dirs = ['/tmp', self.project_root / 'temp', self.project_root / 'logs']
+            temp_dirs = ["/tmp", self.project_root / "temp", self.project_root / "logs"]
             for temp_dir in temp_dirs:
                 if os.path.exists(temp_dir):
                     # Clean old files (implementation would go here)
@@ -917,7 +967,7 @@ class DeploymentOrchestrator:
                 "subscriptions": {"active": True, "revenue_24h": 300.0},
                 "advertising": {"active": True, "revenue_24h": 75.0},
                 "affiliates": {"active": True, "revenue_24h": 50.0},
-                "total_24h": 575.0
+                "total_24h": 575.0,
             }
         except Exception:
             return {"error": "Failed to get revenue status"}
@@ -929,7 +979,7 @@ class DeploymentOrchestrator:
                 "questions_generated_24h": 1500,
                 "answers_generated_24h": 1500,
                 "topics_covered": 25,
-                "generation_rate_per_hour": 125
+                "generation_rate_per_hour": 125,
             }
         except Exception:
             return {"error": "Failed to get Q&A status"}
@@ -942,7 +992,8 @@ class DeploymentOrchestrator:
 
         # Start revenue optimization in background
         revenue_thread = threading.Thread(
-            target=self._revenue_optimization_loop, daemon=True)
+            target=self._revenue_optimization_loop, daemon=True
+        )
         revenue_thread.start()
 
         # Activate all revenue streams
@@ -960,7 +1011,7 @@ class DeploymentOrchestrator:
             RevenueStream.ADVERTISING,
             RevenueStream.AFFILIATES,
             RevenueStream.DONATIONS,
-            RevenueStream.PREMIUM_CONTENT
+            RevenueStream.PREMIUM_CONTENT,
         ]
 
         for stream in revenue_streams:
@@ -1020,7 +1071,7 @@ class DeploymentOrchestrator:
             "conservative_philosophy",
             "free_speech",
             "property_rights",
-            "conservative_policy"
+            "conservative_policy",
         ]
 
         # Apply massive boost multiplier (1 billion %)
@@ -1098,10 +1149,8 @@ class DeploymentOrchestrator:
             # Rollback to previous stable version
             rollback_cmd = "netlify rollback --prod"
             result = subprocess.run(
-                rollback_cmd,
-                shell=True,
-                capture_output=True,
-                text=True)
+                rollback_cmd, shell=True, capture_output=True, text=True
+            )
 
             if result.returncode == 0:
                 logger.info("✅ Emergency rollback completed successfully")
@@ -1125,12 +1174,12 @@ class DeploymentOrchestrator:
                 "monitoring": self.monitoring_active,
                 "self_healing": self.self_healing_active,
                 "revenue_optimization": self.revenue_optimization_active,
-                "qa_boost": self.qa_boost_active
+                "qa_boost": self.qa_boost_active,
             },
             "current_health": self.current_health.value,
             "metrics": self._collect_system_metrics().__dict__,
             "revenue_streams": self._get_revenue_status(),
-            "qa_generation": self._get_qa_status()
+            "qa_generation": self._get_qa_status(),
         }
 
         return report
@@ -1141,14 +1190,14 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Conservative Research System - Deployment Orchestrator")
+        description="Conservative Research System - Deployment Orchestrator"
+    )
     parser.add_argument("--project-root", default=".", help="Project root directory")
     parser.add_argument("--deploy", action="store_true", help="Start full deployment")
     parser.add_argument("--monitor", action="store_true", help="Start monitoring only")
     parser.add_argument(
-        "--report",
-        action="store_true",
-        help="Generate deployment report")
+        "--report", action="store_true", help="Generate deployment report"
+    )
 
     args = parser.parse_args()
 

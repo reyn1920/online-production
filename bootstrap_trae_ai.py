@@ -11,105 +11,107 @@ Non-negotiable principles:
 - Secure design (no exposed secrets)
 """
 
-import os
-import sys
-import subprocess
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 
 class TraeAIBootstrap:
     def __init__(self):
         self.project_root = Path.cwd()
         self.services = [
-            'orchestrator',
-            'content_agent', 
-            'marketing_agent',
-            'monetization_bundle',
-            'revenue_rollup'
+            "orchestrator",
+            "content_agent",
+            "marketing_agent",
+            "monetization_bundle",
+            "revenue_rollup",
         ]
-        
+
     def create_directory_structure(self):
         """Create the complete TRAE.AI directory structure"""
         directories = [
-            'orchestrator',
-            'content_agent',
-            'marketing_agent', 
-            'monetization_bundle',
-            'revenue_rollup',
-            'dashboard',
-            'shared',
-            'tests',
-            'data',
-            'logs'
+            "orchestrator",
+            "content_agent",
+            "marketing_agent",
+            "monetization_bundle",
+            "revenue_rollup",
+            "dashboard",
+            "shared",
+            "tests",
+            "data",
+            "logs",
         ]
-        
+
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
             print(f"✓ Created directory: {directory}")
-    
+
     def create_docker_compose(self):
         """Create Docker Compose configuration for all services"""
         compose_config = {
-            'version': '3.8',
-            'services': {
-                'orchestrator': {
-                    'build': './orchestrator',
-                    'volumes': ['./data:/app/data', './logs:/app/logs'],
-                    'environment': [
-                        'USE_MOCK=false',
-                        'OPENAI_API_KEY=${OPENAI_API_KEY}',
-                        'YOUTUBE_API_KEY=${YOUTUBE_API_KEY}',
-                        'GUMROAD_ACCESS_TOKEN=${GUMROAD_ACCESS_TOKEN}'
+            "version": "3.8",
+            "services": {
+                "orchestrator": {
+                    "build": "./orchestrator",
+                    "volumes": ["./data:/app/data", "./logs:/app/logs"],
+                    "environment": [
+                        "USE_MOCK=false",
+                        "OPENAI_API_KEY=${OPENAI_API_KEY}",
+                        "YOUTUBE_API_KEY=${YOUTUBE_API_KEY}",
+                        "GUMROAD_ACCESS_TOKEN=${GUMROAD_ACCESS_TOKEN}",
                     ],
-                    'restart': 'unless-stopped'
+                    "restart": "unless-stopped",
                 },
-                'content_agent': {
-                    'build': './content_agent',
-                    'volumes': ['./data:/app/data', './logs:/app/logs'],
-                    'environment': [
-                        'USE_MOCK=false',
-                        'OPENAI_API_KEY=${OPENAI_API_KEY}',
-                        'COQUI_API_KEY=${COQUI_API_KEY}'
+                "content_agent": {
+                    "build": "./content_agent",
+                    "volumes": ["./data:/app/data", "./logs:/app/logs"],
+                    "environment": [
+                        "USE_MOCK=false",
+                        "OPENAI_API_KEY=${OPENAI_API_KEY}",
+                        "COQUI_API_KEY=${COQUI_API_KEY}",
                     ],
-                    'restart': 'unless-stopped'
+                    "restart": "unless-stopped",
                 },
-                'marketing_agent': {
-                    'build': './marketing_agent',
-                    'volumes': ['./data:/app/data', './logs:/app/logs'],
-                    'environment': [
-                        'USE_MOCK=false',
-                        'TWITTER_API_KEY=${TWITTER_API_KEY}',
-                        'MAILCHIMP_API_KEY=${MAILCHIMP_API_KEY}'
+                "marketing_agent": {
+                    "build": "./marketing_agent",
+                    "volumes": ["./data:/app/data", "./logs:/app/logs"],
+                    "environment": [
+                        "USE_MOCK=false",
+                        "TWITTER_API_KEY=${TWITTER_API_KEY}",
+                        "MAILCHIMP_API_KEY=${MAILCHIMP_API_KEY}",
                     ],
-                    'restart': 'unless-stopped'
+                    "restart": "unless-stopped",
                 },
-                'monetization_bundle': {
-                    'build': './monetization_bundle',
-                    'volumes': ['./data:/app/data', './logs:/app/logs'],
-                    'environment': [
-                        'USE_MOCK=false',
-                        'GUMROAD_ACCESS_TOKEN=${GUMROAD_ACCESS_TOKEN}',
-                        'PRINTFUL_API_KEY=${PRINTFUL_API_KEY}'
+                "monetization_bundle": {
+                    "build": "./monetization_bundle",
+                    "volumes": ["./data:/app/data", "./logs:/app/logs"],
+                    "environment": [
+                        "USE_MOCK=false",
+                        "GUMROAD_ACCESS_TOKEN=${GUMROAD_ACCESS_TOKEN}",
+                        "PRINTFUL_API_KEY=${PRINTFUL_API_KEY}",
                     ],
-                    'restart': 'unless-stopped'
+                    "restart": "unless-stopped",
                 },
-                'revenue_rollup': {
-                    'build': './revenue_rollup',
-                    'volumes': ['./data:/app/data', './logs:/app/logs'],
-                    'environment': [
-                        'USE_MOCK=false',
-                        'YOUTUBE_API_KEY=${YOUTUBE_API_KEY}'
+                "revenue_rollup": {
+                    "build": "./revenue_rollup",
+                    "volumes": ["./data:/app/data", "./logs:/app/logs"],
+                    "environment": [
+                        "USE_MOCK=false",
+                        "YOUTUBE_API_KEY=${YOUTUBE_API_KEY}",
                     ],
-                    'restart': 'unless-stopped'
-                }
-            }
+                    "restart": "unless-stopped",
+                },
+            },
         }
-        
-        with open('docker-compose.yml', 'w') as f:
+
+        with open("docker-compose.yml", "w") as f:
             import yaml
+
             yaml.dump(compose_config, f, default_flow_style=False)
         print("✓ Created docker-compose.yml")
-    
+
     def create_env_template(self):
         """Create environment template with all required API keys"""
         env_template = """
@@ -148,11 +150,11 @@ SMTP_PORT=587
 SMTP_USERNAME=your_smtp_username_here
 SMTP_PASSWORD=your_smtp_password_here
 """
-        
-        with open('.env.example', 'w') as f:
+
+        with open(".env.example", "w") as f:
             f.write(env_template)
         print("✓ Created .env.example")
-    
+
     def create_requirements(self):
         """Create comprehensive requirements.txt for all services"""
         requirements = """
@@ -216,11 +218,11 @@ black==23.11.0
 flake8==6.1.0
 mypy==1.7.1
 """
-        
-        with open('requirements.txt', 'w') as f:
+
+        with open("requirements.txt", "w") as f:
             f.write(requirements)
         print("✓ Created requirements.txt")
-    
+
     def create_launch_script(self):
         """Create master launch script for the entire system"""
         launch_script = '''#!/usr/bin/env python3
@@ -312,23 +314,23 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-        
-        with open('launch_live.py', 'w') as f:
+
+        with open("launch_live.py", "w") as f:
             f.write(launch_script)
-        os.chmod('launch_live.py', 0o755)
+        os.chmod("launch_live.py", 0o755)
         print("✓ Created launch_live.py")
-    
+
     def run_bootstrap(self):
         """Execute the complete bootstrap process"""
         print("🎬 Bootstrapping TRAE.AI - Zero-Cost Live Stack")
         print("=" * 50)
-        
+
         self.create_directory_structure()
         self.create_docker_compose()
         self.create_env_template()
         self.create_requirements()
         self.create_launch_script()
-        
+
         print("\n✅ TRAE.AI Bootstrap Complete!")
         print("\nNext steps:")
         print("1. Copy .env.example to .env and configure your API keys")
@@ -336,6 +338,7 @@ if __name__ == '__main__':
         print("3. Run: python launch_live.py")
         print("\n🚀 Your zero-cost, live-ready TRAE.AI stack is ready!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     bootstrap = TraeAIBootstrap()
     bootstrap.run_bootstrap()

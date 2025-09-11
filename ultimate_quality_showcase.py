@@ -5,69 +5,70 @@ Demonstrates TRAE.AI's "better than Hollywood" content generation capabilities
 across all media formats with maximum quality settings.
 """
 
-import os
 import json
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 class UltimateQualityShowcase:
     """Generates a complete multi-platform content package at maximum quality."""
-    
+
     def __init__(self):
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.output_dir = Path("./output/tests/ultimate_quality_showcase")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Core content theme
         self.core_theme = "The Mindful Morning: A Guide to Sustainable Wellness"
         self.channel = "EcoWell Living"
-        
+
         # Maximum quality settings
         self.quality_settings = {
             "video": {
                 "resolution": "4K (3840x2160)",
                 "render_samples": 512,
                 "bitrate": "High-Bitrate Encoding",
-                "avatar_profile": "EcoWell presenter - calm and professional"
+                "avatar_profile": "EcoWell presenter - calm and professional",
             },
             "audio": {
                 "voice_profile": "World-Class/Cinematic",
                 "mastering": "Podcast Distribution Quality",
-                "format": "48kHz/24-bit WAV"
+                "format": "48kHz/24-bit WAV",
             },
             "ebook": {
                 "format": "Professional PDF",
                 "typography": "Premium Layout",
-                "images": "High-resolution illustrations"
+                "images": "High-resolution illustrations",
             },
             "social": {
                 "resolution": "Ultra-high resolution",
-                "formats": ["YouTube Thumbnail", "Twitter Post", "Instagram Story"]
-            }
+                "formats": ["YouTube Thumbnail", "Twitter Post", "Instagram Story"],
+            },
         }
-        
+
         self._setup_logging()
-    
+
     def _setup_logging(self):
         """Configure logging for the showcase test."""
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         )
-        self.logger = logging.getLogger('UltimateQualityShowcase')
-    
+        self.logger = logging.getLogger("UltimateQualityShowcase")
+
     def _load_channels_config(self) -> Dict[str, Any]:
         """Load channel configuration for EcoWell Living."""
         try:
-            with open('channels.json', 'r') as f:
+            with open("channels.json", "r") as f:
                 channels = json.load(f)
-                return channels.get('EcoWell Living', self._get_default_config())
+                return channels.get("EcoWell Living", self._get_default_config())
         except FileNotFoundError:
             self.logger.warning("channels.json not found, using default configuration")
             return self._get_default_config()
-    
+
     def _get_default_config(self) -> Dict[str, Any]:
         """Get default configuration for the showcase."""
         return {
@@ -77,19 +78,21 @@ class UltimateQualityShowcase:
                 "voice_id": "premium_narrator",
                 "speed": 1.0,
                 "pitch": 0.0,
-                "emotion": "calm_inspiring"
+                "emotion": "calm_inspiring",
             },
             "avatar_settings": {
                 "character": "wellness_expert",
                 "outfit": "professional_casual",
-                "background": "serene_natural"
-            }
+                "background": "serene_natural",
+            },
         }
-    
+
     def generate_core_content(self) -> str:
         """Generate the core written content for Chapter 1."""
-        self.logger.info("Step 1: Generating Core Content - Chapter 1 of 'The Mindful Morning'")
-        
+        self.logger.info(
+            "Step 1: Generating Core Content - Chapter 1 of 'The Mindful Morning'"
+        )
+
         content = f"""
 # The Mindful Morning: A Guide to Sustainable Wellness
 ## Chapter 1: Awakening to Intention
@@ -155,20 +158,24 @@ Choose one element from this chapter to implement tomorrow morning. Start small,
 - Structure: Clear, actionable, and engaging
 - Sustainability Focus: Integrated throughout
 """
-        
+
         # Save the content
-        content_path = self.output_dir / f"UQS_Mindful_Morning_CHAPTER_{self.timestamp}.md"
-        with open(content_path, 'w', encoding='utf-8') as f:
+        content_path = (
+            self.output_dir / f"UQS_Mindful_Morning_CHAPTER_{self.timestamp}.md"
+        )
+        with open(content_path, "w", encoding="utf-8") as f:
             f.write(content)
-        
+
         self.logger.info(f"Core content generated: {content_path}")
         return str(content_path)
-    
+
     def generate_video_content(self) -> str:
         """Generate high-quality video content using Blender pipeline."""
-        self.logger.info("Step 2: Creating Video - 4K Resolution with Cinematic Quality")
+        self.logger.info(
+            "Step 2: Creating Video - 4K Resolution with Cinematic Quality"
+        )
         self.logger.info(f"Settings: {self.quality_settings['video']}")
-        
+
         # Simulate Blender render pipeline
         video_script = f"""
 # TRAE.AI Ultimate Quality Showcase - Video Production
@@ -224,24 +231,24 @@ Let's begin with the foundation: intentional awakening..."
 - Audio sync: Perfect lip-sync with narration
 - Color accuracy: Professional color space (Rec. 2020)
 """
-        
+
         # Create the video file (simulated)
         video_path = self.output_dir / f"UQS_Mindful_Morning_VIDEO_{self.timestamp}.mp4"
-        with open(video_path, 'w', encoding='utf-8') as f:
+        with open(video_path, "w", encoding="utf-8") as f:
             f.write(f"# TRAE.AI Ultimate Quality Showcase - Video Output\n")
             f.write(f"# Generated: {datetime.now().isoformat()}\n")
             f.write(f"# Theme: {self.core_theme}\n")
             f.write(f"# Quality: {self.quality_settings['video']}\n\n")
             f.write(video_script)
-        
+
         self.logger.info(f"High-quality video generated: {video_path}")
         return str(video_path)
-    
+
     def generate_audio_content(self) -> str:
         """Generate podcast-quality audio narration."""
         self.logger.info("Step 3: Creating Audio - World-Class Cinematic Voice")
         self.logger.info(f"Settings: {self.quality_settings['audio']}")
-        
+
         audio_script = f"""
 # TRAE.AI Ultimate Quality Showcase - Audio Production
 # Generated: {datetime.now().isoformat()}
@@ -297,24 +304,26 @@ Are you ready to awaken to your fullest potential? Let's begin this journey toge
 - Mastering: Optimized for podcast distribution (-16 LUFS)
 - Export format: 48kHz/24-bit WAV for maximum quality
 """
-        
+
         # Create the audio file (simulated)
-        audio_path = self.output_dir / f"UQS_Mindful_Morning_PODCAST_{self.timestamp}.mp3"
-        with open(audio_path, 'w', encoding='utf-8') as f:
+        audio_path = (
+            self.output_dir / f"UQS_Mindful_Morning_PODCAST_{self.timestamp}.mp3"
+        )
+        with open(audio_path, "w", encoding="utf-8") as f:
             f.write(f"# TRAE.AI Ultimate Quality Showcase - Audio Output\n")
             f.write(f"# Generated: {datetime.now().isoformat()}\n")
             f.write(f"# Theme: {self.core_theme}\n")
             f.write(f"# Quality: {self.quality_settings['audio']}\n\n")
             f.write(audio_script)
-        
+
         self.logger.info(f"Podcast-quality audio generated: {audio_path}")
         return str(audio_path)
-    
+
     def generate_ebook_content(self) -> str:
         """Generate professional e-book chapter with premium formatting."""
         self.logger.info("Step 4: Creating E-Book Chapter - Professional PDF Layout")
         self.logger.info(f"Settings: {self.quality_settings['ebook']}")
-        
+
         ebook_content = f"""
 # TRAE.AI Ultimate Quality Showcase - E-Book Production
 # Generated: {datetime.now().isoformat()}
@@ -385,28 +394,32 @@ Are you ready to awaken to your fullest potential? Let's begin this journey toge
 - PDF for direct distribution
 - EPUB for universal e-reader support
 """
-        
+
         # Create the e-book file (simulated)
-        ebook_path = self.output_dir / f"UQS_Mindful_Morning_CHAPTER_{self.timestamp}.pdf"
-        with open(ebook_path, 'w', encoding='utf-8') as f:
+        ebook_path = (
+            self.output_dir / f"UQS_Mindful_Morning_CHAPTER_{self.timestamp}.pdf"
+        )
+        with open(ebook_path, "w", encoding="utf-8") as f:
             f.write(f"# TRAE.AI Ultimate Quality Showcase - E-Book Output\n")
             f.write(f"# Generated: {datetime.now().isoformat()}\n")
             f.write(f"# Theme: {self.core_theme}\n")
             f.write(f"# Quality: {self.quality_settings['ebook']}\n\n")
             f.write(ebook_content)
-        
+
         self.logger.info(f"Professional e-book chapter generated: {ebook_path}")
         return str(ebook_path)
-    
+
     def generate_social_assets(self) -> str:
         """Generate social media graphics package."""
-        self.logger.info("Step 5: Creating Social Assets - Ultra-High Resolution Graphics")
+        self.logger.info(
+            "Step 5: Creating Social Assets - Ultra-High Resolution Graphics"
+        )
         self.logger.info(f"Settings: {self.quality_settings['social']}")
-        
+
         # Create social assets directory
         social_dir = self.output_dir / "UQS_Social_Assets"
         social_dir.mkdir(exist_ok=True)
-        
+
         # YouTube Thumbnail
         youtube_content = f"""
 # YouTube Thumbnail - Ultra-High Resolution
@@ -429,11 +442,11 @@ Are you ready to awaken to your fullest potential? Let's begin this journey toge
 - Compression: Lossless for maximum quality
 - Accessibility: High contrast ratios for readability
 """
-        
+
         youtube_path = social_dir / f"YouTube_Thumbnail_{self.timestamp}.png"
-        with open(youtube_path, 'w', encoding='utf-8') as f:
+        with open(youtube_path, "w", encoding="utf-8") as f:
             f.write(youtube_content)
-        
+
         # Twitter Post Image
         twitter_content = f"""
 # Twitter Post Image - Optimized for Engagement
@@ -454,11 +467,11 @@ Are you ready to awaken to your fullest potential? Let's begin this journey toge
 - Eye-catching color combinations
 - Balanced composition following rule of thirds
 """
-        
+
         twitter_path = social_dir / f"Twitter_Post_{self.timestamp}.png"
-        with open(twitter_path, 'w', encoding='utf-8') as f:
+        with open(twitter_path, "w", encoding="utf-8") as f:
             f.write(twitter_content)
-        
+
         # Instagram Story Graphic
         instagram_content = f"""
 # Instagram Story Graphic - Vertical Format
@@ -479,35 +492,37 @@ Are you ready to awaken to your fullest potential? Let's begin this journey toge
 - Branded color scheme for recognition
 - Strategic text placement avoiding UI elements
 """
-        
+
         instagram_path = social_dir / f"Instagram_Story_{self.timestamp}.png"
-        with open(instagram_path, 'w', encoding='utf-8') as f:
+        with open(instagram_path, "w", encoding="utf-8") as f:
             f.write(instagram_content)
-        
+
         self.logger.info(f"Social media assets generated in: {social_dir}")
         return str(social_dir)
-    
+
     def run_showcase(self) -> Dict[str, str]:
         """Execute the complete Ultimate Quality Showcase Test."""
         self.logger.info("=== TRAE.AI ULTIMATE QUALITY SHOWCASE TEST ===")
-        self.logger.info(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S %Z')}")
+        self.logger.info(
+            f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S %Z')}"
+        )
         self.logger.info(f"Theme: {self.core_theme}")
         self.logger.info(f"Channel: {self.channel}")
         self.logger.info("Activating 'Maximum Quality' production protocols...")
-        
+
         results = {}
-        
+
         try:
             # Generate all content types
-            results['core_content'] = self.generate_core_content()
-            results['video'] = self.generate_video_content()
-            results['audio'] = self.generate_audio_content()
-            results['ebook'] = self.generate_ebook_content()
-            results['social_assets'] = self.generate_social_assets()
-            
+            results["core_content"] = self.generate_core_content()
+            results["video"] = self.generate_video_content()
+            results["audio"] = self.generate_audio_content()
+            results["ebook"] = self.generate_ebook_content()
+            results["social_assets"] = self.generate_social_assets()
+
             # Create summary report
             summary_path = self.output_dir / f"UQS_SUMMARY_REPORT_{self.timestamp}.txt"
-            with open(summary_path, 'w', encoding='utf-8') as f:
+            with open(summary_path, "w", encoding="utf-8") as f:
                 f.write(f"TRAE.AI ULTIMATE QUALITY SHOWCASE TEST - SUMMARY REPORT\n")
                 f.write(f"Generated: {datetime.now().isoformat()}\n")
                 f.write(f"Theme: {self.core_theme}\n")
@@ -518,28 +533,31 @@ Are you ready to awaken to your fullest potential? Let's begin this journey toge
                 f.write(f"\nQUALITY SETTINGS APPLIED:\n")
                 for category, settings in self.quality_settings.items():
                     f.write(f"- {category.upper()}: {settings}\n")
-                f.write(f"\nSTATUS: SUCCESS - All assets generated at maximum quality\n")
-            
-            results['summary_report'] = str(summary_path)
-            
+                f.write(
+                    f"\nSTATUS: SUCCESS - All assets generated at maximum quality\n"
+                )
+
+            results["summary_report"] = str(summary_path)
+
             self.logger.info("=== SHOWCASE COMPLETE ===")
             self.logger.info("All assets generated at maximum quality settings")
             self.logger.info(f"Output directory: {self.output_dir}")
-            
+
             return results
-            
+
         except Exception as e:
             self.logger.error(f"Showcase failed: {str(e)}")
             raise
+
 
 def main():
     """Run the Ultimate Quality Showcase Test."""
     showcase = UltimateQualityShowcase()
     results = showcase.run_showcase()
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("TRAE.AI ULTIMATE QUALITY SHOWCASE TEST - COMPLETE")
-    print("="*60)
+    print("=" * 60)
     print(f"Theme: {showcase.core_theme}")
     print(f"Channel: {showcase.channel}")
     print(f"Timestamp: {showcase.timestamp}")
@@ -548,7 +566,8 @@ def main():
         print(f"  {asset_type.replace('_', ' ').title()}: {path}")
     print("\nQuality Level: MAXIMUM (Better than Hollywood)")
     print("Status: SUCCESS - Ready for production deployment")
-    print("="*60)
+    print("=" * 60)
+
 
 if __name__ == "__main__":
     main()

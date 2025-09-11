@@ -19,36 +19,40 @@ Version: 2.0.0
 import asyncio
 import json
 import logging
+import os
 import sqlite3
 import threading
 import time
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
-from pathlib import Path
 import uuid
-from flask import Flask, render_template, jsonify, request, send_from_directory
-from flask_socketio import SocketIO, emit
+from collections import defaultdict, deque
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import pandas as pd
 import plotly.graph_objs as go
 import plotly.utils
-import pandas as pd
-from collections import defaultdict, deque
 import psutil
-import os
+from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask_socketio import SocketIO, emit
 
 # Import our pipeline components
 try:
-    from full_automation_pipeline import FullAutomationPipeline, PipelineStatus, TaskPriority
     from ai_ceo_master_controller import AICEOMasterController
     from autonomous_decision_engine import AutonomousDecisionEngine
+    from full_automation_pipeline import (FullAutomationPipeline, PipelineStatus,
+                                          TaskPriority)
 except ImportError as e:
     logging.warning(f"Some components not available: {e}")
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class DashboardMetrics:
     """Dashboard-specific metrics."""
+
     active_users: int = 0
     page_views: int = 0
     api_calls: int = 0
@@ -60,9 +64,11 @@ class DashboardMetrics:
     network_io: Dict[str, float] = None
     last_updated: datetime = None
 
+
 @dataclass
 class AlertConfig:
     """Alert configuration."""
+
     name: str
     condition: str
     threshold: float
@@ -71,80 +77,86 @@ class AlertConfig:
     last_triggered: Optional[datetime] = None
     trigger_count: int = 0
 
+
 class MonitoringDashboard:
     """Real-time monitoring dashboard for AI CEO operations."""
-    
-    def __init__(self, pipeline: Optional[FullAutomationPipeline] = None, port: int = 5000):
+
+    def __init__(
+        self, pipeline: Optional[FullAutomationPipeline] = None, port: int = 5000
+    ):
         self.pipeline = pipeline
         self.port = port
-        
+
         # Flask app setup
-        self.app = Flask(__name__, 
-                        template_folder='templates',
-                        static_folder='static')
-        self.app.config['SECRET_KEY'] = 'ai-ceo-dashboard-secret-key'
+        self.app = Flask(__name__, template_folder="templates", static_folder="static")
+        self.app.config["SECRET_KEY"] = "ai-ceo-dashboard-secret-key"
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
-        
+
         # Dashboard state
         self.metrics = DashboardMetrics(last_updated=datetime.now())
         self.connected_clients = set()
         self.real_time_data = {
-            'pipeline_status': deque(maxlen=100),
-            'task_metrics': deque(maxlen=100),
-            'business_metrics': deque(maxlen=100),
-            'system_metrics': deque(maxlen=100),
-            'agent_performance': deque(maxlen=100)
+            "pipeline_status": deque(maxlen=100),
+            "task_metrics": deque(maxlen=100),
+            "business_metrics": deque(maxlen=100),
+            "system_metrics": deque(maxlen=100),
+            "agent_performance": deque(maxlen=100),
         }
-        
+
         # Alert system
         self.alerts = self._setup_default_alerts()
         self.active_alerts = []
-        
+
         # Performance tracking
         self.performance_history = []
         self.business_kpis = {
-            'daily_revenue': 0.0,
-            'monthly_revenue': 0.0,
-            'conversion_rate': 0.0,
-            'customer_acquisition_cost': 0.0,
-            'lifetime_value': 0.0,
-            'churn_rate': 0.0
+            "daily_revenue": 0.0,
+            "monthly_revenue": 0.0,
+            "conversion_rate": 0.0,
+            "customer_acquisition_cost": 0.0,
+            "lifetime_value": 0.0,
+            "churn_rate": 0.0,
         }
-        
+
         # Database connection
         self.db_path = "dashboard.db"
         self._init_dashboard_database()
-        
+
         # Background threads
         self.monitoring_thread = None
         self.running = False
-        
+
         # Setup routes
         self._setup_routes()
         self._setup_socketio_events()
-        
+
         logger.info("📊 Monitoring Dashboard initialized")
-    
+
     def _setup_default_alerts(self) -> List[AlertConfig]:
         """Setup default alert configurations."""
         return [
             AlertConfig("High Error Rate", "error_rate > 0.1", 0.1, "high"),
             AlertConfig("High CPU Usage", "cpu_usage > 0.8", 0.8, "medium"),
             AlertConfig("High Memory Usage", "memory_usage > 0.8", 0.8, "medium"),
-            AlertConfig("Low Automation Efficiency", "automation_efficiency < 0.7", 0.7, "high"),
-            AlertConfig("Pipeline Stopped", "pipeline_status == 'stopped'", 0, "critical"),
+            AlertConfig(
+                "Low Automation Efficiency", "automation_efficiency < 0.7", 0.7, "high"
+            ),
+            AlertConfig(
+                "Pipeline Stopped", "pipeline_status == 'stopped'", 0, "critical"
+            ),
             AlertConfig("Agent Failure", "agent_success_rate < 0.5", 0.5, "high"),
             AlertConfig("High Response Time", "response_time > 5.0", 5.0, "medium"),
-            AlertConfig("Revenue Drop", "daily_revenue_change < -0.2", -0.2, "high")
+            AlertConfig("Revenue Drop", "daily_revenue_change < -0.2", -0.2, "high"),
         ]
-    
+
     def _init_dashboard_database(self):
         """Initialize dashboard database."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Dashboard metrics table
-        cursor.execute('''
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS dashboard_metrics (
                 timestamp TEXT PRIMARY KEY,
                 active_users INTEGER,
@@ -157,10 +169,12 @@ class MonitoringDashboard:
                 disk_usage REAL,
                 network_io TEXT
             )
-        ''')
-        
+        """
+        )
+
         # Alerts table
-        cursor.execute('''
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS alerts (
                 id TEXT PRIMARY KEY,
                 name TEXT,
@@ -172,10 +186,12 @@ class MonitoringDashboard:
                 message TEXT,
                 acknowledged BOOLEAN DEFAULT FALSE
             )
-        ''')
-        
+        """
+        )
+
         # Business KPIs table
-        cursor.execute('''
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS business_kpis (
                 date TEXT PRIMARY KEY,
                 daily_revenue REAL,
@@ -185,10 +201,12 @@ class MonitoringDashboard:
                 lifetime_value REAL,
                 churn_rate REAL
             )
-        ''')
-        
+        """
+        )
+
         # User sessions table
-        cursor.execute('''
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS user_sessions (
                 session_id TEXT PRIMARY KEY,
                 user_id TEXT,
@@ -197,159 +215,176 @@ class MonitoringDashboard:
                 actions_performed INTEGER,
                 ip_address TEXT
             )
-        ''')
-        
+        """
+        )
+
         conn.commit()
         conn.close()
         logger.info("📊 Dashboard database initialized")
-    
+
     def _setup_routes(self):
         """Setup Flask routes."""
-        
-        @self.app.route('/')
+
+        @self.app.route("/")
         def dashboard():
             """Main dashboard page."""
-            return render_template('dashboard.html')
-        
-        @self.app.route('/api/status')
+            return render_template("dashboard.html")
+
+        @self.app.route("/api/status")
         def get_status():
             """Get current system status."""
             try:
                 status_data = {
-                    'pipeline': self.pipeline.get_status() if self.pipeline else {'status': 'disconnected'},
-                    'dashboard': asdict(self.metrics),
-                    'system': self._get_system_metrics(),
-                    'business': self.business_kpis,
-                    'alerts': [alert for alert in self.active_alerts],
-                    'timestamp': datetime.now().isoformat()
+                    "pipeline": (
+                        self.pipeline.get_status()
+                        if self.pipeline
+                        else {"status": "disconnected"}
+                    ),
+                    "dashboard": asdict(self.metrics),
+                    "system": self._get_system_metrics(),
+                    "business": self.business_kpis,
+                    "alerts": [alert for alert in self.active_alerts],
+                    "timestamp": datetime.now().isoformat(),
                 }
                 return jsonify(status_data)
             except Exception as e:
                 logger.error(f"Error getting status: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/metrics')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/metrics")
         def get_metrics():
             """Get detailed metrics."""
             try:
-                return jsonify({
-                    'pipeline_metrics': list(self.real_time_data['pipeline_status']),
-                    'task_metrics': list(self.real_time_data['task_metrics']),
-                    'business_metrics': list(self.real_time_data['business_metrics']),
-                    'system_metrics': list(self.real_time_data['system_metrics']),
-                    'agent_performance': list(self.real_time_data['agent_performance'])
-                })
+                return jsonify(
+                    {
+                        "pipeline_metrics": list(
+                            self.real_time_data["pipeline_status"]
+                        ),
+                        "task_metrics": list(self.real_time_data["task_metrics"]),
+                        "business_metrics": list(
+                            self.real_time_data["business_metrics"]
+                        ),
+                        "system_metrics": list(self.real_time_data["system_metrics"]),
+                        "agent_performance": list(
+                            self.real_time_data["agent_performance"]
+                        ),
+                    }
+                )
             except Exception as e:
                 logger.error(f"Error getting metrics: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/performance-report')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/performance-report")
         def get_performance_report():
             """Get comprehensive performance report."""
             try:
                 if self.pipeline:
                     report = self.pipeline.get_performance_report()
                 else:
-                    report = {'error': 'Pipeline not connected'}
-                
+                    report = {"error": "Pipeline not connected"}
+
                 # Add dashboard-specific metrics
-                report['dashboard_metrics'] = asdict(self.metrics)
-                report['business_kpis'] = self.business_kpis
-                report['system_health'] = self._get_system_health()
-                
+                report["dashboard_metrics"] = asdict(self.metrics)
+                report["business_kpis"] = self.business_kpis
+                report["system_health"] = self._get_system_health()
+
                 return jsonify(report)
             except Exception as e:
                 logger.error(f"Error getting performance report: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/agents')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/agents")
         def get_agents():
             """Get agent status and controls."""
             try:
                 if self.pipeline:
                     agent_status = self.pipeline.agent_status
-                    return jsonify({
-                        'agents': agent_status,
-                        'controls': {
-                            'restart_agent': '/api/agents/<agent_name>/restart',
-                            'pause_agent': '/api/agents/<agent_name>/pause',
-                            'resume_agent': '/api/agents/<agent_name>/resume'
+                    return jsonify(
+                        {
+                            "agents": agent_status,
+                            "controls": {
+                                "restart_agent": "/api/agents/<agent_name>/restart",
+                                "pause_agent": "/api/agents/<agent_name>/pause",
+                                "resume_agent": "/api/agents/<agent_name>/resume",
+                            },
                         }
-                    })
+                    )
                 else:
-                    return jsonify({'error': 'Pipeline not connected'}), 503
+                    return jsonify({"error": "Pipeline not connected"}), 503
             except Exception as e:
                 logger.error(f"Error getting agents: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/agents/<agent_name>/restart', methods=['POST'])
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/agents/<agent_name>/restart", methods=["POST"])
         def restart_agent(agent_name):
             """Restart a specific agent."""
             try:
                 if self.pipeline:
                     # This would trigger agent restart
                     # For now, return success
-                    return jsonify({'message': f'Agent {agent_name} restart initiated'})
+                    return jsonify({"message": f"Agent {agent_name} restart initiated"})
                 else:
-                    return jsonify({'error': 'Pipeline not connected'}), 503
+                    return jsonify({"error": "Pipeline not connected"}), 503
             except Exception as e:
                 logger.error(f"Error restarting agent: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/pipeline/pause', methods=['POST'])
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/pipeline/pause", methods=["POST"])
         def pause_pipeline():
             """Pause the pipeline."""
             try:
                 if self.pipeline:
                     # This would pause the pipeline
-                    return jsonify({'message': 'Pipeline pause initiated'})
+                    return jsonify({"message": "Pipeline pause initiated"})
                 else:
-                    return jsonify({'error': 'Pipeline not connected'}), 503
+                    return jsonify({"error": "Pipeline not connected"}), 503
             except Exception as e:
                 logger.error(f"Error pausing pipeline: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/pipeline/resume', methods=['POST'])
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/pipeline/resume", methods=["POST"])
         def resume_pipeline():
             """Resume the pipeline."""
             try:
                 if self.pipeline:
                     # This would resume the pipeline
-                    return jsonify({'message': 'Pipeline resume initiated'})
+                    return jsonify({"message": "Pipeline resume initiated"})
                 else:
-                    return jsonify({'error': 'Pipeline not connected'}), 503
+                    return jsonify({"error": "Pipeline not connected"}), 503
             except Exception as e:
                 logger.error(f"Error resuming pipeline: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/alerts')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/alerts")
         def get_alerts():
             """Get current alerts."""
             try:
-                return jsonify({
-                    'active_alerts': self.active_alerts,
-                    'alert_configs': [asdict(alert) for alert in self.alerts]
-                })
+                return jsonify(
+                    {
+                        "active_alerts": self.active_alerts,
+                        "alert_configs": [asdict(alert) for alert in self.alerts],
+                    }
+                )
             except Exception as e:
                 logger.error(f"Error getting alerts: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/alerts/<alert_id>/acknowledge', methods=['POST'])
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/alerts/<alert_id>/acknowledge", methods=["POST"])
         def acknowledge_alert(alert_id):
             """Acknowledge an alert."""
             try:
                 # Mark alert as acknowledged
                 for alert in self.active_alerts:
-                    if alert.get('id') == alert_id:
-                        alert['acknowledged'] = True
+                    if alert.get("id") == alert_id:
+                        alert["acknowledged"] = True
                         break
-                
-                return jsonify({'message': f'Alert {alert_id} acknowledged'})
+
+                return jsonify({"message": f"Alert {alert_id} acknowledged"})
             except Exception as e:
                 logger.error(f"Error acknowledging alert: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/charts/pipeline-performance')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/charts/pipeline-performance")
         def get_pipeline_performance_chart():
             """Get pipeline performance chart data."""
             try:
@@ -358,9 +393,9 @@ class MonitoringDashboard:
                 return jsonify(chart_data)
             except Exception as e:
                 logger.error(f"Error generating chart: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/charts/business-metrics')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/charts/business-metrics")
         def get_business_metrics_chart():
             """Get business metrics chart data."""
             try:
@@ -368,9 +403,9 @@ class MonitoringDashboard:
                 return jsonify(chart_data)
             except Exception as e:
                 logger.error(f"Error generating chart: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/charts/system-health')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/charts/system-health")
         def get_system_health_chart():
             """Get system health chart data."""
             try:
@@ -378,498 +413,532 @@ class MonitoringDashboard:
                 return jsonify(chart_data)
             except Exception as e:
                 logger.error(f"Error generating chart: {e}")
-                return jsonify({'error': str(e)}), 500
-    
+                return jsonify({"error": str(e)}), 500
+
     def _setup_socketio_events(self):
         """Setup SocketIO events for real-time updates."""
-        
-        @self.socketio.on('connect')
+
+        @self.socketio.on("connect")
         def handle_connect():
             """Handle client connection."""
             client_id = request.sid
             self.connected_clients.add(client_id)
             logger.info(f"📱 Client connected: {client_id}")
-            
+
             # Send initial data
-            emit('status_update', self._get_current_status())
-        
-        @self.socketio.on('disconnect')
+            emit("status_update", self._get_current_status())
+
+        @self.socketio.on("disconnect")
         def handle_disconnect():
             """Handle client disconnection."""
             client_id = request.sid
             self.connected_clients.discard(client_id)
             logger.info(f"📱 Client disconnected: {client_id}")
-        
-        @self.socketio.on('request_update')
+
+        @self.socketio.on("request_update")
         def handle_update_request():
             """Handle client update request."""
-            emit('status_update', self._get_current_status())
-        
-        @self.socketio.on('execute_command')
+            emit("status_update", self._get_current_status())
+
+        @self.socketio.on("execute_command")
         def handle_command(data):
             """Handle command execution from client."""
             try:
-                command = data.get('command')
-                params = data.get('params', {})
-                
+                command = data.get("command")
+                params = data.get("params", {})
+
                 result = self._execute_dashboard_command(command, params)
-                emit('command_result', {
-                    'command': command,
-                    'result': result,
-                    'timestamp': datetime.now().isoformat()
-                })
+                emit(
+                    "command_result",
+                    {
+                        "command": command,
+                        "result": result,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                )
             except Exception as e:
-                emit('command_error', {
-                    'command': command,
-                    'error': str(e),
-                    'timestamp': datetime.now().isoformat()
-                })
-    
+                emit(
+                    "command_error",
+                    {
+                        "command": command,
+                        "error": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                )
+
     def _get_current_status(self) -> Dict[str, Any]:
         """Get current comprehensive status."""
         return {
-            'pipeline': self.pipeline.get_status() if self.pipeline else {'status': 'disconnected'},
-            'dashboard': asdict(self.metrics),
-            'system': self._get_system_metrics(),
-            'business': self.business_kpis,
-            'alerts': self.active_alerts,
-            'connected_clients': len(self.connected_clients),
-            'timestamp': datetime.now().isoformat()
+            "pipeline": (
+                self.pipeline.get_status()
+                if self.pipeline
+                else {"status": "disconnected"}
+            ),
+            "dashboard": asdict(self.metrics),
+            "system": self._get_system_metrics(),
+            "business": self.business_kpis,
+            "alerts": self.active_alerts,
+            "connected_clients": len(self.connected_clients),
+            "timestamp": datetime.now().isoformat(),
         }
-    
+
     def _get_system_metrics(self) -> Dict[str, Any]:
         """Get current system metrics."""
         try:
             # CPU usage
             cpu_percent = psutil.cpu_percent(interval=1)
-            
+
             # Memory usage
             memory = psutil.virtual_memory()
             memory_percent = memory.percent
-            
+
             # Disk usage
-            disk = psutil.disk_usage('/')
+            disk = psutil.disk_usage("/")
             disk_percent = (disk.used / disk.total) * 100
-            
+
             # Network I/O
             network = psutil.net_io_counters()
-            
+
             return {
-                'cpu_usage': cpu_percent / 100.0,
-                'memory_usage': memory_percent / 100.0,
-                'disk_usage': disk_percent / 100.0,
-                'memory_total': memory.total,
-                'memory_used': memory.used,
-                'disk_total': disk.total,
-                'disk_used': disk.used,
-                'network_bytes_sent': network.bytes_sent,
-                'network_bytes_recv': network.bytes_recv,
-                'timestamp': datetime.now().isoformat()
+                "cpu_usage": cpu_percent / 100.0,
+                "memory_usage": memory_percent / 100.0,
+                "disk_usage": disk_percent / 100.0,
+                "memory_total": memory.total,
+                "memory_used": memory.used,
+                "disk_total": disk.total,
+                "disk_used": disk.used,
+                "network_bytes_sent": network.bytes_sent,
+                "network_bytes_recv": network.bytes_recv,
+                "timestamp": datetime.now().isoformat(),
             }
         except Exception as e:
             logger.error(f"Error getting system metrics: {e}")
             return {}
-    
+
     def _get_system_health(self) -> Dict[str, Any]:
         """Get comprehensive system health status."""
         system_metrics = self._get_system_metrics()
-        
+
         health_score = 100.0
         issues = []
-        
+
         # Check CPU usage
-        if system_metrics.get('cpu_usage', 0) > 0.8:
+        if system_metrics.get("cpu_usage", 0) > 0.8:
             health_score -= 20
             issues.append("High CPU usage")
-        
+
         # Check memory usage
-        if system_metrics.get('memory_usage', 0) > 0.8:
+        if system_metrics.get("memory_usage", 0) > 0.8:
             health_score -= 20
             issues.append("High memory usage")
-        
+
         # Check disk usage
-        if system_metrics.get('disk_usage', 0) > 0.9:
+        if system_metrics.get("disk_usage", 0) > 0.9:
             health_score -= 15
             issues.append("High disk usage")
-        
+
         # Check pipeline status
         if self.pipeline:
             pipeline_status = self.pipeline.get_status()
-            if pipeline_status['status'] != 'running':
+            if pipeline_status["status"] != "running":
                 health_score -= 30
                 issues.append(f"Pipeline not running: {pipeline_status['status']}")
         else:
             health_score -= 50
             issues.append("Pipeline not connected")
-        
+
         return {
-            'health_score': max(0, health_score),
-            'status': 'healthy' if health_score > 80 else 'warning' if health_score > 50 else 'critical',
-            'issues': issues,
-            'timestamp': datetime.now().isoformat()
+            "health_score": max(0, health_score),
+            "status": (
+                "healthy"
+                if health_score > 80
+                else "warning" if health_score > 50 else "critical"
+            ),
+            "issues": issues,
+            "timestamp": datetime.now().isoformat(),
         }
-    
-    def _execute_dashboard_command(self, command: str, params: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _execute_dashboard_command(
+        self, command: str, params: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Execute dashboard command."""
         try:
-            if command == 'restart_pipeline':
+            if command == "restart_pipeline":
                 if self.pipeline:
                     # This would restart the pipeline
-                    return {'success': True, 'message': 'Pipeline restart initiated'}
+                    return {"success": True, "message": "Pipeline restart initiated"}
                 else:
-                    return {'success': False, 'message': 'Pipeline not connected'}
-            
-            elif command == 'pause_pipeline':
+                    return {"success": False, "message": "Pipeline not connected"}
+
+            elif command == "pause_pipeline":
                 if self.pipeline:
                     # This would pause the pipeline
-                    return {'success': True, 'message': 'Pipeline paused'}
+                    return {"success": True, "message": "Pipeline paused"}
                 else:
-                    return {'success': False, 'message': 'Pipeline not connected'}
-            
-            elif command == 'resume_pipeline':
+                    return {"success": False, "message": "Pipeline not connected"}
+
+            elif command == "resume_pipeline":
                 if self.pipeline:
                     # This would resume the pipeline
-                    return {'success': True, 'message': 'Pipeline resumed'}
+                    return {"success": True, "message": "Pipeline resumed"}
                 else:
-                    return {'success': False, 'message': 'Pipeline not connected'}
-            
-            elif command == 'restart_agent':
-                agent_name = params.get('agent_name')
+                    return {"success": False, "message": "Pipeline not connected"}
+
+            elif command == "restart_agent":
+                agent_name = params.get("agent_name")
                 if self.pipeline and agent_name:
                     # This would restart the specific agent
-                    return {'success': True, 'message': f'Agent {agent_name} restart initiated'}
+                    return {
+                        "success": True,
+                        "message": f"Agent {agent_name} restart initiated",
+                    }
                 else:
-                    return {'success': False, 'message': 'Invalid agent name or pipeline not connected'}
-            
-            elif command == 'clear_alerts':
+                    return {
+                        "success": False,
+                        "message": "Invalid agent name or pipeline not connected",
+                    }
+
+            elif command == "clear_alerts":
                 self.active_alerts.clear()
-                return {'success': True, 'message': 'All alerts cleared'}
-            
-            elif command == 'export_metrics':
+                return {"success": True, "message": "All alerts cleared"}
+
+            elif command == "export_metrics":
                 # Export metrics to file
                 export_data = self._export_metrics_data()
-                return {'success': True, 'message': 'Metrics exported', 'data': export_data}
-            
+                return {
+                    "success": True,
+                    "message": "Metrics exported",
+                    "data": export_data,
+                }
+
             else:
-                return {'success': False, 'message': f'Unknown command: {command}'}
-        
+                return {"success": False, "message": f"Unknown command: {command}"}
+
         except Exception as e:
-            return {'success': False, 'message': f'Command execution failed: {str(e)}'}
-    
+            return {"success": False, "message": f"Command execution failed: {str(e)}"}
+
     def _generate_pipeline_performance_chart(self) -> Dict[str, Any]:
         """Generate pipeline performance chart data."""
         try:
             # Get recent pipeline metrics
-            pipeline_data = list(self.real_time_data['pipeline_status'])
-            
+            pipeline_data = list(self.real_time_data["pipeline_status"])
+
             if not pipeline_data:
-                return {'error': 'No pipeline data available'}
-            
+                return {"error": "No pipeline data available"}
+
             # Extract data for chart
-            timestamps = [item.get('timestamp', '') for item in pipeline_data]
-            success_rates = [item.get('success_rate', 0) for item in pipeline_data]
-            task_counts = [item.get('active_tasks', 0) for item in pipeline_data]
-            
+            timestamps = [item.get("timestamp", "") for item in pipeline_data]
+            success_rates = [item.get("success_rate", 0) for item in pipeline_data]
+            task_counts = [item.get("active_tasks", 0) for item in pipeline_data]
+
             # Create Plotly chart
             fig = go.Figure()
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=success_rates,
-                mode='lines+markers',
-                name='Success Rate',
-                line=dict(color='green')
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=task_counts,
-                mode='lines+markers',
-                name='Active Tasks',
-                yaxis='y2',
-                line=dict(color='blue')
-            ))
-            
-            fig.update_layout(
-                title='Pipeline Performance Over Time',
-                xaxis_title='Time',
-                yaxis_title='Success Rate',
-                yaxis2=dict(
-                    title='Active Tasks',
-                    overlaying='y',
-                    side='right'
-                ),
-                hovermode='x unified'
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=success_rates,
+                    mode="lines+markers",
+                    name="Success Rate",
+                    line=dict(color="green"),
+                )
             )
-            
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=task_counts,
+                    mode="lines+markers",
+                    name="Active Tasks",
+                    yaxis="y2",
+                    line=dict(color="blue"),
+                )
+            )
+
+            fig.update_layout(
+                title="Pipeline Performance Over Time",
+                xaxis_title="Time",
+                yaxis_title="Success Rate",
+                yaxis2=dict(title="Active Tasks", overlaying="y", side="right"),
+                hovermode="x unified",
+            )
+
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
-        
+
         except Exception as e:
             logger.error(f"Error generating pipeline performance chart: {e}")
-            return {'error': str(e)}
-    
+            return {"error": str(e)}
+
     def _generate_business_metrics_chart(self) -> Dict[str, Any]:
         """Generate business metrics chart data."""
         try:
             # Get recent business metrics
-            business_data = list(self.real_time_data['business_metrics'])
-            
+            business_data = list(self.real_time_data["business_metrics"])
+
             if not business_data:
-                return {'error': 'No business data available'}
-            
+                return {"error": "No business data available"}
+
             # Extract data for chart
-            timestamps = [item.get('timestamp', '') for item in business_data]
-            revenue = [item.get('daily_revenue', 0) for item in business_data]
-            conversion_rate = [item.get('conversion_rate', 0) for item in business_data]
-            
+            timestamps = [item.get("timestamp", "") for item in business_data]
+            revenue = [item.get("daily_revenue", 0) for item in business_data]
+            conversion_rate = [item.get("conversion_rate", 0) for item in business_data]
+
             # Create Plotly chart
             fig = go.Figure()
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=revenue,
-                mode='lines+markers',
-                name='Daily Revenue',
-                line=dict(color='green')
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=conversion_rate,
-                mode='lines+markers',
-                name='Conversion Rate',
-                yaxis='y2',
-                line=dict(color='orange')
-            ))
-            
-            fig.update_layout(
-                title='Business Metrics Over Time',
-                xaxis_title='Time',
-                yaxis_title='Revenue ($)',
-                yaxis2=dict(
-                    title='Conversion Rate (%)',
-                    overlaying='y',
-                    side='right'
-                ),
-                hovermode='x unified'
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=revenue,
+                    mode="lines+markers",
+                    name="Daily Revenue",
+                    line=dict(color="green"),
+                )
             )
-            
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=conversion_rate,
+                    mode="lines+markers",
+                    name="Conversion Rate",
+                    yaxis="y2",
+                    line=dict(color="orange"),
+                )
+            )
+
+            fig.update_layout(
+                title="Business Metrics Over Time",
+                xaxis_title="Time",
+                yaxis_title="Revenue ($)",
+                yaxis2=dict(title="Conversion Rate (%)", overlaying="y", side="right"),
+                hovermode="x unified",
+            )
+
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
-        
+
         except Exception as e:
             logger.error(f"Error generating business metrics chart: {e}")
-            return {'error': str(e)}
-    
+            return {"error": str(e)}
+
     def _generate_system_health_chart(self) -> Dict[str, Any]:
         """Generate system health chart data."""
         try:
             # Get recent system metrics
-            system_data = list(self.real_time_data['system_metrics'])
-            
+            system_data = list(self.real_time_data["system_metrics"])
+
             if not system_data:
-                return {'error': 'No system data available'}
-            
+                return {"error": "No system data available"}
+
             # Extract data for chart
-            timestamps = [item.get('timestamp', '') for item in system_data]
-            cpu_usage = [item.get('cpu_usage', 0) * 100 for item in system_data]
-            memory_usage = [item.get('memory_usage', 0) * 100 for item in system_data]
-            disk_usage = [item.get('disk_usage', 0) * 100 for item in system_data]
-            
+            timestamps = [item.get("timestamp", "") for item in system_data]
+            cpu_usage = [item.get("cpu_usage", 0) * 100 for item in system_data]
+            memory_usage = [item.get("memory_usage", 0) * 100 for item in system_data]
+            disk_usage = [item.get("disk_usage", 0) * 100 for item in system_data]
+
             # Create Plotly chart
             fig = go.Figure()
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=cpu_usage,
-                mode='lines+markers',
-                name='CPU Usage (%)',
-                line=dict(color='red')
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=memory_usage,
-                mode='lines+markers',
-                name='Memory Usage (%)',
-                line=dict(color='blue')
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=disk_usage,
-                mode='lines+markers',
-                name='Disk Usage (%)',
-                line=dict(color='green')
-            ))
-            
-            fig.update_layout(
-                title='System Health Over Time',
-                xaxis_title='Time',
-                yaxis_title='Usage (%)',
-                hovermode='x unified'
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=cpu_usage,
+                    mode="lines+markers",
+                    name="CPU Usage (%)",
+                    line=dict(color="red"),
+                )
             )
-            
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=memory_usage,
+                    mode="lines+markers",
+                    name="Memory Usage (%)",
+                    line=dict(color="blue"),
+                )
+            )
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=disk_usage,
+                    mode="lines+markers",
+                    name="Disk Usage (%)",
+                    line=dict(color="green"),
+                )
+            )
+
+            fig.update_layout(
+                title="System Health Over Time",
+                xaxis_title="Time",
+                yaxis_title="Usage (%)",
+                hovermode="x unified",
+            )
+
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
-        
+
         except Exception as e:
             logger.error(f"Error generating system health chart: {e}")
-            return {'error': str(e)}
-    
+            return {"error": str(e)}
+
     def _export_metrics_data(self) -> Dict[str, Any]:
         """Export metrics data for analysis."""
         try:
             export_data = {
-                'pipeline_metrics': list(self.real_time_data['pipeline_status']),
-                'business_metrics': list(self.real_time_data['business_metrics']),
-                'system_metrics': list(self.real_time_data['system_metrics']),
-                'agent_performance': list(self.real_time_data['agent_performance']),
-                'business_kpis': self.business_kpis,
-                'dashboard_metrics': asdict(self.metrics),
-                'export_timestamp': datetime.now().isoformat()
+                "pipeline_metrics": list(self.real_time_data["pipeline_status"]),
+                "business_metrics": list(self.real_time_data["business_metrics"]),
+                "system_metrics": list(self.real_time_data["system_metrics"]),
+                "agent_performance": list(self.real_time_data["agent_performance"]),
+                "business_kpis": self.business_kpis,
+                "dashboard_metrics": asdict(self.metrics),
+                "export_timestamp": datetime.now().isoformat(),
             }
-            
+
             # Save to file
             filename = f"metrics_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-            with open(filename, 'w') as f:
+            with open(filename, "w") as f:
                 json.dump(export_data, f, indent=2, default=str)
-            
+
             return {
-                'filename': filename,
-                'record_count': sum(len(data) for data in self.real_time_data.values()),
-                'file_size': os.path.getsize(filename)
+                "filename": filename,
+                "record_count": sum(len(data) for data in self.real_time_data.values()),
+                "file_size": os.path.getsize(filename),
             }
-        
+
         except Exception as e:
             logger.error(f"Error exporting metrics: {e}")
-            return {'error': str(e)}
-    
+            return {"error": str(e)}
+
     def start_monitoring(self):
         """Start the monitoring dashboard."""
         logger.info("📊 Starting Monitoring Dashboard...")
-        
+
         self.running = True
-        
+
         # Start background monitoring thread
-        self.monitoring_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
+        self.monitoring_thread = threading.Thread(
+            target=self._monitoring_loop, daemon=True
+        )
         self.monitoring_thread.start()
-        
+
         # Start Flask app
         try:
             logger.info(f"🌐 Dashboard available at http://localhost:{self.port}")
-            self.socketio.run(self.app, host='0.0.0.0', port=self.port, debug=False)
+            self.socketio.run(self.app, host="0.0.0.0", port=self.port, debug=False)
         except Exception as e:
             logger.error(f"❌ Failed to start dashboard: {e}")
             self.running = False
             raise
-    
+
     def _monitoring_loop(self):
         """Background monitoring loop."""
         logger.info("🔄 Monitoring loop started")
-        
+
         while self.running:
             try:
                 # Update metrics
                 self._update_dashboard_metrics()
-                
+
                 # Check alerts
                 self._check_alerts()
-                
+
                 # Broadcast updates to connected clients
                 if self.connected_clients:
-                    self.socketio.emit('status_update', self._get_current_status())
-                
+                    self.socketio.emit("status_update", self._get_current_status())
+
                 # Sleep for update interval
                 time.sleep(5)  # Update every 5 seconds
-                
+
             except Exception as e:
                 logger.error(f"❌ Error in monitoring loop: {e}")
                 time.sleep(10)
-        
+
         logger.info("🛑 Monitoring loop stopped")
-    
+
     def _update_dashboard_metrics(self):
         """Update dashboard metrics."""
         try:
             # Update system metrics
             system_metrics = self._get_system_metrics()
-            
-            self.metrics.cpu_usage = system_metrics.get('cpu_usage', 0)
-            self.metrics.memory_usage = system_metrics.get('memory_usage', 0)
-            self.metrics.disk_usage = system_metrics.get('disk_usage', 0)
+
+            self.metrics.cpu_usage = system_metrics.get("cpu_usage", 0)
+            self.metrics.memory_usage = system_metrics.get("memory_usage", 0)
+            self.metrics.disk_usage = system_metrics.get("disk_usage", 0)
             self.metrics.last_updated = datetime.now()
-            
+
             # Add to real-time data
-            self.real_time_data['system_metrics'].append({
-                'timestamp': datetime.now().isoformat(),
-                **system_metrics
-            })
-            
+            self.real_time_data["system_metrics"].append(
+                {"timestamp": datetime.now().isoformat(), **system_metrics}
+            )
+
             # Update pipeline metrics if available
             if self.pipeline:
                 pipeline_status = self.pipeline.get_status()
-                self.real_time_data['pipeline_status'].append({
-                    'timestamp': datetime.now().isoformat(),
-                    **pipeline_status
-                })
-            
+                self.real_time_data["pipeline_status"].append(
+                    {"timestamp": datetime.now().isoformat(), **pipeline_status}
+                )
+
             # Update business metrics (simulated for now)
-            self.real_time_data['business_metrics'].append({
-                'timestamp': datetime.now().isoformat(),
-                **self.business_kpis
-            })
-            
+            self.real_time_data["business_metrics"].append(
+                {"timestamp": datetime.now().isoformat(), **self.business_kpis}
+            )
+
         except Exception as e:
             logger.error(f"Error updating dashboard metrics: {e}")
-    
+
     def _check_alerts(self):
         """Check for alert conditions."""
         try:
             current_time = datetime.now()
-            
+
             for alert_config in self.alerts:
                 if not alert_config.enabled:
                     continue
-                
+
                 # Evaluate alert condition
                 triggered = self._evaluate_alert_condition(alert_config)
-                
+
                 if triggered:
                     # Check if alert was recently triggered (avoid spam)
-                    if (alert_config.last_triggered and 
-                        (current_time - alert_config.last_triggered).total_seconds() < 300):  # 5 minutes
+                    if (
+                        alert_config.last_triggered
+                        and (current_time - alert_config.last_triggered).total_seconds()
+                        < 300
+                    ):  # 5 minutes
                         continue
-                    
+
                     # Create alert
                     alert = {
-                        'id': str(uuid.uuid4()),
-                        'name': alert_config.name,
-                        'severity': alert_config.severity,
-                        'message': f"Alert triggered: {alert_config.name}",
-                        'condition': alert_config.condition,
-                        'threshold': alert_config.threshold,
-                        'triggered_at': current_time.isoformat(),
-                        'acknowledged': False
+                        "id": str(uuid.uuid4()),
+                        "name": alert_config.name,
+                        "severity": alert_config.severity,
+                        "message": f"Alert triggered: {alert_config.name}",
+                        "condition": alert_config.condition,
+                        "threshold": alert_config.threshold,
+                        "triggered_at": current_time.isoformat(),
+                        "acknowledged": False,
                     }
-                    
+
                     self.active_alerts.append(alert)
                     alert_config.last_triggered = current_time
                     alert_config.trigger_count += 1
-                    
+
                     # Broadcast alert to connected clients
                     if self.connected_clients:
-                        self.socketio.emit('new_alert', alert)
-                    
+                        self.socketio.emit("new_alert", alert)
+
                     logger.warning(f"🚨 Alert triggered: {alert_config.name}")
-        
+
         except Exception as e:
             logger.error(f"Error checking alerts: {e}")
-    
+
     def _evaluate_alert_condition(self, alert_config: AlertConfig) -> bool:
         """Evaluate if an alert condition is met."""
         try:
             condition = alert_config.condition
             threshold = alert_config.threshold
-            
+
             # Get current values
             if "error_rate" in condition:
                 current_value = self.metrics.error_rate
@@ -882,11 +951,11 @@ class MonitoringDashboard:
             elif "pipeline_status" in condition:
                 if self.pipeline:
                     status = self.pipeline.get_status()
-                    return status['status'] == 'stopped'
+                    return status["status"] == "stopped"
                 return True  # Pipeline not connected
             else:
                 return False
-            
+
             # Evaluate condition
             if ">" in condition:
                 return current_value > threshold
@@ -894,30 +963,30 @@ class MonitoringDashboard:
                 return current_value < threshold
             elif "==" in condition:
                 return current_value == threshold
-            
+
             return False
-        
+
         except Exception as e:
             logger.error(f"Error evaluating alert condition: {e}")
             return False
-    
+
     def stop_monitoring(self):
         """Stop the monitoring dashboard."""
         logger.info("🛑 Stopping Monitoring Dashboard...")
-        
+
         self.running = False
-        
+
         # Wait for monitoring thread to finish
         if self.monitoring_thread and self.monitoring_thread.is_alive():
             self.monitoring_thread.join(timeout=5)
-        
+
         logger.info("✅ Monitoring Dashboard stopped")
-    
+
     def connect_pipeline(self, pipeline: FullAutomationPipeline):
         """Connect to a pipeline instance."""
         self.pipeline = pipeline
         logger.info("🔗 Pipeline connected to dashboard")
-    
+
     def disconnect_pipeline(self):
         """Disconnect from pipeline."""
         self.pipeline = None
@@ -928,9 +997,9 @@ def create_dashboard_templates():
     """Create basic HTML templates for the dashboard."""
     templates_dir = Path("templates")
     templates_dir.mkdir(exist_ok=True)
-    
+
     # Main dashboard template
-    dashboard_html = '''
+    dashboard_html = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1237,48 +1306,47 @@ def create_dashboard_templates():
     </script>
 </body>
 </html>
-    '''
-    
+    """
+
     with open(templates_dir / "dashboard.html", "w") as f:
         f.write(dashboard_html)
-    
+
     logger.info("📄 Dashboard templates created")
 
 
 def main():
     """Main function to run the monitoring dashboard."""
     import argparse
-    
-    parser = argparse.ArgumentParser(description='AI CEO Monitoring Dashboard')
-    parser.add_argument('--port', type=int, default=5000, help='Dashboard port')
-    parser.add_argument('--create-templates', action='store_true', help='Create dashboard templates')
+
+    parser = argparse.ArgumentParser(description="AI CEO Monitoring Dashboard")
+    parser.add_argument("--port", type=int, default=5000, help="Dashboard port")
+    parser.add_argument(
+        "--create-templates", action="store_true", help="Create dashboard templates"
+    )
     args = parser.parse_args()
-    
+
     # Setup logging
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler('dashboard.log'),
-            logging.StreamHandler()
-        ]
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("dashboard.log"), logging.StreamHandler()],
     )
-    
+
     if args.create_templates:
         create_dashboard_templates()
         return
-    
+
     # Create and start dashboard
     dashboard = MonitoringDashboard(port=args.port)
-    
+
     try:
         # Create templates if they don't exist
         if not Path("templates/dashboard.html").exists():
             create_dashboard_templates()
-        
+
         # Start dashboard
         dashboard.start_monitoring()
-    
+
     except KeyboardInterrupt:
         logger.info("🛑 Keyboard interrupt received")
     except Exception as e:

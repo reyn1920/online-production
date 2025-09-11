@@ -18,14 +18,14 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-import os
-import sys
-import sqlite3
 import argparse
-import shutil
 import json
-from pathlib import Path
+import os
+import shutil
+import sqlite3
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 # Add project root to path
@@ -38,32 +38,32 @@ class DatabaseManager:
 
     def __init__(self):
         self.project_root = PROJECT_ROOT
-        self.data_dir = self.project_root / 'data'
-        self.app_dir = self.project_root / 'app'
-        self.backup_dir = self.project_root / 'backups' / 'database'
+        self.data_dir = self.project_root / "data"
+        self.app_dir = self.project_root / "app"
+        self.backup_dir = self.project_root / "backups" / "database"
 
         # Database configurations
         self.databases = {
-            'main': {
-                'path': self.data_dir / 'trae_ai.db',
-                'schema_file': self.project_root / 'master_schema.sql',
-                'description': 'Main application database'
+            "main": {
+                "path": self.data_dir / "trae_ai.db",
+                "schema_file": self.project_root / "master_schema.sql",
+                "description": "Main application database",
             },
-            'intelligence': {
-                'path': self.data_dir / 'right_perspective.db',
-                'schema_file': self.project_root / 'right_perspective_schema.sql',
-                'description': 'Intelligence and research database'
+            "intelligence": {
+                "path": self.data_dir / "right_perspective.db",
+                "schema_file": self.project_root / "right_perspective_schema.sql",
+                "description": "Intelligence and research database",
             },
-            'app_main': {
-                'path': self.app_dir / 'trae_ai.db',
-                'schema_file': self.project_root / 'master_schema.sql',
-                'description': 'App directory main database'
+            "app_main": {
+                "path": self.app_dir / "trae_ai.db",
+                "schema_file": self.project_root / "master_schema.sql",
+                "description": "App directory main database",
             },
-            'app_intelligence': {
-                'path': self.app_dir / 'right_perspective.db',
-                'schema_file': self.project_root / 'right_perspective_schema.sql',
-                'description': 'App directory intelligence database'
-            }
+            "app_intelligence": {
+                "path": self.app_dir / "right_perspective.db",
+                "schema_file": self.project_root / "right_perspective_schema.sql",
+                "description": "App directory intelligence database",
+            },
         }
 
         # Ensure directories exist
@@ -76,7 +76,7 @@ class DatabaseManager:
             print(f"⚠️  Schema file not found: {schema_file}")
             return ""
 
-        with open(schema_file, 'r') as f:
+        with open(schema_file, "r") as f:
             return f.read()
 
     def execute_sql(self, db_path: Path, sql: str, description: str = "") -> bool:
@@ -106,17 +106,15 @@ class DatabaseManager:
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
+                    "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+                )
                 tables = cursor.fetchall()
 
                 table_info = []
                 for (table_name,) in tables:
                     cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
                     count = cursor.fetchone()[0]
-                    table_info.append({
-                        'name': table_name,
-                        'rows': count
-                    })
+                    table_info.append({"name": table_name, "rows": count})
 
                 return table_info
         except sqlite3.Error:
@@ -129,8 +127,8 @@ class DatabaseManager:
             return False
 
         config = self.databases[db_name]
-        db_path = config['path']
-        schema_file = config['schema_file']
+        db_path = config["path"]
+        schema_file = config["schema_file"]
 
         print(f"🔧 Initializing {config['description']}...")
         print(f"   Database: {db_path}")
@@ -145,11 +143,7 @@ class DatabaseManager:
             print(f"❌ No schema found for {db_name}")
             return False
 
-        success = self.execute_sql(
-            db_path,
-            schema_sql,
-            f"Schema applied to {db_name}"
-        )
+        success = self.execute_sql(db_path, schema_sql, f"Schema applied to {db_name}")
 
         if success:
             # Verify tables were created
@@ -172,7 +166,8 @@ class DatabaseManager:
             print()  # Add spacing
 
         print(
-            f"📊 Database initialization complete: {success_count}/{total_count} successful")
+            f"📊 Database initialization complete: {success_count}/{total_count} successful"
+        )
         return success_count == total_count
 
     def verify_schema_integrity(self) -> bool:
@@ -183,7 +178,7 @@ class DatabaseManager:
         all_valid = True
 
         for db_name, config in self.databases.items():
-            db_path = config['path']
+            db_path = config["path"]
 
             if not db_path.exists():
                 print(f"❌ {db_name}: Database file missing")
@@ -203,7 +198,7 @@ class DatabaseManager:
 
     def backup_databases(self) -> bool:
         """Create backup of all databases."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_subdir = self.backup_dir / f"backup_{timestamp}"
         backup_subdir.mkdir(parents=True, exist_ok=True)
 
@@ -213,7 +208,7 @@ class DatabaseManager:
         success_count = 0
 
         for db_name, config in self.databases.items():
-            db_path = config['path']
+            db_path = config["path"]
 
             if not db_path.exists():
                 print(f"⚠️  {db_name}: Database not found, skipping")
@@ -230,14 +225,14 @@ class DatabaseManager:
 
         # Create backup manifest
         manifest = {
-            'timestamp': timestamp,
-            'databases_backed_up': success_count,
-            'backup_directory': str(backup_subdir),
-            'created_by': 'TRAE AI Database Manager'
+            "timestamp": timestamp,
+            "databases_backed_up": success_count,
+            "backup_directory": str(backup_subdir),
+            "created_by": "TRAE AI Database Manager",
         }
 
-        manifest_path = backup_subdir / 'manifest.json'
-        with open(manifest_path, 'w') as f:
+        manifest_path = backup_subdir / "manifest.json"
+        with open(manifest_path, "w") as f:
             json.dump(manifest, f, indent=2)
 
         print(f"\n📋 Backup manifest created: {manifest_path}")
@@ -251,7 +246,7 @@ class DatabaseManager:
         print("=" * 50)
 
         for db_name, config in self.databases.items():
-            db_path = config['path']
+            db_path = config["path"]
             print(f"\n🗄️  {db_name.upper()}")
             print(f"   Description: {config['description']}")
             print(f"   Path: {db_path}")
@@ -259,7 +254,7 @@ class DatabaseManager:
             if db_path.exists():
                 size_mb = db_path.stat().st_size / (1024 * 1024)
                 tables = self.get_table_info(db_path)
-                total_rows = sum(table['rows'] for table in tables)
+                total_rows = sum(table["rows"] for table in tables)
 
                 print(f"   Status: ✅ EXISTS")
                 print(f"   Size: {size_mb:.2f} MB")
@@ -279,7 +274,7 @@ class DatabaseManager:
             print("⚠️  WARNING: This will DELETE ALL DATABASE DATA!")
             print("This operation cannot be undone.")
             response = input("Type 'RESET' to confirm: ")
-            if response != 'RESET':
+            if response != "RESET":
                 print("❌ Operation cancelled.")
                 return False
 
@@ -293,7 +288,7 @@ class DatabaseManager:
         # Delete existing databases
         deleted_count = 0
         for db_name, config in self.databases.items():
-            db_path = config['path']
+            db_path = config["path"]
             if db_path.exists():
                 try:
                     db_path.unlink()
@@ -317,7 +312,7 @@ class DatabaseManager:
 
 def main():
     parser = argparse.ArgumentParser(
-        description='TRAE AI Database Management System',
+        description="TRAE AI Database Management System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -325,18 +320,19 @@ Examples:
   python scripts/manage_db.py verify        # Check database integrity
   python scripts/manage_db.py backup        # Create backup
   python scripts/manage_db.py status        # Show database status
-        """
+        """,
     )
 
-    parser.add_argument('command', choices=[
-        'init', 'migrate', 'verify', 'backup', 'restore', 'reset', 'status'
-    ], help='Database management command')
-
-    parser.add_argument('file', nargs='?', help='File for restore command')
     parser.add_argument(
-        '--force',
-        action='store_true',
-        help='Force operation without confirmation')
+        "command",
+        choices=["init", "migrate", "verify", "backup", "restore", "reset", "status"],
+        help="Database management command",
+    )
+
+    parser.add_argument("file", nargs="?", help="File for restore command")
+    parser.add_argument(
+        "--force", action="store_true", help="Force operation without confirmation"
+    )
 
     args = parser.parse_args()
 
@@ -344,21 +340,21 @@ Examples:
     db_manager = DatabaseManager()
 
     try:
-        if args.command == 'init':
+        if args.command == "init":
             success = db_manager.init_all_databases()
-        elif args.command == 'verify':
+        elif args.command == "verify":
             success = db_manager.verify_schema_integrity()
-        elif args.command == 'backup':
+        elif args.command == "backup":
             success = db_manager.backup_databases()
-        elif args.command == 'status':
+        elif args.command == "status":
             db_manager.show_status()
             success = True
-        elif args.command == 'reset':
+        elif args.command == "reset":
             success = db_manager.reset_databases(confirm=args.force)
-        elif args.command == 'migrate':
+        elif args.command == "migrate":
             print("🔄 Migration functionality coming soon...")
             success = True
-        elif args.command == 'restore':
+        elif args.command == "restore":
             print("🔄 Restore functionality coming soon...")
             success = True
         else:
@@ -375,5 +371,5 @@ Examples:
     return 0 if success else 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

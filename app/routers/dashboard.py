@@ -4,22 +4,23 @@ Dashboard Router - FastAPI router for dashboard functionality
 Integrates dashboard endpoints with the main FastAPI application
 """
 
-from fastapi import APIRouter, Request, HTTPException, Depends, Form, Query
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
-from typing import Dict, List, Any, Optional
-from datetime import datetime
+import json
 import logging
 import os
-import json
+from datetime import datetime
 from pathlib import Path
-from ..analytics import analytics_engine, track_page_view, track_api_call, track_user_action
-from ..auth import (
-    auth_manager, get_current_user, require_permission, require_role,
-    User, UserRole, Permission, validate_password_strength
-)
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
+
+from ..analytics import (analytics_engine, track_api_call, track_page_view,
+                         track_user_action)
+from ..auth import (Permission, User, UserRole, auth_manager, get_current_user,
+                    require_permission, require_role, validate_password_strength)
 
 # Initialize router
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -33,20 +34,20 @@ dashboard_data = {
     "system_status": {
         "status": "operational",
         "uptime": "99.9%",
-        "last_updated": datetime.now().isoformat()
+        "last_updated": datetime.now().isoformat(),
     },
     "metrics": {
         "total_users": 1250,
         "active_sessions": 45,
         "api_calls_today": 8750,
-        "revenue_today": 2340.50
+        "revenue_today": 2340.50,
     },
     "services": {
         "youtube_automation": {"status": "active", "last_run": "2024-01-15T10:30:00Z"},
         "content_pipeline": {"status": "active", "last_run": "2024-01-15T11:15:00Z"},
         "marketing_agent": {"status": "active", "last_run": "2024-01-15T09:45:00Z"},
-        "financial_tracking": {"status": "active", "last_run": "2024-01-15T12:00:00Z"}
-    }
+        "financial_tracking": {"status": "active", "last_run": "2024-01-15T12:00:00Z"},
+    },
 }
 
 
@@ -54,11 +55,14 @@ dashboard_data = {
 async def dashboard_home(request: Request):
     """Main dashboard page."""
     try:
-        return templates.TemplateResponse("dashboard.html", {
-            "request": request,
-            "title": "Production Dashboard",
-            "data": dashboard_data
-        })
+        return templates.TemplateResponse(
+            "dashboard.html",
+            {
+                "request": request,
+                "title": "Production Dashboard",
+                "data": dashboard_data,
+            },
+        )
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
         # Fallback to simple HTML response
@@ -245,38 +249,44 @@ async def dashboard_home(request: Request):
             </body>
             </html>
             """,
-            status_code=200
+            status_code=200,
         )
 
 
 @router.get("/api/status")
 async def get_dashboard_status():
     """Get current dashboard status and metrics."""
-    return JSONResponse(content={
-        "status": "success",
-        "data": dashboard_data,
-        "timestamp": datetime.now().isoformat()
-    })
+    return JSONResponse(
+        content={
+            "status": "success",
+            "data": dashboard_data,
+            "timestamp": datetime.now().isoformat(),
+        }
+    )
 
 
 @router.get("/api/metrics")
 async def get_metrics():
     """Get system metrics."""
-    return JSONResponse(content={
-        "status": "success",
-        "metrics": dashboard_data["metrics"],
-        "timestamp": datetime.now().isoformat()
-    })
+    return JSONResponse(
+        content={
+            "status": "success",
+            "metrics": dashboard_data["metrics"],
+            "timestamp": datetime.now().isoformat(),
+        }
+    )
 
 
 @router.get("/api/services")
 async def get_services_status():
     """Get status of all services."""
-    return JSONResponse(content={
-        "status": "success",
-        "services": dashboard_data["services"],
-        "timestamp": datetime.now().isoformat()
-    })
+    return JSONResponse(
+        content={
+            "status": "success",
+            "services": dashboard_data["services"],
+            "timestamp": datetime.now().isoformat(),
+        }
+    )
 
 
 @router.post("/api/metrics/update")
@@ -286,11 +296,13 @@ async def update_metrics(metrics: Dict[str, Any]):
         dashboard_data["metrics"].update(metrics)
         dashboard_data["system_status"]["last_updated"] = datetime.now().isoformat()
 
-        return JSONResponse(content={
-            "status": "success",
-            "message": "Metrics updated successfully",
-            "timestamp": datetime.now().isoformat()
-        })
+        return JSONResponse(
+            content={
+                "status": "success",
+                "message": "Metrics updated successfully",
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
     except Exception as e:
         logger.error(f"Error updating metrics: {e}")
         raise HTTPException(status_code=500, detail="Failed to update metrics")
@@ -300,8 +312,9 @@ async def update_metrics(metrics: Dict[str, Any]):
 async def get_system_info():
     """Get system information."""
     try:
-        import psutil
         import platform
+
+        import psutil
 
         system_info = {
             "platform": platform.system(),
@@ -313,31 +326,35 @@ async def get_system_info():
             "memory": {
                 "total": psutil.virtual_memory().total,
                 "available": psutil.virtual_memory().available,
-                "percent": psutil.virtual_memory().percent
+                "percent": psutil.virtual_memory().percent,
             },
             "disk": {
-                "total": psutil.disk_usage('/').total,
-                "used": psutil.disk_usage('/').used,
-                "free": psutil.disk_usage('/').free,
-                "percent": psutil.disk_usage('/').percent
-            }
+                "total": psutil.disk_usage("/").total,
+                "used": psutil.disk_usage("/").used,
+                "free": psutil.disk_usage("/").free,
+                "percent": psutil.disk_usage("/").percent,
+            },
         }
 
-        return JSONResponse(content={
-            "status": "success",
-            "system_info": system_info,
-            "timestamp": datetime.now().isoformat()
-        })
+        return JSONResponse(
+            content={
+                "status": "success",
+                "system_info": system_info,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
     except ImportError:
         # Fallback if psutil is not available
-        return JSONResponse(content={
-            "status": "success",
-            "system_info": {
-                "platform": "Unknown",
-                "message": "System monitoring not available (psutil not installed)"
-            },
-            "timestamp": datetime.now().isoformat()
-        })
+        return JSONResponse(
+            content={
+                "status": "success",
+                "system_info": {
+                    "platform": "Unknown",
+                    "message": "System monitoring not available (psutil not installed)",
+                },
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
     except Exception as e:
         logger.error(f"Error getting system info: {e}")
         raise HTTPException(status_code=500, detail="Failed to get system information")
@@ -361,29 +378,34 @@ async def submit_paste(request: Request):
 
         # Log the paste for the AI assistant to access
         logger.info(
-            f"Paste received [{paste_id}]: {content[:100]}{'...' if len(content) > 100 else ''}")
+            f"Paste received [{paste_id}]: {content[:100]}{'...' if len(content) > 100 else ''}"
+        )
 
         # Store in dashboard data for retrieval
         if "pastes" not in dashboard_data:
             dashboard_data["pastes"] = []
 
-        dashboard_data["pastes"].append({
-            "id": paste_id,
-            "content": content,
-            "timestamp": datetime.now().isoformat(),
-            "length": len(content)
-        })
+        dashboard_data["pastes"].append(
+            {
+                "id": paste_id,
+                "content": content,
+                "timestamp": datetime.now().isoformat(),
+                "length": len(content),
+            }
+        )
 
         # Keep only last 50 pastes
         if len(dashboard_data["pastes"]) > 50:
             dashboard_data["pastes"] = dashboard_data["pastes"][-50:]
 
-        return JSONResponse(content={
-            "status": "success",
-            "message": "Paste submitted successfully",
-            "id": paste_id,
-            "timestamp": datetime.now().isoformat()
-        })
+        return JSONResponse(
+            content={
+                "status": "success",
+                "message": "Paste submitted successfully",
+                "id": paste_id,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     except Exception as e:
         logger.error(f"Error handling paste submission: {e}")
@@ -397,12 +419,14 @@ async def get_pastes(limit: int = 10):
         pastes = dashboard_data.get("pastes", [])
         recent_pastes = pastes[-limit:] if pastes else []
 
-        return JSONResponse(content={
-            "status": "success",
-            "pastes": recent_pastes,
-            "total": len(pastes),
-            "timestamp": datetime.now().isoformat()
-        })
+        return JSONResponse(
+            content={
+                "status": "success",
+                "pastes": recent_pastes,
+                "total": len(pastes),
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     except Exception as e:
         logger.error(f"Error retrieving pastes: {e}")
@@ -413,12 +437,15 @@ async def get_pastes(limit: int = 10):
 async def dashboard_health_check():
     """Dashboard health check endpoint."""
     track_api_call("/health", "GET", 200, 50)
-    return JSONResponse(content={
-        "status": "healthy",
-        "service": "dashboard",
-        "timestamp": datetime.now().isoformat(),
-        "uptime": "operational"
-    })
+    return JSONResponse(
+        content={
+            "status": "healthy",
+            "service": "dashboard",
+            "timestamp": datetime.now().isoformat(),
+            "uptime": "operational",
+        }
+    )
+
 
 # Analytics Endpoints
 
@@ -498,7 +525,7 @@ async def get_analytics_report(days: int = Query(7, ge=1, le=365)):
 @router.get("/api/analytics/export")
 async def export_analytics_data(
     format: str = Query("json", regex="^(json|csv)$"),
-    days: int = Query(30, ge=1, le=365)
+    days: int = Query(30, ge=1, le=365),
 ):
     """Export analytics data in specified format"""
     try:
@@ -507,15 +534,21 @@ async def export_analytics_data(
 
         if format == "json":
             return JSONResponse(
-                content=json.loads(data), headers={
-                    "Content-Disposition": f"attachment; filename=analytics_{days}days.json"})
+                content=json.loads(data),
+                headers={
+                    "Content-Disposition": f"attachment; filename=analytics_{days}days.json"
+                },
+            )
         else:  # CSV
             from fastapi.responses import Response
+
             return Response(
                 content=data,
                 media_type="text/csv",
                 headers={
-                    "Content-Disposition": f"attachment; filename=analytics_{days}days.csv"})
+                    "Content-Disposition": f"attachment; filename=analytics_{days}days.csv"
+                },
+            )
     except Exception as e:
         track_api_call("/api/analytics/export", "GET", 500, 300)
         raise HTTPException(status_code=500, detail=str(e))
@@ -526,19 +559,20 @@ async def track_custom_event(
     event_type: str = Form(...),
     properties: str = Form(None),
     user_id: str = Form(None),
-    session_id: str = Form(None)
+    session_id: str = Form(None),
 ):
     """Track a custom analytics event"""
     try:
         props = json.loads(properties) if properties else {}
 
         from ..analytics import AnalyticsEvent
+
         event = AnalyticsEvent(
             event_type=event_type,
             timestamp=datetime.now(),
             user_id=user_id,
             session_id=session_id,
-            properties=props
+            properties=props,
         )
 
         analytics_engine.track_event(event)
@@ -548,6 +582,7 @@ async def track_custom_event(
     except Exception as e:
         track_api_call("/api/analytics/track", "POST", 500, 50)
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # Pydantic models for request/response
 
@@ -586,6 +621,7 @@ class PasswordChangeRequest(BaseModel):
     current_password: str
     new_password: str
 
+
 # Authentication Endpoints
 
 
@@ -598,7 +634,7 @@ async def login(request: LoginRequest):
             track_api_call("/api/auth/login", "POST", 401, 100)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect username or password"
+                detail="Incorrect username or password",
             )
 
         access_token = auth_manager.create_access_token(user)
@@ -611,7 +647,7 @@ async def login(request: LoginRequest):
             "access_token": access_token,
             "refresh_token": refresh_token,
             "token_type": "bearer",
-            "user": user.to_dict()
+            "user": user.to_dict(),
         }
     except HTTPException:
         raise
@@ -628,15 +664,11 @@ async def refresh_token(refresh_token: str = Form(...)):
         if not new_access_token:
             track_api_call("/api/auth/refresh", "POST", 401, 50)
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid refresh token"
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
             )
 
         track_api_call("/api/auth/refresh", "POST", 200, 50)
-        return {
-            "access_token": new_access_token,
-            "token_type": "bearer"
-        }
+        return {"access_token": new_access_token, "token_type": "bearer"}
     except HTTPException:
         raise
     except Exception as e:
@@ -647,7 +679,7 @@ async def refresh_token(refresh_token: str = Form(...)):
 @router.post("/api/auth/register")
 async def register(
     request: RegisterRequest,
-    current_user: User = Depends(require_permission(Permission.MANAGE_USERS))
+    current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
 ):
     """Register new user (admin only)"""
     try:
@@ -659,8 +691,8 @@ async def register(
                 status_code=400,
                 detail={
                     "message": "Password does not meet requirements",
-                    "validation": password_validation
-                }
+                    "validation": password_validation,
+                },
             )
 
         user = auth_manager.create_user(
@@ -668,20 +700,15 @@ async def register(
             email=request.email,
             full_name=request.full_name,
             password=request.password,
-            role=request.role
+            role=request.role,
         )
 
         track_api_call("/api/auth/register", "POST", 201, 150)
         track_user_action(
-            "user_created",
-            current_user.id,
-            properties={
-                "new_user_id": user.id})
+            "user_created", current_user.id, properties={"new_user_id": user.id}
+        )
 
-        return {
-            "message": "User created successfully",
-            "user": user.to_dict()
-        }
+        return {"message": "User created successfully", "user": user.to_dict()}
     except ValueError as e:
         track_api_call("/api/auth/register", "POST", 400, 100)
         raise HTTPException(status_code=400, detail=str(e))
@@ -699,24 +726,23 @@ async def get_current_user_info(current_user: User = Depends(get_current_user)):
 
 @router.put("/api/auth/me")
 async def update_current_user(
-    request: UpdateUserRequest,
-    current_user: User = Depends(get_current_user)
+    request: UpdateUserRequest, current_user: User = Depends(get_current_user)
 ):
     """Update current user information"""
     try:
         # Users can only update their own basic info (not role)
         allowed_updates = {}
         if request.email:
-            allowed_updates['email'] = request.email
+            allowed_updates["email"] = request.email
         if request.full_name:
-            allowed_updates['full_name'] = request.full_name
+            allowed_updates["full_name"] = request.full_name
 
         # Only admins can change roles and active status
         if current_user.has_permission(Permission.MANAGE_USERS):
             if request.role:
-                allowed_updates['role'] = request.role
+                allowed_updates["role"] = request.role
             if request.is_active is not None:
-                allowed_updates['is_active'] = request.is_active
+                allowed_updates["is_active"] = request.is_active
 
         updated_user = auth_manager.update_user(current_user.id, **allowed_updates)
         if not updated_user:
@@ -725,10 +751,7 @@ async def update_current_user(
         track_api_call("/api/auth/me", "PUT", 200, 100)
         track_user_action("profile_updated", current_user.id)
 
-        return {
-            "message": "User updated successfully",
-            "user": updated_user.to_dict()
-        }
+        return {"message": "User updated successfully", "user": updated_user.to_dict()}
     except Exception as e:
         track_api_call("/api/auth/me", "PUT", 500, 100)
         raise HTTPException(status_code=500, detail=str(e))
@@ -736,15 +759,14 @@ async def update_current_user(
 
 @router.post("/api/auth/change-password")
 async def change_password(
-    request: PasswordChangeRequest,
-    current_user: User = Depends(get_current_user)
+    request: PasswordChangeRequest, current_user: User = Depends(get_current_user)
 ):
     """Change user password"""
     try:
         # Verify current password
         if not auth_manager.verify_password(
-                request.current_password,
-                current_user.password_hash):
+            request.current_password, current_user.password_hash
+        ):
             track_api_call("/api/auth/change-password", "POST", 400, 100)
             raise HTTPException(status_code=400, detail="Current password is incorrect")
 
@@ -756,8 +778,8 @@ async def change_password(
                 status_code=400,
                 detail={
                     "message": "New password does not meet requirements",
-                    "validation": password_validation
-                }
+                    "validation": password_validation,
+                },
             )
 
         # Update password
@@ -773,12 +795,13 @@ async def change_password(
         track_api_call("/api/auth/change-password", "POST", 500, 100)
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # User Management Endpoints (Admin only)
 
 
 @router.get("/api/users")
 async def list_users(
-    current_user: User = Depends(require_permission(Permission.MANAGE_USERS))
+    current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
 ):
     """List all users (admin only)"""
     try:
@@ -787,10 +810,7 @@ async def list_users(
 
         track_api_call("/api/users", "GET", 200, 100)
 
-        return {
-            "users": users,
-            "stats": stats
-        }
+        return {"users": users, "stats": stats}
     except Exception as e:
         track_api_call("/api/users", "GET", 500, 100)
         raise HTTPException(status_code=500, detail=str(e))
@@ -799,7 +819,7 @@ async def list_users(
 @router.post("/api/users")
 async def create_user(
     request: CreateUserRequest,
-    current_user: User = Depends(require_permission(Permission.MANAGE_USERS))
+    current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
 ):
     """Create new user (admin only)"""
     try:
@@ -811,18 +831,15 @@ async def create_user(
                 status_code=400,
                 detail={
                     "message": "Password does not meet requirements",
-                    "validation": password_validation
-                }
+                    "validation": password_validation,
+                },
             )
 
         # Check if username already exists
         existing_user = auth_manager.get_user_by_username(request.username)
         if existing_user:
             track_api_call("/api/users", "POST", 400, 100)
-            raise HTTPException(
-                status_code=400,
-                detail="Username already exists"
-            )
+            raise HTTPException(status_code=400, detail="Username already exists")
 
         # Create the user
         new_user = auth_manager.create_user(
@@ -831,7 +848,7 @@ async def create_user(
             password=request.password,
             full_name=request.full_name,
             role=request.role,
-            is_active=request.is_active
+            is_active=request.is_active,
         )
 
         if not new_user:
@@ -840,13 +857,10 @@ async def create_user(
 
         track_api_call("/api/users", "POST", 201, 100)
         track_user_action(
-            "user_created", current_user.id, properties={
-                "created_user_id": new_user.id})
+            "user_created", current_user.id, properties={"created_user_id": new_user.id}
+        )
 
-        return {
-            "message": "User created successfully",
-            "user": new_user.to_dict()
-        }
+        return {"message": "User created successfully", "user": new_user.to_dict()}
     except HTTPException:
         raise
     except Exception as e:
@@ -857,7 +871,7 @@ async def create_user(
 @router.get("/api/users/{user_id}")
 async def get_user(
     user_id: str,
-    current_user: User = Depends(require_permission(Permission.MANAGE_USERS))
+    current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
 ):
     """Get specific user (admin only)"""
     try:
@@ -879,19 +893,19 @@ async def get_user(
 async def update_user(
     user_id: str,
     request: UpdateUserRequest,
-    current_user: User = Depends(require_permission(Permission.MANAGE_USERS))
+    current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
 ):
     """Update user (admin only)"""
     try:
         updates = {}
         if request.email:
-            updates['email'] = request.email
+            updates["email"] = request.email
         if request.full_name:
-            updates['full_name'] = request.full_name
+            updates["full_name"] = request.full_name
         if request.role:
-            updates['role'] = request.role
+            updates["role"] = request.role
         if request.is_active is not None:
-            updates['is_active'] = request.is_active
+            updates["is_active"] = request.is_active
         if request.password:
             # Validate password strength
             password_validation = validate_password_strength(request.password)
@@ -901,10 +915,10 @@ async def update_user(
                     status_code=400,
                     detail={
                         "message": "Password does not meet requirements",
-                        "validation": password_validation
-                    }
+                        "validation": password_validation,
+                    },
                 )
-            updates['password'] = request.password
+            updates["password"] = request.password
 
         updated_user = auth_manager.update_user(user_id, **updates)
         if not updated_user:
@@ -913,15 +927,10 @@ async def update_user(
 
         track_api_call(f"/api/users/{user_id}", "PUT", 200, 100)
         track_user_action(
-            "user_updated",
-            current_user.id,
-            properties={
-                "updated_user_id": user_id})
+            "user_updated", current_user.id, properties={"updated_user_id": user_id}
+        )
 
-        return {
-            "message": "User updated successfully",
-            "user": updated_user.to_dict()
-        }
+        return {"message": "User updated successfully", "user": updated_user.to_dict()}
     except HTTPException:
         raise
     except Exception as e:
@@ -932,7 +941,7 @@ async def update_user(
 @router.delete("/api/users/{user_id}")
 async def delete_user(
     user_id: str,
-    current_user: User = Depends(require_permission(Permission.MANAGE_USERS))
+    current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
 ):
     """Delete user (admin only)"""
     try:
@@ -940,8 +949,8 @@ async def delete_user(
         if user_id == current_user.id:
             track_api_call(f"/api/users/{user_id}", "DELETE", 400, 50)
             raise HTTPException(
-                status_code=400,
-                detail="Cannot delete your own account")
+                status_code=400, detail="Cannot delete your own account"
+            )
 
         success = auth_manager.delete_user(user_id)
         if not success:
@@ -950,10 +959,8 @@ async def delete_user(
 
         track_api_call(f"/api/users/{user_id}", "DELETE", 200, 50)
         track_user_action(
-            "user_deleted",
-            current_user.id,
-            properties={
-                "deleted_user_id": user_id})
+            "user_deleted", current_user.id, properties={"deleted_user_id": user_id}
+        )
 
         return {"message": "User deleted successfully"}
     except HTTPException:
@@ -983,23 +990,19 @@ async def get_analytics():
         analytics_data = {
             "api_usage": {
                 "labels": ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
-                "data": [120, 190, 300, 500, 200, 300]
+                "data": [120, 190, 300, 500, 200, 300],
             },
             "performance": {
                 "labels": ["CPU", "Memory", "Disk", "Network"],
-                "data": [65, 45, 30, 25]
+                "data": [65, 45, 30, 25],
             },
             "user_activity": {
                 "total_users": 1247,
                 "active_sessions": 89,
                 "new_users_today": 23,
-                "bounce_rate": 34.5
+                "bounce_rate": 34.5,
             },
-            "revenue": {
-                "today": 2847.50,
-                "this_month": 45230.75,
-                "growth": 12.3
-            }
+            "revenue": {"today": 2847.50, "this_month": 45230.75, "growth": 12.3},
         }
         return {"analytics": analytics_data}
     except Exception as e:
@@ -1030,25 +1033,28 @@ async def get_logs(level: str = "all", limit: int = 100):
                     "User logged in successfully",
                     "API request processed",
                     "Cache updated",
-                    "Backup completed"],
+                    "Backup completed",
+                ],
                 "warning": [
                     "High memory usage detected",
                     "Slow query detected",
-                    "Rate limit approaching"],
+                    "Rate limit approaching",
+                ],
                 "error": [
                     "Database connection failed",
                     "API timeout",
-                    "Authentication failed"],
-                "debug": [
-                    "Processing request",
-                    "Cache miss",
-                    "Query executed"]}
+                    "Authentication failed",
+                ],
+                "debug": ["Processing request", "Cache miss", "Query executed"],
+            }
 
-            logs.append({
-                "timestamp": timestamp.isoformat(),
-                "level": log_level,
-                "message": random.choice(messages[log_level])
-            })
+            logs.append(
+                {
+                    "timestamp": timestamp.isoformat(),
+                    "level": log_level,
+                    "message": random.choice(messages[log_level]),
+                }
+            )
 
         # Sort by timestamp (newest first)
         logs.sort(key=lambda x: x["timestamp"], reverse=True)
@@ -1067,19 +1073,21 @@ async def restart_service(service_name: str):
             "youtube_automation",
             "content_pipeline",
             "marketing_agent",
-            "financial_tracking"]
+            "financial_tracking",
+        ]
 
         if service_name not in valid_services:
             raise HTTPException(status_code=404, detail="Service not found")
 
         # Simulate restart delay
         import asyncio
+
         await asyncio.sleep(1)
 
         return {
             "status": "success",
             "message": f"Service {service_name} restarted successfully",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
     except HTTPException:
         raise
@@ -1102,20 +1110,38 @@ async def get_service_logs(service_name: str, limit: int = 50):
 
             service_messages = {
                 "youtube_automation": [
-                    "Video processed", "Upload completed", "Thumbnail generated"], "content_pipeline": [
-                    "Content analyzed", "Pipeline executed", "Output generated"], "marketing_agent": [
-                    "Campaign created", "Audience targeted", "Metrics updated"], "financial_tracking": [
-                    "Transaction recorded", "Report generated", "Budget updated"]}
+                    "Video processed",
+                    "Upload completed",
+                    "Thumbnail generated",
+                ],
+                "content_pipeline": [
+                    "Content analyzed",
+                    "Pipeline executed",
+                    "Output generated",
+                ],
+                "marketing_agent": [
+                    "Campaign created",
+                    "Audience targeted",
+                    "Metrics updated",
+                ],
+                "financial_tracking": [
+                    "Transaction recorded",
+                    "Report generated",
+                    "Budget updated",
+                ],
+            }
 
             default_messages = ["Service running", "Task completed", "Status updated"]
             messages = service_messages.get(service_name, default_messages)
 
-            logs.append({
-                "timestamp": timestamp.isoformat(),
-                "level": level,
-                "service": service_name,
-                "message": random.choice(messages)
-            })
+            logs.append(
+                {
+                    "timestamp": timestamp.isoformat(),
+                    "level": level,
+                    "service": service_name,
+                    "message": random.choice(messages),
+                }
+            )
 
         logs.sort(key=lambda x: x["timestamp"], reverse=True)
 
@@ -1134,28 +1160,28 @@ async def get_performance_metrics():
             "cpu": {
                 "current": random.uniform(20, 80),
                 "average": random.uniform(30, 60),
-                "peak": random.uniform(60, 95)
+                "peak": random.uniform(60, 95),
             },
             "memory": {
                 "used": random.uniform(2, 8),
                 "total": 16,
-                "percentage": random.uniform(20, 70)
+                "percentage": random.uniform(20, 70),
             },
             "disk": {
                 "used": random.uniform(50, 200),
                 "total": 500,
-                "percentage": random.uniform(10, 40)
+                "percentage": random.uniform(10, 40),
             },
             "network": {
                 "bytes_sent": random.randint(1000000, 10000000),
                 "bytes_received": random.randint(5000000, 50000000),
-                "connections": random.randint(10, 100)
+                "connections": random.randint(10, 100),
             },
             "response_times": {
                 "api_avg": random.uniform(50, 200),
                 "db_avg": random.uniform(10, 50),
-                "cache_avg": random.uniform(1, 10)
-            }
+                "cache_avg": random.uniform(1, 10),
+            },
         }
 
         return {"performance": performance_data}
@@ -1182,16 +1208,18 @@ async def get_alerts():
                 "info": "System backup completed successfully",
                 "warning": "High CPU usage detected on server",
                 "error": "Failed to connect to external API",
-                "success": "All services are running normally"
+                "success": "All services are running normally",
             }
 
-            alerts.append({
-                "id": f"alert_{i}",
-                "type": alert_type,
-                "message": alert_messages[alert_type],
-                "timestamp": timestamp.isoformat(),
-                "read": random.choice([True, False])
-            })
+            alerts.append(
+                {
+                    "id": f"alert_{i}",
+                    "type": alert_type,
+                    "message": alert_messages[alert_type],
+                    "timestamp": timestamp.isoformat(),
+                    "read": random.choice([True, False]),
+                }
+            )
 
         alerts.sort(key=lambda x: x["timestamp"], reverse=True)
 
@@ -1208,7 +1236,7 @@ async def mark_alert_read(alert_id: str):
         return {
             "status": "success",
             "message": f"Alert {alert_id} marked as read",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

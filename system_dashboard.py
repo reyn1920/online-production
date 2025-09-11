@@ -4,96 +4,101 @@ TRAE.AI System Management Dashboard
 Provides a web interface to monitor and control all system services.
 """
 
-import os
-import sys
 import json
-import time
-import psutil
+import os
 import subprocess
+import sys
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
+
+import psutil
 
 try:
-    from fastapi import FastAPI, Request, HTTPException
+    import uvicorn
+    from fastapi import FastAPI, HTTPException, Request
     from fastapi.responses import HTMLResponse, JSONResponse
     from fastapi.staticfiles import StaticFiles
     from fastapi.templating import Jinja2Templates
-    import uvicorn
 except ImportError:
     print("FastAPI not installed. Installing...")
-    subprocess.run([sys.executable, "-m", "pip", "install", "fastapi", "uvicorn", "jinja2"])
-    from fastapi import FastAPI, Request, HTTPException
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "fastapi", "uvicorn", "jinja2"]
+    )
+    import uvicorn
+    from fastapi import FastAPI, HTTPException, Request
     from fastapi.responses import HTMLResponse, JSONResponse
     from fastapi.staticfiles import StaticFiles
     from fastapi.templating import Jinja2Templates
-    import uvicorn
+
 
 class SystemMonitor:
     """System monitoring and management class"""
-    
+
     def __init__(self):
         self.project_root = Path(__file__).parent
         self.pid_file = self.project_root / "service.pid"
         self.log_file = self.project_root / "startup_system.log"
         self.service_log = self.project_root / "service.log"
         self.error_log = self.project_root / "service.error.log"
-        
+
     def get_system_info(self) -> Dict[str, Any]:
         """Get comprehensive system information"""
         try:
             # CPU and Memory info
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
-            
+            disk = psutil.disk_usage("/")
+
             # Network info
             network = psutil.net_io_counters()
-            
+
             # Boot time
             boot_time = datetime.fromtimestamp(psutil.boot_time())
             uptime = datetime.now() - boot_time
-            
+
             # Service status
             services = {
-                "main_app": self.is_service_running("uvicorn") or self.is_service_running("main:app"),
+                "main_app": self.is_service_running("uvicorn")
+                or self.is_service_running("main:app"),
                 "ollama": self.is_service_running("ollama"),
                 "chrome": self.is_service_running("chrome"),
-                "dashboard": self.is_service_running("system_dashboard")
+                "dashboard": self.is_service_running("system_dashboard"),
             }
-            
+
             return {
                 "cpu": {
                     "percent": cpu_percent,
                     "count": psutil.cpu_count(),
-                    "freq": psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None
+                    "freq": psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None,
                 },
                 "memory": {
                     "total": memory.total,
                     "available": memory.available,
                     "percent": memory.percent,
                     "used": memory.used,
-                    "free": memory.free
+                    "free": memory.free,
                 },
                 "disk": {
                     "total": disk.total,
                     "used": disk.used,
                     "free": disk.free,
-                    "percent": (disk.used / disk.total) * 100
+                    "percent": (disk.used / disk.total) * 100,
                 },
                 "network": {
                     "bytes_sent": network.bytes_sent,
                     "bytes_recv": network.bytes_recv,
                     "packets_sent": network.packets_sent,
-                    "packets_recv": network.packets_recv
+                    "packets_recv": network.packets_recv,
                 },
-                "uptime": str(uptime).split('.')[0],
+                "uptime": str(uptime).split(".")[0],
                 "boot_time": boot_time.strftime("%Y-%m-%d %H:%M:%S"),
-                "services": services
+                "services": services,
             }
         except Exception as e:
             return {"error": str(e)}
-    
+
     def get_service_status(self) -> Dict[str, Any]:
         """Get TRAE.AI service status"""
         try:
@@ -102,58 +107,55 @@ class SystemMonitor:
                     "status": "stopped",
                     "pid": None,
                     "uptime": None,
-                    "health": "unknown"
+                    "health": "unknown",
                 }
-            
-            with open(self.pid_file, 'r') as f:
+
+            with open(self.pid_file, "r") as f:
                 pid = int(f.read().strip())
-            
+
             # Check if process is running
             try:
                 process = psutil.Process(pid)
                 if process.is_running():
                     create_time = datetime.fromtimestamp(process.create_time())
                     uptime = datetime.now() - create_time
-                    
+
                     # Check health endpoint
                     health_status = self.check_health_endpoint()
-                    
+
                     return {
                         "status": "running",
                         "pid": pid,
-                        "uptime": str(uptime).split('.')[0],
+                        "uptime": str(uptime).split(".")[0],
                         "health": health_status,
                         "cpu_percent": process.cpu_percent(),
                         "memory_percent": process.memory_percent(),
                         "memory_info": process.memory_info()._asdict(),
                         "num_threads": process.num_threads(),
-                        "create_time": create_time.strftime("%Y-%m-%d %H:%M:%S")
+                        "create_time": create_time.strftime("%Y-%m-%d %H:%M:%S"),
                     }
                 else:
                     return {
                         "status": "stopped",
                         "pid": None,
                         "uptime": None,
-                        "health": "down"
+                        "health": "down",
                     }
             except psutil.NoSuchProcess:
                 return {
                     "status": "stopped",
                     "pid": None,
                     "uptime": None,
-                    "health": "down"
+                    "health": "down",
                 }
         except Exception as e:
-            return {
-                "status": "error",
-                "error": str(e),
-                "health": "unknown"
-            }
-    
+            return {"status": "error", "error": str(e), "health": "unknown"}
+
     def check_health_endpoint(self) -> str:
         """Check if the health endpoint is responding"""
         try:
             import requests
+
             response = requests.get("http://localhost:8000/health", timeout=5)
             if response.status_code == 200:
                 return "healthy"
@@ -161,16 +163,16 @@ class SystemMonitor:
                 return "unhealthy"
         except Exception:
             return "unreachable"
-    
+
     def is_service_running(self, service_name: str) -> bool:
         """Check if a service is running by name"""
         try:
-            for proc in psutil.process_iter(['name', 'cmdline']):
+            for proc in psutil.process_iter(["name", "cmdline"]):
                 try:
-                    if service_name.lower() in proc.info['name'].lower():
+                    if service_name.lower() in proc.info["name"].lower():
                         return True
-                    if proc.info['cmdline']:
-                        cmdline = ' '.join(proc.info['cmdline']).lower()
+                    if proc.info["cmdline"]:
+                        cmdline = " ".join(proc.info["cmdline"]).lower()
                         if service_name.lower() in cmdline:
                             return True
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
@@ -178,89 +180,119 @@ class SystemMonitor:
             return False
         except Exception:
             return False
-    
+
     def get_running_processes(self) -> List[Dict[str, Any]]:
         """Get list of running processes related to the application"""
         processes = []
-        keywords = ['python', 'uvicorn', 'fastapi', 'node', 'npm', 'trae']
-        
-        for proc in psutil.process_iter(['pid', 'name', 'cmdline', 'cpu_percent', 'memory_percent']):
+        keywords = ["python", "uvicorn", "fastapi", "node", "npm", "trae"]
+
+        for proc in psutil.process_iter(
+            ["pid", "name", "cmdline", "cpu_percent", "memory_percent"]
+        ):
             try:
-                cmdline = ' '.join(proc.info['cmdline'] or [])
+                cmdline = " ".join(proc.info["cmdline"] or [])
                 if any(keyword in cmdline.lower() for keyword in keywords):
-                    processes.append({
-                        'pid': proc.info['pid'],
-                        'name': proc.info['name'],
-                        'cmdline': cmdline[:100] + '...' if len(cmdline) > 100 else cmdline,
-                        'cpu_percent': proc.info['cpu_percent'],
-                        'memory_percent': proc.info['memory_percent']
-                    })
+                    processes.append(
+                        {
+                            "pid": proc.info["pid"],
+                            "name": proc.info["name"],
+                            "cmdline": (
+                                cmdline[:100] + "..." if len(cmdline) > 100 else cmdline
+                            ),
+                            "cpu_percent": proc.info["cpu_percent"],
+                            "memory_percent": proc.info["memory_percent"],
+                        }
+                    )
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
-        
+
         return processes
-    
+
     def get_log_tail(self, log_file: Path, lines: int = 50) -> List[str]:
         """Get last N lines from log file"""
         try:
             if not log_file.exists():
                 return []
-            
-            with open(log_file, 'r') as f:
+
+            with open(log_file, "r") as f:
                 return f.readlines()[-lines:]
         except Exception as e:
             return [f"Error reading log: {str(e)}"]
-    
+
     def execute_command(self, command: str, service: str = "main") -> Dict[str, Any]:
         """Execute system command safely"""
         try:
             if service == "main":
                 allowed_commands = {
-                    'start': './start_app.sh start',
-                    'stop': './start_app.sh stop',
-                    'restart': './start_app.sh restart',
-                    'status': './start_app.sh status',
-                    'install-service': './start_app.sh install-service',
-                    'uninstall-service': './start_app.sh uninstall-service'
+                    "start": "./start_app.sh start",
+                    "stop": "./start_app.sh stop",
+                    "restart": "./start_app.sh restart",
+                    "status": "./start_app.sh status",
+                    "install-service": "./start_app.sh install-service",
+                    "uninstall-service": "./start_app.sh uninstall-service",
                 }
-                
+
                 if command not in allowed_commands:
                     return {"error": "Command not allowed"}
-                
+
                 result = subprocess.run(
                     allowed_commands[command],
                     shell=True,
                     cwd=self.project_root,
                     capture_output=True,
                     text=True,
-                    timeout=30
+                    timeout=30,
                 )
-                
+
                 return {
                     "success": result.returncode == 0,
                     "returncode": result.returncode,
                     "stdout": result.stdout,
-                    "stderr": result.stderr
+                    "stderr": result.stderr,
                 }
-            
+
             elif service == "ollama":
                 if command == "start":
                     if not self.is_service_running("ollama"):
-                        subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                        return {"success": True, "stdout": "Ollama service started", "stderr": ""}
+                        subprocess.Popen(
+                            ["ollama", "serve"],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL,
+                        )
+                        return {
+                            "success": True,
+                            "stdout": "Ollama service started",
+                            "stderr": "",
+                        }
                     else:
-                        return {"success": True, "stdout": "Ollama is already running", "stderr": ""}
-                
+                        return {
+                            "success": True,
+                            "stdout": "Ollama is already running",
+                            "stderr": "",
+                        }
+
                 elif command == "stop":
                     subprocess.run(["pkill", "-f", "ollama serve"], capture_output=True)
-                    return {"success": True, "stdout": "Ollama service stopped", "stderr": ""}
-                
+                    return {
+                        "success": True,
+                        "stdout": "Ollama service stopped",
+                        "stderr": "",
+                    }
+
                 elif command == "restart":
                     subprocess.run(["pkill", "-f", "ollama serve"], capture_output=True)
                     time.sleep(2)
-                    subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    return {"success": True, "stdout": "Ollama service restarted", "stderr": ""}
-            
+                    subprocess.Popen(
+                        ["ollama", "serve"],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
+                    return {
+                        "success": True,
+                        "stdout": "Ollama service restarted",
+                        "stderr": "",
+                    }
+
             elif service == "chrome":
                 if command == "start":
                     if not self.is_service_running("chrome"):
@@ -272,24 +304,35 @@ class SystemMonitor:
                             "http://localhost:9000",
                             "https://github.com",
                             "https://netlify.com",
-                            "https://openai.com"
+                            "https://openai.com",
                         ]
                         for site in essential_sites:
                             subprocess.Popen(["open", "-u", site])
-                        return {"success": True, "stdout": "Chrome started with essential tabs", "stderr": ""}
+                        return {
+                            "success": True,
+                            "stdout": "Chrome started with essential tabs",
+                            "stderr": "",
+                        }
                     else:
-                        return {"success": True, "stdout": "Chrome is already running", "stderr": ""}
-                
+                        return {
+                            "success": True,
+                            "stdout": "Chrome is already running",
+                            "stderr": "",
+                        }
+
                 elif command == "stop":
-                    subprocess.run(["pkill", "-f", "Google Chrome"], capture_output=True)
+                    subprocess.run(
+                        ["pkill", "-f", "Google Chrome"], capture_output=True
+                    )
                     return {"success": True, "stdout": "Chrome stopped", "stderr": ""}
-            
+
             return {"error": "Invalid action or service"}
-                
+
         except subprocess.TimeoutExpired:
             return {"error": "Command timed out"}
         except Exception as e:
             return {"error": str(e)}
+
 
 # Initialize FastAPI app
 app = FastAPI(title="TRAE.AI System Dashboard", version="1.0.0")
@@ -300,7 +343,7 @@ templates_dir = Path(__file__).parent / "templates"
 templates_dir.mkdir(exist_ok=True)
 
 # Create the dashboard HTML template
-dashboard_html = '''
+dashboard_html = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -613,7 +656,7 @@ dashboard_html = '''
     </script>
 </body>
 </html>
-'''
+"""
 
 # Write the HTML template
 with open(templates_dir / "dashboard.html", "w") as f:
@@ -621,26 +664,31 @@ with open(templates_dir / "dashboard.html", "w") as f:
 
 templates = Jinja2Templates(directory=str(templates_dir))
 
+
 # Routes
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
     """Main dashboard page"""
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
+
 @app.get("/api/system")
 async def get_system_info():
     """Get system information"""
     return monitor.get_system_info()
+
 
 @app.get("/api/service")
 async def get_service_status():
     """Get service status"""
     return monitor.get_service_status()
 
+
 @app.get("/api/processes")
 async def get_processes():
     """Get running processes"""
     return monitor.get_running_processes()
+
 
 @app.get("/api/logs")
 async def get_logs():
@@ -648,8 +696,9 @@ async def get_logs():
     return {
         "system": monitor.get_log_tail(monitor.log_file),
         "service": monitor.get_log_tail(monitor.service_log),
-        "error": monitor.get_log_tail(monitor.error_log)
+        "error": monitor.get_log_tail(monitor.error_log),
     }
+
 
 @app.post("/api/command")
 async def execute_command(request: Request):
@@ -657,28 +706,30 @@ async def execute_command(request: Request):
     data = await request.json()
     command = data.get("command")
     service = data.get("service", "main")
-    
+
     if not command:
         raise HTTPException(status_code=400, detail="Command is required")
-    
+
     result = monitor.execute_command(command, service)
     return result
+
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
+
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="TRAE.AI System Dashboard")
     parser.add_argument("--host", default="127.0.0.1", help="Host to bind to")
     parser.add_argument("--port", type=int, default=9000, help="Port to bind to")
     parser.add_argument("--reload", action="store_true", help="Enable auto-reload")
-    
+
     args = parser.parse_args()
-    
+
     print(f"Starting TRAE.AI System Dashboard on http://{args.host}:{args.port}")
     print("Dashboard features:")
     print("  - Real-time system monitoring")
@@ -686,10 +737,7 @@ if __name__ == "__main__":
     print("  - Process monitoring")
     print("  - Log viewing")
     print("  - Health checks")
-    
+
     uvicorn.run(
-        "system_dashboard:app",
-        host=args.host,
-        port=args.port,
-        reload=args.reload
+        "system_dashboard:app", host=args.host, port=args.port, reload=args.reload
     )

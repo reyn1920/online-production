@@ -7,6 +7,17 @@ on:
     branches: [main]
   schedule:
     - cron: "0 2 * * 1" # Weekly on Monday at 2 AM
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to scan'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - development
+        - staging
+        - production
 
 jobs:
   security-scan:

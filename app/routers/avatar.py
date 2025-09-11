@@ -1,27 +1,30 @@
 # app/routers/avatar.py - Avatar generation and 3D pipeline router
-from fastapi import APIRouter, HTTPException, Request, UploadFile, File
-from fastapi.responses import JSONResponse, FileResponse
-from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
-import os
 import logging
-from datetime import datetime
+import os
 import tempfile
 import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, Field
 
 # Import avatar services
 try:
-    from backend.services.avatar_engines import engine_manager, AvatarRequest, AvatarResponse
+    from backend.services.avatar_engines import (AvatarRequest, AvatarResponse,
+                                                 engine_manager)
 except ImportError:
     engine_manager = None
     logging.warning("Avatar engines not available - check backend structure")
 
 try:
-    from backend.avatar_pipeline import AvatarPipeline, CharacterSpec, AnimationSpec
+    from backend.avatar_pipeline import AnimationSpec, AvatarPipeline, CharacterSpec
 except ImportError:
     try:
-        from copy_of_code.avatar_pipeline import AvatarPipeline, CharacterSpec, AnimationSpec
+        from copy_of_code.avatar_pipeline import (AnimationSpec, AvatarPipeline,
+                                                  CharacterSpec)
     except ImportError:
         AvatarPipeline = None
         logging.warning("Avatar pipeline not available - check backend structure")
@@ -36,28 +39,37 @@ logger = logging.getLogger(__name__)
 class AvatarGenerationRequest(BaseModel):
     text: str = Field(..., description="Text for the avatar to speak")
     voice_settings: Optional[Dict[str, Any]] = Field(
-        default={}, description="Voice configuration")
+        default={}, description="Voice configuration"
+    )
     video_settings: Optional[Dict[str, Any]] = Field(
-        default={}, description="Video configuration")
+        default={}, description="Video configuration"
+    )
     source_image: Optional[str] = Field(
-        None, description="Base64 encoded source image or image URL")
+        None, description="Base64 encoded source image or image URL"
+    )
     engine: Optional[str] = Field("linly-talker", description="Avatar engine to use")
     gender: Optional[str] = Field(
-        "neutral", description="Avatar gender (neutral, male, female)")
+        "neutral", description="Avatar gender (neutral, male, female)"
+    )
 
 
 class Avatar3DRequest(BaseModel):
-    character_description: str = Field(...,
-                                       description="Description of the 3D character to create")
+    character_description: str = Field(
+        ..., description="Description of the 3D character to create"
+    )
     animation_type: Optional[str] = Field(
-        "idle", description="Type of animation to apply")
+        "idle", description="Type of animation to apply"
+    )
     voice_text: Optional[str] = Field(None, description="Text for voice synthesis")
     export_format: Optional[str] = Field(
-        "mp4", description="Export format (mp4, fbx, obj)")
+        "mp4", description="Export format (mp4, fbx, obj)"
+    )
     quality: Optional[str] = Field(
-        "medium", description="Rendering quality (low, medium, high)")
+        "medium", description="Rendering quality (low, medium, high)"
+    )
     gender: Optional[str] = Field(
-        "neutral", description="Avatar gender (neutral, male, female)")
+        "neutral", description="Avatar gender (neutral, male, female)"
+    )
 
 
 class AvatarStatusResponse(BaseModel):
@@ -77,11 +89,14 @@ avatar_jobs = {}
 @router.get("/")
 async def avatar_interface(request: Request):
     """Avatar generation interface"""
-    return templates.TemplateResponse("avatar.html", {
-        "request": request,
-        "title": "Avatar Generation",
-        "engines": await get_available_engines()
-    })
+    return templates.TemplateResponse(
+        "avatar.html",
+        {
+            "request": request,
+            "title": "Avatar Generation",
+            "engines": await get_available_engines(),
+        },
+    )
 
 
 @router.get("/health")
@@ -91,7 +106,7 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "engines": {},
-        "pipeline": AvatarPipeline is not None
+        "pipeline": AvatarPipeline is not None,
     }
 
     if engine_manager:
@@ -122,11 +137,13 @@ async def get_available_engines():
             engine = await engine_manager.get_engine(engine_name)
             if engine:
                 health = await engine.health_check()
-                engine_info.append({
-                    "name": engine_name,
-                    "healthy": health,
-                    "capabilities": getattr(engine, 'capabilities', [])
-                })
+                engine_info.append(
+                    {
+                        "name": engine_name,
+                        "healthy": health,
+                        "capabilities": getattr(engine, "capabilities", []),
+                    }
+                )
 
         return {"engines": engine_info}
     except Exception as e:
@@ -148,14 +165,18 @@ async def generate_avatar(request: AvatarGenerationRequest):
         engine = await engine_manager.get_engine(request.engine)
         if not engine:
             raise HTTPException(
-                status_code=400, detail=f"Engine {
-                    request.engine} not available")
+                status_code=400,
+                detail=f"Engine {
+                    request.engine} not available",
+            )
 
         # Check engine health
         if not await engine.health_check():
             raise HTTPException(
-                status_code=503, detail=f"Engine {
-                    request.engine} is not responding")
+                status_code=503,
+                detail=f"Engine {
+                    request.engine} is not responding",
+            )
 
         # Create avatar request
         avatar_request = AvatarRequest(
@@ -163,7 +184,7 @@ async def generate_avatar(request: AvatarGenerationRequest):
             voice_settings=request.voice_settings,
             video_settings=request.video_settings,
             source_image=request.source_image,
-            gender=request.gender
+            gender=request.gender,
         )
 
         # Store job info
@@ -172,7 +193,7 @@ async def generate_avatar(request: AvatarGenerationRequest):
             "progress": 0.0,
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
-            "engine": request.engine
+            "engine": request.engine,
         }
 
         # Start generation (async)
@@ -180,24 +201,26 @@ async def generate_avatar(request: AvatarGenerationRequest):
             response = await engine.generate_avatar(avatar_request)
 
             if response.success:
-                avatar_jobs[job_id].update({
-                    "status": "completed",
-                    "progress": 100.0,
-                    "result_url": response.output_path,
-                    "updated_at": datetime.now()
-                })
+                avatar_jobs[job_id].update(
+                    {
+                        "status": "completed",
+                        "progress": 100.0,
+                        "result_url": response.output_path,
+                        "updated_at": datetime.now(),
+                    }
+                )
             else:
-                avatar_jobs[job_id].update({
-                    "status": "failed",
-                    "error": response.error,
-                    "updated_at": datetime.now()
-                })
+                avatar_jobs[job_id].update(
+                    {
+                        "status": "failed",
+                        "error": response.error,
+                        "updated_at": datetime.now(),
+                    }
+                )
         except Exception as e:
-            avatar_jobs[job_id].update({
-                "status": "failed",
-                "error": str(e),
-                "updated_at": datetime.now()
-            })
+            avatar_jobs[job_id].update(
+                {"status": "failed", "error": str(e), "updated_at": datetime.now()}
+            )
 
         return {"job_id": job_id, "status": "started"}
 
@@ -222,7 +245,7 @@ async def generate_3d_avatar(request: Avatar3DRequest):
             "progress": 0.0,
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
-            "type": "3d_pipeline"
+            "type": "3d_pipeline",
         }
 
         # Initialize pipeline
@@ -233,7 +256,7 @@ async def generate_3d_avatar(request: Avatar3DRequest):
             description=request.character_description,
             gender=request.gender or "neutral",
             age_range="adult",
-            style="realistic"
+            style="realistic",
         )
 
         # Create animation spec if voice text provided
@@ -242,7 +265,7 @@ async def generate_3d_avatar(request: Avatar3DRequest):
             animation_spec = AnimationSpec(
                 animation_type=request.animation_type,
                 voice_text=request.voice_text,
-                duration=None  # Auto-calculate from text
+                duration=None,  # Auto-calculate from text
             )
 
         # Start generation (async)
@@ -251,23 +274,23 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                 spec=character_spec,
                 animation_spec=animation_spec,
                 output_format=request.export_format,
-                quality=request.quality
+                quality=request.quality,
             )
 
-            avatar_jobs[job_id].update({
-                "status": "completed",
-                "progress": 100.0,
-                "result_url": str(result.final_render_path),
-                "metadata": result.metadata,
-                "updated_at": datetime.now()
-            })
+            avatar_jobs[job_id].update(
+                {
+                    "status": "completed",
+                    "progress": 100.0,
+                    "result_url": str(result.final_render_path),
+                    "metadata": result.metadata,
+                    "updated_at": datetime.now(),
+                }
+            )
 
         except Exception as e:
-            avatar_jobs[job_id].update({
-                "status": "failed",
-                "error": str(e),
-                "updated_at": datetime.now()
-            })
+            avatar_jobs[job_id].update(
+                {"status": "failed", "error": str(e), "updated_at": datetime.now()}
+            )
 
         return {"job_id": job_id, "status": "started"}
 
@@ -290,7 +313,7 @@ async def get_avatar_status(job_id: str):
         result_url=job_info.get("result_url"),
         error=job_info.get("error"),
         created_at=job_info["created_at"],
-        updated_at=job_info["updated_at"]
+        updated_at=job_info["updated_at"],
     )
 
 
@@ -309,9 +332,7 @@ async def download_avatar(job_id: str):
         raise HTTPException(status_code=404, detail="Avatar file not found")
 
     return FileResponse(
-        path=result_path,
-        filename=f"avatar_{job_id}.mp4",
-        media_type="video/mp4"
+        path=result_path, filename=f"avatar_{job_id}.mp4", media_type="video/mp4"
     )
 
 
@@ -323,7 +344,9 @@ async def upload_source_image(file: UploadFile = File(...)):
 
     try:
         # Create temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as tmp_file:
+        with tempfile.NamedTemporaryFile(
+            delete=False, suffix=os.path.splitext(file.filename)[1]
+        ) as tmp_file:
             content = await file.read()
             tmp_file.write(content)
             tmp_file_path = tmp_file.name
@@ -333,7 +356,7 @@ async def upload_source_image(file: UploadFile = File(...)):
             "success": True,
             "file_path": tmp_file_path,
             "filename": file.filename,
-            "size": len(content)
+            "size": len(content),
         }
 
     except Exception as e:
@@ -367,16 +390,19 @@ async def list_avatar_jobs():
     """List all avatar generation jobs"""
     jobs = []
     for job_id, job_info in avatar_jobs.items():
-        jobs.append({
-            "job_id": job_id,
-            "status": job_info["status"],
-            "progress": job_info.get("progress"),
-            "created_at": job_info["created_at"],
-            "updated_at": job_info["updated_at"],
-            "type": job_info.get("type", "standard")
-        })
+        jobs.append(
+            {
+                "job_id": job_id,
+                "status": job_info["status"],
+                "progress": job_info.get("progress"),
+                "created_at": job_info["created_at"],
+                "updated_at": job_info["updated_at"],
+                "type": job_info.get("type", "standard"),
+            }
+        )
 
     return {"jobs": jobs, "total": len(jobs)}
+
 
 # Export router
 __all__ = ["router"]

@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 # paste_integration_demo.py - Minimal FastAPI server demonstrating paste integration
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
+import time
 from datetime import datetime
 from functools import lru_cache
-import time
+from typing import List, Optional
+
 import uvicorn
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
 
 # Create FastAPI app
 app = FastAPI(
     title="Paste Integration Demo",
     description="Demonstration of integrated paste functionality",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Add CORS middleware
@@ -30,9 +31,11 @@ app.add_middleware(
 # In-memory storage for pastes
 pastes_storage = []
 
+
 class PasteCreate(BaseModel):
     content: str
     title: Optional[str] = None
+
 
 class PasteResponse(BaseModel):
     id: int
@@ -40,10 +43,12 @@ class PasteResponse(BaseModel):
     title: Optional[str]
     timestamp: str
 
+
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Main page with integrated paste functionality"""
-    return HTMLResponse(content="""
+    return HTMLResponse(
+        content="""
 <!DOCTYPE html>
 <html>
 <head>
@@ -318,7 +323,9 @@ async def root():
     </script>
 </body>
 </html>
-    """)
+    """
+    )
+
 
 @app.get("/health")
 async def health_check():
@@ -327,8 +334,9 @@ async def health_check():
         "status": "healthy",
         "service": "paste_integration_demo",
         "timestamp": datetime.now().isoformat(),
-        "integration_status": "active"
+        "integration_status": "active",
     }
+
 
 @app.post("/api/paste", response_model=PasteResponse)
 async def create_paste(paste_data: PasteCreate):
@@ -338,15 +346,17 @@ async def create_paste(paste_data: PasteCreate):
         "id": paste_id,
         "content": paste_data.content,
         "title": paste_data.title,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
     pastes_storage.append(new_paste)
     return new_paste
 
+
 @app.get("/api/pastes", response_model=List[PasteResponse])
 async def get_pastes(limit: int = 50, offset: int = 0):
     """Get all pastes with pagination"""
-    return pastes_storage[offset:offset + limit]
+    return pastes_storage[offset : offset + limit]
+
 
 @app.get("/api/paste/{paste_id}", response_model=PasteResponse)
 async def get_paste(paste_id: int):
@@ -356,34 +366,39 @@ async def get_paste(paste_id: int):
             return paste
     raise HTTPException(status_code=404, detail="Paste not found")
 
+
 # Cache for stats to reduce computation
 _stats_cache = {"data": None, "timestamp": 0}
 CACHE_DURATION = 30  # 30 seconds
+
 
 @app.get("/api/stats")
 async def get_stats():
     """Get paste statistics (cached for 30 seconds)"""
     current_time = time.time()
-    
+
     # Return cached data if still valid
-    if (_stats_cache["data"] is not None and 
-        current_time - _stats_cache["timestamp"] < CACHE_DURATION):
+    if (
+        _stats_cache["data"] is not None
+        and current_time - _stats_cache["timestamp"] < CACHE_DURATION
+    ):
         return _stats_cache["data"]
-    
+
     # Generate fresh stats
     stats = {
         "total_pastes": len(pastes_storage),
         "server_uptime": "active",
         "integration_status": "fully_integrated",
         "last_updated": datetime.now().isoformat(),
-        "cache_status": "fresh"
+        "cache_status": "fresh",
     }
-    
+
     # Update cache
     _stats_cache["data"] = stats
     _stats_cache["timestamp"] = current_time
-    
+
     return stats
+
 
 if __name__ == "__main__":
     print("🚀 Starting Integrated Paste Application...")

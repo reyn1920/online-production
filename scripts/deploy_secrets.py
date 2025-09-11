@@ -14,16 +14,17 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-from backend.secret_store import SecretStore, SecretStoreError
-import sys
-import os
 import argparse
 import json
+import os
 import shutil
 import sqlite3
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional
+
+from backend.secret_store import SecretStore, SecretStoreError
 
 # Add the project root to Python path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -37,45 +38,48 @@ class SecretsDeployment:
     and production readiness checks.
     """
 
-    def __init__(self, environment: str = 'production'):
+    def __init__(self, environment: str = "production"):
         self.environment = environment
         self.project_root = Path(__file__).parent.parent
-        self.data_dir = self.project_root / 'data'
-        self.backup_dir = self.project_root / 'backups' / 'secrets'
+        self.data_dir = self.project_root / "data"
+        self.backup_dir = self.project_root / "backups" / "secrets"
         self.config = self._load_deployment_config()
 
         # Environment-specific settings
-        self.db_path = self.config.get('database_path', {
-            'production': 'data/secrets.sqlite',
-            'staging': 'data/secrets_staging.sqlite',
-            'development': 'data/secrets_dev.sqlite'
-        }).get(environment, 'data/secrets.sqlite')
+        self.db_path = self.config.get(
+            "database_path",
+            {
+                "production": "data/secrets.sqlite",
+                "staging": "data/secrets_staging.sqlite",
+                "development": "data/secrets_dev.sqlite",
+            },
+        ).get(environment, "data/secrets.sqlite")
 
     def _load_deployment_config(self) -> Dict:
         """Load deployment configuration from file."""
-        config_file = self.project_root / 'config' / 'deployment.json'
+        config_file = self.project_root / "config" / "deployment.json"
 
         default_config = {
-            'database_path': {
-                'production': 'data/secrets.sqlite',
-                'staging': 'data/secrets_staging.sqlite',
-                'development': 'data/secrets_dev.sqlite'
+            "database_path": {
+                "production": "data/secrets.sqlite",
+                "staging": "data/secrets_staging.sqlite",
+                "development": "data/secrets_dev.sqlite",
             },
-            'backup_retention_days': 30,
-            'security_checks': {
-                'require_master_key': True,
-                'validate_permissions': True,
-                'check_encryption': True
+            "backup_retention_days": 30,
+            "security_checks": {
+                "require_master_key": True,
+                "validate_permissions": True,
+                "check_encryption": True,
             },
-            'production_requirements': {
-                'min_python_version': '3.8',
-                'required_packages': ['cryptography', 'sqlite3']
-            }
+            "production_requirements": {
+                "min_python_version": "3.8",
+                "required_packages": ["cryptography", "sqlite3"],
+            },
         }
 
         if config_file.exists():
             try:
-                with open(config_file, 'r') as f:
+                with open(config_file, "r") as f:
                     config = json.load(f)
                 # Merge with defaults
                 for key, value in default_config.items():
@@ -101,7 +105,7 @@ class SecretsDeployment:
         total_checks = 6
 
         # Check 1: Python version
-        min_version = self.config['production_requirements']['min_python_version']
+        min_version = self.config["production_requirements"]["min_python_version"]
         current_version = f"{sys.version_info.major}.{sys.version_info.minor}"
         if current_version >= min_version:
             print(f"✓ Python version: {current_version} (>= {min_version})")
@@ -110,7 +114,7 @@ class SecretsDeployment:
             print(f"✗ Python version: {current_version} (requires >= {min_version})")
 
         # Check 2: Required packages
-        required_packages = self.config['production_requirements']['required_packages']
+        required_packages = self.config["production_requirements"]["required_packages"]
         for package in required_packages:
             try:
                 __import__(package)
@@ -120,15 +124,15 @@ class SecretsDeployment:
                 print(f"✗ Missing package: {package}")
 
         # Check 3: Master key environment variable
-        if self.config['security_checks']['require_master_key']:
-            if os.getenv('TRAE_MASTER_KEY'):
+        if self.config["security_checks"]["require_master_key"]:
+            if os.getenv("TRAE_MASTER_KEY"):
                 print("✓ Master key environment variable set")
                 checks_passed += 1
             else:
                 print("✗ TRAE_MASTER_KEY environment variable not set")
 
         # Check 4: Directory permissions
-        if self.config['security_checks']['validate_permissions']:
+        if self.config["security_checks"]["validate_permissions"]:
             data_dir = Path(self.db_path).parent
             if self._check_directory_permissions(data_dir):
                 print(f"✓ Directory permissions: {data_dir}")
@@ -149,7 +153,7 @@ class SecretsDeployment:
             checks_passed += 1  # Not an error for new deployments
 
         # Check 6: Encryption functionality
-        if self.config['security_checks']['check_encryption']:
+        if self.config["security_checks"]["check_encryption"]:
             if self._test_encryption():
                 print("✓ Encryption functionality working")
                 checks_passed += 1
@@ -158,9 +162,10 @@ class SecretsDeployment:
 
         success_rate = (checks_passed / total_checks) * 100
         print(
-            f"\nValidation Results: {checks_passed}/{total_checks} checks passed ({success_rate:.1f}%)")
+            f"\nValidation Results: {checks_passed}/{total_checks} checks passed ({success_rate:.1f}%)"
+        )
 
-        if self.environment == 'production' and checks_passed < total_checks:
+        if self.environment == "production" and checks_passed < total_checks:
             print("❌ Production deployment requires all checks to pass.")
             return False
         elif checks_passed >= (total_checks * 0.8):  # 80% for staging/dev
@@ -175,8 +180,8 @@ class SecretsDeployment:
         try:
             directory.mkdir(parents=True, exist_ok=True)
             # Test write permissions
-            test_file = directory / '.permission_test'
-            test_file.write_text('test')
+            test_file = directory / ".permission_test"
+            test_file.write_text("test")
             test_file.unlink()
             return True
         except Exception:
@@ -195,16 +200,16 @@ class SecretsDeployment:
         """Test encryption functionality with a temporary store."""
         try:
             # Create a temporary database for testing
-            test_db = self.data_dir / 'test_encryption.sqlite'
+            test_db = self.data_dir / "test_encryption.sqlite"
             test_db.parent.mkdir(parents=True, exist_ok=True)
 
             # Test with a temporary master key
-            os.environ['TRAE_MASTER_KEY_TEST'] = 'test_key_for_validation'
+            os.environ["TRAE_MASTER_KEY_TEST"] = "test_key_for_validation"
 
-            with SecretStore(str(test_db), os.getenv('TRAE_MASTER_KEY_TEST')) as store:
+            with SecretStore(str(test_db), os.getenv("TRAE_MASTER_KEY_TEST")) as store:
                 # Test store and retrieve
-                test_key = 'test_secret'
-                test_value = 'test_value_123'
+                test_key = "test_secret"
+                test_value = "test_value_123"
 
                 store.store_secret(test_key, test_value)
                 retrieved_value = store.get_secret(test_key)
@@ -219,8 +224,8 @@ class SecretsDeployment:
                 test_db.unlink()
 
             # Clean up test environment variable
-            if 'TRAE_MASTER_KEY_TEST' in os.environ:
-                del os.environ['TRAE_MASTER_KEY_TEST']
+            if "TRAE_MASTER_KEY_TEST" in os.environ:
+                del os.environ["TRAE_MASTER_KEY_TEST"]
 
             return success
 
@@ -245,7 +250,7 @@ class SecretsDeployment:
         self.backup_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate backup filename with timestamp
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_filename = f"secrets_backup_{self.environment}_{timestamp}.sqlite"
         backup_path = self.backup_dir / backup_filename
 
@@ -264,11 +269,11 @@ class SecretsDeployment:
 
     def _cleanup_old_backups(self) -> None:
         """Remove old backup files based on retention policy."""
-        retention_days = self.config.get('backup_retention_days', 30)
+        retention_days = self.config.get("backup_retention_days", 30)
         cutoff_time = datetime.now().timestamp() - (retention_days * 24 * 60 * 60)
 
         try:
-            for backup_file in self.backup_dir.glob('secrets_backup_*.sqlite'):
+            for backup_file in self.backup_dir.glob("secrets_backup_*.sqlite"):
                 if backup_file.stat().st_mtime < cutoff_time:
                     backup_file.unlink()
                     print(f"Removed old backup: {backup_file.name}")
@@ -289,7 +294,7 @@ class SecretsDeployment:
             Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
 
             # Check if master key is available
-            master_key = os.getenv('TRAE_MASTER_KEY')
+            master_key = os.getenv("TRAE_MASTER_KEY")
             if not master_key:
                 print("✗ TRAE_MASTER_KEY environment variable not set")
                 return False
@@ -297,8 +302,8 @@ class SecretsDeployment:
             # Initialize the database
             with SecretStore(self.db_path, master_key) as store:
                 # Test basic functionality
-                test_key = '_deployment_test'
-                test_value = f'deployment_test_{datetime.now().isoformat()}'
+                test_key = "_deployment_test"
+                test_value = f"deployment_test_{datetime.now().isoformat()}"
 
                 store.store_secret(test_key, test_value)
                 retrieved = store.get_secret(test_key)
@@ -334,8 +339,12 @@ class SecretsDeployment:
         except Exception as e:
             print(f"Warning: Could not set secure permissions: {e}")
 
-    def deploy(self, validate_only: bool = False, backup_existing: bool = True,
-               init_database: bool = True) -> bool:
+    def deploy(
+        self,
+        validate_only: bool = False,
+        backup_existing: bool = True,
+        init_database: bool = True,
+    ) -> bool:
         """
         Execute the complete deployment process.
 
@@ -376,15 +385,18 @@ class SecretsDeployment:
         # Step 4: Final validation
         print("\n=== Final Deployment Validation ===")
         try:
-            master_key = os.getenv('TRAE_MASTER_KEY')
+            master_key = os.getenv("TRAE_MASTER_KEY")
             with SecretStore(self.db_path, master_key) as store:
                 # Test all basic operations
                 test_operations = [
-                    ('store_secret', lambda: store.store_secret('_final_test', 'test_value')),
-                    ('get_secret', lambda: store.get_secret('_final_test')),
-                    ('secret_exists', lambda: store.secret_exists('_final_test')),
-                    ('list_secrets', lambda: store.list_secrets()),
-                    ('delete_secret', lambda: store.delete_secret('_final_test'))
+                    (
+                        "store_secret",
+                        lambda: store.store_secret("_final_test", "test_value"),
+                    ),
+                    ("get_secret", lambda: store.get_secret("_final_test")),
+                    ("secret_exists", lambda: store.secret_exists("_final_test")),
+                    ("list_secrets", lambda: store.list_secrets()),
+                    ("delete_secret", lambda: store.delete_secret("_final_test")),
                 ]
 
                 for operation_name, operation in test_operations:
@@ -407,7 +419,7 @@ class SecretsDeployment:
 def main():
     """Main entry point for the deployment script."""
     parser = argparse.ArgumentParser(
-        description='TRAE.AI Secrets Management Production Deployment',
+        description="TRAE.AI Secrets Management Production Deployment",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -419,33 +431,55 @@ Examples:
 Environment Variables:
   TRAE_MASTER_KEY: Master password for encryption (required)
   TRAE_SECRETS_DB: Override default database path (optional)
-        """
+        """,
     )
 
-    parser.add_argument('--environment', '-e',
-                        choices=['production', 'staging', 'development'],
-                        default='production',
-                        help='Deployment environment')
+    parser.add_argument(
+        "--environment",
+        "-e",
+        choices=["production", "staging", "development"],
+        default="production",
+        help="Deployment environment",
+    )
 
-    parser.add_argument('--validate-only', action='store_true',
-                        help='Only validate environment, do not deploy')
+    parser.add_argument(
+        "--validate-only",
+        action="store_true",
+        help="Only validate environment, do not deploy",
+    )
 
-    parser.add_argument('--backup-existing', action='store_true', default=True,
-                        help='Create backup of existing database')
+    parser.add_argument(
+        "--backup-existing",
+        action="store_true",
+        default=True,
+        help="Create backup of existing database",
+    )
 
-    parser.add_argument('--no-backup', dest='backup_existing', action='store_false',
-                        help='Skip backup of existing database')
+    parser.add_argument(
+        "--no-backup",
+        dest="backup_existing",
+        action="store_false",
+        help="Skip backup of existing database",
+    )
 
-    parser.add_argument('--init-database', action='store_true', default=True,
-                        help='Initialize database during deployment')
+    parser.add_argument(
+        "--init-database",
+        action="store_true",
+        default=True,
+        help="Initialize database during deployment",
+    )
 
-    parser.add_argument('--no-init', dest='init_database', action='store_false',
-                        help='Skip database initialization')
+    parser.add_argument(
+        "--no-init",
+        dest="init_database",
+        action="store_false",
+        help="Skip database initialization",
+    )
 
     args = parser.parse_args()
 
     # Override database path if environment variable is set
-    if os.getenv('TRAE_SECRETS_DB'):
+    if os.getenv("TRAE_SECRETS_DB"):
         print(f"Using database path from environment: {os.getenv('TRAE_SECRETS_DB')}")
 
     # Create deployment manager
@@ -455,11 +489,11 @@ Environment Variables:
     success = deployment.deploy(
         validate_only=args.validate_only,
         backup_existing=args.backup_existing,
-        init_database=args.init_database
+        init_database=args.init_database,
     )
 
     sys.exit(0 if success else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

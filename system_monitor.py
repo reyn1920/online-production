@@ -20,32 +20,35 @@ Version: 1.0.0
 Date: 2024
 """
 
-import os
-import sys
 import asyncio
 import json
-import time
-import psutil
-import sqlite3
 import logging
+import os
+import sqlite3
+import sys
 import threading
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, field, asdict
+import time
 from collections import defaultdict, deque
-from flask import Flask, render_template_string, jsonify, request
-from flask_socketio import SocketIO, emit
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import psutil
 import requests
 import websocket
+from flask import Flask, jsonify, render_template_string, request
+from flask_socketio import SocketIO, emit
 
 # Add project root to Python path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
+
 @dataclass
 class ServiceMetrics:
     """Metrics for a service"""
+
     name: str
     status: str
     cpu_percent: float = 0.0
@@ -57,9 +60,11 @@ class ServiceMetrics:
     last_check: Optional[datetime] = None
     health_score: float = 100.0
 
+
 @dataclass
 class SystemMetrics:
     """System-wide metrics"""
+
     timestamp: datetime
     cpu_percent: float
     memory_percent: float
@@ -69,9 +74,11 @@ class SystemMetrics:
     active_connections: int
     load_average: Tuple[float, float, float]
 
+
 @dataclass
 class AlertRule:
     """Alert rule configuration"""
+
     name: str
     condition: str  # e.g., "cpu_percent > 80"
     severity: str  # low, medium, high, critical
@@ -79,96 +86,99 @@ class AlertRule:
     enabled: bool = True
     last_triggered: Optional[datetime] = None
 
+
 class SystemMonitor:
     """
     Comprehensive system monitoring and health checking
     """
-    
+
     def __init__(self, config_file: str = "monitoring_config.json"):
         self.config_file = config_file
         self.logger = self._setup_logging()
-        
+
         # Monitoring data
         self.service_metrics: Dict[str, ServiceMetrics] = {}
         self.system_metrics_history: deque = deque(maxlen=1000)
         self.alert_rules: List[AlertRule] = []
         self.active_alerts: Dict[str, datetime] = {}
-        
+
         # Configuration
         self.config = self._load_config()
-        self.monitoring_interval = self.config.get('monitoring_interval', 30)
-        self.services_to_monitor = self.config.get('services', {})
-        
+        self.monitoring_interval = self.config.get("monitoring_interval", 30)
+        self.services_to_monitor = self.config.get("services", {})
+
         # Database for metrics storage
         self.db_path = "monitoring/metrics.db"
         self._init_database()
-        
+
         # Flask app for web dashboard
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = os.environ.get('SYSTEM_MONITOR_SECRET_KEY', os.urandom(24).hex())
+        self.app.config["SECRET_KEY"] = os.environ.get(
+            "SYSTEM_MONITOR_SECRET_KEY", os.urandom(24).hex()
+        )
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
-        
+
         # Setup routes
         self._setup_routes()
-        
+
         # Monitoring thread control
         self.monitoring_active = False
         self.monitoring_thread = None
-        
+
         # Load default alert rules
         self._setup_default_alert_rules()
-    
+
     def _setup_logging(self) -> logging.Logger:
         """Setup logging configuration"""
         Path("logs").mkdir(exist_ok=True)
-        
+
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
             handlers=[
-                logging.FileHandler('logs/system_monitor.log'),
-                logging.StreamHandler()
-            ]
+                logging.FileHandler("logs/system_monitor.log"),
+                logging.StreamHandler(),
+            ],
         )
         return logging.getLogger(__name__)
-    
+
     def _load_config(self) -> Dict[str, Any]:
         """Load monitoring configuration"""
         default_config = {
-            'monitoring_interval': 30,
-            'services': {
-                'main_app': {
-                    'url': 'http://localhost:8000/health',
-                    'port': 8000,
-                    'critical': True
+            "monitoring_interval": 30,
+            "services": {
+                "main_app": {
+                    "url": "http://localhost:8000/health",
+                    "port": 8000,
+                    "critical": True,
                 },
-                'paste_app': {
-                    'url': 'http://localhost:3001',
-                    'port': 3001,
-                    'critical': False
+                "paste_app": {
+                    "url": "http://localhost:3001",
+                    "port": 3001,
+                    "critical": False,
                 },
-                'demo_avatar': {
-                    'url': 'http://localhost:3002',
-                    'port': 3002,
-                    'critical': False
+                "demo_avatar": {
+                    "url": "http://localhost:3002",
+                    "port": 3002,
+                    "critical": False,
                 },
-                'static_server': {
-                    'url': 'http://localhost:3000',
-                    'port': 3000,
-                    'critical': False
-                }
+                "static_server": {
+                    "url": "http://localhost:3000",
+                    "port": 3000,
+                    "critical": False,
+                },
             },
-            'alert_thresholds': {
-                'cpu_percent': 80,
-                'memory_percent': 85,
-                'disk_percent': 90,
-                'response_time_ms': 5000
-            }
+            "alert_thresholds": {
+                "cpu_percent": 80,
+                "memory_percent": 85,
+                "disk_percent": 90,
+                "response_time_ms": 5000,
+            },
         }
-        
+
         try:
             if Path(self.config_file).exists():
-                with open(self.config_file, 'r') as f:
+                with open(self.config_file, "r") as f:
                     config = json.load(f)
                 # Merge with defaults
                 for key, value in default_config.items():
@@ -180,17 +190,18 @@ class SystemMonitor:
         except Exception as e:
             self.logger.error(f"Failed to load config: {e}")
             return default_config
-    
+
     def _init_database(self):
         """Initialize metrics database"""
         Path("monitoring").mkdir(exist_ok=True)
-        
+
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             # Create tables
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS service_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -204,9 +215,11 @@ class SystemMonitor:
                     request_count INTEGER,
                     health_score REAL
                 )
-            """)
-            
-            cursor.execute("""
+            """
+            )
+
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS system_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -220,9 +233,11 @@ class SystemMonitor:
                     load_avg_5m REAL,
                     load_avg_15m REAL
                 )
-            """)
-            
-            cursor.execute("""
+            """
+            )
+
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -232,189 +247,204 @@ class SystemMonitor:
                     resolved BOOLEAN DEFAULT FALSE,
                     resolved_at DATETIME
                 )
-            """)
-            
+            """
+            )
+
             conn.commit()
             conn.close()
-            
+
             self.logger.info("Metrics database initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to initialize database: {e}")
-    
+
     def _setup_default_alert_rules(self):
         """Setup default alert rules"""
-        thresholds = self.config.get('alert_thresholds', {})
-        
+        thresholds = self.config.get("alert_thresholds", {})
+
         self.alert_rules = [
             AlertRule(
                 name="High CPU Usage",
                 condition=f"cpu_percent > {thresholds.get('cpu_percent', 80)}",
                 severity="high",
-                cooldown_minutes=5
+                cooldown_minutes=5,
             ),
             AlertRule(
                 name="High Memory Usage",
                 condition=f"memory_percent > {thresholds.get('memory_percent', 85)}",
                 severity="high",
-                cooldown_minutes=5
+                cooldown_minutes=5,
             ),
             AlertRule(
                 name="High Disk Usage",
                 condition=f"disk_percent > {thresholds.get('disk_percent', 90)}",
                 severity="critical",
-                cooldown_minutes=10
+                cooldown_minutes=10,
             ),
             AlertRule(
                 name="Service Down",
                 condition="service_status == 'down'",
                 severity="critical",
-                cooldown_minutes=1
+                cooldown_minutes=1,
             ),
             AlertRule(
                 name="Slow Response Time",
                 condition=f"response_time_ms > {thresholds.get('response_time_ms', 5000)}",
                 severity="medium",
-                cooldown_minutes=3
-            )
+                cooldown_minutes=3,
+            ),
         ]
-    
+
     def _setup_routes(self):
         """Setup Flask routes for web dashboard"""
-        
-        @self.app.route('/')
+
+        @self.app.route("/")
         def dashboard():
             return render_template_string(DASHBOARD_HTML)
-        
-        @self.app.route('/api/metrics')
+
+        @self.app.route("/api/metrics")
         def get_metrics():
-            return jsonify({
-                'services': {name: asdict(metrics) for name, metrics in self.service_metrics.items()},
-                'system': [asdict(m) for m in list(self.system_metrics_history)[-10:]],
-                'alerts': self._get_active_alerts()
-            })
-        
-        @self.app.route('/api/service/<service_name>/history')
+            return jsonify(
+                {
+                    "services": {
+                        name: asdict(metrics)
+                        for name, metrics in self.service_metrics.items()
+                    },
+                    "system": [
+                        asdict(m) for m in list(self.system_metrics_history)[-10:]
+                    ],
+                    "alerts": self._get_active_alerts(),
+                }
+            )
+
+        @self.app.route("/api/service/<service_name>/history")
         def get_service_history(service_name):
             try:
                 conn = sqlite3.connect(self.db_path)
                 cursor = conn.cursor()
-                
-                cursor.execute("""
+
+                cursor.execute(
+                    """
                     SELECT timestamp, status, cpu_percent, memory_mb, response_time_ms, health_score
                     FROM service_metrics 
                     WHERE service_name = ? 
                     ORDER BY timestamp DESC 
                     LIMIT 100
-                """, (service_name,))
-                
+                """,
+                    (service_name,),
+                )
+
                 rows = cursor.fetchall()
                 conn.close()
-                
+
                 history = []
                 for row in rows:
-                    history.append({
-                        'timestamp': row[0],
-                        'status': row[1],
-                        'cpu_percent': row[2],
-                        'memory_mb': row[3],
-                        'response_time_ms': row[4],
-                        'health_score': row[5]
-                    })
-                
+                    history.append(
+                        {
+                            "timestamp": row[0],
+                            "status": row[1],
+                            "cpu_percent": row[2],
+                            "memory_mb": row[3],
+                            "response_time_ms": row[4],
+                            "health_score": row[5],
+                        }
+                    )
+
                 return jsonify(history)
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to get service history: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.socketio.on('connect')
+                return jsonify({"error": str(e)}), 500
+
+        @self.socketio.on("connect")
         def handle_connect():
             self.logger.info("Client connected to monitoring dashboard")
-            emit('status', {'message': 'Connected to monitoring system'})
-        
-        @self.socketio.on('disconnect')
+            emit("status", {"message": "Connected to monitoring system"})
+
+        @self.socketio.on("disconnect")
         def handle_disconnect():
             self.logger.info("Client disconnected from monitoring dashboard")
-    
-    def check_service_health(self, service_name: str, service_config: Dict[str, Any]) -> ServiceMetrics:
+
+    def check_service_health(
+        self, service_name: str, service_config: Dict[str, Any]
+    ) -> ServiceMetrics:
         """Check health of a specific service"""
-        metrics = ServiceMetrics(name=service_name, status='unknown')
-        
+        metrics = ServiceMetrics(name=service_name, status="unknown")
+
         try:
             # Get process info if port is specified
-            if 'port' in service_config:
-                port = service_config['port']
+            if "port" in service_config:
+                port = service_config["port"]
                 process = self._find_process_by_port(port)
-                
+
                 if process:
                     metrics.cpu_percent = process.cpu_percent()
                     metrics.memory_mb = process.memory_info().rss / 1024 / 1024
                     metrics.uptime_seconds = int(time.time() - process.create_time())
-                    metrics.status = 'running'
+                    metrics.status = "running"
                 else:
-                    metrics.status = 'down'
-            
+                    metrics.status = "down"
+
             # HTTP health check if URL is provided
-            if 'url' in service_config and metrics.status != 'down':
+            if "url" in service_config and metrics.status != "down":
                 start_time = time.time()
                 try:
-                    response = requests.get(service_config['url'], timeout=10)
+                    response = requests.get(service_config["url"], timeout=10)
                     metrics.response_time_ms = (time.time() - start_time) * 1000
-                    
+
                     if response.status_code == 200:
-                        metrics.status = 'healthy'
+                        metrics.status = "healthy"
                         metrics.health_score = 100.0
                     else:
-                        metrics.status = 'unhealthy'
+                        metrics.status = "unhealthy"
                         metrics.health_score = 50.0
                         metrics.error_count += 1
-                        
+
                 except requests.RequestException as e:
-                    metrics.status = 'unreachable'
+                    metrics.status = "unreachable"
                     metrics.response_time_ms = (time.time() - start_time) * 1000
                     metrics.health_score = 0.0
                     metrics.error_count += 1
-            
+
             metrics.last_check = datetime.now()
-            
+
         except Exception as e:
             self.logger.error(f"Error checking service {service_name}: {e}")
-            metrics.status = 'error'
+            metrics.status = "error"
             metrics.health_score = 0.0
-        
+
         return metrics
-    
+
     def _find_process_by_port(self, port: int) -> Optional[psutil.Process]:
         """Find process listening on a specific port"""
         try:
-            for conn in psutil.net_connections(kind='inet'):
+            for conn in psutil.net_connections(kind="inet"):
                 if conn.laddr.port == port and conn.status == psutil.CONN_LISTEN:
                     return psutil.Process(conn.pid)
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
         return None
-    
+
     def collect_system_metrics(self) -> SystemMetrics:
         """Collect system-wide metrics"""
         try:
             # CPU and memory
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
-            
+            disk = psutil.disk_usage("/")
+
             # Network
             net_io = psutil.net_io_counters()
-            
+
             # Load average (Unix-like systems)
             try:
                 load_avg = os.getloadavg()
             except (OSError, AttributeError):
                 load_avg = (0.0, 0.0, 0.0)
-            
+
             # Active connections
             active_connections = len(psutil.net_connections())
-            
+
             return SystemMetrics(
                 timestamp=datetime.now(),
                 cpu_percent=cpu_percent,
@@ -423,9 +453,9 @@ class SystemMonitor:
                 network_bytes_sent=net_io.bytes_sent,
                 network_bytes_recv=net_io.bytes_recv,
                 active_connections=active_connections,
-                load_average=load_avg
+                load_average=load_avg,
             )
-            
+
         except Exception as e:
             self.logger.error(f"Error collecting system metrics: {e}")
             return SystemMetrics(
@@ -436,234 +466,296 @@ class SystemMonitor:
                 network_bytes_sent=0,
                 network_bytes_recv=0,
                 active_connections=0,
-                load_average=(0.0, 0.0, 0.0)
+                load_average=(0.0, 0.0, 0.0),
             )
-    
-    def store_metrics(self, service_metrics: Dict[str, ServiceMetrics], system_metrics: SystemMetrics):
+
+    def store_metrics(
+        self, service_metrics: Dict[str, ServiceMetrics], system_metrics: SystemMetrics
+    ):
         """Store metrics in database"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             # Store service metrics
             for metrics in service_metrics.values():
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO service_metrics 
                     (service_name, status, cpu_percent, memory_mb, response_time_ms, 
                      uptime_seconds, error_count, request_count, health_score)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    metrics.name, metrics.status, metrics.cpu_percent, metrics.memory_mb,
-                    metrics.response_time_ms, metrics.uptime_seconds, metrics.error_count,
-                    metrics.request_count, metrics.health_score
-                ))
-            
+                """,
+                    (
+                        metrics.name,
+                        metrics.status,
+                        metrics.cpu_percent,
+                        metrics.memory_mb,
+                        metrics.response_time_ms,
+                        metrics.uptime_seconds,
+                        metrics.error_count,
+                        metrics.request_count,
+                        metrics.health_score,
+                    ),
+                )
+
             # Store system metrics
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO system_metrics 
                 (cpu_percent, memory_percent, disk_percent, network_bytes_sent, 
                  network_bytes_recv, active_connections, load_avg_1m, load_avg_5m, load_avg_15m)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                system_metrics.cpu_percent, system_metrics.memory_percent, system_metrics.disk_percent,
-                system_metrics.network_bytes_sent, system_metrics.network_bytes_recv,
-                system_metrics.active_connections, system_metrics.load_average[0],
-                system_metrics.load_average[1], system_metrics.load_average[2]
-            ))
-            
+            """,
+                (
+                    system_metrics.cpu_percent,
+                    system_metrics.memory_percent,
+                    system_metrics.disk_percent,
+                    system_metrics.network_bytes_sent,
+                    system_metrics.network_bytes_recv,
+                    system_metrics.active_connections,
+                    system_metrics.load_average[0],
+                    system_metrics.load_average[1],
+                    system_metrics.load_average[2],
+                ),
+            )
+
             conn.commit()
             conn.close()
-            
+
         except Exception as e:
             self.logger.error(f"Failed to store metrics: {e}")
-    
-    def check_alerts(self, service_metrics: Dict[str, ServiceMetrics], system_metrics: SystemMetrics):
+
+    def check_alerts(
+        self, service_metrics: Dict[str, ServiceMetrics], system_metrics: SystemMetrics
+    ):
         """Check alert conditions and trigger alerts"""
         current_time = datetime.now()
-        
+
         for rule in self.alert_rules:
             if not rule.enabled:
                 continue
-            
+
             # Check cooldown
-            if (rule.last_triggered and 
-                current_time - rule.last_triggered < timedelta(minutes=rule.cooldown_minutes)):
+            if rule.last_triggered and current_time - rule.last_triggered < timedelta(
+                minutes=rule.cooldown_minutes
+            ):
                 continue
-            
+
             # Evaluate condition
             alert_triggered = False
             alert_message = ""
-            
+
             try:
                 if "cpu_percent" in rule.condition:
-                    if eval(rule.condition.replace("cpu_percent", str(system_metrics.cpu_percent))):
+                    if eval(
+                        rule.condition.replace(
+                            "cpu_percent", str(system_metrics.cpu_percent)
+                        )
+                    ):
                         alert_triggered = True
-                        alert_message = f"System CPU usage is {system_metrics.cpu_percent:.1f}%"
-                
+                        alert_message = (
+                            f"System CPU usage is {system_metrics.cpu_percent:.1f}%"
+                        )
+
                 elif "memory_percent" in rule.condition:
-                    if eval(rule.condition.replace("memory_percent", str(system_metrics.memory_percent))):
+                    if eval(
+                        rule.condition.replace(
+                            "memory_percent", str(system_metrics.memory_percent)
+                        )
+                    ):
                         alert_triggered = True
                         alert_message = f"System memory usage is {system_metrics.memory_percent:.1f}%"
-                
+
                 elif "disk_percent" in rule.condition:
-                    if eval(rule.condition.replace("disk_percent", str(system_metrics.disk_percent))):
+                    if eval(
+                        rule.condition.replace(
+                            "disk_percent", str(system_metrics.disk_percent)
+                        )
+                    ):
                         alert_triggered = True
-                        alert_message = f"System disk usage is {system_metrics.disk_percent:.1f}%"
-                
+                        alert_message = (
+                            f"System disk usage is {system_metrics.disk_percent:.1f}%"
+                        )
+
                 elif "service_status" in rule.condition:
                     for service_name, metrics in service_metrics.items():
-                        if metrics.status in ['down', 'unreachable', 'error']:
+                        if metrics.status in ["down", "unreachable", "error"]:
                             alert_triggered = True
-                            alert_message = f"Service {service_name} is {metrics.status}"
+                            alert_message = (
+                                f"Service {service_name} is {metrics.status}"
+                            )
                             break
-                
+
                 elif "response_time_ms" in rule.condition:
                     for service_name, metrics in service_metrics.items():
-                        if eval(rule.condition.replace("response_time_ms", str(metrics.response_time_ms))):
+                        if eval(
+                            rule.condition.replace(
+                                "response_time_ms", str(metrics.response_time_ms)
+                            )
+                        ):
                             alert_triggered = True
                             alert_message = f"Service {service_name} response time is {metrics.response_time_ms:.0f}ms"
                             break
-                
+
                 if alert_triggered:
                     self._trigger_alert(rule, alert_message)
                     rule.last_triggered = current_time
-                    
+
             except Exception as e:
                 self.logger.error(f"Error evaluating alert rule {rule.name}: {e}")
-    
+
     def _trigger_alert(self, rule: AlertRule, message: str):
         """Trigger an alert"""
         alert_data = {
-            'name': rule.name,
-            'severity': rule.severity,
-            'message': message,
-            'timestamp': datetime.now().isoformat()
+            "name": rule.name,
+            "severity": rule.severity,
+            "message": message,
+            "timestamp": datetime.now().isoformat(),
         }
-        
+
         self.logger.warning(f"ALERT [{rule.severity.upper()}] {rule.name}: {message}")
-        
+
         # Store alert in database
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO alerts (alert_name, severity, message)
                 VALUES (?, ?, ?)
-            """, (rule.name, rule.severity, message))
+            """,
+                (rule.name, rule.severity, message),
+            )
             conn.commit()
             conn.close()
         except Exception as e:
             self.logger.error(f"Failed to store alert: {e}")
-        
+
         # Emit to connected clients
         try:
-            self.socketio.emit('alert', alert_data)
+            self.socketio.emit("alert", alert_data)
         except Exception as e:
             self.logger.error(f"Failed to emit alert: {e}")
-    
+
     def _get_active_alerts(self) -> List[Dict[str, Any]]:
         """Get active alerts from database"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
-            cursor.execute("""
+
+            cursor.execute(
+                """
                 SELECT alert_name, severity, message, timestamp
                 FROM alerts 
                 WHERE resolved = FALSE 
                 ORDER BY timestamp DESC 
                 LIMIT 50
-            """)
-            
+            """
+            )
+
             rows = cursor.fetchall()
             conn.close()
-            
+
             alerts = []
             for row in rows:
-                alerts.append({
-                    'name': row[0],
-                    'severity': row[1],
-                    'message': row[2],
-                    'timestamp': row[3]
-                })
-            
+                alerts.append(
+                    {
+                        "name": row[0],
+                        "severity": row[1],
+                        "message": row[2],
+                        "timestamp": row[3],
+                    }
+                )
+
             return alerts
-            
+
         except Exception as e:
             self.logger.error(f"Failed to get active alerts: {e}")
             return []
-    
+
     def monitoring_loop(self):
         """Main monitoring loop"""
         self.logger.info("Starting monitoring loop")
-        
+
         while self.monitoring_active:
             try:
                 # Collect service metrics
                 for service_name, service_config in self.services_to_monitor.items():
                     metrics = self.check_service_health(service_name, service_config)
                     self.service_metrics[service_name] = metrics
-                
+
                 # Collect system metrics
                 system_metrics = self.collect_system_metrics()
                 self.system_metrics_history.append(system_metrics)
-                
+
                 # Store metrics
                 self.store_metrics(self.service_metrics, system_metrics)
-                
+
                 # Check alerts
                 self.check_alerts(self.service_metrics, system_metrics)
-                
+
                 # Emit real-time data to connected clients
                 try:
-                    self.socketio.emit('metrics_update', {
-                        'services': {name: asdict(metrics) for name, metrics in self.service_metrics.items()},
-                        'system': asdict(system_metrics)
-                    })
+                    self.socketio.emit(
+                        "metrics_update",
+                        {
+                            "services": {
+                                name: asdict(metrics)
+                                for name, metrics in self.service_metrics.items()
+                            },
+                            "system": asdict(system_metrics),
+                        },
+                    )
                 except Exception as e:
                     self.logger.error(f"Failed to emit metrics update: {e}")
-                
+
                 # Wait for next iteration
                 time.sleep(self.monitoring_interval)
-                
+
             except Exception as e:
                 self.logger.error(f"Error in monitoring loop: {e}")
                 time.sleep(10)
-        
+
         self.logger.info("Monitoring loop stopped")
-    
+
     def start_monitoring(self):
         """Start the monitoring system"""
         if self.monitoring_active:
             self.logger.warning("Monitoring is already active")
             return
-        
+
         self.monitoring_active = True
-        self.monitoring_thread = threading.Thread(target=self.monitoring_loop, daemon=True)
+        self.monitoring_thread = threading.Thread(
+            target=self.monitoring_loop, daemon=True
+        )
         self.monitoring_thread.start()
-        
+
         self.logger.info("Monitoring system started")
-    
+
     def stop_monitoring(self):
         """Stop the monitoring system"""
         self.monitoring_active = False
-        
+
         if self.monitoring_thread:
             self.monitoring_thread.join(timeout=5)
-        
+
         self.logger.info("Monitoring system stopped")
-    
-    def run_dashboard(self, host: str = '0.0.0.0', port: int = 5000, debug: bool = False):
+
+    def run_dashboard(
+        self, host: str = "0.0.0.0", port: int = 5000, debug: bool = False
+    ):
         """Run the web dashboard"""
         self.logger.info(f"Starting monitoring dashboard on {host}:{port}")
         self.start_monitoring()
-        
+
         try:
             self.socketio.run(self.app, host=host, port=port, debug=debug)
         except KeyboardInterrupt:
             self.logger.info("Dashboard shutdown requested")
         finally:
             self.stop_monitoring()
+
 
 # HTML template for the monitoring dashboard
 DASHBOARD_HTML = """
@@ -934,16 +1026,18 @@ DASHBOARD_HTML = """
 </html>
 """
 
+
 def main():
     """Main entry point"""
     monitor = SystemMonitor()
-    
+
     try:
-        monitor.run_dashboard(host='0.0.0.0', port=5000, debug=False)
+        monitor.run_dashboard(host="0.0.0.0", port=5000, debug=False)
     except KeyboardInterrupt:
         print("\nShutdown requested")
     finally:
         monitor.stop_monitoring()
+
 
 if __name__ == "__main__":
     main()

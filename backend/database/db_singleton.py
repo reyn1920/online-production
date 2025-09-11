@@ -27,12 +27,12 @@ except ImportError:
 
 class DatabaseSingleton:
     """Singleton manager for database instances"""
-    
+
     _instance = None
     _lock = threading.Lock()
     _hypocrisy_db_manager = None
     _hypocrisy_db_lock = threading.Lock()
-    
+
     def __new__(cls):
         if cls._instance is None:
             with cls._lock:
@@ -40,7 +40,7 @@ class DatabaseSingleton:
                     cls._instance = super(DatabaseSingleton, cls).__new__(cls)
                     cls._instance.logger = logging.getLogger(__name__)
         return cls._instance
-    
+
     def get_hypocrisy_db_manager(self) -> Optional[HypocrisyDatabaseManager]:
         """Get singleton instance of HypocrisyDatabaseManager"""
         if self._hypocrisy_db_manager is None:
@@ -49,16 +49,20 @@ class DatabaseSingleton:
                     if HypocrisyDatabaseManager:
                         try:
                             self._hypocrisy_db_manager = HypocrisyDatabaseManager()
-                            self.logger.info("Hypocrisy database manager initialized successfully (singleton)")
+                            self.logger.info(
+                                "Hypocrisy database manager initialized successfully (singleton)"
+                            )
                         except Exception as e:
-                            self.logger.error(f"Failed to initialize hypocrisy database manager: {e}")
+                            self.logger.error(
+                                f"Failed to initialize hypocrisy database manager: {e}"
+                            )
                             return None
                     else:
                         self.logger.warning("HypocrisyDatabaseManager not available")
                         return None
-        
+
         return self._hypocrisy_db_manager
-    
+
     def reset_hypocrisy_db_manager(self):
         """Reset the hypocrisy database manager (for testing)"""
         with self._hypocrisy_db_lock:

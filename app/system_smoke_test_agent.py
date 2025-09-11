@@ -10,22 +10,22 @@ This agent implements the complete "Go-Live" smoke test protocol as specified:
 The agent provides a one-click verification system that ensures 100% system readiness.
 """
 
-import os
-import sys
+import asyncio
 import json
+import os
+import shutil
+import socket
+import subprocess
+import sys
+import tempfile
 import time
 import uuid
-import shutil
-import tempfile
-import subprocess
-import asyncio
-import socket
-import psutil
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass, asdict
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
+import psutil
 import requests
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
@@ -33,6 +33,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 @dataclass
 class TestResult:
     """Represents the result of a single test step."""
+
     step_name: str
     success: bool
     message: str
@@ -48,6 +49,7 @@ class TestResult:
 @dataclass
 class SmokeTestSession:
     """Represents a complete smoke test session."""
+
     test_id: str
     started_at: str
     triggered_by: str
@@ -69,10 +71,10 @@ class SystemSmokeTestAgent:
     def __init__(self, socketio: SocketIO = None, base_url: str = None):
         # Auto-detect the correct base URL from environment
         if base_url is None:
-            dashboard_port = os.environ.get('DASHBOARD_PORT', '8081')
+            dashboard_port = os.environ.get("DASHBOARD_PORT", "8081")
             base_url = f"http://localhost:{dashboard_port}"
         self.socketio = socketio
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
         self.current_session: Optional[SmokeTestSession] = None
         self.is_running = False
 
@@ -96,7 +98,7 @@ class SystemSmokeTestAgent:
             test_id=test_id,
             started_at=datetime.now().isoformat(),
             triggered_by=triggered_by,
-            status="running"
+            status="running",
         )
 
         self.is_running = True
@@ -124,8 +126,8 @@ class SystemSmokeTestAgent:
         try:
             # Phase 1: Pre-Flight Checks
             self._emit_progress(
-                "Pre-Flight Checks",
-                "Running infrastructure validation...")
+                "Pre-Flight Checks", "Running infrastructure validation..."
+            )
             preflight_success = await self._run_preflight_checks()
 
             if not preflight_success:
@@ -133,13 +135,18 @@ class SystemSmokeTestAgent:
                 return self.current_session
 
             # Phase 2: Live Smoke Test
-            self._emit_progress("Live Smoke Test",
-                                "Running end-to-end workflow verification...")
+            self._emit_progress(
+                "Live Smoke Test", "Running end-to-end workflow verification..."
+            )
             smoke_test_success = await self._run_live_smoke_test()
 
             # Complete the test
             overall_success = preflight_success and smoke_test_success
-            summary_message = "All tests passed successfully" if overall_success else "Some tests failed"
+            summary_message = (
+                "All tests passed successfully"
+                if overall_success
+                else "Some tests failed"
+            )
             self._complete_test(overall_success, summary_message)
 
         except Exception as e:
@@ -159,7 +166,7 @@ class SystemSmokeTestAgent:
             ("Disk Space", self._check_disk_space),
             ("FFmpeg Installation", self._check_ffmpeg),
             ("Directory Permissions", self._check_directory_permissions),
-            ("Python Dependencies", self._check_python_dependencies)
+            ("Python Dependencies", self._check_python_dependencies),
         ]
 
         all_passed = True
@@ -168,7 +175,8 @@ class SystemSmokeTestAgent:
             self._emit_progress(
                 "Pre-Flight Checks",
                 f"Checking {
-                    check_name.lower()}...")
+                    check_name.lower()}...",
+            )
 
             start_time = time.time()
             try:
@@ -180,7 +188,7 @@ class SystemSmokeTestAgent:
                     success=success,
                     message=message,
                     details=details,
-                    duration_ms=duration_ms
+                    duration_ms=duration_ms,
                 )
 
                 self.current_session.results.append(result)
@@ -199,13 +207,14 @@ class SystemSmokeTestAgent:
                     step_name=check_name,
                     success=False,
                     message=f"Check failed with error: {str(e)}",
-                    duration_ms=duration_ms
+                    duration_ms=duration_ms,
                 )
                 self.current_session.results.append(result)
                 self._emit_log(
                     "ERROR",
                     f"❌ {check_name}: Check failed with error: {
-                        str(e)}")
+                        str(e)}",
+                )
                 all_passed = False
 
         return all_passed
@@ -220,11 +229,17 @@ class SystemSmokeTestAgent:
             if 1024 <= port_num <= 65535:
                 return True, f"Dashboard port correctly set to {actual_port}", None
             else:
-                return False, f"Dashboard port {actual_port} is outside valid range (1024-65535)", \
-                    "Set DASHBOARD_PORT to a valid port number"
+                return (
+                    False,
+                    f"Dashboard port {actual_port} is outside valid range (1024-65535)",
+                    "Set DASHBOARD_PORT to a valid port number",
+                )
         except ValueError:
-            return False, f"Dashboard port '{actual_port}' is not a valid number", \
-                "Set DASHBOARD_PORT to a valid port number"
+            return (
+                False,
+                f"Dashboard port '{actual_port}' is not a valid number",
+                "Set DASHBOARD_PORT to a valid port number",
+            )
 
     async def _check_port_availability(self) -> Tuple[bool, str, Optional[str]]:
         """Check that required services are running on their configured ports."""
@@ -238,23 +253,31 @@ class SystemSmokeTestAgent:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     sock.settimeout(1)
-                    result = sock.connect_ex(('localhost', port))
+                    result = sock.connect_ex(("localhost", port))
                     if result == 0:  # Port is in use (which is good for services)
                         running_ports.append(port)
             except Exception as e:
                 return False, f"Error checking port {port}", str(e)
 
         if len(running_ports) == len(ports_to_check):
-            return True, f"All required services are running on ports: {
+            return (
+                True,
+                f"All required services are running on ports: {
                 ', '.join(
                     map(
-                        str, running_ports))}", None
+                        str, running_ports))}",
+                None,
+            )
         else:
             missing_ports = [p for p in ports_to_check if p not in running_ports]
-            return False, f"Services not running on ports: {
+            return (
+                False,
+                f"Services not running on ports: {
                 ', '.join(
                     map(
-                        str, missing_ports))}", "Ensure all required services are started"
+                        str, missing_ports))}",
+                "Ensure all required services are started",
+            )
 
     async def _check_system_resources(self) -> Tuple[bool, str, Optional[str]]:
         """Check system CPU and memory resources."""
@@ -271,9 +294,13 @@ class SystemSmokeTestAgent:
                 issues.append(f"High memory usage: {memory_percent:.1f}%")
 
             if not issues:
-                return True, f"System resources OK (CPU: {
+                return (
+                    True,
+                    f"System resources OK (CPU: {
                     cpu_percent:.1f}%, Memory: {
-                    memory_percent:.1f}%)", None
+                    memory_percent:.1f}%)",
+                    None,
+                )
             else:
                 return False, "System resources under stress", "; ".join(issues)
 
@@ -284,7 +311,7 @@ class SystemSmokeTestAgent:
         """Check network connectivity to essential services."""
         test_urls = [
             ("localhost:8080", "http://localhost:8080/api/health"),
-            ("External DNS", "https://8.8.8.8")
+            ("External DNS", "https://8.8.8.8"),
         ]
 
         connectivity_issues = []
@@ -293,7 +320,9 @@ class SystemSmokeTestAgent:
             try:
                 response = requests.get(url, timeout=5)
                 if response.status_code not in [
-                        200, 404]:  # 404 is OK for health check if service not running
+                    200,
+                    404,
+                ]:  # 404 is OK for health check if service not running
                     connectivity_issues.append(f"{name}: HTTP {response.status_code}")
             except requests.exceptions.Timeout:
                 connectivity_issues.append(f"{name}: Timeout")
@@ -307,8 +336,11 @@ class SystemSmokeTestAgent:
         if not connectivity_issues:
             return True, "Network connectivity verified", None
         else:
-            return True, "Network connectivity checked (some services may not be running yet)", \
-                "; ".join(connectivity_issues)  # Non-blocking for now
+            return (
+                True,
+                "Network connectivity checked (some services may not be running yet)",
+                "; ".join(connectivity_issues),
+            )  # Non-blocking for now
 
     async def _check_secrets(self) -> Tuple[bool, str, Optional[str]]:
         """Check that required secrets are loaded and accessible."""
@@ -320,11 +352,18 @@ class SystemSmokeTestAgent:
                 missing_secrets.append(secret)
 
         if not missing_secrets:
-            return True, f"All {
-                len(required_secrets)} required secrets are present", None
+            return (
+                True,
+                f"All {
+                len(required_secrets)} required secrets are present",
+                None,
+            )
         else:
-            return False, f"Missing {len(missing_secrets)} required secrets", \
-                f"Missing secrets: {', '.join(missing_secrets)}"
+            return (
+                False,
+                f"Missing {len(missing_secrets)} required secrets",
+                f"Missing secrets: {', '.join(missing_secrets)}",
+            )
 
     async def _check_disk_space(self) -> Tuple[bool, str, Optional[str]]:
         """Check for at least 5GB of free disk space."""
@@ -335,27 +374,36 @@ class SystemSmokeTestAgent:
             if free_gb >= self.required_disk_space_gb:
                 return True, f"Sufficient disk space: {free_gb:.1f}GB available", None
             else:
-                return False, f"Insufficient disk space: {
+                return (
+                    False,
+                    f"Insufficient disk space: {
                     free_gb:.1f}GB available, {
-                    self.required_disk_space_gb}GB required", "Free up disk space before proceeding"
+                    self.required_disk_space_gb}GB required",
+                    "Free up disk space before proceeding",
+                )
         except Exception as e:
             return False, "Could not check disk space", str(e)
 
     async def _check_ffmpeg(self) -> Tuple[bool, str, Optional[str]]:
         """Check that ffmpeg is installed and in PATH."""
         try:
-            result = subprocess.run(["ffmpeg", "-version"],
-                                    capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["ffmpeg", "-version"], capture_output=True, text=True, timeout=10
+            )
             if result.returncode == 0:
                 # Extract version from output
-                version_line = result.stdout.split('\n')[0]
+                version_line = result.stdout.split("\n")[0]
                 return True, f"FFmpeg is installed: {version_line}", None
             else:
                 return False, "FFmpeg command failed", result.stderr
         except subprocess.TimeoutExpired:
             return False, "FFmpeg check timed out", "Command took too long to execute"
         except FileNotFoundError:
-            return False, "FFmpeg not found in PATH", "Install FFmpeg and ensure it's in your system PATH"
+            return (
+                False,
+                "FFmpeg not found in PATH",
+                "Install FFmpeg and ensure it's in your system PATH",
+            )
         except Exception as e:
             return False, "FFmpeg check failed", str(e)
 
@@ -385,11 +433,11 @@ class SystemSmokeTestAgent:
     async def _check_python_dependencies(self) -> Tuple[bool, str, Optional[str]]:
         """Check that critical Python dependencies are available."""
         critical_modules = [
-            ('flask', 'Flask web framework'),
-            ('flask_socketio', 'SocketIO for real-time communication'),
-            ('requests', 'HTTP client library'),
-            ('psutil', 'System monitoring'),
-            ('waitress', 'WSGI server')
+            ("flask", "Flask web framework"),
+            ("flask_socketio", "SocketIO for real-time communication"),
+            ("requests", "HTTP client library"),
+            ("psutil", "System monitoring"),
+            ("waitress", "WSGI server"),
         ]
 
         missing_modules = []
@@ -401,11 +449,18 @@ class SystemSmokeTestAgent:
                 missing_modules.append(f"{module_name} ({description})")
 
         if not missing_modules:
-            return True, f"All {
-                len(critical_modules)} critical Python dependencies are available", None
+            return (
+                True,
+                f"All {
+                len(critical_modules)} critical Python dependencies are available",
+                None,
+            )
         else:
-            return False, f"Missing {len(missing_modules)} critical dependencies", \
-                f"Missing: {'; '.join(missing_modules)}"
+            return (
+                False,
+                f"Missing {len(missing_modules)} critical dependencies",
+                f"Missing: {'; '.join(missing_modules)}",
+            )
 
     async def _run_live_smoke_test(self) -> bool:
         """Run the comprehensive live smoke test with enhanced validation."""
@@ -417,7 +472,7 @@ class SystemSmokeTestAgent:
             ("Create Video Task", self._test_create_video_task),
             ("Monitor Task Completion", self._test_monitor_task),
             ("Verify Video Output", self._test_verify_video_output),
-            ("Cleanup Test Artifacts", self._test_cleanup_artifacts)
+            ("Cleanup Test Artifacts", self._test_cleanup_artifacts),
         ]
 
         all_passed = True
@@ -439,7 +494,7 @@ class SystemSmokeTestAgent:
                     success=success,
                     message=message,
                     details=details,
-                    duration_ms=duration_ms
+                    duration_ms=duration_ms,
                 )
 
                 self.current_session.results.append(result)
@@ -459,13 +514,14 @@ class SystemSmokeTestAgent:
                     step_name=test_name,
                     success=False,
                     message=f"Test failed with error: {str(e)}",
-                    duration_ms=duration_ms
+                    duration_ms=duration_ms,
                 )
                 self.current_session.results.append(result)
                 self._emit_log(
                     "ERROR",
                     f"❌ {test_name}: Test failed with error: {
-                        str(e)}")
+                        str(e)}",
+                )
                 all_passed = False
                 break
 
@@ -476,11 +532,19 @@ class SystemSmokeTestAgent:
         try:
             response = requests.get(f"{self.base_url}/api/health", timeout=10)
             if response.status_code == 200:
-                return True, "Dashboard health check passed", f"Response: {
-                    response.text}"
+                return (
+                    True,
+                    "Dashboard health check passed",
+                    f"Response: {
+                    response.text}",
+                )
             else:
-                return False, f"Dashboard health check failed (HTTP {
-                    response.status_code})", response.text
+                return (
+                    False,
+                    f"Dashboard health check failed (HTTP {
+                    response.status_code})",
+                    response.text,
+                )
         except requests.exceptions.RequestException as e:
             return False, "Dashboard health check failed", str(e)
 
@@ -491,13 +555,25 @@ class SystemSmokeTestAgent:
             orchestrator_url = "http://localhost:8000/api/health"
             response = requests.get(orchestrator_url, timeout=5)
             if response.status_code == 200:
-                return True, "Orchestrator service is running and healthy", f"Response: {
-                    response.text}"
+                return (
+                    True,
+                    "Orchestrator service is running and healthy",
+                    f"Response: {
+                    response.text}",
+                )
             else:
-                return True, "Orchestrator service not available (optional)", "System can operate without orchestrator service"
+                return (
+                    True,
+                    "Orchestrator service not available (optional)",
+                    "System can operate without orchestrator service",
+                )
         except requests.exceptions.RequestException:
             # Orchestrator is optional - system can run without it
-            return True, "Orchestrator service not running (optional)", "System is operational without orchestrator service"
+            return (
+                True,
+                "Orchestrator service not running (optional)",
+                "System is operational without orchestrator service",
+            )
 
     async def _test_create_video_task(self) -> Tuple[bool, str, Optional[str]]:
         """Test creating a video generation task with comprehensive validation."""
@@ -511,21 +587,27 @@ class SystemSmokeTestAgent:
             "metadata": {
                 "test_type": "smoke_test",
                 "created_by": "system_smoke_test_agent",
-                "timestamp": datetime.now().isoformat()}}
+                "timestamp": datetime.now().isoformat(),
+            },
+        }
 
         try:
             # First, verify the endpoint exists
             health_response = requests.get(f"{self.base_url}/api/health", timeout=5)
             if health_response.status_code != 200:
-                return False, "Dashboard not responding before task creation", f"Health check failed: {
-                    health_response.status_code}"
+                return (
+                    False,
+                    "Dashboard not responding before task creation",
+                    f"Health check failed: {
+                    health_response.status_code}",
+                )
 
             # Create the video task
             response = requests.post(
                 f"{self.base_url}/api/workflows/create-video",
                 json=test_payload,
                 headers={"Content-Type": "application/json"},
-                timeout=30
+                timeout=30,
             )
 
             if response.status_code == 201:
@@ -534,46 +616,81 @@ class SystemSmokeTestAgent:
                     self.task_id = result["task_id"]
                     # Validate task_id format (should be UUID-like)
                     if len(self.task_id) < 8:
-                        return False, "Invalid task_id format received", f"Task ID: {
-                            self.task_id}"
+                        return (
+                            False,
+                            "Invalid task_id format received",
+                            f"Task ID: {
+                            self.task_id}",
+                        )
 
                     # Verify task was actually queued
                     await asyncio.sleep(1)  # Brief pause to allow task queuing
                     status_response = requests.get(
                         f"{self.base_url}/api/tasks",
                         params={"task_id": self.task_id},
-                        timeout=10
+                        timeout=10,
                     )
 
                     if status_response.status_code == 200:
                         task_data = status_response.json()
                         initial_status = task_data.get("status", "unknown")
-                        return True, f"Video task created and queued (ID: {
-                            self.task_id}, Status: {initial_status})", json.dumps(
-                            result, indent=2)
+                        return (
+                            True,
+                            f"Video task created and queued (ID: {
+                            self.task_id}, Status: {initial_status})",
+                            json.dumps(result, indent=2),
+                        )
                     else:
-                        return False, f"Task created but status check failed (HTTP {
-                            status_response.status_code})", response.text
+                        return (
+                            False,
+                            f"Task created but status check failed (HTTP {
+                            status_response.status_code})",
+                            response.text,
+                        )
                 else:
-                    return False, "Video task creation response missing task_id", response.text
+                    return (
+                        False,
+                        "Video task creation response missing task_id",
+                        response.text,
+                    )
             elif response.status_code == 400:
-                return False, "Invalid request payload for video task creation", response.text
+                return (
+                    False,
+                    "Invalid request payload for video task creation",
+                    response.text,
+                )
             elif response.status_code == 503:
                 return False, "Video service unavailable", response.text
             else:
-                return False, f"Video task creation failed (HTTP {
-                    response.status_code})", response.text
+                return (
+                    False,
+                    f"Video task creation failed (HTTP {
+                    response.status_code})",
+                    response.text,
+                )
         except requests.exceptions.Timeout:
-            return False, "Video task creation timed out", "Request exceeded 30 second timeout"
+            return (
+                False,
+                "Video task creation timed out",
+                "Request exceeded 30 second timeout",
+            )
         except requests.exceptions.ConnectionError:
-            return False, "Cannot connect to video service", "Connection refused or network error"
+            return (
+                False,
+                "Cannot connect to video service",
+                "Connection refused or network error",
+            )
         except requests.exceptions.RequestException as e:
             return False, "Video task creation failed", str(e)
 
     async def _test_monitor_task(self) -> Tuple[bool, str, Optional[str]]:
         """Monitor task completion with comprehensive status tracking and progress validation."""
         if not self.task_id:
-            return False, "No task ID available for monitoring", "Task creation must succeed first"
+            return (
+                False,
+                "No task ID available for monitoring",
+                "Task creation must succeed first",
+            )
 
         start_time = time.time()
         last_status = None
@@ -592,7 +709,7 @@ class SystemSmokeTestAgent:
                 response = requests.get(
                     f"{self.base_url}/api/tasks",
                     params={"task_id": self.task_id},
-                    timeout=10
+                    timeout=10,
                 )
 
                 if response.status_code == 200:
@@ -614,14 +731,22 @@ class SystemSmokeTestAgent:
                     # Track progress
                     if progress > 0:
                         progress_history.append(
-                            {"time": int(time.time() - start_time), "progress": progress})
+                            {
+                                "time": int(time.time() - start_time),
+                                "progress": progress,
+                            }
+                        )
                         if len(progress_history) > 1:
                             # Check for progress stagnation
                             recent_progress = progress_history[-5:]  # Last 5 readings
                             if len(recent_progress) >= 3 and all(
-                                    p["progress"] == recent_progress[0]["progress"] for p in recent_progress):
+                                p["progress"] == recent_progress[0]["progress"]
+                                for p in recent_progress
+                            ):
                                 self._emit_log(
-                                    "WARN", f"Progress stagnant at {progress}% for multiple checks")
+                                    "WARN",
+                                    f"Progress stagnant at {progress}% for multiple checks",
+                                )
 
                     # Handle different status states
                     if status == "completed":
@@ -634,11 +759,14 @@ class SystemSmokeTestAgent:
                             "final_progress": final_progress,
                             "output_file": output_file,
                             "status_changes": status_changes,
-                            "task_data": task_data
+                            "task_data": task_data,
                         }
 
-                        return True, f"Task completed successfully in {elapsed}s (Progress: {final_progress}%, Output: {output_file})", json.dumps(
-                            details, indent=2)
+                        return (
+                            True,
+                            f"Task completed successfully in {elapsed}s (Progress: {final_progress}%, Output: {output_file})",
+                            json.dumps(details, indent=2),
+                        )
 
                     elif status in ["failed", "error", "cancelled"]:
                         elapsed = int(time.time() - start_time)
@@ -649,60 +777,90 @@ class SystemSmokeTestAgent:
                             "error_message": error_details,
                             "final_progress": progress,
                             "status_changes": status_changes,
-                            "task_data": task_data
+                            "task_data": task_data,
                         }
 
-                        return False, f"Task {status} after {elapsed}s: {error_details}", json.dumps(
-                            details, indent=2)
+                        return (
+                            False,
+                            f"Task {status} after {elapsed}s: {error_details}",
+                            json.dumps(details, indent=2),
+                        )
 
                     elif status in ["queued", "pending", "running", "processing"]:
                         # Valid intermediate states - continue monitoring
                         if progress > 0:
                             self._emit_progress(
                                 "Task Monitoring",
-                                f"Status: {status}, Progress: {progress}%")
+                                f"Status: {status}, Progress: {progress}%",
+                            )
                         else:
                             self._emit_progress("Task Monitoring", f"Status: {status}")
 
                     elif status == "unknown":
                         self._emit_log(
-                            "WARN", "Task status is unknown - this may indicate a system issue")
+                            "WARN",
+                            "Task status is unknown - this may indicate a system issue",
+                        )
 
                     # Continue polling
                     await asyncio.sleep(self.poll_interval_seconds)
 
                 elif response.status_code == 404:
-                    return False, "Task not found - may have been deleted or expired", f"Task ID: {
-                        self.task_id}"
+                    return (
+                        False,
+                        "Task not found - may have been deleted or expired",
+                        f"Task ID: {
+                        self.task_id}",
+                    )
                 elif response.status_code >= 500:
                     consecutive_failures += 1
                     if consecutive_failures >= max_consecutive_failures:
-                        return False, f"Server errors exceeded threshold ({consecutive_failures} consecutive failures)", f"Last HTTP status: {
-                            response.status_code}"
+                        return (
+                            False,
+                            f"Server errors exceeded threshold ({consecutive_failures} consecutive failures)",
+                            f"Last HTTP status: {
+                            response.status_code}",
+                        )
                     self._emit_log(
-                        "WARN", f"Server error {
-                            response.status_code}, retrying... ({consecutive_failures}/{max_consecutive_failures})")
+                        "WARN",
+                        f"Server error {
+                            response.status_code}, retrying... ({consecutive_failures}/{max_consecutive_failures})",
+                    )
                     # Longer wait on server errors
                     await asyncio.sleep(self.poll_interval_seconds * 2)
                 else:
-                    return False, f"Task status check failed (HTTP {
-                        response.status_code})", response.text
+                    return (
+                        False,
+                        f"Task status check failed (HTTP {
+                        response.status_code})",
+                        response.text,
+                    )
 
             except requests.exceptions.Timeout:
                 consecutive_failures += 1
                 if consecutive_failures >= max_consecutive_failures:
-                    return False, f"Request timeouts exceeded threshold ({consecutive_failures} consecutive failures)", "Multiple timeout errors"
+                    return (
+                        False,
+                        f"Request timeouts exceeded threshold ({consecutive_failures} consecutive failures)",
+                        "Multiple timeout errors",
+                    )
                 self._emit_log(
                     "WARN",
-                    f"Request timeout, retrying... ({consecutive_failures}/{max_consecutive_failures})")
+                    f"Request timeout, retrying... ({consecutive_failures}/{max_consecutive_failures})",
+                )
                 await asyncio.sleep(self.poll_interval_seconds)
             except requests.exceptions.RequestException as e:
                 consecutive_failures += 1
                 if consecutive_failures >= max_consecutive_failures:
-                    return False, f"Network errors exceeded threshold ({consecutive_failures} consecutive failures)", str(
-                        e)
+                    return (
+                        False,
+                        f"Network errors exceeded threshold ({consecutive_failures} consecutive failures)",
+                        str(e),
+                    )
                 self._emit_log(
-                    "WARN", f"Network error, retrying... ({consecutive_failures}/{max_consecutive_failures}): {str(e)}")
+                    "WARN",
+                    f"Network error, retrying... ({consecutive_failures}/{max_consecutive_failures}): {str(e)}",
+                )
                 await asyncio.sleep(self.poll_interval_seconds)
 
         # Timeout reached
@@ -711,16 +869,23 @@ class SystemSmokeTestAgent:
             "timeout_duration": elapsed,
             "last_status": last_status,
             "status_changes": status_changes,
-            "progress_history": progress_history[-10:]  # Last 10 progress readings
+            "progress_history": progress_history[-10:],  # Last 10 progress readings
         }
 
-        return False, f"Task monitoring timed out after {elapsed}s (Last status: {last_status})", json.dumps(
-            timeout_details, indent=2)
+        return (
+            False,
+            f"Task monitoring timed out after {elapsed}s (Last status: {last_status})",
+            json.dumps(timeout_details, indent=2),
+        )
 
     async def _test_verify_video_output(self) -> Tuple[bool, str, Optional[str]]:
         """Verify video file creation with comprehensive validation including metadata and integrity checks."""
         if not self.task_id:
-            return False, "No task ID available for output verification", "Task creation must succeed first"
+            return (
+                False,
+                "No task ID available for output verification",
+                "Task creation must succeed first",
+            )
 
         try:
             # Wait a moment for file system to sync
@@ -732,15 +897,19 @@ class SystemSmokeTestAgent:
             if not video_files:
                 # Also check for other video formats
                 all_video_files = []
-                for ext in ['*.mp4', '*.avi', '*.mov', '*.mkv', '*.webm']:
+                for ext in ["*.mp4", "*.avi", "*.mov", "*.mkv", "*.webm"]:
                     all_video_files.extend(list(self.outputs_dir.glob(ext)))
 
                 if not all_video_files:
                     # List all files in directory for debugging
                     all_files = list(self.outputs_dir.glob("*"))
                     file_list = [f.name for f in all_files[:10]]  # First 10 files
-                    return False, "No video files found in outputs directory", f"Searched in: {
-                        self.outputs_dir}\nFound files: {file_list}"
+                    return (
+                        False,
+                        "No video files found in outputs directory",
+                        f"Searched in: {
+                        self.outputs_dir}\nFound files: {file_list}",
+                    )
                 else:
                     video_files = all_video_files
 
@@ -753,96 +922,130 @@ class SystemSmokeTestAgent:
             file_age_seconds = current_time - file_stats.st_mtime
             if file_age_seconds > 600:  # 10 minutes
                 self._emit_log(
-                    "WARN", f"Video file is older than expected: {
-                        file_age_seconds:.1f}s old")
+                    "WARN",
+                    f"Video file is older than expected: {
+                        file_age_seconds:.1f}s old",
+                )
 
             # Check file size (should be > 0 and reasonable for a short video)
             file_size = file_stats.st_size
             if file_size == 0:
-                return False, f"Video file is empty: {
-                    latest_video.name}", f"File size: {file_size} bytes"
+                return (
+                    False,
+                    f"Video file is empty: {
+                    latest_video.name}",
+                    f"File size: {file_size} bytes",
+                )
 
             # Check minimum file size (should be at least 1KB for a valid video)
             if file_size < 1024:
-                return False, f"Video file too small to be valid: {
-                    latest_video.name}", f"File size: {file_size} bytes (< 1KB)"
+                return (
+                    False,
+                    f"Video file too small to be valid: {
+                    latest_video.name}",
+                    f"File size: {file_size} bytes (< 1KB)",
+                )
 
             # Check maximum reasonable file size (shouldn't exceed 100MB for a
             # 3-second test video)
             max_size = 100 * 1024 * 1024  # 100MB
             if file_size > max_size:
                 self._emit_log(
-                    "WARN", f"Video file unexpectedly large: {file_size / (1024 * 1024):.1f}MB")
+                    "WARN",
+                    f"Video file unexpectedly large: {file_size / (1024 * 1024):.1f}MB",
+                )
 
             # Try to get basic video information using ffmpeg if available
             video_info = {}
             try:
                 # Check if ffmpeg is available and get video info
-                result = subprocess.run(['ffprobe',
-                                         '-v',
-                                         'quiet',
-                                         '-print_format',
-                                         'json',
-                                         '-show_format',
-                                         '-show_streams',
-                                         str(latest_video)],
-                                        capture_output=True,
-                                        text=True,
-                                        timeout=10)
+                result = subprocess.run(
+                    [
+                        "ffprobe",
+                        "-v",
+                        "quiet",
+                        "-print_format",
+                        "json",
+                        "-show_format",
+                        "-show_streams",
+                        str(latest_video),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
 
                 if result.returncode == 0:
                     probe_data = json.loads(result.stdout)
-                    if 'format' in probe_data:
-                        video_info['duration'] = float(
-                            probe_data['format'].get('duration', 0))
-                        video_info['format_name'] = probe_data['format'].get(
-                            'format_name', 'unknown')
+                    if "format" in probe_data:
+                        video_info["duration"] = float(
+                            probe_data["format"].get("duration", 0)
+                        )
+                        video_info["format_name"] = probe_data["format"].get(
+                            "format_name", "unknown"
+                        )
 
-                    if 'streams' in probe_data:
+                    if "streams" in probe_data:
                         video_streams = [
-                            s for s in probe_data['streams'] if s.get('codec_type') == 'video']
+                            s
+                            for s in probe_data["streams"]
+                            if s.get("codec_type") == "video"
+                        ]
                         if video_streams:
                             stream = video_streams[0]
-                            video_info['codec'] = stream.get('codec_name', 'unknown')
-                            video_info['width'] = stream.get('width', 0)
-                            video_info['height'] = stream.get('height', 0)
+                            video_info["codec"] = stream.get("codec_name", "unknown")
+                            video_info["width"] = stream.get("width", 0)
+                            video_info["height"] = stream.get("height", 0)
                             # Convert fraction to float
-                            video_info['fps'] = eval(stream.get('r_frame_rate', '0/1'))
+                            video_info["fps"] = eval(stream.get("r_frame_rate", "0/1"))
 
                     # Validate video properties
-                    if video_info.get('duration', 0) < 1:
+                    if video_info.get("duration", 0) < 1:
                         self._emit_log(
-                            "WARN", f"Video duration seems too short: {
+                            "WARN",
+                            f"Video duration seems too short: {
                                 video_info.get(
-                                    'duration', 0)}s")
-                    elif video_info.get('duration', 0) > 10:
+                                    'duration', 0)}s",
+                        )
+                    elif video_info.get("duration", 0) > 10:
                         self._emit_log(
-                            "WARN", f"Video duration longer than expected: {
+                            "WARN",
+                            f"Video duration longer than expected: {
                                 video_info.get(
-                                    'duration', 0)}s")
+                                    'duration', 0)}s",
+                        )
 
-                    if video_info.get(
-                            'width',
-                            0) < 100 or video_info.get(
-                            'height',
-                            0) < 100:
+                    if (
+                        video_info.get("width", 0) < 100
+                        or video_info.get("height", 0) < 100
+                    ):
                         self._emit_log(
-                            "WARN", f"Video resolution seems low: {
+                            "WARN",
+                            f"Video resolution seems low: {
                                 video_info.get(
                                     'width', 0)}x{
                                 video_info.get(
-                                    'height', 0)}")
+                                    'height', 0)}",
+                        )
 
                 else:
                     self._emit_log(
-                        "WARN", f"Could not probe video file: {
-                            result.stderr}")
+                        "WARN",
+                        f"Could not probe video file: {
+                            result.stderr}",
+                    )
 
-            except (subprocess.TimeoutExpired, subprocess.CalledProcessError, json.JSONDecodeError, FileNotFoundError) as e:
+            except (
+                subprocess.TimeoutExpired,
+                subprocess.CalledProcessError,
+                json.JSONDecodeError,
+                FileNotFoundError,
+            ) as e:
                 self._emit_log(
                     "WARN",
                     f"Video probing failed (ffprobe not available or error): {
-                        str(e)}")
+                        str(e)}",
+                )
 
             # Prepare detailed results
             file_size_mb = file_size / (1024 * 1024)
@@ -852,29 +1055,24 @@ class SystemSmokeTestAgent:
                 "file_path": str(latest_video),
                 "file_name": latest_video.name,
                 "file_size_bytes": file_size,
-                "file_size_mb": round(
-                    file_size_mb,
-                    2),
-                "file_age_seconds": round(
-                    file_age_seconds,
-                    1),
-                "file_age_minutes": round(
-                    file_age_minutes,
-                    1),
-                "created_time": datetime.fromtimestamp(
-                    file_stats.st_ctime).isoformat(),
+                "file_size_mb": round(file_size_mb, 2),
+                "file_age_seconds": round(file_age_seconds, 1),
+                "file_age_minutes": round(file_age_minutes, 1),
+                "created_time": datetime.fromtimestamp(file_stats.st_ctime).isoformat(),
                 "modified_time": datetime.fromtimestamp(
-                        file_stats.st_mtime).isoformat(),
+                    file_stats.st_mtime
+                ).isoformat(),
                 "video_info": video_info,
-                "task_id": self.task_id}
+                "task_id": self.task_id,
+            }
 
             # Create success message with key information
             success_msg = f"Video file verified: {
                 latest_video.name} ({
                 file_size_mb:.1f}MB)"
-            if video_info.get('duration'):
+            if video_info.get("duration"):
                 success_msg += f", Duration: {video_info['duration']:.1f}s"
-            if video_info.get('width') and video_info.get('height'):
+            if video_info.get("width") and video_info.get("height"):
                 success_msg += f", Resolution: {
                     video_info['width']}x{
                     video_info['height']}"
@@ -882,10 +1080,14 @@ class SystemSmokeTestAgent:
             return True, success_msg, json.dumps(details, indent=2)
 
         except Exception as e:
-            return False, "Video output verification failed", f"Error: {
+            return (
+                False,
+                "Video output verification failed",
+                f"Error: {
                 str(e)}\nTask ID: {
                 self.task_id}\nOutputs directory: {
-                self.outputs_dir}"
+                self.outputs_dir}",
+            )
 
     async def _test_api_endpoints(self) -> Tuple[bool, str, Optional[str]]:
         """Test critical API endpoints for availability and proper responses."""
@@ -893,7 +1095,7 @@ class SystemSmokeTestAgent:
             ("/api/health", "GET", 200, "Health endpoint"),
             ("/api/tasks", "GET", 200, "Tasks listing endpoint"),
             ("/api/workflows", "GET", 200, "Workflows endpoint"),
-            ("/api/system/status", "GET", 200, "System status endpoint")
+            ("/api/system/status", "GET", 200, "System status endpoint"),
         ]
 
         results = []
@@ -917,15 +1119,19 @@ class SystemSmokeTestAgent:
                 if not success:
                     all_passed = False
 
-                results.append({
-                    "endpoint": endpoint,
-                    "method": method,
-                    "expected_status": expected_status,
-                    "actual_status": response.status_code,
-                    "success": success,
-                    "description": description,
-                    "response_time_ms": int(response.elapsed.total_seconds() * 1000)
-                })
+                results.append(
+                    {
+                        "endpoint": endpoint,
+                        "method": method,
+                        "expected_status": expected_status,
+                        "actual_status": response.status_code,
+                        "success": success,
+                        "description": description,
+                        "response_time_ms": int(
+                            response.elapsed.total_seconds() * 1000
+                        ),
+                    }
+                )
 
                 if success:
                     self._emit_log(
@@ -933,34 +1139,45 @@ class SystemSmokeTestAgent:
                         f"✅ {description}: {
                             response.status_code} ({
                             response.elapsed.total_seconds()
-                            * 1000:.0f}ms)")
+                            * 1000:.0f}ms)",
+                    )
                 else:
                     self._emit_log(
-                        "ERROR", f"❌ {description}: Expected {expected_status}, got {
-                            response.status_code}")
+                        "ERROR",
+                        f"❌ {description}: Expected {expected_status}, got {
+                            response.status_code}",
+                    )
 
             except requests.exceptions.RequestException as e:
                 all_passed = False
-                results.append({
-                    "endpoint": endpoint,
-                    "method": method,
-                    "expected_status": expected_status,
-                    "actual_status": "ERROR",
-                    "success": False,
-                    "description": description,
-                    "error": str(e)
-                })
+                results.append(
+                    {
+                        "endpoint": endpoint,
+                        "method": method,
+                        "expected_status": expected_status,
+                        "actual_status": "ERROR",
+                        "success": False,
+                        "description": description,
+                        "error": str(e),
+                    }
+                )
                 self._emit_log("ERROR", f"❌ {description}: Request failed - {str(e)}")
 
         passed_count = sum(1 for r in results if r["success"])
         total_count = len(results)
 
         if all_passed:
-            return True, f"All {total_count} API endpoints responding correctly", json.dumps(
-                results, indent=2)
+            return (
+                True,
+                f"All {total_count} API endpoints responding correctly",
+                json.dumps(results, indent=2),
+            )
         else:
-            return False, f"API endpoint failures: {passed_count}/{total_count} passed", json.dumps(
-                results, indent=2)
+            return (
+                False,
+                f"API endpoint failures: {passed_count}/{total_count} passed",
+                json.dumps(results, indent=2),
+            )
 
     async def _test_system_resources_live(self) -> Tuple[bool, str, Optional[str]]:
         """Test system resources during live operation."""
@@ -971,9 +1188,10 @@ class SystemSmokeTestAgent:
             disk = psutil.disk_usage(str(self.outputs_dir.parent))
 
             # Check network connections
-            connections = psutil.net_connections(kind='inet')
+            connections = psutil.net_connections(kind="inet")
             listening_ports = [
-                conn.laddr.port for conn in connections if conn.status == 'LISTEN']
+                conn.laddr.port for conn in connections if conn.status == "LISTEN"
+            ]
 
             # Get process information
             current_process = psutil.Process()
@@ -989,7 +1207,7 @@ class SystemSmokeTestAgent:
                 "disk_percent": round((disk.used / disk.total) * 100, 1),
                 "listening_ports": sorted(listening_ports),
                 "process_memory_mb": round(process_memory.rss / (1024**2), 1),
-                "process_cpu_percent": current_process.cpu_percent()
+                "process_cpu_percent": current_process.cpu_percent(),
             }
 
             # Check for resource constraints
@@ -1004,19 +1222,26 @@ class SystemSmokeTestAgent:
             # Check if expected ports are listening
             expected_ports = [8080, 8081]  # Dashboard ports
             missing_ports = [
-                port for port in expected_ports if port not in listening_ports]
+                port for port in expected_ports if port not in listening_ports
+            ]
             if missing_ports:
                 warnings.append(f"Expected ports not listening: {missing_ports}")
 
             if warnings:
-                return False, f"System resource warnings detected: {
-                    '; '.join(warnings)}", json.dumps(
-                    metrics, indent=2)
+                return (
+                    False,
+                    f"System resource warnings detected: {
+                    '; '.join(warnings)}",
+                    json.dumps(metrics, indent=2),
+                )
             else:
-                return True, f"System resources healthy (CPU: {cpu_percent}%, Memory: {
+                return (
+                    True,
+                    f"System resources healthy (CPU: {cpu_percent}%, Memory: {
                     memory.percent}%, Disk: {
-                    metrics['disk_percent']}%)", json.dumps(
-                    metrics, indent=2)
+                    metrics['disk_percent']}%)",
+                    json.dumps(metrics, indent=2),
+                )
 
         except Exception as e:
             return False, "System resource check failed", str(e)
@@ -1028,7 +1253,7 @@ class SystemSmokeTestAgent:
                 "files_removed": [],
                 "files_failed": [],
                 "directories_checked": [],
-                "total_space_freed_mb": 0
+                "total_space_freed_mb": 0,
             }
 
             # Find test files created during this smoke test
@@ -1041,7 +1266,9 @@ class SystemSmokeTestAgent:
 
                 # If file was created in the last 30 minutes and is small (likely a test
                 # file)
-                if file_age < 1800 and file_stats.st_size < 50 * 1024 * 1024:  # 50MB threshold
+                if (
+                    file_age < 1800 and file_stats.st_size < 50 * 1024 * 1024
+                ):  # 50MB threshold
                     test_files.append(video_file)
 
             # Also look for any files with "test" or "smoke" in the name
@@ -1058,25 +1285,31 @@ class SystemSmokeTestAgent:
                     if file_path.exists():
                         file_size = file_path.stat().st_size
                         file_path.unlink()  # Remove the file
-                        cleanup_results["files_removed"].append({
-                            "name": file_path.name,
-                            "size_mb": round(file_size / (1024**2), 2)
-                        })
+                        cleanup_results["files_removed"].append(
+                            {
+                                "name": file_path.name,
+                                "size_mb": round(file_size / (1024**2), 2),
+                            }
+                        )
                         total_size_freed += file_size
                         self._emit_log(
-                            "INFO", f"Removed test file: {file_path.name} ({file_size / (1024**2):.1f}MB)")
+                            "INFO",
+                            f"Removed test file: {file_path.name} ({file_size / (1024**2):.1f}MB)",
+                        )
                 except Exception as e:
-                    cleanup_results["files_failed"].append({
-                        "name": file_path.name,
-                        "error": str(e)
-                    })
+                    cleanup_results["files_failed"].append(
+                        {"name": file_path.name, "error": str(e)}
+                    )
                     self._emit_log(
-                        "WARN", f"Failed to remove {
+                        "WARN",
+                        f"Failed to remove {
                             file_path.name}: {
-                            str(e)}")
+                            str(e)}",
+                    )
 
             cleanup_results["total_space_freed_mb"] = round(
-                total_size_freed / (1024**2), 2)
+                total_size_freed / (1024**2), 2
+            )
             cleanup_results["directories_checked"] = [str(self.outputs_dir)]
 
             # Verify cleanup
@@ -1088,15 +1321,24 @@ class SystemSmokeTestAgent:
             files_failed_count = len(cleanup_results["files_failed"])
 
             if files_failed_count > 0:
-                return False, f"Cleanup partially failed: {files_removed_count} removed, {files_failed_count} failed", json.dumps(
-                    cleanup_results, indent=2)
+                return (
+                    False,
+                    f"Cleanup partially failed: {files_removed_count} removed, {files_failed_count} failed",
+                    json.dumps(cleanup_results, indent=2),
+                )
             elif files_removed_count > 0:
-                return True, f"Cleanup successful: {files_removed_count} test files removed ({
-                    cleanup_results['total_space_freed_mb']}MB freed)", json.dumps(
-                    cleanup_results, indent=2)
+                return (
+                    True,
+                    f"Cleanup successful: {files_removed_count} test files removed ({
+                    cleanup_results['total_space_freed_mb']}MB freed)",
+                    json.dumps(cleanup_results, indent=2),
+                )
             else:
-                return True, "No test artifacts found to clean up", json.dumps(
-                    cleanup_results, indent=2)
+                return (
+                    True,
+                    "No test artifacts found to clean up",
+                    json.dumps(cleanup_results, indent=2),
+                )
 
         except Exception as e:
             return False, "Cleanup test failed", str(e)
@@ -1123,29 +1365,37 @@ class SystemSmokeTestAgent:
             "failed_tests": failed_tests,
             "total_duration_ms": total_duration,
             "success_rate": (
-                passed_tests
-                / total_tests
-                * 100) if total_tests > 0 else 0,
-            "details": summary_message}
+                (passed_tests / total_tests * 100) if total_tests > 0 else 0
+            ),
+            "details": summary_message,
+        }
 
         self.is_running = False
 
         # Emit completion event
         if self.socketio:
-            self.socketio.emit('test_completed', {
-                'success': success,
-                'summary': self.current_session.summary,
-                'session': asdict(self.current_session)
-            }, namespace='/smoke-test')
+            self.socketio.emit(
+                "test_completed",
+                {
+                    "success": success,
+                    "summary": self.current_session.summary,
+                    "session": asdict(self.current_session),
+                },
+                namespace="/smoke-test",
+            )
 
     def _emit_log(self, level: str, message: str):
         """Emit a log message via WebSocket."""
         if self.socketio:
-            self.socketio.emit('test_log', {
-                'level': level,
-                'message': message,
-                'timestamp': datetime.now().isoformat()
-            }, namespace='/smoke-test')
+            self.socketio.emit(
+                "test_log",
+                {
+                    "level": level,
+                    "message": message,
+                    "timestamp": datetime.now().isoformat(),
+                },
+                namespace="/smoke-test",
+            )
 
     def _emit_progress(self, current_step: str, message: str):
         """Emit a progress update via WebSocket."""
@@ -1153,11 +1403,15 @@ class SystemSmokeTestAgent:
             self.current_session.current_step = current_step
 
         if self.socketio:
-            self.socketio.emit('test_progress', {
-                'current_step': current_step,
-                'message': message,
-                'timestamp': datetime.now().isoformat()
-            }, namespace='/smoke-test')
+            self.socketio.emit(
+                "test_progress",
+                {
+                    "current_step": current_step,
+                    "message": message,
+                    "timestamp": datetime.now().isoformat(),
+                },
+                namespace="/smoke-test",
+            )
 
     def get_session_status(self) -> Optional[Dict[str, Any]]:
         """Get the current session status."""
@@ -1171,9 +1425,12 @@ class SystemSmokeTestAgent:
         try:
             if self.is_running:
                 return {
-                    'success': False,
-                    'error': 'Smoke test is already running',
-                    'test_id': self.current_session.test_id if self.current_session else None}
+                    "success": False,
+                    "error": "Smoke test is already running",
+                    "test_id": (
+                        self.current_session.test_id if self.current_session else None
+                    ),
+                }
 
             test_id = self.start_smoke_test("dashboard")
 
@@ -1192,38 +1449,32 @@ class SystemSmokeTestAgent:
             thread.start()
 
             return {
-                'success': True,
-                'message': 'Smoke test started successfully',
-                'test_id': test_id,
-                'test_type': test_type
+                "success": True,
+                "message": "Smoke test started successfully",
+                "test_id": test_id,
+                "test_type": test_type,
             }
 
         except Exception as e:
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     def stop_test(self) -> Dict[str, Any]:
         """Public interface to stop smoke test."""
         try:
             if not self.is_running:
-                return {
-                    'success': False,
-                    'error': 'No smoke test is currently running'
-                }
+                return {"success": False, "error": "No smoke test is currently running"}
 
             success = self.stop_smoke_test()
 
             return {
-                'success': success,
-                'message': 'Smoke test stopped' if success else 'Failed to stop smoke test'}
+                "success": success,
+                "message": (
+                    "Smoke test stopped" if success else "Failed to stop smoke test"
+                ),
+            }
 
         except Exception as e:
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     def get_status(self) -> Dict[str, Any]:
         """Public interface to get current status."""
@@ -1231,16 +1482,16 @@ class SystemSmokeTestAgent:
             session_status = self.get_session_status()
 
             return {
-                'success': True,
-                'is_running': self.is_running,
-                'session': session_status,
-                'timestamp': datetime.now().isoformat()
+                "success": True,
+                "is_running": self.is_running,
+                "session": session_status,
+                "timestamp": datetime.now().isoformat(),
             }
 
         except Exception as e:
             return {
-                'success': False,
-                'error': str(e),
-                'is_running': False,
-                'session': None
+                "success": False,
+                "error": str(e),
+                "is_running": False,
+                "session": None,
             }

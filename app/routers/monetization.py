@@ -9,19 +9,19 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException, BackgroundTasks, UploadFile, File, Form
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
 from loguru import logger
+from pydantic import BaseModel, Field
 
 # Import monetization bundle components
 try:
-    from monetization_bundle.main import (
-        MonetizationBundle, MonetizationConfig,
-        EbookRequest, NewsletterRequest, MerchRequest, BlogPostRequest
-    )
+    from monetization_bundle.main import (BlogPostRequest, EbookRequest, MerchRequest,
+                                          MonetizationBundle, MonetizationConfig,
+                                          NewsletterRequest)
+
     MONETIZATION_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"Monetization bundle not available: {e}")
@@ -43,9 +43,11 @@ class NewsletterCreationRequest(BaseModel):
     subject: str = Field(..., description="Newsletter subject line")
     content: str = Field(..., description="Newsletter content")
     subscriber_list: List[str] = Field(
-        default=[], description="List of subscriber emails")
+        default=[], description="List of subscriber emails"
+    )
     include_affiliate_links: bool = Field(
-        default=True, description="Include affiliate links")
+        default=True, description="Include affiliate links"
+    )
     send_time: Optional[datetime] = Field(None, description="Scheduled send time")
 
 
@@ -63,7 +65,8 @@ class BlogPostCreationRequest(BaseModel):
     platform: str = Field(default="wordpress", description="Publishing platform")
     seo_keywords: List[str] = Field(default=[], description="SEO keywords")
     include_affiliate_links: bool = Field(
-        default=True, description="Include affiliate links")
+        default=True, description="Include affiliate links"
+    )
 
 
 class MonetizationJobResponse(BaseModel):
@@ -110,15 +113,15 @@ async def health_check():
             "ebook_generator": MONETIZATION_AVAILABLE,
             "newsletter_bot": MONETIZATION_AVAILABLE,
             "merch_bot": MONETIZATION_AVAILABLE,
-            "seo_publisher": MONETIZATION_AVAILABLE
-        }
+            "seo_publisher": MONETIZATION_AVAILABLE,
+        },
     }
 
 
 @router.post("/ebook/generate", response_model=MonetizationJobResponse)
 async def generate_ebook(
-        request: EbookGenerationRequest,
-        background_tasks: BackgroundTasks):
+    request: EbookGenerationRequest, background_tasks: BackgroundTasks
+):
     """Generate an ebook and publish it"""
     if not MONETIZATION_AVAILABLE:
         raise HTTPException(status_code=503, detail="Monetization service unavailable")
@@ -132,7 +135,7 @@ async def generate_ebook(
         "created_at": datetime.now(),
         "progress": 0,
         "result": None,
-        "error": None
+        "error": None,
     }
 
     # Start background task
@@ -142,14 +145,14 @@ async def generate_ebook(
         job_id=job_id,
         status="pending",
         message="Ebook generation started",
-        estimated_completion=datetime.now() + timedelta(minutes=5)
+        estimated_completion=datetime.now() + timedelta(minutes=5),
     )
 
 
 @router.post("/newsletter/create", response_model=MonetizationJobResponse)
 async def create_newsletter(
-        request: NewsletterCreationRequest,
-        background_tasks: BackgroundTasks):
+    request: NewsletterCreationRequest, background_tasks: BackgroundTasks
+):
     """Create and send newsletter"""
     if not MONETIZATION_AVAILABLE:
         raise HTTPException(status_code=503, detail="Monetization service unavailable")
@@ -163,7 +166,7 @@ async def create_newsletter(
         "created_at": datetime.now(),
         "progress": 0,
         "result": None,
-        "error": None
+        "error": None,
     }
 
     # Start background task
@@ -173,14 +176,14 @@ async def create_newsletter(
         job_id=job_id,
         status="pending",
         message="Newsletter creation started",
-        estimated_completion=datetime.now() + timedelta(minutes=3)
+        estimated_completion=datetime.now() + timedelta(minutes=3),
     )
 
 
 @router.post("/merch/design", response_model=MonetizationJobResponse)
 async def create_merch_design(
-        request: MerchDesignRequest,
-        background_tasks: BackgroundTasks):
+    request: MerchDesignRequest, background_tasks: BackgroundTasks
+):
     """Create merchandise design and publish"""
     if not MONETIZATION_AVAILABLE:
         raise HTTPException(status_code=503, detail="Monetization service unavailable")
@@ -194,7 +197,7 @@ async def create_merch_design(
         "created_at": datetime.now(),
         "progress": 0,
         "result": None,
-        "error": None
+        "error": None,
     }
 
     # Start background task
@@ -204,14 +207,14 @@ async def create_merch_design(
         job_id=job_id,
         status="pending",
         message="Merch design creation started",
-        estimated_completion=datetime.now() + timedelta(minutes=10)
+        estimated_completion=datetime.now() + timedelta(minutes=10),
     )
 
 
 @router.post("/blog/publish", response_model=MonetizationJobResponse)
 async def publish_blog_post(
-        request: BlogPostCreationRequest,
-        background_tasks: BackgroundTasks):
+    request: BlogPostCreationRequest, background_tasks: BackgroundTasks
+):
     """Publish SEO-optimized blog post"""
     if not MONETIZATION_AVAILABLE:
         raise HTTPException(status_code=503, detail="Monetization service unavailable")
@@ -225,7 +228,7 @@ async def publish_blog_post(
         "created_at": datetime.now(),
         "progress": 0,
         "result": None,
-        "error": None
+        "error": None,
     }
 
     # Start background task
@@ -235,7 +238,7 @@ async def publish_blog_post(
         job_id=job_id,
         status="pending",
         message="Blog post publishing started",
-        estimated_completion=datetime.now() + timedelta(minutes=2)
+        estimated_completion=datetime.now() + timedelta(minutes=2),
     )
 
 
@@ -253,15 +256,15 @@ async def get_job_status(job_id: str):
         "progress": job["progress"],
         "created_at": job["created_at"].isoformat(),
         "result": job["result"],
-        "error": job["error"]
+        "error": job["error"],
     }
 
 
 @router.get("/revenue/stats", response_model=RevenueStatsResponse)
 async def get_revenue_stats():
     """Get revenue statistics"""
-    if not MONETIZATION_AVAILABLE:
-        # Return mock data when service unavailable
+    if not MONETIZATION_AVAILABLE or not monetization_bundle:
+        # Return empty stats when service unavailable
         return RevenueStatsResponse(
             total_revenue=0.0,
             ebook_revenue=0.0,
@@ -270,65 +273,58 @@ async def get_revenue_stats():
             newsletter_revenue=0.0,
             products_sold=0,
             active_campaigns=0,
-            last_updated=datetime.now()
+            last_updated=datetime.now(),
         )
 
     try:
-        # Get stats from database
-        # This would typically query the monetization bundle's database
+        # Get real stats from monetization bundle
+        stats = await asyncio.to_thread(monetization_bundle.get_revenue_stats)
+
         return RevenueStatsResponse(
-            total_revenue=15420.50,
-            ebook_revenue=8750.25,
-            merch_revenue=4200.75,
-            affiliate_revenue=1890.50,
-            newsletter_revenue=579.00,
-            products_sold=342,
-            active_campaigns=12,
-            last_updated=datetime.now()
+            total_revenue=stats.get("total_revenue", 0.0),
+            ebook_revenue=stats.get("ebook_revenue", 0.0),
+            merch_revenue=stats.get("merch_revenue", 0.0),
+            affiliate_revenue=stats.get("affiliate_revenue", 0.0),
+            newsletter_revenue=stats.get("newsletter_revenue", 0.0),
+            products_sold=stats.get("products_sold", 0),
+            active_campaigns=stats.get("active_campaigns", 0),
+            last_updated=datetime.now(),
         )
     except Exception as e:
         logger.error(f"Error getting revenue stats: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get revenue stats")
+        # Return fallback data on error
+        return RevenueStatsResponse(
+            total_revenue=0.0,
+            ebook_revenue=0.0,
+            merch_revenue=0.0,
+            affiliate_revenue=0.0,
+            newsletter_revenue=0.0,
+            products_sold=0,
+            active_campaigns=0,
+            last_updated=datetime.now(),
+        )
 
 
 @router.get("/products")
 async def list_products():
     """List all monetization products"""
-    if not MONETIZATION_AVAILABLE:
+    if not MONETIZATION_AVAILABLE or not monetization_bundle:
         return {"products": [], "total": 0}
 
-    # Mock product data
-    products = [
-        {
-            "id": "ebook_001",
-            "name": "AI Content Creation Guide",
-            "type": "ebook",
-            "price": 19.99,
-            "sales": 145,
-            "revenue": 2898.55,
-            "status": "active"
-        },
-        {
-            "id": "merch_001",
-            "name": "TRAE.AI Logo T-Shirt",
-            "type": "merch",
-            "price": 24.99,
-            "sales": 89,
-            "revenue": 2224.11,
-            "status": "active"
-        },
-        {
-            "id": "course_001",
-            "name": "Advanced AI Automation",
-            "type": "course",
-            "price": 97.00,
-            "sales": 67,
-            "revenue": 6499.00,
-            "status": "active"
-        }
-    ]
+    try:
+        # Get real product data from monetization bundle
+        products_data = await asyncio.to_thread(monetization_bundle.get_products)
+        products = products_data.get("products", [])
 
-    return {"products": products, "total": len(products)}
+        return {
+            "products": products,
+            "total": len(products),
+            "last_updated": datetime.now().isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Error getting products: {e}")
+        # Return empty list on error
+        return {"products": [], "total": 0}
 
 
 @router.get("/campaigns")
@@ -347,7 +343,7 @@ async def list_campaigns():
             "subscribers": 2450,
             "open_rate": 0.24,
             "click_rate": 0.08,
-            "revenue": 1250.75
+            "revenue": 1250.75,
         },
         {
             "id": "camp_002",
@@ -357,11 +353,12 @@ async def list_campaigns():
             "reach": 15600,
             "engagement_rate": 0.12,
             "conversions": 34,
-            "revenue": 849.66
-        }
+            "revenue": 849.66,
+        },
     ]
 
     return {"campaigns": campaigns, "total": len(campaigns)}
+
 
 # Background task functions
 
@@ -378,17 +375,19 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 title=request.title,
                 content=request.content,
                 author=request.author,
-                format=request.format
+                format=request.format,
             )
 
             jobs[job_id]["progress"] = 75
 
             # Publish to Gumroad
-            publish_result = await monetization_bundle.gumroad_publisher.publish_product(
-                name=request.title,
-                price=request.price,
-                file_path=file_path,
-                description=f"Ebook by {request.author}"
+            publish_result = (
+                await monetization_bundle.gumroad_publisher.publish_product(
+                    name=request.title,
+                    price=request.price,
+                    file_path=file_path,
+                    description=f"Ebook by {request.author}",
+                )
             )
 
             jobs[job_id]["status"] = "completed"
@@ -396,7 +395,7 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
             jobs[job_id]["result"] = {
                 "file_path": file_path,
                 "publish_result": publish_result,
-                "download_url": f"/monetization/download/{job_id}"
+                "download_url": f"/monetization/download/{job_id}",
             }
         else:
             # Mock completion
@@ -406,7 +405,7 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
             jobs[job_id]["result"] = {
                 "file_path": f"mock_ebook_{job_id}.pdf",
                 "publish_result": {"success": True, "product_id": f"mock_{job_id}"},
-                "download_url": f"/monetization/download/{job_id}"
+                "download_url": f"/monetization/download/{job_id}",
             }
 
     except Exception as e:
@@ -423,11 +422,13 @@ async def process_newsletter_creation(job_id: str, request: NewsletterCreationRe
 
         if monetization_bundle:
             # Create and send newsletter
-            result = await monetization_bundle.newsletter_bot.create_and_send_newsletter(
-                subject=request.subject,
-                content=request.content,
-                subscribers=request.subscriber_list,
-                include_affiliate_links=request.include_affiliate_links
+            result = (
+                await monetization_bundle.newsletter_bot.create_and_send_newsletter(
+                    subject=request.subject,
+                    content=request.content,
+                    subscribers=request.subscriber_list,
+                    include_affiliate_links=request.include_affiliate_links,
+                )
             )
 
             jobs[job_id]["status"] = "completed"
@@ -441,7 +442,7 @@ async def process_newsletter_creation(job_id: str, request: NewsletterCreationRe
             jobs[job_id]["result"] = {
                 "success": True,
                 "sent_count": len(request.subscriber_list),
-                "campaign_id": f"mock_campaign_{job_id}"
+                "campaign_id": f"mock_campaign_{job_id}",
             }
 
     except Exception as e:
@@ -461,7 +462,7 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
             design_path = await monetization_bundle.merch_bot.create_merch_design(
                 design_name=request.design_name,
                 product_type=request.product_type,
-                design_prompt=request.design_prompt
+                design_prompt=request.design_prompt,
             )
 
             jobs[job_id]["progress"] = 70
@@ -470,14 +471,14 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
             publish_result = await monetization_bundle.merch_bot.publish_to_printful(
                 design_path=design_path,
                 product_type=request.product_type,
-                price=request.price
+                price=request.price,
             )
 
             jobs[job_id]["status"] = "completed"
             jobs[job_id]["progress"] = 100
             jobs[job_id]["result"] = {
                 "design_path": design_path,
-                "publish_result": publish_result
+                "publish_result": publish_result,
             }
         else:
             # Mock completion
@@ -488,7 +489,9 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
                 "design_path": f"mock_design_{job_id}.png",
                 "publish_result": {
                     "success": True,
-                    "product_id": f"mock_merch_{job_id}"}}
+                    "product_id": f"mock_merch_{job_id}",
+                },
+            }
 
     except Exception as e:
         logger.error(f"Merch design creation failed: {e}")
@@ -509,7 +512,7 @@ async def process_blog_publishing(job_id: str, request: BlogPostCreationRequest)
                 content=request.content,
                 platform=request.platform,
                 seo_keywords=request.seo_keywords,
-                include_affiliate_links=request.include_affiliate_links
+                include_affiliate_links=request.include_affiliate_links,
             )
 
             jobs[job_id]["status"] = "completed"
@@ -523,7 +526,7 @@ async def process_blog_publishing(job_id: str, request: BlogPostCreationRequest)
             jobs[job_id]["result"] = {
                 "success": True,
                 "post_url": f"https://mock-blog.com/posts/{job_id}",
-                "post_id": f"mock_post_{job_id}"
+                "post_id": f"mock_post_{job_id}",
             }
 
     except Exception as e:
@@ -543,8 +546,4 @@ async def download_file(job_id: str):
         raise HTTPException(status_code=400, detail="File not ready")
 
     # Return file download info
-    return {
-        "job_id": job_id,
-        "file_info": job["result"],
-        "download_ready": True
-    }
+    return {"job_id": job_id, "file_info": job["result"], "download_ready": True}

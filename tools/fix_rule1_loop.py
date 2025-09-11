@@ -14,6 +14,7 @@ Created files:
 import os
 from pathlib import Path
 
+
 def create_rule1_ignore():
     """Create .rule1_ignore file with common third-party patterns."""
     ignore_patterns = [
@@ -115,15 +116,16 @@ def create_rule1_ignore():
         "backups/",
         "snapshots/",
         "*.bak",
-        "*.backup"
+        "*.backup",
     ]
-    
+
     ignore_file = Path(".rule1_ignore")
-    with open(ignore_file, 'w') as f:
-        f.write('\n'.join(ignore_patterns))
-    
+    with open(ignore_file, "w") as f:
+        f.write("\n".join(ignore_patterns))
+
     print(f"✅ Created {ignore_file}")
     return ignore_file
+
 
 def create_first_party_scanner():
     """Create rule1_scan_first_party.py script."""
@@ -300,35 +302,39 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-    
+
     scanner_file = Path("tools/rule1_scan_first_party.py")
     scanner_file.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(scanner_file, 'w') as f:
+
+    with open(scanner_file, "w") as f:
         f.write(scanner_content)
-    
+
     # Make it executable
     os.chmod(scanner_file, 0o755)
-    
+
     print(f"✅ Created {scanner_file}")
     return scanner_file
+
 
 def main():
     """Main entry point."""
     print("🔧 Creating Rule-1 loop fix utilities...")
     print("=" * 50)
-    
+
     # Create ignore file
     ignore_file = create_rule1_ignore()
-    
+
     # Create first-party scanner
     scanner_file = create_first_party_scanner()
-    
+
     print("\n✅ Rule-1 loop fix utilities created successfully!")
     print("\nNext steps:")
     print(f"1. Preview files: python3 {scanner_file}")
     print(f"2. Scan first-party only: python3 {scanner_file} --scan")
-    print(f"3. Pipe to scanner: python3 {scanner_file} --print-files | python3 -m utils.rule1_scanner --files-from -")
-    
-if __name__ == '__main__':
+    print(
+        f"3. Pipe to scanner: python3 {scanner_file} --print-files | python3 -m utils.rule1_scanner --files-from -"
+    )
+
+
+if __name__ == "__main__":
     main()

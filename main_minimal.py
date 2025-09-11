@@ -3,16 +3,16 @@
 Minimal FastAPI server for debugging
 """
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 import logging
 import os
 
+import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 # Set up logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Online Production API - Minimal",
     description="Minimal version for debugging",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Add CORS middleware
@@ -29,20 +29,19 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:8000",
-        "https://*.netlify.app"
+        "https://*.netlify.app",
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "message": "Minimal server is running"
-    }
+    return {"status": "healthy", "message": "Minimal server is running"}
+
 
 @app.get("/")
 async def root():
@@ -50,22 +49,17 @@ async def root():
     return {
         "message": "Online Production API - Minimal Mode",
         "status": "running",
-        "endpoints": ["/health", "/docs"]
+        "endpoints": ["/health", "/docs"],
     }
+
 
 if __name__ == "__main__":
     # Get configuration from environment
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "8000"))
-    
+
     logger.info(f"🚀 Starting minimal server on {host}:{port}")
     logger.info(f"📖 API docs: http://{host}:{port}/docs")
     logger.info(f"❤️ Health check: http://{host}:{port}/health")
-    
-    uvicorn.run(
-        app, 
-        host=host, 
-        port=port,
-        reload=False,
-        log_level="info"
-    )
+
+    uvicorn.run(app, host=host, port=port, reload=False, log_level="info")

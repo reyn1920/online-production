@@ -1,12 +1,13 @@
 import requests
 
+
 def web_search(query: str, num_results=5):
     """Search the web using DuckDuckGo API
-    
+
     Args:
         query (str): Search query
         num_results (int): Number of results to return (default: 5)
-        
+
     Returns:
         list: List of search results with snippet and link
     """
@@ -15,6 +16,7 @@ def web_search(query: str, num_results=5):
     if resp.status_code == 200:
         return [r["snippet"] + " - " + r["link"] for r in resp.json()["results"]]
     return []
+
 
 if __name__ == "__main__":
     # Test the function

@@ -1,6 +1,7 @@
 import time
 from functools import wraps
 
+
 def rate_limited_logger(logger, key_prefix="rl", period=60):
     last = {}
 
@@ -13,6 +14,9 @@ def rate_limited_logger(logger, key_prefix="rl", period=60):
                 if now - last.get(k, 0) >= period:
                     last[k] = now
                     getattr(logger, level)(msg, *args, **kwargs)
+
             return inner
+
         return deco
+
     return wrapper

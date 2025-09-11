@@ -6,63 +6,71 @@ This script generates secure credentials and configuration files for production 
 Run this script before deploying to production to ensure all secrets are properly configured.
 """
 
+import argparse
+import hashlib
+import json
+import os
 import secrets
 import string
-import os
-import hashlib
-from pathlib import Path
-from typing import Dict, Any
-import argparse
-import json
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
+
 
 def generate_secure_password(length: int = 32, include_symbols: bool = True) -> str:
     """Generate a cryptographically secure password."""
     alphabet = string.ascii_letters + string.digits
     if include_symbols:
         alphabet += "!@#$%^&*()-_=+[]{}|;:,.<>?"
-    
-    password = ''.join(secrets.choice(alphabet) for _ in range(length))
+
+    password = "".join(secrets.choice(alphabet) for _ in range(length))
     return password
+
 
 def generate_api_key(prefix: str = "trae", length: int = 32) -> str:
     """Generate a secure API key with prefix."""
     key = secrets.token_urlsafe(length)
     return f"{prefix}_{key}"
 
+
 def generate_jwt_secret() -> str:
     """Generate a secure JWT secret."""
     return secrets.token_urlsafe(64)
+
 
 def generate_database_credentials() -> Dict[str, str]:
     """Generate secure database credentials."""
     return {
         "DB_USER": f"trae_user_{secrets.token_hex(4)}",
-        "DB_PASSWORD": generate_secure_password(32, False),  # No symbols for DB password
-        "DB_NAME": "trae_ai_production"
+        "DB_PASSWORD": generate_secure_password(
+            32, False
+        ),  # No symbols for DB password
+        "DB_NAME": "trae_ai_production",
     }
+
 
 def generate_redis_credentials() -> Dict[str, str]:
     """Generate secure Redis credentials."""
-    return {
-        "REDIS_PASSWORD": generate_secure_password(32, False)
-    }
+    return {"REDIS_PASSWORD": generate_secure_password(32, False)}
+
 
 def generate_rabbitmq_credentials() -> Dict[str, str]:
     """Generate secure RabbitMQ credentials."""
     return {
         "RABBITMQ_USER": f"trae_mq_{secrets.token_hex(4)}",
         "RABBITMQ_PASSWORD": generate_secure_password(32, False),
-        "RABBITMQ_ERLANG_COOKIE": secrets.token_hex(32)
+        "RABBITMQ_ERLANG_COOKIE": secrets.token_hex(32),
     }
+
 
 def generate_admin_credentials() -> Dict[str, str]:
     """Generate secure admin credentials."""
     return {
         "ADMIN_USERNAME": f"admin_{secrets.token_hex(4)}",
         "ADMIN_PASSWORD": generate_secure_password(16, True),
-        "ADMIN_EMAIL": "admin@yourdomain.com"  # User should update this
+        "ADMIN_EMAIL": "admin@yourdomain.com",  # User should update this
     }
+
 
 def generate_encryption_keys() -> Dict[str, str]:
     """Generate encryption keys for various purposes."""
@@ -70,8 +78,9 @@ def generate_encryption_keys() -> Dict[str, str]:
         "SECRET_KEY": secrets.token_urlsafe(32),
         "JWT_SECRET": generate_jwt_secret(),
         "TRAE_MASTER_KEY": generate_api_key("trae_master", 32),
-        "BACKUP_ENCRYPTION_KEY": secrets.token_urlsafe(32)
+        "BACKUP_ENCRYPTION_KEY": secrets.token_urlsafe(32),
     }
+
 
 def create_production_env_file(credentials: Dict[str, Any], output_path: str) -> None:
     """Create the production .env file with secure credentials."""
@@ -145,13 +154,14 @@ BACKUP_SCHEDULE=0 2 * * *  # Daily at 2 AM
 # Grafana Admin Password
 GRAFANA_ADMIN_PASSWORD={generate_secure_password(16, False)}
 """
-    
-    with open(output_path, 'w') as f:
+
+    with open(output_path, "w") as f:
         f.write(env_content)
-    
+
     # Set restrictive permissions
     os.chmod(output_path, 0o600)
     print(f"✅ Created secure production environment file: {output_path}")
+
 
 def create_credentials_backup(credentials: Dict[str, Any], output_path: str) -> None:
     """Create an encrypted backup of credentials for safe storage."""
@@ -162,27 +172,34 @@ def create_credentials_backup(credentials: Dict[str, Any], output_path: str) -> 
             "Store this file securely and separately from your codebase",
             "Use a password manager or encrypted storage",
             "Never commit this file to version control",
-            "Rotate these credentials regularly"
-        ]
+            "Rotate these credentials regularly",
+        ],
     }
-    
-    with open(output_path, 'w') as f:
+
+    with open(output_path, "w") as f:
         json.dump(backup_data, f, indent=2)
-    
+
     os.chmod(output_path, 0o600)
     print(f"✅ Created credentials backup: {output_path}")
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Generate secure configuration for TRAE AI production")
-    parser.add_argument("--output-dir", default=".", help="Output directory for generated files")
-    parser.add_argument("--backup", action="store_true", help="Create credentials backup file")
+    parser = argparse.ArgumentParser(
+        description="Generate secure configuration for TRAE AI production"
+    )
+    parser.add_argument(
+        "--output-dir", default=".", help="Output directory for generated files"
+    )
+    parser.add_argument(
+        "--backup", action="store_true", help="Create credentials backup file"
+    )
     args = parser.parse_args()
-    
+
     output_dir = Path(args.output_dir)
     output_dir.mkdir(exist_ok=True)
-    
+
     print("🔐 Generating secure credentials for TRAE AI production...")
-    
+
     # Generate all credentials
     credentials = {}
     credentials.update(generate_encryption_keys())
@@ -190,16 +207,19 @@ def main():
     credentials.update(generate_redis_credentials())
     credentials.update(generate_rabbitmq_credentials())
     credentials.update(generate_admin_credentials())
-    
+
     # Create production environment file
     env_file_path = output_dir / ".env.production"
     create_production_env_file(credentials, str(env_file_path))
-    
+
     # Create credentials backup if requested
     if args.backup:
-        backup_path = output_dir / f"credentials_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        backup_path = (
+            output_dir
+            / f"credentials_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         create_credentials_backup(credentials, str(backup_path))
-    
+
     print("\n🎯 Next Steps:")
     print("1. Review and update the generated .env.production file")
     print("2. Update external API keys (OpenAI, Supabase, etc.)")
@@ -207,16 +227,17 @@ def main():
     print("4. Store credentials securely (password manager recommended)")
     print("5. Never commit .env.production to version control")
     print("6. Test the configuration in a staging environment first")
-    
+
     print("\n⚠️  IMPORTANT SECURITY NOTES:")
     print("- Change the admin email address before deployment")
     print("- Rotate these credentials regularly")
     print("- Use HTTPS in production")
     print("- Enable firewall rules to restrict database access")
     print("- Monitor logs for suspicious activity")
-    
+
     print(f"\n✅ Secure configuration generated successfully!")
     print(f"📁 Files created in: {output_dir.absolute()}")
+
 
 if __name__ == "__main__":
     main()

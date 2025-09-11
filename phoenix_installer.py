@@ -5,10 +5,11 @@ This master script automates the entire deployment, configuration, and
 verification of the TRAE.AI system.
 """
 import os
-import sys
-import subprocess
 import sqlite3
+import subprocess
+import sys
 import time
+
 import requests
 
 # --- Configuration ---
@@ -22,24 +23,28 @@ DOCTOR_SCRIPT_PATH = os.path.join(PROJECT_ROOT, "scripts", "doctor_creative_env.
 LAUNCH_SCRIPT_PATH = os.path.join(PROJECT_ROOT, "launch_live.py")
 DASHBOARD_URL = "http://localhost:8080"
 
+
 def run_command(command, check=True):
     """Runs a command and streams its output."""
     print(f"\n--- Running Command: {' '.join(command)} ---")
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-    for line in iter(process.stdout.readline, ''):
-        print(line, end='')
+    process = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+    )
+    for line in iter(process.stdout.readline, ""):
+        print(line, end="")
     process.wait()
     if check and process.returncode != 0:
         print(f"\n--- ❌ Command failed with exit code {process.returncode} ---")
         sys.exit(1)
     return process.returncode
 
+
 def main():
     """Executes the Phoenix Protocol."""
-    print("="*60)
+    print("=" * 60)
     print("🚀 Initiating TRAE.AI Phoenix Protocol...")
     print("This will deploy, configure, and verify the entire system.")
-    print("="*60)
+    print("=" * 60)
 
     # Step 1: System Prerequisite Check
     print("\n--- Phase 1: Running System Prerequisite Check ---")
@@ -52,12 +57,12 @@ def main():
         print("❌ Creative environment not found after doctor script ran. Aborting.")
         sys.exit(1)
     print("✅ Creative environment is built.")
-    
+
     # Step 3: Database Initialization
     print("\n--- Phase 3: Initializing Master Database ---")
     if os.path.exists(MAIN_DB_PATH):
         os.remove(MAIN_DB_PATH)
-    with open(SCHEMA_PATH, 'r') as f:
+    with open(SCHEMA_PATH, "r") as f:
         schema_sql = f.read()
     conn = sqlite3.connect(MAIN_DB_PATH)
     conn.executescript(schema_sql)
@@ -69,8 +74,12 @@ def main():
     print("You will now be prompted to enter your secure credentials.")
     print("This is a one-time setup to populate the encrypted secret store.")
     print("Please add all required API keys and affiliate credentials.")
-    run_command([sys.executable, SECRETS_CLI_PATH, "list"], check=False) # Show existing keys
-    print("\nExample command to add a secret: python scripts/secrets_cli.py add SECRET_NAME 'your_secret_value'")
+    run_command(
+        [sys.executable, SECRETS_CLI_PATH, "list"], check=False
+    )  # Show existing keys
+    print(
+        "\nExample command to add a secret: python scripts/secrets_cli.py add SECRET_NAME 'your_secret_value'"
+    )
     input("Press Enter to continue after you have added all your secrets...")
 
     # Step 5: Automated System Tests
@@ -82,16 +91,19 @@ def main():
     # Step 6: The Final Live Verification
     print("\n--- Phase 6: Final Live Verification ---")
     print("Launching the full TRAE.AI application in the background...")
-    
-    venv_python = os.path.join("venv", "bin", "python3") # Assuming a main venv
+
+    venv_python = os.path.join("venv", "bin", "python3")  # Assuming a main venv
     app_process = subprocess.Popen([venv_python, LAUNCH_SCRIPT_PATH])
-    
+
     print(f"Waiting for dashboard to become available at {DASHBOARD_URL}...")
-    
-    for i in range(30): # Wait up to 30 seconds
+
+    for i in range(30):  # Wait up to 30 seconds
         try:
             response = requests.get(f"{DASHBOARD_URL}/api/health", timeout=1)
-            if response.status_code == 200 and response.json().get('status') == 'healthy':
+            if (
+                response.status_code == 200
+                and response.json().get("status") == "healthy"
+            ):
                 print("✅ Dashboard is online and healthy.")
                 break
         except requests.ConnectionError:
@@ -100,25 +112,32 @@ def main():
         print("❌ Verification failed: Dashboard did not become available.")
         app_process.terminate()
         sys.exit(1)
-        
+
     print("Verifying agent status...")
     response = requests.get(f"{DASHBOARD_URL}/api/agents/status")
     if response.status_code == 200:
         print("✅ Agent status endpoint is responsive.")
     else:
-        print(f"❌ Verification failed: Agent status endpoint returned {response.status_code}.")
+        print(
+            f"❌ Verification failed: Agent status endpoint returned {response.status_code}."
+        )
         app_process.terminate()
         sys.exit(1)
 
     # Step 7: Final Report
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("✅ PHOENIX PROTOCOL COMPLETE.")
-    print("The TRAE.AI system is fully deployed, tested, and verified to be running live.")
+    print(
+        "The TRAE.AI system is fully deployed, tested, and verified to be running live."
+    )
     print(f"You can access the command center at: {DASHBOARD_URL}")
-    print("The application is now running in the background. You can stop this installer.")
-    print("="*60)
-    
-    app_process.wait() # Keep the installer alive while the app runs
+    print(
+        "The application is now running in the background. You can stop this installer."
+    )
+    print("=" * 60)
+
+    app_process.wait()  # Keep the installer alive while the app runs
+
 
 if __name__ == "__main__":
     main()

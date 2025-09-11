@@ -1,9 +1,13 @@
-import requests
 import json
 from typing import List
 
+import requests
+
+
 class WebEnhancedDebuggerAgent:
-    def __init__(self, ollama_endpoint="http://localhost:11434", model="codellama:latest"):
+    def __init__(
+        self, ollama_endpoint="http://localhost:11434", model="codellama:latest"
+    ):
         self.ollama_endpoint = ollama_endpoint
         self.model = model
 
@@ -63,7 +67,7 @@ Provide a FIX for this error, with clear code or SQL patches that can be applied
     def categorize_error(self, error_msg: str) -> str:
         """Categorize the type of error for better search targeting"""
         error_lower = error_msg.lower()
-        
+
         if "sqlite" in error_lower or "database" in error_lower:
             return "database"
         elif "import" in error_lower or "module" in error_lower:
@@ -80,11 +84,11 @@ Provide a FIX for this error, with clear code or SQL patches that can be applied
     # 🎯 Enhanced search with error-specific keywords
     def enhanced_debug_and_fix(self, error_msg: str) -> str:
         print(f"\n🐞 Captured Error: {error_msg}")
-        
+
         # Categorize error
         error_type = self.categorize_error(error_msg)
         print(f"\n📋 Error Category: {error_type}")
-        
+
         # Enhanced search query based on error type
         search_query = f"{error_msg} {error_type} fix solution"
         results = self.web_search(search_query, num_results=5)
@@ -108,25 +112,26 @@ Instructions:
    - Exact Fix (with code/SQL)
    - Prevention Tips
 """
-        
+
         # Generate enhanced fix
         fix = self.ask_ollama(context)
         return f"\n💡 Enhanced AI Analysis & Fix:\n{fix}"
 
+
 # 🧪 Demo usage
 if __name__ == "__main__":
     debugger = WebEnhancedDebuggerAgent()
-    
+
     # Test with a common SQLite error
     test_error = "sqlite3.OperationalError: no such column: search_keywords"
-    
+
     print("=== Web-Enhanced Debugger Demo ===")
     print("\n🔍 Testing Enhanced Debugging...")
-    
+
     result = debugger.enhanced_debug_and_fix(test_error)
     print(result)
-    
-    print("\n" + "="*50)
+
+    print("\n" + "=" * 50)
     print("✅ Demo completed! The debugger successfully:")
     print("   • Categorized the error type")
     print("   • Searched the web for solutions")

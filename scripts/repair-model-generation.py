@@ -9,23 +9,23 @@ Author: Trae AI Assistant
 Date: 2025-01-27
 """
 
-import os
-import sys
-import json
-import subprocess
-import logging
 import asyncio
+import json
+import logging
+import os
+import subprocess
+import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('model_repair.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+        logging.FileHandler("model_repair.log"),
+        logging.StreamHandler(sys.stdout),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -45,14 +45,14 @@ class ModelGenerationRepair:
             "SadTalker_V0.0.2_256.safetensors",
             "mapping_00109-model.pth.tar",
             "Obama_ave.pth",
-            "Obama.json"
+            "Obama.json",
         ]
 
         # Critical directories
         self.required_dirs = [
             "GPT_SoVITS/pretrained_models",
             "MuseTalk",
-            "gfpgan/weights"
+            "gfpgan/weights",
         ]
 
     def check_environment(self) -> Dict[str, Any]:
@@ -65,21 +65,24 @@ class ModelGenerationRepair:
             "models_downloaded": False,
             "test_mode_disabled": False,
             "services_running": False,
-            "issues": issues
+            "issues": issues,
         }
 
         # Check if checkpoints directory exists and has content
         if not self.checkpoints_path.exists():
             issues.append("Checkpoints directory does not exist")
         else:
-            checkpoint_files = list(self.checkpoints_path.glob("*.pth")) + \
-                list(self.checkpoints_path.glob("*.safetensors")) + \
-                list(self.checkpoints_path.glob("*.tar"))
+            checkpoint_files = (
+                list(self.checkpoints_path.glob("*.pth"))
+                + list(self.checkpoints_path.glob("*.safetensors"))
+                + list(self.checkpoints_path.glob("*.tar"))
+            )
 
             if len(checkpoint_files) < 3:  # Should have multiple checkpoint files
                 issues.append(
                     f"Only {
-                        len(checkpoint_files)} checkpoint files found, expected more")
+                        len(checkpoint_files)} checkpoint files found, expected more"
+                )
             else:
                 status["checkpoints_exist"] = True
                 logger.info(f"✅ Found {len(checkpoint_files)} checkpoint files")
@@ -93,7 +96,8 @@ class ModelGenerationRepair:
         if missing_files:
             issues.append(
                 f"Missing required checkpoint files: {
-                    ', '.join(missing_files)}")
+                    ', '.join(missing_files)}"
+            )
         else:
             status["models_downloaded"] = True
             logger.info("✅ All required checkpoint files found")
@@ -101,7 +105,7 @@ class ModelGenerationRepair:
         # Check avatar engines configuration
         avatar_engines_file = self.backend_path / "services" / "avatar_engines.py"
         if avatar_engines_file.exists():
-            with open(avatar_engines_file, 'r') as f:
+            with open(avatar_engines_file, "r") as f:
                 content = f.read()
                 if "'test_mode': False" in content:
                     status["test_mode_disabled"] = True
@@ -116,7 +120,8 @@ class ModelGenerationRepair:
         if download_processes:
             logger.info(
                 f"📥 Model download in progress: {
-                    len(download_processes)} processes")
+                    len(download_processes)} processes"
+            )
             status["download_in_progress"] = True
 
         return status
@@ -125,19 +130,19 @@ class ModelGenerationRepair:
         """Check if model download processes are running."""
         try:
             result = subprocess.run(
-                ["ps", "aux"],
-                capture_output=True,
-                text=True,
-                check=True
+                ["ps", "aux"], capture_output=True, text=True, check=True
             )
 
             download_processes = []
-            for line in result.stdout.split('\n'):
+            for line in result.stdout.split("\n"):
                 if any(
-                    keyword in line.lower() for keyword in [
-                        'download_models.sh',
-                        'huggingface_download',
-                        'modelscope_download']):
+                    keyword in line.lower()
+                    for keyword in [
+                        "download_models.sh",
+                        "huggingface_download",
+                        "modelscope_download",
+                    ]
+                ):
                     download_processes.append(line.strip())
 
             return download_processes
@@ -154,17 +159,14 @@ class ModelGenerationRepair:
             return False
 
         try:
-            with open(avatar_engines_file, 'r') as f:
+            with open(avatar_engines_file, "r") as f:
                 content = f.read()
 
             # Replace test_mode: True with test_mode: False
-            updated_content = content.replace(
-                "'test_mode': True",
-                "'test_mode': False"
-            )
+            updated_content = content.replace("'test_mode': True", "'test_mode': False")
 
             if updated_content != content:
-                with open(avatar_engines_file, 'w') as f:
+                with open(avatar_engines_file, "w") as f:
                     f.write(updated_content)
                 logger.info("✅ Test mode disabled successfully")
                 return True
@@ -198,7 +200,7 @@ class ModelGenerationRepair:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                cwd=str(self.linly_talker_path)
+                cwd=str(self.linly_talker_path),
             )
 
             # Send option 2 (Huggingface) to the script
@@ -223,11 +225,12 @@ class ModelGenerationRepair:
             # Kill existing demo processes
             subprocess.run(
                 ["pkill", "-f", "demo_app.py"],
-                check=False  # Don't fail if no process found
+                check=False,  # Don't fail if no process found
             )
 
             # Wait a moment for cleanup
             import time
+
             time.sleep(2)
 
             # Start the demo app
@@ -235,8 +238,7 @@ class ModelGenerationRepair:
             if demo_script.exists():
                 logger.info("Starting Linly-Talker demo...")
                 subprocess.Popen(
-                    ["python", str(demo_script)],
-                    cwd=str(self.linly_talker_path)
+                    ["python", str(demo_script)], cwd=str(self.linly_talker_path)
                 )
                 logger.info("✅ Services restarted")
                 return True
@@ -257,25 +259,25 @@ class ModelGenerationRepair:
                 "fallback_mode": True,
                 "use_basic_models": True,
                 "skip_heavy_processing": True,
-                "enable_caching": True
+                "enable_caching": True,
             },
             "model_paths": {
                 "wav2lip": "checkpoints/wav2lip_gan.pth",
                 "sadtalker": "checkpoints/SadTalker_V0.0.2_256.safetensors",
-                "mapping": "checkpoints/mapping_00109-model.pth.tar"
+                "mapping": "checkpoints/mapping_00109-model.pth.tar",
             },
             "performance": {
                 "max_video_length": 30,
                 "reduce_quality_if_needed": True,
-                "timeout_seconds": 120
-            }
+                "timeout_seconds": 120,
+            },
         }
 
         try:
             config_file = self.base_path / "config" / "fallback_avatar_config.json"
             config_file.parent.mkdir(exist_ok=True)
 
-            with open(config_file, 'w') as f:
+            with open(config_file, "w") as f:
                 json.dump(fallback_config, f, indent=2)
 
             logger.info(f"✅ Fallback configuration created: {config_file}")
@@ -297,7 +299,7 @@ class ModelGenerationRepair:
             "initial_status": status,
             "repairs_attempted": [],
             "repairs_successful": [],
-            "final_status": None
+            "final_status": None,
         }
 
         # Step 2: Repair test mode
@@ -351,12 +353,12 @@ def main():
     print(f"Repairs attempted: {len(results['repairs_attempted'])}")
     print(f"Repairs successful: {len(results['repairs_successful'])}")
 
-    if results['repairs_successful']:
+    if results["repairs_successful"]:
         print("\n✅ Successful repairs:")
-        for repair in results['repairs_successful']:
+        for repair in results["repairs_successful"]:
             print(f"  - {repair}")
 
-    remaining_issues = results['final_status'].get('issues', [])
+    remaining_issues = results["final_status"].get("issues", [])
     if remaining_issues:
         print("\n⚠️ Remaining issues:")
         for issue in remaining_issues:

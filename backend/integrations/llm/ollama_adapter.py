@@ -1,22 +1,37 @@
-import os, json, requests, time, logging
+import json
+import logging
+import os
+import time
+
+import requests
+
 from backend.core.ci import pick_timeout
+
 log = logging.getLogger("integrations.llm.ollama")
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.1")
 
+
 def is_up(timeout=0.8):
     try:
-        r = requests.get(f"{OLLAMA_URL}/api/tags", timeout=pick_timeout(timeout, ci_default=0.2))
+        r = requests.get(
+            f"{OLLAMA_URL}/api/tags", timeout=pick_timeout(timeout, ci_default=0.2)
+        )
         return r.ok
     except Exception:
         return False
+
 
 def gen(prompt: str, temperature=0.8, max_tokens=800):
     try:
         r = requests.post(
             f"{OLLAMA_URL}/api/generate",
-            json={"model": OLLAMA_MODEL, "prompt": prompt, "options": {"temperature": temperature}},
+            json={
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "options": {"temperature": temperature},
+            },
             timeout=pick_timeout(120, ci_default=15),
         )
         r.raise_for_status()

@@ -1,15 +1,16 @@
 # app/routers/paste.py - Paste functionality router
+import math
+import os
+import socket
+import time
+from datetime import datetime
+from typing import List, Optional
+
+import requests
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from typing import List, Optional
-import os
-import socket
-import requests
-import math
-import time
-from datetime import datetime
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -23,12 +24,14 @@ PROVIDER_STATUS = {
         "name": "OpenStreetMap Overpass",
         "color": "green",
         "last_error": None,
-        "requires_key": False},
+        "requires_key": False,
+    },
     "nominatim": {
         "name": "OpenStreetMap Nominatim",
         "color": "green",
         "last_error": None,
-        "requires_key": False},
+        "requires_key": False,
+    },
 }
 
 
@@ -50,7 +53,7 @@ async def api_status():
     return {
         "status": "healthy",
         "providers": PROVIDER_STATUS,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
 
@@ -63,10 +66,7 @@ async def health_check():
 @router.get("/providers")
 async def places_providers():
     """Get available place search providers"""
-    return {
-        "providers": PROVIDER_STATUS,
-        "default": "overpass"
-    }
+    return {"providers": PROVIDER_STATUS, "default": "overpass"}
 
 
 @router.post("/paste", response_model=PasteResponse)
@@ -80,7 +80,7 @@ async def create_paste(paste_data: PasteCreate):
         "id": paste_id,
         "content": paste_data.content,
         "title": paste_data.title,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
     pastes_storage.append(new_paste)
@@ -102,6 +102,7 @@ async def get_paste(paste_id: int):
         if paste["id"] == paste_id:
             return paste
     raise HTTPException(status_code=404, detail="Paste not found")
+
 
 # OSM Tags for place search
 _OSM_TAGS = {
@@ -128,9 +129,7 @@ def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
 
     try:
         response = requests.post(
-            "https://overpass-api.de/api/interpreter",
-            data=query,
-            timeout=30
+            "https://overpass-api.de/api/interpreter", data=query, timeout=30
         )
         response.raise_for_status()
         return response.json()
@@ -162,13 +161,9 @@ def _elements_to_items(js):
                 addr_parts.append(tags[key])
         address = ", ".join(addr_parts) if addr_parts else ""
 
-        items.append({
-            "name": name,
-            "lat": lat,
-            "lng": lng,
-            "address": address,
-            "tags": tags
-        })
+        items.append(
+            {"name": name, "lat": lat, "lng": lng, "address": address, "tags": tags}
+        )
 
     return items
 
@@ -179,7 +174,7 @@ async def places_search(
     lat: float = 40.7128,
     lng: float = -74.0060,
     radius_m: int = 5000,
-    limit: int = 50
+    limit: int = 50,
 ):
     """Search for places using OpenStreetMap data"""
     if category not in _OSM_TAGS:
@@ -203,11 +198,12 @@ async def places_search(
                 "lat": lat,
                 "lng": lng,
                 "radius_m": radius_m,
-                "limit": limit
-            }
+                "limit": limit,
+            },
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
+
 
 # HTML Templates
 PASTE_HTML_TEMPLATE = """

@@ -24,7 +24,7 @@ Analyze the provided logs, identify ALL issues, and create a comprehensive resto
 - **Browser Automation**: Web scraping and AI service integration
 
 ### External AI Services Integration
-- **Abacus.AI** (https://apps.abacus.ai/)
+- **Abacus.AI** (https://apps.abacus.ai/chatllm/?appId=1024a18ebe)
 - **Google Gemini** (https://gemini.google.com/app)
 - **ChatGPT** (https://chatgpt.com/)
 

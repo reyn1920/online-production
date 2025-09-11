@@ -13,8 +13,13 @@ Usage examples:
   python3 yt_multi_hook.py --channel NextGenTechToday --revenue 25.00 --post
 """
 
-import os, sys, json, argparse, urllib.request, urllib.parse
-from typing import Dict, Any, List
+import argparse
+import json
+import os
+import sys
+import urllib.parse
+import urllib.request
+from typing import Any, Dict, List
 
 # ---- Your channels (from your message) --------------------------------------
 CHANNELS: Dict[str, Dict[str, Any]] = {
@@ -25,7 +30,7 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "slot": "6 PM EST",
         "target_len": "12-15 min",
         "voice": "Matthew (Speechelo)",
-        "email": "brianinpty@gmail.com",
+        "email": "test@example.com",
         "monetization": ["High-value ads", "Merch", "Affiliate"],
     },
     "NextGenTechToday": {
@@ -35,7 +40,7 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "slot": "8 PM EST",
         "target_len": "10-12 min",
         "voice": "David (Speechelo)",
-        "email": "brianinpty@gmail.com",
+        "email": "test@example.com",
         "monetization": ["Tech affiliate", "Sponsored reviews"],
     },
     "EcoWellLiving": {
@@ -45,7 +50,7 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "slot": "4 PM EST",
         "target_len": "12-15 min",
         "voice": "Brian (Speechelo)",
-        "email": "brianinpty@gmail.com",
+        "email": "test@example.com",
         "monetization": ["Eco partners", "Wellness services"],
     },
     "AITrendReports": {
@@ -55,19 +60,23 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "slot": "7 PM EST",
         "target_len": "15-18 min",
         "voice": "Alex (Speechelo)",
-        "email": "brianinpty@gmail.com",
+        "email": "test@example.com",
         "monetization": ["AI tool affiliates", "Courses"],
     },
 }
 
 # ---- Config via env (override as needed) ------------------------------------
-API_KEY     = os.environ.get("YT_API_KEY", "").strip()
-DASHBOARD   = os.environ.get("DASH_URL", "http://localhost:8000/api/update-metrics").strip()
+API_KEY = os.environ.get("YT_API_KEY", "").strip()
+DASHBOARD = os.environ.get(
+    "DASH_URL", "http://localhost:8000/api/update-metrics"
+).strip()
+
 
 def yt(endpoint: str, params: Dict[str, str]) -> Dict[str, Any]:
     url = f"https://www.googleapis.com/youtube/v3/{endpoint}?{urllib.parse.urlencode(params)}"
     with urllib.request.urlopen(url) as r:
         return json.loads(r.read().decode())
+
 
 def get_channel_stats(api_key: str, channel_id: str) -> Dict[str, int]:
     data = yt("channels", {"part": "statistics", "id": channel_id, "key": api_key})
@@ -81,22 +90,27 @@ def get_channel_stats(api_key: str, channel_id: str) -> Dict[str, int]:
         "active_videos": int(s.get("videoCount", 0)),
     }
 
+
 def compose_payload(stats: Dict[str, int], revenue: float = 0.0) -> Dict[str, Any]:
     # Matches your FastAPI dashboard expected keys exactly
     return {
         "views": stats["views"],
         "revenue": float(revenue),
         "subscribers": stats["subscribers"],
-        "engagement": 0,               # You can wire a real calc later
+        "engagement": 0,  # You can wire a real calc later
         "active_videos": stats["active_videos"],
-        "trending_topics": [],         # Placeholder until you feed topics
+        "trending_topics": [],  # Placeholder until you feed topics
     }
+
 
 def post_dashboard(url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     body = json.dumps(payload).encode()
-    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(
+        url, data=body, headers={"Content-Type": "application/json"}
+    )
     with urllib.request.urlopen(req) as r:
         return json.loads(r.read().decode())
+
 
 def aggregate_stats(items: List[Dict[str, int]]) -> Dict[str, int]:
     out = {"views": 0, "subscribers": 0, "active_videos": 0}
@@ -106,6 +120,7 @@ def aggregate_stats(items: List[Dict[str, int]]) -> Dict[str, int]:
         out["active_videos"] += s.get("active_videos", 0)
     return out
 
+
 def resolve_channel(arg: str) -> Dict[str, Any]:
     # Accept key ("primary") or label/handle/id match
     if arg in CHANNELS:
@@ -114,16 +129,30 @@ def resolve_channel(arg: str) -> Dict[str, Any]:
     for meta in CHANNELS.values():
         if arg == meta["handle"] or arg == meta["label"] or arg == meta["id"]:
             return meta
-    raise SystemExit(f"Unknown channel '{arg}'. Use one of: {', '.join(CHANNELS.keys())}")
+    raise SystemExit(
+        f"Unknown channel '{arg}'. Use one of: {', '.join(CHANNELS.keys())}"
+    )
+
 
 def main():
     p = argparse.ArgumentParser(description="Update live dashboard from YouTube stats")
     g = p.add_mutually_exclusive_group(required=True)
-    g.add_argument("--channel", help="Channel key/handle/label/id (e.g. primary, @NextGenTechToday)")
+    g.add_argument(
+        "--channel",
+        help="Channel key/handle/label/id (e.g. primary, @NextGenTechToday)",
+    )
     g.add_argument("--all", action="store_true", help="Aggregate all channels")
-    p.add_argument("--revenue", type=float, default=0.0, help="Revenue to display (default 0.0)")
-    p.add_argument("--post", action="store_true", help="POST to dashboard (otherwise print only)")
-    p.add_argument("--dashboard", default=DASHBOARD, help=f"Dashboard endpoint (default {DASHBOARD})")
+    p.add_argument(
+        "--revenue", type=float, default=0.0, help="Revenue to display (default 0.0)"
+    )
+    p.add_argument(
+        "--post", action="store_true", help="POST to dashboard (otherwise print only)"
+    )
+    p.add_argument(
+        "--dashboard",
+        default=DASHBOARD,
+        help=f"Dashboard endpoint (default {DASHBOARD})",
+    )
     args = p.parse_args()
 
     if not API_KEY:
@@ -136,7 +165,9 @@ def main():
             for key, meta in CHANNELS.items():
                 if not API_KEY:
                     # Dry-run fake values if no API key
-                    stats_list.append({"views": 0, "subscribers": 0, "active_videos": 0})
+                    stats_list.append(
+                        {"views": 0, "subscribers": 0, "active_videos": 0}
+                    )
                 else:
                     stats_list.append(get_channel_stats(API_KEY, meta["id"]))
             agg = aggregate_stats(stats_list)
@@ -166,6 +197,7 @@ def main():
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

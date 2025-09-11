@@ -1,7 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional, Dict, Any
+
 import os
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
 
 @dataclass
 class LinkedInClient:
@@ -27,10 +29,18 @@ class LinkedInClient:
             raise RuntimeError("LinkedIn not configured")
         return {"ok": True, "id": "li_post_stub", "text": text, "media": media_url}
 
-    def post_article(self, title: str, content: str, media_url: str = "") -> Dict[str, Any]:
+    def post_article(
+        self, title: str, content: str, media_url: str = ""
+    ) -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("LinkedIn not configured")
-        return {"ok": True, "id": "li_article_stub", "title": title, "content": content, "media": media_url}
+        return {
+            "ok": True,
+            "id": "li_article_stub",
+            "title": title,
+            "content": content,
+            "media": media_url,
+        }
 
     def insights(self) -> Dict[str, Any]:
         if not self.ready():

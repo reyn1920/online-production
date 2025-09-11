@@ -1,7 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional, Dict, Any
+
 import os
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
 
 @dataclass
 class RedditClient:
@@ -23,18 +25,34 @@ class RedditClient:
 
     def ready(self) -> bool:
         # OFF by default: returns True only when creds exist
-        return bool(self.client_id and self.client_secret and self.username and self.password)
+        return bool(
+            self.client_id and self.client_secret and self.username and self.password
+        )
 
     # --- Stubs (no network calls yet) ---
-    def submit_post(self, subreddit: str, title: str, text: str = "", url: str = "") -> Dict[str, Any]:
+    def submit_post(
+        self, subreddit: str, title: str, text: str = "", url: str = ""
+    ) -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("Reddit not configured")
-        return {"ok": True, "id": "reddit_post_stub", "subreddit": subreddit, "title": title[:300], "text": text, "url": url}
+        return {
+            "ok": True,
+            "id": "reddit_post_stub",
+            "subreddit": subreddit,
+            "title": title[:300],
+            "text": text,
+            "url": url,
+        }
 
     def submit_comment(self, post_id: str, text: str) -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("Reddit not configured")
-        return {"ok": True, "id": "reddit_comment_stub", "post_id": post_id, "text": text}
+        return {
+            "ok": True,
+            "id": "reddit_comment_stub",
+            "post_id": post_id,
+            "text": text,
+        }
 
     def insights(self) -> Dict[str, Any]:
         if not self.ready():

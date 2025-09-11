@@ -17,39 +17,41 @@ Date: 2024
 """
 
 import asyncio
+import base64
+import hashlib
 import json
 import logging
 import os
-import sys
-import subprocess
+import secrets
 import shutil
-import time
 import sqlite3
-import yaml
-from datetime import datetime, timedelta
+import subprocess
+import sys
+import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Tuple
+from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 import requests
-import hashlib
-import secrets
-import base64
+import yaml
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('production_deployment.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler("production_deployment.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
 
 class DeploymentStage(Enum):
     """Deployment pipeline stages"""
+
     PREPARATION = "preparation"
     VALIDATION = "validation"
     SECURITY_CHECK = "security_check"
@@ -63,6 +65,7 @@ class DeploymentStage(Enum):
 
 class DeploymentStatus(Enum):
     """Deployment status types"""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     SUCCESS = "success"
@@ -73,6 +76,7 @@ class DeploymentStatus(Enum):
 @dataclass
 class DeploymentConfig:
     """Configuration for production deployment"""
+
     project_name: str = "conservative-research-system"
     environment: str = "production"
     version: str = "1.0.0"
@@ -92,6 +96,7 @@ class DeploymentConfig:
 @dataclass
 class DeploymentResult:
     """Result of a deployment stage"""
+
     stage: DeploymentStage
     status: DeploymentStatus
     message: str
@@ -208,7 +213,7 @@ class ProductionDeploymentSystem:
                 await self._create_backup()
 
             # Validate project structure
-            required_files = ['package.json', 'src']
+            required_files = ["package.json", "src"]
             missing_files = []
 
             for file_path in required_files:
@@ -219,7 +224,7 @@ class ProductionDeploymentSystem:
                 raise Exception(f"Missing required files: {missing_files}")
 
             # Create deployment directories
-            deployment_dirs = ['dist', 'logs', 'backups']
+            deployment_dirs = ["dist", "logs", "backups"]
             for dir_name in deployment_dirs:
                 (self.project_root / dir_name).mkdir(exist_ok=True)
 
@@ -231,7 +236,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.PREPARATION,
                 status=DeploymentStatus.SUCCESS,
                 message="Deployment preparation completed successfully",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
 
@@ -244,7 +249,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.PREPARATION,
                 status=DeploymentStatus.FAILED,
                 message=f"Preparation failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Preparation failed: {str(e)}")
@@ -260,8 +265,9 @@ class ProductionDeploymentSystem:
 
             # Check Node.js version
             try:
-                result = subprocess.run(['node', '--version'],
-                                        capture_output=True, text=True)
+                result = subprocess.run(
+                    ["node", "--version"], capture_output=True, text=True
+                )
                 if result.returncode == 0:
                     node_version = result.stdout.strip()
                     validation_checks.append(f"Node.js: {node_version}")
@@ -272,8 +278,9 @@ class ProductionDeploymentSystem:
 
             # Check npm version
             try:
-                result = subprocess.run(['npm', '--version'],
-                                        capture_output=True, text=True)
+                result = subprocess.run(
+                    ["npm", "--version"], capture_output=True, text=True
+                )
                 if result.returncode == 0:
                     npm_version = result.stdout.strip()
                     validation_checks.append(f"npm: {npm_version}")
@@ -283,7 +290,7 @@ class ProductionDeploymentSystem:
                 raise Exception("npm is required but not installed")
 
             # Check environment variables
-            required_env_vars = ['NETLIFY_AUTH_TOKEN', 'NETLIFY_SITE_ID']
+            required_env_vars = ["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]
             missing_env_vars = []
 
             for env_var in required_env_vars:
@@ -299,7 +306,7 @@ class ProductionDeploymentSystem:
                 status=DeploymentStatus.SUCCESS,
                 message="Environment validation completed",
                 duration=duration,
-                details={'checks': validation_checks}
+                details={"checks": validation_checks},
             )
             self.results.append(result)
 
@@ -312,7 +319,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.VALIDATION,
                 status=DeploymentStatus.FAILED,
                 message=f"Environment validation failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Environment validation failed: {str(e)}")
@@ -332,47 +339,55 @@ class ProductionDeploymentSystem:
                 r'api[_-]?key[\s]*[=:][\s]*["\'][^"\'\']{10,}["\']',
                 r'secret[_-]?key[\s]*[=:][\s]*["\'][^"\'\']{10,}["\']',
                 r'password[\s]*[=:][\s]*["\'][^"\'\']{8,}["\']',
-                r'token[\s]*[=:][\s]*["\'][^"\'\']{20,}["\']'
+                r'token[\s]*[=:][\s]*["\'][^"\'\']{20,}["\']',
             ]
 
             import re
+
             for root, dirs, files in os.walk(self.project_root / "src"):
                 for file in files:
-                    if file.endswith(('.js', '.ts', '.jsx', '.tsx', '.vue')):
+                    if file.endswith((".js", ".ts", ".jsx", ".tsx", ".vue")):
                         file_path = Path(root) / file
                         try:
-                            with open(file_path, 'r', encoding='utf-8') as f:
+                            with open(file_path, "r", encoding="utf-8") as f:
                                 content = f.read()
                                 for pattern in secret_patterns:
                                     if re.search(pattern, content, re.IGNORECASE):
                                         security_issues.append(
-                                            f"Potential hardcoded secret in {file_path}")
+                                            f"Potential hardcoded secret in {file_path}"
+                                        )
                         except Exception:
                             continue
 
             # Check dependencies for vulnerabilities
             logger.info("🔍 Checking dependencies for vulnerabilities...")
             try:
-                result = subprocess.run(['npm', 'audit', '--json'],
-                                        capture_output=True, text=True, cwd=self.project_root)
+                result = subprocess.run(
+                    ["npm", "audit", "--json"],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.project_root,
+                )
                 if result.returncode != 0 and result.stdout:
                     audit_data = json.loads(result.stdout)
-                    if 'vulnerabilities' in audit_data:
-                        vuln_count = len(audit_data['vulnerabilities'])
+                    if "vulnerabilities" in audit_data:
+                        vuln_count = len(audit_data["vulnerabilities"])
                         if vuln_count > 0:
                             security_issues.append(
-                                f"Found {vuln_count} dependency vulnerabilities")
+                                f"Found {vuln_count} dependency vulnerabilities"
+                            )
             except Exception as e:
                 logger.warning(f"Could not run npm audit: {str(e)}")
 
             # Check for sensitive files
             logger.info("🔍 Checking for sensitive files...")
             sensitive_files = [
-                '.env',
-                '.env.local',
-                '.env.production',
-                'config.json',
-                'secrets.json']
+                ".env",
+                ".env.local",
+                ".env.production",
+                "config.json",
+                "secrets.json",
+            ]
             for sensitive_file in sensitive_files:
                 if (self.project_root / sensitive_file).exists():
                     security_issues.append(f"Sensitive file found: {sensitive_file}")
@@ -405,14 +420,14 @@ class ProductionDeploymentSystem:
                     message=f"Security scan completed with {
                         len(security_issues)} warnings",
                     duration=duration,
-                    details={
-                        'issues': security_issues})
+                    details={"issues": security_issues},
+                )
             else:
                 result = DeploymentResult(
                     stage=DeploymentStage.SECURITY_CHECK,
                     status=DeploymentStatus.SUCCESS,
                     message="Security scan completed - no issues found",
-                    duration=duration
+                    duration=duration,
                 )
 
             self.results.append(result)
@@ -425,7 +440,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.SECURITY_CHECK,
                 status=DeploymentStatus.FAILED,
                 message=f"Security checks failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Security checks failed: {str(e)}")
@@ -440,7 +455,11 @@ class ProductionDeploymentSystem:
             # Install dependencies
             logger.info("📦 Installing dependencies...")
             result = subprocess.run(
-                ['npm', 'install'], capture_output=True, text=True, cwd=self.project_root)
+                ["npm", "install"],
+                capture_output=True,
+                text=True,
+                cwd=self.project_root,
+            )
             if result.returncode != 0:
                 raise Exception(f"npm install failed: {result.stderr}")
 
@@ -450,7 +469,8 @@ class ProductionDeploymentSystem:
                 self.config.build_command.split(),
                 capture_output=True,
                 text=True,
-                cwd=self.project_root)
+                cwd=self.project_root,
+            )
             if result.returncode != 0:
                 raise Exception(f"Build failed: {result.stderr}")
 
@@ -461,7 +481,8 @@ class ProductionDeploymentSystem:
 
             # Calculate build size
             build_size = sum(
-                f.stat().st_size for f in dist_path.rglob('*') if f.is_file())
+                f.stat().st_size for f in dist_path.rglob("*") if f.is_file()
+            )
             build_size_mb = build_size / (1024 * 1024)
 
             duration = time.time() - start_time
@@ -470,14 +491,15 @@ class ProductionDeploymentSystem:
                 status=DeploymentStatus.SUCCESS,
                 message=f"Build completed successfully ({build_size_mb:.2f} MB)",
                 duration=duration,
-                details={'size_bytes': build_size, 'size_mb': build_size_mb}
+                details={"size_bytes": build_size, "size_mb": build_size_mb},
             )
             self.results.append(result)
 
             logger.info(
                 f"✅ Build completed in {
                     duration:.2f}s ({
-                    build_size_mb:.2f} MB)")
+                    build_size_mb:.2f} MB)"
+            )
             return True
 
         except Exception as e:
@@ -486,7 +508,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.BUILD,
                 status=DeploymentStatus.FAILED,
                 message=f"Build failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Build failed: {str(e)}")
@@ -501,18 +523,19 @@ class ProductionDeploymentSystem:
             # Check if test command exists in package.json
             package_json_path = self.project_root / "package.json"
             if package_json_path.exists():
-                with open(package_json_path, 'r') as f:
+                with open(package_json_path, "r") as f:
                     package_data = json.load(f)
-                    scripts = package_data.get('scripts', {})
-                    if 'test' not in scripts:
+                    scripts = package_data.get("scripts", {})
+                    if "test" not in scripts:
                         logger.info(
-                            "⚠️ No test script found in package.json, skipping tests")
+                            "⚠️ No test script found in package.json, skipping tests"
+                        )
                         duration = time.time() - start_time
                         result = DeploymentResult(
                             stage=DeploymentStage.TESTING,
                             status=DeploymentStatus.SUCCESS,
                             message="No tests configured - skipped",
-                            duration=duration
+                            duration=duration,
                         )
                         self.results.append(result)
                         return True
@@ -523,16 +546,18 @@ class ProductionDeploymentSystem:
                 self.config.test_command.split(),
                 capture_output=True,
                 text=True,
-                cwd=self.project_root)
+                cwd=self.project_root,
+            )
 
             # Parse test results
             test_output = result.stdout + result.stderr
-            passed_tests = test_output.count('✓') + test_output.count('PASS')
-            failed_tests = test_output.count('✗') + test_output.count('FAIL')
+            passed_tests = test_output.count("✓") + test_output.count("PASS")
+            failed_tests = test_output.count("✗") + test_output.count("FAIL")
 
             if result.returncode != 0 and failed_tests > 0:
                 raise Exception(
-                    f"Tests failed: {failed_tests} failed, {passed_tests} passed")
+                    f"Tests failed: {failed_tests} failed, {passed_tests} passed"
+                )
 
             duration = time.time() - start_time
             result = DeploymentResult(
@@ -541,12 +566,16 @@ class ProductionDeploymentSystem:
                 message=f"Tests completed: {passed_tests} passed, {failed_tests} failed",
                 duration=duration,
                 details={
-                    'passed': passed_tests,
-                    'failed': failed_tests,
-                    'output': test_output})
+                    "passed": passed_tests,
+                    "failed": failed_tests,
+                    "output": test_output,
+                },
+            )
             self.results.append(result)
 
-            logger.info(f"✅ Tests completed in {duration:.2f}s ({passed_tests} passed)")
+            logger.info(
+                f"✅ Tests completed in {duration:.2f}s ({passed_tests} passed)"
+            )
             return True
 
         except Exception as e:
@@ -555,7 +584,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.TESTING,
                 status=DeploymentStatus.FAILED,
                 message=f"Tests failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Tests failed: {str(e)}")
@@ -568,24 +597,18 @@ class ProductionDeploymentSystem:
 
         try:
             # Deploy to Netlify staging
-            staging_command = [
-                'netlify', 'deploy',
-                '--dir', 'dist',
-                '--json'
-            ]
+            staging_command = ["netlify", "deploy", "--dir", "dist", "--json"]
 
             result = subprocess.run(
-                staging_command,
-                capture_output=True,
-                text=True,
-                cwd=self.project_root)
+                staging_command, capture_output=True, text=True, cwd=self.project_root
+            )
 
             if result.returncode != 0:
                 raise Exception(f"Staging deployment failed: {result.stderr}")
 
             # Parse deployment result
             deploy_data = json.loads(result.stdout)
-            staging_url = deploy_data.get('deploy_url') or deploy_data.get('url')
+            staging_url = deploy_data.get("deploy_url") or deploy_data.get("url")
 
             if not staging_url:
                 raise Exception("Could not get staging URL from deployment result")
@@ -596,7 +619,7 @@ class ProductionDeploymentSystem:
                 status=DeploymentStatus.SUCCESS,
                 message=f"Staging deployment completed: {staging_url}",
                 duration=duration,
-                details={'url': staging_url, 'deploy_data': deploy_data}
+                details={"url": staging_url, "deploy_data": deploy_data},
             )
             self.results.append(result)
 
@@ -610,7 +633,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.STAGING,
                 status=DeploymentStatus.FAILED,
                 message=f"Staging deployment failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Staging deployment failed: {str(e)}")
@@ -658,7 +681,10 @@ class ProductionDeploymentSystem:
                     status=DeploymentStatus.FAILED,
                     message=f"Staging tests failed: {len(failed_tests)} failures",
                     duration=duration,
-                    details={'test_results': test_results, 'failed_tests': failed_tests}
+                    details={
+                        "test_results": test_results,
+                        "failed_tests": failed_tests,
+                    },
                 )
                 self.results.append(result)
                 logger.error(f"❌ Staging tests failed: {failed_tests}")
@@ -669,7 +695,7 @@ class ProductionDeploymentSystem:
                     status=DeploymentStatus.SUCCESS,
                     message="All staging tests passed",
                     duration=duration,
-                    details={'test_results': test_results}
+                    details={"test_results": test_results},
                 )
                 self.results.append(result)
                 logger.info(f"✅ Staging tests completed in {duration:.2f}s")
@@ -681,7 +707,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.STAGING,
                 status=DeploymentStatus.FAILED,
                 message=f"Staging tests failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Staging tests failed: {str(e)}")
@@ -695,24 +721,27 @@ class ProductionDeploymentSystem:
         try:
             # Deploy to Netlify production
             production_command = [
-                'netlify', 'deploy',
-                '--prod',
-                '--dir', 'dist',
-                '--json'
+                "netlify",
+                "deploy",
+                "--prod",
+                "--dir",
+                "dist",
+                "--json",
             ]
 
             result = subprocess.run(
                 production_command,
                 capture_output=True,
                 text=True,
-                cwd=self.project_root)
+                cwd=self.project_root,
+            )
 
             if result.returncode != 0:
                 raise Exception(f"Production deployment failed: {result.stderr}")
 
             # Parse deployment result
             deploy_data = json.loads(result.stdout)
-            production_url = deploy_data.get('url') or f"https://{self.config.domain}"
+            production_url = deploy_data.get("url") or f"https://{self.config.domain}"
 
             duration = time.time() - start_time
             result = DeploymentResult(
@@ -720,7 +749,7 @@ class ProductionDeploymentSystem:
                 status=DeploymentStatus.SUCCESS,
                 message=f"Production deployment completed: {production_url}",
                 duration=duration,
-                details={'url': production_url, 'deploy_data': deploy_data}
+                details={"url": production_url, "deploy_data": deploy_data},
             )
             self.results.append(result)
 
@@ -734,7 +763,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.PRODUCTION,
                 status=DeploymentStatus.FAILED,
                 message=f"Production deployment failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Production deployment failed: {str(e)}")
@@ -795,9 +824,9 @@ class ProductionDeploymentSystem:
             headers = response.headers
 
             security_headers = {
-                'X-Content-Type-Options': 'nosniff',
-                'X-Frame-Options': ['DENY', 'SAMEORIGIN'],
-                'X-XSS-Protection': '1; mode=block'
+                "X-Content-Type-Options": "nosniff",
+                "X-Frame-Options": ["DENY", "SAMEORIGIN"],
+                "X-XSS-Protection": "1; mode=block",
             }
 
             missing_headers = []
@@ -812,7 +841,8 @@ class ProductionDeploymentSystem:
 
             if missing_headers:
                 logger.warning(
-                    f"⚠️ Missing/incorrect security headers: {missing_headers}")
+                    f"⚠️ Missing/incorrect security headers: {missing_headers}"
+                )
                 return True  # Warning, but not a failure for now
             else:
                 logger.info("✅ Security headers test passed")
@@ -830,10 +860,10 @@ class ProductionDeploymentSystem:
 
             # Basic checks
             checks = [
-                ('HTML structure', '<html' in content.lower()),
-                ('Title tag', '<title>' in content.lower()),
-                ('Body content', '<body' in content.lower()),
-                ('No error messages', 'error' not in content.lower())
+                ("HTML structure", "<html" in content.lower()),
+                ("Title tag", "<title>" in content.lower()),
+                ("Body content", "<body" in content.lower()),
+                ("No error messages", "error" not in content.lower()),
             ]
 
             failed_checks = [check[0] for check in checks if not check[1]]
@@ -857,24 +887,24 @@ class ProductionDeploymentSystem:
         try:
             # Create monitoring configuration
             monitoring_config = {
-                'deployment_id': self.deployment_id,
-                'timestamp': datetime.now().isoformat(),
-                'monitoring': {
-                    'uptime_checks': True,
-                    'performance_monitoring': True,
-                    'error_tracking': True,
-                    'analytics': True
+                "deployment_id": self.deployment_id,
+                "timestamp": datetime.now().isoformat(),
+                "monitoring": {
+                    "uptime_checks": True,
+                    "performance_monitoring": True,
+                    "error_tracking": True,
+                    "analytics": True,
                 },
-                'alerts': {
-                    'downtime': True,
-                    'performance_degradation': True,
-                    'error_rate_spike': True
-                }
+                "alerts": {
+                    "downtime": True,
+                    "performance_degradation": True,
+                    "error_rate_spike": True,
+                },
             }
 
             # Save monitoring configuration
-            monitoring_path = self.project_root / 'monitoring_config.json'
-            with open(monitoring_path, 'w') as f:
+            monitoring_path = self.project_root / "monitoring_config.json"
+            with open(monitoring_path, "w") as f:
                 json.dump(monitoring_config, f, indent=2)
 
             duration = time.time() - start_time
@@ -883,7 +913,7 @@ class ProductionDeploymentSystem:
                 status=DeploymentStatus.SUCCESS,
                 message="Monitoring setup completed",
                 duration=duration,
-                details=monitoring_config
+                details=monitoring_config,
             )
             self.results.append(result)
 
@@ -896,7 +926,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.MONITORING,
                 status=DeploymentStatus.FAILED,
                 message=f"Monitoring setup failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Monitoring setup failed: {str(e)}")
@@ -929,8 +959,8 @@ class ProductionDeploymentSystem:
                 message=f"Performance optimization completed: {
                     len(optimizations)} optimizations applied",
                 duration=duration,
-                details={
-                    'optimizations': optimizations})
+                details={"optimizations": optimizations},
+            )
             self.results.append(result)
 
             logger.info(f"✅ Performance optimization completed in {duration:.2f}s")
@@ -942,7 +972,7 @@ class ProductionDeploymentSystem:
                 stage=DeploymentStage.OPTIMIZATION,
                 status=DeploymentStatus.FAILED,
                 message=f"Performance optimization failed: {str(e)}",
-                duration=duration
+                duration=duration,
             )
             self.results.append(result)
             logger.error(f"❌ Performance optimization failed: {str(e)}")
@@ -953,23 +983,17 @@ class ProductionDeploymentSystem:
         try:
             # Create cache configuration
             cache_config = {
-                'static_assets': {
-                    'max_age': 31536000,  # 1 year
-                    'patterns': ['*.js', '*.css', '*.png', '*.jpg', '*.gif', '*.svg']
+                "static_assets": {
+                    "max_age": 31536000,  # 1 year
+                    "patterns": ["*.js", "*.css", "*.png", "*.jpg", "*.gif", "*.svg"],
                 },
-                'html_files': {
-                    'max_age': 3600,  # 1 hour
-                    'patterns': ['*.html']
-                },
-                'api_responses': {
-                    'max_age': 300,  # 5 minutes
-                    'patterns': ['/api/*']
-                }
+                "html_files": {"max_age": 3600, "patterns": ["*.html"]},  # 1 hour
+                "api_responses": {"max_age": 300, "patterns": ["/api/*"]},  # 5 minutes
             }
 
             # Save cache configuration
-            cache_path = self.project_root / 'cache_config.json'
-            with open(cache_path, 'w') as f:
+            cache_path = self.project_root / "cache_config.json"
+            with open(cache_path, "w") as f:
                 json.dump(cache_config, f, indent=2)
 
             logger.info("✅ Caching optimization configured")
@@ -984,26 +1008,31 @@ class ProductionDeploymentSystem:
         try:
             # Create compression configuration
             compression_config = {
-                'gzip': {
-                    'enabled': True,
-                    'level': 6,
-                    'types': [
-                        'text/html',
-                        'text/css',
-                        'application/javascript',
-                        'application/json']},
-                'brotli': {
-                    'enabled': True,
-                    'level': 4,
-                    'types': [
-                        'text/html',
-                        'text/css',
-                        'application/javascript',
-                        'application/json']}}
+                "gzip": {
+                    "enabled": True,
+                    "level": 6,
+                    "types": [
+                        "text/html",
+                        "text/css",
+                        "application/javascript",
+                        "application/json",
+                    ],
+                },
+                "brotli": {
+                    "enabled": True,
+                    "level": 4,
+                    "types": [
+                        "text/html",
+                        "text/css",
+                        "application/javascript",
+                        "application/json",
+                    ],
+                },
+            }
 
             # Save compression configuration
-            compression_path = self.project_root / 'compression_config.json'
-            with open(compression_path, 'w') as f:
+            compression_path = self.project_root / "compression_config.json"
+            with open(compression_path, "w") as f:
                 json.dump(compression_config, f, indent=2)
 
             logger.info("✅ Compression optimization configured")
@@ -1031,14 +1060,14 @@ class ProductionDeploymentSystem:
 
         try:
             revenue_streams = [
-                'Conservative merchandise sales',
-                'Premium content subscriptions',
-                'Advertising partnerships',
-                'Affiliate marketing',
-                'Donation campaigns',
-                'Sponsored content',
-                'Email marketing',
-                'Social media monetization'
+                "Conservative merchandise sales",
+                "Premium content subscriptions",
+                "Advertising partnerships",
+                "Affiliate marketing",
+                "Donation campaigns",
+                "Sponsored content",
+                "Email marketing",
+                "Social media monetization",
             ]
 
             activated_streams = []
@@ -1051,7 +1080,8 @@ class ProductionDeploymentSystem:
             duration = time.time() - start_time
             logger.info(
                 f"💰 Revenue streams activated: {
-                    len(activated_streams)} streams")
+                    len(activated_streams)} streams"
+            )
             return True
 
         except Exception as e:
@@ -1066,14 +1096,14 @@ class ProductionDeploymentSystem:
         try:
             # Simulate massive Q&A generation boost
             qa_topics = [
-                'Conservative policy analysis',
-                'Liberal hypocrisy examples',
-                'Constitutional interpretation',
-                'Economic policy critique',
-                'Media bias documentation',
-                'Political fact-checking',
-                'Historical conservative victories',
-                'Current events analysis'
+                "Conservative policy analysis",
+                "Liberal hypocrisy examples",
+                "Constitutional interpretation",
+                "Economic policy critique",
+                "Media bias documentation",
+                "Political fact-checking",
+                "Historical conservative victories",
+                "Current events analysis",
             ]
 
             total_qa_generated = 0
@@ -1106,7 +1136,7 @@ class ProductionDeploymentSystem:
             backup_dir.mkdir(parents=True, exist_ok=True)
 
             # Backup critical files
-            critical_files = ['package.json', 'package-lock.json', 'netlify.toml']
+            critical_files = ["package.json", "package-lock.json", "netlify.toml"]
             for file_name in critical_files:
                 file_path = self.project_root / file_name
                 if file_path.exists():
@@ -1119,12 +1149,12 @@ class ProductionDeploymentSystem:
 
             # Create backup manifest
             backup_manifest = {
-                'deployment_id': self.deployment_id,
-                'timestamp': datetime.now().isoformat(),
-                'files_backed_up': len(list(backup_dir.rglob('*')))
+                "deployment_id": self.deployment_id,
+                "timestamp": datetime.now().isoformat(),
+                "files_backed_up": len(list(backup_dir.rglob("*"))),
             }
 
-            with open(backup_dir / 'manifest.json', 'w') as f:
+            with open(backup_dir / "manifest.json", "w") as f:
                 json.dump(backup_manifest, f, indent=2)
 
             logger.info(f"✅ Backup created: {backup_dir}")
@@ -1138,60 +1168,51 @@ class ProductionDeploymentSystem:
         """Create Netlify configuration"""
         try:
             netlify_config = {
-                'build': {
-                    'publish': 'dist',
-                    'command': self.config.build_command
-                },
-                'redirects': [
+                "build": {"publish": "dist", "command": self.config.build_command},
+                "redirects": [{"from": "/*", "to": "/index.html", "status": 200}],
+                "headers": [
                     {
-                        'from': '/*',
-                        'to': '/index.html',
-                        'status': 200
-                    }
-                ],
-                'headers': [
-                    {
-                        'for': '/*',
-                        'values': {
-                            'X-Frame-Options': 'DENY',
-                            'X-XSS-Protection': '1; mode=block',
-                            'X-Content-Type-Options': 'nosniff',
-                            'Referrer-Policy': 'strict-origin-when-cross-origin'
-                        }
+                        "for": "/*",
+                        "values": {
+                            "X-Frame-Options": "DENY",
+                            "X-XSS-Protection": "1; mode=block",
+                            "X-Content-Type-Options": "nosniff",
+                            "Referrer-Policy": "strict-origin-when-cross-origin",
+                        },
                     },
                     {
-                        'for': '/static/*',
-                        'values': {
-                            'Cache-Control': 'public, max-age=31536000, immutable'
-                        }
-                    }
-                ]
+                        "for": "/static/*",
+                        "values": {
+                            "Cache-Control": "public, max-age=31536000, immutable"
+                        },
+                    },
+                ],
             }
 
             # Write netlify.toml
-            netlify_toml_path = self.project_root / 'netlify.toml'
-            with open(netlify_toml_path, 'w') as f:
+            netlify_toml_path = self.project_root / "netlify.toml"
+            with open(netlify_toml_path, "w") as f:
                 # Convert to TOML format (simplified)
-                f.write('[build]\n')
+                f.write("[build]\n")
                 f.write(f'  publish = "{netlify_config["build"]["publish"]}"\n')
                 f.write(f'  command = "{netlify_config["build"]["command"]}"\n\n')
 
-                f.write('[[redirects]]\n')
+                f.write("[[redirects]]\n")
                 f.write('  from = "/*"\n')
                 f.write('  to = "/index.html"\n')
-                f.write('  status = 200\n\n')
+                f.write("  status = 200\n\n")
 
-                f.write('[[headers]]\n')
+                f.write("[[headers]]\n")
                 f.write('  for = "/*"\n')
-                f.write('  [headers.values]\n')
+                f.write("  [headers.values]\n")
                 f.write('    X-Frame-Options = "DENY"\n')
                 f.write('    X-XSS-Protection = "1; mode=block"\n')
                 f.write('    X-Content-Type-Options = "nosniff"\n')
                 f.write('    Referrer-Policy = "strict-origin-when-cross-origin"\n\n')
 
-                f.write('[[headers]]\n')
+                f.write("[[headers]]\n")
                 f.write('  for = "/static/*"\n')
-                f.write('  [headers.values]\n')
+                f.write("  [headers.values]\n")
                 f.write('    Cache-Control = "public, max-age=31536000, immutable"\n')
 
             logger.info("✅ Netlify configuration created")
@@ -1207,7 +1228,8 @@ class ProductionDeploymentSystem:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute('''
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS deployments (
                     id TEXT PRIMARY KEY,
                     timestamp TEXT,
@@ -1215,7 +1237,8 @@ class ProductionDeploymentSystem:
                     duration REAL,
                     details TEXT
                 )
-            ''')
+            """
+            )
 
             conn.commit()
             conn.close()
@@ -1249,43 +1272,51 @@ class ProductionDeploymentSystem:
             total_duration = (datetime.now() - self.start_time).total_seconds()
 
             report = {
-                'deployment_id': self.deployment_id,
-                'timestamp': self.start_time.isoformat(),
-                'total_duration': total_duration,
-                'status': 'SUCCESS' if all(
-                    r.status == DeploymentStatus.SUCCESS for r in self.results) else 'FAILED',
-                'stages': []}
+                "deployment_id": self.deployment_id,
+                "timestamp": self.start_time.isoformat(),
+                "total_duration": total_duration,
+                "status": (
+                    "SUCCESS"
+                    if all(r.status == DeploymentStatus.SUCCESS for r in self.results)
+                    else "FAILED"
+                ),
+                "stages": [],
+            }
 
             for result in self.results:
                 stage_info = {
-                    'stage': result.stage.value,
-                    'status': result.status.value,
-                    'message': result.message,
-                    'duration': result.duration,
-                    'timestamp': result.timestamp.isoformat()
+                    "stage": result.stage.value,
+                    "status": result.status.value,
+                    "message": result.message,
+                    "duration": result.duration,
+                    "timestamp": result.timestamp.isoformat(),
                 }
-                report['stages'].append(stage_info)
+                report["stages"].append(stage_info)
 
             # Save report
-            report_path = self.project_root / \
-                f"deployment_report_{self.deployment_id}.json"
-            with open(report_path, 'w') as f:
+            report_path = (
+                self.project_root / f"deployment_report_{self.deployment_id}.json"
+            )
+            with open(report_path, "w") as f:
                 json.dump(report, f, indent=2)
 
             # Save to database
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute('''
+            cursor.execute(
+                """
                 INSERT INTO deployments (id, timestamp, status, duration, details)
                 VALUES (?, ?, ?, ?, ?)
-            ''', (
-                self.deployment_id,
-                self.start_time.isoformat(),
-                report['status'],
-                total_duration,
-                json.dumps(report)
-            ))
+            """,
+                (
+                    self.deployment_id,
+                    self.start_time.isoformat(),
+                    report["status"],
+                    total_duration,
+                    json.dumps(report),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -1307,29 +1338,29 @@ async def main():
 
     # Parse command line arguments
     import argparse
+
     parser = argparse.ArgumentParser(
-        description='Deploy Conservative Research System to production')
+        description="Deploy Conservative Research System to production"
+    )
     parser.add_argument(
-        '--environment',
-        default='production',
-        choices=[
-            'staging',
-            'production'],
-        help='Deployment environment')
-    parser.add_argument('--version', default='1.0.0', help='Version to deploy')
+        "--environment",
+        default="production",
+        choices=["staging", "production"],
+        help="Deployment environment",
+    )
+    parser.add_argument("--version", default="1.0.0", help="Version to deploy")
     parser.add_argument(
-        '--domain',
-        default='therightperspective.com',
-        help='Target domain')
-    parser.add_argument('--skip-tests', action='store_true', help='Skip test execution')
+        "--domain", default="therightperspective.com", help="Target domain"
+    )
+    parser.add_argument("--skip-tests", action="store_true", help="Skip test execution")
     parser.add_argument(
-        '--skip-security',
-        action='store_true',
-        help='Skip security checks')
+        "--skip-security", action="store_true", help="Skip security checks"
+    )
     parser.add_argument(
-        '--dry-run',
-        action='store_true',
-        help='Perform dry run without actual deployment')
+        "--dry-run",
+        action="store_true",
+        help="Perform dry run without actual deployment",
+    )
 
     args = parser.parse_args()
 
@@ -1338,7 +1369,7 @@ async def main():
         environment=args.environment,
         version=args.version,
         domain=args.domain,
-        security_scan_enabled=not args.skip_security
+        security_scan_enabled=not args.skip_security,
     )
 
     if args.skip_tests:
@@ -1358,7 +1389,8 @@ async def main():
     if success:
         print("\n🎉 DEPLOYMENT SUCCESSFUL!")
         print(
-            f"🌐 Your Conservative Research System is now live at: https://{config.domain}")
+            f"🌐 Your Conservative Research System is now live at: https://{config.domain}"
+        )
         print("💰 Revenue streams activated")
         print("🚀 Q&A generation boosted by 1000000000%")
         print("📊 Monitoring and optimization enabled")
@@ -1368,7 +1400,8 @@ async def main():
         print("📧 Check logs for details")
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

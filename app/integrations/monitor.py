@@ -8,8 +8,8 @@ Monitors provider health, performs status checks, and tracks availability.
 import asyncio
 import logging
 import time
-from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 import httpx
 
@@ -35,7 +35,7 @@ class IntegrationMonitor:
             "status": "purple",
             "response_time": None,
             "error": None,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
         if not provider.enabled:
@@ -72,6 +72,7 @@ class IntegrationMonitor:
             # For providers requiring keys, check if key is available
             if provider.key_env:
                 import os
+
                 if os.getenv(provider.key_env):
                     result["status"] = "green"
                 else:
@@ -88,12 +89,13 @@ class IntegrationMonitor:
         test_urls = {
             "nominatim_osm": f"{
                 provider.base_url}/search?q=London&format=json&limit=1",
-            "overpass_main": f"{
-                provider.base_url}/interpreter?data=[out:json];node[name=\"London\"];out;",
-            "overpass_kumi": f"{
-                provider.base_url}/interpreter?data=[out:json];node[name=\"London\"];out;",
-            "overpass_fr": f"{
-                provider.base_url}/interpreter?data=[out:json];node[name=\"London\"];out;"}
+            "overpass_main": f'{
+                provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
+            "overpass_kumi": f'{
+                provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
+            "overpass_fr": f'{
+                provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
+        }
         return test_urls.get(provider.id)
 
     async def check_all(self) -> Dict[str, Dict[str, Any]]:
@@ -118,9 +120,7 @@ class IntegrationMonitor:
 
                 # Update registry with new status
                 self.registry.update_provider_status(
-                    provider.id,
-                    result["status"],
-                    result.get("error")
+                    provider.id, result["status"], result.get("error")
                 )
 
             except Exception as e:
@@ -129,7 +129,7 @@ class IntegrationMonitor:
                     "provider_id": provider.id,
                     "status": "red",
                     "error": str(e),
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
 
         self.check_results = results
@@ -139,7 +139,8 @@ class IntegrationMonitor:
         return results
 
     async def check_specific_providers(
-            self, provider_ids: List[str]) -> Dict[str, Dict[str, Any]]:
+        self, provider_ids: List[str]
+    ) -> Dict[str, Dict[str, Any]]:
         """Check health of specific providers"""
         results = {}
 
@@ -152,9 +153,7 @@ class IntegrationMonitor:
 
                     # Update registry
                     self.registry.update_provider_status(
-                        provider_id,
-                        result["status"],
-                        result.get("error")
+                        provider_id, result["status"], result.get("error")
                     )
 
                 except Exception as e:
@@ -163,14 +162,14 @@ class IntegrationMonitor:
                         "provider_id": provider_id,
                         "status": "red",
                         "error": str(e),
-                        "timestamp": datetime.now().isoformat()
+                        "timestamp": datetime.now().isoformat(),
                     }
             else:
                 results[provider_id] = {
                     "provider_id": provider_id,
                     "status": "red",
                     "error": "Provider not found",
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
 
         return results
@@ -185,7 +184,11 @@ class IntegrationMonitor:
             "healthy": len([p for p in providers if p.status == "green"]),
             "unhealthy": len([p for p in providers if p.status == "red"]),
             "unknown": len([p for p in providers if p.status == "purple"]),
-            "last_check": datetime.fromtimestamp(self.last_check_time).isoformat() if self.last_check_time else None
+            "last_check": (
+                datetime.fromtimestamp(self.last_check_time).isoformat()
+                if self.last_check_time
+                else None
+            ),
         }
 
         return summary

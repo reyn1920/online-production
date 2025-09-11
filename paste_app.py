@@ -7,61 +7,95 @@ Usage:
     PORT=8001 python3 paste_app.py    # Auto-detects port starting from 8001
 """
 
+import math
 import os
+import shutil
 import socket
-from flask import Flask, request, jsonify, render_template_string, send_file
+import time
+from pathlib import Path
+
+import requests
+from flask import Flask, jsonify, render_template_string, request, send_file
 from werkzeug.exceptions import HTTPException
 from werkzeug.utils import secure_filename
-import requests, math, time
-import shutil
-from pathlib import Path
 
 app = Flask(__name__)
 
 # Configure upload settings
-UPLOAD_FOLDER = os.path.expanduser('~/Downloads')
+UPLOAD_FOLDER = os.path.expanduser("~/Downloads")
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
 # Allowed file extensions
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx', 'py', 'js', 'html', 'css', 'json', 'xml', 'zip'}
+ALLOWED_EXTENSIONS = {
+    "txt",
+    "pdf",
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "doc",
+    "docx",
+    "py",
+    "js",
+    "html",
+    "css",
+    "json",
+    "xml",
+    "zip",
+}
+
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 # ---------- BEGIN PATCH: Places + JSON errors + Dev stubs ----------
 # In-memory provider status (for lights)
 PROVIDER_STATUS = {
-    "overpass": {"name": "OpenStreetMap Overpass", "color": "green", "last_error": None, "requires_key": False},
-    "nominatim": {"name": "OpenStreetMap Nominatim", "color": "green", "last_error": None, "requires_key": False},
+    "overpass": {
+        "name": "OpenStreetMap Overpass",
+        "color": "green",
+        "last_error": None,
+        "requires_key": False,
+    },
+    "nominatim": {
+        "name": "OpenStreetMap Nominatim",
+        "color": "green",
+        "last_error": None,
+        "requires_key": False,
+    },
 }
+
 
 # Dev-only route that some UIs ping; return 204 instead of 404 noise
 @app.route("/@vite/client")
 def _vite_client_placeholder():
     return ("", 204)
 
+
 # Minimal system status (handy for quick checks)
 @app.get("/api/status")
 def api_status():
-    return jsonify({
-        "framework": "flask",
-        "port": 8080,  # Updated to reflect new default port
-        "services": {"places": True, "pets": True},
-        "providers": PROVIDER_STATUS,
-        "time": int(time.time())
-    })
+    return jsonify(
+        {
+            "framework": "flask",
+            "port": 8080,  # Updated to reflect new default port
+            "services": {"places": True, "pets": True},
+            "providers": PROVIDER_STATUS,
+            "time": int(time.time()),
+        }
+    )
+
 
 # Health check endpoint for Docker healthcheck
 @app.get("/health")
 def health_check():
-    return jsonify({
-        "status": "healthy",
-        "timestamp": time.time(),
-        "service": "paste-app"
-    })
+    return jsonify(
+        {"status": "healthy", "timestamp": time.time(), "service": "paste-app"}
+    )
+
 
 # Provider statuses (green/purple/red)
 @app.get("/places/providers")
@@ -72,13 +106,16 @@ def places_providers():
         color = v["color"]
         if v.get("requires_key"):
             color = "purple"
-        items.append({
-            "key": key,
-            "name": v["name"],
-            "color": color,
-            "last_error": v["last_error"]
-        })
+        items.append(
+            {
+                "key": key,
+                "name": v["name"],
+                "color": color,
+                "last_error": v["last_error"],
+            }
+        )
     return jsonify({"items": items})
+
 
 # --------- Paste API ----------
 @app.route("/paste", methods=["POST"])
@@ -90,30 +127,36 @@ def create_paste():
         data = request.get_json()
         if not data:
             return jsonify({"error": "No JSON data provided"}), 400
-        
+
         # Validate required fields
         content = data.get("content", "").strip()
         if not content:
             return jsonify({"error": "Content is required"}), 400
-        
+
         # Create paste object
         paste = {
             "id": int(time.time() * 1000),  # timestamp in milliseconds
             "content": content,
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "created_at": time.time()
+            "created_at": time.time(),
         }
-        
+
         # In a real app, you'd save to database
         # For now, just return the created paste
-        return jsonify({
-            "success": True,
-            "paste": paste,
-            "message": "Paste created successfully"
-        }), 201
-        
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "paste": paste,
+                    "message": "Paste created successfully",
+                }
+            ),
+            201,
+        )
+
     except Exception as e:
         return jsonify({"error": f"Failed to create paste: {str(e)}"}), 500
+
 
 # --------- Downloads Integration API ----------
 @app.route("/upload", methods=["POST"])
@@ -121,66 +164,71 @@ def create_paste():
 def upload_file():
     """Upload file to downloads folder"""
     try:
-        if 'file' not in request.files:
+        if "file" not in request.files:
             return jsonify({"error": "No file provided"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
+
+        file = request.files["file"]
+        if file.filename == "":
             return jsonify({"error": "No file selected"}), 400
-        
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             # Handle custom filename from form data
-            custom_filename = request.form.get('filename')
+            custom_filename = request.form.get("filename")
             if custom_filename:
                 filename = secure_filename(custom_filename)
-            
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(filepath)
-            
-            return jsonify({
-                "success": True,
-                "filename": filename,
-                "filepath": filepath,
-                "message": "File uploaded successfully"
-            }), 201
+
+            return (
+                jsonify(
+                    {
+                        "success": True,
+                        "filename": filename,
+                        "filepath": filepath,
+                        "message": "File uploaded successfully",
+                    }
+                ),
+                201,
+            )
         else:
             return jsonify({"error": "File type not allowed"}), 400
-            
+
     except Exception as e:
         return jsonify({"error": f"Upload failed: {str(e)}"}), 500
+
 
 @app.route("/downloads/list", methods=["GET"])
 @app.route("/api/downloads/list", methods=["GET"])  # alias
 def list_downloads():
     """List files in downloads folder"""
     try:
-        downloads_path = Path(app.config['UPLOAD_FOLDER'])
+        downloads_path = Path(app.config["UPLOAD_FOLDER"])
         if not downloads_path.exists():
             return jsonify({"files": []})
-        
+
         files = []
         for file_path in downloads_path.iterdir():
             if file_path.is_file():
                 stat = file_path.stat()
-                files.append({
-                    "name": file_path.name,
-                    "size": stat.st_size,
-                    "modified": stat.st_mtime,
-                    "extension": file_path.suffix.lower()
-                })
-        
+                files.append(
+                    {
+                        "name": file_path.name,
+                        "size": stat.st_size,
+                        "modified": stat.st_mtime,
+                        "extension": file_path.suffix.lower(),
+                    }
+                )
+
         # Sort by modification time (newest first)
-        files.sort(key=lambda x: x['modified'], reverse=True)
-        
-        return jsonify({
-            "success": True,
-            "files": files,
-            "count": len(files)
-        })
-        
+        files.sort(key=lambda x: x["modified"], reverse=True)
+
+        return jsonify({"success": True, "files": files, "count": len(files)})
+
     except Exception as e:
         return jsonify({"error": f"Failed to list files: {str(e)}"}), 500
+
 
 @app.route("/downloads/process", methods=["POST"])
 @app.route("/api/downloads/process", methods=["POST"])  # alias
@@ -188,56 +236,63 @@ def process_downloads_file():
     """Process a file from downloads folder"""
     try:
         data = request.get_json()
-        if not data or 'filename' not in data:
+        if not data or "filename" not in data:
             return jsonify({"error": "Filename is required"}), 400
-        
-        filename = secure_filename(data['filename'])
-        action = data.get('action', 'read')
-        
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        
+
+        filename = secure_filename(data["filename"])
+        action = data.get("action", "read")
+
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+
         if not os.path.exists(filepath):
             return jsonify({"error": "File not found"}), 404
-        
-        if action == 'read':
+
+        if action == "read":
             # Read file content (for text files)
             try:
-                with open(filepath, 'r', encoding='utf-8') as f:
+                with open(filepath, "r", encoding="utf-8") as f:
                     content = f.read()
-                return jsonify({
-                    "success": True,
-                    "filename": filename,
-                    "content": content,
-                    "action": "read"
-                })
+                return jsonify(
+                    {
+                        "success": True,
+                        "filename": filename,
+                        "content": content,
+                        "action": "read",
+                    }
+                )
             except UnicodeDecodeError:
-                return jsonify({
-                    "success": True,
-                    "filename": filename,
-                    "content": "[Binary file - cannot display content]",
-                    "action": "read",
-                    "is_binary": True
-                })
-        
-        elif action == 'download':
+                return jsonify(
+                    {
+                        "success": True,
+                        "filename": filename,
+                        "content": "[Binary file - cannot display content]",
+                        "action": "read",
+                        "is_binary": True,
+                    }
+                )
+
+        elif action == "download":
             # Send file for download
             return send_file(filepath, as_attachment=True)
-        
-        elif action == 'delete':
+
+        elif action == "delete":
             # Delete file
             os.remove(filepath)
-            return jsonify({
-                "success": True,
-                "filename": filename,
-                "action": "delete",
-                "message": "File deleted successfully"
-            })
-        
+            return jsonify(
+                {
+                    "success": True,
+                    "filename": filename,
+                    "action": "delete",
+                    "message": "File deleted successfully",
+                }
+            )
+
         else:
             return jsonify({"error": f"Unknown action: {action}"}), 400
-            
+
     except Exception as e:
         return jsonify({"error": f"File processing failed: {str(e)}"}), 500
+
 
 @app.route("/paste/avatar", methods=["POST"])
 @app.route("/api/paste/avatar", methods=["POST"])  # alias
@@ -247,13 +302,13 @@ def paste_avatar():
         data = request.get_json()
         if not data:
             return jsonify({"error": "No JSON data provided"}), 400
-        
-        content = data.get('content', '')
-        avatar_type = data.get('avatar_type', 'professional')
-        voice_style = data.get('voice_style', 'natural')
-        quality = data.get('quality', 'high')
-        template = data.get('template', 'professional_presenter')
-        
+
+        content = data.get("content", "")
+        avatar_type = data.get("avatar_type", "professional")
+        voice_style = data.get("voice_style", "natural")
+        quality = data.get("quality", "high")
+        template = data.get("template", "professional_presenter")
+
         # Simulate avatar generation (in real implementation, this would call actual avatar service)
         avatar_result = {
             "id": int(time.time() * 1000),
@@ -266,17 +321,23 @@ def paste_avatar():
             "url": f"/avatar/{int(time.time() * 1000)}.mp4",
             "thumbnail": f"/avatar/thumb_{int(time.time() * 1000)}.jpg",
             "duration": len(content.split()) * 0.5,  # Rough estimate
-            "created_at": time.time()
+            "created_at": time.time(),
         }
-        
-        return jsonify({
-            "success": True,
-            "avatar": avatar_result,
-            "message": "Avatar generated successfully"
-        }), 201
-        
+
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "avatar": avatar_result,
+                    "message": "Avatar generated successfully",
+                }
+            ),
+            201,
+        )
+
     except Exception as e:
         return jsonify({"error": f"Avatar generation failed: {str(e)}"}), 500
+
 
 # --------- Places search (free Overpass) ----------
 # category -> OSM tag mapping (add more as you like)
@@ -289,6 +350,7 @@ _OSM_TAGS = {
     "dog_park": {"leisure": "dog_park"},
 }
 
+
 def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
     # Overpass QL for nodes/ways/relations around a point; include center for ways/relations
     q = f"""
@@ -300,9 +362,12 @@ def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
     );
     out center {limit};
     """
-    r = requests.post("https://overpass-api.de/api/interpreter", data={"data": q}, timeout=30)
+    r = requests.post(
+        "https://overpass-api.de/api/interpreter", data={"data": q}, timeout=30
+    )
     r.raise_for_status()
     return r.json()
+
 
 def _elements_to_items(js):
     items = []
@@ -317,22 +382,32 @@ def _elements_to_items(js):
                 lat, lng = center.get("lat"), center.get("lon")
         if not (lat and lng):
             continue
-        items.append({
-            "id": el.get("id"),
-            "name": tags.get("name") or "Unnamed place",
-            "address": ", ".join(filter(None, [
-                tags.get("addr:street"),
-                tags.get("addr:housenumber"),
-                tags.get("addr:city"),
-                tags.get("addr:state"),
-                tags.get("addr:country"),
-            ])) or None,
-            "phone": tags.get("phone") or tags.get("contact:phone"),
-            "website": tags.get("website") or tags.get("contact:website"),
-            "lat": lat, "lng": lng,
-            "raw_tags": tags
-        })
+        items.append(
+            {
+                "id": el.get("id"),
+                "name": tags.get("name") or "Unnamed place",
+                "address": ", ".join(
+                    filter(
+                        None,
+                        [
+                            tags.get("addr:street"),
+                            tags.get("addr:housenumber"),
+                            tags.get("addr:city"),
+                            tags.get("addr:state"),
+                            tags.get("addr:country"),
+                        ],
+                    )
+                )
+                or None,
+                "phone": tags.get("phone") or tags.get("contact:phone"),
+                "website": tags.get("website") or tags.get("contact:website"),
+                "lat": lat,
+                "lng": lng,
+                "raw_tags": tags,
+            }
+        )
     return items
+
 
 @app.get("/places/search")
 @app.get("/api/places/search")  # alias
@@ -357,14 +432,19 @@ def places_search():
         PROVIDER_STATUS["overpass"]["color"] = "red"
         PROVIDER_STATUS["overpass"]["last_error"] = str(e)
 
-        fallback = [{
-            "id": "fallback_1",
-            "name": "Example Clinic",
-            "address": "123 Example St",
-            "lat": lat, "lng": lng,
-            "phone": None, "website": None
-        }]
+        fallback = [
+            {
+                "id": "fallback_1",
+                "name": "Example Clinic",
+                "address": "123 Example St",
+                "lat": lat,
+                "lng": lng,
+                "phone": None,
+                "website": None,
+            }
+        ]
         return jsonify({"provider": "static_fallback", "items": fallback})
+
 
 # --------- Locator pages (HTML) ----------
 _LOCATOR_HTML = """
@@ -440,10 +520,12 @@ _LOCATOR_HTML = """
 </html>
 """
 
+
 @app.get("/places/locator")
 @app.get("/api/places/locator")  # alias
 def places_locator():
     return render_template_string(_LOCATOR_HTML)
+
 
 # Embeddable mini-map
 _LOCATOR_EMBED_HTML = """
@@ -498,10 +580,12 @@ _LOCATOR_EMBED_HTML = """
 </html>
 """
 
+
 @app.get("/places/locator/embed")
 @app.get("/api/places/locator/embed")  # alias
 def places_locator_embed():
     return render_template_string(_LOCATOR_EMBED_HTML)
+
 
 @app.get("/integrations/providers/ui")
 def providers_ui():
@@ -529,6 +613,7 @@ def providers_ui():
     """
     return html
 
+
 # --------- JSON error handler (prevents plain-text 500s) ----------
 @app.errorhandler(Exception)
 def _json_errors(e):
@@ -540,34 +625,88 @@ def _json_errors(e):
     p = request.path or ""
     if p.startswith("/content/pets/fish/species"):
         # static fish fallback (always JSON, 200)
-        return jsonify({
-            "provider": "static_fallback",
-            "count": 5,
-            "species": [
-                {"name":"Atlantic Salmon","scientific":"Salmo salar","biology":"Atlantic salmon are anadromous fish...","habitat":"North Atlantic Ocean..."},
-                {"name":"Pacific Cod","scientific":"Gadus macrocephalus","biology":"Pacific cod are bottom-dwelling...","habitat":"North Pacific Ocean..."},
-                {"name":"Yellowfin Tuna","scientific":"Thunnus albacares","biology":"Yellowfin tuna are fast-swimming...","habitat":"Tropical and subtropical waters..."},
-                {"name":"Red Snapper","scientific":"Lutjanus campechanus","biology":"Red snapper are long-lived...","habitat":"Gulf of Mexico..."},
-                {"name":"Mahi-Mahi","scientific":"Coryphaena hippurus","biology":"Mahi-mahi are fast-growing...","habitat":"Warm tropical/subtropical seas..."}
-            ]
-        }), 200
+        return (
+            jsonify(
+                {
+                    "provider": "static_fallback",
+                    "count": 5,
+                    "species": [
+                        {
+                            "name": "Atlantic Salmon",
+                            "scientific": "Salmo salar",
+                            "biology": "Atlantic salmon are anadromous fish...",
+                            "habitat": "North Atlantic Ocean...",
+                        },
+                        {
+                            "name": "Pacific Cod",
+                            "scientific": "Gadus macrocephalus",
+                            "biology": "Pacific cod are bottom-dwelling...",
+                            "habitat": "North Pacific Ocean...",
+                        },
+                        {
+                            "name": "Yellowfin Tuna",
+                            "scientific": "Thunnus albacares",
+                            "biology": "Yellowfin tuna are fast-swimming...",
+                            "habitat": "Tropical and subtropical waters...",
+                        },
+                        {
+                            "name": "Red Snapper",
+                            "scientific": "Lutjanus campechanus",
+                            "biology": "Red snapper are long-lived...",
+                            "habitat": "Gulf of Mexico...",
+                        },
+                        {
+                            "name": "Mahi-Mahi",
+                            "scientific": "Coryphaena hippurus",
+                            "biology": "Mahi-mahi are fast-growing...",
+                            "habitat": "Warm tropical/subtropical seas...",
+                        },
+                    ],
+                }
+            ),
+            200,
+        )
 
     if p.startswith("/content/pets/birds/nearby"):
-        return jsonify({
-            "provider": "static",
-            "data": [
-                {"speciesCode":"amecro","comName":"American Crow","sciName":"Corvus brachyrhynchos","locName":"Central Park, New York","obsDt":"2024-01-15 10:30","howMany":3},
-                {"speciesCode":"norcrd","comName":"Northern Cardinal","sciName":"Cardinalis cardinalis","locName":"Bryant Park, New York","obsDt":"2024-01-15 09:45","howMany":2},
-                {"speciesCode":"blujay","comName":"Blue Jay","sciName":"Cyanocitta cristata","locName":"Washington Square Park, New York","obsDt":"2024-01-15 11:15","howMany":1}
-            ]
-        }), 200
+        return (
+            jsonify(
+                {
+                    "provider": "static",
+                    "data": [
+                        {
+                            "speciesCode": "amecro",
+                            "comName": "American Crow",
+                            "sciName": "Corvus brachyrhynchos",
+                            "locName": "Central Park, New York",
+                            "obsDt": "2024-01-15 10:30",
+                            "howMany": 3,
+                        },
+                        {
+                            "speciesCode": "norcrd",
+                            "comName": "Northern Cardinal",
+                            "sciName": "Cardinalis cardinalis",
+                            "locName": "Bryant Park, New York",
+                            "obsDt": "2024-01-15 09:45",
+                            "howMany": 2,
+                        },
+                        {
+                            "speciesCode": "blujay",
+                            "comName": "Blue Jay",
+                            "sciName": "Cyanocitta cristata",
+                            "locName": "Washington Square Park, New York",
+                            "obsDt": "2024-01-15 11:15",
+                            "howMany": 1,
+                        },
+                    ],
+                }
+            ),
+            200,
+        )
 
     # generic JSON error for everything else
-    return jsonify({
-        "error": "internal_error",
-        "status": code,
-        "message": str(e)
-    }), code
+    return jsonify({"error": "internal_error", "status": code, "message": str(e)}), code
+
+
 # ---------- END PATCH ----------
 
 # Simple HTML template for the paste app
@@ -626,15 +765,18 @@ HTML_TEMPLATE = """
 </html>
 """
 
-@app.route('/')
+
+@app.route("/")
 def index():
     """Main page with paste interface"""
     return render_template_string(HTML_TEMPLATE)
 
-@app.route('/health')
+
+@app.route("/health")
 def health():
     """Health check endpoint"""
     return jsonify({"status": "healthy", "app": "paste_app"})
+
 
 def first_free(start, max_tries=50):
     """Find the first free port starting from 'start'"""
@@ -648,9 +790,12 @@ def first_free(start, max_tries=50):
                 return p
             except OSError:
                 p += 1
-    raise RuntimeError(f"No free port found after trying {max_tries} ports starting from {start}")
+    raise RuntimeError(
+        f"No free port found after trying {max_tries} ports starting from {start}"
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     port = first_free(8081)
     print(f"Starting paste app on port {port}")
     app.run(host="0.0.0.0", port=port, debug=False)

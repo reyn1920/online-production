@@ -1,13 +1,22 @@
 from __future__ import annotations
-import os, json, time, pathlib, requests
+
+import json
+import os
+import pathlib
+import time
 from dataclasses import dataclass
-from typing import Optional, Dict, Any, Tuple
+from typing import Any, Dict, Optional, Tuple
+
+import requests
 
 GRAPH = "https://graph.facebook.com/v21.0"  # bump if needed
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config"
 CONFIG.mkdir(parents=True, exist_ok=True)
-TOKENS = CONFIG / "instagram.tokens.json"   # use your encrypted store later if you prefer
+TOKENS = (
+    CONFIG / "instagram.tokens.json"
+)  # use your encrypted store later if you prefer
+
 
 def _load() -> dict:
     if TOKENS.exists():
@@ -17,8 +26,10 @@ def _load() -> dict:
             pass
     return {}
 
+
 def _save(d: dict) -> None:
     TOKENS.write_text(json.dumps(d, indent=2))
+
 
 def _http(method: str, url: str, **kw) -> Tuple[int, dict]:
     resp = requests.request(method, url, timeout=60, **kw)
@@ -27,15 +38,18 @@ def _http(method: str, url: str, **kw) -> Tuple[int, dict]:
     except Exception:
         return resp.status_code, {"raw": resp.text}
 
+
 @dataclass
 class InstagramClient:
     app_id: Optional[str] = None
     app_secret: Optional[str] = None
     redirect_uri: Optional[str] = None
-    scopes: str = "pages_show_list,instagram_basic,instagram_content_publish,pages_read_engagement,business_management"
+    scopes: str = (
+        "pages_show_list,instagram_basic,instagram_content_publish,pages_read_engagement,business_management"
+    )
 
     # hydrated at runtime
-    user_access_token: Optional[str] = None      # long-lived user token
+    user_access_token: Optional[str] = None  # long-lived user token
     page_id: Optional[str] = None
     page_access_token: Optional[str] = None
     ig_user_id: Optional[str] = None
@@ -46,7 +60,9 @@ class InstagramClient:
         return cls(
             app_id=os.getenv("FB_APP_ID"),
             app_secret=os.getenv("FB_APP_SECRET"),
-            redirect_uri=os.getenv("FB_REDIRECT_URI"),  # e.g. https://your.host/social/oauth/instagram/callback
+            redirect_uri=os.getenv(
+                "FB_REDIRECT_URI"
+            ),  # e.g. https://your.host/social/oauth/instagram/callback
             scopes=os.getenv("FB_APP_SCOPES", cls.scopes),
             user_access_token=data.get("user_access_token"),
             page_id=data.get("page_id"),
@@ -74,7 +90,12 @@ class InstagramClient:
     def exchange_code_for_tokens(self, code: str) -> Dict[str, Any]:
         # 1) short-lived user token
         url = f"{GRAPH}/oauth/access_token"
-        params = dict(client_id=self.app_id, client_secret=self.app_secret, redirect_uri=self.redirect_uri, code=code)
+        params = dict(
+            client_id=self.app_id,
+            client_secret=self.app_secret,
+            redirect_uri=self.redirect_uri,
+            code=code,
+        )
         sc, j = _http("GET", url, params=params)
         if sc != 200:
             return {"ok": False, "step": "short_token", "status": sc, "error": j}
@@ -83,7 +104,12 @@ class InstagramClient:
 
         # 2) long-lived user token
         url = f"{GRAPH}/oauth/access_token"
-        params = dict(grant_type="fb_exchange_token", client_id=self.app_id, client_secret=self.app_secret, fb_exchange_token=short)
+        params = dict(
+            grant_type="fb_exchange_token",
+            client_id=self.app_id,
+            client_secret=self.app_secret,
+            fb_exchange_token=short,
+        )
         sc, j = _http("GET", url, params=params)
         if sc != 200:
             return {"ok": False, "step": "long_token", "status": sc, "error": j}
@@ -100,19 +126,25 @@ class InstagramClient:
         page_token = page.get("access_token")
 
         # 4) get IG business account id from page
-        sc, j = _http("GET", f"{GRAPH}/{page_id}", params={"fields": "instagram_business_account", "access_token": page_token})
+        sc, j = _http(
+            "GET",
+            f"{GRAPH}/{page_id}",
+            params={"fields": "instagram_business_account", "access_token": page_token},
+        )
         ig_user_id = (j.get("instagram_business_account") or {}).get("id")
 
         if not ig_user_id:
             return {"ok": False, "step": "ig_user", "status": sc, "error": j}
 
-        _save({
-            "saved_at": int(time.time()),
-            "user_access_token": user_ll,
-            "page_id": page_id,
-            "page_access_token": page_token,
-            "ig_user_id": ig_user_id,
-        })
+        _save(
+            {
+                "saved_at": int(time.time()),
+                "user_access_token": user_ll,
+                "page_id": page_id,
+                "page_access_token": page_token,
+                "ig_user_id": ig_user_id,
+            }
+        )
         self.user_access_token = user_ll
         self.page_id = page_id
         self.page_access_token = page_token
@@ -121,19 +153,30 @@ class InstagramClient:
 
     # ---------- POSTING ----------
     def _publish_creation(self, creation_id: str) -> Dict[str, Any]:
-        sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media_publish", data={"creation_id": creation_id, "access_token": self.page_access_token})
+        sc, j = _http(
+            "POST",
+            f"{GRAPH}/{self.ig_user_id}/media_publish",
+            data={"creation_id": creation_id, "access_token": self.page_access_token},
+        )
         return {"status": sc, **j}
 
     def post_image(self, caption: str, image_url: str) -> Dict[str, Any]:
         if not self.ready():
             return {"ok": False, "reason": "Not configured"}
-        data = {"caption": caption or "", "image_url": image_url, "access_token": self.page_access_token}
+        data = {
+            "caption": caption or "",
+            "image_url": image_url,
+            "access_token": self.page_access_token,
+        }
         sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media", data=data)
-        if sc != 200 or "id" not in j: return {"ok": False, "step": "create_media", "status": sc, "error": j}
+        if sc != 200 or "id" not in j:
+            return {"ok": False, "step": "create_media", "status": sc, "error": j}
         publish = self._publish_creation(j["id"])
         return {"ok": publish.get("status") == 200, "creation": j, "publish": publish}
 
-    def post_reel(self, caption: str, video_url: str, share_to_feed: bool = True) -> Dict[str, Any]:
+    def post_reel(
+        self, caption: str, video_url: str, share_to_feed: bool = True
+    ) -> Dict[str, Any]:
         if not self.ready():
             return {"ok": False, "reason": "Not configured"}
         data = {
@@ -144,7 +187,8 @@ class InstagramClient:
             "access_token": self.page_access_token,
         }
         sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media", data=data)
-        if sc != 200 or "id" not in j: return {"ok": False, "step": "create_reel", "status": sc, "error": j}
+        if sc != 200 or "id" not in j:
+            return {"ok": False, "step": "create_reel", "status": sc, "error": j}
         # (optional) poll status via /{creation_id}?fields=status_code
         publish = self._publish_creation(j["id"])
         return {"ok": publish.get("status") == 200, "creation": j, "publish": publish}
@@ -153,6 +197,10 @@ class InstagramClient:
     def insights(self) -> Dict[str, Any]:
         if not self.ready():
             return {"ok": False, "reason": "Not configured"}
-        params = {"metric": "impressions,reach,profile_views,follower_count", "period": "day", "access_token": self.page_access_token}
+        params = {
+            "metric": "impressions,reach,profile_views,follower_count",
+            "period": "day",
+            "access_token": self.page_access_token,
+        }
         sc, j = _http("GET", f"{GRAPH}/{self.ig_user_id}/insights", params=params)
         return {"ok": sc == 200, "status": sc, "data": j}

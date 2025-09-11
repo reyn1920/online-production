@@ -1,15 +1,17 @@
 # ADD-ONLY: Metrics aggregator + /api/metrics route
 # Safe on systems without psutil; falls back to stdlib.
 from __future__ import annotations
-import os
-import json
-import time
+
 import glob
-import traceback
+import json
+import os
 import shutil
+import time
+import traceback
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
-from flask import Blueprint, jsonify, current_app
+from typing import Any, Dict, List, Optional
+
+from flask import Blueprint, current_app, jsonify
 
 try:
     import psutil  # optional
@@ -39,35 +41,44 @@ def _system_stats() -> Dict[str, Any]:
     return {
         "cpu_percent": cpu,
         "memory": (
-            {"total": vm["total"], "used": vm["used"], "available": vm["available"], "percent": vm["percent"]}
-            if isinstance(vm, dict) else None
+            {
+                "total": vm["total"],
+                "used": vm["used"],
+                "available": vm["available"],
+                "percent": vm["percent"],
+            }
+            if isinstance(vm, dict)
+            else None
         ),
-        "disk": (
-            {"total": du.total, "used": du.used, "free": du.free}
-            if du else None
-        ),
+        "disk": ({"total": du.total, "used": du.used, "free": du.free} if du else None),
     }
 
 
 def _db_inventory() -> Dict[str, Any]:
     # Discover *.db under common locations; size + mtime
-    roots = list({os.getenv("TRAE_DB_DIR", "data"),
-                 "data", "backend/database", "db", "."})
+    roots = list(
+        {os.getenv("TRAE_DB_DIR", "data"), "data", "backend/database", "db", "."}
+    )
     found: List[Dict[str, Any]] = []
     for root in roots:
         for path in glob.glob(os.path.join(root, "**", "*.db"), recursive=True):
             try:
                 st = os.stat(path)
-                found.append({
-                    "path": os.path.relpath(path),
-                    "size_bytes": st.st_size,
-                    "modified": datetime.fromtimestamp(st.st_mtime, tz=timezone.utc).isoformat(),
-                })
+                found.append(
+                    {
+                        "path": os.path.relpath(path),
+                        "size_bytes": st.st_size,
+                        "modified": datetime.fromtimestamp(
+                            st.st_mtime, tz=timezone.utc
+                        ).isoformat(),
+                    }
+                )
             except FileNotFoundError:
                 continue
             except Exception:
                 current_app.logger.debug(
-                    "db stat error %s\n%s", path, traceback.format_exc())
+                    "db stat error %s\n%s", path, traceback.format_exc()
+                )
     return {
         "count": len(found),
         # cap to keep payload light
@@ -89,13 +100,15 @@ def _latest_backup() -> Optional[Dict[str, Any]]:
                 best = {
                     "path": os.path.relpath(p),
                     "st_mtime": st.st_mtime,
-                    "size_bytes": st.st_size}
+                    "size_bytes": st.st_size,
+                }
         except Exception:
             continue
     if not best:
         return None
     best["timestamp"] = datetime.fromtimestamp(
-        best["st_mtime"], tz=timezone.utc).isoformat()
+        best["st_mtime"], tz=timezone.utc
+    ).isoformat()
     best["age_seconds"] = max(0, time.time() - best["st_mtime"])
     del best["st_mtime"]
     return best
@@ -134,11 +147,11 @@ def _agent_snapshot() -> Dict[str, Any]:
     total = _safe(lambda: len(snap.get("agents", [])))
     active = _safe(
         lambda: sum(
-            1 for a in snap.get(
-                "agents",
-                []) if a.get("status") in {
-                "busy",
-                "processing"}))
+            1
+            for a in snap.get("agents", [])
+            if a.get("status") in {"busy", "processing"}
+        )
+    )
     return {"total": total, "active": active, "agents": snap.get("agents")}
 
 

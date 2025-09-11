@@ -1,7 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional, Dict, Any
+
 import os
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
 
 @dataclass
 class FacebookClient:
@@ -25,12 +27,22 @@ class FacebookClient:
     def post_message(self, message: str, media_url: str = "") -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("Facebook not configured")
-        return {"ok": True, "id": "fb_post_stub", "message": message, "media": media_url}
+        return {
+            "ok": True,
+            "id": "fb_post_stub",
+            "message": message,
+            "media": media_url,
+        }
 
     def post_photo(self, caption: str, photo_url: str) -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("Facebook not configured")
-        return {"ok": True, "id": "fb_photo_stub", "caption": caption, "media": photo_url}
+        return {
+            "ok": True,
+            "id": "fb_photo_stub",
+            "caption": caption,
+            "media": photo_url,
+        }
 
     def insights(self) -> Dict[str, Any]:
         if not self.ready():

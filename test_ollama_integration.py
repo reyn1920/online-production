@@ -8,10 +8,12 @@ Steps:
 3. Run this script: `python test_ollama_integration.py`
 """
 
-import requests
 import json
 
+import requests
+
 OLLAMA_ENDPOINT = "http://localhost:11434"
+
 
 def test_ollama_tags():
     """Check if Ollama is running and list models."""
@@ -32,7 +34,7 @@ def test_ollama_generate():
     url = f"{OLLAMA_ENDPOINT}/api/generate"
     payload = {
         "model": "codellama",  # change this if you pulled another model
-        "prompt": "Find the bug in this Python code:\n\nfor i in range(5)\n    print(i)"
+        "prompt": "Find the bug in this Python code:\n\nfor i in range(5)\n    print(i)",
     }
 
     try:
@@ -59,7 +61,9 @@ def main():
     if ok_tags:
         test_ollama_generate()
 
-    print("\n🎯 Done. If you saw responses, Trae.ai can now use Ollama for debugging & fixes.")
+    print(
+        "\n🎯 Done. If you saw responses, Trae.ai can now use Ollama for debugging & fixes."
+    )
 
 
 if __name__ == "__main__":

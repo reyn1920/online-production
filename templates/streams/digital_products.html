@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Products - Production Ready</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .status-active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #f44336;
+            color: white;
+        }
+
+        .status-starting {
+            background: #ff9800;
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .control-panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #9C27B0;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .metrics-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #9C27B0;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9C27B0, #E1BEE7);
+            transition: width 0.3s ease;
+        }
+
+        .products-section {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #E1BEE7, #9C27B0);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-category {
+            background: #9C27B0;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .product-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #9C27B0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .bestseller-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #FF5722;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .new-product-form {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #9C27B0;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .sales-analytics {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .analytics-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #9C27B0;
+            margin-bottom: 10px;
+        }
+
+        .analytics-label {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .analytics-change {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .change-positive {
+            color: #4CAF50;
+        }
+
+        .change-negative {
+            color: #f44336;
+        }
+
+        .test-results {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .test-pass {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .test-fail {
+            background: #f44336;
+            color: white;
+        }
+
+        .test-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #9C27B0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="status-indicator" id="statusIndicator">INACTIVE</div>
+            <h1>🛍️ Digital Products</h1>
+            <p>Production-Ready E-commerce & Digital Sales Platform</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h2>Stream Controls</h2>
+                
+                <div class="control-group">
+                    <label>Stream Status</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="streamToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="streamStatus">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Auto-Start on System Boot</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoStartToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span>Enabled when checked</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn btn-success" id="startBtn" onclick="startStream()">▶️ Start Stream</button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopStream()" disabled>⏹️ Stop Stream</button>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn btn-warning" onclick="runTests()">🧪 Run Tests</button>
+                    <button class="btn" onclick="saveConfig()">💾 Save Config</button>
+                    <button class="btn btn-purple" onclick="showNewProductForm()">➕ Add Product</button>
+                </div>
+
+                <div id="alertContainer"></div>
+            </div>
+
+            <!-- Metrics Panel -->
+            <div class="metrics-panel">
+                <h2>Sales Metrics</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalSales">0</div>
+                        <div class="metric-label">Total Sales</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="monthlyRevenue">$0.00</div>
+                        <div class="metric-label">Monthly Revenue</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="activeProducts">0</div>
+                        <div class="metric-label">Active Products</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="conversionRate">0%</div>
+                        <div class="metric-label">Conversion Rate</div>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Monthly Sales Goal</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="salesGoalFill" style="width: 0%"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 5px;">
+                        <span id="salesGoalText">$0 / $10,000 goal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="products-section">
+                <h2>Digital Products Catalog</h2>
+                <p style="color: #666; margin-bottom: 20px;">Manage your digital products and track sales performance</p>
+                
+                <div class="products-grid" id="productsGrid">
+                    <!-- Products will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- New Product Form -->
+            <div class="new-product-form" id="newProductForm" style="display: none;">
+                <h2>Add New Digital Product</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="productName" placeholder="Enter product name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="productCategory">
+                            <option value="ebook">E-book</option>
+                            <option value="course">Online Course</option>
+                            <option value="template">Template</option>
+                            <option value="software">Software</option>
+                            <option value="audio">Audio</option>
+                            <option value="video">Video</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="productPrice" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Product Icon (Emoji)</label>
+                        <input type="text" id="productIcon" placeholder="📚" maxlength="2">
+                    </div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Description</label>
+                        <textarea id="productDescription" placeholder="Describe your digital product..."></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Download URL</label>
+                        <input type="url" id="productDownloadUrl" placeholder="https://example.com/download/product">
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-success" onclick="createProduct()">✅ Create Product</button>
+                    <button class="btn" onclick="hideNewProductForm()">❌ Cancel</button>
+                </div>
+            </div>
+
+            <!-- Sales Analytics -->
+            <div class="sales-analytics">
+                <h2>Sales Analytics</h2>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-value" id="todaySales">$0</div>
+                        <div class="analytics-label">Today's Sales</div>
+                        <div class="analytics-change change-positive" id="todayChange">+0%</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-value" id="weekSales">$0</div>
+                        <div class="analytics-label">This Week</div>
+                        <div class="analytics-change change-positive" id="weekChange">+0%</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-value" id="avgOrderValue">$0</div>
+                        <div class="analytics-label">Avg Order Value</div>
+                        <div class="analytics-change change-positive" id="aovChange">+0%</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-value" id="totalCustomers">0</div>
+                        <div class="analytics-label">Total Customers</div>
+                        <div class="analytics-change change-positive" id="customersChange">+0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Results Section -->
+            <div class="test-results">
+                <h2>System Tests</h2>
+                <div id="testResultsContainer">
+                    <p style="text-align: center; color: #666;">Click "Run Tests" to validate all e-commerce systems</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let streamData = {
+            streamId: 'digital_products',
+            status: 'inactive',
+            autoStart: false,
+            totalSales: 0,
+            monthlyRevenue: 0,
+            activeProducts: 0,
+            conversionRate: 0,
+            salesGoal: 10000,
+            products: [],
+            analytics: {
+                todaySales: 0,
+                weekSales: 0,
+                avgOrderValue: 0,
+                totalCustomers: 0,
+                todayChange: 0,
+                weekChange: 0,
+                aovChange: 0,
+                customersChange: 0
+            }
+        };
+
+        const defaultProducts = [
+            {
+                id: 'ebook_guide',
+                name: 'Complete Digital Marketing Guide',
+                category: 'ebook',
+                price: 29.99,
+                icon: '📚',
+                description: 'Comprehensive guide to digital marketing strategies and tactics for modern businesses.',
+                downloadUrl: 'https://example.com/download/marketing-guide',
+                sales: 0,
+                revenue: 0,
+                views: 0,
+                bestseller: true,
+                created: new Date().toISOString()
+            },
+            {
+                id: 'course_webdev',
+                name: 'Full-Stack Web Development Course',
+                category: 'course',
+                price: 199.99,
+                icon: '💻',
+                description: 'Learn modern web development from scratch with hands-on projects and real-world examples.',
+                downloadUrl: 'https://example.com/course/webdev',
+                sales: 0,
+                revenue: 0,
+                views: 0,
+                bestseller: false,
+                created: new Date().toISOString()
+            },
+            {
+                id: 'template_business',
+                name: 'Business Plan Templates Pack',
+                category: 'template',
+                price: 49.99,
+                icon: '📋',
+                description: 'Professional business plan templates for startups and established businesses.',
+                downloadUrl: 'https://example.com/download/business-templates',
+                sales: 0,
+                revenue: 0,
+                views: 0,
+                bestseller: false,
+                created: new Date().toISOString()
+            },
+            {
+                id: 'software_tool',
+                name: 'Productivity Automation Tool',
+                category: 'software',
+                price: 79.99,
+                icon: '⚡',
+                description: 'Powerful automation software to streamline your workflow and boost productivity.',
+                downloadUrl: 'https://example.com/download/productivity-tool',
+                sales: 0,
+                revenue: 0,
+                views: 0,
+                bestseller: false,
+                created: new Date().toISOString()
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProducts();
+            loadStreamData();
+            setupEventListeners();
+            startRealtimeUpdates();
+        });
+
+        function initializeProducts() {
+            streamData.products = defaultProducts;
+            streamData.activeProducts = streamData.products.length;
+            renderProducts();
+        }
+
+        function setupEventListeners() {
+            // Stream toggle
+            document.getElementById('streamToggle').addEventListener('change', function() {
+                if (this.checked) {
+                    startStream();
+                } else {
+                    stopStream();
+                }
+            });
+
+            // Auto-start toggle
+            document.getElementById('autoStartToggle').addEventListener('change', function() {
+                streamData.autoStart = this.checked;
+                updateStreamConfig();
+            });
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('productsGrid');
+            container.innerHTML = '';
+
+            streamData.products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    ${product.bestseller ? '<div class="bestseller-badge">Bestseller</div>' : ''}
+                    
+                    <div class="product-image">
+                        ${product.icon}
+                    </div>
+                    
+                    <div class="product-header">
+                        <div>
+                            <div class="product-name">${product.name}</div>
+                        </div>
+                        <div class="product-category">${product.category}</div>
+                    </div>
+                    
+                    <div class="product-description">
+                        ${product.description}
+                    </div>
+                    
+                    <div class="product-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${product.sales}</div>
+                            <div class="stat-label">Sales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$${product.revenue.toFixed(2)}</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${product.views}</div>
+                            <div class="stat-label">Views</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-price">$${product.price.toFixed(2)}</div>
+                    
+                    <div class="product-actions">
+                        <button class="btn" onclick="editProduct('${product.id}')" style="padding: 10px; font-size: 0.9rem;">
+                            ✏️ Edit
+                        </button>
+                        <button class="btn btn-warning" onclick="testProduct('${product.id}')" style="padding: 10px; font-size: 0.9rem;">
+                            🧪 Test
+                        </button>
+                    </div>
+                `;
+                container.appendChild(productCard);
+            });
+        }
+
+        async function loadStreamData() {
+            try {
+                const response = await fetch('/api/revenue/status');
+                const data = await response.json();
+                
+                if (data.success && data.streams.digital_products) {
+                    const stream = data.streams.digital_products;
+                    streamData.status = stream.status;
+                    streamData.totalSales = stream.totalSales;
+                    streamData.monthlyRevenue = stream.monthlyRevenue;
+                    streamData.conversionRate = stream.conversionRate;
+                    streamData.autoStart = stream.autoStart;
+                    
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Error loading stream data:', error);
+                showAlert('Error loading stream data', 'error');
+            }
+        }
+
+        function updateUI() {
+            // Update status indicator
+            const statusIndicator = document.getElementById('statusIndicator');
+            const streamToggle = document.getElementById('streamToggle');
+            const streamStatus = document.getElementById('streamStatus');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+
+            statusIndicator.textContent = streamData.status.toUpperCase();
+            statusIndicator.className = 'status-indicator status-' + streamData.status;
+
+            streamToggle.checked = streamData.status === 'active';
+            streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
+
+            startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
+
+            // Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;
+
+            // Update metrics
+            document.getElementById('totalSales').textContent = streamData.totalSales.toLocaleString();
+            document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
+            document.getElementById('activeProducts').textContent = streamData.activeProducts.toLocaleString();
+            document.getElementById('conversionRate').textContent = streamData.conversionRate.toFixed(1) + '%';
+            
+            // Update sales goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyRevenue / streamData.salesGoal) * 100);
+            document.getElementById('salesGoalFill').style.width = goalPercent + '%';
+            document.getElementById('salesGoalText').textContent = `$${streamData.monthlyRevenue.toFixed(2)} / $${streamData.salesGoal.toLocaleString()} goal`;
+
+            // Update analytics
+            document.getElementById('todaySales').textContent = '$' + streamData.analytics.todaySales.toFixed(2);
+            document.getElementById('weekSales').textContent = '$' + streamData.analytics.weekSales.toFixed(2);
+            document.getElementById('avgOrderValue').textContent = '$' + streamData.analytics.avgOrderValue.toFixed(2);
+            document.getElementById('totalCustomers').textContent = streamData.analytics.totalCustomers.toLocaleString();
+            
+            // Update change indicators
+            updateChangeIndicator('todayChange', streamData.analytics.todayChange);
+            updateChangeIndicator('weekChange', streamData.analytics.weekChange);
+            updateChangeIndicator('aovChange', streamData.analytics.aovChange);
+            updateChangeIndicator('customersChange', streamData.analytics.customersChange);
+        }
+
+        function updateChangeIndicator(elementId, change) {
+            const element = document.getElementById(elementId);
+            const sign = change >= 0 ? '+' : '';
+            element.textContent = sign + change.toFixed(1) + '%';
+            element.className = 'analytics-change ' + (change >= 0 ? 'change-positive' : 'change-negative');
+        }
+
+        async function startStream() {
+            try {
+                showAlert('Starting Digital Products stream...', 'warning');
+                
+                const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    streamData.status = 'starting';
+                    updateUI();
+                    showAlert(result.message, 'success');
+                    
+                    // Poll for status updates
+                    pollStreamStatus();
+                } else {
+                    showAlert('Failed to start stream: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error starting stream:', error);
+                showAlert('Error starting stream', 'error');
+            }
+        }
+
+        async function stopStream() {
+            try {
+                showAlert('Stopping Digital Products stream...', 'warning');
+                
+                const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    streamData.status = 'stopping';
+                    updateUI();
+                    showAlert(result.message, 'success');
+                    
+                    // Poll for status updates
+                    pollStreamStatus();
+                } else {
+                    showAlert('Failed to stop stream: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error stopping stream:', error);
+                showAlert('Error stopping stream', 'error');
+            }
+        }
+
+        async function runTests() {
+            try {
+                showAlert('Running comprehensive e-commerce tests...', 'warning');
+                
+                const testContainer = document.getElementById('testResultsContainer');
+                testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
+                
+                const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayTestResults(result.results);
+                    showAlert('Tests completed successfully', 'success');
+                } else {
+                    showAlert('Test execution failed: ' + result.error, 'error');
+                    testContainer.innerHTML = '<p style="text-align: center; color: #f44336;">Test execution failed</p>';
+                }
+            } catch (error) {
+                console.error('Error running tests:', error);
+                showAlert('Error running tests', 'error');
+            }
+        }
+
+        function displayTestResults(results) {
+            const container = document.getElementById('testResultsContainer');
+            container.innerHTML = '';
+            
+            Object.keys(results).forEach(testName => {
+                const test = results[testName];
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                
+                testItem.innerHTML = `
+                    <div>
+                        <strong>${testName}</strong>
+                        <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">${test.message}</div>
+                        <div style="font-size: 0.8rem; color: #999; margin-top: 3px;">Execution time: ${test.executionTime.toFixed(3)}s</div>
+                    </div>
+                    <div class="test-status test-${test.status}">${test.status}</div>
+                `;
+                
+                container.appendChild(testItem);
+            });
+        }
+
+        function showNewProductForm() {
+            document.getElementById('newProductForm').style.display = 'block';
+            document.getElementById('productName').focus();
+        }
+
+        function hideNewProductForm() {
+            document.getElementById('newProductForm').style.display = 'none';
+            // Clear form
+            document.getElementById('productName').value = '';
+            document.getElementById('productCategory').value = 'ebook';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productIcon').value = '';
+            document.getElementById('productDescription').value = '';
+            document.getElementById('productDownloadUrl').value = '';
+        }
+
+        async function createProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const category = document.getElementById('productCategory').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const icon = document.getElementById('productIcon').value.trim() || '📦';
+            const description = document.getElementById('productDescription').value.trim();
+            const downloadUrl = document.getElementById('productDownloadUrl').value.trim();
+
+            if (!name || !description || isNaN(price) || price < 0) {
+                showAlert('Please fill in all required fields with valid data', 'error');
+                return;
+            }
+
+            try {
+                const newProduct = {
+                    id: 'product_' + Date.now(),
+                    name: name,
+                    category: category,
+                    price: price,
+                    icon: icon,
+                    description: description,
+                    downloadUrl: downloadUrl,
+                    sales: 0,
+                    revenue: 0,
+                    views: 0,
+                    bestseller: false,
+                    created: new Date().toISOString()
+                };
+
+                const response = await fetch('/api/products/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newProduct)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    streamData.products.unshift(newProduct);
+                    streamData.activeProducts = streamData.products.length;
+                    renderProducts();
+                    updateUI();
+                    hideNewProductForm();
+                    showAlert('Product created successfully', 'success');
+                } else {
+                    showAlert('Failed to create product: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error creating product:', error);
+                showAlert('Error creating product', 'error');
+            }
+        }
+
+        function editProduct(productId) {
+            const product = streamData.products.find(p => p.id === productId);
+            if (product) {
+                const newPrice = parseFloat(prompt(`Enter new price for "${product.name}":`, product.price));
+                if (!isNaN(newPrice) && newPrice >= 0) {
+                    product.price = newPrice;
+                    renderProducts();
+                    showAlert(`Price updated for "${product.name}"`, 'success');
+                }
+            }
+        }
+
+        async function testProduct(productId) {
+            const product = streamData.products.find(p => p.id === productId);
+            if (product) {
+                try {
+                    showAlert(`Testing "${product.name}" product...`, 'warning');
+                    
+                    const response = await fetch('/api/test/product', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productId: productId,
+                            downloadUrl: product.downloadUrl
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlert(`"${product.name}" test passed successfully`, 'success');
+                    } else {
+                        showAlert(`"${product.name}" test failed: ${result.error}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error testing product:', error);
+                    showAlert('Error testing product', 'error');
+                }
+            }
+        }
+
+        async function saveConfig() {
+            try {
+                const response = await fetch(`/api/revenue/config/${streamData.streamId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        autoStart: streamData.autoStart,
+                        products: streamData.products,
+                        salesGoal: streamData.salesGoal
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Configuration saved successfully', 'success');
+                } else {
+                    showAlert('Failed to save configuration: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving configuration:', error);
+                showAlert('Error saving configuration', 'error');
+            }
+        }
+
+        async function updateStreamConfig() {
+            try {
+                const response = await fetch(`/api/revenue/config/${streamData.streamId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        autoStart: streamData.autoStart
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to update auto-start setting');
+                }
+            } catch (error) {
+                console.error('Error updating stream config:', error);
+            }
+        }
+
+        function pollStreamStatus() {
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/revenue/status');
+                    const data = await response.json();
+                    
+                    if (data.success && data.streams.digital_products) {
+                        const stream = data.streams.digital_products;
+                        const oldStatus = streamData.status;
+                        streamData.status = stream.status;
+                        streamData.totalSales = stream.totalSales;
+                        streamData.monthlyRevenue = stream.monthlyRevenue;
+                        streamData.conversionRate = stream.conversionRate;
+                        
+                        updateUI();
+                        
+                        // Stop polling if status is stable
+                        if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
+                            clearInterval(pollInterval);
+                            
+                            if (stream.status === 'error') {
+                                showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
+                            } else if (oldStatus !== stream.status) {
+                                showAlert(`Stream is now ${stream.status}`, 'success');
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error polling status:', error);
+                    clearInterval(pollInterval);
+                }
+            }, 2000);
+        }
+
+        function startRealtimeUpdates() {
+            // Update metrics every 30 seconds
+            setInterval(async () => {
+                if (streamData.status === 'active') {
+                    await loadStreamData();
+                    simulateSalesActivity();
+                }
+            }, 30000);
+        }
+
+        function simulateSalesActivity() {
+            if (streamData.status === 'active') {
+                // Simulate product sales
+                streamData.products.forEach(product => {
+                    const newSales = Math.floor(Math.random() * 3);
+                    const newViews = Math.floor(Math.random() * 20) + 5;
+                    
+                    product.sales += newSales;
+                    product.revenue += newSales * product.price;
+                    product.views += newViews;
+                });
+                
+                // Update totals
+                streamData.totalSales = streamData.products.reduce((sum, p) => sum + p.sales, 0);
+                streamData.monthlyRevenue = streamData.products.reduce((sum, p) => sum + p.revenue, 0);
+                streamData.conversionRate = streamData.totalSales > 0 ? 
+                    (streamData.totalSales / streamData.products.reduce((sum, p) => sum + p.views, 0)) * 100 : 0;
+                
+                // Update analytics
+                streamData.analytics.todaySales = streamData.monthlyRevenue * 0.1;
+                streamData.analytics.weekSales = streamData.monthlyRevenue * 0.3;
+                streamData.analytics.avgOrderValue = streamData.totalSales > 0 ? streamData.monthlyRevenue / streamData.totalSales : 0;
+                streamData.analytics.totalCustomers = Math.floor(streamData.totalSales * 0.8);
+                
+                // Simulate changes
+                streamData.analytics.todayChange = (Math.random() - 0.3) * 20;
+                streamData.analytics.weekChange = (Math.random() - 0.2) * 15;
+                streamData.analytics.aovChange = (Math.random() - 0.4) * 10;
+                streamData.analytics.customersChange = (Math.random() - 0.1) * 25;
+                
+                updateUI();
+                renderProducts();
+            }
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            container.appendChild(alert);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+
+        // Start sales activity simulation
+        setInterval(simulateSalesActivity, 20000);
+    </script>
+</body>
+</html>

@@ -7,10 +7,10 @@ Usage:
     python3 tools/start_local.py dashboard  # Launch dashboard application
 """
 
-import sys
 import os
-import subprocess
 import signal
+import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -18,20 +18,22 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+
 def signal_handler(sig, frame):
     """Handle Ctrl+C gracefully"""
     print("\n\n🛑 Shutting down server...")
     sys.exit(0)
+
 
 def launch_paste_app():
     """Launch the paste application"""
     print("🚀 Starting Paste Application...")
     print("📋 Available at: http://127.0.0.1:8000 (or next available port)")
     print("💡 Press Ctrl+C to stop\n")
-    
+
     # Change to project root directory
     os.chdir(project_root)
-    
+
     # Launch paste app
     try:
         subprocess.run([sys.executable, "paste_app.py"], check=True)
@@ -41,15 +43,16 @@ def launch_paste_app():
     except KeyboardInterrupt:
         print("\n🛑 Paste app stopped by user")
 
+
 def launch_dashboard():
     """Launch the dashboard application"""
     print("🚀 Starting Dashboard Application...")
     print("📊 Available at: http://127.0.0.1:8080 (or next available port)")
     print("💡 Press Ctrl+C to stop\n")
-    
+
     # Change to project root directory
     os.chdir(project_root)
-    
+
     # Launch dashboard
     try:
         subprocess.run([sys.executable, "app/dashboard.py"], check=True)
@@ -59,15 +62,16 @@ def launch_dashboard():
     except KeyboardInterrupt:
         print("\n🛑 Dashboard stopped by user")
 
+
 def launch_live_dashboard():
     """Launch the live dashboard application"""
     print("🚀 Starting Live Dashboard Application...")
     print("📊 Available at: http://127.0.0.1:8001 (or next available port)")
     print("💡 Press Ctrl+C to stop\n")
-    
+
     # Change to project root directory
     os.chdir(project_root)
-    
+
     # Launch live dashboard
     try:
         subprocess.run([sys.executable, "live_dashboard.py"], check=True)
@@ -77,9 +81,11 @@ def launch_live_dashboard():
     except KeyboardInterrupt:
         print("\n🛑 Live dashboard stopped by user")
 
+
 def show_help():
     """Show usage information"""
-    print("""
+    print(
+        """
 🔧 Local Development Server Launcher
 
 Usage:
@@ -97,20 +103,22 @@ Examples:
 
 💡 All applications use automatic port detection to avoid conflicts.
 💡 Press Ctrl+C to stop any running service.
-    """)
+    """
+    )
+
 
 def main():
     """Main entry point"""
     # Set up signal handler for graceful shutdown
     signal.signal(signal.SIGINT, signal_handler)
-    
+
     # Check command line arguments
     if len(sys.argv) != 2:
         show_help()
         sys.exit(1)
-    
+
     service = sys.argv[1].lower()
-    
+
     # Route to appropriate launcher
     if service == "paste":
         launch_paste_app()
@@ -124,6 +132,7 @@ def main():
         print(f"❌ Unknown service: {service}")
         show_help()
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

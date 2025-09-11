@@ -1,15 +1,16 @@
 # auth.py - User Authentication and Authorization Module
-from datetime import datetime, timedelta
-from typing import Optional, Dict, List, Any
-from dataclasses import dataclass, asdict
-from passlib.context import CryptContext
-from jose import JWTError, jwt
-from fastapi import HTTPException, status, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import secrets
 import hashlib
 import os
+import secrets
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 # Configuration - Use environment variables for security
 SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_urlsafe(32))
@@ -30,6 +31,7 @@ security = HTTPBearer()
 
 class UserRole(str, Enum):
     """User roles for role-based access control"""
+
     ADMIN = "admin"
     MANAGER = "manager"
     ANALYST = "analyst"
@@ -38,6 +40,7 @@ class UserRole(str, Enum):
 
 class Permission(str, Enum):
     """System permissions"""
+
     READ_DASHBOARD = "read:dashboard"
     WRITE_DASHBOARD = "write:dashboard"
     READ_ANALYTICS = "read:analytics"
@@ -58,29 +61,28 @@ ROLE_PERMISSIONS = {
         Permission.MANAGE_USERS,
         Permission.SYSTEM_ADMIN,
         Permission.RESTART_SERVICES,
-        Permission.VIEW_LOGS
+        Permission.VIEW_LOGS,
     ],
     UserRole.MANAGER: [
         Permission.READ_DASHBOARD,
         Permission.WRITE_DASHBOARD,
         Permission.READ_ANALYTICS,
         Permission.EXPORT_DATA,
-        Permission.VIEW_LOGS
+        Permission.VIEW_LOGS,
     ],
     UserRole.ANALYST: [
         Permission.READ_DASHBOARD,
         Permission.READ_ANALYTICS,
-        Permission.EXPORT_DATA
+        Permission.EXPORT_DATA,
     ],
-    UserRole.VIEWER: [
-        Permission.READ_DASHBOARD
-    ]
+    UserRole.VIEWER: [Permission.READ_DASHBOARD],
 }
 
 
 @dataclass
 class User:
     """User model"""
+
     id: str
     username: str
     email: str
@@ -106,16 +108,17 @@ class User:
     def to_dict(self) -> Dict[str, Any]:
         """Convert user to dictionary (excluding password hash)"""
         data = asdict(self)
-        data.pop('password_hash', None)
-        data['created_at'] = self.created_at.isoformat() if self.created_at else None
-        data['last_login'] = self.last_login.isoformat() if self.last_login else None
-        data['permissions'] = [p.value for p in self.get_permissions()]
+        data.pop("password_hash", None)
+        data["created_at"] = self.created_at.isoformat() if self.created_at else None
+        data["last_login"] = self.last_login.isoformat() if self.last_login else None
+        data["permissions"] = [p.value for p in self.get_permissions()]
         return data
 
 
 @dataclass
 class TokenData:
     """Token payload data"""
+
     user_id: str
     username: str
     role: UserRole
@@ -143,7 +146,7 @@ class AuthManager:
                 "email": "admin@dashboard.com",
                 "full_name": "System Administrator",
                 "role": UserRole.ADMIN,
-                "password": "admin123"  # In production, use secure password
+                "password": "admin123",  # In production, use secure password
             },
             {
                 "id": "manager_001",
@@ -151,7 +154,7 @@ class AuthManager:
                 "email": "manager@dashboard.com",
                 "full_name": "Dashboard Manager",
                 "role": UserRole.MANAGER,
-                "password": "manager123"
+                "password": "manager123",
             },
             {
                 "id": "analyst_001",
@@ -159,7 +162,7 @@ class AuthManager:
                 "email": "analyst@dashboard.com",
                 "full_name": "Data Analyst",
                 "role": UserRole.ANALYST,
-                "password": "analyst123"
+                "password": "analyst123",
             },
             {
                 "id": "viewer_001",
@@ -167,12 +170,12 @@ class AuthManager:
                 "email": "viewer@dashboard.com",
                 "full_name": "Dashboard Viewer",
                 "role": UserRole.VIEWER,
-                "password": "viewer123"
-            }
+                "password": "viewer123",
+            },
         ]
 
         for user_data in default_users:
-            password = user_data.pop('password')
+            password = user_data.pop("password")
             user = User(**user_data)
             user.password_hash = self.hash_password(password)
             self.users[user.id] = user
@@ -219,7 +222,7 @@ class AuthManager:
             "role": user.role.value,
             "permissions": [p.value for p in user.get_permissions()],
             "exp": expire,
-            "iat": datetime.utcnow()
+            "iat": datetime.utcnow(),
         }
 
         return jwt.encode(payload, JWT_SECRET, algorithm=ALGORITHM)
@@ -232,7 +235,7 @@ class AuthManager:
             "sub": user.id,
             "type": "refresh",
             "exp": expire,
-            "iat": datetime.utcnow()
+            "iat": datetime.utcnow(),
         }
 
         return jwt.encode(payload, JWT_SECRET, algorithm=ALGORITHM)
@@ -256,7 +259,7 @@ class AuthManager:
                 role=UserRole(payload.get("role")),
                 permissions=payload.get("permissions", []),
                 exp=datetime.fromtimestamp(payload.get("exp")),
-                iat=datetime.fromtimestamp(payload.get("iat"))
+                iat=datetime.fromtimestamp(payload.get("iat")),
             )
 
             return token_data
@@ -283,8 +286,9 @@ class AuthManager:
         except JWTError:
             return None
 
-    def create_user(self, username: str, email: str, full_name: str,
-                    password: str, role: UserRole) -> User:
+    def create_user(
+        self, username: str, email: str, full_name: str, password: str, role: UserRole
+    ) -> User:
         """Create a new user"""
         # Check if username already exists
         if self.get_user_by_username(username):
@@ -299,7 +303,7 @@ class AuthManager:
             email=email,
             full_name=full_name,
             role=role,
-            password_hash=self.hash_password(password)
+            password_hash=self.hash_password(password),
         )
 
         self.users[user_id] = user
@@ -312,14 +316,14 @@ class AuthManager:
             return None
 
         # Update allowed fields
-        allowed_fields = ['email', 'full_name', 'role', 'is_active']
+        allowed_fields = ["email", "full_name", "role", "is_active"]
         for field, value in kwargs.items():
             if field in allowed_fields:
                 setattr(user, field, value)
 
         # Handle password update
-        if 'password' in kwargs:
-            user.password_hash = self.hash_password(kwargs['password'])
+        if "password" in kwargs:
+            user.password_hash = self.hash_password(kwargs["password"])
 
         return user
 
@@ -342,13 +346,14 @@ class AuthManager:
         role_counts = {}
         for role in UserRole:
             role_counts[role.value] = sum(
-                1 for user in self.users.values() if user.role == role)
+                1 for user in self.users.values() if user.role == role
+            )
 
         return {
             "total_users": total_users,
             "active_users": active_users,
             "inactive_users": total_users - active_users,
-            "role_distribution": role_counts
+            "role_distribution": role_counts,
         }
 
 
@@ -359,7 +364,8 @@ auth_manager = AuthManager()
 
 
 async def get_current_user(
-        credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> User:
     """Get current authenticated user"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -384,11 +390,12 @@ async def get_current_user(
 
 def require_permission(permission: Permission):
     """Decorator to require specific permission"""
+
     def permission_checker(current_user: User = Depends(get_current_user)) -> User:
         if not current_user.has_permission(permission):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Permission required: {permission.value}"
+                detail=f"Permission required: {permission.value}",
             )
         return current_user
 
@@ -397,15 +404,17 @@ def require_permission(permission: Permission):
 
 def require_role(role: UserRole):
     """Decorator to require specific role"""
+
     def role_checker(current_user: User = Depends(get_current_user)) -> User:
         if current_user.role != role:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Role required: {role.value}"
+                detail=f"Role required: {role.value}",
             )
         return current_user
 
     return role_checker
+
 
 # Utility functions
 
@@ -454,5 +463,5 @@ def validate_password_strength(password: str) -> Dict[str, Any]:
         "is_valid": len(issues) == 0,
         "strength": strength,
         "score": score,
-        "issues": issues
+        "issues": issues,
     }

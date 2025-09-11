@@ -1,6 +1,9 @@
-import json, os, time, urllib.parse
+import json
+import os
+import time
+import urllib.parse
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple, Any
+from typing import Any, Dict, Optional, Tuple
 
 import requests
 
@@ -10,8 +13,10 @@ TIKTOK_TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/"
 TIKTOK_DIRECT_POST_INIT = "https://open.tiktokapis.com/v2/post/publish/video/init/"
 TIKTOK_STATUS_FETCH = "https://open.tiktokapis.com/v2/post/publish/status/fetch/"
 
+
 def _now() -> int:
     return int(time.time())
+
 
 @dataclass
 class TikTokTokens:
@@ -20,6 +25,7 @@ class TikTokTokens:
     expires_at: int  # epoch seconds
     open_id: Optional[str] = None
     scope: Optional[str] = None
+
 
 class TikTokClient:
     """
@@ -52,7 +58,11 @@ class TikTokClient:
     @classmethod
     def from_env(cls) -> "TikTokClient":
         enabled = os.getenv("TIKTOK_ENABLED", "false").lower() == "true"
-        scopes = [s.strip() for s in os.getenv("TIKTOK_SCOPES", "video.upload,video.publish").split(",") if s.strip()]
+        scopes = [
+            s.strip()
+            for s in os.getenv("TIKTOK_SCOPES", "video.upload,video.publish").split(",")
+            if s.strip()
+        ]
         return cls(
             client_key=os.getenv("TIKTOK_CLIENT_KEY", ""),
             client_secret=os.getenv("TIKTOK_CLIENT_SECRET", ""),
@@ -77,7 +87,10 @@ class TikTokClient:
             return ("purple", {**meta, "reason": "missing_keys"})
         if not self._tokens or not self._tokens.access_token or self._expired():
             return ("red", {**meta, "reason": "auth_required"})
-        return ("green", {**meta, "open_id": self._tokens.open_id, "scopes": self._tokens.scope})
+        return (
+            "green",
+            {**meta, "open_id": self._tokens.open_id, "scopes": self._tokens.scope},
+        )
 
     def ready(self) -> bool:
         color, _ = self.status_light()
@@ -102,13 +115,17 @@ class TikTokClient:
     def _save_tokens(self, tokens: TikTokTokens):
         os.makedirs(os.path.dirname(self.token_path), exist_ok=True)
         with open(self.token_path, "w") as f:
-            json.dump({
-                "access_token": tokens.access_token,
-                "refresh_token": tokens.refresh_token,
-                "expires_at": tokens.expires_at,
-                "open_id": tokens.open_id,
-                "scope": tokens.scope
-            }, f, indent=2)
+            json.dump(
+                {
+                    "access_token": tokens.access_token,
+                    "refresh_token": tokens.refresh_token,
+                    "expires_at": tokens.expires_at,
+                    "open_id": tokens.open_id,
+                    "scope": tokens.scope,
+                },
+                f,
+                indent=2,
+            )
         self._tokens = tokens
 
     def _expired(self) -> bool:
@@ -200,28 +217,39 @@ class TikTokClient:
         Requires scopes: video.upload + video.publish.
         Returns {publish_id, status_hint}
         """
-        headers = {**self._auth_headers(), "Content-Type": "application/json; charset=UTF-8"}
-        payload = {
-            "source_info": {
-                "source": "PULL_FROM_URL",
-                "video_url": video_url
-            },
-            "post_info": {
-                "title": caption
-            }
+        headers = {
+            **self._auth_headers(),
+            "Content-Type": "application/json; charset=UTF-8",
         }
-        r = self.http.post(TIKTOK_DIRECT_POST_INIT, headers=headers, json=payload, timeout=60)
+        payload = {
+            "source_info": {"source": "PULL_FROM_URL", "video_url": video_url},
+            "post_info": {"title": caption},
+        }
+        r = self.http.post(
+            TIKTOK_DIRECT_POST_INIT, headers=headers, json=payload, timeout=60
+        )
         r.raise_for_status()
         j = r.json()
         err = (j.get("error") or {}).get("code")
         if err not in (None, "", "ok"):
             raise RuntimeError(f"TikTok init error: {j}")
         publish_id = (j.get("data") or {}).get("publish_id")
-        return {"publish_id": publish_id, "hint": "use /tiktok/status?publish_id=... to poll"}
+        return {
+            "publish_id": publish_id,
+            "hint": "use /tiktok/status?publish_id=... to poll",
+        }
 
     def fetch_status(self, publish_id: str) -> Dict:
-        headers = {**self._auth_headers(), "Content-Type": "application/json; charset=UTF-8"}
-        r = self.http.post(TIKTOK_STATUS_FETCH, headers=headers, json={"publish_id": publish_id}, timeout=30)
+        headers = {
+            **self._auth_headers(),
+            "Content-Type": "application/json; charset=UTF-8",
+        }
+        r = self.http.post(
+            TIKTOK_STATUS_FETCH,
+            headers=headers,
+            json={"publish_id": publish_id},
+            timeout=30,
+        )
         r.raise_for_status()
         return r.json()
 

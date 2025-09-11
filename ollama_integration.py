@@ -1,13 +1,15 @@
-import requests
 import json
+
+import requests
+
 
 def ask_ollama(model, prompt):
     """Send a prompt to Ollama and get the response.
-    
+
     Args:
         model (str): The model name to use (e.g., 'codellama:latest', 'llama2:7b')
         prompt (str): The prompt to send to the model
-        
+
     Returns:
         str: The complete response from the model
     """
@@ -20,6 +22,7 @@ def ask_ollama(model, prompt):
             data = json.loads(line.decode("utf-8"))
             answer += data.get("response", "")
     return answer
+
 
 # Test function
 if __name__ == "__main__":

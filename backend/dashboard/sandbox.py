@@ -1,25 +1,48 @@
-from flask import Blueprint, render_template, request, jsonify, send_from_directory, current_app, redirect
-import os, csv, time, requests
+import csv
+import os
+import time
 from urllib.parse import urlencode
 
-sandbox_bp = Blueprint("sandbox", __name__, template_folder="templates", static_folder="static")
+import requests
+from flask import (Blueprint, current_app, jsonify, redirect, render_template, request,
+                   send_from_directory)
+
+sandbox_bp = Blueprint(
+    "sandbox", __name__, template_folder="templates", static_folder="static"
+)
 
 DASH_URL = os.environ.get("TRAE_DASH_URL", "http://127.0.0.1:8083")
 
-ASSETS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "assets"))
+ASSETS_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "assets")
+)
 ROADMAP_DIR = os.path.join(ASSETS_DIR, "incoming")
 ROADMAP_PATH = os.path.join(ROADMAP_DIR, "channel_roadmaps_10.csv")
+
 
 def ensure_assets_layout():
     """Create common asset directories if missing"""
     subdirs = [
-        "", "incoming", "incoming/bundles", "incoming/roadmaps", "incoming/media",
-        "releases", "releases/v1", "releases/v2", "releases/v3",
-        "temp", "temp/synthesis", "temp/channels", "temp/processing",
-        "generated", "avatars", "audio"
+        "",
+        "incoming",
+        "incoming/bundles",
+        "incoming/roadmaps",
+        "incoming/media",
+        "releases",
+        "releases/v1",
+        "releases/v2",
+        "releases/v3",
+        "temp",
+        "temp/synthesis",
+        "temp/channels",
+        "temp/processing",
+        "generated",
+        "avatars",
+        "audio",
     ]
     for sd in subdirs:
         os.makedirs(os.path.join(ASSETS_DIR, sd), exist_ok=True)
+
 
 def ensure_roadmap_seed():
     """Seed assets/incoming/channel_roadmaps_10.csv with demo channels if missing/empty"""
@@ -29,10 +52,11 @@ def ensure_roadmap_seed():
             ["channel"],
             ["DEMO_CAPABILITY_REEL"],
             ["TEST_CHANNEL"],
-            ["QUICK_START"]
+            ["QUICK_START"],
         ]
         with open(ROADMAP_PATH, "w", newline="") as f:
             csv.writer(f).writerows(rows)
+
 
 @sandbox_bp.route("/sandbox", methods=["GET"])
 def sandbox_page():
@@ -42,6 +66,7 @@ def sandbox_page():
     except Exception as e:
         current_app.logger.warning("Sandbox seed warning: %s", e)
     return render_template("sandbox.html")
+
 
 @sandbox_bp.route("/go/capability-reel", methods=["GET"])
 def go_capability_reel():
@@ -56,6 +81,7 @@ def go_capability_reel():
     }
     return redirect(f"/sandbox?{urlencode(q)}", code=302)
 
+
 @sandbox_bp.route("/api/sandbox/capability-reel", methods=["POST"])
 def sandbox_capability_reel():
     """Proxy to existing Max-Out 'Run one channel' action with enhanced response handling"""
@@ -66,12 +92,12 @@ def sandbox_capability_reel():
     payload.setdefault("produce_examples", True)
     payload.setdefault("random_seed", int(time.time()))
     payload.setdefault("avatars", ["Linly-Talker", "TalkingHeads"])
-    
+
     try:
         r = requests.post(
             f"{DASH_URL}/api/action/maxout/Run%20one%20channel",
             json=payload,
-            timeout=300
+            timeout=300,
         )
         r.raise_for_status()
         data = r.json()
@@ -110,12 +136,19 @@ def sandbox_capability_reel():
         "ok": bool(data.get("ok", True)),
         "payload": payload,
         "raw": data,
-        "mp4_url": to_sandbox_url(pick(body, "mp4", "video", "artifacts.mp4", "outputs.mp4")),
-        "pdf_url": to_sandbox_url(pick(body, "pdf", "ebook", "artifacts.pdf", "outputs.pdf")),
-        "out_dir": to_sandbox_url(pick(body, "out_dir", "artifacts_dir", "outputs.dir")),
+        "mp4_url": to_sandbox_url(
+            pick(body, "mp4", "video", "artifacts.mp4", "outputs.mp4")
+        ),
+        "pdf_url": to_sandbox_url(
+            pick(body, "pdf", "ebook", "artifacts.pdf", "outputs.pdf")
+        ),
+        "out_dir": to_sandbox_url(
+            pick(body, "out_dir", "artifacts_dir", "outputs.dir")
+        ),
         "roadmap_csv": f"/sandbox/assets/incoming/{os.path.basename(ROADMAP_PATH)}",
     }
     return jsonify(resp), 200
+
 
 @sandbox_bp.route("/sandbox/assets/<path:subpath>", methods=["GET"])
 def sandbox_assets(subpath):

@@ -1,11 +1,14 @@
 from flask import Blueprint, jsonify, request
-from .actions_bus import list_actions, dispatch
+
+from .actions_bus import dispatch, list_actions
 
 actions_bp = Blueprint("actions_api", __name__)
+
 
 @actions_bp.route("/api/actions", methods=["GET"])
 def api_actions():
     return jsonify({"actions": list_actions(), "count": len(list_actions())})
+
 
 @actions_bp.route("/api/action/<agent>/<path:action>", methods=["POST"])
 def api_action_dispatch(agent, action):

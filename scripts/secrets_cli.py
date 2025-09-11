@@ -21,14 +21,15 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-from backend.secret_store import SecretStore, SecretStoreError
-import sys
-import os
 import argparse
 import getpass
 import json
+import os
+import sys
 from pathlib import Path
 from typing import Optional
+
+from backend.secret_store import SecretStore, SecretStoreError
 
 # Add the project root to Python path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -43,7 +44,7 @@ class SecretsCLI:
     """
 
     def __init__(self):
-        self.db_path = os.getenv('TRAE_SECRETS_DB', 'data/secrets.sqlite')
+        self.db_path = os.getenv("TRAE_SECRETS_DB", "data/secrets.sqlite")
         self.master_password = None
 
     def _get_master_password(self) -> str:
@@ -60,7 +61,7 @@ class SecretsCLI:
             return self.master_password
 
         # Try environment variable first
-        password = os.getenv('TRAE_MASTER_KEY')
+        password = os.getenv("TRAE_MASTER_KEY")
 
         if not password:
             # Prompt user for password (hidden input)
@@ -145,7 +146,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error retrieving secret: {e}")
 
-    def list_secrets(self, output_format: str = 'table') -> None:
+    def list_secrets(self, output_format: str = "table") -> None:
         """
         List all secrets in the store.
 
@@ -160,7 +161,7 @@ class SecretsCLI:
                     print("No secrets found in the store.")
                     return
 
-                if output_format == 'json':
+                if output_format == "json":
                     print(json.dumps(secrets, indent=2))
                 else:
                     # Table format
@@ -168,8 +169,12 @@ class SecretsCLI:
                     print("-" * 70)
 
                     for secret in secrets:
-                        created = secret['created_at'][:19] if secret['created_at'] else 'N/A'
-                        updated = secret['updated_at'][:19] if secret['updated_at'] else 'N/A'
+                        created = (
+                            secret["created_at"][:19] if secret["created_at"] else "N/A"
+                        )
+                        updated = (
+                            secret["updated_at"][:19] if secret["updated_at"] else "N/A"
+                        )
                         print(f"{secret['key_name']:<30} {created:<20} {updated:<20}")
 
                     print(f"\nTotal: {len(secrets)} secrets")
@@ -188,8 +193,9 @@ class SecretsCLI:
         try:
             if not confirm:
                 response = input(
-                    f"Are you sure you want to delete secret '{key_name}'? (y/N): ")
-                if response.lower() not in ['y', 'yes']:
+                    f"Are you sure you want to delete secret '{key_name}'? (y/N): "
+                )
+                if response.lower() not in ["y", "yes"]:
                     print("Operation cancelled.")
                     return
 
@@ -244,7 +250,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error backing up secrets: {e}")
 
-    def export_secrets(self, export_path: str, format_type: str = 'json') -> None:
+    def export_secrets(self, export_path: str, format_type: str = "json") -> None:
         """
         Export secrets to a file in specified format.
 
@@ -263,16 +269,16 @@ class SecretsCLI:
                 export_data = {}
                 for secret in secrets:
                     # Get the actual secret value
-                    secret_value = store.get_secret(secret['key_name'])
-                    export_data[secret['key_name']] = secret_value
+                    secret_value = store.get_secret(secret["key_name"])
+                    export_data[secret["key_name"]] = secret_value
 
                 Path(export_path).parent.mkdir(parents=True, exist_ok=True)
 
-                if format_type == 'json':
-                    with open(export_path, 'w') as f:
+                if format_type == "json":
+                    with open(export_path, "w") as f:
                         json.dump(export_data, f, indent=2)
-                elif format_type == 'env':
-                    with open(export_path, 'w') as f:
+                elif format_type == "env":
+                    with open(export_path, "w") as f:
                         for key, value in export_data.items():
                             f.write(f"{key}={value}\n")
                 else:
@@ -280,7 +286,8 @@ class SecretsCLI:
 
                 print(f"✓ {len(export_data)} secrets exported to: {export_path}")
                 print(
-                    f"⚠️  WARNING: Exported file contains unencrypted secrets. Handle with care!")
+                    f"⚠️  WARNING: Exported file contains unencrypted secrets. Handle with care!"
+                )
 
         except SecretStoreError as e:
             print(f"Error exporting secrets: {e}")
@@ -288,10 +295,8 @@ class SecretsCLI:
             print(f"Error writing export file: {e}")
 
     def import_secrets(
-            self,
-            import_path: str,
-            format_type: str = 'json',
-            overwrite: bool = False) -> None:
+        self, import_path: str, format_type: str = "json", overwrite: bool = False
+    ) -> None:
         """
         Import secrets from a file.
 
@@ -307,15 +312,15 @@ class SecretsCLI:
 
             import_data = {}
 
-            if format_type == 'json':
-                with open(import_path, 'r') as f:
+            if format_type == "json":
+                with open(import_path, "r") as f:
                     import_data = json.load(f)
-            elif format_type == 'env':
-                with open(import_path, 'r') as f:
+            elif format_type == "env":
+                with open(import_path, "r") as f:
                     for line in f:
                         line = line.strip()
-                        if line and '=' in line and not line.startswith('#'):
-                            key, value = line.split('=', 1)
+                        if line and "=" in line and not line.startswith("#"):
+                            key, value = line.split("=", 1)
                             import_data[key.strip()] = value.strip()
             else:
                 raise ValueError(f"Unsupported format: {format_type}")
@@ -338,7 +343,8 @@ class SecretsCLI:
                     imported_count += 1
 
                 print(
-                    f"✓ Import completed: {imported_count} secrets imported, {skipped_count} skipped")
+                    f"✓ Import completed: {imported_count} secrets imported, {skipped_count} skipped"
+                )
 
         except SecretStoreError as e:
             print(f"Error importing secrets: {e}")
@@ -367,7 +373,8 @@ class SecretsCLI:
                         failed_count += 1
 
                 print(
-                    f"\nBatch operation completed: {added_count} added, {failed_count} failed")
+                    f"\nBatch operation completed: {added_count} added, {failed_count} failed"
+                )
 
         except SecretStoreError as e:
             print(f"Error in batch operation: {e}")
@@ -387,7 +394,7 @@ class SecretsCLI:
                     print(f"  - {key_name}")
 
                 confirm = input("\nAre you sure? (yes/no): ").lower()
-                if confirm not in ['yes', 'y']:
+                if confirm not in ["yes", "y"]:
                     print("Operation cancelled.")
                     return
 
@@ -408,7 +415,8 @@ class SecretsCLI:
                         failed_count += 1
 
                 print(
-                    f"\nBatch deletion completed: {deleted_count} deleted, {failed_count} failed")
+                    f"\nBatch deletion completed: {deleted_count} deleted, {failed_count} failed"
+                )
 
         except SecretStoreError as e:
             print(f"Error in batch deletion: {e}")
@@ -421,20 +429,20 @@ class SecretsCLI:
             config_option (str): Configuration option to set
             value (str): Value to set (if None, shows current value)
         """
-        config_file = Path(self.db_path).parent / 'secrets_config.json'
+        config_file = Path(self.db_path).parent / "secrets_config.json"
 
         # Load existing config
         config = {}
         if config_file.exists():
             try:
-                with open(config_file, 'r') as f:
+                with open(config_file, "r") as f:
                     config = json.load(f)
             except Exception as e:
                 print(f"Warning: Could not load config file: {e}")
 
         if value is None:
             # Show current value
-            current_value = config.get(config_option, 'Not set')
+            current_value = config.get(config_option, "Not set")
             print(f"{config_option}: {current_value}")
             return
 
@@ -443,7 +451,7 @@ class SecretsCLI:
 
         try:
             config_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(config_file, 'w') as f:
+            with open(config_file, "w") as f:
                 json.dump(config, f, indent=2)
             print(f"✓ Configuration updated: {config_option} = {value}")
         except Exception as e:
@@ -454,7 +462,9 @@ class SecretsCLI:
         Start interactive mode for secret management.
         """
         print("\n=== TRAE.AI Secrets Management (Interactive Mode) ===")
-        print("Commands: add, get, list, delete, exists, backup, export, import, batch-add, batch-delete, config, help, quit")
+        print(
+            "Commands: add, get, list, delete, exists, backup, export, import, batch-add, batch-delete, config, help, quit"
+        )
 
         while True:
             try:
@@ -465,90 +475,91 @@ class SecretsCLI:
 
                 cmd = command[0].lower()
 
-                if cmd in ['quit', 'exit', 'q']:
+                if cmd in ["quit", "exit", "q"]:
                     print("Goodbye!")
                     break
 
-                elif cmd == 'help':
+                elif cmd == "help":
                     self._show_help()
 
-                elif cmd == 'add':
+                elif cmd == "add":
                     if len(command) < 2:
                         key_name = input("Enter key name: ")
                     else:
                         key_name = command[1]
                     self.add_secret(key_name)
 
-                elif cmd == 'get':
+                elif cmd == "get":
                     if len(command) < 2:
                         key_name = input("Enter key name: ")
                     else:
                         key_name = command[1]
                     self.get_secret(key_name)
 
-                elif cmd == 'list':
+                elif cmd == "list":
                     self.list_secrets()
 
-                elif cmd == 'delete':
+                elif cmd == "delete":
                     if len(command) < 2:
                         key_name = input("Enter key name: ")
                     else:
                         key_name = command[1]
                     self.delete_secret(key_name)
 
-                elif cmd == 'exists':
+                elif cmd == "exists":
                     if len(command) < 2:
                         key_name = input("Enter key name: ")
                     else:
                         key_name = command[1]
                     self.check_exists(key_name)
 
-                elif cmd == 'backup':
+                elif cmd == "backup":
                     if len(command) < 2:
                         backup_path = input("Enter backup path: ")
                     else:
                         backup_path = command[1]
                     self.backup_secrets(backup_path)
 
-                elif cmd == 'export':
+                elif cmd == "export":
                     if len(command) < 2:
                         export_path = input("Enter export path: ")
                     else:
                         export_path = command[1]
-                    format_type = command[2] if len(command) > 2 else 'json'
+                    format_type = command[2] if len(command) > 2 else "json"
                     self.export_secrets(export_path, format_type)
 
-                elif cmd == 'import':
+                elif cmd == "import":
                     if len(command) < 2:
                         import_path = input("Enter import path: ")
                     else:
                         import_path = command[1]
-                    format_type = command[2] if len(command) > 2 else 'json'
-                    overwrite = '--overwrite' in command
+                    format_type = command[2] if len(command) > 2 else "json"
+                    overwrite = "--overwrite" in command
                     self.import_secrets(import_path, format_type, overwrite)
 
-                elif cmd == 'batch-add':
+                elif cmd == "batch-add":
                     print("Enter secrets in key=value format (empty line to finish):")
                     secrets_dict = {}
                     while True:
                         line = input("  ").strip()
                         if not line:
                             break
-                        if '=' in line:
-                            key, value = line.split('=', 1)
+                        if "=" in line:
+                            key, value = line.split("=", 1)
                             secrets_dict[key.strip()] = value.strip()
                     if secrets_dict:
                         self.batch_add_secrets(secrets_dict)
 
-                elif cmd == 'batch-delete':
+                elif cmd == "batch-delete":
                     keys_input = input(
-                        "Enter secret keys to delete (comma-separated): ")
-                    key_names = [k.strip() for k in keys_input.split(',') if k.strip()]
+                        "Enter secret keys to delete (comma-separated): "
+                    )
+                    key_names = [k.strip() for k in keys_input.split(",") if k.strip()]
                     if key_names:
-                        force = '--force' in command
+                        force = "--force" in command
                         self.batch_delete_secrets(key_names, force)
 
-                elif cmd == 'config':
+                elif cmd == "config":
                     if len(command) < 2:
                         option = input("Enter config option: ")
                     else:
@@ -558,7 +569,8 @@ class SecretsCLI:
 
                 else:
                     print(
-                        f"Unknown command: {cmd}. Type 'help' for available commands.")
+                        f"Unknown command: {cmd}. Type 'help' for available commands."
+                    )
 
             except KeyboardInterrupt:
                 print("\nGoodbye!")
@@ -599,7 +611,7 @@ def main():
     Main entry point for the CLI application.
     """
     parser = argparse.ArgumentParser(
-        description='TRAE.AI Secrets Management CLI',
+        description="TRAE.AI Secrets Management CLI",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -619,105 +631,91 @@ Examples:
 Environment Variables:
   TRAE_MASTER_KEY: Master password for encryption (required)
   TRAE_SECRETS_DB: Path to secrets database (optional)
-        """
+        """,
     )
 
-    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # Add command
-    add_parser = subparsers.add_parser('add', help='Add a new secret')
-    add_parser.add_argument('key_name', help='Unique identifier for the secret')
+    add_parser = subparsers.add_parser("add", help="Add a new secret")
+    add_parser.add_argument("key_name", help="Unique identifier for the secret")
     add_parser.add_argument(
-        'secret_value',
-        nargs='?',
-        help='Secret value (will prompt if not provided)')
+        "secret_value", nargs="?", help="Secret value (will prompt if not provided)"
+    )
 
     # Get command
-    get_parser = subparsers.add_parser('get', help='Retrieve a secret')
-    get_parser.add_argument('key_name', help='Unique identifier for the secret')
+    get_parser = subparsers.add_parser("get", help="Retrieve a secret")
+    get_parser.add_argument("key_name", help="Unique identifier for the secret")
     get_parser.add_argument(
-        '--hide-value',
-        action='store_true',
-        help='Hide the secret value in output')
+        "--hide-value", action="store_true", help="Hide the secret value in output"
+    )
 
     # List command
-    list_parser = subparsers.add_parser('list', help='List all secrets')
+    list_parser = subparsers.add_parser("list", help="List all secrets")
     list_parser.add_argument(
-        '--format',
-        choices=[
-            'table',
-            'json'],
-        default='table',
-        help='Output format')
+        "--format", choices=["table", "json"], default="table", help="Output format"
+    )
 
     # Delete command
-    delete_parser = subparsers.add_parser('delete', help='Delete a secret')
-    delete_parser.add_argument('key_name', help='Unique identifier for the secret')
+    delete_parser = subparsers.add_parser("delete", help="Delete a secret")
+    delete_parser.add_argument("key_name", help="Unique identifier for the secret")
     delete_parser.add_argument(
-        '--yes',
-        action='store_true',
-        help='Skip confirmation prompt')
+        "--yes", action="store_true", help="Skip confirmation prompt"
+    )
 
     # Exists command
-    exists_parser = subparsers.add_parser('exists', help='Check if a secret exists')
-    exists_parser.add_argument('key_name', help='Unique identifier for the secret')
+    exists_parser = subparsers.add_parser("exists", help="Check if a secret exists")
+    exists_parser.add_argument("key_name", help="Unique identifier for the secret")
 
     # Backup command
-    backup_parser = subparsers.add_parser('backup', help='Backup secrets database')
-    backup_parser.add_argument('backup_path', help='Path for the backup file')
+    backup_parser = subparsers.add_parser("backup", help="Backup secrets database")
+    backup_parser.add_argument("backup_path", help="Path for the backup file")
 
     # Export command
-    export_parser = subparsers.add_parser('export', help='Export secrets to file')
-    export_parser.add_argument('export_path', help='Path for the export file')
+    export_parser = subparsers.add_parser("export", help="Export secrets to file")
+    export_parser.add_argument("export_path", help="Path for the export file")
     export_parser.add_argument(
-        '--format',
-        choices=[
-            'json',
-            'env'],
-        default='json',
-        help='Export format')
+        "--format", choices=["json", "env"], default="json", help="Export format"
+    )
 
     # Import command
-    import_parser = subparsers.add_parser('import', help='Import secrets from file')
-    import_parser.add_argument('import_path', help='Path to the import file')
+    import_parser = subparsers.add_parser("import", help="Import secrets from file")
+    import_parser.add_argument("import_path", help="Path to the import file")
     import_parser.add_argument(
-        '--format',
-        choices=[
-            'json',
-            'env'],
-        default='json',
-        help='Import format')
+        "--format", choices=["json", "env"], default="json", help="Import format"
+    )
     import_parser.add_argument(
-        '--overwrite',
-        action='store_true',
-        help='Overwrite existing secrets')
+        "--overwrite", action="store_true", help="Overwrite existing secrets"
+    )
 
     # Batch add command
     batch_add_parser = subparsers.add_parser(
-        'batch-add', help='Add multiple secrets from JSON file')
-    batch_add_parser.add_argument('secrets_file', help='JSON file containing secrets')
+        "batch-add", help="Add multiple secrets from JSON file"
+    )
+    batch_add_parser.add_argument("secrets_file", help="JSON file containing secrets")
 
     # Batch delete command
     batch_delete_parser = subparsers.add_parser(
-        'batch-delete', help='Delete multiple secrets')
+        "batch-delete", help="Delete multiple secrets"
+    )
     batch_delete_parser.add_argument(
-        'key_names', nargs='+', help='Secret keys to delete')
+        "key_names", nargs="+", help="Secret keys to delete"
+    )
     batch_delete_parser.add_argument(
-        '--force',
-        action='store_true',
-        help='Skip confirmation')
+        "--force", action="store_true", help="Skip confirmation"
+    )
 
     # Config command
-    config_parser = subparsers.add_parser('config', help='Configure settings')
-    config_parser.add_argument('option', help='Configuration option')
+    config_parser = subparsers.add_parser("config", help="Configure settings")
+    config_parser.add_argument("option", help="Configuration option")
     config_parser.add_argument(
-        'value',
-        nargs='?',
-        help='Value to set (omit to show current value)')
+        "value", nargs="?", help="Value to set (omit to show current value)"
+    )
 
     # Interactive command
     interactive_parser = subparsers.add_parser(
-        'interactive', help='Start interactive mode')
+        "interactive", help="Start interactive mode"
+    )
 
     args = parser.parse_args()
 
@@ -728,45 +726,45 @@ Environment Variables:
     cli = SecretsCLI()
 
     try:
-        if args.command == 'add':
+        if args.command == "add":
             cli.add_secret(args.key_name, args.secret_value)
 
-        elif args.command == 'get':
+        elif args.command == "get":
             cli.get_secret(args.key_name, not args.hide_value)
 
-        elif args.command == 'list':
+        elif args.command == "list":
             cli.list_secrets(args.format)
 
-        elif args.command == 'delete':
+        elif args.command == "delete":
             cli.delete_secret(args.key_name, args.yes)
 
-        elif args.command == 'exists':
+        elif args.command == "exists":
             cli.check_exists(args.key_name)
 
-        elif args.command == 'backup':
+        elif args.command == "backup":
             cli.backup_secrets(args.backup_path)
 
-        elif args.command == 'export':
+        elif args.command == "export":
             cli.export_secrets(args.export_path, args.format)
 
-        elif args.command == 'import':
+        elif args.command == "import":
             cli.import_secrets(args.import_path, args.format, args.overwrite)
 
-        elif args.command == 'batch-add':
+        elif args.command == "batch-add":
             try:
-                with open(args.secrets_file, 'r') as f:
+                with open(args.secrets_file, "r") as f:
                     secrets_dict = json.load(f)
                 cli.batch_add_secrets(secrets_dict)
             except Exception as e:
                 print(f"Error reading secrets file: {e}")
 
-        elif args.command == 'batch-delete':
+        elif args.command == "batch-delete":
             cli.batch_delete_secrets(args.key_names, args.force)
 
-        elif args.command == 'config':
+        elif args.command == "config":
             cli.configure_store(args.option, args.value)
 
-        elif args.command == 'interactive':
+        elif args.command == "interactive":
             cli.interactive_mode()
 
     except Exception as e:
@@ -774,5 +772,5 @@ Environment Variables:
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

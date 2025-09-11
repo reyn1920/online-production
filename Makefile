@@ -29,7 +29,11 @@ help:
 	@echo "  make test-unit   - Run unit tests only"
 	@echo "  make test-e2e    - Run end-to-end tests"
 	@echo "  make lint        - Run code linting"
+	@echo "  make lint-fix    - Auto-fix lint issues"
 	@echo "  make security    - Run security scans"
+	@echo "  make dev         - Auto-lint + test watch mode"
+	@echo "  make dev-fast    - Bare-metal test watch mode"
+	@echo "  make ci          - Run full CI pipeline (lint + tests + security)"
 	@echo ""
 	@echo "🗄️  Database & Backup:"
 	@echo "  make db-init     - Initialize database with schema"
@@ -139,10 +143,43 @@ lint:
 	@. venv/bin/activate && black --check .
 	@. venv/bin/activate && isort --check-only .
 
+lint-fix:
+	@echo "🔧 Auto-fixing lint issues..."
+	@. venv/bin/activate && black .
+	@. venv/bin/activate && isort .
+
 security:
 	@echo "🔒 Running security scans..."
 	@. venv/bin/activate && bandit -r . -f json -o security-report.json || true
 	@. venv/bin/activate && safety check
+
+# Development workflow targets
+dev: lint-fix
+	@echo "🛠️  Starting development mode with auto-lint + test watch..."
+	@. venv/bin/activate && python -m pytest tests/ -v --tb=short -x --lf
+	@echo "🔄 Watching for changes... (Press Ctrl+C to stop)"
+	@. venv/bin/activate && python -m pytest tests/ -v --tb=short -x --lf -f
+
+dev-fast:
+	@echo "⚡ Starting bare-metal test watch..."
+	@echo "🔄 Watching for changes... (Press Ctrl+C to stop)"
+	@. venv/bin/activate && python -m pytest tests/ -v --tb=short -x --lf -f --no-cov
+
+# CI target - runs the same pipeline as GitHub Actions
+ci:
+	@echo "🚀 Running CI pipeline (lint + tests on multiple Python versions)..."
+	@echo "📋 This matches the GitHub Actions workflow for pre-push confidence"
+	@echo ""
+	@echo "🔍 Step 1: Linting..."
+	@make lint
+	@echo ""
+	@echo "🧪 Step 2: Running full test suite..."
+	@make test
+	@echo ""
+	@echo "🔒 Step 3: Security checks..."
+	@make security
+	@echo ""
+	@echo "✅ CI pipeline completed successfully! Ready for push."
 
 # Database & Backup
 db-init:

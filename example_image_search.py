@@ -2,23 +2,26 @@
 # Tries Unsplash -> Pexels -> Pixabay in order
 
 import asyncio
-from integrations_hub import http_with_fallback, get_secret
+
+from integrations_hub import get_secret, http_with_fallback
+
 
 async def get_images_for_query(query: str):
     """Fetch stock images for a given query using multiple providers with fallback.
-    
+
     This function demonstrates the power of the http_with_fallback system:
     - Automatically tries providers in preferred order
     - Falls back to next provider if one fails
     - Handles API key management securely
     - Returns consistent results regardless of which provider succeeds
-    
+
     Args:
         query: Search term for images
-        
+
     Returns:
         JSON response from the first successful provider
     """
+
     async def do_request(client, prov):
         """Handle requests for different image providers."""
         if prov.id == "unsplash":
@@ -32,7 +35,7 @@ async def get_images_for_query(query: str):
             )
             r.raise_for_status()
             return r.json()
-            
+
         elif prov.id == "pexels":
             key = get_secret("PEXELS_KEY")
             if not key:
@@ -44,7 +47,7 @@ async def get_images_for_query(query: str):
             )
             r.raise_for_status()
             return r.json()
-            
+
         elif prov.id == "pixabay":
             key = get_secret("PIXABAY_KEY")
             if not key:
@@ -55,23 +58,22 @@ async def get_images_for_query(query: str):
             )
             r.raise_for_status()
             return r.json()
-            
+
         else:
             raise RuntimeError(f"Unknown provider for images: {prov.id}")
 
     # Use http_with_fallback to try providers in order with automatic fallback
     return await http_with_fallback(
-        "images", 
-        do_request, 
-        prefer=["unsplash", "pexels", "pixabay"]
+        "images", do_request, prefer=["unsplash", "pexels", "pixabay"]
     )
+
 
 # Example usage:
 # import asyncio
-# 
+#
 # async def main():
 #     results = await get_images_for_query("nature")
 #     print(f"Found {len(results.get('results', []))} images")
-# 
+#
 # if __name__ == "__main__":
 #     asyncio.run(main())

@@ -14,19 +14,18 @@ Options:
     --update: Update existing environment with new dependencies
 """
 
-import os
-import sys
-import subprocess
 import argparse
-import shutil
-from pathlib import Path
 import logging
-from typing import Optional, List
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import List, Optional
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -56,8 +55,11 @@ class CreativeEnvironmentManager:
 
         # Check if virtualenv is available
         try:
-            subprocess.run([sys.executable, "-m", "venv", "--help"],
-                           capture_output=True, check=True)
+            subprocess.run(
+                [sys.executable, "-m", "venv", "--help"],
+                capture_output=True,
+                check=True,
+            )
         except subprocess.CalledProcessError:
             logger.error("Python venv module is not available")
             return False
@@ -71,7 +73,8 @@ class CreativeEnvironmentManager:
             if not force:
                 logger.info(
                     f"Creative environment already exists at {
-                        self.creative_env_path}")
+                        self.creative_env_path}"
+                )
                 return True
             else:
                 logger.info("Removing existing creative environment...")
@@ -81,11 +84,17 @@ class CreativeEnvironmentManager:
 
         try:
             # Create virtual environment
-            subprocess.run([
-                sys.executable, "-m", "venv",
-                str(self.creative_env_path),
-                "--prompt", "creative-pipeline"
-            ], check=True)
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "venv",
+                    str(self.creative_env_path),
+                    "--prompt",
+                    "creative-pipeline",
+                ],
+                check=True,
+            )
 
             logger.info("Creative environment created successfully")
             return True
@@ -96,14 +105,14 @@ class CreativeEnvironmentManager:
 
     def get_pip_executable(self) -> str:
         """Get the pip executable path for the creative environment."""
-        if os.name == 'nt':  # Windows
+        if os.name == "nt":  # Windows
             return str(self.creative_env_path / "Scripts" / "pip.exe")
         else:  # Unix-like
             return str(self.creative_env_path / "bin" / "pip")
 
     def get_python_executable(self) -> str:
         """Get the Python executable path for the creative environment."""
-        if os.name == 'nt':  # Windows
+        if os.name == "nt":  # Windows
             return str(self.creative_env_path / "Scripts" / "python.exe")
         else:  # Unix-like
             return str(self.creative_env_path / "bin" / "python")
@@ -116,19 +125,16 @@ class CreativeEnvironmentManager:
 
         try:
             # Upgrade pip first
-            subprocess.run([
-                pip_executable, "install", "--upgrade", "pip"
-            ], check=True)
+            subprocess.run([pip_executable, "install", "--upgrade", "pip"], check=True)
 
             # Install wheel for better package compilation
-            subprocess.run([
-                pip_executable, "install", "wheel"
-            ], check=True)
+            subprocess.run([pip_executable, "install", "wheel"], check=True)
 
             # Install creative dependencies
-            subprocess.run([
-                pip_executable, "install", "-r", str(self.requirements_file)
-            ], check=True)
+            subprocess.run(
+                [pip_executable, "install", "-r", str(self.requirements_file)],
+                check=True,
+            )
 
             logger.info("Creative dependencies installed successfully")
             return True
@@ -141,7 +147,7 @@ class CreativeEnvironmentManager:
         """Create a convenient activation script."""
         logger.info("Creating activation script...")
 
-        script_content = f'''#!/bin/bash
+        script_content = f"""#!/bin/bash
 # Creative Environment Activation Script
 # This script activates the isolated creative environment
 
@@ -155,12 +161,12 @@ echo "  - AI model libraries"
 echo "  - Video/Audio processing tools"
 echo ""
 echo "To deactivate, run: deactivate"
-'''
+"""
 
         script_path = self.project_root / "activate_creative.sh"
 
         try:
-            with open(script_path, 'w') as f:
+            with open(script_path, "w") as f:
                 f.write(script_content)
 
             # Make script executable
@@ -175,7 +181,7 @@ echo "To deactivate, run: deactivate"
 
     def create_environment_info(self) -> bool:
         """Create environment information file."""
-        info_content = f'''# Creative Environment Information
+        info_content = f"""# Creative Environment Information
 
 This directory contains an isolated Python virtual environment specifically
 for creative tools and AI models used in the TRAE.AI pipeline.
@@ -213,12 +219,12 @@ python scripts/setup_creative_environment.py --update
 {self.requirements_file}
 
 ## Created: {subprocess.check_output(['date']).decode().strip()}
-'''
+"""
 
         info_path = self.creative_env_path / "ENVIRONMENT_INFO.md"
 
         try:
-            with open(info_path, 'w') as f:
+            with open(info_path, "w") as f:
                 f.write(info_content)
 
             logger.info(f"Environment info created: {info_path}")
@@ -237,22 +243,23 @@ python scripts/setup_creative_environment.py --update
         # Read packages from requirements file
         packages_to_verify = []
         try:
-            with open(self.requirements_file, 'r') as f:
+            with open(self.requirements_file, "r") as f:
                 for line in f:
                     line = line.strip()
-                    if line and not line.startswith('#'):
+                    if line and not line.startswith("#"):
                         # Extract package name (before any version specifiers)
-                        package_name = line.split('>=')[0].split('==')[
-                            0].split('<')[0].strip()
+                        package_name = (
+                            line.split(">=")[0].split("==")[0].split("<")[0].strip()
+                        )
                         if package_name:
                             # Map common package names to import names
                             import_name = {
-                                'opencv-python': 'cv2',
-                                'Pillow': 'PIL',
-                                'PyYAML': 'yaml',
-                                'scikit-image': 'skimage',
-                                'scikit-learn': 'sklearn',
-                                'ffmpeg-python': 'ffmpeg'
+                                "opencv-python": "cv2",
+                                "Pillow": "PIL",
+                                "PyYAML": "yaml",
+                                "scikit-image": "skimage",
+                                "scikit-learn": "sklearn",
+                                "ffmpeg-python": "ffmpeg",
                             }.get(package_name, package_name)
                             packages_to_verify.append((package_name, import_name))
         except Exception as e:
@@ -265,9 +272,16 @@ python scripts/setup_creative_environment.py --update
 
         for package_name, import_name in packages_to_verify:
             try:
-                result = subprocess.run([
-                    python_executable, "-c", f"import {import_name}; print(f'{package_name} imported successfully')"
-                ], capture_output=True, text=True, check=True)
+                result = subprocess.run(
+                    [
+                        python_executable,
+                        "-c",
+                        f"import {import_name}; print(f'{package_name} imported successfully')",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
 
                 logger.info(f"✓ {package_name}: {result.stdout.strip()}")
 
@@ -290,37 +304,42 @@ python scripts/setup_creative_environment.py --update
     def get_environment_status(self) -> dict:
         """Get status information about the creative environment."""
         status = {
-            'exists': self.creative_env_path.exists(),
-            'path': str(self.creative_env_path),
-            'requirements_file': str(self.requirements_file),
-            'requirements_exists': self.requirements_file.exists()
+            "exists": self.creative_env_path.exists(),
+            "path": str(self.creative_env_path),
+            "requirements_file": str(self.requirements_file),
+            "requirements_exists": self.requirements_file.exists(),
         }
 
-        if status['exists']:
+        if status["exists"]:
             python_executable = self.get_python_executable()
             try:
                 # Get Python version
-                result = subprocess.run([
-                    python_executable, "--version"
-                ], capture_output=True, text=True, check=True)
-                status['python_version'] = result.stdout.strip()
+                result = subprocess.run(
+                    [python_executable, "--version"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                status["python_version"] = result.stdout.strip()
 
                 # Get installed packages count
-                result = subprocess.run([
-                    self.get_pip_executable(), "list", "--format=freeze"
-                ], capture_output=True, text=True, check=True)
-                status['installed_packages'] = len(result.stdout.strip().split('\n'))
+                result = subprocess.run(
+                    [self.get_pip_executable(), "list", "--format=freeze"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                status["installed_packages"] = len(result.stdout.strip().split("\n"))
 
             except subprocess.CalledProcessError:
-                status['python_version'] = 'Unknown'
-                status['installed_packages'] = 0
+                status["python_version"] = "Unknown"
+                status["installed_packages"] = 0
 
         return status
 
     def setup_complete_environment(
-            self,
-            force: bool = False,
-            update: bool = False) -> bool:
+        self, force: bool = False, update: bool = False
+    ) -> bool:
         """Complete setup process for the creative environment."""
         logger.info("Starting creative environment setup...")
 
@@ -358,20 +377,12 @@ def main():
         description="Setup isolated creative environment for TRAE.AI"
     )
     parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Force recreation of environment"
+        "--force", action="store_true", help="Force recreation of environment"
     )
     parser.add_argument(
-        "--update",
-        action="store_true",
-        help="Update existing environment"
+        "--update", action="store_true", help="Update existing environment"
     )
-    parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show environment status"
-    )
+    parser.add_argument("--status", action="store_true", help="Show environment status")
 
     args = parser.parse_args()
 
@@ -386,22 +397,23 @@ def main():
         print(f"  Exists: {status['exists']}")
         print(f"  Path: {status['path']}")
         print(f"  Requirements file: {status['requirements_exists']}")
-        if status['exists']:
+        if status["exists"]:
             print(f"  Python version: {status.get('python_version', 'Unknown')}")
             print(f"  Installed packages: {status.get('installed_packages', 0)}")
         return
 
-    success = manager.setup_complete_environment(
-        force=args.force,
-        update=args.update
-    )
+    success = manager.setup_complete_environment(force=args.force, update=args.update)
 
     if success:
         print("\n🎉 Creative environment setup completed successfully!")
         print("\nNext steps:")
         print("1. Activate the environment: ./activate_creative.sh")
-        print("2. Test creative tools: python -c 'import torch; print(torch.__version__)'")
-        print("3. Update self_repair_agent.py to use this environment for creative tasks")
+        print(
+            "2. Test creative tools: python -c 'import torch; print(torch.__version__)'"
+        )
+        print(
+            "3. Update self_repair_agent.py to use this environment for creative tasks"
+        )
         sys.exit(0)
     else:
         print("\n❌ Creative environment setup failed. Check logs above.")

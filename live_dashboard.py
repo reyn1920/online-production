@@ -1,23 +1,24 @@
+import os
+import socket
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
-import os
-import socket
-import uvicorn
-from datetime import datetime
-from typing import Dict, Any, List, Optional
 
 
 class LiveDashboard:
     """Live Dashboard FastAPI Application with automatic port detection"""
-    
+
     def __init__(self):
         self.app = FastAPI(
             title="Live Dashboard",
             description="Real-time monitoring and control dashboard",
-            version="1.0.0"
+            version="1.0.0",
         )
-        
+
         # Add CORS middleware
         self.app.add_middleware(
             CORSMiddleware,
@@ -26,13 +27,13 @@ class LiveDashboard:
             allow_methods=["*"],
             allow_headers=["*"],
         )
-        
+
         # Setup routes
         self.setup_routes()
-        
+
     def setup_routes(self):
         """Setup FastAPI routes"""
-        
+
         @self.app.get("/", response_class=HTMLResponse)
         async def dashboard_home():
             """Main dashboard page"""
@@ -201,7 +202,7 @@ class LiveDashboard:
             </body>
             </html>
             """
-        
+
         @self.app.get("/health")
         async def health_check():
             """Health check endpoint"""
@@ -209,21 +210,23 @@ class LiveDashboard:
                 "status": "healthy",
                 "timestamp": datetime.now().isoformat(),
                 "service": "Live Dashboard",
-                "version": "1.0.0"
+                "version": "1.0.0",
             }
-        
+
         @self.app.get("/api/status")
         async def get_status():
             """Get system status"""
-            uptime = datetime.now() - datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            uptime = datetime.now() - datetime.now().replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
             return {
                 "status": "online",
-                "uptime": str(uptime).split('.')[0],  # Remove microseconds
+                "uptime": str(uptime).split(".")[0],  # Remove microseconds
                 "timestamp": datetime.now().isoformat(),
                 "port_detection": "automatic",
-                "environment": os.getenv("ENVIRONMENT", "development")
+                "environment": os.getenv("ENVIRONMENT", "development"),
             }
-        
+
         @self.app.get("/api/metrics")
         async def get_metrics():
             """Get system metrics"""
@@ -233,16 +236,19 @@ class LiveDashboard:
                 "response_time": "< 100ms",
                 "active_connections": 1,
                 "requests_per_minute": 0,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
 
 
 if __name__ == "__main__":
-    import os, socket, uvicorn
-    
+    import os
+    import socket
+
+    import uvicorn
+
     host = os.getenv("HOST", "127.0.0.1")
     port = int(os.getenv("PORT", "8000"))
-    
+
     def first_free(start, max_tries=50):
         p = start
         for _ in range(max_tries):
@@ -254,7 +260,9 @@ if __name__ == "__main__":
                 except OSError:
                     p += 1
         raise RuntimeError("No free port found")
-    
+
     port = first_free(port)
     print(f"Dashboard starting on http://{host}:{port}")
-    uvicorn.run(LiveDashboard().app, host=host, port=port, reload=False, log_level="info")
+    uvicorn.run(
+        LiveDashboard().app, host=host, port=port, reload=False, log_level="info"
+    )

@@ -14,22 +14,20 @@ Author: TRAE.AI Production System
 Version: 1.0.0
 """
 
-from utils.logger import get_logger
-from config.linly_talker_realistic import (
-    RealisticLinlyConfig,
-    RealisticOptimizations,
-    RealisticWorkflow,
-    REALISTIC_CONFIGS
-)
-from backend.services.avatar_engines import generate_avatar, AvatarRequest
-from backend.content.animate_avatar import AnimateAvatar, AnimationJob
+import argparse
+import asyncio
+import json
 import os
 import sys
-import argparse
-import json
-import asyncio
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
+from utils.logger import get_logger
+
+from backend.content.animate_avatar import AnimateAvatar, AnimationJob
+from backend.services.avatar_engines import AvatarRequest, generate_avatar
+from config.linly_talker_realistic import (REALISTIC_CONFIGS, RealisticLinlyConfig,
+                                           RealisticOptimizations, RealisticWorkflow)
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -52,22 +50,22 @@ class RealisticAvatarGenerator:
         optimized = text
 
         # Add breathing pauses
-        optimized = optimized.replace('. ', '... ')
-        optimized = optimized.replace('? ', '?... ')
-        optimized = optimized.replace('! ', '!... ')
+        optimized = optimized.replace(". ", "... ")
+        optimized = optimized.replace("? ", "?... ")
+        optimized = optimized.replace("! ", "!... ")
 
         # Add natural filler words at sentence boundaries
-        sentences = optimized.split('... ')
+        sentences = optimized.split("... ")
         natural_sentences = []
 
-        fillers = ['so', 'well', 'you know', 'actually']
+        fillers = ["so", "well", "you know", "actually"]
         for i, sentence in enumerate(sentences):
             if i > 0 and i % 3 == 0:  # Add filler every 3rd sentence
                 filler = fillers[i % len(fillers)]
                 sentence = f"{filler}, {sentence.lower()}"
             natural_sentences.append(sentence)
 
-        optimized = '... '.join(natural_sentences)
+        optimized = "... ".join(natural_sentences)
 
         self.logger.info(f"Optimized script: {optimized[:100]}...")
         return optimized
@@ -80,24 +78,28 @@ class RealisticAvatarGenerator:
 
         try:
             from PIL import Image
+
             with Image.open(image_path) as img:
                 width, height = img.size
 
                 # Check minimum resolution
                 if width < 512 or height < 512:
                     self.logger.warning(
-                        f"Image resolution {width}x{height} is low. Recommend 1080p+ for best results.")
+                        f"Image resolution {width}x{height} is low. Recommend 1080p+ for best results."
+                    )
 
                 # Check aspect ratio
                 aspect_ratio = width / height
                 if aspect_ratio < 0.7 or aspect_ratio > 1.5:
                     self.logger.warning(
                         f"Unusual aspect ratio {
-                            aspect_ratio:.2f}. Portrait orientation (0.75-1.33) works best.")
+                            aspect_ratio:.2f}. Portrait orientation (0.75-1.33) works best."
+                    )
 
                 self.logger.info(
                     f"Image validated: {width}x{height}, aspect ratio: {
-                        aspect_ratio:.2f}")
+                        aspect_ratio:.2f}"
+                )
                 return True
 
         except Exception as e:
@@ -109,7 +111,7 @@ class RealisticAvatarGenerator:
         image_path: str,
         text: str,
         config_type: str = "ultra_realistic",
-        output_name: Optional[str] = None
+        output_name: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Generate ultra-realistic avatar with optimized settings."""
 
@@ -123,7 +125,8 @@ class RealisticAvatarGenerator:
         # Get configuration
         if config_type not in REALISTIC_CONFIGS:
             self.logger.warning(
-                f"Unknown config type: {config_type}. Using ultra_realistic.")
+                f"Unknown config type: {config_type}. Using ultra_realistic."
+            )
             config_type = "ultra_realistic"
 
         config = REALISTIC_CONFIGS[config_type]
@@ -147,13 +150,14 @@ class RealisticAvatarGenerator:
                 source_image=image_path,
                 audio_file=None,  # Will be generated from text
                 output_path=str(output_path),
-                config=config
+                config=config,
             )
 
             # For text-to-speech, we need to generate audio first
             # This would typically use a TTS service
             self.logger.info(
-                "Note: Text-to-speech audio generation needed for complete workflow")
+                "Note: Text-to-speech audio generation needed for complete workflow"
+            )
 
             # Alternative: Use avatar service API
             self.logger.info("Generating avatar using service API...")
@@ -164,17 +168,17 @@ class RealisticAvatarGenerator:
                     "voice_id": "natural",
                     "speed": 1.0,
                     "pitch": 1.0,
-                    "volume": 1.0
+                    "volume": 1.0,
                 },
                 video_settings={
                     "quality": "ultra",
                     "fps": config.fps,
                     "resolution": config.resolution,
                     "enhance_face": config.enhance_face,
-                    "stabilize_video": config.stabilize_video
+                    "stabilize_video": config.stabilize_video,
                 },
                 source_image=image_path,
-                output_path=str(output_path)
+                output_path=str(output_path),
             )
 
             response = await generate_avatar(
@@ -182,18 +186,18 @@ class RealisticAvatarGenerator:
                 voice_settings=request.voice_settings,
                 video_settings=request.video_settings,
                 source_image=image_path,
-                preferred_engine="linly-talker-enhanced"
+                preferred_engine="linly-talker-enhanced",
             )
 
             if response.success:
                 self.logger.info(
                     f"Avatar generated successfully: {
-                        response.video_path}")
+                        response.video_path}"
+                )
 
                 # Apply post-processing enhancements
                 enhanced_path = await self.apply_realistic_enhancements(
-                    response.video_path,
-                    config_type
+                    response.video_path, config_type
                 )
 
                 return {
@@ -203,13 +207,13 @@ class RealisticAvatarGenerator:
                     "processing_time": response.processing_time,
                     "config_used": config_type,
                     "optimizations_applied": True,
-                    "metadata": response.metadata
+                    "metadata": response.metadata,
                 }
             else:
                 return {
                     "success": False,
                     "error": response.error_message,
-                    "processing_time": response.processing_time
+                    "processing_time": response.processing_time,
                 }
 
         except Exception as e:
@@ -217,9 +221,7 @@ class RealisticAvatarGenerator:
             return {"success": False, "error": str(e)}
 
     async def apply_realistic_enhancements(
-        self,
-        video_path: str,
-        config_type: str
+        self, video_path: str, config_type: str
     ) -> Optional[str]:
         """Apply post-processing enhancements for camera-like realism."""
         try:
@@ -230,7 +232,7 @@ class RealisticAvatarGenerator:
             self.logger.info("Applying realistic enhancements:")
 
             for enhancement, settings in enhancements.items():
-                if settings.get('enabled', False):
+                if settings.get("enabled", False):
                     self.logger.info(f"  - {enhancement}: {settings}")
 
             # In a full implementation, this would use ffmpeg or similar
@@ -264,7 +266,7 @@ class RealisticAvatarGenerator:
         print("\n🎬 POST-PROCESSING:")
         enhancements = RealisticOptimizations.get_post_processing_enhancements()
         for enhancement, settings in enhancements.items():
-            if settings.get('enabled', False):
+            if settings.get("enabled", False):
                 print(f"  • {enhancement.upper()}: {settings.get('type', 'enabled')}")
 
         print("\n✅ QUALITY CHECKLIST:")
@@ -287,22 +289,24 @@ Examples:
   python scripts/generate_realistic_avatar.py --image avatar.jpg --text "Hello, how are you today?"
   python scripts/generate_realistic_avatar.py --image avatar.jpg --text "Welcome to our presentation" --config professional
   python scripts/generate_realistic_avatar.py --tips  # Show optimization tips
-        """
+        """,
     )
 
-    parser.add_argument('--image', type=str, help='Path to source image')
-    parser.add_argument('--text', type=str, help='Text to speak')
-    parser.add_argument('--config', type=str, default='ultra_realistic',
-                        choices=list(REALISTIC_CONFIGS.keys()),
-                        help='Configuration preset to use')
+    parser.add_argument("--image", type=str, help="Path to source image")
+    parser.add_argument("--text", type=str, help="Text to speak")
     parser.add_argument(
-        '--output',
+        "--config",
         type=str,
-        help='Output filename (without extension)')
+        default="ultra_realistic",
+        choices=list(REALISTIC_CONFIGS.keys()),
+        help="Configuration preset to use",
+    )
     parser.add_argument(
-        '--tips',
-        action='store_true',
-        help='Show optimization tips and exit')
+        "--output", type=str, help="Output filename (without extension)"
+    )
+    parser.add_argument(
+        "--tips", action="store_true", help="Show optimization tips and exit"
+    )
 
     args = parser.parse_args()
 
@@ -325,19 +329,20 @@ Examples:
         image_path=args.image,
         text=args.text,
         config_type=args.config,
-        output_name=args.output
+        output_name=args.output,
     )
 
-    if result['success']:
+    if result["success"]:
         print(f"\n✅ SUCCESS!")
         print(f"📹 Video: {result['video_path']}")
         print(f"⏱️  Processing time: {result.get('processing_time', 'N/A')}s")
         print(f"🎯 Config used: {result['config_used']}")
 
-        if result.get('optimizations_applied'):
+        if result.get("optimizations_applied"):
             print(f"🔧 Optimizations: Applied")
     else:
         print(f"\n❌ FAILED: {result['error']}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

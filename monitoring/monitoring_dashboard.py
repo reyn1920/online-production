@@ -4,24 +4,24 @@ TRAE AI Monitoring Dashboard
 Provides a web-based dashboard for monitoring system health, performance, and errors.
 """
 
-import os
 import json
+import os
 import sqlite3
-from datetime import datetime, timezone, timedelta
-from typing import Dict, List, Any, Optional
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 try:
-    from flask import Flask, render_template_string, jsonify, request
+    from flask import Flask, jsonify, render_template_string, request
 except ImportError:
     print("Flask not installed. Install with: pip install flask")
     exit(1)
 
-from performance_monitor import PerformanceMonitor
 from error_tracker import ErrorTracker
+from performance_monitor import PerformanceMonitor
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('MONITORING_SECRET_KEY', os.urandom(24).hex())
+app.secret_key = os.environ.get("MONITORING_SECRET_KEY", os.urandom(24).hex())
 
 # Initialize monitoring components
 performance_monitor = PerformanceMonitor()
@@ -431,20 +431,22 @@ DASHBOARD_TEMPLATE = """
 </html>
 """
 
+
 def format_bytes(bytes_value: int) -> str:
     """Format bytes into human readable format."""
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
         if bytes_value < 1024.0:
             return f"{bytes_value:.1f} {unit}"
         bytes_value /= 1024.0
     return f"{bytes_value:.1f} PB"
+
 
 def format_uptime(seconds: float) -> str:
     """Format uptime seconds into human readable format."""
     days = int(seconds // 86400)
     hours = int((seconds % 86400) // 3600)
     minutes = int((seconds % 3600) // 60)
-    
+
     if days > 0:
         return f"{days}d {hours}h {minutes}m"
     elif hours > 0:
@@ -452,130 +454,168 @@ def format_uptime(seconds: float) -> str:
     else:
         return f"{minutes}m"
 
-@app.route('/')
+
+@app.route("/")
 def dashboard():
     """Main dashboard route."""
     try:
         # Get health status
         health_status = performance_monitor.get_health_status()
-        
+
         # Get error summary
         error_summary = error_tracker.get_error_summary(24)
-        
+
         # Format uptime
-        uptime_formatted = format_uptime(health_status.get('uptime_seconds', 0))
-        
+        uptime_formatted = format_uptime(health_status.get("uptime_seconds", 0))
+
         # Current time
-        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         return render_template_string(
             DASHBOARD_TEMPLATE,
             health_status=health_status,
             error_summary=error_summary,
             uptime_formatted=uptime_formatted,
             current_time=current_time,
-            format_bytes=format_bytes
+            format_bytes=format_bytes,
         )
-        
-    except Exception as e:
-        return jsonify({
-            'error': 'Dashboard error',
-            'message': str(e),
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        }), 500
 
-@app.route('/api/health')
+    except Exception as e:
+        return (
+            jsonify(
+                {
+                    "error": "Dashboard error",
+                    "message": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+            ),
+            500,
+        )
+
+
+@app.route("/api/health")
 def api_health():
     """Health check API endpoint."""
     try:
         health_status = performance_monitor.get_health_status()
         return jsonify(health_status)
     except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'error': str(e),
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        }), 500
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "error": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+            ),
+            500,
+        )
 
-@app.route('/api/errors')
+
+@app.route("/api/errors")
 def api_errors():
     """Error summary API endpoint."""
     try:
-        hours = request.args.get('hours', 24, type=int)
+        hours = request.args.get("hours", 24, type=int)
         error_summary = error_tracker.get_error_summary(hours)
         return jsonify(error_summary)
     except Exception as e:
-        return jsonify({
-            'error': 'Failed to get error summary',
-            'message': str(e),
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        }), 500
+        return (
+            jsonify(
+                {
+                    "error": "Failed to get error summary",
+                    "message": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+            ),
+            500,
+        )
 
-@app.route('/api/metrics')
+
+@app.route("/api/metrics")
 def api_metrics():
     """Combined metrics API endpoint."""
     try:
         health_status = performance_monitor.get_health_status()
         error_summary = error_tracker.get_error_summary(24)
-        
-        return jsonify({
-            'health': health_status,
-            'errors': error_summary,
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        })
-    except Exception as e:
-        return jsonify({
-            'error': 'Failed to get metrics',
-            'message': str(e),
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        }), 500
 
-@app.route('/api/alerts')
+        return jsonify(
+            {
+                "health": health_status,
+                "errors": error_summary,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    except Exception as e:
+        return (
+            jsonify(
+                {
+                    "error": "Failed to get metrics",
+                    "message": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+            ),
+            500,
+        )
+
+
+@app.route("/api/alerts")
 def api_alerts():
     """Active alerts API endpoint."""
     try:
         # Get recent alerts from error tracker
         with sqlite3.connect(error_tracker.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT rule_name, severity, message, timestamp 
                 FROM alert_history 
                 WHERE timestamp >= datetime('now', '-1 hour')
                 AND acknowledged = FALSE
                 ORDER BY timestamp DESC
-            """)
-            
+            """
+            )
+
             alerts = [
                 {
-                    'rule_name': row[0],
-                    'severity': row[1],
-                    'message': row[2],
-                    'timestamp': row[3]
-                } for row in cursor.fetchall()
+                    "rule_name": row[0],
+                    "severity": row[1],
+                    "message": row[2],
+                    "timestamp": row[3],
+                }
+                for row in cursor.fetchall()
             ]
-            
-        return jsonify({
-            'alerts': alerts,
-            'count': len(alerts),
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        })
-        
+
+        return jsonify(
+            {
+                "alerts": alerts,
+                "count": len(alerts),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+
     except Exception as e:
-        return jsonify({
-            'error': 'Failed to get alerts',
-            'message': str(e),
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        }), 500
+        return (
+            jsonify(
+                {
+                    "error": "Failed to get alerts",
+                    "message": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+            ),
+            500,
+        )
+
 
 def main():
     """Main function to run the monitoring dashboard."""
     import sys
-    
+
     # Configuration
-    host = os.environ.get('MONITORING_HOST', '127.0.0.1')
-    port = int(os.environ.get('MONITORING_PORT', 5001))
-    debug = os.environ.get('MONITORING_DEBUG', 'false').lower() == 'true'
-    
+    host = os.environ.get("MONITORING_HOST", "127.0.0.1")
+    port = int(os.environ.get("MONITORING_PORT", 5001))
+    debug = os.environ.get("MONITORING_DEBUG", "false").lower() == "true"
+
     print(f"🚀 Starting TRAE AI Monitoring Dashboard")
     print(f"📊 Dashboard URL: http://{host}:{port}")
     print(f"🔗 Health API: http://{host}:{port}/api/health")
@@ -584,7 +624,7 @@ def main():
     print(f"🚨 Alerts API: http://{host}:{port}/api/alerts")
     print("")
     print("Press Ctrl+C to stop the dashboard")
-    
+
     try:
         app.run(host=host, port=port, debug=debug, threaded=True)
     except KeyboardInterrupt:
@@ -593,5 +633,6 @@ def main():
         print(f"❌ Failed to start monitoring dashboard: {e}")
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

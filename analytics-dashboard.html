@@ -418,85 +418,78 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
-        // Mock real-time data
-        const generateMockData = () => {
-            const now = new Date();
-            const last30Days = Array.from({ length: 30 }, (_, i) => {
-                const date = new Date(now);
-                date.setDate(date.getDate() - (29 - i));
+        // Real-time data fetching
+        const fetchAnalyticsData = async () => {
+            try {
+                const response = await fetch('/api/revenue/analytics');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch analytics data');
+                }
+                const data = await response.json();
+                
+                // Transform API data to expected format
                 return {
-                    date: date.toISOString().split('T')[0],
-                    revenue: Math.random() * 200 + 50,
-                    views: Math.floor(Math.random() * 10000 + 1000),
-                    subscribers: Math.floor(Math.random() * 50 + 10),
-                    engagement: Math.random() * 10 + 2
+                    overview: {
+                        totalRevenue: data.total_revenue || 0,
+                        totalViews: data.total_views || 0,
+                        totalSubscribers: data.total_subscribers || 0,
+                        avgEngagement: data.avg_engagement || 0,
+                        changes: data.changes || {
+                            revenue: 0,
+                            views: 0,
+                            subscribers: 0,
+                            engagement: 0
+                        }
+                    },
+                    timeSeries: data.time_series || [],
+                    platforms: data.platforms || {
+                        youtube: { subscribers: 0, views: 0, revenue: 0, engagement: 0 },
+                        tiktok: { followers: 0, views: 0, revenue: 0, engagement: 0 },
+                        instagram: { followers: 0, views: 0, revenue: 0, engagement: 0 }
+                    },
+                    insights: data.insights || []
                 };
-            });
-            
-            return {
-                overview: {
-                    totalRevenue: 4700.50,
-                    totalViews: 125000,
-                    totalSubscribers: 8500,
-                    avgEngagement: 6.8,
-                    changes: {
-                        revenue: 12.5,
-                        views: -3.2,
-                        subscribers: 8.7,
-                        engagement: 4.1
-                    }
-                },
-                timeSeries: last30Days,
-                platforms: {
-                    youtube: {
-                        subscribers: 8500,
-                        views: 95000,
-                        revenue: 3200.50,
-                        engagement: 7.2
+            } catch (error) {
+                console.error('Error fetching analytics data:', error);
+                // Fallback data in case of API failure
+                return {
+                    overview: {
+                        totalRevenue: 0,
+                        totalViews: 0,
+                        totalSubscribers: 0,
+                        avgEngagement: 0,
+                        changes: { revenue: 0, views: 0, subscribers: 0, engagement: 0 }
                     },
-                    tiktok: {
-                        followers: 15200,
-                        views: 450000,
-                        revenue: 850.00,
-                        engagement: 12.5
+                    timeSeries: [],
+                    platforms: {
+                        youtube: { subscribers: 0, views: 0, revenue: 0, engagement: 0 },
+                        tiktok: { followers: 0, views: 0, revenue: 0, engagement: 0 },
+                        instagram: { followers: 0, views: 0, revenue: 0, engagement: 0 }
                     },
-                    instagram: {
-                        followers: 5800,
-                        views: 28000,
-                        revenue: 650.00,
-                        engagement: 5.8
-                    }
-                },
-                insights: [
-                    {
-                        type: 'positive',
-                        text: 'Your YouTube Shorts are performing 45% better than regular videos this month.',
-                        action: 'Create more Shorts content'
-                    },
-                    {
-                        type: 'warning',
-                        text: 'TikTok engagement has dropped 8% in the last week. Consider adjusting posting times.',
-                        action: 'Optimize posting schedule'
-                    },
-                    {
-                        type: 'info',
-                        text: 'You\'re 1,500 subscribers away from YouTube Partner Program eligibility.',
-                        action: 'View YPP strategy'
-                    },
-                    {
-                        type: 'positive',
-                        text: 'Affiliate marketing revenue increased 23% this month, driven by tech product reviews.',
-                        action: 'Expand tech content'
-                    }
-                ]
-            };
-        };
+                    insights: [{
+                         type: 'info',
+                         text: 'Analytics data is currently unavailable. Please check your API connections.',
+                         action: 'Verify integrations'
+                     }]
+                 };
+             }
+         };
         
         function AnalyticsDashboard() {
-            const [data, setData] = useState(generateMockData());
+            const [data, setData] = useState(null);
             const [timeRange, setTimeRange] = useState('30d');
             const [activeChart, setActiveChart] = useState('revenue');
-            const [isLoading, setIsLoading] = useState(false);
+            const [isLoading, setIsLoading] = useState(true);
+            
+            useEffect(() => {
+                const loadData = async () => {
+                    setIsLoading(true);
+                    const analyticsData = await fetchAnalyticsData();
+                    setData(analyticsData);
+                    setIsLoading(false);
+                };
+                loadData();
+            }, []);
             
             const revenueChartRef = useRef(null);
             const platformChartRef = useRef(null);
@@ -504,15 +497,18 @@
             const platformChartInstance = useRef(null);
             
             useEffect(() => {
-                initializeCharts();
+                if (data) {
+                    initializeCharts();
+                }
                 
-                // Simulate real-time updates
-                const interval = setInterval(() => {
-                    setData(generateMockData());
+                // Real-time updates
+                const interval = setInterval(async () => {
+                    const updatedData = await fetchAnalyticsData();
+                    setData(updatedData);
                 }, 30000); // Update every 30 seconds
                 
                 return () => clearInterval(interval);
-            }, []);
+            }, [data]);
             
             useEffect(() => {
                 updateCharts();
@@ -651,9 +647,8 @@
             
             const refreshData = async () => {
                 setIsLoading(true);
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                setData(generateMockData());
+                const updatedData = await fetchAnalyticsData();
+                setData(updatedData);
                 setIsLoading(false);
             };
             
@@ -672,6 +667,19 @@
                     currency: 'USD'
                 }).format(num);
             };
+            
+            if (isLoading || !data) {
+                return (
+                    <div className="dashboard-container">
+                        <div className="loading-state">
+                            <div className="loading-spinner">
+                                <i className="fas fa-spinner fa-spin"></i>
+                            </div>
+                            <p>Loading analytics data...</p>
+                        </div>
+                    </div>
+                );
+            }
             
             return (
                 <div className="dashboard-container">

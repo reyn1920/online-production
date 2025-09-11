@@ -20,36 +20,38 @@ Author: TRAE.AI Media System
 Version: 2.0.0
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
-import asyncio
-import logging
+import threading
+import time
+import uuid
+from collections import defaultdict, deque
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Union
-from dataclasses import dataclass, asdict
-import uuid
-import time
-from collections import defaultdict, deque
-import threading
-from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Dict, List, Optional, Union
 
-# Web framework imports
-from flask import Flask, render_template, request, jsonify, send_file, session
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_cors import CORS
 import plotly.graph_objs as go
 import plotly.utils
+# Web framework imports
+from flask import Flask, jsonify, render_template, request, send_file, session
+from flask_cors import CORS
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from werkzeug.utils import secure_filename
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class DashboardMetrics:
     """Dashboard performance metrics."""
+
     total_jobs: int = 0
     active_jobs: int = 0
     completed_jobs: int = 0
@@ -63,9 +65,11 @@ class DashboardMetrics:
     uptime: float = 0.0
     last_updated: datetime = None
 
+
 @dataclass
 class JobStatus:
     """Individual job status information."""
+
     job_id: str
     job_type: str
     status: str
@@ -77,610 +81,657 @@ class JobStatus:
     error_message: Optional[str]
     metadata: Dict[str, Any]
 
+
 class MediaDashboard:
     """Comprehensive media processing dashboard."""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or self._load_default_config()
-        self.app = Flask(__name__, template_folder='templates', static_folder='static')
-        self.app.config['SECRET_KEY'] = self.config.get('secret_key', 'media-dashboard-secret')
-        
+        self.app = Flask(__name__, template_folder="templates", static_folder="static")
+        self.app.config["SECRET_KEY"] = self.config.get(
+            "secret_key", "media-dashboard-secret"
+        )
+
         # Initialize extensions
-        self.socketio = SocketIO(self.app, cors_allowed_origins="*", async_mode='threading')
+        self.socketio = SocketIO(
+            self.app, cors_allowed_origins="*", async_mode="threading"
+        )
         CORS(self.app)
-        
+
         # Dashboard state
         self.metrics = DashboardMetrics()
         self.active_jobs: Dict[str, JobStatus] = {}
         self.job_history: deque = deque(maxlen=1000)
         self.connected_clients: Set[str] = set()
         self.workflow_templates: Dict[str, Any] = {}
-        
+
         # Performance monitoring
         self.performance_history: deque = deque(maxlen=100)
         self.start_time = datetime.now()
-        
+
         # Initialize routes and socket handlers
         self._setup_routes()
         self._setup_socket_handlers()
-        
+
         # Start background monitoring
         self._start_monitoring_thread()
-        
+
         logger.info("Media Dashboard initialized")
-    
+
     def _load_default_config(self) -> Dict[str, Any]:
         """Load default dashboard configuration."""
         return {
-            'host': '0.0.0.0',
-            'port': 8080,
-            'debug': True,
-            'secret_key': 'media-dashboard-secret-key',
-            'upload_folder': './uploads',
-            'max_file_size': 100 * 1024 * 1024,  # 100MB
-            'allowed_extensions': {'.mp4', '.avi', '.mov', '.png', '.jpg', '.jpeg', '.wav', '.mp3'},
-            'monitoring_interval': 5,  # seconds
-            'auto_cleanup_hours': 24,
-            'enable_analytics': True,
-            'theme': 'dark'
+            "host": "0.0.0.0",
+            "port": 8080,
+            "debug": True,
+            "secret_key": "media-dashboard-secret-key",
+            "upload_folder": "./uploads",
+            "max_file_size": 100 * 1024 * 1024,  # 100MB
+            "allowed_extensions": {
+                ".mp4",
+                ".avi",
+                ".mov",
+                ".png",
+                ".jpg",
+                ".jpeg",
+                ".wav",
+                ".mp3",
+            },
+            "monitoring_interval": 5,  # seconds
+            "auto_cleanup_hours": 24,
+            "enable_analytics": True,
+            "theme": "dark",
         }
-    
+
     def _setup_routes(self):
         """Setup Flask routes."""
-        
-        @self.app.route('/')
+
+        @self.app.route("/")
         def dashboard_home():
             """Main dashboard page."""
-            return render_template('dashboard.html', 
-                                 config=self.config,
-                                 metrics=asdict(self.metrics))
-        
-        @self.app.route('/api/status')
+            return render_template(
+                "dashboard.html", config=self.config, metrics=asdict(self.metrics)
+            )
+
+        @self.app.route("/api/status")
         def get_status():
             """Get current dashboard status."""
-            return jsonify({
-                'success': True,
-                'metrics': asdict(self.metrics),
-                'active_jobs': {job_id: asdict(job) for job_id, job in self.active_jobs.items()},
-                'uptime': (datetime.now() - self.start_time).total_seconds()
-            })
-        
-        @self.app.route('/api/jobs')
+            return jsonify(
+                {
+                    "success": True,
+                    "metrics": asdict(self.metrics),
+                    "active_jobs": {
+                        job_id: asdict(job) for job_id, job in self.active_jobs.items()
+                    },
+                    "uptime": (datetime.now() - self.start_time).total_seconds(),
+                }
+            )
+
+        @self.app.route("/api/jobs")
         def get_jobs():
             """Get all jobs with filtering."""
-            status_filter = request.args.get('status')
-            job_type_filter = request.args.get('type')
-            limit = int(request.args.get('limit', 50))
-            
+            status_filter = request.args.get("status")
+            job_type_filter = request.args.get("type")
+            limit = int(request.args.get("limit", 50))
+
             jobs = list(self.job_history)
-            
+
             # Apply filters
             if status_filter:
-                jobs = [job for job in jobs if job.get('status') == status_filter]
+                jobs = [job for job in jobs if job.get("status") == status_filter]
             if job_type_filter:
-                jobs = [job for job in jobs if job.get('job_type') == job_type_filter]
-            
+                jobs = [job for job in jobs if job.get("job_type") == job_type_filter]
+
             # Limit results
             jobs = jobs[-limit:]
-            
-            return jsonify({
-                'success': True,
-                'jobs': jobs,
-                'total': len(jobs)
-            })
-        
-        @self.app.route('/api/jobs/<job_id>')
+
+            return jsonify({"success": True, "jobs": jobs, "total": len(jobs)})
+
+        @self.app.route("/api/jobs/<job_id>")
         def get_job_details(job_id):
             """Get detailed information about a specific job."""
             if job_id in self.active_jobs:
                 job = self.active_jobs[job_id]
-                return jsonify({
-                    'success': True,
-                    'job': asdict(job)
-                })
-            
+                return jsonify({"success": True, "job": asdict(job)})
+
             # Search in history
             for job in self.job_history:
-                if job.get('job_id') == job_id:
-                    return jsonify({
-                        'success': True,
-                        'job': job
-                    })
-            
-            return jsonify({
-                'success': False,
-                'error': 'Job not found'
-            }), 404
-        
-        @self.app.route('/api/jobs/<job_id>/cancel', methods=['POST'])
+                if job.get("job_id") == job_id:
+                    return jsonify({"success": True, "job": job})
+
+            return jsonify({"success": False, "error": "Job not found"}), 404
+
+        @self.app.route("/api/jobs/<job_id>/cancel", methods=["POST"])
         def cancel_job(job_id):
             """Cancel a running job."""
             try:
                 # Import workflow engine
                 from backend.media.workflow_engine import get_workflow_engine
-                
+
                 engine = get_workflow_engine()
                 success = await engine.cancel_execution(job_id)
-                
+
                 if success:
-                    return jsonify({
-                        'success': True,
-                        'message': f'Job {job_id} cancelled successfully'
-                    })
+                    return jsonify(
+                        {
+                            "success": True,
+                            "message": f"Job {job_id} cancelled successfully",
+                        }
+                    )
                 else:
-                    return jsonify({
-                        'success': False,
-                        'error': 'Job not found or cannot be cancelled'
-                    }), 400
-                    
+                    return (
+                        jsonify(
+                            {
+                                "success": False,
+                                "error": "Job not found or cannot be cancelled",
+                            }
+                        ),
+                        400,
+                    )
+
             except Exception as e:
                 logger.error(f"Error cancelling job {job_id}: {e}")
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
-        
-        @self.app.route('/api/workflows')
+                return jsonify({"success": False, "error": str(e)}), 500
+
+        @self.app.route("/api/workflows")
         def get_workflows():
             """Get available workflow templates."""
             try:
                 from backend.media.workflow_engine import get_workflow_engine
-                
+
                 engine = get_workflow_engine()
                 workflows = engine.get_available_workflows()
-                
-                return jsonify({
-                    'success': True,
-                    'workflows': workflows
-                })
-                
+
+                return jsonify({"success": True, "workflows": workflows})
+
             except Exception as e:
                 logger.error(f"Error getting workflows: {e}")
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
-        
-        @self.app.route('/api/workflows/<workflow_id>/execute', methods=['POST'])
+                return jsonify({"success": False, "error": str(e)}), 500
+
+        @self.app.route("/api/workflows/<workflow_id>/execute", methods=["POST"])
         def execute_workflow(workflow_id):
             """Execute a workflow with provided input data."""
             try:
                 input_data = request.get_json()
-                
+
                 from backend.media.workflow_engine import get_workflow_engine
-                
+
                 engine = get_workflow_engine()
-                
+
                 # Create and execute workflow
-                execution_id = asyncio.run(engine.create_workflow_execution(
-                    workflow_id, input_data
-                ))
-                
+                execution_id = asyncio.run(
+                    engine.create_workflow_execution(workflow_id, input_data)
+                )
+
                 # Start execution in background
                 def run_workflow():
                     asyncio.run(engine.execute_workflow(execution_id))
-                
+
                 threading.Thread(target=run_workflow, daemon=True).start()
-                
-                return jsonify({
-                    'success': True,
-                    'execution_id': execution_id,
-                    'message': 'Workflow execution started'
-                })
-                
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "execution_id": execution_id,
+                        "message": "Workflow execution started",
+                    }
+                )
+
             except Exception as e:
                 logger.error(f"Error executing workflow {workflow_id}: {e}")
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
-        
-        @self.app.route('/api/upload', methods=['POST'])
+                return jsonify({"success": False, "error": str(e)}), 500
+
+        @self.app.route("/api/upload", methods=["POST"])
         def upload_file():
             """Handle file uploads."""
             try:
-                if 'file' not in request.files:
-                    return jsonify({
-                        'success': False,
-                        'error': 'No file provided'
-                    }), 400
-                
-                file = request.files['file']
-                if file.filename == '':
-                    return jsonify({
-                        'success': False,
-                        'error': 'No file selected'
-                    }), 400
-                
+                if "file" not in request.files:
+                    return jsonify({"success": False, "error": "No file provided"}), 400
+
+                file = request.files["file"]
+                if file.filename == "":
+                    return jsonify({"success": False, "error": "No file selected"}), 400
+
                 # Validate file extension
                 file_ext = Path(file.filename).suffix.lower()
-                if file_ext not in self.config['allowed_extensions']:
-                    return jsonify({
-                        'success': False,
-                        'error': f'File type {file_ext} not allowed'
-                    }), 400
-                
+                if file_ext not in self.config["allowed_extensions"]:
+                    return (
+                        jsonify(
+                            {
+                                "success": False,
+                                "error": f"File type {file_ext} not allowed",
+                            }
+                        ),
+                        400,
+                    )
+
                 # Save file
                 filename = secure_filename(file.filename)
-                upload_path = Path(self.config['upload_folder']) / filename
+                upload_path = Path(self.config["upload_folder"]) / filename
                 upload_path.parent.mkdir(parents=True, exist_ok=True)
-                
+
                 file.save(str(upload_path))
-                
-                return jsonify({
-                    'success': True,
-                    'filename': filename,
-                    'path': str(upload_path),
-                    'size': upload_path.stat().st_size
-                })
-                
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "filename": filename,
+                        "path": str(upload_path),
+                        "size": upload_path.stat().st_size,
+                    }
+                )
+
             except Exception as e:
                 logger.error(f"Error uploading file: {e}")
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
-        
-        @self.app.route('/api/analytics')
+                return jsonify({"success": False, "error": str(e)}), 500
+
+        @self.app.route("/api/analytics")
         def get_analytics():
             """Get performance analytics data."""
             try:
                 # Generate analytics charts
                 charts = self._generate_analytics_charts()
-                
-                return jsonify({
-                    'success': True,
-                    'charts': charts,
-                    'summary': {
-                        'total_jobs_today': self._count_jobs_today(),
-                        'avg_processing_time': self.metrics.avg_processing_time,
-                        'success_rate': self._calculate_success_rate(),
-                        'peak_usage_time': self._get_peak_usage_time()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "charts": charts,
+                        "summary": {
+                            "total_jobs_today": self._count_jobs_today(),
+                            "avg_processing_time": self.metrics.avg_processing_time,
+                            "success_rate": self._calculate_success_rate(),
+                            "peak_usage_time": self._get_peak_usage_time(),
+                        },
                     }
-                })
-                
+                )
+
             except Exception as e:
                 logger.error(f"Error generating analytics: {e}")
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
-        
-        @self.app.route('/api/system/health')
+                return jsonify({"success": False, "error": str(e)}), 500
+
+        @self.app.route("/api/system/health")
         def system_health():
             """Get system health information."""
             try:
                 import psutil
-                
+
                 health_data = {
-                    'cpu_percent': psutil.cpu_percent(interval=1),
-                    'memory_percent': psutil.virtual_memory().percent,
-                    'disk_percent': psutil.disk_usage('/').percent,
-                    'network_io': dict(psutil.net_io_counters()._asdict()),
-                    'process_count': len(psutil.pids()),
-                    'uptime': (datetime.now() - self.start_time).total_seconds(),
-                    'load_average': os.getloadavg() if hasattr(os, 'getloadavg') else [0, 0, 0]
+                    "cpu_percent": psutil.cpu_percent(interval=1),
+                    "memory_percent": psutil.virtual_memory().percent,
+                    "disk_percent": psutil.disk_usage("/").percent,
+                    "network_io": dict(psutil.net_io_counters()._asdict()),
+                    "process_count": len(psutil.pids()),
+                    "uptime": (datetime.now() - self.start_time).total_seconds(),
+                    "load_average": (
+                        os.getloadavg() if hasattr(os, "getloadavg") else [0, 0, 0]
+                    ),
                 }
-                
-                return jsonify({
-                    'success': True,
-                    'health': health_data,
-                    'status': 'healthy' if health_data['cpu_percent'] < 80 else 'warning'
-                })
-                
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "health": health_data,
+                        "status": (
+                            "healthy" if health_data["cpu_percent"] < 80 else "warning"
+                        ),
+                    }
+                )
+
             except Exception as e:
                 logger.error(f"Error getting system health: {e}")
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
-    
+                return jsonify({"success": False, "error": str(e)}), 500
+
     def _setup_socket_handlers(self):
         """Setup WebSocket event handlers."""
-        
-        @self.socketio.on('connect')
+
+        @self.socketio.on("connect")
         def handle_connect():
             """Handle client connection."""
             client_id = request.sid
             self.connected_clients.add(client_id)
-            
+
             # Send initial data
-            emit('dashboard_update', {
-                'metrics': asdict(self.metrics),
-                'active_jobs': {job_id: asdict(job) for job_id, job in self.active_jobs.items()}
-            })
-            
+            emit(
+                "dashboard_update",
+                {
+                    "metrics": asdict(self.metrics),
+                    "active_jobs": {
+                        job_id: asdict(job) for job_id, job in self.active_jobs.items()
+                    },
+                },
+            )
+
             logger.info(f"Client {client_id} connected")
-        
-        @self.socketio.on('disconnect')
+
+        @self.socketio.on("disconnect")
         def handle_disconnect():
             """Handle client disconnection."""
             client_id = request.sid
             self.connected_clients.discard(client_id)
             logger.info(f"Client {client_id} disconnected")
-        
-        @self.socketio.on('subscribe_job')
+
+        @self.socketio.on("subscribe_job")
         def handle_subscribe_job(data):
             """Subscribe to job updates."""
-            job_id = data.get('job_id')
+            job_id = data.get("job_id")
             if job_id:
                 join_room(f"job_{job_id}")
-                emit('subscribed', {'job_id': job_id})
-        
-        @self.socketio.on('unsubscribe_job')
+                emit("subscribed", {"job_id": job_id})
+
+        @self.socketio.on("unsubscribe_job")
         def handle_unsubscribe_job(data):
             """Unsubscribe from job updates."""
-            job_id = data.get('job_id')
+            job_id = data.get("job_id")
             if job_id:
                 leave_room(f"job_{job_id}")
-                emit('unsubscribed', {'job_id': job_id})
-        
-        @self.socketio.on('request_preview')
+                emit("unsubscribed", {"job_id": job_id})
+
+        @self.socketio.on("request_preview")
         def handle_preview_request(data):
             """Handle preview generation request."""
             try:
-                job_id = data.get('job_id')
-                preview_type = data.get('type', 'thumbnail')
-                
+                job_id = data.get("job_id")
+                preview_type = data.get("type", "thumbnail")
+
                 # Generate preview (implementation depends on media type)
                 preview_data = self._generate_preview(job_id, preview_type)
-                
-                emit('preview_ready', {
-                    'job_id': job_id,
-                    'preview_type': preview_type,
-                    'preview_data': preview_data
-                })
-                
+
+                emit(
+                    "preview_ready",
+                    {
+                        "job_id": job_id,
+                        "preview_type": preview_type,
+                        "preview_data": preview_data,
+                    },
+                )
+
             except Exception as e:
-                emit('preview_error', {
-                    'job_id': job_id,
-                    'error': str(e)
-                })
-    
+                emit("preview_error", {"job_id": job_id, "error": str(e)})
+
     def _start_monitoring_thread(self):
         """Start background monitoring thread."""
+
         def monitor_loop():
             while True:
                 try:
                     self._update_metrics()
                     self._broadcast_updates()
-                    time.sleep(self.config['monitoring_interval'])
+                    time.sleep(self.config["monitoring_interval"])
                 except Exception as e:
                     logger.error(f"Monitoring error: {e}")
                     time.sleep(5)
-        
+
         monitoring_thread = threading.Thread(target=monitor_loop, daemon=True)
         monitoring_thread.start()
         logger.info("Monitoring thread started")
-    
+
     def _update_metrics(self):
         """Update dashboard metrics."""
         try:
             import psutil
-            
+
             # Update system metrics
             self.metrics.cpu_usage = psutil.cpu_percent(interval=None)
             self.metrics.memory_usage = psutil.virtual_memory().percent
-            self.metrics.disk_usage = psutil.disk_usage('/').percent
-            
+            self.metrics.disk_usage = psutil.disk_usage("/").percent
+
             # Update job metrics
             self.metrics.active_jobs = len(self.active_jobs)
             self.metrics.total_jobs = len(self.job_history) + self.metrics.active_jobs
-            
+
             # Calculate averages
             if self.job_history:
                 processing_times = [
-                    job.get('processing_time', 0) for job in self.job_history
-                    if job.get('processing_time')
+                    job.get("processing_time", 0)
+                    for job in self.job_history
+                    if job.get("processing_time")
                 ]
                 if processing_times:
-                    self.metrics.avg_processing_time = sum(processing_times) / len(processing_times)
-            
+                    self.metrics.avg_processing_time = sum(processing_times) / len(
+                        processing_times
+                    )
+
             self.metrics.uptime = (datetime.now() - self.start_time).total_seconds()
             self.metrics.last_updated = datetime.now()
-            
+
             # Store performance history
-            self.performance_history.append({
-                'timestamp': datetime.now().isoformat(),
-                'cpu_usage': self.metrics.cpu_usage,
-                'memory_usage': self.metrics.memory_usage,
-                'active_jobs': self.metrics.active_jobs
-            })
-            
+            self.performance_history.append(
+                {
+                    "timestamp": datetime.now().isoformat(),
+                    "cpu_usage": self.metrics.cpu_usage,
+                    "memory_usage": self.metrics.memory_usage,
+                    "active_jobs": self.metrics.active_jobs,
+                }
+            )
+
         except Exception as e:
             logger.error(f"Error updating metrics: {e}")
-    
+
     def _broadcast_updates(self):
         """Broadcast updates to connected clients."""
         if self.connected_clients:
             update_data = {
-                'metrics': asdict(self.metrics),
-                'active_jobs': {job_id: asdict(job) for job_id, job in self.active_jobs.items()},
-                'timestamp': datetime.now().isoformat()
+                "metrics": asdict(self.metrics),
+                "active_jobs": {
+                    job_id: asdict(job) for job_id, job in self.active_jobs.items()
+                },
+                "timestamp": datetime.now().isoformat(),
             }
-            
-            self.socketio.emit('dashboard_update', update_data)
-    
+
+            self.socketio.emit("dashboard_update", update_data)
+
     def _generate_analytics_charts(self) -> Dict[str, Any]:
         """Generate analytics charts data."""
         charts = {}
-        
+
         # Performance over time chart
         if self.performance_history:
-            timestamps = [entry['timestamp'] for entry in self.performance_history]
-            cpu_data = [entry['cpu_usage'] for entry in self.performance_history]
-            memory_data = [entry['memory_usage'] for entry in self.performance_history]
-            
+            timestamps = [entry["timestamp"] for entry in self.performance_history]
+            cpu_data = [entry["cpu_usage"] for entry in self.performance_history]
+            memory_data = [entry["memory_usage"] for entry in self.performance_history]
+
             performance_chart = {
-                'data': [
+                "data": [
                     {
-                        'x': timestamps,
-                        'y': cpu_data,
-                        'type': 'scatter',
-                        'mode': 'lines',
-                        'name': 'CPU Usage %',
-                        'line': {'color': '#ff6b6b'}
+                        "x": timestamps,
+                        "y": cpu_data,
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "CPU Usage %",
+                        "line": {"color": "#ff6b6b"},
                     },
                     {
-                        'x': timestamps,
-                        'y': memory_data,
-                        'type': 'scatter',
-                        'mode': 'lines',
-                        'name': 'Memory Usage %',
-                        'line': {'color': '#4ecdc4'}
-                    }
+                        "x": timestamps,
+                        "y": memory_data,
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "Memory Usage %",
+                        "line": {"color": "#4ecdc4"},
+                    },
                 ],
-                'layout': {
-                    'title': 'System Performance Over Time',
-                    'xaxis': {'title': 'Time'},
-                    'yaxis': {'title': 'Usage %'},
-                    'template': 'plotly_dark' if self.config['theme'] == 'dark' else 'plotly_white'
-                }
+                "layout": {
+                    "title": "System Performance Over Time",
+                    "xaxis": {"title": "Time"},
+                    "yaxis": {"title": "Usage %"},
+                    "template": (
+                        "plotly_dark"
+                        if self.config["theme"] == "dark"
+                        else "plotly_white"
+                    ),
+                },
             }
-            charts['performance'] = performance_chart
-        
+            charts["performance"] = performance_chart
+
         # Job status distribution
         if self.job_history:
             status_counts = defaultdict(int)
             for job in self.job_history:
-                status_counts[job.get('status', 'unknown')] += 1
-            
+                status_counts[job.get("status", "unknown")] += 1
+
             status_chart = {
-                'data': [{
-                    'labels': list(status_counts.keys()),
-                    'values': list(status_counts.values()),
-                    'type': 'pie',
-                    'marker': {
-                        'colors': ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57']
+                "data": [
+                    {
+                        "labels": list(status_counts.keys()),
+                        "values": list(status_counts.values()),
+                        "type": "pie",
+                        "marker": {
+                            "colors": [
+                                "#ff6b6b",
+                                "#4ecdc4",
+                                "#45b7d1",
+                                "#96ceb4",
+                                "#feca57",
+                            ]
+                        },
                     }
-                }],
-                'layout': {
-                    'title': 'Job Status Distribution',
-                    'template': 'plotly_dark' if self.config['theme'] == 'dark' else 'plotly_white'
-                }
+                ],
+                "layout": {
+                    "title": "Job Status Distribution",
+                    "template": (
+                        "plotly_dark"
+                        if self.config["theme"] == "dark"
+                        else "plotly_white"
+                    ),
+                },
             }
-            charts['job_status'] = status_chart
-        
+            charts["job_status"] = status_chart
+
         return charts
-    
+
     def _count_jobs_today(self) -> int:
         """Count jobs processed today."""
         today = datetime.now().date()
         count = 0
-        
+
         for job in self.job_history:
-            job_date = datetime.fromisoformat(job.get('start_time', '')).date()
+            job_date = datetime.fromisoformat(job.get("start_time", "")).date()
             if job_date == today:
                 count += 1
-        
+
         return count
-    
+
     def _calculate_success_rate(self) -> float:
         """Calculate job success rate."""
         if not self.job_history:
             return 0.0
-        
-        successful_jobs = sum(1 for job in self.job_history if job.get('status') == 'completed')
+
+        successful_jobs = sum(
+            1 for job in self.job_history if job.get("status") == "completed"
+        )
         return (successful_jobs / len(self.job_history)) * 100
-    
+
     def _get_peak_usage_time(self) -> str:
         """Get peak usage time of day."""
         if not self.performance_history:
             return "N/A"
-        
+
         # Find hour with highest average CPU usage
         hourly_usage = defaultdict(list)
-        
+
         for entry in self.performance_history:
-            hour = datetime.fromisoformat(entry['timestamp']).hour
-            hourly_usage[hour].append(entry['cpu_usage'])
-        
+            hour = datetime.fromisoformat(entry["timestamp"]).hour
+            hourly_usage[hour].append(entry["cpu_usage"])
+
         if not hourly_usage:
             return "N/A"
-        
-        peak_hour = max(hourly_usage.keys(), 
-                       key=lambda h: sum(hourly_usage[h]) / len(hourly_usage[h]))
-        
+
+        peak_hour = max(
+            hourly_usage.keys(),
+            key=lambda h: sum(hourly_usage[h]) / len(hourly_usage[h]),
+        )
+
         return f"{peak_hour:02d}:00"
-    
+
     def _generate_preview(self, job_id: str, preview_type: str) -> Dict[str, Any]:
         """Generate preview for a job."""
         # This would integrate with the actual media processing to generate previews
         # For now, return placeholder data
         return {
-            'type': preview_type,
-            'url': f'/api/preview/{job_id}/{preview_type}',
-            'generated_at': datetime.now().isoformat()
+            "type": preview_type,
+            "url": f"/api/preview/{job_id}/{preview_type}",
+            "generated_at": datetime.now().isoformat(),
         }
-    
-    def update_job_status(self, job_id: str, status: str, progress: float = None, 
-                         metadata: Dict[str, Any] = None):
+
+    def update_job_status(
+        self,
+        job_id: str,
+        status: str,
+        progress: float = None,
+        metadata: Dict[str, Any] = None,
+    ):
         """Update job status and broadcast to clients."""
         if job_id in self.active_jobs:
             job = self.active_jobs[job_id]
             job.status = status
-            
+
             if progress is not None:
                 job.progress = progress
-            
+
             if metadata:
                 job.metadata.update(metadata)
-            
+
             # Broadcast job update
-            self.socketio.emit('job_update', {
-                'job_id': job_id,
-                'status': status,
-                'progress': progress,
-                'metadata': metadata
-            }, room=f"job_{job_id}")
-            
+            self.socketio.emit(
+                "job_update",
+                {
+                    "job_id": job_id,
+                    "status": status,
+                    "progress": progress,
+                    "metadata": metadata,
+                },
+                room=f"job_{job_id}",
+            )
+
             # Move to history if completed or failed
-            if status in ['completed', 'failed', 'cancelled']:
+            if status in ["completed", "failed", "cancelled"]:
                 job.end_time = datetime.now()
                 self.job_history.append(asdict(job))
                 del self.active_jobs[job_id]
-    
-    def add_job(self, job_id: str, job_type: str, input_files: List[str], 
-               metadata: Dict[str, Any] = None) -> JobStatus:
+
+    def add_job(
+        self,
+        job_id: str,
+        job_type: str,
+        input_files: List[str],
+        metadata: Dict[str, Any] = None,
+    ) -> JobStatus:
         """Add a new job to tracking."""
         job = JobStatus(
             job_id=job_id,
             job_type=job_type,
-            status='pending',
+            status="pending",
             progress=0.0,
             start_time=datetime.now(),
             estimated_completion=None,
             input_files=input_files,
             output_files=[],
             error_message=None,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
-        
+
         self.active_jobs[job_id] = job
-        
+
         # Broadcast new job
-        self.socketio.emit('new_job', asdict(job))
-        
+        self.socketio.emit("new_job", asdict(job))
+
         return job
-    
+
     def run(self, host: str = None, port: int = None, debug: bool = None):
         """Run the dashboard server."""
-        host = host or self.config['host']
-        port = port or self.config['port']
-        debug = debug if debug is not None else self.config['debug']
-        
+        host = host or self.config["host"]
+        port = port or self.config["port"]
+        debug = debug if debug is not None else self.config["debug"]
+
         logger.info(f"Starting Media Dashboard on {host}:{port}")
-        
+
         self.socketio.run(
-            self.app,
-            host=host,
-            port=port,
-            debug=debug,
-            allow_unsafe_werkzeug=True
+            self.app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True
         )
+
 
 # Global dashboard instance
 _dashboard_instance = None
+
 
 def get_media_dashboard(config: Optional[Dict[str, Any]] = None) -> MediaDashboard:
     """Get or create the global media dashboard instance."""
@@ -689,8 +740,9 @@ def get_media_dashboard(config: Optional[Dict[str, Any]] = None) -> MediaDashboa
         _dashboard_instance = MediaDashboard(config)
     return _dashboard_instance
 
+
 # Dashboard HTML Template
-DASHBOARD_TEMPLATE = '''
+DASHBOARD_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1024,16 +1076,16 @@ DASHBOARD_TEMPLATE = '''
     </script>
 </body>
 </html>
-'''
+"""
 
 if __name__ == "__main__":
     # Create templates directory and save template
-    templates_dir = Path('templates')
+    templates_dir = Path("templates")
     templates_dir.mkdir(exist_ok=True)
-    
-    with open(templates_dir / 'dashboard.html', 'w') as f:
+
+    with open(templates_dir / "dashboard.html", "w") as f:
         f.write(DASHBOARD_TEMPLATE)
-    
+
     # Run dashboard
     dashboard = get_media_dashboard()
     dashboard.run()

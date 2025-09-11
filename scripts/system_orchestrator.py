@@ -23,37 +23,36 @@ import asyncio
 import json
 import logging
 import os
-import sys
-import subprocess
-import time
-import sqlite3
-import yaml
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Tuple, Union
-from enum import Enum
-from pathlib import Path
-import threading
 import queue
 import signal
+import sqlite3
+import subprocess
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import psutil
 import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import yaml
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('system_orchestrator.log'),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler("system_orchestrator.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
 
 class SystemStatus(Enum):
     """System status enumeration"""
+
     STARTING = "starting"
     RUNNING = "running"
     DEGRADED = "degraded"
@@ -65,6 +64,7 @@ class SystemStatus(Enum):
 
 class ComponentType(Enum):
     """System component types"""
+
     RESEARCH_AGENT = "research_agent"
     NEWS_SCRAPER = "news_scraper"
     YOUTUBE_ANALYZER = "youtube_analyzer"
@@ -82,6 +82,7 @@ class ComponentType(Enum):
 @dataclass
 class SystemComponent:
     """System component definition"""
+
     name: str
     component_type: ComponentType
     status: SystemStatus
@@ -97,6 +98,7 @@ class SystemComponent:
 @dataclass
 class SystemMetrics:
     """System-wide metrics"""
+
     total_components: int
     healthy_components: int
     degraded_components: int
@@ -152,144 +154,155 @@ class ConservativeResearchOrchestrator:
         config_file = self.config_dir / "orchestrator_config.yaml"
 
         default_config = {
-            'system': {
-                'name': 'Conservative Research System',
-                'version': '6.0.0',
-                'environment': 'production',
-                'debug_mode': False,
-                'max_workers': 10,
-                'health_check_interval': 30,
-                'metrics_collection_interval': 60,
-                'auto_restart': True,
-                'self_healing': True
+            "system": {
+                "name": "Conservative Research System",
+                "version": "6.0.0",
+                "environment": "production",
+                "debug_mode": False,
+                "max_workers": 10,
+                "health_check_interval": 30,
+                "metrics_collection_interval": 60,
+                "auto_restart": True,
+                "self_healing": True,
             },
-            'components': {
-                'research_agent': {
-                    'enabled': True,
-                    'script_path': 'backend/agents/conservative_research_agent.py',
-                    'health_endpoint': '/health',
-                    'restart_threshold': 3,
-                    'memory_limit_mb': 512
+            "components": {
+                "research_agent": {
+                    "enabled": True,
+                    "script_path": "backend/agents/conservative_research_agent.py",
+                    "health_endpoint": "/health",
+                    "restart_threshold": 3,
+                    "memory_limit_mb": 512,
                 },
-                'news_scraper': {
-                    'enabled': True,
-                    'script_path': 'backend/scrapers/news_scraper.py',
-                    'scrape_interval': 300,
-                    'sources': ['fox_news', 'drudge_report', 'babylon_bee', 'cnn', 'msnbc'],
-                    'memory_limit_mb': 256
+                "news_scraper": {
+                    "enabled": True,
+                    "script_path": "backend/scrapers/news_scraper.py",
+                    "scrape_interval": 300,
+                    "sources": [
+                        "fox_news",
+                        "drudge_report",
+                        "babylon_bee",
+                        "cnn",
+                        "msnbc",
+                    ],
+                    "memory_limit_mb": 256,
                 },
-                'youtube_analyzer': {
-                    'enabled': True,
-                    'script_path': 'backend/analyzers/youtube_analyzer.py',
-                    'analysis_interval': 600,
-                    'channels': ['gutfeld', 'watters', 'bongino', 'crowder', 'shapiro'],
-                    'memory_limit_mb': 1024
+                "youtube_analyzer": {
+                    "enabled": True,
+                    "script_path": "backend/analyzers/youtube_analyzer.py",
+                    "analysis_interval": 600,
+                    "channels": ["gutfeld", "watters", "bongino", "crowder", "shapiro"],
+                    "memory_limit_mb": 1024,
                 },
-                'content_generator': {
-                    'enabled': True,
-                    'script_path': 'backend/generators/content_generator.py',
-                    'generation_interval': 3600,
-                    'output_formats': ['article', 'video_script', 'social_post'],
-                    'memory_limit_mb': 512
+                "content_generator": {
+                    "enabled": True,
+                    "script_path": "backend/generators/content_generator.py",
+                    "generation_interval": 3600,
+                    "output_formats": ["article", "video_script", "social_post"],
+                    "memory_limit_mb": 512,
                 },
-                'evidence_database': {
-                    'enabled': True,
-                    'script_path': 'backend/database/evidence_manager.py',
-                    'backup_interval': 21600,
-                    'cleanup_interval': 86400,
-                    'memory_limit_mb': 256
+                "evidence_database": {
+                    "enabled": True,
+                    "script_path": "backend/database/evidence_manager.py",
+                    "backup_interval": 21600,
+                    "cleanup_interval": 86400,
+                    "memory_limit_mb": 256,
                 },
-                'revenue_optimizer': {
-                    'enabled': True,
-                    'script_path': 'backend/revenue/revenue_optimization_system.py',
-                    'optimization_interval': 1800,
-                    'target_increase': 1000,
-                    'memory_limit_mb': 256
+                "revenue_optimizer": {
+                    "enabled": True,
+                    "script_path": "backend/revenue/revenue_optimization_system.py",
+                    "optimization_interval": 1800,
+                    "target_increase": 1000,
+                    "memory_limit_mb": 256,
                 },
-                'qa_generator': {
-                    'enabled': True,
-                    'script_path': 'backend/enhancement/pipeline_enhancement_system.py',
-                    'generation_interval': 60,
-                    'boost_multiplier': 1000000000,
-                    'memory_limit_mb': 512
+                "qa_generator": {
+                    "enabled": True,
+                    "script_path": "backend/enhancement/pipeline_enhancement_system.py",
+                    "generation_interval": 60,
+                    "boost_multiplier": 1000000000,
+                    "memory_limit_mb": 512,
                 },
-                'health_monitor': {
-                    'enabled': True,
-                    'script_path': 'backend/monitoring/system_health_monitor.py',
-                    'check_interval': 30,
-                    'alert_threshold': 0.8,
-                    'memory_limit_mb': 128
+                "health_monitor": {
+                    "enabled": True,
+                    "script_path": "backend/monitoring/system_health_monitor.py",
+                    "check_interval": 30,
+                    "alert_threshold": 0.8,
+                    "memory_limit_mb": 128,
                 },
-                'deployment_system': {
-                    'enabled': True,
-                    'script_path': 'scripts/production_deployment.py',
-                    'auto_deploy': False,
-                    'rollback_enabled': True,
-                    'memory_limit_mb': 256
+                "deployment_system": {
+                    "enabled": True,
+                    "script_path": "scripts/production_deployment.py",
+                    "auto_deploy": False,
+                    "rollback_enabled": True,
+                    "memory_limit_mb": 256,
                 },
-                'testing_suite': {
-                    'enabled': True,
-                    'script_path': 'backend/testing/automated_test_suite.py',
-                    'test_interval': 3600,
-                    'coverage_threshold': 0.9,
-                    'memory_limit_mb': 512
+                "testing_suite": {
+                    "enabled": True,
+                    "script_path": "backend/testing/automated_test_suite.py",
+                    "test_interval": 3600,
+                    "coverage_threshold": 0.9,
+                    "memory_limit_mb": 512,
                 },
-                'pipeline_enhancer': {
-                    'enabled': True,
-                    'script_path': 'backend/automation/self_healing_pipeline.py',
-                    'enhancement_interval': 1800,
-                    'auto_optimize': True,
-                    'memory_limit_mb': 256
+                "pipeline_enhancer": {
+                    "enabled": True,
+                    "script_path": "backend/automation/self_healing_pipeline.py",
+                    "enhancement_interval": 1800,
+                    "auto_optimize": True,
+                    "memory_limit_mb": 256,
                 },
-                'master_control': {
-                    'enabled': True,
-                    'script_path': 'backend/integration/master_control_system.py',
-                    'coordination_interval': 120,
-                    'decision_threshold': 0.7,
-                    'memory_limit_mb': 512
-                }
+                "master_control": {
+                    "enabled": True,
+                    "script_path": "backend/integration/master_control_system.py",
+                    "coordination_interval": 120,
+                    "decision_threshold": 0.7,
+                    "memory_limit_mb": 512,
+                },
             },
-            'monitoring': {
-                'health_check_timeout': 10,
-                'performance_threshold': 0.8,
-                'error_rate_threshold': 0.05,
-                'memory_usage_threshold': 0.9,
-                'cpu_usage_threshold': 0.8,
-                'disk_usage_threshold': 0.9
+            "monitoring": {
+                "health_check_timeout": 10,
+                "performance_threshold": 0.8,
+                "error_rate_threshold": 0.05,
+                "memory_usage_threshold": 0.9,
+                "cpu_usage_threshold": 0.8,
+                "disk_usage_threshold": 0.9,
             },
-            'alerts': {
-                'email_enabled': True,
-                'slack_enabled': True,
-                'webhook_enabled': True,
-                'email_recipients': ['admin@therightperspective.com'],
-                'slack_channel': '#system-alerts',
-                'webhook_url': 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+            "alerts": {
+                "email_enabled": True,
+                "slack_enabled": True,
+                "webhook_enabled": True,
+                "email_recipients": ["admin@therightperspective.com"],
+                "slack_channel": "#system-alerts",
+                "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
             },
-            'revenue': {
-                'target_daily_revenue': 10000,
-                'optimization_enabled': True,
-                'streams': {
-                    'subscriptions': {'enabled': True, 'target': 5000},
-                    'advertising': {'enabled': True, 'target': 3000},
-                    'affiliates': {'enabled': True, 'target': 1500},
-                    'merchandise': {'enabled': True, 'target': 500}
-                }
+            "revenue": {
+                "target_daily_revenue": 10000,
+                "optimization_enabled": True,
+                "streams": {
+                    "subscriptions": {"enabled": True, "target": 5000},
+                    "advertising": {"enabled": True, "target": 3000},
+                    "affiliates": {"enabled": True, "target": 1500},
+                    "merchandise": {"enabled": True, "target": 500},
+                },
             },
-            'qa_generation': {
-                'enabled': True,
-                'boost_multiplier': 1000000000,
-                'categories': [
-                    'conservative_politics', 'media_hypocrisy', 'policy_analysis',
-                    'fact_checking', 'historical_context', 'economic_analysis',
-                    'social_issues', 'constitutional_law'
+            "qa_generation": {
+                "enabled": True,
+                "boost_multiplier": 1000000000,
+                "categories": [
+                    "conservative_politics",
+                    "media_hypocrisy",
+                    "policy_analysis",
+                    "fact_checking",
+                    "historical_context",
+                    "economic_analysis",
+                    "social_issues",
+                    "constitutional_law",
                 ],
-                'output_formats': ['text', 'json', 'markdown', 'html']
-            }
+                "output_formats": ["text", "json", "markdown", "html"],
+            },
         }
 
         if config_file.exists():
             try:
-                with open(config_file, 'r') as f:
+                with open(config_file, "r") as f:
                     loaded_config = yaml.safe_load(f)
                     # Merge with defaults
                     self._deep_merge(default_config, loaded_config)
@@ -298,7 +311,7 @@ class ConservativeResearchOrchestrator:
                 logger.warning(f"⚠️  Failed to load config file: {e}, using defaults")
         else:
             # Save default configuration
-            with open(config_file, 'w') as f:
+            with open(config_file, "w") as f:
                 yaml.dump(default_config, f, default_flow_style=False, indent=2)
             logger.info(f"✅ Default configuration saved to {config_file}")
 
@@ -307,11 +320,11 @@ class ConservativeResearchOrchestrator:
     def _deep_merge(self, base_dict: Dict, update_dict: Dict) -> None:
         """Deep merge two dictionaries"""
         for key, value in update_dict.items():
-            if key in base_dict and isinstance(
-                    base_dict[key],
-                    dict) and isinstance(
-                    value,
-                    dict):
+            if (
+                key in base_dict
+                and isinstance(base_dict[key], dict)
+                and isinstance(value, dict)
+            ):
                 self._deep_merge(base_dict[key], value)
             else:
                 base_dict[key] = value
@@ -320,8 +333,8 @@ class ConservativeResearchOrchestrator:
         """Initialize all system components"""
         logger.info("🔧 Initializing system components...")
 
-        for component_name, component_config in self.config['components'].items():
-            if component_config.get('enabled', True):
+        for component_name, component_config in self.config["components"].items():
+            if component_config.get("enabled", True):
                 component_type = ComponentType(component_name)
 
                 component = SystemComponent(
@@ -330,7 +343,7 @@ class ConservativeResearchOrchestrator:
                     status=SystemStatus.STARTING,
                     health_score=1.0,
                     last_check=datetime.now(),
-                    config=component_config
+                    config=component_config,
                 )
 
                 self.components[component_name] = component
@@ -388,19 +401,21 @@ class ConservativeResearchOrchestrator:
         try:
             # Check system resources
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
+            disk = psutil.disk_usage("/")
             cpu_count = psutil.cpu_count()
 
             logger.info(
                 f"💾 Memory: {
                     memory.percent}% used ({
                     memory.available
-                    / 1024**3:.1f}GB available)")
+                    / 1024**3:.1f}GB available)"
+            )
             logger.info(
                 f"💽 Disk: {
                     disk.percent}% used ({
                     disk.free
-                    / 1024**3:.1f}GB available)")
+                    / 1024**3:.1f}GB available)"
+            )
             logger.info(f"🖥️  CPU: {cpu_count} cores available")
 
             # Check minimum requirements
@@ -462,8 +477,14 @@ class ConservativeResearchOrchestrator:
 
             # Check required Python packages
             required_packages = [
-                'requests', 'beautifulsoup4', 'selenium', 'pandas',
-                'numpy', 'scikit-learn', 'nltk', 'transformers'
+                "requests",
+                "beautifulsoup4",
+                "selenium",
+                "pandas",
+                "numpy",
+                "scikit-learn",
+                "nltk",
+                "transformers",
             ]
 
             missing_packages = []
@@ -475,7 +496,9 @@ class ConservativeResearchOrchestrator:
 
             if missing_packages:
                 logger.warning(f"⚠️  Missing packages: {', '.join(missing_packages)}")
-                logger.info("💡 Install with: pip install " + ' '.join(missing_packages))
+                logger.info(
+                    "💡 Install with: pip install " + " ".join(missing_packages)
+                )
             else:
                 logger.info("✅ All required packages available")
 
@@ -489,23 +512,24 @@ class ConservativeResearchOrchestrator:
         """Calculate optimal component startup order based on dependencies"""
         # Define dependency graph
         dependency_order = [
-            'evidence_database',      # Core data storage
-            'health_monitor',         # System monitoring
-            'research_agent',         # Core research functionality
-            'news_scraper',          # Data collection
-            'youtube_analyzer',      # Content analysis
-            'content_generator',     # Content creation
-            'qa_generator',          # Q&A generation
-            'revenue_optimizer',     # Revenue optimization
-            'pipeline_enhancer',     # Pipeline optimization
-            'testing_suite',         # Quality assurance
-            'deployment_system',     # Deployment management
-            'master_control'         # Central coordination
+            "evidence_database",  # Core data storage
+            "health_monitor",  # System monitoring
+            "research_agent",  # Core research functionality
+            "news_scraper",  # Data collection
+            "youtube_analyzer",  # Content analysis
+            "content_generator",  # Content creation
+            "qa_generator",  # Q&A generation
+            "revenue_optimizer",  # Revenue optimization
+            "pipeline_enhancer",  # Pipeline optimization
+            "testing_suite",  # Quality assurance
+            "deployment_system",  # Deployment management
+            "master_control",  # Central coordination
         ]
 
         # Filter to only include enabled components
         enabled_components = [
-            comp for comp in dependency_order if comp in self.components]
+            comp for comp in dependency_order if comp in self.components
+        ]
 
         logger.info(f"📋 Component startup order: {' → '.join(enabled_components)}")
         return enabled_components
@@ -519,11 +543,12 @@ class ConservativeResearchOrchestrator:
             component.status = SystemStatus.STARTING
 
             # Get component script path
-            script_path = self.project_root / component.config.get('script_path', '')
+            script_path = self.project_root / component.config.get("script_path", "")
 
             if not script_path.exists():
                 logger.warning(
-                    f"⚠️  Script not found for {component_name}: {script_path}")
+                    f"⚠️  Script not found for {component_name}: {script_path}"
+                )
                 # Create placeholder for missing components
                 await self._create_component_placeholder(component_name, script_path)
 
@@ -541,7 +566,8 @@ class ConservativeResearchOrchestrator:
             return False
 
     async def _create_component_placeholder(
-            self, component_name: str, script_path: Path) -> None:
+        self, component_name: str, script_path: Path
+    ) -> None:
         """Create placeholder for missing component"""
         logger.info(f"📝 Creating placeholder for {component_name}")
 
@@ -620,7 +646,7 @@ if __name__ == '__main__':
     asyncio.run(main())
 '''
 
-        with open(script_path, 'w') as f:
+        with open(script_path, "w") as f:
             f.write(placeholder_content)
 
         # Make executable
@@ -640,7 +666,7 @@ if __name__ == '__main__':
             asyncio.create_task(self._revenue_optimization_loop()),
             asyncio.create_task(self._qa_generation_loop()),
             asyncio.create_task(self._performance_monitoring_loop()),
-            asyncio.create_task(self._task_processing_loop())
+            asyncio.create_task(self._task_processing_loop()),
         ]
 
         logger.info(f"✅ Started {len(tasks)} orchestration tasks")
@@ -652,7 +678,7 @@ if __name__ == '__main__':
         while not self.shutdown_event.is_set():
             try:
                 await self._perform_health_checks()
-                await asyncio.sleep(self.config['system']['health_check_interval'])
+                await asyncio.sleep(self.config["system"]["health_check_interval"])
             except Exception as e:
                 logger.error(f"❌ Health monitoring error: {str(e)}")
                 await asyncio.sleep(30)
@@ -697,6 +723,7 @@ if __name__ == '__main__':
 
             # Add some randomness to simulate real conditions
             import random
+
             health_variance = random.uniform(-0.1, 0.1)
             final_health = max(0.0, min(1.0, base_health + health_variance))
 
@@ -719,7 +746,9 @@ if __name__ == '__main__':
                 if len(self.metrics_history) > 1000:
                     self.metrics_history = self.metrics_history[-1000:]
 
-                await asyncio.sleep(self.config['system']['metrics_collection_interval'])
+                await asyncio.sleep(
+                    self.config["system"]["metrics_collection_interval"]
+                )
             except Exception as e:
                 logger.error(f"❌ Metrics collection error: {str(e)}")
                 await asyncio.sleep(60)
@@ -729,28 +758,39 @@ if __name__ == '__main__':
         try:
             total_components = len(self.components)
             healthy_components = sum(
-                1 for c in self.components.values() if c.status == SystemStatus.RUNNING)
+                1 for c in self.components.values() if c.status == SystemStatus.RUNNING
+            )
             degraded_components = sum(
-                1 for c in self.components.values() if c.status == SystemStatus.DEGRADED)
+                1 for c in self.components.values() if c.status == SystemStatus.DEGRADED
+            )
             critical_components = sum(
-                1 for c in self.components.values() if c.status == SystemStatus.CRITICAL)
+                1 for c in self.components.values() if c.status == SystemStatus.CRITICAL
+            )
 
             system_uptime = (datetime.now() - self.start_time).total_seconds()
 
             # Simulate revenue and performance metrics
-            total_revenue = sum([
-                5000,  # subscriptions
-                3000,  # advertising
-                1500,  # affiliates
-                500    # merchandise
-            ]) * (1 + (system_uptime / 86400))  # Increase over time
+            total_revenue = sum(
+                [
+                    5000,  # subscriptions
+                    3000,  # advertising
+                    1500,  # affiliates
+                    500,  # merchandise
+                ]
+            ) * (
+                1 + (system_uptime / 86400)
+            )  # Increase over time
 
-            qa_generation_rate = 1000000000 if self.config['qa_generation']['enabled'] else 1000
+            qa_generation_rate = (
+                1000000000 if self.config["qa_generation"]["enabled"] else 1000
+            )
             content_production_rate = healthy_components * 100
-            error_rate = sum(c.error_count for c in self.components.values()
-                             ) / max(total_components, 1)
+            error_rate = sum(c.error_count for c in self.components.values()) / max(
+                total_components, 1
+            )
             performance_score = sum(
-                c.health_score for c in self.components.values()) / max(total_components, 1)
+                c.health_score for c in self.components.values()
+            ) / max(total_components, 1)
 
             return SystemMetrics(
                 total_components=total_components,
@@ -762,7 +802,7 @@ if __name__ == '__main__':
                 qa_generation_rate=qa_generation_rate,
                 content_production_rate=content_production_rate,
                 error_rate=error_rate,
-                performance_score=performance_score
+                performance_score=performance_score,
             )
 
         except Exception as e:
@@ -786,13 +826,20 @@ if __name__ == '__main__':
         for component_name, component in self.components.items():
             try:
                 # Auto-restart critical components
-                if component.status == SystemStatus.CRITICAL and self.config['system']['auto_restart']:
+                if (
+                    component.status == SystemStatus.CRITICAL
+                    and self.config["system"]["auto_restart"]
+                ):
                     logger.warning(
-                        f"🔄 Auto-restarting critical component: {component_name}")
+                        f"🔄 Auto-restarting critical component: {component_name}"
+                    )
                     await self._restart_component(component_name)
 
                 # Clear error counts for healthy components
-                if component.status == SystemStatus.RUNNING and component.error_count > 0:
+                if (
+                    component.status == SystemStatus.RUNNING
+                    and component.error_count > 0
+                ):
                     component.error_count = max(0, component.error_count - 1)
 
             except Exception as e:
@@ -830,7 +877,7 @@ if __name__ == '__main__':
 
         while not self.shutdown_event.is_set():
             try:
-                if self.config['revenue']['optimization_enabled']:
+                if self.config["revenue"]["optimization_enabled"]:
                     await self._optimize_revenue_streams()
                 await asyncio.sleep(1800)  # Every 30 minutes
             except Exception as e:
@@ -844,19 +891,21 @@ if __name__ == '__main__':
             if not current_metrics:
                 return
 
-            target_revenue = self.config['revenue']['target_daily_revenue']
+            target_revenue = self.config["revenue"]["target_daily_revenue"]
             current_revenue = current_metrics.total_revenue
 
             if current_revenue < target_revenue:
                 optimization_factor = target_revenue / max(current_revenue, 1)
                 logger.info(
                     f"💰 Optimizing revenue streams (factor: {
-                        optimization_factor:.2f})")
+                        optimization_factor:.2f})"
+                )
 
                 # Simulate revenue optimization
-                for stream_name, stream_config in self.config['revenue']['streams'].items(
-                ):
-                    if stream_config['enabled']:
+                for stream_name, stream_config in self.config["revenue"][
+                    "streams"
+                ].items():
+                    if stream_config["enabled"]:
                         logger.info(f"📈 Optimizing {stream_name} revenue stream")
 
             logger.info(f"💰 Current revenue: ${current_revenue:,.2f}")
@@ -870,7 +919,7 @@ if __name__ == '__main__':
 
         while not self.shutdown_event.is_set():
             try:
-                if self.config['qa_generation']['enabled']:
+                if self.config["qa_generation"]["enabled"]:
                     await self._generate_massive_qa_content()
                 await asyncio.sleep(60)  # Every minute
             except Exception as e:
@@ -880,8 +929,8 @@ if __name__ == '__main__':
     async def _generate_massive_qa_content(self) -> None:
         """Generate massive Q&A content with 1,000,000,000% boost"""
         try:
-            boost_multiplier = self.config['qa_generation']['boost_multiplier']
-            categories = self.config['qa_generation']['categories']
+            boost_multiplier = self.config["qa_generation"]["boost_multiplier"]
+            categories = self.config["qa_generation"]["categories"]
 
             # Simulate massive Q&A generation
             total_generated = 0
@@ -892,12 +941,14 @@ if __name__ == '__main__':
                 if total_generated % 1000000 == 0:  # Log every million
                     logger.info(
                         f"📝 Generated {
-                            total_generated:,} Q&A items for {category}")
+                            total_generated:,} Q&A items for {category}"
+                    )
 
             logger.info(
                 f"🚀 Q&A Generation: {
                     total_generated:,} items generated (boost: {
-                    boost_multiplier:,}%)")
+                    boost_multiplier:,}%)"
+            )
 
         except Exception as e:
             logger.error(f"❌ Q&A generation failed: {str(e)}")
@@ -920,22 +971,23 @@ if __name__ == '__main__':
             # System resource monitoring
             memory = psutil.virtual_memory()
             cpu_percent = psutil.cpu_percent(interval=1)
-            disk = psutil.disk_usage('/')
+            disk = psutil.disk_usage("/")
 
             # Log performance metrics
             logger.info(
-                f"⚡ Performance - CPU: {cpu_percent}%, Memory: {memory.percent}%, Disk: {disk.percent}%")
+                f"⚡ Performance - CPU: {cpu_percent}%, Memory: {memory.percent}%, Disk: {disk.percent}%"
+            )
 
             # Check thresholds and alert if necessary
-            monitoring_config = self.config['monitoring']
+            monitoring_config = self.config["monitoring"]
 
-            if memory.percent > monitoring_config['memory_usage_threshold'] * 100:
+            if memory.percent > monitoring_config["memory_usage_threshold"] * 100:
                 await self._send_alert(f"High memory usage: {memory.percent}%")
 
-            if cpu_percent > monitoring_config['cpu_usage_threshold'] * 100:
+            if cpu_percent > monitoring_config["cpu_usage_threshold"] * 100:
                 await self._send_alert(f"High CPU usage: {cpu_percent}%")
 
-            if disk.percent > monitoring_config['disk_usage_threshold'] * 100:
+            if disk.percent > monitoring_config["disk_usage_threshold"] * 100:
                 await self._send_alert(f"High disk usage: {disk.percent}%")
 
         except Exception as e:
@@ -961,19 +1013,19 @@ if __name__ == '__main__':
     async def _process_task(self, task: Dict[str, Any]) -> None:
         """Process a queued task"""
         try:
-            task_type = task.get('type')
-            task_data = task.get('data', {})
+            task_type = task.get("type")
+            task_data = task.get("data", {})
 
             logger.info(f"📋 Processing task: {task_type}")
 
-            if task_type == 'restart_component':
-                component_name = task_data.get('component_name')
+            if task_type == "restart_component":
+                component_name = task_data.get("component_name")
                 await self._restart_component(component_name)
-            elif task_type == 'optimize_revenue':
+            elif task_type == "optimize_revenue":
                 await self._optimize_revenue_streams()
-            elif task_type == 'generate_qa':
+            elif task_type == "generate_qa":
                 await self._generate_massive_qa_content()
-            elif task_type == 'health_check':
+            elif task_type == "health_check":
                 await self._perform_health_checks()
             else:
                 logger.warning(f"⚠️  Unknown task type: {task_type}")
@@ -984,30 +1036,36 @@ if __name__ == '__main__':
     async def _send_alert(self, message: str) -> None:
         """Send system alert"""
         try:
-            alert_config = self.config['alerts']
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            alert_config = self.config["alerts"]
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             alert_message = f"🚨 SYSTEM ALERT [{timestamp}]: {message}"
             logger.warning(alert_message)
 
             # Email alerts
-            if alert_config.get('email_enabled'):
+            if alert_config.get("email_enabled"):
                 # Implement email sending logic
                 logger.info(
                     f"📧 Email alert sent to: {
-                        alert_config.get('email_recipients')}")
+                        alert_config.get('email_recipients')}"
+                )
 
             # Slack alerts
-            if alert_config.get('slack_enabled'):
+            if alert_config.get("slack_enabled"):
                 # Implement Slack webhook logic
                 logger.info(
                     f"💬 Slack alert sent to: {
-                        alert_config.get('slack_channel')}")
+                        alert_config.get('slack_channel')}"
+                )
 
             # Webhook alerts
-            if alert_config.get('webhook_enabled'):
-                webhook_url = alert_config.get('webhook_url')
-                if webhook_url and webhook_url != 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL':
+            if alert_config.get("webhook_enabled"):
+                webhook_url = alert_config.get("webhook_url")
+                if (
+                    webhook_url
+                    and webhook_url
+                    != "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+                ):
                     # Implement webhook logic
                     logger.info(f"🔗 Webhook alert sent to: {webhook_url}")
 
@@ -1057,27 +1115,32 @@ if __name__ == '__main__':
             uptime = (datetime.now() - self.start_time).total_seconds()
 
             report = {
-                'shutdown_summary': {
-                    'system_name': self.config['system']['name'],
-                    'version': self.config['system']['version'],
-                    'shutdown_time': datetime.now().isoformat(),
-                    'total_uptime': f"{uptime:.2f}s",
-                    'components_managed': len(self.components)
+                "shutdown_summary": {
+                    "system_name": self.config["system"]["name"],
+                    "version": self.config["system"]["version"],
+                    "shutdown_time": datetime.now().isoformat(),
+                    "total_uptime": f"{uptime:.2f}s",
+                    "components_managed": len(self.components),
                 },
-                'final_metrics': self.metrics_history[-1].__dict__ if self.metrics_history else {},
-                'component_status': {
+                "final_metrics": (
+                    self.metrics_history[-1].__dict__ if self.metrics_history else {}
+                ),
+                "component_status": {
                     name: {
-                        'status': comp.status.value,
-                        'health_score': comp.health_score,
-                        'error_count': comp.error_count,
-                        'restart_count': comp.restart_count
-                    } for name, comp in self.components.items()
-                }
+                        "status": comp.status.value,
+                        "health_score": comp.health_score,
+                        "error_count": comp.error_count,
+                        "restart_count": comp.restart_count,
+                    }
+                    for name, comp in self.components.items()
+                },
             }
 
-            report_file = self.logs_dir / \
-                f"shutdown_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-            with open(report_file, 'w') as f:
+            report_file = (
+                self.logs_dir
+                / f"shutdown_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            )
+            with open(report_file, "w") as f:
                 json.dump(report, f, indent=2)
 
             logger.info(f"📊 Shutdown report saved: {report_file}")
@@ -1092,31 +1155,37 @@ if __name__ == '__main__':
             uptime = (datetime.now() - self.start_time).total_seconds()
 
             return {
-                'system_status': self.system_status.value,
-                'uptime_seconds': uptime,
-                'uptime_formatted': str(timedelta(seconds=int(uptime))),
-                'components': {
+                "system_status": self.system_status.value,
+                "uptime_seconds": uptime,
+                "uptime_formatted": str(timedelta(seconds=int(uptime))),
+                "components": {
                     name: {
-                        'status': comp.status.value,
-                        'health_score': comp.health_score,
-                        'last_check': comp.last_check.isoformat(),
-                        'error_count': comp.error_count,
-                        'restart_count': comp.restart_count
-                    } for name, comp in self.components.items()
+                        "status": comp.status.value,
+                        "health_score": comp.health_score,
+                        "last_check": comp.last_check.isoformat(),
+                        "error_count": comp.error_count,
+                        "restart_count": comp.restart_count,
+                    }
+                    for name, comp in self.components.items()
                 },
-                'metrics': current_metrics.__dict__ if current_metrics else {},
-                'configuration': {
-                    'total_components': len(self.components),
-                    'auto_restart_enabled': self.config['system']['auto_restart'],
-                    'self_healing_enabled': self.config['system']['self_healing'],
-                    'revenue_optimization': self.config['revenue']['optimization_enabled'],
-                    'qa_generation_boost': self.config['qa_generation']['boost_multiplier']
-                }
+                "metrics": current_metrics.__dict__ if current_metrics else {},
+                "configuration": {
+                    "total_components": len(self.components),
+                    "auto_restart_enabled": self.config["system"]["auto_restart"],
+                    "self_healing_enabled": self.config["system"]["self_healing"],
+                    "revenue_optimization": self.config["revenue"][
+                        "optimization_enabled"
+                    ],
+                    "qa_generation_boost": self.config["qa_generation"][
+                        "boost_multiplier"
+                    ],
+                },
             }
 
         except Exception as e:
             logger.error(f"❌ Status retrieval failed: {str(e)}")
-            return {'error': str(e)}
+            return {"error": str(e)}
+
 
 # CLI Interface
 
@@ -1126,14 +1195,15 @@ async def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description='Conservative Research System Orchestrator')
-    parser.add_argument('--start', action='store_true', help='Start the system')
-    parser.add_argument('--stop', action='store_true', help='Stop the system')
-    parser.add_argument('--status', action='store_true', help='Show system status')
-    parser.add_argument('--config', help='Configuration file path')
-    parser.add_argument('--component', help='Manage specific component')
-    parser.add_argument('--restart-component', help='Restart specific component')
-    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+        description="Conservative Research System Orchestrator"
+    )
+    parser.add_argument("--start", action="store_true", help="Start the system")
+    parser.add_argument("--stop", action="store_true", help="Stop the system")
+    parser.add_argument("--status", action="store_true", help="Show system status")
+    parser.add_argument("--config", help="Configuration file path")
+    parser.add_argument("--component", help="Manage specific component")
+    parser.add_argument("--restart-component", help="Restart specific component")
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 
     args = parser.parse_args()
 
@@ -1207,7 +1277,8 @@ async def main():
         logger.error(f"💥 Orchestrator error: {str(e)}")
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

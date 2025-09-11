@@ -1,8 +1,9 @@
 import logging
-from logging.handlers import RotatingFileHandler
 import os
+from logging.handlers import RotatingFileHandler
 
-def setup_logger(log_dir='logs', file_name='trae_ai.log', level=logging.INFO):
+
+def setup_logger(log_dir="logs", file_name="trae_ai.log", level=logging.INFO):
     """
     Configures and returns a centralized, rotating logger.
     """
@@ -19,12 +20,12 @@ def setup_logger(log_dir='logs', file_name='trae_ai.log', level=logging.INFO):
     # Create a rotating file handler
     # Keeps 5 log files, each up to 10MB
     handler = RotatingFileHandler(
-        log_file_path, maxBytes=10*1024*1024, backupCount=5
+        log_file_path, maxBytes=10 * 1024 * 1024, backupCount=5
     )
 
     # Create a standard log format
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
     handler.setFormatter(formatter)
 

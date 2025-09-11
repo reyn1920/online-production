@@ -1,4 +1,4 @@
-# backend/agents/performance_analytics_agent.py 
+# backend/agents/performance_analytics_agent.py
 class PerformanceAnalyticsAgent:
     """
     Placeholder stub for PerformanceAnalyticsAgent.
@@ -15,5 +15,5 @@ class PerformanceAnalyticsAgent:
         """
         return {
             "status": "ok",
-            "analysis": "Stub performance analytics, replace with real logic"
+            "analysis": "Stub performance analytics, replace with real logic",
         }
