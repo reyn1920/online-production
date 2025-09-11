@@ -76,7 +76,7 @@ def check_git_status():
 
 def check_github_workflow():
     """Check if GitHub Actions workflow exists"""
-    workflow_path = '.github / workflows / deploy.yml'
+    workflow_path = '.github/workflows/deploy.yml'
     if check_file_exists(workflow_path, "GitHub Actions workflow"):
         try:
             with open(workflow_path, 'r') as f:
@@ -136,9 +136,9 @@ def check_environment_template():
 def check_ai_integrations():
     """Check AI integration files"""
     ai_files = [
-        ('backend / ai_benchmark_integration.py', 'AI Benchmark Integration'),
-            ('app / quality_dashboard.py', 'Quality Dashboard'),
-            ('app / dashboard.py', 'Main Dashboard')
+        ('backend/ai_benchmark_integration.py', 'AI Benchmark Integration'),
+        ('app/quality_dashboard.py', 'Quality Dashboard'),
+        ('app/dashboard.py', 'Main Dashboard')
     ]
 
     all_exist = True
