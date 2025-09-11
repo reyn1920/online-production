@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 AI Inpainting - Dynamic Avatar Clothing and Appearance Modification
 
-This module implements AI-powered inpainting using local Stable Diffusion models
+This module implements AI - powered inpainting using local Stable Diffusion models
 to dynamically change avatar clothing, backgrounds, and other visual elements
 based on text prompts. It supports batch processing, mask generation, and
 integration with the content pipeline.
@@ -41,6 +41,7 @@ try:
     from utils.logger import get_logger
 except ImportError:
 
+
     def get_logger(name):
         return logging.getLogger(name)
 
@@ -58,7 +59,7 @@ class InpaintingQuality(Enum):
     """Quality settings for inpainting."""
 
     DRAFT = "draft"  # Fast, lower quality
-    STANDARD = "standard"  # Balanced quality/speed
+    STANDARD = "standard"  # Balanced quality / speed
     HIGH = "high"  # High quality, slower
     ULTRA = "ultra"  # Maximum quality, very slow
 
@@ -66,14 +67,14 @@ class InpaintingQuality(Enum):
 class MaskMode(Enum):
     """Mask generation modes."""
 
-    MANUAL = "manual"  # User-provided mask
+    MANUAL = "manual"  # User - provided mask
     AUTO_CLOTHING = "auto_clothing"  # Automatic clothing detection
     AUTO_BACKGROUND = "auto_background"  # Automatic background detection
     AUTO_FACE = "auto_face"  # Automatic face detection
     CUSTOM_REGION = "custom_region"  # Custom region selection
-    SMART_CLOTHING = "smart_clothing"  # AI-powered clothing detection
+    SMART_CLOTHING = "smart_clothing"  # AI - powered clothing detection
     SEMANTIC_SEGMENTATION = "semantic_segmentation"  # Full semantic segmentation
-    EDGE_DETECTION = "edge_detection"  # Edge-based mask generation
+    EDGE_DETECTION = "edge_detection"  # Edge - based mask generation
 
 
 class ClothingType(Enum):
@@ -88,8 +89,9 @@ class ClothingType(Enum):
     ACCESSORIES = "accessories"
     FULL_OUTFIT = "full_outfit"
 
-
 @dataclass
+
+
 class InpaintingConfig:
     """Configuration for inpainting operations."""
 
@@ -133,8 +135,9 @@ class InpaintingConfig:
     max_retries: int = 3
     progressive_enhancement: bool = True
 
-
 @dataclass
+
+
 class InpaintingJob:
     """Represents an inpainting job."""
 
@@ -157,7 +160,8 @@ class InpaintingJob:
     retry_count: int = 0
     cache_hit: bool = False
     processing_time: Optional[float] = None
-    intermediate_results: List[str] = field(default_factory=list)
+    intermediate_results: List[str] = field(default_factory = list)
+
 
     def __post_init__(self):
         if self.generated_images is None:
@@ -171,8 +175,10 @@ class InpaintingJob:
 class QualityAnalyzer:
     """Analyzes inpainting quality and provides feedback."""
 
+
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
+
 
     def analyze_quality(
         self, original: Image.Image, inpainted: Image.Image, mask: Image.Image
@@ -192,23 +198,23 @@ class QualityAnalyzer:
                 "structural_similarity": self._calculate_ssim(
                     orig_np, inpaint_np, mask_np
                 ),
-                "color_consistency": self._calculate_color_consistency(
+                    "color_consistency": self._calculate_color_consistency(
                     orig_np, inpaint_np, mask_np
                 ),
-                "edge_preservation": self._calculate_edge_preservation(
+                    "edge_preservation": self._calculate_edge_preservation(
                     orig_np, inpaint_np, mask_np
                 ),
-                "texture_quality": self._calculate_texture_quality(inpaint_np, mask_np),
-                "overall_score": 0.0,
-            }
+                    "texture_quality": self._calculate_texture_quality(inpaint_np, mask_np),
+                    "overall_score": 0.0,
+                    }
 
             # Calculate overall score
             weights = {
                 "structural_similarity": 0.3,
-                "color_consistency": 0.25,
-                "edge_preservation": 0.25,
-                "texture_quality": 0.2,
-            }
+                    "color_consistency": 0.25,
+                    "edge_preservation": 0.25,
+                    "texture_quality": 0.2,
+                    }
             metrics["overall_score"] = sum(metrics[k] * weights[k] for k in weights)
 
             return metrics
@@ -216,6 +222,7 @@ class QualityAnalyzer:
         except Exception as e:
             self.logger.error(f"Quality analysis failed: {e}")
             return {"overall_score": 0.5}  # Default score
+
 
     def _calculate_ssim(
         self, orig: np.ndarray, inpaint: np.ndarray, mask: np.ndarray
@@ -229,10 +236,11 @@ class QualityAnalyzer:
             masked_inpaint = inpaint * mask[..., np.newaxis]
 
             # Calculate SSIM
-            score = ssim(masked_orig, masked_inpaint, multichannel=True, data_range=255)
+            score = ssim(masked_orig, masked_inpaint, multichannel = True, data_range = 255)
             return max(0.0, score)
-        except:
+        except Exception:
             return 0.7  # Default score
+
 
     def _calculate_color_consistency(
         self, orig: np.ndarray, inpaint: np.ndarray, mask: np.ndarray
@@ -255,8 +263,9 @@ class QualityAnalyzer:
             score = 1.0 - (color_diff / 255.0)
 
             return max(0.0, min(1.0, score))
-        except:
+        except Exception:
             return 0.7
+
 
     def _calculate_edge_preservation(
         self, orig: np.ndarray, inpaint: np.ndarray, mask: np.ndarray
@@ -284,8 +293,9 @@ class QualityAnalyzer:
 
             score = intersection / union if union > 0 else 0.8
             return max(0.0, min(1.0, score))
-        except:
+        except Exception:
             return 0.7
+
 
     def _calculate_texture_quality(
         self, inpaint: np.ndarray, mask: np.ndarray
@@ -308,20 +318,22 @@ class QualityAnalyzer:
             # Normalize variance (higher variance = better texture)
             score = min(1.0, texture_var / 1000.0)
             return max(0.3, score)
-        except:
+        except Exception:
             return 0.7
 
 
 class CacheManager:
     """Manages caching of inpainting results."""
 
+
     def __init__(self, cache_dir: Optional[str] = None, max_size_mb: int = 1000):
         self.cache_dir = (
             Path(cache_dir or tempfile.gettempdir()) / "ai_inpainting_cache"
         )
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir.mkdir(parents = True, exist_ok = True)
         self.max_size_mb = max_size_mb
         self.logger = get_logger(self.__class__.__name__)
+
 
     def get_cache_key(
         self, source_image: str, prompt: str, config: InpaintingConfig
@@ -335,13 +347,14 @@ class CacheManager:
             hasher.update(f.read())
 
         # Add prompt
-        hasher.update(prompt.encode("utf-8"))
+        hasher.update(prompt.encode("utf - 8"))
 
         # Add relevant config parameters
         config_str = f"{config.model.value}_{config.quality.value}_{config.steps}_{config.guidance_scale}_{config.strength}"
-        hasher.update(config_str.encode("utf-8"))
+        hasher.update(config_str.encode("utf - 8"))
 
         return hasher.hexdigest()
+
 
     def get_cached_result(self, cache_key: str) -> Optional[List[str]]:
         """Get cached inpainting result."""
@@ -364,6 +377,7 @@ class CacheManager:
             self.logger.error(f"Cache retrieval failed: {e}")
             return None
 
+
     def cache_result(
         self, cache_key: str, images: List[str], metadata: Dict[str, Any]
     ) -> None:
@@ -372,9 +386,9 @@ class CacheManager:
             cache_file = self.cache_dir / f"{cache_key}.pkl"
             cached_data = {
                 "images": images,
-                "metadata": metadata,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "metadata": metadata,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
             with open(cache_file, "wb") as f:
                 pickle.dump(cached_data, f)
@@ -386,6 +400,7 @@ class CacheManager:
 
         except Exception as e:
             self.logger.error(f"Cache storage failed: {e}")
+
 
     def _cleanup_cache(self) -> None:
         """Clean up old cache entries if size limit exceeded."""
@@ -401,7 +416,7 @@ class CacheManager:
                 cache_files = [
                     (f, f.stat().st_mtime) for f in self.cache_dir.glob("*.pkl")
                 ]
-                cache_files.sort(key=lambda x: x[1])  # Sort by modification time
+                cache_files.sort(key = lambda x: x[1])  # Sort by modification time
 
                 # Remove oldest 20% of files
                 files_to_remove = cache_files[: len(cache_files) // 5]
@@ -416,12 +431,14 @@ class CacheManager:
 class StableDiffusionEngine:
     """Engine for Stable Diffusion inpainting."""
 
+
     def __init__(self, model_path: Optional[str] = None, device: str = "cuda"):
-        self.model_path = model_path or "runwayml/stable-diffusion-inpainting"
+        self.model_path = model_path or "runwayml / stable - diffusion - inpainting"
         self.device = device
         self.logger = get_logger(self.__class__.__name__)
         self.is_initialized = False
         self.pipe = None
+
 
     def initialize(self) -> bool:
         """Initialize the Stable Diffusion pipeline."""
@@ -430,7 +447,7 @@ class StableDiffusionEngine:
             try:
                 import torch
                 from diffusers import (DPMSolverMultistepScheduler,
-                                       StableDiffusionInpaintPipeline)
+                    StableDiffusionInpaintPipeline)
 
                 self.logger.info(f"PyTorch available: {torch.__version__}")
 
@@ -444,12 +461,12 @@ class StableDiffusionEngine:
 
                 self.pipe = StableDiffusionInpaintPipeline.from_pretrained(
                     self.model_path,
-                    torch_dtype=(
+                        torch_dtype=(
                         torch.float16 if self.device == "cuda" else torch.float32
                     ),
-                    safety_checker=None,  # Disable for local use
-                    requires_safety_checker=False,
-                )
+                        safety_checker = None,  # Disable for local use
+                    requires_safety_checker = False,
+                        )
 
                 # Use DPM solver for faster inference
                 self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(
@@ -465,7 +482,7 @@ class StableDiffusionEngine:
                 if hasattr(self.pipe, "enable_xformers_memory_efficient_attention"):
                     try:
                         self.pipe.enable_xformers_memory_efficient_attention()
-                    except:
+                    except Exception:
                         pass  # xformers not available
 
                 self.is_initialized = True
@@ -480,13 +497,14 @@ class StableDiffusionEngine:
             self.logger.error(f"Failed to initialize Stable Diffusion: {e}")
             return False
 
+
     def generate_inpainting(
         self,
-        source_image: Image.Image,
-        mask_image: Image.Image,
-        prompt: str,
-        config: InpaintingConfig,
-    ) -> List[Image.Image]:
+            source_image: Image.Image,
+            mask_image: Image.Image,
+            prompt: str,
+            config: InpaintingConfig,
+            ) -> List[Image.Image]:
         """Generate inpainted images using Stable Diffusion."""
         if not self.is_initialized:
             if not self.initialize():
@@ -500,20 +518,20 @@ class StableDiffusionEngine:
             # Generate images
             with torch.no_grad():
                 result = self.pipe(
-                    prompt=prompt,
-                    image=source_image,
-                    mask_image=mask_image,
-                    num_inference_steps=config.steps,
-                    guidance_scale=config.guidance_scale,
-                    strength=config.strength,
-                    generator=(
-                        torch.Generator(device=self.device).manual_seed(config.seed)
+                    prompt = prompt,
+                        image = source_image,
+                        mask_image = mask_image,
+                        num_inference_steps = config.steps,
+                        guidance_scale = config.guidance_scale,
+                        strength = config.strength,
+                        generator=(
+                        torch.Generator(device = self.device).manual_seed(config.seed)
                         if config.seed
                         else None
                     ),
-                    num_images_per_prompt=config.batch_size,
-                    negative_prompt=config.negative_prompt,
-                )
+                        num_images_per_prompt = config.batch_size,
+                        negative_prompt = config.negative_prompt,
+                        )
 
             return result.images
 
@@ -525,16 +543,18 @@ class StableDiffusionEngine:
 class FallbackEngine:
     """Fallback engine using traditional image processing."""
 
+
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
+
     def generate_inpainting(
         self,
-        source_image: Image.Image,
-        mask_image: Image.Image,
-        prompt: str,
-        config: InpaintingConfig,
-    ) -> List[Image.Image]:
+            source_image: Image.Image,
+            mask_image: Image.Image,
+            prompt: str,
+            config: InpaintingConfig,
+            ) -> List[Image.Image]:
         """Generate basic inpainting using traditional methods."""
         try:
             # Convert to numpy arrays
@@ -558,6 +578,7 @@ class FallbackEngine:
 class MaskGenerator:
     """Generates masks for inpainting based on different modes."""
 
+
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
@@ -566,11 +587,12 @@ class MaskGenerator:
             self.face_cascade = cv2.CascadeClassifier(
                 cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
             )
-        except:
+        except Exception:
             self.face_cascade = None
 
         # Initialize advanced detection models (if available)
         self._init_advanced_models()
+
 
     def _init_advanced_models(self):
         """Initialize advanced detection models."""
@@ -583,23 +605,24 @@ class MaskGenerator:
             self.transform = transforms.Compose(
                 [
                     transforms.Resize((512, 512)),
-                    transforms.ToTensor(),
-                    transforms.Normalize(
+                        transforms.ToTensor(),
+                        transforms.Normalize(
                         mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
                     ),
-                ]
+                        ]
             )
         except ImportError:
             self.has_torch = False
             self.logger.warning("PyTorch not available, using fallback methods")
 
+
     def generate_mask(
         self,
-        image: Image.Image,
-        mode: MaskMode,
-        region: Optional[Tuple[int, int, int, int]] = None,
-        clothing_type: Optional[ClothingType] = None,
-    ) -> Image.Image:
+            image: Image.Image,
+            mode: MaskMode,
+            region: Optional[Tuple[int, int, int, int]] = None,
+            clothing_type: Optional[ClothingType] = None,
+            ) -> Image.Image:
         """Generate mask based on the specified mode."""
         try:
             if mode == MaskMode.AUTO_CLOTHING:
@@ -624,6 +647,7 @@ class MaskGenerator:
             self.logger.error(f"Mask generation failed: {e}")
             return self._generate_center_mask(image)
 
+
     def _generate_clothing_mask(
         self, image: Image.Image, clothing_type: Optional[ClothingType] = None
     ) -> Image.Image:
@@ -636,61 +660,62 @@ class MaskGenerator:
         if clothing_type == ClothingType.SHIRT:
             x1, y1, x2, y2 = (
                 int(width * 0.2),
-                int(height * 0.3),
-                int(width * 0.8),
-                int(height * 0.7),
-            )
+                    int(height * 0.3),
+                    int(width * 0.8),
+                    int(height * 0.7),
+                    )
         elif clothing_type == ClothingType.PANTS:
             x1, y1, x2, y2 = (
                 int(width * 0.25),
-                int(height * 0.6),
-                int(width * 0.75),
-                int(height * 0.95),
-            )
+                    int(height * 0.6),
+                    int(width * 0.75),
+                    int(height * 0.95),
+                    )
         elif clothing_type == ClothingType.DRESS:
             x1, y1, x2, y2 = (
                 int(width * 0.2),
-                int(height * 0.3),
-                int(width * 0.8),
-                int(height * 0.9),
-            )
+                    int(height * 0.3),
+                    int(width * 0.8),
+                    int(height * 0.9),
+                    )
         elif clothing_type == ClothingType.JACKET:
             x1, y1, x2, y2 = (
                 int(width * 0.15),
-                int(height * 0.25),
-                int(width * 0.85),
-                int(height * 0.75),
-            )
+                    int(height * 0.25),
+                    int(width * 0.85),
+                    int(height * 0.75),
+                    )
         elif clothing_type == ClothingType.SHOES:
             x1, y1, x2, y2 = (
                 int(width * 0.3),
-                int(height * 0.85),
-                int(width * 0.7),
-                int(height * 0.98),
-            )
+                    int(height * 0.85),
+                    int(width * 0.7),
+                    int(height * 0.98),
+                    )
         elif clothing_type == ClothingType.HAT:
             x1, y1, x2, y2 = (
                 int(width * 0.25),
-                int(height * 0.05),
-                int(width * 0.75),
-                int(height * 0.35),
-            )
+                    int(height * 0.05),
+                    int(width * 0.75),
+                    int(height * 0.35),
+                    )
         else:
             # Default clothing region (roughly torso area)
             x1, y1, x2, y2 = (
                 int(width * 0.2),
-                int(height * 0.3),
-                int(width * 0.8),
-                int(height * 0.9),
-            )
+                    int(height * 0.3),
+                    int(width * 0.8),
+                    int(height * 0.9),
+                    )
 
         # Create elliptical mask for clothing
-        draw.ellipse([x1, y1, x2, y2], fill=255)
+        draw.ellipse([x1, y1, x2, y2], fill = 255)
 
         # Apply some blur to soften edges
-        mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
+        mask = mask.filter(ImageFilter.GaussianBlur(radius = 5))
 
         return mask
+
 
     def _generate_smart_clothing_mask(
         self, image: Image.Image, clothing_type: Optional[ClothingType] = None
@@ -700,7 +725,7 @@ class MaskGenerator:
             # Convert to numpy for processing
             img_np = np.array(image)
 
-            # Use color-based segmentation for clothing detection
+            # Use color - based segmentation for clothing detection
             hsv = cv2.cvtColor(img_np, cv2.COLOR_RGB2HSV)
 
             # Create mask based on color clustering
@@ -720,49 +745,51 @@ class MaskGenerator:
             self.logger.error(f"Smart clothing mask generation failed: {e}")
             return self._generate_clothing_mask(image, clothing_type)
 
+
     def _color_based_segmentation(
         self, hsv_image: np.ndarray, clothing_type: Optional[ClothingType] = None
     ) -> np.ndarray:
-        """Perform color-based segmentation for clothing detection."""
+        """Perform color - based segmentation for clothing detection."""
         height, width = hsv_image.shape[:2]
 
         # Define region of interest based on clothing type
         if clothing_type == ClothingType.SHIRT:
             roi = hsv_image[
                 int(height * 0.3) : int(height * 0.7),
-                int(width * 0.2) : int(width * 0.8),
-            ]
+                    int(width * 0.2) : int(width * 0.8),
+                    ]
         elif clothing_type == ClothingType.PANTS:
             roi = hsv_image[
                 int(height * 0.6) : int(height * 0.95),
-                int(width * 0.25) : int(width * 0.75),
-            ]
+                    int(width * 0.25) : int(width * 0.75),
+                    ]
         else:
             roi = hsv_image[
                 int(height * 0.3) : int(height * 0.9),
-                int(width * 0.2) : int(width * 0.8),
-            ]
+                    int(width * 0.2) : int(width * 0.8),
+                    ]
 
         # Calculate dominant colors in ROI
         roi_flat = roi.reshape(-1, 3)
 
-        # Use k-means clustering to find dominant colors
+        # Use k - means clustering to find dominant colors
         try:
             from sklearn.cluster import KMeans
 
-            kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+            kmeans = KMeans(n_clusters = 3, random_state = 42, n_init = 10)
             kmeans.fit(roi_flat)
             dominant_color = kmeans.cluster_centers_[0]
         except ImportError:
             # Fallback: use mean color
-            dominant_color = np.mean(roi_flat, axis=0)
+                dominant_color = np.mean(roi_flat, axis = 0)
 
         # Create mask based on color similarity
-        color_diff = np.linalg.norm(hsv_image - dominant_color, axis=2)
+        color_diff = np.linalg.norm(hsv_image - dominant_color, axis = 2)
         threshold = np.percentile(color_diff, 30)  # Adjust threshold as needed
         mask = (color_diff < threshold).astype(np.uint8) * 255
 
         return mask
+
 
     def _generate_semantic_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask using semantic segmentation."""
@@ -776,7 +803,7 @@ class MaskGenerator:
             # Convert image for processing
             img_np = np.array(image)
 
-            # Use GrabCut algorithm for foreground/background segmentation
+            # Use GrabCut algorithm for foreground / background segmentation
             mask = np.zeros(img_np.shape[:2], np.uint8)
             bgd_model = np.zeros((1, 65), np.float64)
             fgd_model = np.zeros((1, 65), np.float64)
@@ -785,10 +812,10 @@ class MaskGenerator:
             height, width = img_np.shape[:2]
             rect = (
                 int(width * 0.1),
-                int(height * 0.1),
-                int(width * 0.8),
-                int(height * 0.8),
-            )
+                    int(height * 0.1),
+                    int(width * 0.8),
+                    int(height * 0.8),
+                    )
 
             # Apply GrabCut
             cv2.grabCut(
@@ -808,6 +835,7 @@ class MaskGenerator:
             self.logger.error(f"Semantic segmentation failed: {e}")
             return self._generate_clothing_mask(image)
 
+
     def _generate_edge_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask using edge detection."""
         try:
@@ -823,7 +851,7 @@ class MaskGenerator:
 
             # Dilate edges to create thicker lines
             kernel = np.ones((3, 3), np.uint8)
-            edges = cv2.dilate(edges, kernel, iterations=2)
+            edges = cv2.dilate(edges, kernel, iterations = 2)
 
             # Fill enclosed regions
             contours, _ = cv2.findContours(
@@ -834,7 +862,7 @@ class MaskGenerator:
             mask = np.zeros_like(gray)
             if contours:
                 # Sort contours by area and take the largest ones
-                contours = sorted(contours, key=cv2.contourArea, reverse=True)
+                contours = sorted(contours, key = cv2.contourArea, reverse = True)
                 for contour in contours[:3]:  # Take top 3 largest contours
                     cv2.fillPoly(mask, [contour], 255)
 
@@ -844,8 +872,9 @@ class MaskGenerator:
             return Image.fromarray(mask)
 
         except Exception as e:
-            self.logger.error(f"Edge-based mask generation failed: {e}")
+            self.logger.error(f"Edge - based mask generation failed: {e}")
             return self._generate_center_mask(image)
+
 
     def _generate_background_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for background (inverse of subject)."""
@@ -859,7 +888,7 @@ class MaskGenerator:
 
             # Dilate edges to create subject mask
             kernel = np.ones((5, 5), np.uint8)
-            subject_mask = cv2.dilate(edges, kernel, iterations=2)
+            subject_mask = cv2.dilate(edges, kernel, iterations = 2)
 
             # Invert to get background mask
             background_mask = cv2.bitwise_not(subject_mask)
@@ -872,6 +901,7 @@ class MaskGenerator:
         except Exception as e:
             self.logger.error(f"Background mask generation failed: {e}")
             return self._generate_center_mask(image)
+
 
     def _generate_face_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for face area."""
@@ -893,7 +923,7 @@ class MaskGenerator:
 
             if len(faces) > 0:
                 # Use the largest face
-                face = max(faces, key=lambda x: x[2] * x[3])
+                face = max(faces, key = lambda x: x[2] * x[3])
                 x, y, w, h = face
 
                 # Expand face region slightly
@@ -904,19 +934,20 @@ class MaskGenerator:
                 y2 = min(image.height, y + h + padding)
 
                 # Create elliptical mask
-                draw.ellipse([x1, y1, x2, y2], fill=255)
+                draw.ellipse([x1, y1, x2, y2], fill = 255)
             else:
                 # No face detected, use upper region
                 return self._generate_upper_mask(image)
 
             # Apply blur to soften edges
-            mask = mask.filter(ImageFilter.GaussianBlur(radius=3))
+            mask = mask.filter(ImageFilter.GaussianBlur(radius = 3))
 
             return mask
 
         except Exception as e:
             self.logger.error(f"Face mask generation failed: {e}")
             return self._generate_upper_mask(image)
+
 
     def _generate_region_mask(
         self, image: Image.Image, region: Tuple[int, int, int, int]
@@ -926,12 +957,13 @@ class MaskGenerator:
         draw = ImageDraw.Draw(mask)
 
         x1, y1, x2, y2 = region
-        draw.rectangle([x1, y1, x2, y2], fill=255)
+        draw.rectangle([x1, y1, x2, y2], fill = 255)
 
         # Apply blur to soften edges
-        mask = mask.filter(ImageFilter.GaussianBlur(radius=2))
+        mask = mask.filter(ImageFilter.GaussianBlur(radius = 2))
 
         return mask
+
 
     def _generate_center_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for center region."""
@@ -945,13 +977,14 @@ class MaskGenerator:
         x2 = int(width * 0.75)
         y2 = int(height * 0.75)
 
-        draw.ellipse([x1, y1, x2, y2], fill=255)
-        mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
+        draw.ellipse([x1, y1, x2, y2], fill = 255)
+        mask = mask.filter(ImageFilter.GaussianBlur(radius = 5))
 
         return mask
 
+
     def _generate_upper_mask(self, image: Image.Image) -> Image.Image:
-        """Generate mask for upper region (head/shoulders)."""
+        """Generate mask for upper region (head / shoulders)."""
         width, height = image.size
         mask = Image.new("L", (width, height), 0)
         draw = ImageDraw.Draw(mask)
@@ -962,14 +995,15 @@ class MaskGenerator:
         x2 = int(width * 0.8)
         y2 = int(height * 0.6)
 
-        draw.ellipse([x1, y1, x2, y2], fill=255)
-        mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
+        draw.ellipse([x1, y1, x2, y2], fill = 255)
+        mask = mask.filter(ImageFilter.GaussianBlur(radius = 5))
 
         return mask
 
 
 class AIInpainting:
-    """Main class for AI-powered inpainting."""
+    """Main class for AI - powered inpainting."""
+
 
     def __init__(self, config: Optional[InpaintingConfig] = None):
         self.config = config or InpaintingConfig()
@@ -977,9 +1011,9 @@ class AIInpainting:
 
         # Initialize engines
         self.sd_engine = StableDiffusionEngine(
-            model_path=self.config.model_path,
-            device="cuda" if self.config.use_gpu else "cpu",
-        )
+            model_path = self.config.model_path,
+                device="cuda" if self.config.use_gpu else "cpu",
+                )
         self.fallback_engine = FallbackEngine()
         self.mask_generator = MaskGenerator()
 
@@ -987,7 +1021,7 @@ class AIInpainting:
         self.quality_analyzer = QualityAnalyzer()
         self.cache_manager = (
             CacheManager(
-                cache_dir=self.config.cache_dir, max_size_mb=self.config.max_cache_size
+                cache_dir = self.config.cache_dir, max_size_mb = self.config.max_cache_size
             )
             if self.config.enable_caching
             else None
@@ -1002,23 +1036,24 @@ class AIInpainting:
         self.temp_dir = (
             Path(self.config.temp_dir or tempfile.gettempdir()) / "ai_inpainting"
         )
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
+        self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Initialize thread pool for parallel processing
         if self.config.parallel_processing:
-            self.executor = ThreadPoolExecutor(max_workers=self.config.max_workers)
+            self.executor = ThreadPoolExecutor(max_workers = self.config.max_workers)
         else:
             self.executor = None
 
+
     def create_inpainting_job(
         self,
-        source_image: str,
-        prompt: str,
-        mask_image: Optional[str] = None,
-        output_path: Optional[str] = None,
-        job_id: Optional[str] = None,
-        config: Optional[InpaintingConfig] = None,
-    ) -> InpaintingJob:
+            source_image: str,
+            prompt: str,
+            mask_image: Optional[str] = None,
+            output_path: Optional[str] = None,
+            job_id: Optional[str] = None,
+            config: Optional[InpaintingConfig] = None,
+            ) -> InpaintingJob:
         """Create a new inpainting job."""
         if job_id is None:
             job_id = f"inpaint_{int(time.time())}_{len(self.active_jobs)}"
@@ -1035,25 +1070,26 @@ class AIInpainting:
             output_path = str(self.temp_dir / f"{job_id}_result.png")
 
         # Create output directory
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(output_path).parent.mkdir(parents = True, exist_ok = True)
 
         job = InpaintingJob(
-            job_id=job_id,
-            source_image=source_image,
-            prompt=prompt,
-            mask_image=mask_image,
-            output_path=output_path,
-            config=config or self.config,
-            metadata={
+            job_id = job_id,
+                source_image = source_image,
+                prompt = prompt,
+                mask_image = mask_image,
+                output_path = output_path,
+                config = config or self.config,
+                metadata={
                 "created_at": datetime.now().isoformat(),
-                "source_image_info": self._get_image_info(source_image),
-            },
-        )
+                    "source_image_info": self._get_image_info(source_image),
+                    },
+                )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Inpainting job created: {job_id}")
 
         return job
+
 
     def process_job(self, job_id: str) -> bool:
         """Process an inpainting job with advanced features."""
@@ -1094,9 +1130,9 @@ class AIInpainting:
             else:
                 mask_image = self.mask_generator.generate_mask(
                     source_image,
-                    job.config.mask_mode,
-                    clothing_type=job.config.clothing_type,
-                )
+                        job.config.mask_mode,
+                        clothing_type = job.config.clothing_type,
+                        )
                 # Save generated mask for reference
                 mask_path = str(self.temp_dir / f"{job_id}_mask.png")
                 mask_image.save(mask_path)
@@ -1112,8 +1148,8 @@ class AIInpainting:
             while retry_count < max_retries and not generated_images:
                 if job.config.model in [
                     InpaintingModel.STABLE_DIFFUSION_INPAINT,
-                    InpaintingModel.STABLE_DIFFUSION_XL_INPAINT,
-                ]:
+                        InpaintingModel.STABLE_DIFFUSION_XL_INPAINT,
+                        ]:
                     generated_images = self.sd_engine.generate_inpainting(
                         source_image, mask_image, job.prompt, job.config
                     )
@@ -1201,22 +1237,25 @@ class AIInpainting:
             self.logger.error(f"Inpainting job error: {job_id} - {e}")
             return False
 
+
     def _get_image_info(self, image_path: str) -> Dict[str, Any]:
         """Get image information."""
         try:
             with Image.open(image_path) as img:
                 return {
                     "width": img.width,
-                    "height": img.height,
-                    "format": img.format,
-                    "mode": img.mode,
-                }
-        except:
+                        "height": img.height,
+                        "format": img.format,
+                        "mode": img.mode,
+                        }
+        except Exception:
             return {}
+
 
     def get_job_status(self, job_id: str) -> Optional[InpaintingJob]:
         """Get status of an inpainting job."""
         return self.active_jobs.get(job_id)
+
 
     def cancel_job(self, job_id: str) -> bool:
         """Cancel an inpainting job."""
@@ -1229,15 +1268,17 @@ class AIInpainting:
                 return True
         return False
 
+
     def cleanup_temp_files(self) -> None:
         """Clean up temporary files."""
         try:
             if self.temp_dir.exists():
                 shutil.rmtree(self.temp_dir)
-                self.temp_dir.mkdir(parents=True, exist_ok=True)
+                self.temp_dir.mkdir(parents = True, exist_ok = True)
                 self.logger.info("Temporary files cleaned up")
         except Exception as e:
             self.logger.error(f"Cleanup failed: {e}")
+
 
     def submit_job_async(self, job_id: str) -> Optional[Future]:
         """Submit a job for asynchronous processing."""
@@ -1251,6 +1292,7 @@ class AIInpainting:
 
         future = self.executor.submit(self.process_job, job_id)
         return future
+
 
     def batch_process(
         self, jobs: List[Tuple[str, str]], parallel: bool = None
@@ -1279,7 +1321,7 @@ class AIInpainting:
             # Wait for completion
             for job_id, future in futures:
                 try:
-                    future.result(timeout=300)  # 5 minute timeout
+                    future.result(timeout = 300)  # 5 minute timeout
                 except Exception as e:
                     self.logger.error(f"Async job {job_id} failed: {e}")
         else:
@@ -1289,11 +1331,12 @@ class AIInpainting:
 
         return job_ids
 
+
     def batch_process_with_progress(
         self,
-        jobs: List[Tuple[str, str]],
-        progress_callback: Optional[Callable[[float], None]] = None,
-    ) -> List[str]:
+            jobs: List[Tuple[str, str]],
+            progress_callback: Optional[Callable[[float], None]] = None,
+            ) -> List[str]:
         """Process multiple jobs with progress tracking."""
         job_ids = []
         total_jobs = len(jobs)
@@ -1315,118 +1358,122 @@ class AIInpainting:
 
         return job_ids
 
+
     def change_avatar_clothing(
         self,
-        avatar_image: str,
-        clothing_prompt: str,
-        clothing_type: Optional[ClothingType] = None,
-        output_path: Optional[str] = None,
-        preserve_face: bool = True,
-        preserve_hands: bool = True,
-    ) -> Optional[str]:
+            avatar_image: str,
+            clothing_prompt: str,
+            clothing_type: Optional[ClothingType] = None,
+            output_path: Optional[str] = None,
+            preserve_face: bool = True,
+            preserve_hands: bool = True,
+            ) -> Optional[str]:
         """Advanced method for changing avatar clothing with specific options."""
         config = InpaintingConfig(
-            mask_mode=MaskMode.SMART_CLOTHING,
-            clothing_type=clothing_type or ClothingType.SHIRT,
-            quality=InpaintingQuality.HIGH,
-            steps=35,
-            guidance_scale=8.0,
-            preserve_face=preserve_face,
-            preserve_hands=preserve_hands,
-            quality_threshold=0.7,
-            auto_retry=True,
-            max_retries=2,
-        )
+            mask_mode = MaskMode.SMART_CLOTHING,
+                clothing_type = clothing_type or ClothingType.SHIRT,
+                quality = InpaintingQuality.HIGH,
+                steps = 35,
+                guidance_scale = 8.0,
+                preserve_face = preserve_face,
+                preserve_hands = preserve_hands,
+                quality_threshold = 0.7,
+                auto_retry = True,
+                max_retries = 2,
+                )
 
         # Enhanced prompt with style and quality descriptors
         enhanced_prompt = f"wearing {clothing_prompt}, high quality, detailed clothing, photorealistic, professional photography"
 
         job = self.create_inpainting_job(
-            source_image=avatar_image,
-            prompt=enhanced_prompt,
-            output_path=output_path,
-            config=config,
-        )
+            source_image = avatar_image,
+                prompt = enhanced_prompt,
+                output_path = output_path,
+                config = config,
+                )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
         return None
 
+
     def change_avatar_background(
         self,
-        avatar_image: str,
-        background_prompt: str,
-        output_path: Optional[str] = None,
-        preserve_subject: bool = True,
-    ) -> Optional[str]:
+            avatar_image: str,
+            background_prompt: str,
+            output_path: Optional[str] = None,
+            preserve_subject: bool = True,
+            ) -> Optional[str]:
         """Advanced method for changing avatar background."""
         config = InpaintingConfig(
-            mask_mode=MaskMode.AUTO_BACKGROUND,
-            quality=InpaintingQuality.HIGH,
-            steps=30,
-            guidance_scale=7.5,
-            preserve_face=preserve_subject,
-            quality_threshold=0.6,
-            auto_retry=True,
-            max_retries=2,
-        )
+            mask_mode = MaskMode.AUTO_BACKGROUND,
+                quality = InpaintingQuality.HIGH,
+                steps = 30,
+                guidance_scale = 7.5,
+                preserve_face = preserve_subject,
+                quality_threshold = 0.6,
+                auto_retry = True,
+                max_retries = 2,
+                )
 
         # Enhanced prompt for better background generation
         enhanced_prompt = f"{background_prompt}, high quality, detailed background, photorealistic, professional lighting"
 
         job = self.create_inpainting_job(
-            source_image=avatar_image,
-            prompt=enhanced_prompt,
-            output_path=output_path,
-            config=config,
-        )
+            source_image = avatar_image,
+                prompt = enhanced_prompt,
+                output_path = output_path,
+                config = config,
+                )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
         return None
+
 
     def enhance_avatar_details(
         self,
-        avatar_image: str,
-        enhancement_prompt: str,
-        mask_path: Optional[str] = None,
-        output_path: Optional[str] = None,
-    ) -> Optional[str]:
+            avatar_image: str,
+            enhancement_prompt: str,
+            mask_path: Optional[str] = None,
+            output_path: Optional[str] = None,
+            ) -> Optional[str]:
         """Enhance specific details of an avatar using inpainting."""
         config = InpaintingConfig(
-            mask_mode=MaskMode.MANUAL if mask_path else MaskMode.EDGE_DETECTION,
-            quality=InpaintingQuality.ULTRA,
-            steps=40,
-            guidance_scale=9.0,
-            strength=0.6,
-            quality_threshold=0.8,
-            auto_retry=True,
-            max_retries=3,
-        )
+            mask_mode = MaskMode.MANUAL if mask_path else MaskMode.EDGE_DETECTION,
+                quality = InpaintingQuality.ULTRA,
+                steps = 40,
+                guidance_scale = 9.0,
+                strength = 0.6,
+                quality_threshold = 0.8,
+                auto_retry = True,
+                max_retries = 3,
+                )
 
         job = self.create_inpainting_job(
-            source_image=avatar_image,
-            prompt=f"enhance details: {enhancement_prompt}, ultra high quality, sharp details",
-            mask_image=mask_path,
-            output_path=output_path,
-            config=config,
-        )
+            source_image = avatar_image,
+                prompt = f"enhance details: {enhancement_prompt}, ultra high quality, sharp details",
+                mask_image = mask_path,
+                output_path = output_path,
+                config = config,
+                )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
         return None
 
+
     def create_avatar_variations(
         self,
-        avatar_image: str,
-        base_prompt: str,
-        variations: List[str],
-        output_dir: Optional[str] = None,
-    ) -> List[str]:
+            avatar_image: str,
+            base_prompt: str,
+            variations: List[str],
+            output_dir: Optional[str] = None,
+            ) -> List[str]:
         """Create multiple variations of an avatar with different prompts."""
         if output_dir:
             output_dir = Path(output_dir)
-            output_dir.mkdir(parents=True, exist_ok=True)
+            output_dir.mkdir(parents = True, exist_ok = True)
 
         results = []
         jobs_data = []
@@ -1434,12 +1481,12 @@ class AIInpainting:
         for i, variation in enumerate(variations):
             output_path = None
             if output_dir:
-                output_path = str(output_dir / f"variation_{i+1}.png")
+                output_path = str(output_dir / f"variation_{i + 1}.png")
 
             combined_prompt = f"{base_prompt}, {variation}"
             jobs_data.append((avatar_image, combined_prompt))
 
-        job_ids = self.batch_process(jobs_data, parallel=True)
+        job_ids = self.batch_process(jobs_data, parallel = True)
 
         for job_id in job_ids:
             if (
@@ -1451,12 +1498,13 @@ class AIInpainting:
 
         return results
 
+
     def shutdown(self):
         """Properly shutdown the AI Inpainting system."""
         try:
             # Shutdown thread pool
             if self.executor:
-                self.executor.shutdown(wait=True)
+                self.executor.shutdown(wait = True)
                 self.logger.info("Thread pool shutdown completed")
 
             # Cleanup temporary files
@@ -1469,26 +1517,25 @@ class AIInpainting:
         except Exception as e:
             self.logger.error(f"Error during shutdown: {e}")
 
-
 # Example usage and testing
 if __name__ == "__main__":
     # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level = logging.INFO)
 
     # Create advanced AIInpainting instance with enhanced features
     config = InpaintingConfig(
-        quality=InpaintingQuality.HIGH,
-        mask_mode=MaskMode.SMART_CLOTHING,
-        steps=30,
-        guidance_scale=8.0,
-        batch_size=1,
-        enable_caching=True,
-        parallel_processing=True,
-        max_workers=2,
-        quality_threshold=0.7,
-        auto_retry=True,
-        max_retries=2,
-    )
+        quality = InpaintingQuality.HIGH,
+            mask_mode = MaskMode.SMART_CLOTHING,
+            steps = 30,
+            guidance_scale = 8.0,
+            batch_size = 1,
+            enable_caching = True,
+            parallel_processing = True,
+            max_workers = 2,
+            quality_threshold = 0.7,
+            auto_retry = True,
+            max_retries = 2,
+            )
 
     inpainter = AIInpainting(config)
 
@@ -1496,13 +1543,13 @@ if __name__ == "__main__":
         # Example 1: Advanced clothing change with specific type
         print("=== Advanced Clothing Change ===")
         result = inpainter.change_avatar_clothing(
-            avatar_image="./assets/avatar.jpg",
-            clothing_prompt="elegant blue evening dress",
-            clothing_type=ClothingType.DRESS,
-            preserve_face=True,
-            preserve_hands=True,
-            output_path="./output/avatar_dress.png",
-        )
+            avatar_image="./assets / avatar.jpg",
+                clothing_prompt="elegant blue evening dress",
+                clothing_type = ClothingType.DRESS,
+                preserve_face = True,
+                preserve_hands = True,
+                output_path="./output / avatar_dress.png",
+                )
 
         if result:
             print(f"Avatar clothing changed: {result}")
@@ -1512,11 +1559,11 @@ if __name__ == "__main__":
         # Example 2: Background change with quality control
         print("\n=== Advanced Background Change ===")
         result = inpainter.change_avatar_background(
-            avatar_image="./assets/avatar.jpg",
-            background_prompt="modern office environment with natural lighting",
-            preserve_subject=True,
-            output_path="./output/avatar_office.png",
-        )
+            avatar_image="./assets / avatar.jpg",
+                background_prompt="modern office environment with natural lighting",
+                preserve_subject = True,
+                output_path="./output / avatar_office.png",
+                )
 
         if result:
             print(f"Avatar background changed: {result}")
@@ -1526,10 +1573,10 @@ if __name__ == "__main__":
         # Example 3: Detail enhancement
         print("\n=== Detail Enhancement ===")
         result = inpainter.enhance_avatar_details(
-            avatar_image="./assets/avatar.jpg",
-            enhancement_prompt="sharper facial features, better skin texture",
-            output_path="./output/avatar_enhanced.png",
-        )
+            avatar_image="./assets / avatar.jpg",
+                enhancement_prompt="sharper facial features, better skin texture",
+                output_path="./output / avatar_enhanced.png",
+                )
 
         if result:
             print(f"Avatar details enhanced: {result}")
@@ -1539,51 +1586,52 @@ if __name__ == "__main__":
         # Example 4: Create multiple variations
         print("\n=== Creating Variations ===")
         variations = inpainter.create_avatar_variations(
-            avatar_image="./assets/avatar.jpg",
-            base_prompt="professional headshot",
-            variations=[
+            avatar_image="./assets / avatar.jpg",
+                base_prompt="professional headshot",
+                variations=[
                 "wearing business suit",
-                "casual attire",
-                "formal evening wear",
-            ],
-            output_dir="./output/variations",
-        )
+                    "casual attire",
+                    "formal evening wear",
+                    ],
+                output_dir="./output / variations",
+                )
         print(f"Created {len(variations)} variations: {variations}")
 
         # Example 5: Batch processing with progress tracking
         print("\n=== Batch Processing ===")
 
+
         def progress_callback(progress):
             print(f"Batch progress: {progress:.1f}%")
 
         jobs_data = [
-            ("./assets/avatar1.jpg", "wearing red shirt"),
-            ("./assets/avatar2.jpg", "wearing blue dress"),
-            ("./assets/avatar3.jpg", "wearing black suit"),
-        ]
+            ("./assets / avatar1.jpg", "wearing red shirt"),
+                ("./assets / avatar2.jpg", "wearing blue dress"),
+                ("./assets / avatar3.jpg", "wearing black suit"),
+                ]
 
         job_ids = inpainter.batch_process_with_progress(
-            jobs_data, progress_callback=progress_callback
+            jobs_data, progress_callback = progress_callback
         )
         print(f"Batch processing completed: {len(job_ids)} jobs")
 
         # Example 6: Asynchronous processing
         print("\n=== Asynchronous Processing ===")
         job = inpainter.create_inpainting_job(
-            source_image="./assets/avatar.jpg",
-            prompt="wearing futuristic outfit, sci-fi style",
-            output_path="./output/avatar_scifi.png",
-            config=InpaintingConfig(
-                mask_mode=MaskMode.SMART_CLOTHING, quality=InpaintingQuality.ULTRA
+            source_image="./assets / avatar.jpg",
+                prompt="wearing futuristic outfit, sci - fi style",
+                output_path="./output / avatar_scifi.png",
+                config = InpaintingConfig(
+                mask_mode = MaskMode.SMART_CLOTHING, quality = InpaintingQuality.ULTRA
             ),
-        )
+                )
 
         future = inpainter.submit_job_async(job.job_id)
         if future:
             print("Job submitted for async processing...")
 
             # Wait for completion
-            future.result(timeout=300)
+            future.result(timeout = 300)
             if job.status == "completed":
                 print(
                     f"Async job completed: {job.generated_images[0] if job.generated_images else 'No output'}"

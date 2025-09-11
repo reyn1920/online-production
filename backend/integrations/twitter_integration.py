@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Twitter Integration Module
 
@@ -77,8 +77,9 @@ class EngagementLevel(Enum):
     HIGH = "high"
     CRITICAL = "critical"
 
-
 @dataclass
+
+
 class TwitterCredentials:
     """Container for Twitter API credentials."""
 
@@ -87,8 +88,9 @@ class TwitterCredentials:
     access_token: str
     access_token_secret: str
 
-
 @dataclass
+
+
 class RateLimitInfo:
     """Information about API rate limits."""
 
@@ -97,8 +99,9 @@ class RateLimitInfo:
     reset_time: datetime
     endpoint: str
 
-
 @dataclass
+
+
 class TweetData:
     """Data structure for tweet information."""
 
@@ -110,8 +113,9 @@ class TweetData:
     mentions: Optional[List[str]] = None
     scheduled_time: Optional[datetime] = None
 
-
 @dataclass
+
+
 class SearchResult:
     """Result from Twitter search operations."""
 
@@ -126,10 +130,11 @@ class SearchResult:
 class TwitterIntegration:
     """
     Comprehensive Twitter API integration with secure authentication,
-    rate limiting, and advanced engagement capabilities.
+        rate limiting, and advanced engagement capabilities.
     """
 
-    def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
+
+    def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
         self.logger = setup_logger("twitter_integration")
         self.secret_store = SecretStore(secrets_db_path)
 
@@ -143,15 +148,15 @@ class TwitterIntegration:
         self.min_request_interval = 1.0  # Minimum seconds between requests
 
         # API endpoints
-        self.base_url = "https://api.twitter.com/2"
-        self.upload_url = "https://upload.twitter.com/1.1"
+        self.base_url = "https://api.twitter.com / 2"
+        self.upload_url = "https://upload.twitter.com / 1.1"
 
         # Configure HTTP session with retries
         self.session = requests.Session()
         retry_strategy = Retry(
-            total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504]
+            total = 3, backoff_factor = 2, status_forcelist=[429, 500, 502, 503, 504]
         )
-        adapter = HTTPAdapter(max_retries=retry_strategy)
+        adapter = HTTPAdapter(max_retries = retry_strategy)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
 
@@ -162,6 +167,7 @@ class TwitterIntegration:
         self.logger.info(
             "Twitter integration initialized and authenticated successfully"
         )
+
 
     def _load_credentials(self) -> TwitterCredentials:
         """
@@ -187,14 +193,15 @@ class TwitterIntegration:
                 )
 
             return TwitterCredentials(
-                api_key=api_key,
-                api_secret=api_secret,
-                access_token=access_token,
-                access_token_secret=access_token_secret,
-            )
+                api_key = api_key,
+                    api_secret = api_secret,
+                    access_token = access_token,
+                    access_token_secret = access_token_secret,
+                    )
         except Exception as e:
             self.logger.error(f"Failed to load Twitter credentials: {e}")
             raise AuthenticationError(f"Credential loading failed: {e}")
+
 
     def _generate_oauth_signature(
         self, method: str, url: str, params: Dict[str, str]
@@ -229,6 +236,7 @@ class TwitterIntegration:
 
         return signature
 
+
     def _create_oauth_header(
         self, method: str, url: str, params: Dict[str, str] = None
     ) -> str:
@@ -249,12 +257,12 @@ class TwitterIntegration:
         # OAuth parameters
         oauth_params = {
             "oauth_consumer_key": self.credentials.api_key,
-            "oauth_token": self.credentials.access_token,
-            "oauth_signature_method": "HMAC-SHA1",
-            "oauth_timestamp": str(int(time.time())),
-            "oauth_nonce": hashlib.md5(str(time.time()).encode()).hexdigest(),
-            "oauth_version": "1.0",
-        }
+                "oauth_token": self.credentials.access_token,
+                "oauth_signature_method": "HMAC - SHA1",
+                "oauth_timestamp": str(int(time.time())),
+                "oauth_nonce": hashlib.md5(str(time.time()).encode()).hexdigest(),
+                "oauth_version": "1.0",
+                }
 
         # Combine all parameters for signature
         all_params = {**params, **oauth_params}
@@ -273,6 +281,7 @@ class TwitterIntegration:
         )
 
         return auth_header
+
 
     def _check_rate_limit(self, endpoint: str) -> None:
         """
@@ -293,7 +302,7 @@ class TwitterIntegration:
             self.logger.debug(f"Rate limiting: sleeping {sleep_time:.2f}s")
             time.sleep(sleep_time)
 
-        # Check endpoint-specific rate limits
+        # Check endpoint - specific rate limits
         if endpoint in self.rate_limits:
             rate_limit = self.rate_limits[endpoint]
             if rate_limit.remaining <= 0 and datetime.now() < rate_limit.reset_time:
@@ -303,6 +312,7 @@ class TwitterIntegration:
                 )
 
         self.last_request_time = current_time
+
 
     def _update_rate_limit_info(
         self, response: requests.Response, endpoint: str
@@ -316,31 +326,32 @@ class TwitterIntegration:
         """
         headers = response.headers
 
-        if "x-rate-limit-limit" in headers:
-            limit = int(headers["x-rate-limit-limit"])
-            remaining = int(headers.get("x-rate-limit-remaining", 0))
-            reset_timestamp = int(headers.get("x-rate-limit-reset", 0))
+        if "x - rate - limit - limit" in headers:
+            limit = int(headers["x - rate - limit - limit"])
+            remaining = int(headers.get("x - rate - limit - remaining", 0))
+            reset_timestamp = int(headers.get("x - rate - limit - reset", 0))
             reset_time = datetime.fromtimestamp(reset_timestamp)
 
             self.rate_limits[endpoint] = RateLimitInfo(
-                limit=limit,
-                remaining=remaining,
-                reset_time=reset_time,
-                endpoint=endpoint,
-            )
+                limit = limit,
+                    remaining = remaining,
+                    reset_time = reset_time,
+                    endpoint = endpoint,
+                    )
 
             self.logger.debug(
                 f"Rate limit updated for {endpoint}: {remaining}/{limit} remaining"
             )
 
+
     def _make_request(
         self,
-        method: str,
-        endpoint: str,
-        params: Dict = None,
-        data: Dict = None,
-        files: Dict = None,
-    ) -> requests.Response:
+            method: str,
+            endpoint: str,
+            params: Dict = None,
+            data: Dict = None,
+            files: Dict = None,
+            ) -> requests.Response:
         """
         Make authenticated request to Twitter API with rate limiting.
 
@@ -377,25 +388,25 @@ class TwitterIntegration:
             method, url, params if method == "GET" else data
         )
 
-        headers = {"Authorization": auth_header, "User-Agent": "TRAE.AI/1.0"}
+        headers = {"Authorization": auth_header, "User - Agent": "TRAE.AI / 1.0"}
 
         if not files and method in ["POST", "PUT", "PATCH"]:
-            headers["Content-Type"] = "application/json"
+            headers["Content - Type"] = "application / json"
 
         try:
             # Make request
             if method.upper() == "GET":
                 response = self.session.get(
-                    url, params=params, headers=headers, timeout=30
+                    url, params = params, headers = headers, timeout = 30
                 )
             elif method.upper() == "POST":
                 if files:
                     response = self.session.post(
-                        url, data=data, files=files, headers=headers, timeout=60
+                        url, data = data, files = files, headers = headers, timeout = 60
                     )
                 else:
                     response = self.session.post(
-                        url, json=data, headers=headers, timeout=30
+                        url, json = data, headers = headers, timeout = 30
                     )
             else:
                 raise TwitterAPIError(f"Unsupported HTTP method: {method}")
@@ -417,6 +428,7 @@ class TwitterIntegration:
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Request failed for {endpoint}: {e}")
             raise TwitterAPIError(f"Request failed: {e}")
+
 
     def post_tweet(self, tweet_data: TweetData) -> Dict[str, Any]:
         """
@@ -470,7 +482,7 @@ class TwitterIntegration:
                     data["media"] = {"media_ids": media_ids}
 
             # Post tweet
-            response = self._make_request("POST", "tweets", data=data)
+            response = self._make_request("POST", "tweets", data = data)
 
             if response.status_code not in [200, 201]:
                 error_data = response.json() if response.content else {}
@@ -492,6 +504,7 @@ class TwitterIntegration:
             self.logger.error(f"Failed to post tweet: {e}")
             raise TwitterAPIError(f"Tweet posting failed: {str(e)}")
 
+
     def _upload_media(self, media_urls: List[str]) -> List[str]:
         """Upload media files to Twitter and return media IDs."""
         media_ids = []
@@ -499,13 +512,13 @@ class TwitterIntegration:
         for media_url in media_urls:
             try:
                 # Download media file
-                media_response = requests.get(media_url, timeout=30)
+                media_response = requests.get(media_url, timeout = 30)
                 if media_response.status_code != 200:
                     self.logger.error(f"Failed to download media from {media_url}")
                     continue
 
                 # Determine media type
-                content_type = media_response.headers.get("content-type", "")
+                content_type = media_response.headers.get("content - type", "")
                 if content_type.startswith("image/"):
                     media_category = "tweet_image"
                 elif content_type.startswith("video/"):
@@ -515,7 +528,7 @@ class TwitterIntegration:
                     continue
 
                 # Upload to Twitter
-                upload_url = "https://upload.twitter.com/1.1/media/upload.json"
+                upload_url = "https://upload.twitter.com / 1.1 / media / upload.json"
 
                 files = {"media": ("media", media_response.content, content_type)}
 
@@ -526,7 +539,7 @@ class TwitterIntegration:
                 headers = {"Authorization": oauth_header}
 
                 upload_response = self.session.post(
-                    upload_url, files=files, data=data, headers=headers, timeout=60
+                    upload_url, files = files, data = data, headers = headers, timeout = 60
                 )
 
                 if upload_response.status_code == 200:
@@ -547,6 +560,7 @@ class TwitterIntegration:
                 continue
 
         return media_ids
+
 
     def search_tweets(
         self, query: str, max_results: int = 10, tweet_fields: List[str] = None
@@ -578,12 +592,12 @@ class TwitterIntegration:
 
             params = {
                 "query": sanitized_query,
-                "max_results": min(max_results, 100),  # API limit
+                    "max_results": min(max_results, 100),  # API limit
                 "tweet.fields": ",".join(tweet_fields),
-                "expansions": "author_id",
-            }
+                    "expansions": "author_id",
+                    }
 
-            response = self._make_request("GET", "tweets/search/recent", params=params)
+            response = self._make_request("GET", "tweets / search / recent", params = params)
 
             if response.status_code != 200:
                 error_data = response.json() if response.content else {}
@@ -626,15 +640,15 @@ class TwitterIntegration:
                             )
 
                     result = SearchResult(
-                        tweet_id=tweet["id"],
-                        author_username=author.get("username", "unknown"),
-                        text=tweet["text"],
-                        created_at=created_at,
-                        engagement_metrics=tweet.get("public_metrics", {}),
-                        relevance_score=self._calculate_relevance_score(
+                        tweet_id = tweet["id"],
+                            author_username = author.get("username", "unknown"),
+                            text = tweet["text"],
+                            created_at = created_at,
+                            engagement_metrics = tweet.get("public_metrics", {}),
+                            relevance_score = self._calculate_relevance_score(
                             tweet, sanitized_query
                         ),
-                    )
+                            )
                     results.append(result)
 
                 except Exception as tweet_error:
@@ -653,6 +667,7 @@ class TwitterIntegration:
         except Exception as e:
             self.logger.error(f"Unexpected error during tweet search: {e}")
             raise TwitterAPIError(f"Search failed: {e}")
+
 
     def _calculate_relevance_score(self, tweet: Dict, query: str) -> float:
         """
@@ -685,6 +700,7 @@ class TwitterIntegration:
 
         return min(relevance_score, 1.0)
 
+
     def get_rate_limit_status(self) -> Dict[str, RateLimitInfo]:
         """
         Get current rate limit status for all tracked endpoints.
@@ -694,6 +710,7 @@ class TwitterIntegration:
         """
         return self.rate_limits.copy()
 
+
     def test_connection(self) -> bool:
         """
         Test Twitter API connection and authentication.
@@ -702,7 +719,7 @@ class TwitterIntegration:
             bool: True if connection successful
         """
         try:
-            response = self._make_request("GET", "users/me")
+            response = self._make_request("GET", "users / me")
 
             if response.status_code != 200:
                 self.logger.error(f"Twitter API returned status {response.status_code}")
@@ -737,7 +754,6 @@ class TwitterIntegration:
             self.logger.error(f"Unexpected error during Twitter connection test: {e}")
             return False
 
-
 # Example usage and testing
 if __name__ == "__main__":
     # Initialize Twitter integration
@@ -750,9 +766,9 @@ if __name__ == "__main__":
         # Example tweet
         tweet_data = TweetData(
             text="Testing TRAE.AI Twitter integration! 🚀",
-            tweet_type=TweetType.ANNOUNCEMENT,
-            hashtags=["TRAEAI", "automation", "AI"],
-        )
+                tweet_type = TweetType.ANNOUNCEMENT,
+                hashtags=["TRAEAI", "automation", "AI"],
+                )
 
         try:
             result = twitter.post_tweet(tweet_data)

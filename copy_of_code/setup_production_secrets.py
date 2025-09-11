@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Production Secrets Setup Script
 
 This script helps configure all production API keys and secrets needed
-to replace fake/mock data with real API integrations.
+to replace fake / mock data with real API integrations.
 
 Usage:
-    python scripts/setup_production_secrets.py
+    python scripts / setup_production_secrets.py
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -37,14 +37,14 @@ def setup_twitter_credentials(store: SecretStore):
     # Check if credentials already exist
     existing_creds = [
         store.secret_exists("TWITTER_API_KEY"),
-        store.secret_exists("TWITTER_API_SECRET"),
-        store.secret_exists("TWITTER_ACCESS_TOKEN"),
-        store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
-    ]
+            store.secret_exists("TWITTER_API_SECRET"),
+            store.secret_exists("TWITTER_ACCESS_TOKEN"),
+            store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
+            ]
 
     if all(existing_creds):
         print("✓ Twitter credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
         if not update:
             return
 
@@ -85,13 +85,13 @@ def setup_youtube_credentials(store: SecretStore):
     # Check if credentials already exist
     existing_creds = [
         store.secret_exists("YOUTUBE_API_KEY"),
-        store.secret_exists("YOUTUBE_CLIENT_ID"),
-        store.secret_exists("YOUTUBE_CLIENT_SECRET"),
-    ]
+            store.secret_exists("YOUTUBE_CLIENT_ID"),
+            store.secret_exists("YOUTUBE_CLIENT_SECRET"),
+            ]
 
     if all(existing_creds):
         print("✓ YouTube credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
         if not update:
             return
 
@@ -113,7 +113,7 @@ def setup_youtube_credentials(store: SecretStore):
             store.store_secret("YOUTUBE_CHANNEL_ID", channel_id)
         print("✓ YouTube credentials stored successfully")
         print(
-            "\n⚠️  Note: You'll need to complete OAuth flow to get access/refresh tokens"
+            "\n⚠️  Note: You'll need to complete OAuth flow to get access / refresh tokens"
         )
         print("   Run the YouTube integration setup after this to authorize the app")
         return True
@@ -134,13 +134,13 @@ def setup_instagram_credentials(store: SecretStore):
 
     existing_creds = [
         store.secret_exists("INSTAGRAM_APP_ID"),
-        store.secret_exists("INSTAGRAM_APP_SECRET"),
-        store.secret_exists("INSTAGRAM_ACCESS_TOKEN"),
-    ]
+            store.secret_exists("INSTAGRAM_APP_SECRET"),
+            store.secret_exists("INSTAGRAM_ACCESS_TOKEN"),
+            ]
 
     if all(existing_creds):
         print("✓ Instagram credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
         if not update:
             return
 
@@ -175,13 +175,13 @@ def setup_tiktok_credentials(store: SecretStore):
 
     existing_creds = [
         store.secret_exists("TIKTOK_CLIENT_KEY"),
-        store.secret_exists("TIKTOK_CLIENT_SECRET"),
-        store.secret_exists("TIKTOK_ACCESS_TOKEN"),
-    ]
+            store.secret_exists("TIKTOK_CLIENT_SECRET"),
+            store.secret_exists("TIKTOK_ACCESS_TOKEN"),
+            ]
 
     if all(existing_creds):
         print("✓ TikTok credentials already configured")
-        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
         if not update:
             return
 
@@ -213,7 +213,7 @@ def setup_google_trends_credentials(store: SecretStore):
 
     if store.secret_exists("GOOGLE_TRENDS_API_KEY"):
         print("✓ Google Trends API key already configured")
-        update = input("Update existing key? (y/N): ").lower().startswith("y")
+        update = input("Update existing key? (y / N): ").lower().startswith("y")
         if not update:
             return
 
@@ -259,20 +259,20 @@ def main():
     print("TRAE.AI Production Secrets Setup")
     print("=" * 40)
     print("This script will help you configure production API credentials")
-    print("to replace mock/fake data with real platform integrations.")
+    print("to replace mock / fake data with real platform integrations.")
     print()
 
     # Check for master key
     if not os.getenv("TRAE_MASTER_KEY"):
         print("❌ TRAE_MASTER_KEY environment variable not set")
         print("Please set it before running this script:")
-        print("export TRAE_MASTER_KEY=your_secure_master_key")
+        print("export TRAE_MASTER_KEY = your_secure_master_key")
         return 1
 
     # Initialize secret store
     try:
         db_path = Path(__file__).parent.parent / "data" / "secrets.sqlite"
-        db_path.parent.mkdir(exist_ok=True)
+        db_path.parent.mkdir(exist_ok = True)
 
         with SecretStore(str(db_path)) as store:
             print(f"✓ Connected to secret store: {db_path}")
@@ -280,11 +280,11 @@ def main():
             # Setup each service
             services = [
                 ("Twitter", setup_twitter_credentials),
-                ("YouTube", setup_youtube_credentials),
-                ("Instagram", setup_instagram_credentials),
-                ("TikTok", setup_tiktok_credentials),
-                ("Google Trends", setup_google_trends_credentials),
-            ]
+                    ("YouTube", setup_youtube_credentials),
+                    ("Instagram", setup_instagram_credentials),
+                    ("TikTok", setup_tiktok_credentials),
+                    ("Google Trends", setup_google_trends_credentials),
+                    ]
 
             for service_name, setup_func in services:
                 try:
@@ -308,7 +308,6 @@ def main():
         return 1
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

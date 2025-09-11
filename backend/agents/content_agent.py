@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Content Agent - The Automated Studio (Upgraded)
 
-The creative engine that uses the new, API-first creative pipeline for all
+The creative engine that uses the new, API - first creative pipeline for all
 video, voice, and graphics generation. Eliminates all brittle RPA and GUI
 scripting in favor of robust, direct automation interfaces.
 
-API-First Pipeline:
+API - First Pipeline:
 - Text: Local Ollama LLM running VidScriptPro framework
-- Voice: Local XTTS-v2 (via Coqui TTS) - Direct Python library integration
+- Voice: Local XTTS - v2 (via Coqui TTS) - Direct Python library integration
 - 3D Avatars: Native Python pipeline using Blender + MPFB Plugin
 - Video Editing: Blender's Video Sequence Editor (VSE) via bpy Python API
 - Art & Graphics: Inkscape CLI + Pillow Python library
@@ -36,8 +36,9 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from .base_agents import AgentCapability, BaseAgent, TaskContext
 
-
 @dataclass
+
+
 class ContentProject:
     """Content creation project"""
 
@@ -52,8 +53,9 @@ class ContentProject:
     created_at: datetime
     updated_at: datetime
 
-
 @dataclass
+
+
 class VoiceProfile:
     """Voice synthesis profile"""
 
@@ -68,8 +70,9 @@ class VoiceProfile:
     model_path: str
     created_at: datetime
 
-
 @dataclass
+
+
 class AvatarProfile:
     """3D Avatar profile"""
 
@@ -84,8 +87,9 @@ class AvatarProfile:
     blend_file_path: str
     created_at: datetime
 
-
 @dataclass
+
+
 class ContentTemplate:
     """Content generation template"""
 
@@ -99,77 +103,78 @@ class ContentTemplate:
 
 
 class ContentAgent(BaseAgent):
-    """The Automated Studio - API-First Content Creation Engine"""
+    """The Automated Studio - API - First Content Creation Engine"""
 
-    def __init__(self, db_path: str = "data/right_perspective.db"):
+
+    def __init__(self, db_path: str = "data / right_perspective.db"):
         super().__init__("ContentAgent")
         self.db_path = db_path
         self.logger = logging.getLogger(self.__class__.__name__)
         self.initialize_database()
 
-        # API-First Pipeline Configuration
+        # API - First Pipeline Configuration
         self.ollama_base_url = "http://localhost:11434"
         self.ollama_model = "llama3.2:latest"
 
-        # Coqui TTS Configuration (Hollywood-level voice synthesis)
-        self.coqui_tts_model = "tts_models/multilingual/multi-dataset/xtts_v2"
-        self.voice_output_dir = "output/voice"
+        # Coqui TTS Configuration (Hollywood - level voice synthesis)
+        self.coqui_tts_model = "tts_models / multilingual / multi - dataset / xtts_v2"
+        self.voice_output_dir = "output / voice"
 
         # DaVinci Resolve Pro Configuration
         self.davinci_resolve_path = (
-            "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/MacOS/Resolve"
+            "/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / MacOS / Resolve"
         )
-        self.davinci_scripts_dir = "scripts/davinci"
-        self.davinci_project_dir = "projects/davinci"
+        self.davinci_scripts_dir = "scripts / davinci"
+        self.davinci_project_dir = "projects / davinci"
 
         # Humor Style Database Integration
-        self.humor_style_db_path = "data/humor_style_db.json"
+        self.humor_style_db_path = "data / humor_style_db.json"
         self.right_perspective_tone = self._load_humor_style_db()
 
         # Enhanced 3D Avatar Pipeline
-        self.makehuman_path = "/Applications/MakeHuman/makehuman"
-        self.daz3d_bridge_path = "bridges/daz3d"
-        self.mixamo_api_endpoint = "https://www.mixamo.com/api/v1/"
+        self.makehuman_path = "/Applications / MakeHuman / makehuman"
+        self.daz3d_bridge_path = "bridges / daz3d"
+        self.mixamo_api_endpoint = "https://www.mixamo.com / api / v1/"
         self.avatar_pipeline_active = True
 
-        # Linly-Talker Enhanced (Primary Avatar System)
-        self.linly_talker_path = "models/linly-talker"
-        self.talking_heads_path = "models/talking-heads"  # Fallback system
+        # Linly - Talker Enhanced (Primary Avatar System)
+        self.linly_talker_path = "models / linly - talker"
+        self.talking_heads_path = "models / talking - heads"  # Fallback system
 
         # Blaster Suite RPA Integration
         self.blaster_suite_config = {
             "spechelo_voices": self._load_spechelo_voice_database(),
-            "scriptelo_templates": "data/scriptelo_templates.json",
-            "thumbnail_blaster_styles": "data/thumbnail_styles.json",
-            "ai_tones": self._load_ai_tone_database(),
-        }
+                "scriptelo_templates": "data / scriptelo_templates.json",
+                "thumbnail_blaster_styles": "data / thumbnail_styles.json",
+                "ai_tones": self._load_ai_tone_database(),
+                }
 
         # Blender Configuration
-        self.blender_executable = "/Applications/Blender.app/Contents/MacOS/Blender"
-        self.blender_scripts_dir = "scripts/blender"
-        self.blend_output_dir = "output/3d"
+        self.blender_executable = "/Applications / Blender.app / Contents / MacOS / Blender"
+        self.blender_scripts_dir = "scripts / blender"
+        self.blend_output_dir = "output / 3d"
 
         # Inkscape Configuration
-        self.inkscape_executable = "/Applications/Inkscape.app/Contents/MacOS/inkscape"
-        self.graphics_output_dir = "output/graphics"
+        self.inkscape_executable = "/Applications / Inkscape.app / Contents / MacOS / inkscape"
+        self.graphics_output_dir = "output / graphics"
 
         # Content directories
         self.content_dirs = {
-            "scripts": "content/scripts",
-            "audio": "content/audio",
-            "video": "content/video",
-            "images": "content/images",
-            "models": "content/models",
-            "templates": "content/templates",
-        }
+            "scripts": "content / scripts",
+                "audio": "content / audio",
+                "video": "content / video",
+                "images": "content / images",
+                "models": "content / models",
+                "templates": "content / templates",
+                }
 
         # Create directories
         for dir_path in self.content_dirs.values():
-            Path(dir_path).mkdir(parents=True, exist_ok=True)
+            Path(dir_path).mkdir(parents = True, exist_ok = True)
 
-        Path(self.voice_output_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.blend_output_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.graphics_output_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.voice_output_dir).mkdir(parents = True, exist_ok = True)
+        Path(self.blend_output_dir).mkdir(parents = True, exist_ok = True)
+        Path(self.graphics_output_dir).mkdir(parents = True, exist_ok = True)
 
         # Content generation queue
         self.content_queue = queue.Queue()
@@ -181,34 +186,37 @@ class ContentAgent(BaseAgent):
             "educational": {
                 "structure": [
                     "hook",
-                    "problem",
-                    "solution",
-                    "demonstration",
-                    "call_to_action",
-                ],
-                "tone": "informative",
-                "duration": "5-10 minutes",
-            },
-            "promotional": {
+                        "problem",
+                        "solution",
+                        "demonstration",
+                        "call_to_action",
+                        ],
+                    "tone": "informative",
+                    "duration": "5 - 10 minutes",
+                    },
+                "promotional": {
                 "structure": ["attention", "interest", "desire", "action"],
-                "tone": "persuasive",
-                "duration": "2-5 minutes",
-            },
-            "entertainment": {
+                    "tone": "persuasive",
+                    "duration": "2 - 5 minutes",
+                    },
+                "entertainment": {
                 "structure": ["setup", "conflict", "resolution", "twist"],
-                "tone": "engaging",
-                "duration": "3-8 minutes",
-            },
-        }
+                    "tone": "engaging",
+                    "duration": "3 - 8 minutes",
+                    },
+                }
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         """Return list of agent capabilities"""
         return [
             AgentCapability.CONTENT_CREATION,
-            AgentCapability.EXECUTION,
-            AgentCapability.ANALYSIS,
-        ]
+                AgentCapability.EXECUTION,
+                AgentCapability.ANALYSIS,
+                ]
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -229,9 +237,9 @@ class ContentAgent(BaseAgent):
             else:
                 result = {
                     "success": True,
-                    "message": f"Processed {task_type} task",
-                    "task_id": task_id,
-                }
+                        "message": f"Processed {task_type} task",
+                        "task_id": task_id,
+                        }
 
             self.logger.info(f"Completed content task {task_id}")
             return result
@@ -240,21 +248,23 @@ class ContentAgent(BaseAgent):
             self.logger.error(f"Error executing content task {task_id}: {str(e)}")
             return {"success": False, "error": str(e), "task_id": task_id}
 
+
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
         """Rephrase task for content generation context"""
         original_task = task.get("description", str(task))
         content_keywords = {
             "create": "generate",
-            "make": "produce",
-            "build": "craft",
-            "write": "compose",
-        }
+                "make": "produce",
+                "build": "craft",
+                "write": "compose",
+                }
 
         rephrased = original_task.lower()
         for old, new in content_keywords.items():
             rephrased = rephrased.replace(old, new)
 
         return f"Content generation task: {rephrased}"
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
@@ -279,18 +289,20 @@ class ContentAgent(BaseAgent):
 
         return True  # Default to valid if no content terms found
 
+
     async def _process_video_production_async(self, task_id: str) -> Dict[str, Any]:
         """Async wrapper for video production processing"""
         try:
             # For now, return a success response - can be implemented later
             return {
                 "success": True,
-                "message": f"Video production task {task_id} processed",
-                "task_id": task_id,
-                "output_path": f"/tmp/video_{task_id}.mp4",
-            }
+                    "message": f"Video production task {task_id} processed",
+                    "task_id": task_id,
+                    "output_path": f"/tmp / video_{task_id}.mp4",
+                    }
         except Exception as e:
             return {"success": False, "error": str(e), "task_id": task_id}
+
 
     async def _synthesize_voice_async(
         self, text: str, voice_profile_id: str
@@ -300,18 +312,19 @@ class ContentAgent(BaseAgent):
             # For now, return a success response - can be implemented later
             return {
                 "success": True,
-                "message": f"Voice synthesis completed for profile {voice_profile_id}",
-                "text": text[:50] + "..." if len(text) > 50 else text,
-                "voice_profile_id": voice_profile_id,
-                "output_path": f"/tmp/voice_{voice_profile_id}.wav",
-            }
+                    "message": f"Voice synthesis completed for profile {voice_profile_id}",
+                    "text": text[:50] + "..." if len(text) > 50 else text,
+                    "voice_profile_id": voice_profile_id,
+                    "output_path": f"/tmp / voice_{voice_profile_id}.wav",
+                    }
         except Exception as e:
             return {
                 "success": False,
-                "error": str(e),
-                "text": text,
-                "voice_profile_id": voice_profile_id,
-            }
+                    "error": str(e),
+                    "text": text,
+                    "voice_profile_id": voice_profile_id,
+                    }
+
 
     def initialize_database(self):
         """Initialize content database"""
@@ -320,15 +333,15 @@ class ContentAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS content_projects (
                     project_id TEXT PRIMARY KEY,
-                    title TEXT NOT NULL,
-                    content_type TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    requirements TEXT NOT NULL,
-                    assets TEXT NOT NULL,
-                    output_files TEXT NOT NULL,
-                    metadata TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL,
-                    updated_at TIMESTAMP NOT NULL
+                        title TEXT NOT NULL,
+                        content_type TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        requirements TEXT NOT NULL,
+                        assets TEXT NOT NULL,
+                        output_files TEXT NOT NULL,
+                        metadata TEXT NOT NULL,
+                        created_at TIMESTAMP NOT NULL,
+                        updated_at TIMESTAMP NOT NULL
                 )
             """
             )
@@ -337,15 +350,15 @@ class ContentAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS voice_profiles (
                     profile_id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    voice_model TEXT NOT NULL,
-                    language TEXT NOT NULL,
-                    gender TEXT NOT NULL,
-                    age_range TEXT NOT NULL,
-                    style TEXT NOT NULL,
-                    sample_text TEXT NOT NULL,
-                    model_path TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL
+                        name TEXT NOT NULL,
+                        voice_model TEXT NOT NULL,
+                        language TEXT NOT NULL,
+                        gender TEXT NOT NULL,
+                        age_range TEXT NOT NULL,
+                        style TEXT NOT NULL,
+                        sample_text TEXT NOT NULL,
+                        model_path TEXT NOT NULL,
+                        created_at TIMESTAMP NOT NULL
                 )
             """
             )
@@ -354,15 +367,15 @@ class ContentAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS avatar_profiles (
                     avatar_id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    gender TEXT NOT NULL,
-                    age INTEGER NOT NULL,
-                    ethnicity TEXT NOT NULL,
-                    style TEXT NOT NULL,
-                    clothing TEXT NOT NULL,
-                    accessories TEXT NOT NULL,
-                    blend_file_path TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL
+                        name TEXT NOT NULL,
+                        gender TEXT NOT NULL,
+                        age INTEGER NOT NULL,
+                        ethnicity TEXT NOT NULL,
+                        style TEXT NOT NULL,
+                        clothing TEXT NOT NULL,
+                        accessories TEXT NOT NULL,
+                        blend_file_path TEXT NOT NULL,
+                        created_at TIMESTAMP NOT NULL
                 )
             """
             )
@@ -371,12 +384,12 @@ class ContentAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS content_templates (
                     template_id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    content_type TEXT NOT NULL,
-                    structure TEXT NOT NULL,
-                    parameters TEXT NOT NULL,
-                    success_metrics TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL
+                        name TEXT NOT NULL,
+                        content_type TEXT NOT NULL,
+                        structure TEXT NOT NULL,
+                        parameters TEXT NOT NULL,
+                        success_metrics TEXT NOT NULL,
+                        created_at TIMESTAMP NOT NULL
                 )
             """
             )
@@ -385,13 +398,14 @@ class ContentAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS content_analytics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    project_id TEXT NOT NULL,
-                    metric_name TEXT NOT NULL,
-                    metric_value REAL NOT NULL,
-                    recorded_at TIMESTAMP NOT NULL
+                        project_id TEXT NOT NULL,
+                        metric_name TEXT NOT NULL,
+                        metric_value REAL NOT NULL,
+                        recorded_at TIMESTAMP NOT NULL
                 )
             """
             )
+
 
     def start_content_generation(self):
         """Start autonomous content generation"""
@@ -400,47 +414,49 @@ class ContentAgent(BaseAgent):
 
         self.generation_active = True
         self.generation_thread = threading.Thread(
-            target=self._content_generator, daemon=True
+            target = self._content_generator, daemon = True
         )
         self.generation_thread.start()
 
         self.logger.info("Content generation started")
+
 
     def stop_content_generation(self):
         """Stop content generation"""
         self.generation_active = False
         self.logger.info("Content generation stopped")
 
+
     def create_video_content(
         self,
-        title: str,
-        script_prompt: str,
-        voice_profile: str,
-        avatar_profile: str,
-        template_type: str = "educational",
-    ) -> ContentProject:
-        """Create complete video content using API-first pipeline"""
+            title: str,
+            script_prompt: str,
+            voice_profile: str,
+            avatar_profile: str,
+            template_type: str = "educational",
+            ) -> ContentProject:
+        """Create complete video content using API - first pipeline"""
         project_id = hashlib.md5(
             f"{title}_{datetime.now().isoformat()}".encode()
         ).hexdigest()[:12]
 
         project = ContentProject(
-            project_id=project_id,
-            title=title,
-            content_type="video",
-            status="planning",
-            requirements={
+            project_id = project_id,
+                title = title,
+                content_type="video",
+                status="planning",
+                requirements={
                 "script_prompt": script_prompt,
-                "voice_profile": voice_profile,
-                "avatar_profile": avatar_profile,
-                "template_type": template_type,
-            },
-            assets=[],
-            output_files=[],
-            metadata={},
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-        )
+                    "voice_profile": voice_profile,
+                    "avatar_profile": avatar_profile,
+                    "template_type": template_type,
+                    },
+                assets=[],
+                output_files=[],
+                metadata={},
+                created_at = datetime.now(),
+                updated_at = datetime.now(),
+                )
 
         self._save_content_project(project)
 
@@ -448,6 +464,7 @@ class ContentAgent(BaseAgent):
         self.content_queue.put({"type": "video_production", "project_id": project_id})
 
         return project
+
 
     def generate_script_with_ollama(
         self, prompt: str, template_type: str = "educational"
@@ -459,34 +476,34 @@ class ContentAgent(BaseAgent):
 
         # Construct VidScriptPro prompt
         vidscript_prompt = f"""
-        You are VidScriptPro, an expert video script writer. Create a {template['tone']} video script 
+        You are VidScriptPro, an expert video script writer. Create a {template['tone']} video script
         with a target duration of {template['duration']}.
-        
+
         Structure: {' -> '.join(template['structure'])}
-        
+
         Topic: {prompt}
-        
+
         Requirements:
         1. Include timestamps for each section
         2. Add visual cues and directions
         3. Write engaging, conversational dialogue
-        4. Include clear call-to-action
+        4. Include clear call - to - action
         5. Optimize for viewer retention
-        
+
         Format the response as JSON with sections: title, hook, main_content, visual_cues, call_to_action, estimated_duration
         """
 
         try:
             response = requests.post(
-                f"{self.ollama_base_url}/api/generate",
-                json={
+                f"{self.ollama_base_url}/api / generate",
+                    json={
                     "model": self.ollama_model,
-                    "prompt": vidscript_prompt,
-                    "stream": False,
-                    "options": {"temperature": 0.7, "top_p": 0.9},
-                },
-                timeout=120,
-            )
+                        "prompt": vidscript_prompt,
+                        "stream": False,
+                        "options": {"temperature": 0.7, "top_p": 0.9},
+                        },
+                    timeout = 120,
+                    )
 
             if response.status_code == 200:
                 result = response.json()
@@ -498,16 +515,16 @@ class ContentAgent(BaseAgent):
                 except json.JSONDecodeError:
                     script_data = {
                         "title": "Generated Script",
-                        "content": script_text,
-                        "estimated_duration": template["duration"],
-                    }
+                            "content": script_text,
+                            "estimated_duration": template["duration"],
+                            }
 
                 return {
                     "success": True,
-                    "script": script_data,
-                    "model_used": self.ollama_model,
-                    "template_type": template_type,
-                }
+                        "script": script_data,
+                        "model_used": self.ollama_model,
+                        "template_type": template_type,
+                        }
             else:
                 raise Exception(f"Ollama API error: {response.status_code}")
 
@@ -515,14 +532,15 @@ class ContentAgent(BaseAgent):
             self.logger.error(f"Script generation error: {e}")
             return {"success": False, "error": str(e)}
 
+
     def synthesize_voice_with_coqui_tts(
         self,
-        text: str,
-        voice_profile_id: str,
-        emotion: str = "neutral",
-        speed: float = 1.0,
-    ) -> Dict[str, Any]:
-        """Hollywood-level voice synthesis using Coqui TTS with emotion and speed control"""
+            text: str,
+            voice_profile_id: str,
+            emotion: str = "neutral",
+            speed: float = 1.0,
+            ) -> Dict[str, Any]:
+        """Hollywood - level voice synthesis using Coqui TTS with emotion and speed control"""
         try:
             voice_profile = self._get_voice_profile(voice_profile_id)
             if not voice_profile:
@@ -538,37 +556,38 @@ class ContentAgent(BaseAgent):
             # Coqui TTS synthesis with advanced features
             synthesis_params = {
                 "text": styled_text,
-                "voice_model": self.coqui_tts_model,
-                "speaker_wav": voice_profile.get("model_path"),
-                "language": voice_profile.get("language", "en"),
-                "emotion": emotion,
-                "speed": speed,
-                "output_path": str(output_path),
-            }
+                    "voice_model": self.coqui_tts_model,
+                    "speaker_wav": voice_profile.get("model_path"),
+                    "language": voice_profile.get("language", "en"),
+                    "emotion": emotion,
+                    "speed": speed,
+                    "output_path": str(output_path),
+                    }
 
             # Execute Coqui TTS (would use actual TTS library)
             synthesis_result = self._execute_coqui_tts_synthesis(synthesis_params)
 
-            # Post-process audio for Hollywood quality
+            # Post - process audio for Hollywood quality
             enhanced_audio_path = self._enhance_audio_quality(output_path)
 
             self.logger.info(
-                f"Hollywood-level voice synthesized: {enhanced_audio_path}"
+                f"Hollywood - level voice synthesized: {enhanced_audio_path}"
             )
 
             return {
                 "success": True,
-                "audio_file": str(enhanced_audio_path),
-                "duration": synthesis_result.get("duration", len(styled_text) * 0.08),
-                "voice_profile": voice_profile["name"],
-                "emotion": emotion,
-                "speed": speed,
-                "quality_enhanced": True,
-            }
+                    "audio_file": str(enhanced_audio_path),
+                    "duration": synthesis_result.get("duration", len(styled_text) * 0.08),
+                    "voice_profile": voice_profile["name"],
+                    "emotion": emotion,
+                    "speed": speed,
+                    "quality_enhanced": True,
+                    }
 
         except Exception as e:
             self.logger.error(f"Coqui TTS synthesis failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     def create_3d_avatar_with_blender(
         self, avatar_profile_id: str, animation_type: str = "talking"
@@ -589,7 +608,7 @@ class ContentAgent(BaseAgent):
             script_path = (
                 Path(self.blender_scripts_dir) / f"avatar_{avatar_profile_id}.py"
             )
-            script_path.parent.mkdir(parents=True, exist_ok=True)
+            script_path.parent.mkdir(parents = True, exist_ok = True)
 
             with open(script_path, "w") as f:
                 f.write(script_content)
@@ -601,28 +620,29 @@ class ContentAgent(BaseAgent):
             # Execute Blender script
             cmd = [
                 self.blender_executable,
-                "--background",
-                "--python",
-                str(script_path),
-                "--",
-                str(output_path),
-            ]
+                    "--background",
+                    "--python",
+                    str(script_path),
+                    "--",
+                    str(output_path),
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 300)
 
             if result.returncode == 0:
                 return {
                     "success": True,
-                    "blend_file": str(output_path),
-                    "avatar_profile": avatar_profile["name"],
-                    "animation_type": animation_type,
-                }
+                        "blend_file": str(output_path),
+                        "avatar_profile": avatar_profile["name"],
+                        "animation_type": animation_type,
+                        }
             else:
                 raise Exception(f"Blender execution failed: {result.stderr}")
 
         except Exception as e:
             self.logger.error(f"3D avatar creation error: {e}")
             return {"success": False, "error": str(e)}
+
 
     def create_video_with_blender_vse(
         self, project_id: str, assets: Dict[str, str]
@@ -645,27 +665,28 @@ class ContentAgent(BaseAgent):
             # Execute Blender VSE script
             cmd = [
                 self.blender_executable,
-                "--background",
-                "--python",
-                str(script_path),
-                "--",
-                str(output_path),
-            ]
+                    "--background",
+                    "--python",
+                    str(script_path),
+                    "--",
+                    str(output_path),
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 600)
 
             if result.returncode == 0:
                 return {
                     "success": True,
-                    "video_file": str(output_path),
-                    "project_id": project_id,
-                }
+                        "video_file": str(output_path),
+                        "project_id": project_id,
+                        }
             else:
                 raise Exception(f"Blender VSE execution failed: {result.stderr}")
 
         except Exception as e:
             self.logger.error(f"Video creation error: {e}")
             return {"success": False, "error": str(e)}
+
 
     def create_graphics_with_inkscape(
         self, graphic_type: str, parameters: Dict[str, Any]
@@ -684,6 +705,7 @@ class ContentAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Graphics creation error: {e}")
             return {"success": False, "error": str(e)}
+
 
     def _create_thumbnail_with_inkscape(
         self, parameters: Dict[str, Any]
@@ -707,27 +729,28 @@ class ContentAgent(BaseAgent):
 
         cmd = [
             self.inkscape_executable,
-            str(svg_path),
-            "--export-type=png",
-            f"--export-filename={png_path}",
-            "--export-width=1280",
-            "--export-height=720",
-            "--export-dpi=300",
-        ]
+                str(svg_path),
+                "--export - type = png",
+                f"--export - filename={png_path}",
+                "--export - width = 1280",
+                "--export - height = 720",
+                "--export - dpi = 300",
+                ]
 
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        result = subprocess.run(cmd, capture_output = True, text = True)
 
         if result.returncode == 0:
-            # Post-process with Pillow if needed
+            # Post - process with Pillow if needed
             self._enhance_thumbnail_with_pillow(png_path, parameters)
 
             return {
                 "success": True,
-                "thumbnail_file": str(png_path),
-                "svg_source": str(svg_path),
-            }
+                    "thumbnail_file": str(png_path),
+                    "svg_source": str(svg_path),
+                    }
         else:
             raise Exception(f"Inkscape execution failed: {result.stderr}")
+
 
     def _enhance_thumbnail_with_pillow(
         self, image_path: Path, parameters: Dict[str, Any]
@@ -752,51 +775,53 @@ class ContentAgent(BaseAgent):
                     img = enhancer.enhance(1.2)
 
                 # Save enhanced image
-                img.save(image_path, "PNG", quality=95)
+                img.save(image_path, "PNG", quality = 95)
 
         except Exception as e:
             self.logger.error(f"Thumbnail enhancement error: {e}")
 
+
     def create_voice_profile(
         self,
-        name: str,
-        voice_model: str,
-        language: str,
-        gender: str,
-        age_range: str,
-        style: str,
-        sample_text: str,
-        model_path: str,
-    ) -> VoiceProfile:
+            name: str,
+            voice_model: str,
+            language: str,
+            gender: str,
+            age_range: str,
+            style: str,
+            sample_text: str,
+            model_path: str,
+            ) -> VoiceProfile:
         """Create new voice profile"""
         profile_id = hashlib.md5(f"{name}_{voice_model}".encode()).hexdigest()[:12]
 
         profile = VoiceProfile(
-            profile_id=profile_id,
-            name=name,
-            voice_model=voice_model,
-            language=language,
-            gender=gender,
-            age_range=age_range,
-            style=style,
-            sample_text=sample_text,
-            model_path=model_path,
-            created_at=datetime.now(),
-        )
+            profile_id = profile_id,
+                name = name,
+                voice_model = voice_model,
+                language = language,
+                gender = gender,
+                age_range = age_range,
+                style = style,
+                sample_text = sample_text,
+                model_path = model_path,
+                created_at = datetime.now(),
+                )
 
         self._save_voice_profile(profile)
         return profile
 
+
     def create_avatar_profile(
         self,
-        name: str,
-        gender: str,
-        age: int,
-        ethnicity: str,
-        style: str,
-        clothing: str,
-        accessories: List[str],
-    ) -> AvatarProfile:
+            name: str,
+            gender: str,
+            age: int,
+            ethnicity: str,
+            style: str,
+            clothing: str,
+            accessories: List[str],
+            ) -> AvatarProfile:
         """Create new avatar profile"""
         avatar_id = hashlib.md5(f"{name}_{gender}_{age}".encode()).hexdigest()[:12]
 
@@ -805,27 +830,28 @@ class ContentAgent(BaseAgent):
         blend_path = Path(self.content_dirs["models"]) / blend_filename
 
         profile = AvatarProfile(
-            avatar_id=avatar_id,
-            name=name,
-            gender=gender,
-            age=age,
-            ethnicity=ethnicity,
-            style=style,
-            clothing=clothing,
-            accessories=accessories,
-            blend_file_path=str(blend_path),
-            created_at=datetime.now(),
-        )
+            avatar_id = avatar_id,
+                name = name,
+                gender = gender,
+                age = age,
+                ethnicity = ethnicity,
+                style = style,
+                clothing = clothing,
+                accessories = accessories,
+                blend_file_path = str(blend_path),
+                created_at = datetime.now(),
+                )
 
         self._save_avatar_profile(profile)
         return profile
+
 
     def _content_generator(self):
         """Main content generation loop"""
         while self.generation_active:
             try:
                 # Get task from queue (with timeout)
-                task = self.content_queue.get(timeout=1)
+                task = self.content_queue.get(timeout = 1)
 
                 if task["type"] == "video_production":
                     self._process_video_production(task["project_id"])
@@ -840,6 +866,7 @@ class ContentAgent(BaseAgent):
                 continue
             except Exception as e:
                 self.logger.error(f"Content generation error: {e}")
+
 
     def _process_video_production(self, project_id: str):
         """Process complete video production pipeline"""
@@ -862,13 +889,13 @@ class ContentAgent(BaseAgent):
             if not script_result["success"]:
                 raise Exception(f"Script generation failed: {script_result['error']}")
 
-            # Step 2: Synthesize voice with Hollywood-level quality
+            # Step 2: Synthesize voice with Hollywood - level quality
             voice_result = self.synthesize_voice_with_coqui_tts(
                 script_result["script"].get("content", ""),
-                requirements["voice_profile"],
-                emotion="professional",
-                speed=1.0,
-            )
+                    requirements["voice_profile"],
+                    emotion="professional",
+                    speed = 1.0,
+                    )
 
             if not voice_result["success"]:
                 raise Exception(f"Voice synthesis failed: {voice_result['error']}")
@@ -884,9 +911,9 @@ class ContentAgent(BaseAgent):
             # Step 4: Create video with Blender VSE
             video_assets = {
                 "audio": voice_result["audio_file"],
-                "avatar": avatar_result["blend_file"],
-                "script": script_result["script"],
-            }
+                    "avatar": avatar_result["blend_file"],
+                    "script": script_result["script"],
+                    }
 
             video_result = self.create_video_with_blender_vse(project_id, video_assets)
 
@@ -905,6 +932,7 @@ class ContentAgent(BaseAgent):
             self.logger.error(f"Video production failed for {project_id}: {e}")
             self._update_project_status(project_id, "failed")
 
+
     def _generate_blender_avatar_script(
         self, avatar_profile: Dict[str, Any], animation_type: str
     ) -> str:
@@ -917,16 +945,16 @@ from mathutils import Vector
 
 # Clear existing mesh objects
 bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False)
+bpy.ops.object.delete(use_global = False)
 
 # Add MPFB human
 try:
     # This would use the MPFB plugin
     bpy.ops.mpfb.create_human()
-    
+
     # Configure human based on profile
     human = bpy.context.active_object
-    
+
     # Set gender
     if '{avatar_profile['gender']}' == 'female':
         # Apply female morphs
@@ -934,32 +962,33 @@ try:
     else:
         # Apply male morphs
         pass
-    
+
     # Set age
     age_factor = {avatar_profile['age']} / 100.0
     # Apply age morphs
-    
+
     # Set ethnicity
     ethnicity = '{avatar_profile['ethnicity']}'
     # Apply ethnicity morphs
-    
+
     # Add clothing
     clothing = '{avatar_profile['clothing']}'
     # Add clothing objects
-    
+
     # Add animation
     if '{animation_type}' == 'talking':
         # Add talking animation
         bpy.ops.anim.keyframe_insert_menu(type='BUILTIN_KSI_LocRot')
-    
+
     # Save file
     output_path = sys.argv[-1]
-    bpy.ops.wm.save_as_mainfile(filepath=output_path)
-    
+    bpy.ops.wm.save_as_mainfile(filepath = output_path)
+
 except Exception as e:
     print(f"Error creating avatar: {{e}}")
     sys.exit(1)
 """
+
 
     def _generate_blender_vse_script(
         self, project_id: str, assets: Dict[str, str]
@@ -971,7 +1000,7 @@ import sys
 import os
 
 # Clear existing data
-bpy.ops.wm.read_factory_settings(use_empty=True)
+bpy.ops.wm.read_factory_settings(use_empty = True)
 
 # Switch to Video Editing workspace
 bpy.context.window.workspace = bpy.data.workspaces['Video Editing']
@@ -993,12 +1022,12 @@ scene.render.ffmpeg.codec = 'H264'
 audio_path = '{assets.get('audio', '')}'
 if os.path.exists(audio_path):
     bpy.ops.sequencer.sound_strip_add(
-        filepath=audio_path,
-        frame_start=1,
-        channel=1
+        filepath = audio_path,
+            frame_start = 1,
+            channel = 1
     )
 
-# Add avatar/video strips
+# Add avatar / video strips
 avatar_path = '{assets.get('avatar', '')}'
 if os.path.exists(avatar_path):
     # This would render the avatar blend file to image sequence
@@ -1011,11 +1040,11 @@ if script_data:
     # Add title text
     bpy.ops.sequencer.effect_strip_add(
         type='TEXT',
-        frame_start=1,
-        frame_end=60,
-        channel=3
+            frame_start = 1,
+            frame_end = 60,
+            channel = 3
     )
-    
+
     text_strip = bpy.context.scene.sequence_editor.active_strip
     text_strip.text = script_data.get('title', 'Generated Video')
     text_strip.font_size = 72
@@ -1023,10 +1052,11 @@ if script_data:
 # Render video
 output_path = sys.argv[-1]
 scene.render.filepath = output_path
-bpy.ops.render.render(animation=True)
+bpy.ops.render.render(animation = True)
 
 print(f"Video rendered to: {{output_path}}")
 """
+
 
     def _generate_thumbnail_svg_template(self, parameters: Dict[str, Any]) -> str:
         """Generate SVG template for thumbnail"""
@@ -1036,32 +1066,32 @@ print(f"Video rendered to: {{output_path}}")
         text_color = parameters.get("text_color", "#FFFFFF")
 
         return f"""
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF - 8"?>
+<svg width="1280" height="720" xmlns="http://www.w3.org / 2000 / svg">
   <!-- Background -->
   <rect width="1280" height="720" fill="{background_color}"/>
-  
+
   <!-- Gradient overlay -->
   <defs>
     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:rgba(0,0,0,0.3);stop-opacity:1" />
-      <stop offset="100%" style="stop-color:rgba(0,0,0,0.1);stop-opacity:1" />
+      <stop offset="0%" style="stop - color:rgba(0,0,0,0.3);stop - opacity:1" />
+      <stop offset="100%" style="stop - color:rgba(0,0,0,0.1);stop - opacity:1" />
     </linearGradient>
   </defs>
   <rect width="1280" height="720" fill="url(#grad1)"/>
-  
+
   <!-- Main title -->
-  <text x="640" y="300" font-family="Arial, sans-serif" font-size="72" 
-        font-weight="bold" text-anchor="middle" fill="{text_color}">
+  <text x="640" y="300" font - family="Arial, sans - serif" font - size="72"
+        font - weight="bold" text - anchor="middle" fill="{text_color}">
     {title}
   </text>
-  
+
   <!-- Subtitle -->
-  <text x="640" y="380" font-family="Arial, sans-serif" font-size="36" 
-        text-anchor="middle" fill="{text_color}" opacity="0.9">
+  <text x="640" y="380" font - family="Arial, sans - serif" font - size="36"
+        text - anchor="middle" fill="{text_color}" opacity="0.9">
     {subtitle}
   </text>
-  
+
   <!-- Decorative elements -->
   <circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.2)"/>
   <circle cx="1180" cy="620" r="30" fill="rgba(255,255,255,0.15)"/>
@@ -1069,6 +1099,8 @@ print(f"Video rendered to: {{output_path}}")
 """
 
     # Database helper methods
+
+
     def _save_content_project(self, project: ContentProject):
         """Save content project to database"""
         with sqlite3.connect(self.db_path) as conn:
@@ -1076,22 +1108,23 @@ print(f"Video rendered to: {{output_path}}")
                 """
                 INSERT OR REPLACE INTO content_projects
                 (project_id, title, content_type, status, requirements, assets,
-                 output_files, metadata, created_at, updated_at)
+                    output_files, metadata, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     project.project_id,
-                    project.title,
-                    project.content_type,
-                    project.status,
-                    json.dumps(project.requirements),
-                    json.dumps(project.assets),
-                    json.dumps(project.output_files),
-                    json.dumps(project.metadata),
-                    project.created_at.isoformat(),
-                    project.updated_at.isoformat(),
-                ),
-            )
+                        project.title,
+                        project.content_type,
+                        project.status,
+                        json.dumps(project.requirements),
+                        json.dumps(project.assets),
+                        json.dumps(project.output_files),
+                        json.dumps(project.metadata),
+                        project.created_at.isoformat(),
+                        project.updated_at.isoformat(),
+                        ),
+                    )
+
 
     def _save_voice_profile(self, profile: VoiceProfile):
         """Save voice profile to database"""
@@ -1100,22 +1133,23 @@ print(f"Video rendered to: {{output_path}}")
                 """
                 INSERT OR REPLACE INTO voice_profiles
                 (profile_id, name, voice_model, language, gender, age_range,
-                 style, sample_text, model_path, created_at)
+                    style, sample_text, model_path, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     profile.profile_id,
-                    profile.name,
-                    profile.voice_model,
-                    profile.language,
-                    profile.gender,
-                    profile.age_range,
-                    profile.style,
-                    profile.sample_text,
-                    profile.model_path,
-                    profile.created_at.isoformat(),
-                ),
-            )
+                        profile.name,
+                        profile.voice_model,
+                        profile.language,
+                        profile.gender,
+                        profile.age_range,
+                        profile.style,
+                        profile.sample_text,
+                        profile.model_path,
+                        profile.created_at.isoformat(),
+                        ),
+                    )
+
 
     def _save_avatar_profile(self, profile: AvatarProfile):
         """Save avatar profile to database"""
@@ -1124,22 +1158,23 @@ print(f"Video rendered to: {{output_path}}")
                 """
                 INSERT OR REPLACE INTO avatar_profiles
                 (avatar_id, name, gender, age, ethnicity, style, clothing,
-                 accessories, blend_file_path, created_at)
+                    accessories, blend_file_path, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     profile.avatar_id,
-                    profile.name,
-                    profile.gender,
-                    profile.age,
-                    profile.ethnicity,
-                    profile.style,
-                    profile.clothing,
-                    json.dumps(profile.accessories),
-                    profile.blend_file_path,
-                    profile.created_at.isoformat(),
-                ),
-            )
+                        profile.name,
+                        profile.gender,
+                        profile.age,
+                        profile.ethnicity,
+                        profile.style,
+                        profile.clothing,
+                        json.dumps(profile.accessories),
+                        profile.blend_file_path,
+                        profile.created_at.isoformat(),
+                        ),
+                    )
+
 
     def _get_content_project(self, project_id: str) -> Optional[Dict[str, Any]]:
         """Get content project from database"""
@@ -1159,6 +1194,7 @@ print(f"Video rendered to: {{output_path}}")
                 return project_dict
         return None
 
+
     def _get_voice_profile(self, profile_id: str) -> Optional[Dict[str, Any]]:
         """Get voice profile from database"""
         with sqlite3.connect(self.db_path) as conn:
@@ -1170,6 +1206,7 @@ print(f"Video rendered to: {{output_path}}")
                 columns = [description[0] for description in cursor.description]
                 return dict(zip(columns, row))
         return None
+
 
     def _get_avatar_profile(self, avatar_id: str) -> Optional[Dict[str, Any]]:
         """Get avatar profile from database"""
@@ -1185,17 +1222,19 @@ print(f"Video rendered to: {{output_path}}")
                 return profile_dict
         return None
 
+
     def _update_project_status(self, project_id: str, status: str):
         """Update project status"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                UPDATE content_projects 
+                UPDATE content_projects
                 SET status = ?, updated_at = ?
                 WHERE project_id = ?
             """,
                 (status, datetime.now().isoformat(), project_id),
-            )
+                    )
+
 
     def _update_project_completion(
         self, project_id: str, output_files: List[str], assets: List[str]
@@ -1204,17 +1243,18 @@ print(f"Video rendered to: {{output_path}}")
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                UPDATE content_projects 
+                UPDATE content_projects
                 SET status = 'completed', output_files = ?, assets = ?, updated_at = ?
                 WHERE project_id = ?
             """,
                 (
                     json.dumps(output_files),
-                    json.dumps(assets),
-                    datetime.now().isoformat(),
-                    project_id,
-                ),
-            )
+                        json.dumps(assets),
+                        datetime.now().isoformat(),
+                        project_id,
+                        ),
+                    )
+
 
     def _load_humor_style_db(self) -> Dict[str, Any]:
         """Load humor style database for Right Perspective tone"""
@@ -1230,23 +1270,24 @@ print(f"Video rendered to: {{output_path}}")
             "tone_modifiers": {
                 "sarcastic": {
                     "intensity": 0.7,
-                    "markers": ["oh really", "sure thing", "absolutely"],
-                },
-                "witty": {
+                        "markers": ["oh really", "sure thing", "absolutely"],
+                        },
+                    "witty": {
                     "intensity": 0.8,
-                    "markers": ["clever", "brilliant", "genius"],
-                },
-                "dry": {
+                        "markers": ["clever", "brilliant", "genius"],
+                        },
+                    "dry": {
                     "intensity": 0.6,
-                    "markers": ["fascinating", "wonderful", "amazing"],
-                },
-            },
-            "timing_patterns": {
+                        "markers": ["fascinating", "wonderful", "amazing"],
+                        },
+                    },
+                "timing_patterns": {
                 "pause_before_punchline": 0.5,
-                "emphasis_duration": 1.2,
-                "comedic_timing": True,
-            },
-        }
+                    "emphasis_duration": 1.2,
+                    "comedic_timing": True,
+                    },
+                }
+
 
     def _load_spechelo_voice_database(self) -> Dict[str, Any]:
         """Load Spechelo voice database for premium voice options"""
@@ -1254,32 +1295,34 @@ print(f"Video rendered to: {{output_path}}")
             "premium_voices": {
                 "david_professional": {
                     "gender": "male",
-                    "accent": "american",
-                    "style": "professional",
-                },
-                "sarah_conversational": {
+                        "accent": "american",
+                        "style": "professional",
+                        },
+                    "sarah_conversational": {
                     "gender": "female",
-                    "accent": "british",
-                    "style": "conversational",
-                },
-                "mike_energetic": {
+                        "accent": "british",
+                        "style": "conversational",
+                        },
+                    "mike_energetic": {
                     "gender": "male",
-                    "accent": "australian",
-                    "style": "energetic",
-                },
-            },
-            "voice_effects": ["echo", "reverb", "pitch_shift", "speed_control"],
-        }
+                        "accent": "australian",
+                        "style": "energetic",
+                        },
+                    },
+                "voice_effects": ["echo", "reverb", "pitch_shift", "speed_control"],
+                }
+
 
     def _load_ai_tone_database(self) -> Dict[str, Any]:
         """Load AI tone database for consistent brand voice"""
         return {
             "right_perspective_tones": {
                 "educational": {"formality": 0.7, "enthusiasm": 0.8, "humor": 0.6},
-                "promotional": {"formality": 0.5, "enthusiasm": 0.9, "humor": 0.4},
-                "entertainment": {"formality": 0.3, "enthusiasm": 0.9, "humor": 0.9},
-            }
+                    "promotional": {"formality": 0.5, "enthusiasm": 0.9, "humor": 0.4},
+                    "entertainment": {"formality": 0.3, "enthusiasm": 0.9, "humor": 0.9},
+                    }
         }
+
 
     def _apply_humor_style_to_text(self, text: str) -> str:
         """Apply Right Perspective humor style to text"""
@@ -1299,6 +1342,7 @@ print(f"Video rendered to: {{output_path}}")
             self.logger.error(f"Failed to apply humor style: {e}")
             return text
 
+
     def _execute_coqui_tts_synthesis(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Execute Coqui TTS synthesis with advanced parameters"""
         try:
@@ -1306,49 +1350,50 @@ print(f"Video rendered to: {{output_path}}")
             from TTS.api import TTS
 
             # Initialize model
-            tts = TTS(model_name=params["voice_model"])
+            tts = TTS(model_name = params["voice_model"])
 
             # Synthesize with emotion and speed control
             tts.tts_to_file(
-                text=params["text"],
-                file_path=params["output_path"],
-                speaker_wav=params.get("speaker_wav"),
-                language=params.get("language", "en"),
-                emotion=params.get("emotion", "neutral"),
-                speed=params.get("speed", 1.0),
-            )
+                text = params["text"],
+                    file_path = params["output_path"],
+                    speaker_wav = params.get("speaker_wav"),
+                    language = params.get("language", "en"),
+                    emotion = params.get("emotion", "neutral"),
+                    speed = params.get("speed", 1.0),
+                    )
 
             return {
                 "success": True,
-                "duration": len(params["text"]) * 0.08,  # Estimate
+                    "duration": len(params["text"]) * 0.08,  # Estimate
                 "quality": "hollywood_level",
-            }
+                    }
 
         except ImportError:
             # Fallback simulation
-            Path(params["output_path"]).parent.mkdir(parents=True, exist_ok=True)
+            Path(params["output_path"]).parent.mkdir(parents = True, exist_ok = True)
             Path(params["output_path"]).touch()
 
             return {
                 "success": True,
-                "duration": len(params["text"]) * 0.08,
-                "quality": "simulated",
-            }
+                    "duration": len(params["text"]) * 0.08,
+                    "quality": "simulated",
+                    }
         except Exception as e:
             raise Exception(f"TTS synthesis failed: {e}")
 
+
     def _enhance_audio_quality(self, audio_path: Path) -> Path:
-        """Enhance audio quality for Hollywood-level production"""
+        """Enhance audio quality for Hollywood - level production"""
         try:
             enhanced_path = audio_path.with_suffix(".enhanced.wav")
 
             # Audio enhancement pipeline (would use actual audio processing)
             enhancement_params = {
                 "noise_reduction": True,
-                "eq_boost": {"low": 1.1, "mid": 1.2, "high": 1.05},
-                "compression": {"ratio": 3.0, "threshold": -18},
-                "limiter": {"ceiling": -0.1, "release": 50},
-            }
+                    "eq_boost": {"low": 1.1, "mid": 1.2, "high": 1.05},
+                    "compression": {"ratio": 3.0, "threshold": -18},
+                    "limiter": {"ceiling": -0.1, "release": 50},
+                    }
 
             # Simulate enhancement
             if audio_path.exists():
@@ -1357,7 +1402,7 @@ print(f"Video rendered to: {{output_path}}")
                 enhanced_path.touch()
 
             self.logger.info(
-                f"Audio enhanced with Hollywood-level processing: {enhanced_path}"
+                f"Audio enhanced with Hollywood - level processing: {enhanced_path}"
             )
             return enhanced_path
 
@@ -1365,25 +1410,29 @@ print(f"Video rendered to: {{output_path}}")
             self.logger.error(f"Audio enhancement failed: {e}")
             return audio_path
 
+
     def _get_audio_duration(self, audio_path: str) -> float:
         """Get audio file duration (placeholder)"""
         # Would use librosa or similar library
         return 10.0  # Placeholder
 
+
     def _add_glow_effect(self, img: Image.Image) -> Image.Image:
         """Add glow effect to image"""
         # Create glow effect using Pillow
-        glow = img.filter(ImageFilter.GaussianBlur(radius=10))
+        glow = img.filter(ImageFilter.GaussianBlur(radius = 10))
         return Image.blend(img, glow, 0.3)
+
 
     def _add_drop_shadow(self, img: Image.Image) -> Image.Image:
         """Add drop shadow to image"""
         # Create shadow effect
         shadow = Image.new("RGBA", (img.width + 10, img.height + 10), (0, 0, 0, 0))
         shadow.paste((0, 0, 0, 128), (5, 5, img.width + 5, img.height + 5))
-        shadow = shadow.filter(ImageFilter.GaussianBlur(radius=3))
+        shadow = shadow.filter(ImageFilter.GaussianBlur(radius = 3))
         shadow.paste(img, (0, 0), img)
         return shadow
+
 
     def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute content creation task"""
@@ -1392,11 +1441,11 @@ print(f"Video rendered to: {{output_path}}")
         if task_type == "create_video":
             project = self.create_video_content(
                 task_data["title"],
-                task_data["script_prompt"],
-                task_data["voice_profile"],
-                task_data["avatar_profile"],
-                task_data.get("template_type", "educational"),
-            )
+                    task_data["script_prompt"],
+                    task_data["voice_profile"],
+                    task_data["avatar_profile"],
+                    task_data.get("template_type", "educational"),
+                    )
             return {"success": True, "project": asdict(project)}
 
         elif task_type == "generate_script":
@@ -1408,10 +1457,10 @@ print(f"Video rendered to: {{output_path}}")
         elif task_type == "synthesize_voice":
             result = self.synthesize_voice_with_coqui_tts(
                 task_data["text"],
-                task_data["voice_profile"],
-                task_data.get("emotion", "neutral"),
-                task_data.get("speed", 1.0),
-            )
+                    task_data["voice_profile"],
+                    task_data.get("emotion", "neutral"),
+                    task_data.get("speed", 1.0),
+                    )
             return result
 
         elif task_type == "create_avatar":
@@ -1433,17 +1482,17 @@ print(f"Video rendered to: {{output_path}}")
         elif task_type == "create_talking_avatar":
             result = self.create_talking_avatar_with_linly_talker(
                 task_data["avatar_profile"],
-                task_data["audio_file"],
-                task_data.get("emotion", "neutral"),
-            )
+                    task_data["audio_file"],
+                    task_data.get("emotion", "neutral"),
+                    )
             return result
 
         elif task_type == "davinci_resolve_edit":
             result = self.create_davinci_resolve_project(
                 task_data["project_name"],
-                task_data["assets"],
-                task_data.get("edit_style", "professional"),
-            )
+                    task_data["assets"],
+                    task_data.get("edit_style", "professional"),
+                    )
             return result
 
         elif task_type == "spechelo_voice":
@@ -1460,13 +1509,14 @@ print(f"Video rendered to: {{output_path}}")
 
         return {"success": False, "error": f"Unknown task type: {task_type}"}
 
+
     def _combine_animations(self, animated_files: List[str]) -> str:
         """Combine multiple animation files into one"""
         try:
             combined_path = os.path.join(
                 self.content_dirs["avatars"],
-                f"combined_animations_{int(time.time())}.fbx",
-            )
+                    f"combined_animations_{int(time.time())}.fbx",
+                    )
 
             # Blender script to combine animations
             combine_script = f"""
@@ -1475,13 +1525,13 @@ import os
 
 # Clear existing objects
 bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False)
+bpy.ops.object.delete(use_global = False)
 
 # Import and combine animations
 animation_files = {animated_files}
 for i, anim_file in enumerate(animation_files):
-    bpy.ops.import_scene.fbx(filepath=anim_file)
-    
+    bpy.ops.import_scene.fbx(filepath = anim_file)
+
     # Rename animation actions
     for action in bpy.data.actions:
         if not action.name.startswith('combined_'):
@@ -1495,14 +1545,14 @@ print(f'Combined animations saved to: {combined_path}')
             result = subprocess.run(
                 [
                     self.blender_config["executable"],
-                    "--background",
-                    "--python-expr",
-                    combine_script,
-                ],
-                capture_output=True,
-                text=True,
-                timeout=300,
-            )
+                        "--background",
+                        "--python - expr",
+                        combine_script,
+                        ],
+                    capture_output = True,
+                    text = True,
+                    timeout = 300,
+                    )
 
             if result.returncode == 0 and os.path.exists(combined_path):
                 return combined_path
@@ -1514,6 +1564,7 @@ print(f'Combined animations saved to: {combined_path}')
             self.logger.error(f"Animation combination failed: {e}")
             return animated_files[0] if animated_files else ""
 
+
     def _apply_humor_style_to_text(self, text: str) -> str:
         """Apply Right Perspective humor style to text"""
         try:
@@ -1521,15 +1572,15 @@ print(f'Combined animations saved to: {combined_path}')
             humor_styles = {
                 "right_perspective": {
                     "tone": "satirical",
-                    "perspective": "conservative_libertarian",
-                    "humor_elements": [
+                        "perspective": "conservative_libertarian",
+                        "humor_elements": [
                         "irony",
-                        "observational_comedy",
-                        "political_satire",
-                        "cultural_commentary",
-                    ],
-                    "delivery_style": "deadpan_serious",
-                }
+                            "observational_comedy",
+                            "political_satire",
+                            "cultural_commentary",
+                            ],
+                        "delivery_style": "deadpan_serious",
+                        }
             }
 
             style = humor_styles["right_perspective"]
@@ -1566,45 +1617,47 @@ print(f'Combined animations saved to: {combined_path}')
             self.logger.error(f"Humor style application failed: {e}")
             return text
 
+
     def _get_avatar_profile(self, avatar_profile_id: str) -> Optional[Dict[str, Any]]:
         """Get avatar profile from database"""
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
                 "SELECT * FROM avatar_profiles WHERE avatar_id = ?",
-                (avatar_profile_id,),
-            )
+                    (avatar_profile_id,),
+                    )
 
             row = cursor.fetchone()
             if row:
                 return {
                     "avatar_id": row[0],
-                    "name": row[1],
-                    "gender": row[2],
-                    "age": row[3],
-                    "ethnicity": row[4],
-                    "style": row[5],
-                    "clothing": row[6],
-                    "accessories": json.loads(row[7]) if row[7] else [],
-                    "blend_file_path": row[8],
-                    "created_at": row[9],
-                }
+                        "name": row[1],
+                        "gender": row[2],
+                        "age": row[3],
+                        "ethnicity": row[4],
+                        "style": row[5],
+                        "clothing": row[6],
+                        "accessories": json.loads(row[7]) if row[7] else [],
+                        "blend_file_path": row[8],
+                        "created_at": row[9],
+                        }
             return None
 
         except Exception as e:
             self.logger.error(f"Failed to get avatar profile: {e}")
             return None
 
+
     def create_talking_avatar_with_linly_talker(
         self, avatar_profile_id: str, audio_file: str, emotion: str = "neutral"
     ) -> Dict[str, Any]:
-        """Create talking avatar using Linly-Talker enhanced pipeline"""
+        """Create talking avatar using Linly - Talker enhanced pipeline"""
         try:
             avatar_profile = self._get_avatar_profile(avatar_profile_id)
             if not avatar_profile:
                 return {"success": False, "error": "Avatar profile not found"}
 
-            # Linly-Talker processing
+            # Linly - Talker processing
             linly_script = f"""
 import sys
 sys.path.append('{self.linly_talker_path}')
@@ -1612,10 +1665,10 @@ sys.path.append('{self.linly_talker_path}')
 from linly_talker import LinlyTalker
 import torch
 
-# Initialize Linly-Talker model
+# Initialize Linly - Talker model
 talker = LinlyTalker(
     model_path='{self.linly_talker_path}/models',
-    device='cuda' if torch.cuda.is_available() else 'cpu'
+        device='cuda' if torch.cuda.is_available() else 'cpu'
 )
 
 # Load avatar image
@@ -1624,32 +1677,32 @@ audio_path = '{audio_file}'
 
 # Generate talking avatar video
 result = talker.generate_talking_video(
-    avatar_image=avatar_image,
-    audio_path=audio_path,
-    emotion='{emotion}',
-    output_path='{self.content_dirs['video']}/talking_avatar_{avatar_profile_id}.mp4'
+    avatar_image = avatar_image,
+        audio_path = audio_path,
+        emotion='{emotion}',
+        output_path='{self.content_dirs['video']}/talking_avatar_{avatar_profile_id}.mp4'
 )
 
 print(f"Talking avatar generated: {{result['output_path']}}")
 """
 
-            # Execute Linly-Talker script
+            # Execute Linly - Talker script
             result = subprocess.run(
                 ["python", "-c", linly_script],
-                capture_output=True,
-                text=True,
-                timeout=600,
-            )
+                    capture_output = True,
+                    text = True,
+                    timeout = 600,
+                    )
 
             if result.returncode == 0:
                 output_path = f"{self.content_dirs['video']}/talking_avatar_{avatar_profile_id}.mp4"
                 return {
                     "success": True,
-                    "talking_avatar_video": output_path,
-                    "avatar_profile": avatar_profile["name"],
-                    "emotion": emotion,
-                    "audio_duration": self._get_audio_duration(audio_file),
-                }
+                        "talking_avatar_video": output_path,
+                        "avatar_profile": avatar_profile["name"],
+                        "emotion": emotion,
+                        "audio_duration": self._get_audio_duration(audio_file),
+                        }
             else:
                 # Fallback to Talking Heads model
                 return self._create_talking_avatar_fallback(
@@ -1657,8 +1710,9 @@ print(f"Talking avatar generated: {{result['output_path']}}")
                 )
 
         except Exception as e:
-            self.logger.error(f"Linly-Talker avatar creation failed: {e}")
+            self.logger.error(f"Linly - Talker avatar creation failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     def _create_talking_avatar_fallback(
         self, avatar_profile_id: str, audio_file: str, emotion: str
@@ -1682,9 +1736,9 @@ audio_path = '{audio_file}'
 
 # Generate talking head video
 video_frames = model.generate_frames(
-    avatar_image=avatar_profile['blend_file_path'],
-    audio_path=audio_path,
-    emotion='{emotion}'
+    avatar_image = avatar_profile['blend_file_path'],
+        audio_path = audio_path,
+        emotion='{emotion}'
 )
 
 # Save video
@@ -1701,10 +1755,10 @@ print(f"Talking head video saved: {{output_path}}")
 
             result = subprocess.run(
                 ["python", "-c", talking_heads_script],
-                capture_output=True,
-                text=True,
-                timeout=600,
-            )
+                    capture_output = True,
+                    text = True,
+                    timeout = 600,
+                    )
 
             if result.returncode == 0:
                 output_path = (
@@ -1712,28 +1766,29 @@ print(f"Talking head video saved: {{output_path}}")
                 )
                 return {
                     "success": True,
-                    "talking_avatar_video": output_path,
-                    "method": "talking_heads_fallback",
-                    "emotion": emotion,
-                }
+                        "talking_avatar_video": output_path,
+                        "method": "talking_heads_fallback",
+                        "emotion": emotion,
+                        }
             else:
                 raise Exception(f"Talking Heads fallback failed: {result.stderr}")
 
         except Exception as e:
             return {"success": False, "error": f"Fallback method failed: {str(e)}"}
 
+
     def create_davinci_resolve_project(
         self,
-        project_name: str,
-        assets: Dict[str, Any],
-        edit_style: str = "professional",
-    ) -> Dict[str, Any]:
-        """Create DaVinci Resolve Pro project with Hollywood-level editing"""
+            project_name: str,
+            assets: Dict[str, Any],
+            edit_style: str = "professional",
+            ) -> Dict[str, Any]:
+        """Create DaVinci Resolve Pro project with Hollywood - level editing"""
         try:
             # DaVinci Resolve Python API script
             resolve_script = f"""
 import sys
-sys.path.append('/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/Libraries/Fusion/fusionscript.so')
+sys.path.append('/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / Libraries / Fusion / fusionscript.so')
 
 import DaVinciResolveScript as dvr_script
 resolve = dvr_script.scriptapp('Resolve')
@@ -1744,85 +1799,85 @@ project = project_manager.CreateProject('{project_name}')
 
 if project:
     print(f"Created project: {project_name}")
-    
+
     # Get media pool and timeline
     media_pool = project.GetMediaPool()
     timeline = media_pool.CreateEmptyTimeline('{project_name}_Timeline')
-    
+
     # Import assets
     assets_data = {assets}
-    
+
     # Import video assets
     if 'video_files' in assets_data:
         for video_file in assets_data['video_files']:
             media_pool.ImportMedia([video_file])
-    
+
     # Import audio assets
     if 'audio_files' in assets_data:
         for audio_file in assets_data['audio_files']:
             media_pool.ImportMedia([audio_file])
-    
+
     # Import image assets
     if 'image_files' in assets_data:
         for image_file in assets_data['image_files']:
             media_pool.ImportMedia([image_file])
-    
+
     # Apply edit style
     edit_config = {self._get_davinci_edit_style(edit_style)}
-    
+
     # Set timeline settings
     timeline_settings = {{
         'timelineResolutionWidth': edit_config.get('resolution_width', 1920),
-        'timelineResolutionHeight': edit_config.get('resolution_height', 1080),
-        'timelineFrameRate': edit_config.get('frame_rate', 30)
+            'timelineResolutionHeight': edit_config.get('resolution_height', 1080),
+            'timelineFrameRate': edit_config.get('frame_rate', 30)
     }}
-    
+
     timeline.SetSetting(timeline_settings)
-    
+
     # Add clips to timeline
     media_pool_items = media_pool.GetRootFolder().GetClipList()
-    
+
     for i, clip in enumerate(media_pool_items):
         timeline.InsertClip(clip, i + 1, 0)  # Track 1, frame position
-    
-    # Apply color grading (Hollywood-level)
+
+    # Apply color grading (Hollywood - level)
     if edit_config.get('color_grading'):
         color_settings = edit_config['color_grading']
-        
+
         # Switch to Color page
         resolve.OpenPage('color')
-        
+
         # Apply LUTs and color corrections
         for setting_name, setting_value in color_settings.items():
             # This would apply specific color grading settings
             pass
-    
+
     # Apply audio mixing
     if edit_config.get('audio_mixing'):
         resolve.OpenPage('fairlight')
         # Apply audio enhancements
-    
+
     # Export settings
     export_settings = {{
         'TargetDir': '{self.davinci_project_dir}/exports',
-        'CustomName': f'{project_name}_final',
-        'ExportVideo': True,
-        'ExportAudio': True,
-        'FormatWidth': edit_config.get('export_width', 1920),
-        'FormatHeight': edit_config.get('export_height', 1080),
-        'FrameRate': edit_config.get('export_fps', 30)
+            'CustomName': f'{project_name}_final',
+            'ExportVideo': True,
+            'ExportAudio': True,
+            'FormatWidth': edit_config.get('export_width', 1920),
+            'FormatHeight': edit_config.get('export_height', 1080),
+            'FrameRate': edit_config.get('export_fps', 30)
     }}
-    
+
     # Start render
     project.SetRenderSettings(export_settings)
     project.AddRenderJob()
     project.StartRendering()
-    
+
     print(f"Render started for project: {project_name}")
-    
+
     # Save project
     project_manager.SaveProject()
-    
+
 else:
     print(f"Failed to create project: {project_name}")
     sys.exit(1)
@@ -1830,7 +1885,7 @@ else:
 
             # Write script to file
             script_path = Path(self.davinci_scripts_dir) / f"project_{project_name}.py"
-            script_path.parent.mkdir(parents=True, exist_ok=True)
+            script_path.parent.mkdir(parents = True, exist_ok = True)
 
             with open(script_path, "w") as f:
                 f.write(resolve_script)
@@ -1838,10 +1893,10 @@ else:
             # Execute DaVinci Resolve script
             result = subprocess.run(
                 [self.davinci_resolve_path, "-script", str(script_path)],
-                capture_output=True,
-                text=True,
-                timeout=1800,
-            )  # 30 minutes timeout
+                    capture_output = True,
+                    text = True,
+                    timeout = 1800,
+                    )  # 30 minutes timeout
 
             if result.returncode == 0:
                 export_path = (
@@ -1849,12 +1904,12 @@ else:
                 )
                 return {
                     "success": True,
-                    "project_name": project_name,
-                    "export_path": export_path,
-                    "edit_style": edit_style,
-                    "timeline_created": True,
-                    "render_started": True,
-                }
+                        "project_name": project_name,
+                        "export_path": export_path,
+                        "edit_style": edit_style,
+                        "timeline_created": True,
+                        "render_started": True,
+                        }
             else:
                 raise Exception(f"DaVinci Resolve execution failed: {result.stderr}")
 
@@ -1862,72 +1917,74 @@ else:
             self.logger.error(f"DaVinci Resolve project creation failed: {e}")
             return {"success": False, "error": str(e)}
 
+
     def _get_davinci_edit_style(self, style: str) -> Dict[str, Any]:
         """Get DaVinci Resolve editing style configuration"""
         styles = {
             "professional": {
                 "resolution_width": 1920,
-                "resolution_height": 1080,
-                "frame_rate": 30,
-                "color_grading": {
+                    "resolution_height": 1080,
+                    "frame_rate": 30,
+                    "color_grading": {
                     "contrast": 1.2,
-                    "saturation": 1.1,
-                    "highlights": -0.2,
-                    "shadows": 0.1,
-                    "lut": "Rec709_to_sRGB",
-                },
-                "audio_mixing": {
+                        "saturation": 1.1,
+                        "highlights": -0.2,
+                        "shadows": 0.1,
+                        "lut": "Rec709_to_sRGB",
+                        },
+                    "audio_mixing": {
                     "normalize": True,
-                    "noise_reduction": True,
-                    "eq_preset": "voice_enhance",
-                },
-                "export_width": 1920,
-                "export_height": 1080,
-                "export_fps": 30,
-            },
-            "cinematic": {
+                        "noise_reduction": True,
+                        "eq_preset": "voice_enhance",
+                        },
+                    "export_width": 1920,
+                    "export_height": 1080,
+                    "export_fps": 30,
+                    },
+                "cinematic": {
                 "resolution_width": 3840,
-                "resolution_height": 2160,
-                "frame_rate": 24,
-                "color_grading": {
+                    "resolution_height": 2160,
+                    "frame_rate": 24,
+                    "color_grading": {
                     "contrast": 1.4,
-                    "saturation": 0.9,
-                    "highlights": -0.3,
-                    "shadows": 0.2,
-                    "lut": "Alexa_LogC_to_Rec709",
-                },
-                "audio_mixing": {
+                        "saturation": 0.9,
+                        "highlights": -0.3,
+                        "shadows": 0.2,
+                        "lut": "Alexa_LogC_to_Rec709",
+                        },
+                    "audio_mixing": {
                     "normalize": True,
-                    "surround_sound": True,
-                    "dynamic_range": "wide",
-                },
-                "export_width": 3840,
-                "export_height": 2160,
-                "export_fps": 24,
-            },
-            "social_media": {
+                        "surround_sound": True,
+                        "dynamic_range": "wide",
+                        },
+                    "export_width": 3840,
+                    "export_height": 2160,
+                    "export_fps": 24,
+                    },
+                "social_media": {
                 "resolution_width": 1080,
-                "resolution_height": 1920,
-                "frame_rate": 30,
-                "color_grading": {
+                    "resolution_height": 1920,
+                    "frame_rate": 30,
+                    "color_grading": {
                     "contrast": 1.3,
-                    "saturation": 1.3,
-                    "highlights": -0.1,
-                    "shadows": 0.05,
-                    "lut": "Instagram_Style",
-                },
-                "audio_mixing": {
+                        "saturation": 1.3,
+                        "highlights": -0.1,
+                        "shadows": 0.05,
+                        "lut": "Instagram_Style",
+                        },
+                    "audio_mixing": {
                     "normalize": True,
-                    "loudness_target": -16,
-                    "eq_preset": "mobile_optimized",
-                },
-                "export_width": 1080,
-                "export_height": 1920,
-                "export_fps": 30,
-            },
-        }
+                        "loudness_target": -16,
+                        "eq_preset": "mobile_optimized",
+                        },
+                    "export_width": 1080,
+                    "export_height": 1920,
+                    "export_fps": 30,
+                    },
+                }
 
         return styles.get(style, styles["professional"])
+
 
     def create_spechelo_voice_synthesis(
         self, text: str, voice_config: Dict[str, Any]
@@ -1948,12 +2005,12 @@ else:
             # Spechelo API call (simulated)
             synthesis_params = {
                 "text": styled_text,
-                "voice": voice_name,
-                "speed": voice_config.get("speed", 1.0),
-                "pitch": voice_config.get("pitch", 0),
-                "emphasis": voice_config.get("emphasis", "normal"),
-                "effects": voice_config.get("effects", []),
-            }
+                    "voice": voice_name,
+                    "speed": voice_config.get("speed", 1.0),
+                    "pitch": voice_config.get("pitch", 0),
+                    "emphasis": voice_config.get("emphasis", "normal"),
+                    "effects": voice_config.get("effects", []),
+                    }
 
             # Generate audio file
             audio_filename = f"spechelo_{voice_name}_{hashlib.md5(styled_text.encode()).hexdigest()[:8]}.mp3"
@@ -1964,24 +2021,26 @@ else:
 
             return {
                 "success": True,
-                "audio_file": str(output_path),
-                "voice_name": voice_name,
-                "voice_settings": voice_settings,
-                "duration": len(styled_text) * 0.08,
-                "quality": "spechelo_premium",
-            }
+                    "audio_file": str(output_path),
+                    "voice_name": voice_name,
+                    "voice_settings": voice_settings,
+                    "duration": len(styled_text) * 0.08,
+                    "quality": "spechelo_premium",
+                    }
 
         except Exception as e:
             self.logger.error(f"Spechelo voice synthesis failed: {e}")
             return {"success": False, "error": str(e)}
 
+
     def _simulate_spechelo_synthesis(self, params: Dict[str, Any], output_path: Path):
         """Simulate Spechelo voice synthesis"""
         # Create placeholder audio file
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.parent.mkdir(parents = True, exist_ok = True)
         output_path.touch()
 
         self.logger.info(f"Simulated Spechelo synthesis: {output_path}")
+
 
     def create_thumbnail_with_blaster_suite(
         self, thumbnail_config: Dict[str, Any]
@@ -2002,11 +2061,11 @@ else:
             # Enhanced thumbnail creation with Blaster Suite styling
             enhanced_params = {
                 **thumbnail_config,
-                "background_gradient": style_config.get("background_gradient"),
-                "text_effects": style_config.get("text_effects"),
-                "overlay_elements": style_config.get("overlay_elements"),
-                "color_scheme": style_config.get("color_scheme"),
-            }
+                    "background_gradient": style_config.get("background_gradient"),
+                    "text_effects": style_config.get("text_effects"),
+                    "overlay_elements": style_config.get("overlay_elements"),
+                    "color_scheme": style_config.get("color_scheme"),
+                    }
 
             # Create thumbnail using enhanced parameters
             result = self._create_thumbnail_with_inkscape(enhanced_params)
@@ -2019,16 +2078,17 @@ else:
 
                 return {
                     "success": True,
-                    "thumbnail_file": enhanced_thumbnail,
-                    "style_applied": style_name,
-                    "blaster_suite_enhanced": True,
-                }
+                        "thumbnail_file": enhanced_thumbnail,
+                        "style_applied": style_name,
+                        "blaster_suite_enhanced": True,
+                        }
             else:
                 return result
 
         except Exception as e:
             self.logger.error(f"Thumbnail Blaster creation failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     def _apply_blaster_suite_enhancements(
         self, thumbnail_path: str, style_config: Dict[str, Any]
@@ -2050,13 +2110,14 @@ else:
 
                 # Save enhanced thumbnail
                 enhanced_path = thumbnail_path.replace(".png", "_enhanced.png")
-                img.save(enhanced_path, "PNG", quality=95)
+                img.save(enhanced_path, "PNG", quality = 95)
 
                 return enhanced_path
 
         except Exception as e:
             self.logger.error(f"Blaster Suite enhancement failed: {e}")
             return thumbnail_path
+
 
     def _add_3d_effect(self, img: Image.Image) -> Image.Image:
         """Add 3D effect to image"""
@@ -2065,7 +2126,7 @@ else:
 
         # Create depth map
         depth = img.convert("L")
-        depth = depth.filter(ImageFilter.GaussianBlur(radius=2))
+        depth = depth.filter(ImageFilter.GaussianBlur(radius = 2))
 
         # Apply 3D transformation
         width, height = img.size
@@ -2080,6 +2141,7 @@ else:
             result.paste(layer, (offset, offset), layer)
 
         return result
+
 
     def _apply_premium_filters(
         self, img: Image.Image, filters: List[str]
@@ -2106,11 +2168,10 @@ else:
 
             elif filter_name == "soft_glow":
                 # Apply soft glow
-                glow = result.filter(ImageFilter.GaussianBlur(radius=15))
+                glow = result.filter(ImageFilter.GaussianBlur(radius = 15))
                 result = Image.blend(result, glow, 0.2)
 
         return result
-
 
 if __name__ == "__main__":
     # Test the Content Agent
@@ -2119,26 +2180,26 @@ if __name__ == "__main__":
     # Create voice profile
     voice_profile = content_agent.create_voice_profile(
         "Professional Male",
-        "xtts-v2",
-        "en",
-        "male",
-        "30-40",
-        "professional",
-        "Hello, this is a test of the voice synthesis system.",
-        "models/voice/professional_male.wav",
-    )
+            "xtts - v2",
+            "en",
+            "male",
+            "30 - 40",
+            "professional",
+            "Hello, this is a test of the voice synthesis system.",
+            "models / voice / professional_male.wav",
+            )
     print(f"Created voice profile: {voice_profile.name}")
 
     # Create avatar profile
     avatar_profile = content_agent.create_avatar_profile(
         "Business Professional",
-        "male",
-        35,
-        "caucasian",
-        "realistic",
-        "business_suit",
-        ["glasses", "watch"],
-    )
+            "male",
+            35,
+            "caucasian",
+            "realistic",
+            "business_suit",
+            ["glasses", "watch"],
+            )
     print(f"Created avatar profile: {avatar_profile.name}")
 
     # Generate script
@@ -2150,11 +2211,11 @@ if __name__ == "__main__":
     # Create video project
     video_project = content_agent.create_video_content(
         "AI Content Creation Tutorial",
-        "Create a comprehensive guide on using AI for content creation",
-        voice_profile.profile_id,
-        avatar_profile.avatar_id,
-        "educational",
-    )
+            "Create a comprehensive guide on using AI for content creation",
+            voice_profile.profile_id,
+            avatar_profile.avatar_id,
+            "educational",
+            )
     print(f"Created video project: {video_project.title}")
 
     # Start content generation

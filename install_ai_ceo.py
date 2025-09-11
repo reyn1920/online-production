@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 AI CEO Automation System - Automated Installation Script
 
@@ -33,9 +33,9 @@ from typing import Dict, List, Optional, Tuple
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("ai_ceo_installation.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("ai_ceo_installation.log"), logging.StreamHandler()],
 )
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,7 @@ logger = logging.getLogger(__name__)
 
 class AICEOInstaller:
     """Automated installer for the AI CEO Automation System."""
+
 
     def __init__(self, quick_install: bool = False, dev_mode: bool = False):
         self.quick_install = quick_install
@@ -55,15 +56,17 @@ class AICEOInstaller:
         logger.info("🚀 AI CEO Automation System Installer")
         logger.info("=" * 60)
 
+
     def _get_system_info(self) -> Dict[str, str]:
         """Get system information."""
         return {
             "platform": platform.system(),
-            "platform_version": platform.version(),
-            "architecture": platform.machine(),
-            "python_version": platform.python_version(),
-            "python_executable": sys.executable,
-        }
+                "platform_version": platform.version(),
+                "architecture": platform.machine(),
+                "python_version": platform.python_version(),
+                "python_executable": sys.executable,
+                }
+
 
     def install(self) -> bool:
         """Run the complete installation process."""
@@ -71,14 +74,14 @@ class AICEOInstaller:
 
         installation_steps = [
             ("System Requirements Check", self._check_system_requirements),
-            ("Python Environment Setup", self._setup_python_environment),
-            ("Dependency Installation", self._install_dependencies),
-            ("Configuration Setup", self._setup_configuration),
-            ("Database Initialization", self._initialize_database),
-            ("File Permissions", self._set_file_permissions),
-            ("Installation Validation", self._validate_installation),
-            ("Post-Installation Setup", self._post_installation_setup),
-        ]
+                ("Python Environment Setup", self._setup_python_environment),
+                ("Dependency Installation", self._install_dependencies),
+                ("Configuration Setup", self._setup_configuration),
+                ("Database Initialization", self._initialize_database),
+                ("File Permissions", self._set_file_permissions),
+                ("Installation Validation", self._validate_installation),
+                ("Post - Installation Setup", self._post_installation_setup),
+                ]
 
         success = True
 
@@ -90,7 +93,7 @@ class AICEOInstaller:
                     success = False
                     if not self.quick_install:
                         user_input = input(
-                            f"Continue with installation? (y/n): "
+                            f"Continue with installation? (y / n): "
                         ).lower()
                         if user_input != "y":
                             break
@@ -106,17 +109,18 @@ class AICEOInstaller:
 
         return success and len(self.errors) == 0
 
+
     def _check_system_requirements(self) -> bool:
         """Check system requirements."""
         logger.info("🔍 Checking system requirements...")
 
         checks = [
             self._check_python_version,
-            self._check_available_memory,
-            self._check_disk_space,
-            self._check_network_connectivity,
-            self._check_required_commands,
-        ]
+                self._check_available_memory,
+                self._check_disk_space,
+                self._check_network_connectivity,
+                self._check_required_commands,
+                ]
 
         all_passed = True
         for check in checks:
@@ -134,6 +138,7 @@ class AICEOInstaller:
 
         return all_passed or self.quick_install
 
+
     def _check_python_version(self) -> bool:
         """Check Python version."""
         version = sys.version_info
@@ -147,6 +152,7 @@ class AICEOInstaller:
             f"✅ Python version: {version.major}.{version.minor}.{version.micro}"
         )
         return True
+
 
     def _check_available_memory(self) -> bool:
         """Check available system memory."""
@@ -167,6 +173,7 @@ class AICEOInstaller:
         except ImportError:
             logger.warning("⚠️ psutil not available, skipping memory check")
             return True
+
 
     def _check_disk_space(self) -> bool:
         """Check available disk space."""
@@ -189,15 +196,17 @@ class AICEOInstaller:
             logger.warning(f"⚠️ Could not check disk space: {e}")
             return True
 
+
     def _check_network_connectivity(self) -> bool:
         """Check network connectivity."""
         try:
-            urllib.request.urlopen("https://pypi.org", timeout=10)
+            urllib.request.urlopen("https://pypi.org", timeout = 10)
             logger.info("✅ Network connectivity available")
             return True
         except Exception:
             logger.warning("⚠️ Limited network connectivity (offline installation)")
             return True  # Allow offline installation
+
 
     def _check_required_commands(self) -> bool:
         """Check for required system commands."""
@@ -218,6 +227,7 @@ class AICEOInstaller:
 
         return all_found
 
+
     def _setup_python_environment(self) -> bool:
         """Setup Python environment."""
         logger.info("🐍 Setting up Python environment...")
@@ -233,12 +243,12 @@ class AICEOInstaller:
                 logger.info("💡 Recommendation: Create a virtual environment:")
                 logger.info("   python -m venv ai_ceo_env")
                 logger.info(
-                    "   source ai_ceo_env/bin/activate  # On Windows: ai_ceo_env\\Scripts\\activate"
+                    "   source ai_ceo_env / bin / activate  # On Windows: ai_ceo_env\\Scripts\\activate"
                 )
 
                 if not self.quick_install:
                     user_input = input(
-                        "Continue without virtual environment? (y/n): "
+                        "Continue without virtual environment? (y / n): "
                     ).lower()
                     if user_input != "y":
                         return False
@@ -247,9 +257,9 @@ class AICEOInstaller:
             logger.info("📦 Upgrading pip...")
             result = subprocess.run(
                 [sys.executable, "-m", "pip", "install", "--upgrade", "pip"],
-                capture_output=True,
-                text=True,
-            )
+                    capture_output = True,
+                    text = True,
+                    )
 
             if result.returncode != 0:
                 logger.warning(f"⚠️ Pip upgrade failed: {result.stderr}")
@@ -261,6 +271,7 @@ class AICEOInstaller:
         except Exception as e:
             logger.error(f"❌ Python environment setup failed: {e}")
             return False
+
 
     def _install_dependencies(self) -> bool:
         """Install Python dependencies."""
@@ -278,21 +289,21 @@ class AICEOInstaller:
 
             install_cmd = [
                 sys.executable,
-                "-m",
-                "pip",
-                "install",
-                "-r",
-                str(requirements_file),
-            ]
+                    "-m",
+                    "pip",
+                    "install",
+                    "-r",
+                    str(requirements_file),
+                    ]
 
             if self.quick_install:
-                install_cmd.extend(["--quiet", "--no-warn-script-location"])
+                install_cmd.extend(["--quiet", "--no - warn - script - location"])
 
             result = subprocess.run(
                 install_cmd,
-                capture_output=True,
-                text=True,
-                timeout=600,  # 10 minute timeout
+                    capture_output = True,
+                    text = True,
+                    timeout = 600,  # 10 minute timeout
             )
 
             if result.returncode != 0:
@@ -305,17 +316,17 @@ class AICEOInstaller:
             if self.dev_mode:
                 logger.info("🔧 Installing development dependencies...")
                 dev_packages = [
-                    "pytest>=7.4.0",
-                    "black>=23.7.0",
-                    "flake8>=6.0.0",
-                    "mypy>=1.5.0",
-                ]
+                    "pytest >= 7.4.0",
+                        "black >= 23.7.0",
+                        "flake8 >= 6.0.0",
+                        "mypy >= 1.5.0",
+                        ]
 
                 for package in dev_packages:
                     subprocess.run(
                         [sys.executable, "-m", "pip", "install", package],
-                        capture_output=True,
-                    )
+                            capture_output = True,
+                            )
 
             return True
 
@@ -325,6 +336,7 @@ class AICEOInstaller:
         except Exception as e:
             logger.error(f"❌ Dependency installation failed: {e}")
             return False
+
 
     def _setup_configuration(self) -> bool:
         """Setup configuration files."""
@@ -353,19 +365,19 @@ class AICEOInstaller:
             if not config_file.exists():
                 config_content = self._generate_default_config()
                 with open(config_file, "w") as f:
-                    json.dump(config_content, f, indent=2)
+                    json.dump(config_content, f, indent = 2)
                 logger.info("✅ Created ai_ceo_config.json")
             else:
                 logger.info("✅ ai_ceo_config.json already exists")
 
             # Create logs directory
             logs_dir = self.installation_path / "logs"
-            logs_dir.mkdir(exist_ok=True)
+            logs_dir.mkdir(exist_ok = True)
             logger.info("✅ Created logs directory")
 
             # Create data directory
             data_dir = self.installation_path / "data"
-            data_dir.mkdir(exist_ok=True)
+            data_dir.mkdir(exist_ok = True)
             logger.info("✅ Created data directory")
 
             return True
@@ -374,174 +386,177 @@ class AICEOInstaller:
             logger.error(f"❌ Configuration setup failed: {e}")
             return False
 
+
     def _generate_default_env_content(self) -> str:
         """Generate default .env file content."""
         return """# AI CEO Automation System Configuration
 # Copy this file to .env and fill in your actual values
 
 # API Keys (Required)
-OPENAI_API_KEY=your_openai_api_key_here
-YOUTUBE_API_KEY=your_youtube_api_key_here
-GMAIL_API_CREDENTIALS=path/to/gmail_credentials.json
-STRIPE_API_KEY=your_stripe_api_key_here
-TWITTER_API_KEY=your_twitter_api_key_here
-TWITTER_API_SECRET=your_twitter_api_secret_here
-TWITTER_ACCESS_TOKEN=your_twitter_access_token_here
-TWITTER_ACCESS_TOKEN_SECRET=your_twitter_access_token_secret_here
+OPENAI_API_KEY = your_openai_api_key_here
+YOUTUBE_API_KEY = your_youtube_api_key_here
+GMAIL_API_CREDENTIALS = path / to / gmail_credentials.json
+STRIPE_API_KEY = your_stripe_api_key_here
+TWITTER_API_KEY = your_twitter_api_key_here
+TWITTER_API_SECRET = your_twitter_api_secret_here
+TWITTER_ACCESS_TOKEN = your_twitter_access_token_here
+TWITTER_ACCESS_TOKEN_SECRET = your_twitter_access_token_secret_here
 
 # Database Configuration
-DATABASE_URL=sqlite:///ai_ceo_system.db
+DATABASE_URL = sqlite:///ai_ceo_system.db
 
 # System Configuration
-SYSTEM_MODE=production
-LOG_LEVEL=INFO
-AUTO_RESTART=true
-HEALTH_CHECK_INTERVAL=30
-MAX_RESTART_ATTEMPTS=3
+SYSTEM_MODE = production
+LOG_LEVEL = INFO
+AUTO_RESTART = true
+HEALTH_CHECK_INTERVAL = 30
+MAX_RESTART_ATTEMPTS = 3
 
 # Business Configuration
-COMPANY_NAME=Your Company Name
-BUSINESS_OBJECTIVES=revenue_growth,market_expansion,cost_optimization
-TARGET_REVENUE=10000
-CONTENT_SCHEDULE=daily
-MONETIZATION_FOCUS=high
+COMPANY_NAME = Your Company Name
+BUSINESS_OBJECTIVES = revenue_growth,market_expansion,cost_optimization
+TARGET_REVENUE = 10000
+CONTENT_SCHEDULE = daily
+MONETIZATION_FOCUS = high
 
 # Dashboard Configuration
-DASHBOARD_PORT=5000
-DASHBOARD_HOST=0.0.0.0
-DASHBOARD_DEBUG=false
+DASHBOARD_PORT = 5000
+DASHBOARD_HOST = 0.0.0.0
+DASHBOARD_DEBUG = false
 
 # Security Configuration
-SECRET_KEY=your_secret_key_here_change_this_in_production
-ENCRYPTION_KEY=your_encryption_key_here
+SECRET_KEY = your_secret_key_here_change_this_in_production
+ENCRYPTION_KEY = your_encryption_key_here
 
 # Optional API Keys
-INSTAGRAM_API_KEY=your_instagram_api_key_here
-LINKEDIN_API_KEY=your_linkedin_api_key_here
-PAYPAL_CLIENT_ID=your_paypal_client_id_here
-PAYPAL_CLIENT_SECRET=your_paypal_client_secret_here
+INSTAGRAM_API_KEY = your_instagram_api_key_here
+LINKEDIN_API_KEY = your_linkedin_api_key_here
+PAYPAL_CLIENT_ID = your_paypal_client_id_here
+PAYPAL_CLIENT_SECRET = your_paypal_client_secret_here
 
 # Performance Configuration
-MAX_WORKERS=4
-CACHE_TIMEOUT=3600
-API_RATE_LIMIT=100
-BATCH_SIZE=50
+MAX_WORKERS = 4
+CACHE_TIMEOUT = 3600
+API_RATE_LIMIT = 100
+BATCH_SIZE = 50
 """
+
 
     def _generate_default_config(self) -> Dict:
         """Generate default AI CEO configuration."""
         return {
             "system": {
                 "startup_timeout": 300,
-                "health_check_interval": 30,
-                "auto_restart": True,
-                "max_restart_attempts": 3,
-                "log_level": "INFO",
-                "performance_monitoring": True,
-            },
-            "components": {
+                    "health_check_interval": 30,
+                    "auto_restart": True,
+                    "max_restart_attempts": 3,
+                    "log_level": "INFO",
+                    "performance_monitoring": True,
+                    },
+                "components": {
                 "decision_engine": {
                     "enabled": True,
-                    "startup_delay": 0,
-                    "analysis_interval": 300,
-                    "decision_threshold": 0.7,
-                },
-                "pipeline": {
+                        "startup_delay": 0,
+                        "analysis_interval": 300,
+                        "decision_threshold": 0.7,
+                        },
+                    "pipeline": {
                     "enabled": True,
-                    "startup_delay": 5,
-                    "batch_size": 50,
-                    "processing_interval": 60,
-                },
-                "healing_protocols": {
+                        "startup_delay": 5,
+                        "batch_size": 50,
+                        "processing_interval": 60,
+                        },
+                    "healing_protocols": {
                     "enabled": True,
-                    "startup_delay": 10,
-                    "check_interval": 30,
-                    "auto_recovery": True,
-                },
-                "master_controller": {
+                        "startup_delay": 10,
+                        "check_interval": 30,
+                        "auto_recovery": True,
+                        },
+                    "master_controller": {
                     "enabled": True,
-                    "startup_delay": 15,
-                    "coordination_interval": 120,
-                    "strategy_update_interval": 3600,
-                },
-                "monitoring_dashboard": {
+                        "startup_delay": 15,
+                        "coordination_interval": 120,
+                        "strategy_update_interval": 3600,
+                        },
+                    "monitoring_dashboard": {
                     "enabled": True,
-                    "startup_delay": 20,
-                    "port": 5000,
-                    "host": "0.0.0.0",
-                    "refresh_rate": 5,
-                },
-            },
-            "agents": {
+                        "startup_delay": 20,
+                        "port": 5000,
+                        "host": "0.0.0.0",
+                        "refresh_rate": 5,
+                        },
+                    },
+                "agents": {
                 "marketing_agent": {
                     "enabled": True,
-                    "priority": "high",
-                    "execution_interval": 1800,
-                },
-                "financial_agent": {
+                        "priority": "high",
+                        "execution_interval": 1800,
+                        },
+                    "financial_agent": {
                     "enabled": True,
-                    "priority": "high",
-                    "execution_interval": 3600,
-                },
-                "monetization_agent": {
+                        "priority": "high",
+                        "execution_interval": 3600,
+                        },
+                    "monetization_agent": {
                     "enabled": True,
-                    "priority": "high",
-                    "execution_interval": 900,
-                },
-                "content_generation_agent": {
+                        "priority": "high",
+                        "execution_interval": 900,
+                        },
+                    "content_generation_agent": {
                     "enabled": True,
-                    "priority": "medium",
-                    "execution_interval": 7200,
-                },
-                "stealth_automation_agent": {
+                        "priority": "medium",
+                        "execution_interval": 7200,
+                        },
+                    "stealth_automation_agent": {
                     "enabled": True,
-                    "priority": "low",
-                    "execution_interval": 300,
-                },
-            },
-            "apis": {
+                        "priority": "low",
+                        "execution_interval": 300,
+                        },
+                    },
+                "apis": {
                 "youtube_api": {"enabled": True, "rate_limit": 100, "timeout": 30},
-                "gmail_api": {"enabled": True, "rate_limit": 50, "timeout": 30},
-                "social_media_apis": {
+                    "gmail_api": {"enabled": True, "rate_limit": 50, "timeout": 30},
+                    "social_media_apis": {
                     "enabled": True,
-                    "rate_limit": 200,
-                    "timeout": 30,
-                },
-                "payment_apis": {"enabled": True, "rate_limit": 10, "timeout": 60},
-            },
-            "business": {
+                        "rate_limit": 200,
+                        "timeout": 30,
+                        },
+                    "payment_apis": {"enabled": True, "rate_limit": 10, "timeout": 60},
+                    },
+                "business": {
                 "revenue_targets": {
                     "daily": 100,
-                    "weekly": 700,
-                    "monthly": 3000,
-                    "yearly": 36000,
-                },
-                "optimization_focus": [
+                        "weekly": 700,
+                        "monthly": 3000,
+                        "yearly": 36000,
+                        },
+                    "optimization_focus": [
                     "revenue_growth",
-                    "cost_reduction",
-                    "market_expansion",
-                    "customer_retention",
-                ],
-                "content_strategy": {
+                        "cost_reduction",
+                        "market_expansion",
+                        "customer_retention",
+                        ],
+                    "content_strategy": {
                     "posting_frequency": "daily",
-                    "content_types": ["blog", "social", "email", "video"],
-                    "seo_optimization": True,
-                    "engagement_tracking": True,
-                },
-            },
-            "monitoring": {
+                        "content_types": ["blog", "social", "email", "video"],
+                        "seo_optimization": True,
+                        "engagement_tracking": True,
+                        },
+                    },
+                "monitoring": {
                 "enable_real_time_alerts": True,
-                "enable_performance_tracking": True,
-                "enable_business_metrics": True,
-                "dashboard_refresh_rate": 5,
-                "alert_thresholds": {
+                    "enable_performance_tracking": True,
+                    "enable_business_metrics": True,
+                    "dashboard_refresh_rate": 5,
+                    "alert_thresholds": {
                     "error_rate": 0.05,
-                    "response_time": 5.0,
-                    "memory_usage": 0.8,
-                    "disk_usage": 0.9,
-                },
-            },
-        }
+                        "response_time": 5.0,
+                        "memory_usage": 0.8,
+                        "disk_usage": 0.9,
+                        },
+                    },
+                }
+
 
     def _initialize_database(self) -> bool:
         """Initialize the database."""
@@ -561,42 +576,42 @@ BATCH_SIZE=50
                 """
                 CREATE TABLE IF NOT EXISTS system_status (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    component TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    details TEXT
+                        component TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        details TEXT
                 )
                 """,
-                """
+                    """
                 CREATE TABLE IF NOT EXISTS business_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    metric_name TEXT NOT NULL,
-                    metric_value REAL NOT NULL,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    category TEXT
+                        metric_name TEXT NOT NULL,
+                        metric_value REAL NOT NULL,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        category TEXT
                 )
                 """,
-                """
+                    """
                 CREATE TABLE IF NOT EXISTS agent_activities (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    agent_name TEXT NOT NULL,
-                    activity TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    result TEXT
+                        agent_name TEXT NOT NULL,
+                        activity TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        result TEXT
                 )
                 """,
-                """
+                    """
                 CREATE TABLE IF NOT EXISTS decisions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    decision_type TEXT NOT NULL,
-                    decision_data TEXT NOT NULL,
-                    confidence REAL NOT NULL,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    outcome TEXT
+                        decision_type TEXT NOT NULL,
+                        decision_data TEXT NOT NULL,
+                        confidence REAL NOT NULL,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        outcome TEXT
                 )
                 """,
-            ]
+                    ]
 
             for table_sql in tables:
                 cursor.execute(table_sql)
@@ -610,6 +625,7 @@ BATCH_SIZE=50
         except Exception as e:
             logger.error(f"❌ Database initialization failed: {e}")
             return False
+
 
     def _set_file_permissions(self) -> bool:
         """Set appropriate file permissions."""
@@ -638,7 +654,8 @@ BATCH_SIZE=50
 
         except Exception as e:
             logger.warning(f"⚠️ Could not set file permissions: {e}")
-            return True  # Non-critical error
+            return True  # Non - critical error
+
 
     def _validate_installation(self) -> bool:
         """Validate the installation."""
@@ -648,15 +665,15 @@ BATCH_SIZE=50
             # Check required files
             required_files = [
                 "start_ai_ceo.py",
-                "ai_ceo_master_controller.py",
-                "full_automation_pipeline.py",
-                "autonomous_decision_engine.py",
-                "self_healing_protocols.py",
-                "monitoring_dashboard.py",
-                "requirements.txt",
-                ".env",
-                "ai_ceo_config.json",
-            ]
+                    "ai_ceo_master_controller.py",
+                    "full_automation_pipeline.py",
+                    "autonomous_decision_engine.py",
+                    "self_healing_protocols.py",
+                    "monitoring_dashboard.py",
+                    "requirements.txt",
+                    ".env",
+                    "ai_ceo_config.json",
+                    ]
 
             missing_files = []
             for file_name in required_files:
@@ -705,9 +722,10 @@ BATCH_SIZE=50
             logger.error(f"❌ Installation validation failed: {e}")
             return False
 
+
     def _post_installation_setup(self) -> bool:
-        """Post-installation setup and instructions."""
-        logger.info("📋 Post-installation setup...")
+        """Post - installation setup and instructions."""
+        logger.info("📋 Post - installation setup...")
 
         try:
             # Create quick start script
@@ -719,8 +737,9 @@ BATCH_SIZE=50
             return True
 
         except Exception as e:
-            logger.error(f"❌ Post-installation setup failed: {e}")
+            logger.error(f"❌ Post - installation setup failed: {e}")
             return False
+
 
     def _create_quick_start_script(self):
         """Create a quick start script."""
@@ -733,7 +752,7 @@ pause
 """
         else:
             script_name = "quick_start.sh"
-            script_content = """#!/bin/bash
+            script_content = """#!/bin / bash
 echo "Starting AI CEO Automation System..."
 python start_ai_ceo.py
 """
@@ -746,6 +765,7 @@ python start_ai_ceo.py
             script_path.chmod(0o755)
 
         logger.info(f"✅ Created quick start script: {script_name}")
+
 
     def _generate_installation_report(self):
         """Generate installation report."""
@@ -766,29 +786,29 @@ Installation Path: {self.installation_path}
 ## Next Steps
 
 1. **Configure API Keys:**
-   Edit the `.env` file and add your API keys:
+    Edit the `.env` file and add your API keys:
    ```
-   OPENAI_API_KEY=your_key_here
-   YOUTUBE_API_KEY=your_key_here
+   OPENAI_API_KEY = your_key_here
+   YOUTUBE_API_KEY = your_key_here
    # ... other keys
    ```
 
 2. **Start the System:**
-   ```bash
+    ```bash
    python start_ai_ceo.py
    ```
-   
+
    Or use the quick start script:
    ```bash
-   ./quick_start.sh  # Linux/Mac
+   ./quick_start.sh  # Linux / Mac
    quick_start.bat   # Windows
    ```
 
 3. **Access Dashboard:**
-   Open your browser to: http://localhost:5000
+    Open your browser to: http://localhost:5000
 
 4. **Read Documentation:**
-   See README_AI_CEO.md for detailed instructions
+    See README_AI_CEO.md for detailed instructions
 
 ## Support
 
@@ -813,11 +833,13 @@ If you encounter issues:
 
         logger.info(f"✅ Installation report saved: {report_path}")
 
+
     def _get_timestamp(self) -> str:
         """Get current timestamp."""
         from datetime import datetime
 
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 
     def _print_installation_summary(self, success: bool):
         """Print installation summary."""
@@ -860,13 +882,13 @@ def main():
         "--dev", action="store_true", help="Install development dependencies"
     )
     parser.add_argument(
-        "--check-only", action="store_true", help="Only check requirements"
+        "--check - only", action="store_true", help="Only check requirements"
     )
 
     args = parser.parse_args()
 
     try:
-        installer = AICEOInstaller(quick_install=args.quick, dev_mode=args.dev)
+        installer = AICEOInstaller(quick_install = args.quick, dev_mode = args.dev)
 
         if args.check_only:
             # Only run system checks
@@ -884,7 +906,6 @@ def main():
     except Exception as e:
         logger.error(f"\n❌ Installation failed with critical error: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

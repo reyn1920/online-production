@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Manifest Contract Test
 Verifies API endpoints conform to expected schemas and contracts.
@@ -14,19 +14,19 @@ import requests
 
 def validate_version_endpoint(base_url: str) -> bool:
     """
-    Validate /api/version endpoint contract.
+    Validate /api / version endpoint contract.
 
     Expected schema:
     {
         "service": str,
-        "version": str,
-        "commit": str,
-        "build_time": str,
-        "python_version": str
+            "version": str,
+            "commit": str,
+            "build_time": str,
+            "python_version": str
     }
     """
     try:
-        response = requests.get(f"{base_url}/api/version", timeout=5)
+        response = requests.get(f"{base_url}/api / version", timeout = 5)
 
         if response.status_code != 200:
             print(f"❌ Version endpoint returned {response.status_code}")
@@ -36,11 +36,11 @@ def validate_version_endpoint(base_url: str) -> bool:
 
         required_fields = [
             "service",
-            "version",
-            "commit",
-            "build_time",
-            "python_version",
-        ]
+                "version",
+                "commit",
+                "build_time",
+                "python_version",
+                ]
         for field in required_fields:
             if field not in data:
                 print(f"❌ Version endpoint missing field: {field}")
@@ -61,21 +61,21 @@ def validate_version_endpoint(base_url: str) -> bool:
 
 def validate_metrics_schema(base_url: str) -> bool:
     """
-    Validate /api/metrics endpoint schema.
+    Validate /api / metrics endpoint schema.
 
-    Expected top-level structure:
+    Expected top - level structure:
     {
         "system": {...},
-        "database": {...},
-        "backup": {...},
-        "version": {...},
-        "agents": [...],
-        "errors": {...},
-        "timestamp": float
+            "database": {...},
+            "backup": {...},
+            "version": {...},
+            "agents": [...],
+            "errors": {...},
+            "timestamp": float
     }
     """
     try:
-        response = requests.get(f"{base_url}/api/metrics", timeout=10)
+        response = requests.get(f"{base_url}/api / metrics", timeout = 10)
 
         if response.status_code != 200:
             print(f"❌ Metrics endpoint returned {response.status_code}")
@@ -83,7 +83,7 @@ def validate_metrics_schema(base_url: str) -> bool:
 
         data = response.json()
 
-        # Validate top-level structure
+        # Validate top - level structure
         required_sections = ["system", "database", "version", "timestamp"]
         for section in required_sections:
             if section not in data:
@@ -127,10 +127,10 @@ def validate_metrics_schema(base_url: str) -> bool:
 
 def validate_dashboard_schema(base_url: str) -> bool:
     """
-    Validate /api/dashboard endpoint schema.
+    Validate /api / dashboard endpoint schema.
     """
     try:
-        response = requests.get(f"{base_url}/api/dashboard", timeout=10)
+        response = requests.get(f"{base_url}/api / dashboard", timeout = 10)
 
         if response.status_code != 200:
             print(f"❌ Dashboard endpoint returned {response.status_code}")
@@ -160,23 +160,23 @@ def validate_dashboard_schema(base_url: str) -> bool:
 
 def validate_readiness_endpoint(base_url: str) -> bool:
     """
-    Validate readiness/health endpoint.
+    Validate readiness / health endpoint.
     """
     try:
         # Try common health check endpoints
-        endpoints = ["/health", "/ready", "/api/health", "/api/ready"]
+        endpoints = ["/health", "/ready", "/api / health", "/api / ready"]
 
         for endpoint in endpoints:
             try:
-                response = requests.get(f"{base_url}{endpoint}", timeout=5)
+                response = requests.get(f"{base_url}{endpoint}", timeout = 5)
                 if response.status_code == 200:
                     print(f"✅ Readiness endpoint {endpoint} available")
                     return True
-            except:
+            except Exception:
                 continue
 
         # If no dedicated health endpoint, check if main service responds
-        response = requests.get(f"{base_url}/api/version", timeout=5)
+        response = requests.get(f"{base_url}/api / version", timeout = 5)
         if response.status_code == 200:
             print(f"✅ Service readiness confirmed via version endpoint")
             return True
@@ -204,10 +204,10 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
 
     tests = [
         ("Version Endpoint", lambda: validate_version_endpoint(base_url)),
-        ("Metrics Schema", lambda: validate_metrics_schema(base_url)),
-        ("Dashboard Schema", lambda: validate_dashboard_schema(base_url)),
-        ("Readiness Check", lambda: validate_readiness_endpoint(base_url)),
-    ]
+            ("Metrics Schema", lambda: validate_metrics_schema(base_url)),
+            ("Dashboard Schema", lambda: validate_dashboard_schema(base_url)),
+            ("Readiness Check", lambda: validate_readiness_endpoint(base_url)),
+            ]
 
     results = []
     for test_name, test_func in tests:
@@ -235,7 +235,6 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
     else:
         print(f"💥 {total - passed} manifest contract tests failed")
         return False
-
 
 if __name__ == "__main__":
     base_url = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8083"

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Metadata extraction utilities for TRAE.AI System
 """
@@ -25,20 +25,20 @@ def extract_bundle_metadata(bundle_path: str) -> Dict[str, Any]:
     if not bundle_dir.exists():
         return {
             "name": bundle_dir.name,
-            "path": str(bundle_path),
-            "exists": False,
-            "error": "Bundle directory not found",
-        }
+                "path": str(bundle_path),
+                "exists": False,
+                "error": "Bundle directory not found",
+                }
 
     metadata = {
         "name": bundle_dir.name,
-        "path": str(bundle_path),
-        "exists": True,
-        "created": datetime.now().isoformat(),
-        "files": [],
-        "size_bytes": 0,
-        "file_count": 0,
-    }
+            "path": str(bundle_path),
+            "exists": True,
+            "created": datetime.now().isoformat(),
+            "files": [],
+            "size_bytes": 0,
+            "file_count": 0,
+            }
 
     # Scan files in bundle
     try:
@@ -46,12 +46,12 @@ def extract_bundle_metadata(bundle_path: str) -> Dict[str, Any]:
             if file_path.is_file():
                 file_info = {
                     "name": file_path.name,
-                    "relative_path": str(file_path.relative_to(bundle_dir)),
-                    "size_bytes": file_path.stat().st_size,
-                    "modified": datetime.fromtimestamp(
+                        "relative_path": str(file_path.relative_to(bundle_dir)),
+                        "size_bytes": file_path.stat().st_size,
+                        "modified": datetime.fromtimestamp(
                         file_path.stat().st_mtime
                     ).isoformat(),
-                }
+                        }
                 metadata["files"].append(file_info)
                 metadata["size_bytes"] += file_info["size_bytes"]
 
@@ -86,10 +86,10 @@ def create_bundle_manifest(bundles: List[str], output_path: str) -> Dict[str, An
     """
     manifest = {
         "created": datetime.now().isoformat(),
-        "bundles": [],
-        "total_size_bytes": 0,
-        "total_files": 0,
-    }
+            "bundles": [],
+            "total_size_bytes": 0,
+            "total_files": 0,
+            }
 
     for bundle_path in bundles:
         bundle_metadata = extract_bundle_metadata(bundle_path)
@@ -102,7 +102,7 @@ def create_bundle_manifest(bundles: List[str], output_path: str) -> Dict[str, An
     # Write manifest to file
     try:
         with open(output_path, "w") as f:
-            json.dump(manifest, f, indent=2)
+            json.dump(manifest, f, indent = 2)
         manifest["manifest_path"] = output_path
     except Exception as e:
         manifest["write_error"] = str(e)

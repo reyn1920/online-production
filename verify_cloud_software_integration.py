@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Cloud Software Integration Verification
 
@@ -12,7 +12,7 @@ Requested Software:
 - Speechelo
 - Voice Generator
 - Background music
-- BONUS: Voiceover-Cash-Machine
+- BONUS: Voiceover - Cash - Machine
 - Training
 - Scriptelo
 - EXTRA SOFTWARE (additional integrations)
@@ -24,33 +24,32 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-
 def verify_database_integration() -> Dict[str, Any]:
     """Verify all cloud software is properly integrated in the database"""
 
     # Required software list from user request
     required_software = {
         "lingo_blaster": "Lingo Blaster",
-        "captionizer": "Captionizer",
-        "thumbnail_blaster": "Thumbnail Blaster",
-        "speechelo": "Speechelo",
-        "voice_generator": "Voice Generator",
-        "background_music": "Background music",
-        "voiceover_cash_machine": "BONUS: Voiceover-Cash-Machine",
-        "training": "Training",
-        "scriptelo": "Scriptelo",
-    }
+            "captionizer": "Captionizer",
+            "thumbnail_blaster": "Thumbnail Blaster",
+            "speechelo": "Speechelo",
+            "voice_generator": "Voice Generator",
+            "background_music": "Background music",
+            "voiceover_cash_machine": "BONUS: Voiceover - Cash - Machine",
+            "training": "Training",
+            "scriptelo": "Scriptelo",
+            }
 
     verification_results = {
         "timestamp": datetime.now().isoformat(),
-        "database_file": "right_perspective.db",
-        "total_required": len(required_software),
-        "found_software": [],
-        "missing_software": [],
-        "database_tables": [],
-        "integration_status": "UNKNOWN",
-        "details": {},
-    }
+            "database_file": "right_perspective.db",
+            "total_required": len(required_software),
+            "found_software": [],
+            "missing_software": [],
+            "database_tables": [],
+            "integration_status": "UNKNOWN",
+            "details": {},
+            }
 
     try:
         # Connect to database
@@ -66,7 +65,7 @@ def verify_database_integration() -> Dict[str, Any]:
         # Verify database tables exist
         cursor = conn.execute(
             """
-            SELECT name FROM sqlite_master 
+            SELECT name FROM sqlite_master
             WHERE type='table' AND name LIKE '%software%'
             ORDER BY name
         """
@@ -77,9 +76,9 @@ def verify_database_integration() -> Dict[str, Any]:
 
         expected_tables = [
             "cloud_software",
-            "software_usage_logs",
-            "software_integration_status",
-        ]
+                "software_usage_logs",
+                "software_integration_status",
+                ]
         missing_tables = [table for table in expected_tables if table not in tables]
 
         if missing_tables:
@@ -91,7 +90,7 @@ def verify_database_integration() -> Dict[str, Any]:
         cursor = conn.execute(
             """
             SELECT software_name, display_name, category, status, integration_type,
-                   authentication_method, capabilities, license_type, notes
+                authentication_method, capabilities, license_type, notes
             FROM cloud_software
             ORDER BY software_name
         """
@@ -162,7 +161,6 @@ def verify_database_integration() -> Dict[str, Any]:
 
     return verification_results
 
-
 def print_verification_report(results: Dict[str, Any]):
     """Print a formatted verification report"""
 
@@ -215,7 +213,7 @@ def print_verification_report(results: Dict[str, Any]):
                 try:
                     caps = json.loads(software["capabilities"])
                     print(f"      Capabilities: {', '.join(caps)}")
-                except:
+                except Exception:
                     print(f"      Capabilities: {software['capabilities']}")
             if software["notes"]:
                 print(f"      Notes: {software['notes']}")
@@ -243,7 +241,6 @@ def print_verification_report(results: Dict[str, Any]):
     print("VERIFICATION COMPLETE")
     print("=" * 80)
 
-
 def main():
     """Main verification function"""
     print("Starting Cloud Software Integration Verification...")
@@ -256,7 +253,7 @@ def main():
         f"integration_verification_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     )
     with open(report_file, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f, indent = 2)
 
     print(f"\nDetailed verification report saved to: {report_file}")
 
@@ -272,7 +269,6 @@ def main():
     else:
         print("\n❌ Cloud software integration verification FAILED")
         return 2
-
 
 if __name__ == "__main__":
     exit(main())

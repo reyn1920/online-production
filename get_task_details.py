@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Get complete details of the strategic project task.
 """
@@ -15,7 +15,7 @@ from backend.task_queue_manager import TaskQueueManager
 def main():
     print("🔍 Getting strategic project task details...")
 
-    strategic_task_id = "93f9a950-9cc7-4ee7-86af-4fe91cc12be0"
+    strategic_task_id = "93f9a950 - 9cc7 - 4ee7 - 86af - 4fe91cc12be0"
 
     try:
         task_manager = TaskQueueManager()
@@ -33,7 +33,7 @@ def main():
             if "payload" in task and task["payload"]:
                 print(f"\n📋 Task Payload:")
                 payload = task["payload"]
-                print(json.dumps(payload, indent=2))
+                print(json.dumps(payload, indent = 2))
             else:
                 print(f"\n❌ No payload found")
 
@@ -45,7 +45,6 @@ def main():
         return 1
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

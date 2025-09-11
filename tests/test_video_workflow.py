@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Test script for video creation workflow
 """
@@ -19,23 +19,29 @@ except ImportError:
     # Fallback to a basic content agent if bridge_to_system is not available
     print("Warning: Could not import DefaultContentAgent, using fallback")
 
+
     class ContentAgent:
+
+
         def __init__(self):
             self.tools_available = False
             self.supported_types = {"video_script": True}
 
+
         async def process_task(self, task):
             return {
                 "title": f"Sample Video: {task.get('topic', 'Unknown Topic')}",
-                "content": f"This is a sample script for {task.get('topic', 'the topic')}",
-                "status": "completed",
-            }
+                    "content": f"This is a sample script for {task.get('topic', 'the topic')}",
+                    "status": "completed",
+                    }
+
 
         def get_active_jobs(self):
             return []
 
-
 @pytest.mark.asyncio
+
+
 async def test_video_creation():
     """Test the complete video creation workflow"""
     print("Starting video creation workflow test...")
@@ -48,16 +54,16 @@ async def test_video_creation():
     print("\n=== Testing Video Script Creation ===")
     script_task = {
         "task_type": "create_content",
-        "content_type": "video_script",
-        "topic": "AI Technology Revolution",
-        "duration": 120,
-        "target_audience": "tech enthusiasts",
-    }
+            "content_type": "video_script",
+            "topic": "AI Technology Revolution",
+            "duration": 120,
+            "target_audience": "tech enthusiasts",
+            }
 
     try:
         script_result = await agent.process_task(script_task)
         print("Video script creation successful:")
-        print(f"Title: {script_result.get('title', 'N/A')}")
+        print(f"Title: {script_result.get('title', 'N / A')}")
         print(
             f"Content length: {len(str(script_result.get('content', '')))} characters"
         )
@@ -71,23 +77,23 @@ async def test_video_creation():
         print("\n=== Testing VidScriptPro Advanced Script ===")
         advanced_script_task = {
             "task_type": "create_content",
-            "content_type": "video_script_pro",
-            "topic": "Future of AI in Creative Industries",
-            "genre": "EDUCATIONAL",
-            "duration": 300,
-            "target_audience": "creative professionals",
-            "tone": "professional",
-        }
+                "content_type": "video_script_pro",
+                "topic": "Future of AI in Creative Industries",
+                "genre": "EDUCATIONAL",
+                "duration": 300,
+                "target_audience": "creative professionals",
+                "tone": "professional",
+                }
 
         try:
             advanced_result = await agent.process_task(advanced_script_task)
             print("Advanced video script creation successful:")
-            print(f"Title: {advanced_result.get('title', 'N/A')}")
-            print(f"Genre: {advanced_result.get('genre', 'N/A')}")
+            print(f"Title: {advanced_result.get('title', 'N / A')}")
+            print(f"Genre: {advanced_result.get('genre', 'N / A')}")
             print(
-                f"Estimated duration: {advanced_result.get('estimated_duration', 'N/A')} seconds"
+                f"Estimated duration: {advanced_result.get('estimated_duration', 'N / A')} seconds"
             )
-            print(f"Word count: {advanced_result.get('word_count', 'N/A')}")
+            print(f"Word count: {advanced_result.get('word_count', 'N / A')}")
         except Exception as e:
             print(f"Advanced video script creation failed: {e}")
 
@@ -98,7 +104,6 @@ async def test_video_creation():
 
     print("\n=== Video Creation Workflow Test Complete ===")
     return True
-
 
 if __name__ == "__main__":
     # Set environment variable if not already set

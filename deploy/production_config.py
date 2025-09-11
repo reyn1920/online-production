@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Production Deployment Configuration
 Handles environment setup, security, and deployment validation
@@ -12,8 +12,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-
 @dataclass
+
+
 class DeploymentConfig:
     """Configuration for production deployment"""
 
@@ -59,21 +60,23 @@ class DeploymentConfig:
 class ProductionValidator:
     """Validates production deployment requirements"""
 
+
     def __init__(self):
         self.errors: List[str] = []
         self.warnings: List[str] = []
         self.logger = logging.getLogger(__name__)
 
+
     def validate_environment_variables(self) -> bool:
         """Validate required environment variables are set"""
         required_vars = [
             "SECRET_KEY",
-            "DATABASE_URL",
-            "ALLOWED_HOSTS",
-            "STRIPE_SECRET_KEY",
-            "STRIPE_PUBLIC_KEY",
-            "STRIPE_WEBHOOK_SECRET",
-        ]
+                "DATABASE_URL",
+                "ALLOWED_HOSTS",
+                "STRIPE_SECRET_KEY",
+                "STRIPE_PUBLIC_KEY",
+                "STRIPE_WEBHOOK_SECRET",
+                ]
 
         missing_vars = []
         for var in required_vars:
@@ -87,6 +90,7 @@ class ProductionValidator:
             return False
 
         return True
+
 
     def validate_security_settings(self) -> bool:
         """Validate security configuration"""
@@ -107,10 +111,11 @@ class ProductionValidator:
         allowed_hosts = os.getenv("ALLOWED_HOSTS", "")
         if "localhost" in allowed_hosts or "127.0.0.1" in allowed_hosts:
             self.warnings.append(
-                "localhost/127.0.0.1 should not be in ALLOWED_HOSTS for production"
+                "localhost / 127.0.0.1 should not be in ALLOWED_HOSTS for production"
             )
 
         return valid
+
 
     def validate_payment_providers(self) -> bool:
         """Validate payment provider configurations"""
@@ -131,6 +136,7 @@ class ProductionValidator:
             valid = False
 
         return valid
+
 
     def validate_database_connection(self) -> bool:
         """Validate database connection"""
@@ -164,6 +170,7 @@ class ProductionValidator:
             self.errors.append(f"Database validation failed: {str(e)}")
             return False
 
+
     def validate_ssl_certificates(self) -> bool:
         """Validate SSL certificate configuration"""
         # This would typically check certificate files, expiration, etc.
@@ -177,84 +184,88 @@ class ProductionValidator:
 
         return True
 
+
     def run_all_validations(self) -> Dict[str, Any]:
         """Run all validation checks"""
         self.logger.info("Starting production deployment validation...")
 
         validations = {
             "environment_variables": self.validate_environment_variables(),
-            "security_settings": self.validate_security_settings(),
-            "payment_providers": self.validate_payment_providers(),
-            "database_connection": self.validate_database_connection(),
-            "ssl_certificates": self.validate_ssl_certificates(),
-        }
+                "security_settings": self.validate_security_settings(),
+                "payment_providers": self.validate_payment_providers(),
+                "database_connection": self.validate_database_connection(),
+                "ssl_certificates": self.validate_ssl_certificates(),
+                }
 
         all_passed = all(validations.values())
 
         return {
             "passed": all_passed,
-            "validations": validations,
-            "errors": self.errors,
-            "warnings": self.warnings,
-            "timestamp": datetime.utcnow().isoformat(),
-        }
+                "validations": validations,
+                "errors": self.errors,
+                "warnings": self.warnings,
+                "timestamp": datetime.utcnow().isoformat(),
+                }
 
 
 class DeploymentManager:
     """Manages production deployment process"""
 
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.validator = ProductionValidator()
 
+
     def load_config(self) -> DeploymentConfig:
         """Load deployment configuration from environment"""
         return DeploymentConfig(
-            environment=os.getenv("ENVIRONMENT", "production"),
-            debug=os.getenv("DEBUG", "false").lower() in ["true", "1", "yes"],
-            database_url=os.getenv("DATABASE_URL", ""),
-            secret_key=os.getenv("SECRET_KEY", ""),
-            allowed_hosts=os.getenv("ALLOWED_HOSTS", "").split(","),
-            cors_origins=os.getenv("CORS_ORIGINS", "").split(","),
-            # Payment providers
-            stripe_public_key=os.getenv("STRIPE_PUBLIC_KEY"),
-            stripe_secret_key=os.getenv("STRIPE_SECRET_KEY"),
-            stripe_webhook_secret=os.getenv("STRIPE_WEBHOOK_SECRET"),
-            paypal_client_id=os.getenv("PAYPAL_CLIENT_ID"),
-            paypal_client_secret=os.getenv("PAYPAL_CLIENT_SECRET"),
-            square_application_id=os.getenv("SQUARE_APPLICATION_ID"),
-            square_access_token=os.getenv("SQUARE_ACCESS_TOKEN"),
-            razorpay_key_id=os.getenv("RAZORPAY_KEY_ID"),
-            razorpay_key_secret=os.getenv("RAZORPAY_KEY_SECRET"),
-            # Security
-            jwt_secret_key=os.getenv("JWT_SECRET_KEY"),
-            encryption_key=os.getenv("ENCRYPTION_KEY"),
-            # Monitoring
-            log_level=os.getenv("LOG_LEVEL", "INFO"),
-            sentry_dsn=os.getenv("SENTRY_DSN"),
-            # Infrastructure
-            redis_url=os.getenv("REDIS_URL"),
-            # Email
-            smtp_host=os.getenv("SMTP_HOST"),
-            smtp_port=int(os.getenv("SMTP_PORT", "587")),
-            smtp_username=os.getenv("SMTP_USERNAME"),
-            smtp_password=os.getenv("SMTP_PASSWORD"),
-        )
+            environment = os.getenv("ENVIRONMENT", "production"),
+                debug = os.getenv("DEBUG", "false").lower() in ["true", "1", "yes"],
+                database_url = os.getenv("DATABASE_URL", ""),
+                secret_key = os.getenv("SECRET_KEY", ""),
+                allowed_hosts = os.getenv("ALLOWED_HOSTS", "").split(","),
+                cors_origins = os.getenv("CORS_ORIGINS", "").split(","),
+                # Payment providers
+            stripe_public_key = os.getenv("STRIPE_PUBLIC_KEY"),
+                stripe_secret_key = os.getenv("STRIPE_SECRET_KEY"),
+                stripe_webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET"),
+                paypal_client_id = os.getenv("PAYPAL_CLIENT_ID"),
+                paypal_client_secret = os.getenv("PAYPAL_CLIENT_SECRET"),
+                square_application_id = os.getenv("SQUARE_APPLICATION_ID"),
+                square_access_token = os.getenv("SQUARE_ACCESS_TOKEN"),
+                razorpay_key_id = os.getenv("RAZORPAY_KEY_ID"),
+                razorpay_key_secret = os.getenv("RAZORPAY_KEY_SECRET"),
+                # Security
+            jwt_secret_key = os.getenv("JWT_SECRET_KEY"),
+                encryption_key = os.getenv("ENCRYPTION_KEY"),
+                # Monitoring
+            log_level = os.getenv("LOG_LEVEL", "INFO"),
+                sentry_dsn = os.getenv("SENTRY_DSN"),
+                # Infrastructure
+            redis_url = os.getenv("REDIS_URL"),
+                # Email
+            smtp_host = os.getenv("SMTP_HOST"),
+                smtp_port = int(os.getenv("SMTP_PORT", "587")),
+                smtp_username = os.getenv("SMTP_USERNAME"),
+                smtp_password = os.getenv("SMTP_PASSWORD"),
+                )
+
 
     def setup_logging(self, config: DeploymentConfig):
         """Configure production logging"""
         logging.basicConfig(
-            level=getattr(logging, config.log_level.upper()),
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[
+            level = getattr(logging, config.log_level.upper()),
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                handlers=[
                 logging.StreamHandler(sys.stdout),
-                (
-                    logging.FileHandler("/var/log/revenue_systems.log")
-                    if os.path.exists("/var/log")
+                    (
+                    logging.FileHandler("/var / log / revenue_systems.log")
+                    if os.path.exists("/var / log")
                     else logging.StreamHandler()
                 ),
-            ],
-        )
+                    ],
+                )
 
         # Configure Sentry if available
         if config.sentry_dsn:
@@ -263,15 +274,16 @@ class DeploymentManager:
                 from sentry_sdk.integrations.flask import FlaskIntegration
 
                 sentry_sdk.init(
-                    dsn=config.sentry_dsn,
-                    integrations=[FlaskIntegration()],
-                    traces_sample_rate=0.1,
-                    environment=config.environment,
-                )
+                    dsn = config.sentry_dsn,
+                        integrations=[FlaskIntegration()],
+                        traces_sample_rate = 0.1,
+                        environment = config.environment,
+                        )
 
                 self.logger.info("Sentry monitoring initialized")
             except ImportError:
                 self.logger.warning("Sentry SDK not available, monitoring disabled")
+
 
     def initialize_database(self, config: DeploymentConfig):
         """Initialize production database"""
@@ -281,16 +293,16 @@ class DeploymentManager:
 
             from api_monetization import APIMonetization
             from payment_processor import PaymentProcessor
-            from revenue_streams_api import RevenueStreamsAPI
+                from revenue_streams_api import RevenueStreamsAPI
 
             # Initialize with production database
             db_path = config.database_url.replace("sqlite:///", "").replace(
                 "sqlite://", ""
             )
 
-            revenue_api = RevenueStreamsAPI(db_path=db_path)
-            api_mon = APIMonetization(db_path=db_path)
-            payment_proc = PaymentProcessor(db_path=db_path)
+            revenue_api = RevenueStreamsAPI(db_path = db_path)
+            api_mon = APIMonetization(db_path = db_path)
+            payment_proc = PaymentProcessor(db_path = db_path)
 
             self.logger.info("Production databases initialized successfully")
             return True
@@ -299,13 +311,14 @@ class DeploymentManager:
             self.logger.error(f"Database initialization failed: {str(e)}")
             return False
 
+
     def run_health_checks(self) -> Dict[str, Any]:
         """Run comprehensive health checks"""
         health_status = {
             "timestamp": datetime.utcnow().isoformat(),
-            "status": "healthy",
-            "checks": {},
-        }
+                "status": "healthy",
+                "checks": {},
+                }
 
         # Database connectivity
         try:
@@ -344,7 +357,7 @@ class DeploymentManager:
 
         # File system permissions
         try:
-            test_file = "/tmp/revenue_systems_test"
+            test_file = "/tmp / revenue_systems_test"
             with open(test_file, "w") as f:
                 f.write("test")
             os.remove(test_file)
@@ -354,6 +367,7 @@ class DeploymentManager:
             health_status["status"] = "unhealthy"
 
         return health_status
+
 
     def deploy(self) -> bool:
         """Execute full production deployment"""
@@ -401,46 +415,46 @@ def create_environment_template():
 # Copy this file to .env and fill in the actual values
 
 # Basic Configuration
-ENVIRONMENT=production
-DEBUG=false
-SECRET_KEY=your-super-secret-key-at-least-32-characters-long
-DATABASE_URL=sqlite:///production_revenue.db
+ENVIRONMENT = production
+DEBUG = false
+SECRET_KEY = your - super - secret - key - at - least - 32 - characters - long
+DATABASE_URL = sqlite:///production_revenue.db
 
 # Security
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
-JWT_SECRET_KEY=your-jwt-secret-key
-ENCRYPTION_KEY=your-encryption-key
+ALLOWED_HOSTS = yourdomain.com,www.yourdomain.com
+CORS_ORIGINS = https://yourdomain.com,https://www.yourdomain.com
+JWT_SECRET_KEY = your - jwt - secret - key
+ENCRYPTION_KEY = your - encryption - key
 
 # Stripe Configuration (REQUIRED)
-STRIPE_PUBLIC_KEY=pk_live_your_stripe_public_key
-STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+STRIPE_PUBLIC_KEY = pk_live_your_stripe_public_key
+STRIPE_SECRET_KEY = sk_live_your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET = whsec_your_webhook_secret
 
 # PayPal Configuration (Optional)
-PAYPAL_CLIENT_ID=your_paypal_client_id
-PAYPAL_CLIENT_SECRET=your_paypal_client_secret
+PAYPAL_CLIENT_ID = your_paypal_client_id
+PAYPAL_CLIENT_SECRET = your_paypal_client_secret
 
 # Square Configuration (Optional)
-SQUARE_APPLICATION_ID=your_square_app_id
-SQUARE_ACCESS_TOKEN=your_square_access_token
+SQUARE_APPLICATION_ID = your_square_app_id
+SQUARE_ACCESS_TOKEN = your_square_access_token
 
 # Razorpay Configuration (Optional)
-RAZORPAY_KEY_ID=your_razorpay_key_id
-RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+RAZORPAY_KEY_ID = your_razorpay_key_id
+RAZORPAY_KEY_SECRET = your_razorpay_key_secret
 
 # Monitoring (Optional)
-LOG_LEVEL=INFO
-SENTRY_DSN=your_sentry_dsn_url
+LOG_LEVEL = INFO
+SENTRY_DSN = your_sentry_dsn_url
 
 # Infrastructure (Optional)
-REDIS_URL=redis://localhost:6379/0
+REDIS_URL = redis://localhost:6379 / 0
 
 # Email Configuration (Optional)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
+SMTP_HOST = smtp.gmail.com
+SMTP_PORT = 587
+SMTP_USERNAME = your_email@gmail.com
+SMTP_PASSWORD = your_app_password
 """
 
     env_file = os.path.join(os.path.dirname(__file__), "..", ".env.production.template")
@@ -459,11 +473,11 @@ def main():
         description="Revenue Systems Production Deployment"
     )
     parser.add_argument(
-        "--validate-only", action="store_true", help="Only run validation checks"
+        "--validate - only", action="store_true", help="Only run validation checks"
     )
-    parser.add_argument("--health-check", action="store_true", help="Run health checks")
+    parser.add_argument("--health - check", action="store_true", help="Run health checks")
     parser.add_argument(
-        "--create-template", action="store_true", help="Create environment template"
+        "--create - template", action="store_true", help="Create environment template"
     )
     parser.add_argument("--deploy", action="store_true", help="Run full deployment")
 
@@ -477,12 +491,12 @@ def main():
 
     if args.validate_only:
         result = manager.validator.run_all_validations()
-        print(json.dumps(result, indent=2))
+        print(json.dumps(result, indent = 2))
         sys.exit(0 if result["passed"] else 1)
 
     if args.health_check:
         health = manager.run_health_checks()
-        print(json.dumps(health, indent=2))
+        print(json.dumps(health, indent = 2))
         sys.exit(0 if health["status"] in ["healthy", "degraded"] else 1)
 
     if args.deploy:
@@ -491,7 +505,6 @@ def main():
 
     # Default: show help
     parser.print_help()
-
 
 if __name__ == "__main__":
     main()

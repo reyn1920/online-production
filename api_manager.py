@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Manager - Central CLI for API Discovery and Management
 
@@ -24,12 +24,13 @@ try:
     from backend.services.web_search_service import WebSearchService
 except ImportError as e:
     print(f"Error importing services: {e}")
-    print("Make sure all service files are in backend/services/")
+    print("Make sure all service files are in backend / services/")
     sys.exit(1)
 
 
 class APIManager:
     """Central API management system."""
+
 
     def __init__(self):
         self.logger = self._setup_logging()
@@ -41,34 +42,36 @@ class APIManager:
         # Marketing channels we support
         self.supported_channels = [
             "youtube",
-            "tiktok",
-            "instagram",
-            "twitter",
-            "linkedin",
-            "pinterest",
-            "email",
-            "sms",
-            "whatsapp",
-            "telegram",
-            "discord",
-            "ai_content",
-            "analytics",
-            "payment",
-            "storage",
-            "auth",
-        ]
+                "tiktok",
+                "instagram",
+                "twitter",
+                "linkedin",
+                "pinterest",
+                "email",
+                "sms",
+                "whatsapp",
+                "telegram",
+                "discord",
+                "ai_content",
+                "analytics",
+                "payment",
+                "storage",
+                "auth",
+                ]
+
 
     def _setup_logging(self) -> logging.Logger:
         """Setup logging configuration."""
         logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[
+            level = logging.INFO,
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                handlers=[
                 logging.FileHandler("api_manager.log"),
-                logging.StreamHandler(sys.stdout),
-            ],
-        )
+                    logging.StreamHandler(sys.stdout),
+                    ],
+                )
         return logging.getLogger(__name__)
+
 
     def discover_channel_apis(
         self, channel: str, budget_limit: float = 25.0
@@ -78,8 +81,8 @@ class APIManager:
             if channel not in self.supported_channels:
                 return {
                     "success": False,
-                    "error": f'Unsupported channel: {channel}. Supported: {", ".join(self.supported_channels)}',
-                }
+                        "error": f'Unsupported channel: {channel}. Supported: {", ".join(self.supported_channels)}',
+                        }
 
             self.logger.info(f"🔍 Discovering APIs for channel: {channel}")
 
@@ -108,6 +111,7 @@ class APIManager:
         except Exception as e:
             self.logger.error(f"Error discovering APIs for {channel}: {e}")
             return {"success": False, "error": str(e)}
+
 
     def discover_all_channels(self, budget_limit: float = 25.0) -> Dict[str, Any]:
         """Discover APIs for all supported channels."""
@@ -139,12 +143,12 @@ class APIManager:
             # Generate final summary
             summary = {
                 "success": True,
-                "channels_processed": len(self.supported_channels),
-                "total_apis_discovered": total_apis,
-                "estimated_monthly_cost": total_cost,
-                "results_by_channel": results,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "channels_processed": len(self.supported_channels),
+                    "total_apis_discovered": total_apis,
+                    "estimated_monthly_cost": total_cost,
+                    "results_by_channel": results,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
             self.logger.info(
                 f"\n🎉 Discovery complete! Found {total_apis} APIs across {len(self.supported_channels)} channels"
@@ -156,6 +160,7 @@ class APIManager:
         except Exception as e:
             self.logger.error(f"Error in comprehensive discovery: {e}")
             return {"success": False, "error": str(e)}
+
 
     def get_stats(self) -> Dict[str, Any]:
         """Get comprehensive statistics about the API management system."""
@@ -172,13 +177,14 @@ class APIManager:
             self.logger.error(f"Error getting stats: {e}")
             return {"error": str(e)}
 
+
     def search_apis(self, query: str, channel: str = None) -> Dict[str, Any]:
         """Search for APIs using the web search service."""
         try:
             self.logger.info(f"🔎 Searching for APIs: {query}")
 
             if channel:
-                # Channel-specific search
+                # Channel - specific search
                 results = self.web_search.search_apis_by_channel(channel)
             else:
                 # General search - use trending discovery
@@ -186,15 +192,16 @@ class APIManager:
 
             return {
                 "success": True,
-                "query": query,
-                "channel": channel,
-                "results": results,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "query": query,
+                    "channel": channel,
+                    "results": results,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Error searching APIs: {e}")
             return {"success": False, "error": str(e)}
+
 
     def update_table(self) -> bool:
         """Update the API management table file."""
@@ -208,6 +215,7 @@ class APIManager:
             self.logger.error(f"Error updating table: {e}")
             return False
 
+
     def track_costs(self) -> Dict[str, Any]:
         """Get cost tracking information."""
         try:
@@ -216,22 +224,23 @@ class APIManager:
 
             cost_info = {
                 "total_monthly_cost": stats.get("total_monthly_cost", 0),
-                "free_apis": stats.get("by_status", {}).get("free", 0),
-                "freemium_apis": stats.get("by_status", {}).get("freemium", 0),
-                "paid_apis": stats.get("by_status", {}).get("paid", 0),
-                "budget_status": (
+                    "free_apis": stats.get("by_status", {}).get("free", 0),
+                    "freemium_apis": stats.get("by_status", {}).get("freemium", 0),
+                    "paid_apis": stats.get("by_status", {}).get("paid", 0),
+                    "budget_status": (
                     "within_budget"
                     if stats.get("total_monthly_cost", 0) <= 25.0
                     else "over_budget"
                 ),
-                "recommendations": self._get_cost_recommendations(stats),
-            }
+                    "recommendations": self._get_cost_recommendations(stats),
+                    }
 
             return cost_info
 
         except Exception as e:
             self.logger.error(f"Error tracking costs: {e}")
             return {"error": str(e)}
+
 
     def _get_cost_recommendations(self, stats: Dict[str, Any]) -> List[str]:
         """Get cost optimization recommendations."""
@@ -243,7 +252,7 @@ class APIManager:
         if total_cost > 25.0:
             recommendations.append("⚠️ Monthly cost exceeds $25 budget limit")
             recommendations.append(
-                "💡 Consider switching to free/freemium alternatives"
+                "💡 Consider switching to free / freemium alternatives"
             )
 
         if paid_apis > 0:
@@ -260,6 +269,7 @@ class APIManager:
         recommendations.append("🔄 Review and optimize API usage monthly")
 
         return recommendations
+
 
     def _print_discovery_summary(self, result: Dict[str, Any]):
         """Print a formatted summary of discovery results."""
@@ -284,6 +294,7 @@ class APIManager:
                     f"     {status_emoji} {api['name']} ({api['provider']}) - Score: {api['quality_score']:.2f}"
                 )
 
+
     def interactive_mode(self):
         """Run in interactive mode for easy API management."""
         print("\n🚀 API Manager - Interactive Mode")
@@ -292,7 +303,7 @@ class APIManager:
         while True:
             print("\nAvailable commands:")
             print("1. discover <channel> - Discover APIs for a specific channel")
-            print("2. discover-all - Discover APIs for all channels")
+            print("2. discover - all - Discover APIs for all channels")
             print("3. search <query> - Search for APIs")
             print("4. stats - Show system statistics")
             print("5. costs - Show cost tracking information")
@@ -313,7 +324,7 @@ class APIManager:
                     if not result.get("success"):
                         print(f"❌ Error: {result.get('error')}")
 
-                elif command == "discover-all":
+                elif command == "discover - all":
                     print("🚀 Starting comprehensive discovery...")
                     result = self.discover_all_channels()
                     if result.get("success"):
@@ -351,7 +362,7 @@ class APIManager:
                             f"   • Monthly Cost: ${stats.get('total_monthly_cost', 0):.2f}"
                         )
                         print(
-                            f"   • Auto-discovered: {stats.get('auto_discovered_count', 0)}"
+                            f"   • Auto - discovered: {stats.get('auto_discovered_count', 0)}"
                         )
                     else:
                         print(f"❌ Error: {stats.get('error')}")
@@ -403,44 +414,44 @@ def main():
     """Main CLI interface."""
     parser = argparse.ArgumentParser(
         description="API Manager - Discover and manage APIs for marketing channels",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+            formatter_class = argparse.RawDescriptionHelpFormatter,
+            epilog="""
 Examples:
   python api_manager.py discover youtube
-  python api_manager.py discover-all
+  python api_manager.py discover - all
   python api_manager.py search "email marketing APIs"
   python api_manager.py stats
   python api_manager.py interactive
         """,
-    )
+            )
 
     parser.add_argument(
         "command",
-        nargs="?",
-        choices=[
+            nargs="?",
+            choices=[
             "discover",
-            "discover-all",
-            "search",
-            "stats",
-            "costs",
-            "update",
-            "channels",
-            "interactive",
-        ],
-        help="Command to execute",
-    )
+                "discover - all",
+                "search",
+                "stats",
+                "costs",
+                "update",
+                "channels",
+                "interactive",
+                ],
+            help="Command to execute",
+            )
 
     parser.add_argument(
         "target",
-        nargs="?",
-        help="Target for the command (e.g., channel name, search query)",
-    )
+            nargs="?",
+            help="Target for the command (e.g., channel name, search query)",
+            )
     parser.add_argument(
         "--budget",
-        type=float,
-        default=25.0,
-        help="Budget limit for API costs (default: $25)",
-    )
+            type = float,
+            default = 25.0,
+            help="Budget limit for API costs (default: $25)",
+            )
     parser.add_argument(
         "--output", choices=["json", "text"], default="text", help="Output format"
     )
@@ -468,7 +479,7 @@ Examples:
                 return
             result = manager.discover_channel_apis(args.target, args.budget)
 
-        elif args.command == "discover-all":
+        elif args.command == "discover - all":
             result = manager.discover_all_channels(args.budget)
 
         elif args.command == "search":
@@ -490,13 +501,13 @@ Examples:
         elif args.command == "channels":
             result = {
                 "supported_channels": manager.supported_channels,
-                "count": len(manager.supported_channels),
-            }
+                    "count": len(manager.supported_channels),
+                    }
 
         # Output result
         if result:
             if args.output == "json":
-                print(json.dumps(result, indent=2, default=str))
+                print(json.dumps(result, indent = 2, default = str))
             else:
                 if result.get("success", True):
                     print("✅ Command completed successfully")
@@ -515,7 +526,6 @@ Examples:
             import traceback
 
             traceback.print_exc()
-
 
 if __name__ == "__main__":
     main()

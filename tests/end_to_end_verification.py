@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-TRAE.AI End-to-End Verification System
+TRAE.AI End - to - End Verification System
 Comprehensive testing suite for the autonomous content empire
 """
 
@@ -40,19 +40,19 @@ try:
     from backend.hollywood_creative_pipeline import HollywoodCreativePipeline
     from backend.marketing_monetization_engine import MarketingMonetizationEngine
     from backend.trae_ai_orchestrator import TraeAIOrchestrator
-    from backend.zero_cost_stack import ZeroCostStackManager
+        from backend.zero_cost_stack import ZeroCostStackManager
 except ImportError as e:
     print(f"Warning: Could not import TRAE.AI modules: {e}")
     print("Some tests may be skipped")
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("logs/e2e_verification.log"),
-        logging.StreamHandler(),
-    ],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+        logging.FileHandler("logs / e2e_verification.log"),
+            logging.StreamHandler(),
+            ],
 )
 logger = logging.getLogger(__name__)
 
@@ -83,8 +83,9 @@ class TestCategory(Enum):
     PERFORMANCE = "performance"
     END_TO_END = "end_to_end"
 
-
 @dataclass
+
+
 class TestResult:
     """Individual test result"""
 
@@ -97,8 +98,9 @@ class TestResult:
     timestamp: datetime
     error_trace: Optional[str] = None
 
-
 @dataclass
+
+
 class SystemHealthMetrics:
     """System health monitoring data"""
 
@@ -114,7 +116,8 @@ class SystemHealthMetrics:
 class TraeAIE2EVerification:
     """Main verification system for TRAE.AI"""
 
-    def __init__(self, config_path: str = "config/test_config.json"):
+
+    def __init__(self, config_path: str = "config / test_config.json"):
         self.config_path = config_path
         self.config = self._load_test_config()
         self.results: List[TestResult] = []
@@ -133,34 +136,35 @@ class TraeAIE2EVerification:
         self.diagnosis_repair = None
         self.zero_cost_stack = None
 
+
     def _load_test_config(self) -> Dict[str, Any]:
         """Load test configuration"""
         default_config = {
             "timeout": 300,
-            "retry_attempts": 3,
-            "parallel_tests": True,
-            "max_workers": 4,
-            "test_categories": {
+                "retry_attempts": 3,
+                "parallel_tests": True,
+                "max_workers": 4,
+                "test_categories": {
                 "system_health": True,
-                "orchestrator": True,
-                "creative_pipeline": True,
-                "marketing_engine": True,
-                "agentic_protocol": True,
-                "diagnosis_repair": True,
-                "zero_cost_stack": True,
-                "integration": True,
-                "security": True,
-                "performance": True,
-                "end_to_end": True,
-            },
-            "thresholds": {
+                    "orchestrator": True,
+                    "creative_pipeline": True,
+                    "marketing_engine": True,
+                    "agentic_protocol": True,
+                    "diagnosis_repair": True,
+                    "zero_cost_stack": True,
+                    "integration": True,
+                    "security": True,
+                    "performance": True,
+                    "end_to_end": True,
+                    },
+                "thresholds": {
                 "cpu_usage_max": 80.0,
-                "memory_usage_max": 85.0,
-                "disk_usage_max": 90.0,
-                "response_time_max": 5.0,
-                "success_rate_min": 95.0,
-            },
-        }
+                    "memory_usage_max": 85.0,
+                    "disk_usage_max": 90.0,
+                    "response_time_max": 5.0,
+                    "success_rate_min": 95.0,
+                    },
+                }
 
         try:
             with open(self.config_path, "r") as f:
@@ -174,24 +178,25 @@ class TraeAIE2EVerification:
             logger.warning(f"Config file {self.config_path} not found, using defaults")
             return default_config
 
+
     def _init_database(self):
         """Initialize test results database"""
-        os.makedirs("data", exist_ok=True)
-        self.db_path = "data/test_results.db"
+        os.makedirs("data", exist_ok = True)
+        self.db_path = "data / test_results.db"
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS test_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    test_name TEXT NOT NULL,
-                    category TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    duration REAL NOT NULL,
-                    message TEXT,
-                    details TEXT,
-                    timestamp TEXT NOT NULL,
-                    error_trace TEXT
+                        test_name TEXT NOT NULL,
+                        category TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        duration REAL NOT NULL,
+                        message TEXT,
+                        details TEXT,
+                        timestamp TEXT NOT NULL,
+                        error_trace TEXT
                 )
             """
             )
@@ -200,24 +205,25 @@ class TraeAIE2EVerification:
                 """
                 CREATE TABLE IF NOT EXISTS system_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    cpu_usage REAL,
-                    memory_usage REAL,
-                    disk_usage REAL,
-                    network_status BOOLEAN,
-                    database_status BOOLEAN,
-                    service_status TEXT,
-                    timestamp TEXT NOT NULL
+                        cpu_usage REAL,
+                        memory_usage REAL,
+                        disk_usage REAL,
+                        network_status BOOLEAN,
+                        database_status BOOLEAN,
+                        service_status TEXT,
+                        timestamp TEXT NOT NULL
                 )
             """
             )
 
+
     def _init_logging(self):
         """Initialize logging system"""
-        os.makedirs("logs", exist_ok=True)
+        os.makedirs("logs", exist_ok = True)
 
-        # Create test-specific logger
+        # Create test - specific logger
         self.test_logger = logging.getLogger("trae_ai_tests")
-        handler = logging.FileHandler("logs/test_execution.log")
+        handler = logging.FileHandler("logs / test_execution.log")
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
@@ -225,10 +231,11 @@ class TraeAIE2EVerification:
         self.test_logger.addHandler(handler)
         self.test_logger.setLevel(logging.DEBUG)
 
+
     def run_all_tests(self) -> Dict[str, Any]:
         """Execute all verification tests"""
         self.start_time = datetime.now()
-        logger.info("Starting TRAE.AI End-to-End Verification")
+        logger.info("Starting TRAE.AI End - to - End Verification")
 
         try:
             # System health checks
@@ -266,7 +273,7 @@ class TraeAIE2EVerification:
             if self.config["test_categories"]["performance"]:
                 self._run_performance_tests()
 
-            # End-to-end tests
+            # End - to - end tests
             if self.config["test_categories"]["end_to_end"]:
                 self._run_end_to_end_tests()
 
@@ -274,16 +281,17 @@ class TraeAIE2EVerification:
             logger.error(f"Critical error during test execution: {e}")
             self._add_result(
                 "critical_error",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.ERROR,
-                0.0,
-                f"Critical system error: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.ERROR,
+                    0.0,
+                    f"Critical system error: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
 
         self.end_time = datetime.now()
         return self._generate_summary()
+
 
     def _run_system_health_tests(self):
         """Run system health verification tests"""
@@ -292,7 +300,7 @@ class TraeAIE2EVerification:
         # CPU usage test
         start_time = time.time()
         try:
-            cpu_usage = psutil.cpu_percent(interval=1)
+            cpu_usage = psutil.cpu_percent(interval = 1)
             status = (
                 TestStatus.PASSED
                 if cpu_usage < self.config["thresholds"]["cpu_usage_max"]
@@ -302,25 +310,25 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "cpu_usage_check",
-                TestCategory.SYSTEM_HEALTH,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.SYSTEM_HEALTH,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "cpu_usage": cpu_usage,
-                    "threshold": self.config["thresholds"]["cpu_usage_max"],
-                },
-            )
+                        "threshold": self.config["thresholds"]["cpu_usage_max"],
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "cpu_usage_check",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to check CPU usage: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to check CPU usage: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
 
         # Memory usage test
         start_time = time.time()
@@ -336,27 +344,27 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "memory_usage_check",
-                TestCategory.SYSTEM_HEALTH,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.SYSTEM_HEALTH,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "memory_usage": memory_usage,
-                    "total_memory": memory.total,
-                    "available_memory": memory.available,
-                    "threshold": self.config["thresholds"]["memory_usage_max"],
-                },
-            )
+                        "total_memory": memory.total,
+                        "available_memory": memory.available,
+                        "threshold": self.config["thresholds"]["memory_usage_max"],
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "memory_usage_check",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to check memory usage: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to check memory usage: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
 
         # Disk usage test
         start_time = time.time()
@@ -372,28 +380,28 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "disk_usage_check",
-                TestCategory.SYSTEM_HEALTH,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.SYSTEM_HEALTH,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "disk_usage": disk_usage,
-                    "total_space": disk.total,
-                    "used_space": disk.used,
-                    "free_space": disk.free,
-                    "threshold": self.config["thresholds"]["disk_usage_max"],
-                },
-            )
+                        "total_space": disk.total,
+                        "used_space": disk.used,
+                        "free_space": disk.free,
+                        "threshold": self.config["thresholds"]["disk_usage_max"],
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "disk_usage_check",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to check disk usage: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to check disk usage: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
 
         # Database connectivity test
         start_time = time.time()
@@ -403,27 +411,27 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "database_connectivity",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Database connection successful",
-                {"database_path": self.db_path},
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Database connection successful",
+                    {"database_path": self.db_path},
+                    )
         except Exception as e:
             self._add_result(
                 "database_connectivity",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Database connection failed: {str(e)}",
-                {"error": str(e), "database_path": self.db_path},
-                error_trace=str(e),
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Database connection failed: {str(e)}",
+                    {"error": str(e), "database_path": self.db_path},
+                    error_trace = str(e),
+                    )
 
         # Network connectivity test
         start_time = time.time()
         try:
-            response = requests.get("https://httpbin.org/status/200", timeout=10)
+            response = requests.get("https://httpbin.org / status / 200", timeout = 10)
             status = (
                 TestStatus.PASSED if response.status_code == 200 else TestStatus.FAILED
             )
@@ -431,25 +439,26 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "network_connectivity",
-                TestCategory.SYSTEM_HEALTH,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.SYSTEM_HEALTH,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "status_code": response.status_code,
-                    "response_time": response.elapsed.total_seconds(),
-                },
-            )
+                        "response_time": response.elapsed.total_seconds(),
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "network_connectivity",
-                TestCategory.SYSTEM_HEALTH,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Network test failed: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.SYSTEM_HEALTH,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Network test failed: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_orchestrator_tests(self):
         """Run orchestrator component tests"""
@@ -458,26 +467,27 @@ class TraeAIE2EVerification:
         start_time = time.time()
         try:
             # Initialize orchestrator
-            self.orchestrator = TraeAIOrchestrator()
+                self.orchestrator = TraeAIOrchestrator()
 
             self._add_result(
                 "orchestrator_initialization",
-                TestCategory.ORCHESTRATOR,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Orchestrator initialized successfully",
-                {"component": "TraeAIOrchestrator"},
-            )
+                    TestCategory.ORCHESTRATOR,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Orchestrator initialized successfully",
+                    {"component": "TraeAIOrchestrator"},
+                    )
         except Exception as e:
             self._add_result(
                 "orchestrator_initialization",
-                TestCategory.ORCHESTRATOR,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to initialize orchestrator: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.ORCHESTRATOR,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to initialize orchestrator: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_creative_pipeline_tests(self):
         """Run creative pipeline tests"""
@@ -490,22 +500,23 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "creative_pipeline_initialization",
-                TestCategory.CREATIVE_PIPELINE,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Creative pipeline initialized successfully",
-                {"component": "HollywoodCreativePipeline"},
-            )
+                    TestCategory.CREATIVE_PIPELINE,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Creative pipeline initialized successfully",
+                    {"component": "HollywoodCreativePipeline"},
+                    )
         except Exception as e:
             self._add_result(
                 "creative_pipeline_initialization",
-                TestCategory.CREATIVE_PIPELINE,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to initialize creative pipeline: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.CREATIVE_PIPELINE,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to initialize creative pipeline: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_marketing_engine_tests(self):
         """Run marketing engine tests"""
@@ -518,22 +529,23 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "marketing_engine_initialization",
-                TestCategory.MARKETING_ENGINE,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Marketing engine initialized successfully",
-                {"component": "MarketingMonetizationEngine"},
-            )
+                    TestCategory.MARKETING_ENGINE,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Marketing engine initialized successfully",
+                    {"component": "MarketingMonetizationEngine"},
+                    )
         except Exception as e:
             self._add_result(
                 "marketing_engine_initialization",
-                TestCategory.MARKETING_ENGINE,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to initialize marketing engine: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.MARKETING_ENGINE,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to initialize marketing engine: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_agentic_protocol_tests(self):
         """Run agentic protocol tests"""
@@ -546,22 +558,23 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "agentic_protocol_initialization",
-                TestCategory.AGENTIC_PROTOCOL,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Agentic protocol initialized successfully",
-                {"component": "AgenticProtocol"},
-            )
+                    TestCategory.AGENTIC_PROTOCOL,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Agentic protocol initialized successfully",
+                    {"component": "AgenticProtocol"},
+                    )
         except Exception as e:
             self._add_result(
                 "agentic_protocol_initialization",
-                TestCategory.AGENTIC_PROTOCOL,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to initialize agentic protocol: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.AGENTIC_PROTOCOL,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to initialize agentic protocol: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_diagnosis_repair_tests(self):
         """Run diagnosis and repair tests"""
@@ -574,22 +587,23 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "diagnosis_repair_initialization",
-                TestCategory.DIAGNOSIS_REPAIR,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Diagnosis and repair initialized successfully",
-                {"component": "AutonomousDiagnosisRepair"},
-            )
+                    TestCategory.DIAGNOSIS_REPAIR,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Diagnosis and repair initialized successfully",
+                    {"component": "AutonomousDiagnosisRepair"},
+                    )
         except Exception as e:
             self._add_result(
                 "diagnosis_repair_initialization",
-                TestCategory.DIAGNOSIS_REPAIR,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to initialize diagnosis and repair: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.DIAGNOSIS_REPAIR,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to initialize diagnosis and repair: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_zero_cost_stack_tests(self):
         """Run zero cost stack tests"""
@@ -602,22 +616,23 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "zero_cost_stack_initialization",
-                TestCategory.ZERO_COST_STACK,
-                TestStatus.PASSED,
-                time.time() - start_time,
-                "Zero cost stack initialized successfully",
-                {"component": "ZeroCostStackManager"},
-            )
+                    TestCategory.ZERO_COST_STACK,
+                    TestStatus.PASSED,
+                    time.time() - start_time,
+                    "Zero cost stack initialized successfully",
+                    {"component": "ZeroCostStackManager"},
+                    )
         except Exception as e:
             self._add_result(
                 "zero_cost_stack_initialization",
-                TestCategory.ZERO_COST_STACK,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Failed to initialize zero cost stack: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.ZERO_COST_STACK,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Failed to initialize zero cost stack: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_integration_tests(self):
         """Run integration tests"""
@@ -628,12 +643,12 @@ class TraeAIE2EVerification:
         try:
             components_initialized = [
                 self.orchestrator is not None,
-                self.creative_pipeline is not None,
-                self.marketing_engine is not None,
-                self.agentic_protocol is not None,
-                self.diagnosis_repair is not None,
-                self.zero_cost_stack is not None,
-            ]
+                    self.creative_pipeline is not None,
+                    self.marketing_engine is not None,
+                    self.agentic_protocol is not None,
+                    self.diagnosis_repair is not None,
+                    self.zero_cost_stack is not None,
+                    ]
 
             initialized_count = sum(components_initialized)
             total_components = len(components_initialized)
@@ -647,26 +662,27 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "component_integration",
-                TestCategory.INTEGRATION,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.INTEGRATION,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "initialized_components": initialized_count,
-                    "total_components": total_components,
-                    "success_rate": (initialized_count / total_components) * 100,
-                },
-            )
+                        "total_components": total_components,
+                        "success_rate": (initialized_count / total_components) * 100,
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "component_integration",
-                TestCategory.INTEGRATION,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Integration test failed: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.INTEGRATION,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Integration test failed: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_security_tests(self):
         """Run security verification tests"""
@@ -677,11 +693,11 @@ class TraeAIE2EVerification:
         try:
             # Common secret patterns
             secret_patterns = [
-                r'api[_-]?key[\s]*[=:][\s]*["\'][a-zA-Z0-9+/=]{10,}["\']',
-                r'secret[_-]?key[\s]*[=:][\s]*["\'][a-zA-Z0-9+/=]{10,}["\']',
-                r'password[\s]*[=:][\s]*["\'][a-zA-Z0-9!@#$%^&*]{8,}["\']',
-                r'token[\s]*[=:][\s]*["\'][a-zA-Z0-9+/=]{10,}["\']',
-            ]
+                r'api[_-]?key[\s]*[=:][\s]*["\'][a - zA - Z0 - 9+/=]{10,}["\']',
+                    r'secret[_-]?key[\s]*[=:][\s]*["\'][a - zA - Z0 - 9+/=]{10,}["\']',
+                    r'password[\s]*[=:][\s]*["\'][a - zA - Z0 - 9!@#$%^&*]{8,}["\']',
+                    r'token[\s]*[=:][\s]*["\'][a - zA - Z0 - 9+/=]{10,}["\']',
+                    ]
 
             # Scan Python files
             secrets_found = []
@@ -700,7 +716,7 @@ class TraeAIE2EVerification:
                         file_path = os.path.join(root, file)
                         try:
                             with open(
-                                file_path, "r", encoding="utf-8", errors="ignore"
+                                file_path, "r", encoding="utf - 8", errors="ignore"
                             ) as f:
                                 content = f.read()
 
@@ -713,9 +729,9 @@ class TraeAIE2EVerification:
                                             [
                                                 {
                                                     "file": file_path,
-                                                    "pattern": pattern,
-                                                    "match": match,
-                                                }
+                                                        "pattern": pattern,
+                                                        "match": match,
+                                                        }
                                                 for match in matches
                                             ]
                                         )
@@ -731,25 +747,26 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "secret_scanning",
-                TestCategory.SECURITY,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.SECURITY,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "secrets_found": len(secrets_found),
-                    "details": secrets_found[:5],
-                },  # Limit details
+                        "details": secrets_found[:5],
+                        },  # Limit details
             )
         except Exception as e:
             self._add_result(
                 "secret_scanning",
-                TestCategory.SECURITY,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Secret scanning failed: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.SECURITY,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Secret scanning failed: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_performance_tests(self):
         """Run performance tests"""
@@ -764,10 +781,10 @@ class TraeAIE2EVerification:
             # Basic system operations
             test_operations = [
                 lambda: os.listdir("."),
-                lambda: psutil.cpu_percent(),
-                lambda: psutil.virtual_memory(),
-                lambda: time.time(),
-            ]
+                    lambda: psutil.cpu_percent(),
+                    lambda: psutil.virtual_memory(),
+                    lambda: time.time(),
+                    ]
 
             for operation in test_operations:
                 operation()
@@ -782,43 +799,44 @@ class TraeAIE2EVerification:
 
             self._add_result(
                 "system_response_time",
-                TestCategory.PERFORMANCE,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.PERFORMANCE,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "response_time": response_time,
-                    "threshold": self.config["thresholds"]["response_time_max"],
-                    "operations_tested": len(test_operations),
-                },
-            )
+                        "threshold": self.config["thresholds"]["response_time_max"],
+                        "operations_tested": len(test_operations),
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "system_response_time",
-                TestCategory.PERFORMANCE,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"Performance test failed: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.PERFORMANCE,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"Performance test failed: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _run_end_to_end_tests(self):
-        """Run end-to-end workflow tests"""
-        logger.info("Running end-to-end tests")
+        """Run end - to - end workflow tests"""
+        logger.info("Running end - to - end tests")
 
         # Full system workflow test
         start_time = time.time()
         try:
             workflow_steps = [
                 "System initialization",
-                "Component loading",
-                "Configuration validation",
-                "Database connectivity",
-                "Network connectivity",
-                "Security validation",
-                "Performance validation",
-            ]
+                    "Component loading",
+                    "Configuration validation",
+                    "Database connectivity",
+                    "Network connectivity",
+                    "Security validation",
+                    "Performance validation",
+                    ]
 
             completed_steps = 0
             for step in workflow_steps:
@@ -832,53 +850,54 @@ class TraeAIE2EVerification:
                 if success_rate >= self.config["thresholds"]["success_rate_min"]
                 else TestStatus.FAILED
             )
-            message = f"End-to-end workflow: {completed_steps}/{len(workflow_steps)} steps completed ({success_rate:.1f}%)"
+            message = f"End - to - end workflow: {completed_steps}/{len(workflow_steps)} steps completed ({success_rate:.1f}%)"
 
             self._add_result(
                 "end_to_end_workflow",
-                TestCategory.END_TO_END,
-                status,
-                time.time() - start_time,
-                message,
-                {
+                    TestCategory.END_TO_END,
+                    status,
+                    time.time() - start_time,
+                    message,
+                    {
                     "completed_steps": completed_steps,
-                    "total_steps": len(workflow_steps),
-                    "success_rate": success_rate,
-                    "workflow_steps": workflow_steps,
-                },
-            )
+                        "total_steps": len(workflow_steps),
+                        "success_rate": success_rate,
+                        "workflow_steps": workflow_steps,
+                        },
+                    )
         except Exception as e:
             self._add_result(
                 "end_to_end_workflow",
-                TestCategory.END_TO_END,
-                TestStatus.ERROR,
-                time.time() - start_time,
-                f"End-to-end test failed: {str(e)}",
-                {"error": str(e)},
-                error_trace=str(e),
-            )
+                    TestCategory.END_TO_END,
+                    TestStatus.ERROR,
+                    time.time() - start_time,
+                    f"End - to - end test failed: {str(e)}",
+                    {"error": str(e)},
+                    error_trace = str(e),
+                    )
+
 
     def _add_result(
         self,
-        test_name: str,
-        category: TestCategory,
-        status: TestStatus,
-        duration: float,
-        message: str,
-        details: Dict[str, Any],
-        error_trace: Optional[str] = None,
-    ):
+            test_name: str,
+            category: TestCategory,
+            status: TestStatus,
+            duration: float,
+            message: str,
+            details: Dict[str, Any],
+            error_trace: Optional[str] = None,
+            ):
         """Add a test result"""
         result = TestResult(
-            test_name=test_name,
-            category=category,
-            status=status,
-            duration=duration,
-            message=message,
-            details=details,
-            timestamp=datetime.now(),
-            error_trace=error_trace,
-        )
+            test_name = test_name,
+                category = category,
+                status = status,
+                duration = duration,
+                message = message,
+                details = details,
+                timestamp = datetime.now(),
+                error_trace = error_trace,
+                )
 
         self.results.append(result)
 
@@ -887,23 +906,24 @@ class TraeAIE2EVerification:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT INTO test_results 
+                    INSERT INTO test_results
                     (test_name, category, status, duration, message, details, timestamp, error_trace)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (
+                        (
                         test_name,
-                        category.value,
-                        status.value,
-                        duration,
-                        message,
-                        json.dumps(details),
-                        result.timestamp.isoformat(),
-                        error_trace,
-                    ),
-                )
+                            category.value,
+                            status.value,
+                            duration,
+                            message,
+                            json.dumps(details),
+                            result.timestamp.isoformat(),
+                            error_trace,
+                            ),
+                        )
         except Exception as e:
             logger.error(f"Failed to store test result: {e}")
+
 
     def _generate_summary(self) -> Dict[str, Any]:
         """Generate test execution summary"""
@@ -937,35 +957,36 @@ class TraeAIE2EVerification:
             if category_results:
                 results_by_category[category.value] = {
                     "total": len(category_results),
-                    "passed": len(
+                        "passed": len(
                         [r for r in category_results if r.status == TestStatus.PASSED]
                     ),
-                    "failed": len(
+                        "failed": len(
                         [r for r in category_results if r.status == TestStatus.FAILED]
                     ),
-                    "error": len(
+                        "error": len(
                         [r for r in category_results if r.status == TestStatus.ERROR]
                     ),
-                    "skipped": len(
+                        "skipped": len(
                         [r for r in category_results if r.status == TestStatus.SKIPPED]
                     ),
-                    "results": [asdict(r) for r in category_results],
-                }
+                        "results": [asdict(r) for r in category_results],
+                        }
 
         return {
             "overall_status": overall_status,
-            "success_rate": success_rate,
-            "total_tests": total_tests,
-            "passed_tests": passed_tests,
-            "failed_tests": failed_tests,
-            "error_tests": error_tests,
-            "skipped_tests": skipped_tests,
-            "duration": duration,
-            "start_time": self.start_time.isoformat() if self.start_time else None,
-            "end_time": self.end_time.isoformat() if self.end_time else None,
-            "results_by_category": results_by_category,
-            "all_results": [asdict(r) for r in self.results],
-        }
+                "success_rate": success_rate,
+                "total_tests": total_tests,
+                "passed_tests": passed_tests,
+                "failed_tests": failed_tests,
+                "error_tests": error_tests,
+                "skipped_tests": skipped_tests,
+                "duration": duration,
+                "start_time": self.start_time.isoformat() if self.start_time else None,
+                "end_time": self.end_time.isoformat() if self.end_time else None,
+                "results_by_category": results_by_category,
+                "all_results": [asdict(r) for r in self.results],
+                }
+
 
     def generate_html_report(self, summary: Dict[str, Any]) -> str:
         """Generate HTML report"""
@@ -973,14 +994,14 @@ class TraeAIE2EVerification:
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TRAE.AI E2E Verification Report</title>
+    <title > TRAE.AI E2E Verification Report</title>
     <style>
-        body {{ font-family: Arial, sans-serif; margin: 20px; }}
-        .header {{ background: #2c3e50; color: white; padding: 20px; border-radius: 5px; }}
-        .summary {{ background: #ecf0f1; padding: 15px; margin: 20px 0; border-radius: 5px; }}
-        .category-section {{ margin: 20px 0; border: 1px solid #bdc3c7; border-radius: 5px; }}
-        .category-title {{ background: #34495e; color: white; padding: 10px; }}
-        .test-result {{ padding: 10px; border-bottom: 1px solid #ecf0f1; }}
+        body {{ font - family: Arial, sans - serif; margin: 20px; }}
+        .header {{ background: #2c3e50; color: white; padding: 20px; border - radius: 5px; }}
+        .summary {{ background: #ecf0f1; padding: 15px; margin: 20px 0; border - radius: 5px; }}
+        .category - section {{ margin: 20px 0; border: 1px solid #bdc3c7; border - radius: 5px; }}
+        .category - title {{ background: #34495e; color: white; padding: 10px; }}
+        .test - result {{ padding: 10px; border - bottom: 1px solid #ecf0f1; }}
         .passed {{ background: #d5f4e6; }}
         .failed {{ background: #f8d7da; }}
         .error {{ background: #f5c6cb; }}
@@ -989,18 +1010,18 @@ class TraeAIE2EVerification:
 </head>
 <body>
     <div class="header">
-        <h1>TRAE.AI End-to-End Verification Report</h1>
-        <p>Generated: {timestamp}</p>
+        <h1 > TRAE.AI End - to - End Verification Report</h1>
+        <p > Generated: {timestamp}</p>
     </div>
-    
+
     <div class="summary">
-        <h2>Summary</h2>
-        <p><strong>Overall Status:</strong> <span class="{overall_status_class}">{overall_status}</span></p>
-        <p><strong>Success Rate:</strong> {success_rate:.1f}%</p>
-        <p><strong>Tests:</strong> {passed_tests}/{total_tests} passed</p>
-        <p><strong>Duration:</strong> {duration:.2f} seconds</p>
+        <h2 > Summary</h2>
+        <p><strong > Overall Status:</strong> <span class="{overall_status_class}">{overall_status}</span></p>
+        <p><strong > Success Rate:</strong> {success_rate:.1f}%</p>
+        <p><strong > Tests:</strong> {passed_tests}/{total_tests} passed</p>
+        <p><strong > Duration:</strong> {duration:.2f} seconds</p>
     </div>
-    
+
     {category_sections}
 </body>
 </html>
@@ -1011,17 +1032,17 @@ class TraeAIE2EVerification:
             test_results_html = ""
             for result in results["results"]:
                 test_results_html += f"""
-                <div class="test-result {result['status']}">
+                <div class="test - result {result['status']}">
                     <strong>{result['test_name']}</strong><br>
                     Status: {result['status']}<br>
-                    Duration: {result['duration']:.3f}s<br>
+                    Duration: {result['duration']:.3f}s < br>
                     Message: {result['message']}
                 </div>
                 """
 
             category_sections += f"""
-            <div class="category-section">
-                <div class="category-title">
+            <div class="category - section">
+                <div class="category - title">
                     <h2>{category.replace('_', ' ').title()}</h2>
                     <span>({results['passed']}/{results['total']} passed)</span>
                 </div>
@@ -1030,20 +1051,19 @@ class TraeAIE2EVerification:
             """
 
         return html_template.format(
-            overall_status=summary["overall_status"],
-            overall_status_class=summary["overall_status"].lower(),
-            success_rate=summary["success_rate"],
-            passed_tests=summary["passed_tests"],
-            total_tests=summary["total_tests"],
-            duration=summary["duration"],
-            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            category_sections=category_sections,
-        )
-
+            overall_status = summary["overall_status"],
+                overall_status_class = summary["overall_status"].lower(),
+                success_rate = summary["success_rate"],
+                passed_tests = summary["passed_tests"],
+                total_tests = summary["total_tests"],
+                duration = summary["duration"],
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                category_sections = category_sections,
+                )
 
 if __name__ == "__main__":
     # Ensure directories exist
-    Path("logs").mkdir(exist_ok=True)
+    Path("logs").mkdir(exist_ok = True)
 
     # Run verification
     verifier = TraeAIE2EVerification()
@@ -1053,7 +1073,7 @@ if __name__ == "__main__":
 
     # Print summary
     print("\n" + "=" * 60)
-    print("TRAE.AI END-TO-END VERIFICATION COMPLETE")
+    print("TRAE.AI END - TO - END VERIFICATION COMPLETE")
     print("=" * 60)
     print(f"Overall Status: {summary['overall_status']}")
     print(f"Success Rate: {summary['success_rate']:.1f}%")
@@ -1061,16 +1081,16 @@ if __name__ == "__main__":
     print(f"Duration: {summary['duration']:.2f} seconds")
 
     # Save JSON report
-    Path("reports").mkdir(exist_ok=True)
-    with open("reports/e2e_verification_report.json", "w") as f:
-        json.dump(summary, f, indent=2, default=str)
-    print("\nJSON report saved: reports/e2e_verification_report.json")
+    Path("reports").mkdir(exist_ok = True)
+    with open("reports / e2e_verification_report.json", "w") as f:
+        json.dump(summary, f, indent = 2, default = str)
+    print("\nJSON report saved: reports / e2e_verification_report.json")
 
     # Generate and save HTML report
     html_report = verifier.generate_html_report(summary)
-    with open("reports/e2e_verification_report.html", "w") as f:
+    with open("reports / e2e_verification_report.html", "w") as f:
         f.write(html_report)
-    print("HTML report saved: reports/e2e_verification_report.html")
+    print("HTML report saved: reports / e2e_verification_report.html")
 
     # Exit with appropriate code
     exit_code = 0 if summary["overall_status"] == "PASSED" else 1

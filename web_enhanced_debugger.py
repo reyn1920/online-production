@@ -5,17 +5,21 @@ import requests
 
 
 class WebEnhancedDebuggerAgent:
+
+
     def __init__(
         self, ollama_endpoint="http://localhost:11434", model="codellama:latest"
     ):
         self.ollama_endpoint = ollama_endpoint
         self.model = model
 
-    # 🔎 Step 1: Web search (you can replace this API with Google/Bing/DuckDuckGo)
+    # 🔎 Step 1: Web search (you can replace this API with Google / Bing / DuckDuckGo)
+
+
     def web_search(self, query: str, num_results: int = 5) -> List[str]:
         try:
-            url = f"https://ddg-api.herokuapp.com/search?query={query}&limit={num_results}"
-            resp = requests.get(url, timeout=10)
+            url = f"https://ddg - api.herokuapp.com / search?query={query}&limit={num_results}"
+            resp = requests.get(url, timeout = 10)
             if resp.status_code == 200:
                 results = resp.json().get("results", [])
                 return [f"- {r['snippet']} ({r['link']})" for r in results]
@@ -24,28 +28,32 @@ class WebEnhancedDebuggerAgent:
         return []
 
     # 🧠 Step 2: Ask Ollama with context injection
+
+
     def ask_ollama(self, prompt: str) -> str:
-        url = f"{self.ollama_endpoint}/api/generate"
+        url = f"{self.ollama_endpoint}/api / generate"
         payload = {"model": self.model, "prompt": prompt}
         answer = ""
 
         try:
-            with requests.post(url, json=payload, stream=True, timeout=60) as resp:
+            with requests.post(url, json = payload, stream = True, timeout = 60) as resp:
                 resp.raise_for_status()
                 for line in resp.iter_lines():
                     if line:
-                        data = json.loads(line.decode("utf-8"))
+                        data = json.loads(line.decode("utf - 8"))
                         answer += data.get("response", "")
         except Exception as e:
             answer = f"❌ Ollama error: {e}"
         return answer.strip()
 
     # 🔧 Step 3: Full pipeline — error -> search -> fix
+
+
     def debug_and_fix(self, error_msg: str) -> str:
         print(f"\n🐞 Captured Error: {error_msg}")
 
         # Search solutions
-        results = self.web_search(error_msg, num_results=5)
+        results = self.web_search(error_msg, num_results = 5)
         print(f"\n🌐 Top Web References Found:\n" + "\n".join(results))
 
         # Build prompt
@@ -64,6 +72,8 @@ Provide a FIX for this error, with clear code or SQL patches that can be applied
         return f"\n💡 Suggested Fix:\n{fix}"
 
     # 🚀 Enhanced debugging with error categorization
+
+
     def categorize_error(self, error_msg: str) -> str:
         """Categorize the type of error for better search targeting"""
         error_lower = error_msg.lower()
@@ -81,17 +91,19 @@ Provide a FIX for this error, with clear code or SQL patches that can be applied
         else:
             return "general"
 
-    # 🎯 Enhanced search with error-specific keywords
+    # 🎯 Enhanced search with error - specific keywords
+
+
     def enhanced_debug_and_fix(self, error_msg: str) -> str:
         print(f"\n🐞 Captured Error: {error_msg}")
 
         # Categorize error
-        error_type = self.categorize_error(error_msg)
+            error_type = self.categorize_error(error_msg)
         print(f"\n📋 Error Category: {error_type}")
 
         # Enhanced search query based on error type
         search_query = f"{error_msg} {error_type} fix solution"
-        results = self.web_search(search_query, num_results=5)
+        results = self.web_search(search_query, num_results = 5)
         print(f"\n🌐 Top Web References Found:\n" + "\n".join(results))
 
         # Build enhanced prompt with error categorization
@@ -109,7 +121,7 @@ Instructions:
 4. Include prevention tips to avoid this error in the future
 5. Format your response clearly with sections for:
    - Root Cause Analysis
-   - Exact Fix (with code/SQL)
+   - Exact Fix (with code / SQL)
    - Prevention Tips
 """
 
@@ -117,15 +129,14 @@ Instructions:
         fix = self.ask_ollama(context)
         return f"\n💡 Enhanced AI Analysis & Fix:\n{fix}"
 
-
 # 🧪 Demo usage
 if __name__ == "__main__":
     debugger = WebEnhancedDebuggerAgent()
 
     # Test with a common SQLite error
-    test_error = "sqlite3.OperationalError: no such column: search_keywords"
+        test_error = "sqlite3.OperationalError: no such column: search_keywords"
 
-    print("=== Web-Enhanced Debugger Demo ===")
+    print("=== Web - Enhanced Debugger Demo ===")
     print("\n🔍 Testing Enhanced Debugging...")
 
     result = debugger.enhanced_debug_and_fix(test_error)
@@ -135,5 +146,5 @@ if __name__ == "__main__":
     print("✅ Demo completed! The debugger successfully:")
     print("   • Categorized the error type")
     print("   • Searched the web for solutions")
-    print("   • Generated AI-powered fix with Ollama")
+    print("   • Generated AI - powered fix with Ollama")
     print("   • Provided prevention tips")

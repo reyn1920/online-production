@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 First Content Generator for The Right Perspective Channel
-Generates audio-only content using the configured voice profile
+Generates audio - only content using the configured voice profile
 """
 
 import json
@@ -15,12 +15,14 @@ import requests
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 class FirstContentGenerator:
+
+
     def __init__(self):
         self.base_dir = Path.cwd()
         self.channel_name = "The Right Perspective"
@@ -32,6 +34,7 @@ class FirstContentGenerator:
         # Load channel configuration
         self.load_channel_config()
 
+
     def load_channel_config(self):
         """Load channel configuration from pipeline file"""
         config_file = self.base_dir / f"{self.channel_dir}_pipeline.json"
@@ -42,6 +45,7 @@ class FirstContentGenerator:
         except FileNotFoundError:
             logger.error(f"Pipeline configuration not found: {config_file}")
             self.config = {}
+
 
     def create_sample_script(self):
         """Create a sample script for the first episode"""
@@ -74,9 +78,9 @@ We'll be covering:
 - Actionable insights on how you can make a difference
 
 #### Segment 3: Building Our Community (4 minutes)
-This isn't just a one-way conversation. This is about building a community of patriots who refuse to be silenced. We want to hear from you - your stories, your concerns, your victories.
+This isn't just a one - way conversation. This is about building a community of patriots who refuse to be silenced. We want to hear from you - your stories, your concerns, your victories.
 
-We'll be featuring listener submissions, highlighting local conservative victories, and connecting like-minded Americans who are ready to take back our country from the radical left.
+We'll be featuring listener submissions, highlighting local conservative victories, and connecting like - minded Americans who are ready to take back our country from the radical left.
 
 ### Conclusion (2 minutes)
 So that's what The Right Perspective is all about - giving you the unfiltered truth that the mainstream media won't tell you. We're going to be your daily source for conservative commentary that cuts through the noise.
@@ -93,7 +97,7 @@ This is The Right Perspective, where your voice matters and the truth always win
 - Voice: Matthew (Speechelo) - Authoritative tone
 - Background: Subtle patriotic music (low volume)
 - Duration Target: 15 minutes
-- Call-to-Action: Subscribe, notifications, tomorrow's preview
+- Call - to - Action: Subscribe, notifications, tomorrow's preview
 - Monetization: Mention merchandise store launch coming soon
 """
 
@@ -103,6 +107,7 @@ This is The Right Perspective, where your voice matters and the truth always win
 
         logger.info(f"Sample script created: {script_file}")
         return script_file
+
 
     def generate_audio_content(self, script_file):
         """Generate audio content from script (placeholder for actual TTS integration)"""
@@ -118,21 +123,21 @@ This is The Right Perspective, where your voice matters and the truth always win
         # Create audio metadata
         audio_metadata = {
             "title": "The Right Perspective - Episode 1: Welcome",
-            "description": "Welcome to The Right Perspective - unfiltered conservative political commentary",
-            "duration_target": "15 minutes",
-            "voice_profile": "Matthew (Speechelo)",
-            "script_file": str(script_file),
-            "generated_date": datetime.now().isoformat(),
-            "content_length": len(spoken_content),
-            "word_count": len(spoken_content.split()),
-            "estimated_duration": f"{len(spoken_content.split()) / 150:.1f} minutes",  # ~150 WPM average
+                "description": "Welcome to The Right Perspective - unfiltered conservative political commentary",
+                "duration_target": "15 minutes",
+                "voice_profile": "Matthew (Speechelo)",
+                "script_file": str(script_file),
+                "generated_date": datetime.now().isoformat(),
+                "content_length": len(spoken_content),
+                "word_count": len(spoken_content.split()),
+                "estimated_duration": f"{len(spoken_content.split()) / 150:.1f} minutes",  # ~150 WPM average
             "status": "ready_for_tts_generation",
-        }
+                }
 
         # Save metadata
         metadata_file = self.output_dir / "episode_001_metadata.json"
         with open(metadata_file, "w") as f:
-            json.dump(audio_metadata, f, indent=2)
+            json.dump(audio_metadata, f, indent = 2)
 
         # Save clean spoken content for TTS
         content_file = self.output_dir / "episode_001_content.txt"
@@ -144,6 +149,7 @@ This is The Right Perspective, where your voice matters and the truth always win
         logger.info(f"Estimated duration: {audio_metadata['estimated_duration']}")
 
         return audio_metadata
+
 
     def extract_spoken_content(self, script_content):
         """Extract only the spoken content from the script"""
@@ -176,22 +182,23 @@ This is The Right Perspective, where your voice matters and the truth always win
 
         return "\n\n".join(spoken_lines)
 
+
     def create_production_schedule(self):
         """Create a production schedule for the first week"""
         today = datetime.now()
         schedule = []
 
         for i in range(7):  # First week
-            episode_date = today + timedelta(days=i)
+            episode_date = today + timedelta(days = i)
             episode_info = {
                 "episode_number": i + 1,
-                "date": episode_date.strftime("%Y-%m-%d"),
-                "publish_time": "18:00 EST",  # 6 PM EST
+                    "date": episode_date.strftime("%Y-%m-%d"),
+                    "publish_time": "18:00 EST",  # 6 PM EST
                 "title": f"Episode {i + 1}: {self.get_episode_title(i + 1)}",
-                "status": "planned" if i > 0 else "in_production",
-                "duration_target": "12-15 minutes",
-                "content_focus": self.get_content_focus(i + 1),
-            }
+                    "status": "planned" if i > 0 else "in_production",
+                    "duration_target": "12 - 15 minutes",
+                    "content_focus": self.get_content_focus(i + 1),
+                    }
             schedule.append(episode_info)
 
         schedule_file = self.base_dir / f"{self.channel_dir}_production_schedule.json"
@@ -199,41 +206,44 @@ This is The Right Perspective, where your voice matters and the truth always win
             json.dump(
                 {
                     "channel": self.channel_name,
-                    "schedule_created": today.isoformat(),
-                    "episodes": schedule,
-                },
-                f,
-                indent=2,
-            )
+                        "schedule_created": today.isoformat(),
+                        "episodes": schedule,
+                        },
+                    f,
+                    indent = 2,
+                    )
 
         logger.info(f"Production schedule created: {schedule_file}")
         return schedule
+
 
     def get_episode_title(self, episode_num):
         """Generate episode titles"""
         titles = {
             1: "Welcome to The Right Perspective",
-            2: "Election Integrity: The Battle Continues",
-            3: "Media Bias Exposed: This Week's Biggest Lies",
-            4: "Border Crisis: What They Don't Want You to Know",
-            5: "Economic Reality Check: Inflation vs. Propaganda",
-            6: "Education Under Attack: Fighting for Our Children",
-            7: "Week in Review: Conservative Wins You Missed",
-        }
+                2: "Election Integrity: The Battle Continues",
+                3: "Media Bias Exposed: This Week's Biggest Lies",
+                4: "Border Crisis: What They Don't Want You to Know",
+                5: "Economic Reality Check: Inflation vs. Propaganda",
+                6: "Education Under Attack: Fighting for Our Children",
+                7: "Week in Review: Conservative Wins You Missed",
+                }
         return titles.get(episode_num, f"Daily Conservative Commentary")
+
 
     def get_content_focus(self, episode_num):
         """Get content focus for each episode"""
         focuses = {
             1: "Channel introduction and mission statement",
-            2: "Current election integrity developments",
-            3: "Weekly mainstream media bias analysis",
-            4: "Border security and immigration policy",
-            5: "Economic policy and inflation impact",
-            6: "Education policy and parental rights",
-            7: "Weekly roundup of conservative victories",
-        }
+                2: "Current election integrity developments",
+                3: "Weekly mainstream media bias analysis",
+                4: "Border security and immigration policy",
+                5: "Economic policy and inflation impact",
+                6: "Education policy and parental rights",
+                7: "Weekly roundup of conservative victories",
+                }
         return focuses.get(episode_num, "Daily political commentary")
+
 
     def generate_first_content(self):
         """Generate the complete first content package"""
@@ -252,33 +262,33 @@ This is The Right Perspective, where your voice matters and the truth always win
             # Generate summary report
             report = {
                 "generation_completed": datetime.now().isoformat(),
-                "channel": self.channel_name,
-                "first_episode": {
+                    "channel": self.channel_name,
+                    "first_episode": {
                     "script_file": str(script_file),
-                    "audio_metadata": audio_metadata,
-                    "status": "ready_for_voice_generation",
-                },
-                "production_schedule": f"{self.channel_dir}_production_schedule.json",
-                "next_steps": [
+                        "audio_metadata": audio_metadata,
+                        "status": "ready_for_voice_generation",
+                        },
+                    "production_schedule": f"{self.channel_dir}_production_schedule.json",
+                    "next_steps": [
                     "Generate audio using Speechelo with Matthew voice profile",
-                    "Create episode thumbnail",
-                    "Upload to YouTube channel",
-                    "Schedule for 6 PM EST publication",
-                    "Prepare episode 2 script",
-                ],
-                "files_created": [
+                        "Create episode thumbnail",
+                        "Upload to YouTube channel",
+                        "Schedule for 6 PM EST publication",
+                        "Prepare episode 2 script",
+                        ],
+                    "files_created": [
                     str(script_file),
-                    str(self.output_dir / "episode_001_metadata.json"),
-                    str(self.output_dir / "episode_001_content.txt"),
-                    f"{self.channel_dir}_production_schedule.json",
-                ],
-            }
+                        str(self.output_dir / "episode_001_metadata.json"),
+                        str(self.output_dir / "episode_001_content.txt"),
+                        f"{self.channel_dir}_production_schedule.json",
+                        ],
+                    }
 
             report_file = (
                 self.base_dir / f"{self.channel_dir}_first_content_report.json"
             )
             with open(report_file, "w") as f:
-                json.dump(report, f, indent=2)
+                json.dump(report, f, indent = 2)
 
             logger.info("✅ First content generation completed successfully!")
             logger.info(f"📝 Script ready: {script_file}")
@@ -318,7 +328,6 @@ def main():
         print("\n❌ Content generation failed. Check the logs for details.")
 
     return success
-
 
 if __name__ == "__main__":
     main()

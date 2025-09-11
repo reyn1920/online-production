@@ -6,18 +6,20 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterable, Optional, Tuple
 
-
 # Support multiple database files
+
+
 def get_db_path(db_name: str) -> Path:
     """Get path for a specific database file"""
     if not db_name.endswith(".db"):
         db_name += ".db"
     path = Path("data") / db_name
-    path.parent.mkdir(parents=True, exist_ok=True)
+    path.parent.mkdir(parents = True, exist_ok = True)
     return path
 
-
 @contextmanager
+
+
 def get_conn(db_name: str = "trae_ai.db"):
     """Get database connection with context manager"""
     db_path = get_db_path(db_name)
@@ -51,10 +53,10 @@ def ensure_schema() -> None:
             """
         CREATE TABLE IF NOT EXISTS affiliates(
             name TEXT PRIMARY KEY,
-            url TEXT NOT NULL,
-            tag TEXT,
-            enabled INTEGER NOT NULL DEFAULT 1,
-            mtime REAL NOT NULL
+                url TEXT NOT NULL,
+                tag TEXT,
+                enabled INTEGER NOT NULL DEFAULT 1,
+                mtime REAL NOT NULL
         )
         """
         )

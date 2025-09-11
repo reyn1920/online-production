@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Hypocrisy Tracker Database Manager
 
@@ -25,8 +25,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-
 @dataclass
+
+
 class HypocrisyFinding:
     """Data class for hypocrisy findings"""
 
@@ -53,38 +54,39 @@ class HypocrisyFinding:
     fact_check_results: Optional[Dict[str, Any]] = None
     created_by: str = "research_agent"
 
+
     def __post_init__(self):
         """Validate and clamp scores to ensure they meet database constraints"""
-        # Clamp severity_score to 1-10 range
+        # Clamp severity_score to 1 - 10 range
         self.severity_score = max(1, min(10, self.severity_score))
 
-        # Clamp public_impact_score to 1-10 range
+        # Clamp public_impact_score to 1 - 10 range
         self.public_impact_score = max(1, min(10, self.public_impact_score))
 
-        # Clamp confidence_score to 0.0-1.0 range
+        # Clamp confidence_score to 0.0 - 1.0 range
         self.confidence_score = max(0.0, min(1.0, self.confidence_score))
 
         # Validate contradiction_type against database constraints
         valid_contradiction_types = {
             "direct",
-            "contextual",
-            "temporal",
-            "value",
-            "policy_shift",
-            "audience_based",
-        }
+                "contextual",
+                "temporal",
+                "value",
+                "policy_shift",
+                "audience_based",
+                }
         if self.contradiction_type not in valid_contradiction_types:
             self.contradiction_type = "direct"  # Default to 'direct' if invalid
 
         # Validate subject_type against database constraints
         valid_subject_types = {
             "person",
-            "organization",
-            "publication",
-            "politician",
-            "celebrity",
-            "influencer",
-        }
+                "organization",
+                "publication",
+                "politician",
+                "celebrity",
+                "influencer",
+                }
         if self.subject_type not in valid_subject_types:
             self.subject_type = "person"  # Default to 'person' if invalid
 
@@ -93,59 +95,63 @@ class HypocrisyFinding:
         if self.verification_status not in valid_verification_statuses:
             self.verification_status = "pending"  # Default to 'pending' if invalid
 
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for database storage"""
         return {
             "subject_name": self.subject_name,
-            "subject_type": self.subject_type,
-            "statement_1": self.statement_1,
-            "statement_2": self.statement_2,
-            "context_1": self.context_1,
-            "context_2": self.context_2,
-            "date_1": self.date_1.isoformat() if self.date_1 else None,
-            "date_2": self.date_2.isoformat() if self.date_2 else None,
-            "source_1": self.source_1,
-            "source_2": self.source_2,
-            "contradiction_type": self.contradiction_type,
-            "severity_score": self.severity_score,
-            "confidence_score": self.confidence_score,
-            "verification_status": self.verification_status,
-            "evidence_links": (
+                "subject_type": self.subject_type,
+                "statement_1": self.statement_1,
+                "statement_2": self.statement_2,
+                "context_1": self.context_1,
+                "context_2": self.context_2,
+                "date_1": self.date_1.isoformat() if self.date_1 else None,
+                "date_2": self.date_2.isoformat() if self.date_2 else None,
+                "source_1": self.source_1,
+                "source_2": self.source_2,
+                "contradiction_type": self.contradiction_type,
+                "severity_score": self.severity_score,
+                "confidence_score": self.confidence_score,
+                "verification_status": self.verification_status,
+                "evidence_links": (
                 json.dumps(self.evidence_links) if self.evidence_links else None
             ),
-            "tags": json.dumps(self.tags) if self.tags else None,
-            "analysis_notes": self.analysis_notes,
-            "public_impact_score": self.public_impact_score,
-            "media_coverage_count": self.media_coverage_count,
-            "social_media_mentions": self.social_media_mentions,
-            "fact_check_results": (
+                "tags": json.dumps(self.tags) if self.tags else None,
+                "analysis_notes": self.analysis_notes,
+                "public_impact_score": self.public_impact_score,
+                "media_coverage_count": self.media_coverage_count,
+                "social_media_mentions": self.social_media_mentions,
+                "fact_check_results": (
                 json.dumps(self.fact_check_results) if self.fact_check_results else None
             ),
-            "created_by": self.created_by,
-            "content_used": False,
-            "content_used_at": None,
-        }
+                "created_by": self.created_by,
+                "content_used": False,
+                "content_used_at": None,
+                }
 
 
 class HypocrisyDatabaseManager:
     """Database manager for hypocrisy tracking system"""
 
-    def __init__(self, db_path: str = "./data/right_perspective.db"):
+
+    def __init__(self, db_path: str = "./data / right_perspective.db"):
         self.db_path = Path(db_path)
         self.logger = logging.getLogger(__name__)
 
         # Ensure data directory exists
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
 
         # Initialize database
         self._initialize_database()
 
     @contextmanager
+
+
     def get_connection(self):
         """Context manager for database connections"""
         conn = None
         try:
-            conn = sqlite3.connect(str(self.db_path), timeout=30.0)
+            conn = sqlite3.connect(str(self.db_path), timeout = 30.0)
             conn.row_factory = sqlite3.Row  # Enable column access by name
             conn.execute("PRAGMA foreign_keys = ON")  # Enable foreign key constraints
             yield conn
@@ -158,9 +164,11 @@ class HypocrisyDatabaseManager:
             if conn:
                 conn.close()
 
+
     def initialize_database(self) -> None:
         """Public method to initialize database - delegates to private method"""
         self._initialize_database()
+
 
     def _initialize_database(self) -> None:
         """Initialize database with hypocrisy tracker schema"""
@@ -173,34 +181,34 @@ class HypocrisyDatabaseManager:
                     """
                     CREATE TABLE IF NOT EXISTS hypocrisy_tracker (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        subject_name TEXT NOT NULL,
-                        subject_type TEXT CHECK (subject_type IN ('person', 'organization', 'publication', 'politician', 'celebrity', 'influencer')),
-                        statement_1 TEXT NOT NULL,
-                        statement_2 TEXT NOT NULL,
-                        context_1 TEXT,
-                        context_2 TEXT,
-                        date_1 DATE,
-                        date_2 DATE,
-                        source_1 TEXT,
-                        source_2 TEXT,
-                        contradiction_type TEXT CHECK (contradiction_type IN ('direct', 'contextual', 'temporal', 'value', 'policy_shift', 'audience_based')),
-                        severity_score INTEGER CHECK (severity_score BETWEEN 1 AND 10),
-                        confidence_score REAL CHECK (confidence_score BETWEEN 0.0 AND 1.0),
-                        verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'disputed', 'debunked')),
-                        evidence_links JSON,
-                        tags JSON,
-                        analysis_notes TEXT,
-                        public_impact_score INTEGER CHECK (public_impact_score BETWEEN 1 AND 10),
-                        media_coverage_count INTEGER DEFAULT 0,
-                        social_media_mentions INTEGER DEFAULT 0,
-                        fact_check_results JSON,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        created_by TEXT,
-                        reviewed_by TEXT,
-                        reviewed_at TIMESTAMP,
-                        content_used BOOLEAN DEFAULT FALSE,
-                        content_used_at TIMESTAMP
+                            subject_name TEXT NOT NULL,
+                            subject_type TEXT CHECK (subject_type IN ('person', 'organization', 'publication', 'politician', 'celebrity', 'influencer')),
+                            statement_1 TEXT NOT NULL,
+                            statement_2 TEXT NOT NULL,
+                            context_1 TEXT,
+                            context_2 TEXT,
+                            date_1 DATE,
+                            date_2 DATE,
+                            source_1 TEXT,
+                            source_2 TEXT,
+                            contradiction_type TEXT CHECK (contradiction_type IN ('direct', 'contextual', 'temporal', 'value', 'policy_shift', 'audience_based')),
+                            severity_score INTEGER CHECK (severity_score BETWEEN 1 AND 10),
+                            confidence_score REAL CHECK (confidence_score BETWEEN 0.0 AND 1.0),
+                            verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'disputed', 'debunked')),
+                            evidence_links JSON,
+                            tags JSON,
+                            analysis_notes TEXT,
+                            public_impact_score INTEGER CHECK (public_impact_score BETWEEN 1 AND 10),
+                            media_coverage_count INTEGER DEFAULT 0,
+                            social_media_mentions INTEGER DEFAULT 0,
+                            fact_check_results JSON,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            created_by TEXT,
+                            reviewed_by TEXT,
+                            reviewed_at TIMESTAMP,
+                            content_used BOOLEAN DEFAULT FALSE,
+                            content_used_at TIMESTAMP
                     )
                 """
                 )
@@ -208,14 +216,14 @@ class HypocrisyDatabaseManager:
                 # Create indexes for performance
                 indexes = [
                     "CREATE INDEX IF NOT EXISTS idx_hypocrisy_subject ON hypocrisy_tracker(subject_name)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_type ON hypocrisy_tracker(subject_type)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_severity ON hypocrisy_tracker(severity_score DESC)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_verification ON hypocrisy_tracker(verification_status)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_created ON hypocrisy_tracker(created_at)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_impact ON hypocrisy_tracker(public_impact_score DESC)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_confidence ON hypocrisy_tracker(confidence_score DESC)",
-                    "CREATE INDEX IF NOT EXISTS idx_hypocrisy_content_used ON hypocrisy_tracker(content_used)",
-                ]
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_type ON hypocrisy_tracker(subject_type)",
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_severity ON hypocrisy_tracker(severity_score DESC)",
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_verification ON hypocrisy_tracker(verification_status)",
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_created ON hypocrisy_tracker(created_at)",
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_impact ON hypocrisy_tracker(public_impact_score DESC)",
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_confidence ON hypocrisy_tracker(confidence_score DESC)",
+                        "CREATE INDEX IF NOT EXISTS idx_hypocrisy_content_used ON hypocrisy_tracker(content_used)",
+                        ]
 
                 for index_sql in indexes:
                     cursor.execute(index_sql)
@@ -238,6 +246,7 @@ class HypocrisyDatabaseManager:
             self.logger.error(f"Failed to initialize hypocrisy database: {e}")
             raise
 
+
     def store_finding(self, finding: HypocrisyFinding) -> Optional[int]:
         """Store a hypocrisy finding in the database with proper validation"""
         try:
@@ -249,12 +258,12 @@ class HypocrisyDatabaseManager:
             # Additional constraint validation
             valid_contradiction_types = {
                 "direct",
-                "contextual",
-                "temporal",
-                "value",
-                "policy_shift",
-                "audience_based",
-            }
+                    "contextual",
+                    "temporal",
+                    "value",
+                    "policy_shift",
+                    "audience_based",
+                    }
             if finding.contradiction_type not in valid_contradiction_types:
                 finding.contradiction_type = "direct"
                 self.logger.warning(
@@ -263,22 +272,22 @@ class HypocrisyDatabaseManager:
 
             valid_subject_types = {
                 "person",
-                "organization",
-                "publication",
-                "politician",
-                "celebrity",
-                "influencer",
-            }
+                    "organization",
+                    "publication",
+                    "politician",
+                    "celebrity",
+                    "influencer",
+                    }
             if finding.subject_type not in valid_subject_types:
                 finding.subject_type = "person"
                 self.logger.warning(f"Invalid subject_type, defaulting to 'person'")
 
             valid_verification_statuses = {
                 "pending",
-                "verified",
-                "disputed",
-                "debunked",
-            }
+                    "verified",
+                    "disputed",
+                    "debunked",
+                    }
             if finding.verification_status not in valid_verification_statuses:
                 finding.verification_status = "pending"
                 self.logger.warning(
@@ -291,11 +300,11 @@ class HypocrisyDatabaseManager:
                 # Check for duplicate findings
                 cursor.execute(
                     """
-                    SELECT id FROM hypocrisy_tracker 
+                    SELECT id FROM hypocrisy_tracker
                     WHERE subject_name = ? AND statement_1 = ? AND statement_2 = ?
                 """,
                     (finding.subject_name, finding.statement_1, finding.statement_2),
-                )
+                        )
 
                 if cursor.fetchone():
                     self.logger.warning(
@@ -314,7 +323,7 @@ class HypocrisyDatabaseManager:
                     VALUES ({placeholders})
                 """,
                     list(finding_data.values()),
-                )
+                        )
 
                 finding_id = cursor.lastrowid
                 conn.commit()
@@ -333,6 +342,7 @@ class HypocrisyDatabaseManager:
             self.logger.error(f"Error storing hypocrisy finding: {e}")
             return None
 
+
     def get_content_opportunities(
         self, limit: int = 10, min_confidence: float = 0.6
     ) -> List[Dict[str, Any]]:
@@ -344,43 +354,43 @@ class HypocrisyDatabaseManager:
                 cursor.execute(
                     """
                     SELECT id, subject_name, subject_type, statement_1, statement_2,
-                           context_1, context_2, date_1, date_2, source_1, source_2,
-                           contradiction_type, severity_score, confidence_score,
-                           public_impact_score, tags, analysis_notes, created_at
+                        context_1, context_2, date_1, date_2, source_1, source_2,
+                               contradiction_type, severity_score, confidence_score,
+                               public_impact_score, tags, analysis_notes, created_at
                     FROM hypocrisy_tracker
-                    WHERE content_used = FALSE 
+                    WHERE content_used = FALSE
                       AND verification_status IN ('pending', 'verified')
                       AND confidence_score >= ?
                     ORDER BY public_impact_score DESC, severity_score DESC, confidence_score DESC, created_at DESC
                     LIMIT ?
                 """,
                     (min_confidence, limit),
-                )
+                        )
 
                 opportunities = []
                 for row in cursor.fetchall():
                     opportunity = {
                         "id": row["id"],
-                        "subject_name": row[
+                            "subject_name": row[
                             "subject_name"
                         ],  # Fixed: use 'subject_name' instead of 'figure'
                         "subject_type": row["subject_type"],
-                        "statement_1": row["statement_1"],
-                        "statement_2": row["statement_2"],
-                        "context_1": row["context_1"],
-                        "context_2": row["context_2"],
-                        "date_1": row["date_1"],
-                        "date_2": row["date_2"],
-                        "source_1": row["source_1"],
-                        "source_2": row["source_2"],
-                        "contradiction_type": row["contradiction_type"],
-                        "severity_score": row["severity_score"],
-                        "confidence_score": row["confidence_score"],
-                        "public_impact_score": row["public_impact_score"],
-                        "tags": json.loads(row["tags"]) if row["tags"] else [],
-                        "analysis_notes": row["analysis_notes"],
-                        "discovered_at": row["created_at"],
-                    }
+                            "statement_1": row["statement_1"],
+                            "statement_2": row["statement_2"],
+                            "context_1": row["context_1"],
+                            "context_2": row["context_2"],
+                            "date_1": row["date_1"],
+                            "date_2": row["date_2"],
+                            "source_1": row["source_1"],
+                            "source_2": row["source_2"],
+                            "contradiction_type": row["contradiction_type"],
+                            "severity_score": row["severity_score"],
+                            "confidence_score": row["confidence_score"],
+                            "public_impact_score": row["public_impact_score"],
+                            "tags": json.loads(row["tags"]) if row["tags"] else [],
+                            "analysis_notes": row["analysis_notes"],
+                            "discovered_at": row["created_at"],
+                            }
                     opportunities.append(opportunity)
 
                 self.logger.info(
@@ -391,6 +401,7 @@ class HypocrisyDatabaseManager:
         except Exception as e:
             self.logger.error(f"Error getting hypocrisy opportunities: {e}")
             return []
+
 
     def mark_content_used(self, finding_id: int) -> bool:
         """Mark a hypocrisy finding as used for content creation"""
@@ -405,7 +416,7 @@ class HypocrisyDatabaseManager:
                     WHERE id = ?
                 """,
                     (finding_id,),
-                )
+                        )
 
                 if cursor.rowcount > 0:
                     conn.commit()
@@ -418,6 +429,7 @@ class HypocrisyDatabaseManager:
         except Exception as e:
             self.logger.error(f"Error marking hypocrisy content as used: {e}")
             return False
+
 
     def update_verification_status(
         self, finding_id: int, status: str, reviewed_by: str = None
@@ -434,7 +446,7 @@ class HypocrisyDatabaseManager:
                     WHERE id = ?
                 """,
                     (status, reviewed_by, finding_id),
-                )
+                        )
 
                 if cursor.rowcount > 0:
                     conn.commit()
@@ -450,6 +462,7 @@ class HypocrisyDatabaseManager:
             self.logger.error(f"Error updating verification status: {e}")
             return False
 
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get statistics about hypocrisy findings"""
         try:
@@ -463,8 +476,8 @@ class HypocrisyDatabaseManager:
                 # By verification status
                 cursor.execute(
                     """
-                    SELECT verification_status, COUNT(*) 
-                    FROM hypocrisy_tracker 
+                    SELECT verification_status, COUNT(*)
+                    FROM hypocrisy_tracker
                     GROUP BY verification_status
                 """
                 )
@@ -473,8 +486,8 @@ class HypocrisyDatabaseManager:
                 # By subject type
                 cursor.execute(
                     """
-                    SELECT subject_type, COUNT(*) 
-                    FROM hypocrisy_tracker 
+                    SELECT subject_type, COUNT(*)
+                    FROM hypocrisy_tracker
                     GROUP BY subject_type
                 """
                 )
@@ -489,7 +502,7 @@ class HypocrisyDatabaseManager:
                 # Recent findings (last 7 days)
                 cursor.execute(
                     """
-                    SELECT COUNT(*) FROM hypocrisy_tracker 
+                    SELECT COUNT(*) FROM hypocrisy_tracker
                     WHERE created_at >= datetime('now', '-7 days')
                 """
                 )
@@ -497,25 +510,26 @@ class HypocrisyDatabaseManager:
 
                 return {
                     "total_findings": total_findings,
-                    "by_verification_status": by_status,
-                    "by_subject_type": by_subject_type,
-                    "content_used": content_used,
-                    "content_unused": total_findings - content_used,
-                    "recent_findings_7_days": recent_findings,
-                }
+                        "by_verification_status": by_status,
+                        "by_subject_type": by_subject_type,
+                        "content_used": content_used,
+                        "content_unused": total_findings - content_used,
+                        "recent_findings_7_days": recent_findings,
+                        }
 
         except Exception as e:
             self.logger.error(f"Error getting statistics: {e}")
             return {}
 
+
     def search_findings(
         self,
-        subject_name: str = None,
-        subject_type: str = None,
-        verification_status: str = None,
-        min_confidence: float = None,
-        limit: int = 50,
-    ) -> List[Dict[str, Any]]:
+            subject_name: str = None,
+            subject_type: str = None,
+            verification_status: str = None,
+            min_confidence: float = None,
+            limit: int = 50,
+            ) -> List[Dict[str, Any]]:
         """Search hypocrisy findings with filters"""
         try:
             with self.get_connection() as conn:
@@ -541,7 +555,7 @@ class HypocrisyDatabaseManager:
                     conditions.append("confidence_score >= ?")
                     params.append(min_confidence)
 
-                where_clause = " AND ".join(conditions) if conditions else "1=1"
+                where_clause = " AND ".join(conditions) if conditions else "1 = 1"
                 params.append(limit)
 
                 cursor.execute(
@@ -552,7 +566,7 @@ class HypocrisyDatabaseManager:
                     LIMIT ?
                 """,
                     params,
-                )
+                        )
 
                 findings = []
                 for row in cursor.fetchall():
@@ -579,6 +593,7 @@ class HypocrisyDatabaseManager:
             self.logger.error(f"Error searching findings: {e}")
             return []
 
+
     def get_recent_findings(self, hours: int = 24) -> List[Dict[str, Any]]:
         """Get recent hypocrisy findings within the specified time window"""
         try:
@@ -591,7 +606,7 @@ class HypocrisyDatabaseManager:
                     WHERE created_at >= datetime('now', '-{} hours')
                     ORDER BY created_at DESC
                 """.format(
-                        hours
+                    hours
                     )
                 )
 
@@ -620,6 +635,7 @@ class HypocrisyDatabaseManager:
             self.logger.error(f"Error getting recent findings: {e}")
             return []
 
+
     def cleanup_old_findings(self, days_old: int = 365) -> int:
         """Clean up old findings that are no longer relevant"""
         try:
@@ -633,7 +649,7 @@ class HypocrisyDatabaseManager:
                       AND verification_status = 'debunked'
                       AND content_used = FALSE
                 """.format(
-                        days_old
+                    days_old
                     )
                 )
 

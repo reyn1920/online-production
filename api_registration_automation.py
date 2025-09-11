@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Registration Automation Script
 Automatically opens registration pages and manages API keys
@@ -6,7 +6,7 @@ Automatically opens registration pages and manages API keys
 Usage:
     python api_registration_automation.py --phase 1
     python api_registration_automation.py --api huggingface
-    python api_registration_automation.py --batch-register
+    python api_registration_automation.py --batch - register
 """
 
 import argparse
@@ -24,275 +24,278 @@ API_REGISTRY = {
     # Phase 1: Essential Free APIs
     "huggingface": {
         "name": "Hugging Face",
-        "signup_url": "https://huggingface.co/join",
-        "login_url": "https://huggingface.co/login",
-        "env_var": "HUGGINGFACE_API_KEY",
-        "cost": "FREE",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Sign up → 2. Go to Settings → 3. Access Tokens → 4. Create new token",
-    },
-    "groq": {
+            "signup_url": "https://huggingface.co / join",
+            "login_url": "https://huggingface.co / login",
+            "env_var": "HUGGINGFACE_API_KEY",
+            "cost": "FREE",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Sign up → 2. Go to Settings → 3. Access Tokens → 4. Create new token",
+            },
+        "groq": {
         "name": "Groq",
-        "signup_url": "https://console.groq.com/",
-        "login_url": "https://console.groq.com/",
-        "env_var": "GROQ_API_KEY",
-        "cost": "FREE",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Sign up → 2. Create API Key → 3. Copy key",
-    },
-    "google_ai": {
+            "signup_url": "https://console.groq.com/",
+            "login_url": "https://console.groq.com/",
+            "env_var": "GROQ_API_KEY",
+            "cost": "FREE",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Sign up → 2. Create API Key → 3. Copy key",
+            },
+        "google_ai": {
         "name": "Google AI (Gemini)",
-        "signup_url": "https://makersuite.google.com/",
-        "login_url": "https://makersuite.google.com/",
-        "env_var": "GOOGLE_AI_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Sign up with Google → 2. Create API Key → 3. Copy key",
-    },
-    "youtube": {
+            "signup_url": "https://makersuite.google.com/",
+            "login_url": "https://makersuite.google.com/",
+            "env_var": "GOOGLE_AI_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Sign up with Google → 2. Create API Key → 3. Copy key",
+            },
+        "youtube": {
         "name": "YouTube Data API",
-        "signup_url": "https://console.cloud.google.com/",
-        "login_url": "https://accounts.google.com/",
-        "env_var": "YOUTUBE_API_KEY",
-        "cost": "FREE",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Google Cloud Console → 2. Enable YouTube Data API → 3. Create credentials",
-    },
-    "reddit": {
+            "signup_url": "https://console.cloud.google.com/",
+            "login_url": "https://accounts.google.com/",
+            "env_var": "YOUTUBE_API_KEY",
+            "cost": "FREE",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Google Cloud Console → 2. Enable YouTube Data API → 3. Create credentials",
+            },
+        "reddit": {
         "name": "Reddit API",
-        "signup_url": "https://www.reddit.com/prefs/apps",
-        "login_url": "https://www.reddit.com/login",
-        "env_var": "REDDIT_CLIENT_ID",
-        "cost": "FREE",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Reddit login → 2. Create app → 3. Get client ID and secret",
-    },
-    "github": {
+            "signup_url": "https://www.reddit.com / prefs / apps",
+            "login_url": "https://www.reddit.com / login",
+            "env_var": "REDDIT_CLIENT_ID",
+            "cost": "FREE",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Reddit login → 2. Create app → 3. Get client ID and secret",
+            },
+        "github": {
         "name": "GitHub API",
-        "signup_url": "https://github.com/join",
-        "login_url": "https://github.com/login",
-        "env_var": "GITHUB_TOKEN",
-        "cost": "FREE",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. GitHub login → 2. Settings → 3. Developer settings → 4. Personal access tokens",
-    },
-    "netlify": {
+            "signup_url": "https://github.com / join",
+            "login_url": "https://github.com / login",
+            "env_var": "GITHUB_TOKEN",
+            "cost": "FREE",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. GitHub login → 2. Settings → 3. Developer settings → 4. Personal access tokens",
+            },
+        "netlify": {
         "name": "Netlify",
-        "signup_url": "https://app.netlify.com/signup",
-        "login_url": "https://app.netlify.com/",
-        "env_var": "NETLIFY_AUTH_TOKEN",
-        "cost": "FREEMIUM",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Sign up → 2. User settings → 3. Applications → 4. Personal access tokens",
-    },
-    "sendgrid": {
+            "signup_url": "https://app.netlify.com / signup",
+            "login_url": "https://app.netlify.com/",
+            "env_var": "NETLIFY_AUTH_TOKEN",
+            "cost": "FREEMIUM",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Sign up → 2. User settings → 3. Applications → 4. Personal access tokens",
+            },
+        "sendgrid": {
         "name": "SendGrid",
-        "signup_url": "https://signup.sendgrid.com/",
-        "login_url": "https://app.sendgrid.com/login",
-        "env_var": "SENDGRID_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 1,
-        "priority": "high",
-        "instructions": "1. Sign up → 2. Settings → 3. API Keys → 4. Create API Key",
-    },
-    # Phase 2: Social Media APIs
+            "signup_url": "https://signup.sendgrid.com/",
+            "login_url": "https://app.sendgrid.com / login",
+            "env_var": "SENDGRID_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 1,
+            "priority": "high",
+            "instructions": "1. Sign up → 2. Settings → 3. API Keys → 4. Create API Key",
+            },
+        # Phase 2: Social Media APIs
     "twitter": {
-        "name": "Twitter/X API",
-        "signup_url": "https://developer.twitter.com/",
-        "login_url": "https://twitter.com/login",
-        "env_var": "TWITTER_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 2,
-        "priority": "medium",
-        "instructions": "1. Apply for developer account → 2. Create app → 3. Get API keys",
-    },
-    "linkedin": {
+        "name": "Twitter / X API",
+            "signup_url": "https://developer.twitter.com/",
+            "login_url": "https://twitter.com / login",
+            "env_var": "TWITTER_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 2,
+            "priority": "medium",
+            "instructions": "1. Apply for developer account → 2. Create app → 3. Get API keys",
+            },
+        "linkedin": {
         "name": "LinkedIn API",
-        "signup_url": "https://developer.linkedin.com/",
-        "login_url": "https://www.linkedin.com/login",
-        "env_var": "LI_CLIENT_ID",
-        "cost": "FREE",
-        "phase": 2,
-        "priority": "medium",
-        "instructions": "1. LinkedIn login → 2. Create app → 3. Get client credentials",
-    },
-    "pinterest": {
+            "signup_url": "https://developer.linkedin.com/",
+            "login_url": "https://www.linkedin.com / login",
+            "env_var": "LI_CLIENT_ID",
+            "cost": "FREE",
+            "phase": 2,
+            "priority": "medium",
+            "instructions": "1. LinkedIn login → 2. Create app → 3. Get client credentials",
+            },
+        "pinterest": {
         "name": "Pinterest API",
-        "signup_url": "https://developers.pinterest.com/",
-        "login_url": "https://www.pinterest.com/login",
-        "env_var": "PINTEREST_ACCESS_TOKEN",
-        "cost": "FREE",
-        "phase": 2,
-        "priority": "medium",
-        "instructions": "1. Pinterest login → 2. Create app → 3. Generate access token",
-    },
-    "tiktok": {
+            "signup_url": "https://developers.pinterest.com/",
+            "login_url": "https://www.pinterest.com / login",
+            "env_var": "PINTEREST_ACCESS_TOKEN",
+            "cost": "FREE",
+            "phase": 2,
+            "priority": "medium",
+            "instructions": "1. Pinterest login → 2. Create app → 3. Generate access token",
+            },
+        "tiktok": {
         "name": "TikTok API",
-        "signup_url": "https://developers.tiktok.com/",
-        "login_url": "https://www.tiktok.com/login",
-        "env_var": "TIKTOK_CLIENT_ID",
-        "cost": "FREE",
-        "phase": 2,
-        "priority": "medium",
-        "instructions": "1. TikTok login → 2. Apply for API access → 3. Create app",
-    },
-    "facebook": {
-        "name": "Facebook/Meta API",
-        "signup_url": "https://developers.facebook.com/",
-        "login_url": "https://www.facebook.com/login",
-        "env_var": "FACEBOOK_APP_ID",
-        "cost": "FREE",
-        "phase": 2,
-        "priority": "medium",
-        "instructions": "1. Facebook login → 2. Create app → 3. Get app ID and secret",
-    },
-    "instagram": {
+            "signup_url": "https://developers.tiktok.com/",
+            "login_url": "https://www.tiktok.com / login",
+            "env_var": "TIKTOK_CLIENT_ID",
+            "cost": "FREE",
+            "phase": 2,
+            "priority": "medium",
+            "instructions": "1. TikTok login → 2. Apply for API access → 3. Create app",
+            },
+        "facebook": {
+        "name": "Facebook / Meta API",
+            "signup_url": "https://developers.facebook.com/",
+            "login_url": "https://www.facebook.com / login",
+            "env_var": "FACEBOOK_APP_ID",
+            "cost": "FREE",
+            "phase": 2,
+            "priority": "medium",
+            "instructions": "1. Facebook login → 2. Create app → 3. Get app ID and secret",
+            },
+        "instagram": {
         "name": "Instagram API",
-        "signup_url": "https://developers.facebook.com/",
-        "login_url": "https://www.facebook.com/login",
-        "env_var": "INSTAGRAM_ACCESS_TOKEN",
-        "cost": "FREE",
-        "phase": 2,
-        "priority": "medium",
-        "instructions": "1. Facebook developers → 2. Instagram Basic Display → 3. Create app",
-    },
-    # Phase 3: Specialized APIs
+            "signup_url": "https://developers.facebook.com/",
+            "login_url": "https://www.facebook.com / login",
+            "env_var": "INSTAGRAM_ACCESS_TOKEN",
+            "cost": "FREE",
+            "phase": 2,
+            "priority": "medium",
+            "instructions": "1. Facebook developers → 2. Instagram Basic Display → 3. Create app",
+            },
+        # Phase 3: Specialized APIs
     "dog_api": {
         "name": "Dog API",
-        "signup_url": "https://thedogapi.com/signup",
-        "login_url": "https://thedogapi.com/signup",
-        "env_var": "DOG_API_KEY",
-        "cost": "FREE",
-        "phase": 3,
-        "priority": "low",
-        "instructions": "1. Sign up → 2. Get API key from email",
-    },
-    "cat_api": {
+            "signup_url": "https://thedogapi.com / signup",
+            "login_url": "https://thedogapi.com / signup",
+            "env_var": "DOG_API_KEY",
+            "cost": "FREE",
+            "phase": 3,
+            "priority": "low",
+            "instructions": "1. Sign up → 2. Get API key from email",
+            },
+        "cat_api": {
         "name": "Cat API",
-        "signup_url": "https://thecatapi.com/signup",
-        "login_url": "https://thecatapi.com/signup",
-        "env_var": "CAT_API_KEY",
-        "cost": "FREE",
-        "phase": 3,
-        "priority": "low",
-        "instructions": "1. Sign up → 2. Get API key from email",
-    },
-    "ebird": {
+            "signup_url": "https://thecatapi.com / signup",
+            "login_url": "https://thecatapi.com / signup",
+            "env_var": "CAT_API_KEY",
+            "cost": "FREE",
+            "phase": 3,
+            "priority": "low",
+            "instructions": "1. Sign up → 2. Get API key from email",
+            },
+        "ebird": {
         "name": "eBird API",
-        "signup_url": "https://ebird.org/api/keygen",
-        "login_url": "https://ebird.org/login",
-        "env_var": "EBIRD_API_TOKEN",
-        "cost": "FREE",
-        "phase": 3,
-        "priority": "low",
-        "instructions": "1. eBird login → 2. Request API key → 3. Get key via email",
-    },
-    "petfinder": {
+            "signup_url": "https://ebird.org / api / keygen",
+            "login_url": "https://ebird.org / login",
+            "env_var": "EBIRD_API_TOKEN",
+            "cost": "FREE",
+            "phase": 3,
+            "priority": "low",
+            "instructions": "1. eBird login → 2. Request API key → 3. Get key via email",
+            },
+        "petfinder": {
         "name": "Petfinder API",
-        "signup_url": "https://www.petfinder.com/developers/",
-        "login_url": "https://www.petfinder.com/user/login/",
-        "env_var": "PETFINDER_KEY",
-        "cost": "FREE",
-        "phase": 3,
-        "priority": "low",
-        "instructions": "1. Petfinder login → 2. Register app → 3. Get API key and secret",
-    },
-    "openweather": {
+            "signup_url": "https://www.petfinder.com / developers/",
+            "login_url": "https://www.petfinder.com / user / login/",
+            "env_var": "PETFINDER_KEY",
+            "cost": "FREE",
+            "phase": 3,
+            "priority": "low",
+            "instructions": "1. Petfinder login → 2. Register app → 3. Get API key and secret",
+            },
+        "openweather": {
         "name": "OpenWeatherMap",
-        "signup_url": "https://openweathermap.org/api",
-        "login_url": "https://home.openweathermap.org/users/sign_in",
-        "env_var": "OPENWEATHER_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 3,
-        "priority": "medium",
-        "instructions": "1. Sign up → 2. API keys section → 3. Generate key",
-    },
-    "unsplash": {
+            "signup_url": "https://openweathermap.org / api",
+            "login_url": "https://home.openweathermap.org / users / sign_in",
+            "env_var": "OPENWEATHER_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 3,
+            "priority": "medium",
+            "instructions": "1. Sign up → 2. API keys section → 3. Generate key",
+            },
+        "unsplash": {
         "name": "Unsplash API",
-        "signup_url": "https://unsplash.com/developers",
-        "login_url": "https://unsplash.com/login",
-        "env_var": "UNSPLASH_ACCESS_KEY",
-        "cost": "FREE",
-        "phase": 3,
-        "priority": "medium",
-        "instructions": "1. Unsplash login → 2. Create new app → 3. Get access key",
-    },
-    # Phase 4: Business APIs
+            "signup_url": "https://unsplash.com / developers",
+            "login_url": "https://unsplash.com / login",
+            "env_var": "UNSPLASH_ACCESS_KEY",
+            "cost": "FREE",
+            "phase": 3,
+            "priority": "medium",
+            "instructions": "1. Unsplash login → 2. Create new app → 3. Get access key",
+            },
+        # Phase 4: Business APIs
     "stripe": {
         "name": "Stripe",
-        "signup_url": "https://dashboard.stripe.com/register",
-        "login_url": "https://dashboard.stripe.com/login",
-        "env_var": "STRIPE_PUBLISHABLE_KEY",
-        "cost": "FREEMIUM",
-        "phase": 4,
-        "priority": "medium",
-        "instructions": "1. Sign up → 2. Developers → 3. API keys → 4. Get publishable and secret keys",
-    },
-    "calendly": {
+            "signup_url": "https://dashboard.stripe.com / register",
+            "login_url": "https://dashboard.stripe.com / login",
+            "env_var": "STRIPE_PUBLISHABLE_KEY",
+            "cost": "FREEMIUM",
+            "phase": 4,
+            "priority": "medium",
+            "instructions": "1. Sign up → 2. Developers → 3. API keys → 4. Get publishable and secret keys",
+            },
+        "calendly": {
         "name": "Calendly",
-        "signup_url": "https://calendly.com/",
-        "login_url": "https://calendly.com/login",
-        "env_var": "CALENDLY_TOKEN",
-        "cost": "FREEMIUM",
-        "phase": 4,
-        "priority": "low",
-        "instructions": "1. Sign up → 2. Integrations → 3. API & Webhooks → 4. Generate token",
-    },
-    "mailchimp": {
+            "signup_url": "https://calendly.com/",
+            "login_url": "https://calendly.com / login",
+            "env_var": "CALENDLY_TOKEN",
+            "cost": "FREEMIUM",
+            "phase": 4,
+            "priority": "low",
+            "instructions": "1. Sign up → 2. Integrations → 3. API & Webhooks → 4. Generate token",
+            },
+        "mailchimp": {
         "name": "Mailchimp",
-        "signup_url": "https://mailchimp.com/",
-        "login_url": "https://login.mailchimp.com/",
-        "env_var": "MAILCHIMP_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 4,
-        "priority": "medium",
-        "instructions": "1. Sign up → 2. Account → 3. Extras → 4. API keys → 5. Create key",
-    },
-    "hubspot": {
+            "signup_url": "https://mailchimp.com/",
+            "login_url": "https://login.mailchimp.com/",
+            "env_var": "MAILCHIMP_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 4,
+            "priority": "medium",
+            "instructions": "1. Sign up → 2. Account → 3. Extras → 4. API keys → 5. Create key",
+            },
+        "hubspot": {
         "name": "HubSpot",
-        "signup_url": "https://www.hubspot.com/",
-        "login_url": "https://app.hubspot.com/login",
-        "env_var": "HUBSPOT_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 4,
-        "priority": "low",
-        "instructions": "1. Sign up → 2. Settings → 3. Integrations → 4. API key",
-    },
-    "airtable": {
+            "signup_url": "https://www.hubspot.com/",
+            "login_url": "https://app.hubspot.com / login",
+            "env_var": "HUBSPOT_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 4,
+            "priority": "low",
+            "instructions": "1. Sign up → 2. Settings → 3. Integrations → 4. API key",
+            },
+        "airtable": {
         "name": "Airtable",
-        "signup_url": "https://airtable.com/",
-        "login_url": "https://airtable.com/login",
-        "env_var": "AIRTABLE_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 4,
-        "priority": "low",
-        "instructions": "1. Sign up → 2. Account → 3. Generate API key",
-    },
-    "notion": {
+            "signup_url": "https://airtable.com/",
+            "login_url": "https://airtable.com / login",
+            "env_var": "AIRTABLE_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 4,
+            "priority": "low",
+            "instructions": "1. Sign up → 2. Account → 3. Generate API key",
+            },
+        "notion": {
         "name": "Notion",
-        "signup_url": "https://www.notion.so/",
-        "login_url": "https://www.notion.so/login",
-        "env_var": "NOTION_API_KEY",
-        "cost": "FREEMIUM",
-        "phase": 4,
-        "priority": "low",
-        "instructions": "1. Sign up → 2. Settings → 3. Integrations → 4. Create integration",
-    },
+            "signup_url": "https://www.notion.so/",
+            "login_url": "https://www.notion.so / login",
+            "env_var": "NOTION_API_KEY",
+            "cost": "FREEMIUM",
+            "phase": 4,
+            "priority": "low",
+            "instructions": "1. Sign up → 2. Settings → 3. Integrations → 4. Create integration",
+            },
 }
 
 
 class APIRegistrationManager:
+
+
     def __init__(self):
         self.env_file = ".env"
         self.progress_file = "api_registration_progress.json"
         self.load_progress()
+
 
     def load_progress(self):
         """Load registration progress from file"""
@@ -302,23 +305,27 @@ class APIRegistrationManager:
         except FileNotFoundError:
             self.progress = {}
 
+
     def save_progress(self):
         """Save registration progress to file"""
         with open(self.progress_file, "w") as f:
-            json.dump(self.progress, f, indent=2)
+            json.dump(self.progress, f, indent = 2)
+
 
     def mark_registered(self, api_key: str, api_token: str = None):
         """Mark an API as registered with its key"""
         self.progress[api_key] = {
             "registered": True,
-            "timestamp": datetime.now().isoformat(),
-            "has_key": bool(api_token),
-        }
+                "timestamp": datetime.now().isoformat(),
+                "has_key": bool(api_token),
+                }
         self.save_progress()
+
 
     def is_registered(self, api_key: str) -> bool:
         """Check if an API is already registered"""
         return self.progress.get(api_key, {}).get("registered", False)
+
 
     def open_registration_page(self, api_key: str):
         """Open the registration page for an API"""
@@ -357,6 +364,7 @@ class APIRegistrationManager:
 
         return True
 
+
     def update_env_file(self, env_var: str, value: str):
         """Update or add environment variable to .env file"""
         env_lines = []
@@ -381,6 +389,7 @@ class APIRegistrationManager:
         with open(self.env_file, "w") as f:
             f.writelines(env_lines)
 
+
     def register_phase(self, phase: int):
         """Register all APIs in a specific phase"""
         phase_apis = [k for k, v in API_REGISTRY.items() if v["phase"] == phase]
@@ -402,7 +411,7 @@ class APIRegistrationManager:
                 continue
 
             proceed = input(
-                f"🤔 Register for {api_info['name']}? (y/n/s=skip): "
+                f"🤔 Register for {api_info['name']}? (y / n/s = skip): "
             ).lower()
 
             if proceed == "y":
@@ -416,6 +425,7 @@ class APIRegistrationManager:
 
         print(f"\n🎉 Phase {phase} registration completed!")
 
+
     def batch_register(self, api_keys: List[str]):
         """Register multiple APIs in batch"""
         print(f"\n🚀 Batch registering {len(api_keys)} APIs")
@@ -426,6 +436,7 @@ class APIRegistrationManager:
                 time.sleep(2)  # Brief pause between registrations
             else:
                 print(f"❌ Unknown API: {api_key}")
+
 
     def show_status(self):
         """Show registration status for all APIs"""
@@ -451,8 +462,9 @@ class APIRegistrationManager:
             [k for k in API_REGISTRY.keys() if self.is_registered(k)]
         )
         print(
-            f"\n📈 Progress: {registered_count}/{total_apis} APIs registered ({registered_count/total_apis*100:.1f}%)"
+            f"\n📈 Progress: {registered_count}/{total_apis} APIs registered ({registered_count / total_apis * 100:.1f}%)"
         )
+
 
     def generate_env_template(self):
         """Generate .env template with all API variables"""
@@ -481,10 +493,10 @@ class APIRegistrationManager:
 def main():
     parser = argparse.ArgumentParser(description="API Registration Automation")
     parser.add_argument(
-        "--phase", type=int, help="Register all APIs in a specific phase (1-4)"
+        "--phase", type = int, help="Register all APIs in a specific phase (1 - 4)"
     )
-    parser.add_argument("--api", type=str, help="Register a specific API")
-    parser.add_argument("--batch-register", nargs="+", help="Register multiple APIs")
+    parser.add_argument("--api", type = str, help="Register a specific API")
+    parser.add_argument("--batch - register", nargs="+", help="Register multiple APIs")
     parser.add_argument(
         "--status", action="store_true", help="Show registration status"
     )
@@ -525,7 +537,7 @@ def main():
         print("6. Register specific API")
         print("7. Generate .env template")
 
-        choice = input("\nEnter your choice (1-7): ").strip()
+        choice = input("\nEnter your choice (1 - 7): ").strip()
 
         if choice == "1":
             manager.register_phase(1)
@@ -544,7 +556,6 @@ def main():
             manager.generate_env_template()
         else:
             print("❌ Invalid choice")
-
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from .base_monetization import (BaseMonetizationAPI, Product, ProductCreationError,
-                                ProductResponse)
+    ProductResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -13,47 +13,50 @@ logger = logging.getLogger(__name__)
 class GumroadAPI(BaseMonetizationAPI):
     """Gumroad API client for digital product sales and management."""
 
+
     def __init__(self, access_token: str):
         super().__init__(
-            api_key=access_token,
-            base_url="https://api.gumroad.com/v2",
-            rate_limit=60,  # Gumroad allows 60 requests per minute
+            api_key = access_token,
+                base_url="https://api.gumroad.com / v2",
+                rate_limit = 60,  # Gumroad allows 60 requests per minute
         )
         self.access_token = access_token
+
 
     def _get_auth_headers(self) -> Dict[str, str]:
         """Get Gumroad API authentication headers."""
         return {
             "Authorization": f"Bearer {self.access_token}",
-            "Content-Type": "application/json",
-        }
+                "Content - Type": "application / json",
+                }
+
 
     def create_product(self, product: Product) -> ProductResponse:
         """Create a new product on Gumroad."""
         try:
             product_data = {
                 "name": product.title,
-                "description": product.description,
-                "price": int(product.price * 100),  # Gumroad uses cents
+                    "description": product.description,
+                    "price": int(product.price * 100),  # Gumroad uses cents
                 "currency": product.currency,
-                "content_type": "digital",
-                "tags": ",".join(product.tags) if product.tags else "",
-                "require_shipping": False,
-                "published": False,  # Start as draft
+                    "content_type": "digital",
+                    "tags": ",".join(product.tags) if product.tags else "",
+                    "require_shipping": False,
+                    "published": False,  # Start as draft
                 "shown_on_profile": True,
-                "file_info": {},
-                "preview_url": (
+                    "file_info": {},
+                    "preview_url": (
                     product.preview_images[0] if product.preview_images else None
                 ),
-                "variants_enabled": product.metadata.get("variants_enabled", False),
-                "affiliate_program": product.metadata.get("affiliate_program", False),
-                "max_purchase_count": product.metadata.get("max_purchase_count", 0),
-            }
+                    "variants_enabled": product.metadata.get("variants_enabled", False),
+                    "affiliate_program": product.metadata.get("affiliate_program", False),
+                    "max_purchase_count": product.metadata.get("max_purchase_count", 0),
+                    }
 
             # Remove None values
             product_data = {k: v for k, v in product_data.items() if v is not None}
 
-            response = self._make_request("POST", "/products", data=product_data)
+            response = self._make_request("POST", "/products", data = product_data)
             product_response = response.json()
 
             if product_response.get("success"):
@@ -66,53 +69,55 @@ class GumroadAPI(BaseMonetizationAPI):
                     )
 
                 return ProductResponse(
-                    success=True,
-                    product_id=product_info["id"],
-                    product_url=product_info.get("short_url"),
-                    platform_data=product_response,
-                )
+                    success = True,
+                        product_id = product_info["id"],
+                        product_url = product_info.get("short_url"),
+                        platform_data = product_response,
+                        )
             else:
                 return ProductResponse(
-                    success=False,
-                    error_message=product_response.get("message", "Unknown error"),
-                )
+                    success = False,
+                        error_message = product_response.get("message", "Unknown error"),
+                        )
 
         except Exception as e:
             logger.error(f"Failed to create Gumroad product: {e}")
-            return ProductResponse(success=False, error_message=str(e))
+            return ProductResponse(success = False, error_message = str(e))
+
 
     def update_product(self, product_id: str, product: Product) -> ProductResponse:
         """Update an existing Gumroad product."""
         try:
             product_data = {
                 "name": product.title,
-                "description": product.description,
-                "price": int(product.price * 100),  # Gumroad uses cents
+                    "description": product.description,
+                    "price": int(product.price * 100),  # Gumroad uses cents
                 "currency": product.currency,
-                "tags": ",".join(product.tags) if product.tags else "",
-            }
+                    "tags": ",".join(product.tags) if product.tags else "",
+                    }
 
             response = self._make_request(
-                "PUT", f"/products/{product_id}", data=product_data
+                "PUT", f"/products/{product_id}", data = product_data
             )
             product_response = response.json()
 
             if product_response.get("success"):
                 return ProductResponse(
-                    success=True,
-                    product_id=product_id,
-                    product_url=product_response["product"].get("short_url"),
-                    platform_data=product_response,
-                )
+                    success = True,
+                        product_id = product_id,
+                        product_url = product_response["product"].get("short_url"),
+                        platform_data = product_response,
+                        )
             else:
                 return ProductResponse(
-                    success=False,
-                    error_message=product_response.get("message", "Unknown error"),
-                )
+                    success = False,
+                        error_message = product_response.get("message", "Unknown error"),
+                        )
 
         except Exception as e:
             logger.error(f"Failed to update Gumroad product {product_id}: {e}")
-            return ProductResponse(success=False, error_message=str(e))
+            return ProductResponse(success = False, error_message = str(e))
+
 
     def delete_product(self, product_id: str) -> bool:
         """Delete a Gumroad product."""
@@ -123,6 +128,7 @@ class GumroadAPI(BaseMonetizationAPI):
         except Exception as e:
             logger.error(f"Failed to delete Gumroad product {product_id}: {e}")
             return False
+
 
     def get_product(self, product_id: str) -> Optional[Dict[str, Any]]:
         """Get Gumroad product details."""
@@ -137,15 +143,16 @@ class GumroadAPI(BaseMonetizationAPI):
             logger.error(f"Failed to get Gumroad product {product_id}: {e}")
             return None
 
+
     def list_products(self, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
         """List Gumroad products."""
         try:
             params = {
                 "page": (offset // limit) + 1,
-                "per_page": min(limit, 100),  # Gumroad max is 100
+                    "per_page": min(limit, 100),  # Gumroad max is 100
             }
 
-            response = self._make_request("GET", "/products", params=params)
+            response = self._make_request("GET", "/products", params = params)
             response_data = response.json()
 
             if response_data.get("success"):
@@ -155,6 +162,7 @@ class GumroadAPI(BaseMonetizationAPI):
             logger.error(f"Failed to list Gumroad products: {e}")
             return []
 
+
     def get_sales_data(
         self, start_date: datetime, end_date: datetime
     ) -> Dict[str, Any]:
@@ -162,17 +170,17 @@ class GumroadAPI(BaseMonetizationAPI):
         try:
             params = {
                 "after": start_date.strftime("%Y-%m-%d"),
-                "before": end_date.strftime("%Y-%m-%d"),
-                "page": 1,
-                "per_page": 100,
-            }
+                    "before": end_date.strftime("%Y-%m-%d"),
+                    "page": 1,
+                    "per_page": 100,
+                    }
 
             all_sales = []
             page = 1
 
             while True:
                 params["page"] = page
-                response = self._make_request("GET", "/sales", params=params)
+                response = self._make_request("GET", "/sales", params = params)
                 response_data = response.json()
 
                 if not response_data.get("success"):
@@ -204,19 +212,20 @@ class GumroadAPI(BaseMonetizationAPI):
 
             return {
                 "platform": "Gumroad",
-                "period": f"{start_date.date()} to {end_date.date()}",
-                "total_sales": total_sales,
-                "total_revenue": total_revenue,
-                "total_refunds": total_refunds,
-                "net_revenue": total_revenue - total_refunds,
-                "currency": "USD",
-                "sales": all_sales,
-                "refunds": refunds,
-            }
+                    "period": f"{start_date.date()} to {end_date.date()}",
+                    "total_sales": total_sales,
+                    "total_revenue": total_revenue,
+                    "total_refunds": total_refunds,
+                    "net_revenue": total_revenue - total_refunds,
+                    "currency": "USD",
+                    "sales": all_sales,
+                    "refunds": refunds,
+                    }
 
         except Exception as e:
             logger.error(f"Failed to get Gumroad sales data: {e}")
             return {"error": str(e)}
+
 
     def publish_product(self, product_id: str) -> bool:
         """Publish a draft product on Gumroad."""
@@ -228,6 +237,7 @@ class GumroadAPI(BaseMonetizationAPI):
             logger.error(f"Failed to publish Gumroad product {product_id}: {e}")
             return False
 
+
     def create_discount_code(
         self, product_id: str, code: str, discount_percent: float, max_uses: int = 100
     ) -> Dict[str, Any]:
@@ -235,13 +245,13 @@ class GumroadAPI(BaseMonetizationAPI):
         try:
             discount_data = {
                 "name": code,
-                "amount_cents": int(discount_percent * 100),  # Convert to basis points
+                    "amount_cents": int(discount_percent * 100),  # Convert to basis points
                 "max_purchase_count": max_uses,
-                "universal": False,  # Product-specific discount
+                    "universal": False,  # Product - specific discount
             }
 
             response = self._make_request(
-                "POST", f"/products/{product_id}/offer_codes", data=discount_data
+                "POST", f"/products/{product_id}/offer_codes", data = discount_data
             )
             return response.json()
 
@@ -249,8 +259,9 @@ class GumroadAPI(BaseMonetizationAPI):
             logger.error(f"Failed to create Gumroad discount code: {e}")
             return {"error": str(e)}
 
+
     def get_user_info(self) -> Dict[str, Any]:
-        """Get Gumroad user/seller information."""
+        """Get Gumroad user / seller information."""
         try:
             response = self._make_request("GET", "/user")
             response_data = response.json()
@@ -263,8 +274,9 @@ class GumroadAPI(BaseMonetizationAPI):
             logger.error(f"Failed to get Gumroad user info: {e}")
             return {"error": str(e)}
 
+
     def get_subscriber_data(self) -> Dict[str, Any]:
-        """Get subscriber/follower data from Gumroad."""
+        """Get subscriber / follower data from Gumroad."""
         try:
             response = self._make_request("GET", "/subscribers")
             response_data = response.json()
@@ -273,14 +285,15 @@ class GumroadAPI(BaseMonetizationAPI):
                 subscribers = response_data.get("subscribers", [])
                 return {
                     "platform": "Gumroad",
-                    "total_subscribers": len(subscribers),
-                    "subscribers": subscribers,
-                }
+                        "total_subscribers": len(subscribers),
+                        "subscribers": subscribers,
+                        }
             return {"error": response_data.get("message", "Unknown error")}
 
         except Exception as e:
             logger.error(f"Failed to get Gumroad subscriber data: {e}")
             return {"error": str(e)}
+
 
     def _upload_digital_files(self, product_id: str, file_paths: List[str]):
         """Upload digital files to a Gumroad product."""
@@ -294,6 +307,7 @@ class GumroadAPI(BaseMonetizationAPI):
             except Exception as e:
                 logger.error(f"Failed to upload digital file {file_path}: {e}")
 
+
     def get_analytics_summary(self) -> Dict[str, Any]:
         """Get comprehensive analytics summary from Gumroad."""
         try:
@@ -302,7 +316,7 @@ class GumroadAPI(BaseMonetizationAPI):
 
             # Get recent sales (last 30 days)
             end_date = datetime.now()
-            start_date = datetime.now().replace(day=1)  # First day of current month
+            start_date = datetime.now().replace(day = 1)  # First day of current month
             sales_data = self.get_sales_data(start_date, end_date)
 
             # Get subscriber data
@@ -310,15 +324,16 @@ class GumroadAPI(BaseMonetizationAPI):
 
             return {
                 "platform": "Gumroad",
-                "user_info": user_info,
-                "monthly_sales": sales_data,
-                "subscribers": subscriber_data,
-                "generated_at": datetime.now().isoformat(),
-            }
+                    "user_info": user_info,
+                    "monthly_sales": sales_data,
+                    "subscribers": subscriber_data,
+                    "generated_at": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             logger.error(f"Failed to get Gumroad analytics summary: {e}")
             return {"error": str(e)}
+
 
     def health_check(self) -> bool:
         """Check Gumroad API health."""

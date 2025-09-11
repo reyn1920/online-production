@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Predictive Analytics Engine - Layer 3 of Maxed-Out Automation
+Predictive Analytics Engine - Layer 3 of Maxed - Out Automation
 Upgrades Research Agent to predict viral content success and optimize content strategy.
 """
 
@@ -24,7 +24,7 @@ import pandas as pd
 try:
     import joblib
     from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
-    from sklearn.linear_model import LinearRegression
+        from sklearn.linear_model import LinearRegression
     from sklearn.metrics import mean_squared_error, r2_score
     from sklearn.model_selection import train_test_split
     from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -54,8 +54,9 @@ class SuccessMetric(Enum):
     CONVERSION = "conversion"
     VIRAL_SCORE = "viral_score"
 
-
 @dataclass
+
+
 class ContentFeatures:
     title: str
     description: str
@@ -70,8 +71,9 @@ class ContentFeatures:
     readability_score: Optional[float] = None
     trending_keywords_count: Optional[int] = None
 
-
 @dataclass
+
+
 class ContentPerformance:
     content_id: str
     features: ContentFeatures
@@ -84,8 +86,9 @@ class ContentPerformance:
     success_factors: List[str]
     performance_date: datetime
 
-
 @dataclass
+
+
 class PredictionResult:
     content_features: ContentFeatures
     predicted_views: int
@@ -101,7 +104,8 @@ class PredictionResult:
 class PredictiveAnalyticsEngine(BaseAgent):
     """Advanced predictive analytics for viral content optimization."""
 
-    def __init__(self, db_path: str = "data/right_perspective.db"):
+
+    def __init__(self, db_path: str = "data / right_perspective.db"):
         super().__init__()
         self.db_path = db_path
         self.secret_store = SecretStore()
@@ -109,8 +113,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
         self.research_agent = ResearchAgent()
 
         # Model storage
-        self.models_dir = Path("data/predictive_models")
-        self.models_dir.mkdir(parents=True, exist_ok=True)
+        self.models_dir = Path("data / predictive_models")
+        self.models_dir.mkdir(parents = True, exist_ok = True)
 
         # Feature extractors
         self.scaler = StandardScaler()
@@ -119,15 +123,16 @@ class PredictiveAnalyticsEngine(BaseAgent):
         # Prediction models
         self.models = {
             SuccessMetric.VIEWS: None,
-            SuccessMetric.ENGAGEMENT: None,
-            SuccessMetric.VIRAL_SCORE: None,
-        }
+                SuccessMetric.ENGAGEMENT: None,
+                SuccessMetric.VIRAL_SCORE: None,
+                }
 
         # Performance tracking
         self.prediction_accuracy = defaultdict(list)
 
         self._init_database()
         self._load_or_train_models()
+
 
     def _init_database(self):
         """Initialize predictive analytics database tables."""
@@ -136,70 +141,71 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS content_performance (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    content_id TEXT UNIQUE NOT NULL,
-                    title TEXT NOT NULL,
-                    description TEXT,
-                    keywords TEXT,
-                    content_type TEXT NOT NULL,
-                    duration_minutes REAL,
-                    word_count INTEGER,
-                    thumbnail_colors TEXT,
-                    publish_time TIMESTAMP,
-                    topic_category TEXT,
-                    sentiment_score REAL,
-                    readability_score REAL,
-                    trending_keywords_count INTEGER,
-                    views_30d INTEGER DEFAULT 0,
-                    engagement_rate REAL DEFAULT 0.0,
-                    shares INTEGER DEFAULT 0,
-                    comments INTEGER DEFAULT 0,
-                    conversion_rate REAL DEFAULT 0.0,
-                    viral_score REAL DEFAULT 0.0,
-                    success_factors TEXT,
-                    performance_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        content_id TEXT UNIQUE NOT NULL,
+                        title TEXT NOT NULL,
+                        description TEXT,
+                        keywords TEXT,
+                        content_type TEXT NOT NULL,
+                        duration_minutes REAL,
+                        word_count INTEGER,
+                        thumbnail_colors TEXT,
+                        publish_time TIMESTAMP,
+                        topic_category TEXT,
+                        sentiment_score REAL,
+                        readability_score REAL,
+                        trending_keywords_count INTEGER,
+                        views_30d INTEGER DEFAULT 0,
+                        engagement_rate REAL DEFAULT 0.0,
+                        shares INTEGER DEFAULT 0,
+                        comments INTEGER DEFAULT 0,
+                        conversion_rate REAL DEFAULT 0.0,
+                        viral_score REAL DEFAULT 0.0,
+                        success_factors TEXT,
+                        performance_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS prediction_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    prediction_id TEXT UNIQUE NOT NULL,
-                    content_features TEXT NOT NULL,
-                    predicted_views INTEGER,
-                    predicted_engagement REAL,
-                    viral_probability REAL,
-                    success_score REAL,
-                    confidence_lower REAL,
-                    confidence_upper REAL,
-                    optimization_suggestions TEXT,
-                    risk_factors TEXT,
-                    best_publish_time TIMESTAMP,
-                    actual_performance TEXT,
-                    prediction_accuracy REAL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        prediction_id TEXT UNIQUE NOT NULL,
+                        content_features TEXT NOT NULL,
+                        predicted_views INTEGER,
+                        predicted_engagement REAL,
+                        viral_probability REAL,
+                        success_score REAL,
+                        confidence_lower REAL,
+                        confidence_upper REAL,
+                        optimization_suggestions TEXT,
+                        risk_factors TEXT,
+                        best_publish_time TIMESTAMP,
+                        actual_performance TEXT,
+                        prediction_accuracy REAL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS trending_patterns (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    pattern_type TEXT NOT NULL,
-                    pattern_data TEXT NOT NULL,
-                    confidence_score REAL NOT NULL,
-                    trend_strength REAL NOT NULL,
-                    detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    expires_at TIMESTAMP,
-                    active BOOLEAN DEFAULT TRUE
+                        pattern_type TEXT NOT NULL,
+                        pattern_data TEXT NOT NULL,
+                        confidence_score REAL NOT NULL,
+                        trend_strength REAL NOT NULL,
+                        detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        expires_at TIMESTAMP,
+                        active BOOLEAN DEFAULT TRUE
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS success_factors (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    factor_name TEXT NOT NULL,
-                    factor_type TEXT NOT NULL,
-                    impact_score REAL NOT NULL,
-                    frequency INTEGER DEFAULT 1,
-                    last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    UNIQUE(factor_name, factor_type)
+                        factor_name TEXT NOT NULL,
+                        factor_type TEXT NOT NULL,
+                        impact_score REAL NOT NULL,
+                        frequency INTEGER DEFAULT 1,
+                        last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        UNIQUE(factor_name, factor_type)
                 );
             """
             )
+
 
     def _load_or_train_models(self):
         """Load existing models or train new ones."""
@@ -230,6 +236,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
             self.logger.error(f"Model loading error: {e}")
             self._train_initial_models()
 
+
     def _train_initial_models(self):
         """Train initial models with synthetic and historical data."""
         if not ML_AVAILABLE:
@@ -258,13 +265,13 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
             # Train models
             self.models[SuccessMetric.VIEWS] = RandomForestRegressor(
-                n_estimators=100, random_state=42
+                n_estimators = 100, random_state = 42
             )
             self.models[SuccessMetric.ENGAGEMENT] = GradientBoostingRegressor(
-                random_state=42
+                random_state = 42
             )
             self.models[SuccessMetric.VIRAL_SCORE] = RandomForestRegressor(
-                n_estimators=100, random_state=42
+                n_estimators = 100, random_state = 42
             )
 
             # Fit models
@@ -287,6 +294,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
         except Exception as e:
             self.logger.error(f"Model training error: {e}")
 
+
     def _generate_synthetic_training_data(
         self, num_samples: int
     ) -> List[ContentPerformance]:
@@ -297,43 +305,43 @@ class PredictiveAnalyticsEngine(BaseAgent):
         categories = {
             "tech_tutorials": {
                 "base_views": 5000,
-                "engagement_mult": 1.2,
-                "viral_chance": 0.15,
-            },
-            "entertainment": {
+                    "engagement_mult": 1.2,
+                    "viral_chance": 0.15,
+                    },
+                "entertainment": {
                 "base_views": 15000,
-                "engagement_mult": 1.8,
-                "viral_chance": 0.25,
-            },
-            "education": {
+                    "engagement_mult": 1.8,
+                    "viral_chance": 0.25,
+                    },
+                "education": {
                 "base_views": 3000,
-                "engagement_mult": 1.0,
-                "viral_chance": 0.08,
-            },
-            "news": {"base_views": 8000, "engagement_mult": 0.9, "viral_chance": 0.12},
-            "lifestyle": {
+                    "engagement_mult": 1.0,
+                    "viral_chance": 0.08,
+                    },
+                "news": {"base_views": 8000, "engagement_mult": 0.9, "viral_chance": 0.12},
+                "lifestyle": {
                 "base_views": 7000,
-                "engagement_mult": 1.4,
-                "viral_chance": 0.18,
-            },
-        }
+                    "engagement_mult": 1.4,
+                    "viral_chance": 0.18,
+                    },
+                }
 
         trending_keywords = [
             "AI",
-            "automation",
-            "productivity",
-            "viral",
-            "trending",
-            "2024",
-            "tips",
-            "secrets",
-            "ultimate",
-            "guide",
-            "hack",
-            "boost",
-            "transform",
-            "master",
-        ]
+                "automation",
+                "productivity",
+                "viral",
+                "trending",
+                "2024",
+                "tips",
+                "secrets",
+                "ultimate",
+                "guide",
+                "hack",
+                "boost",
+                "transform",
+                "master",
+                ]
 
         for i in range(num_samples):
             # Random content features
@@ -343,10 +351,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Title generation with viral elements
             title_templates = [
                 f"Ultimate {category.replace('_', ' ').title()} Guide",
-                f"10 {category.replace('_', ' ').title()} Secrets",
-                f"How to Master {category.replace('_', ' ').title()}",
-                f"Transform Your {category.replace('_', ' ').title()}",
-            ]
+                    f"10 {category.replace('_', ' ').title()} Secrets",
+                    f"How to Master {category.replace('_', ' ').title()}",
+                    f"Transform Your {category.replace('_', ' ').title()}",
+                    ]
 
             title = np.random.choice(title_templates)
             if np.random.random() < 0.3:  # 30% chance of trending keyword
@@ -354,22 +362,22 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
             # Features
             features = ContentFeatures(
-                title=title,
-                description=f"Comprehensive guide about {category.replace('_', ' ')}",
-                keywords=np.random.choice(
-                    trending_keywords, size=np.random.randint(3, 8)
+                title = title,
+                    description = f"Comprehensive guide about {category.replace('_', ' ')}",
+                    keywords = np.random.choice(
+                    trending_keywords, size = np.random.randint(3, 8)
                 ).tolist(),
-                content_type=ContentType.VIDEO,
-                duration_minutes=np.random.uniform(5, 30),
-                word_count=np.random.randint(500, 3000),
-                thumbnail_colors=["#FF6B6B", "#4ECDC4", "#45B7D1"],
-                topic_category=category,
-                sentiment_score=np.random.uniform(0.3, 0.9),
-                readability_score=np.random.uniform(60, 90),
-                trending_keywords_count=len(
+                    content_type = ContentType.VIDEO,
+                    duration_minutes = np.random.uniform(5, 30),
+                    word_count = np.random.randint(500, 3000),
+                    thumbnail_colors=["#FF6B6B", "#4ECDC4", "#45B7D1"],
+                    topic_category = category,
+                    sentiment_score = np.random.uniform(0.3, 0.9),
+                    readability_score = np.random.uniform(60, 90),
+                    trending_keywords_count = len(
                     [k for k in trending_keywords if k in title.lower()]
                 ),
-            )
+                    )
 
             # Performance calculation with realistic patterns
             base_views = cat_data["base_views"]
@@ -411,33 +419,34 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Viral score calculation
             viral_factors = [
                 features.trending_keywords_count * 0.1,
-                (engagement_rate - 0.05) * 10,
-                title_score - 1.0,
-                (sentiment_score - 0.5) * 2,
-            ]
+                    (engagement_rate - 0.05) * 10,
+                    title_score - 1.0,
+                    (sentiment_score - 0.5) * 2,
+                    ]
             viral_score = min(1.0, max(0.0, sum(viral_factors)))
 
             performance = ContentPerformance(
-                content_id=f"synthetic_{i}",
-                features=features,
-                views_30d=views,
-                engagement_rate=engagement_rate,
-                shares=shares,
-                comments=comments,
-                conversion_rate=np.random.uniform(0.01, 0.05),
-                viral_score=viral_score,
-                success_factors=(
+                content_id = f"synthetic_{i}",
+                    features = features,
+                    views_30d = views,
+                    engagement_rate = engagement_rate,
+                    shares = shares,
+                    comments = comments,
+                    conversion_rate = np.random.uniform(0.01, 0.05),
+                    viral_score = viral_score,
+                    success_factors=(
                     ["title_optimization", "trending_keywords"]
                     if viral_score > 0.6
                     else []
                 ),
-                performance_date=datetime.now()
-                - timedelta(days=np.random.randint(1, 365)),
-            )
+                    performance_date = datetime.now()
+                - timedelta(days = np.random.randint(1, 365)),
+                    )
 
             training_data.append(performance)
 
         return training_data
+
 
     def _prepare_training_data(
         self, training_data: List[ContentPerformance]
@@ -471,10 +480,11 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         return (
             X_scaled,
-            np.array(views_list),
-            np.array(engagement_list),
-            np.array(viral_list),
-        )
+                np.array(views_list),
+                np.array(engagement_list),
+                np.array(viral_list),
+                )
+
 
     def _extract_feature_vector(
         self, features: ContentFeatures
@@ -493,22 +503,22 @@ class PredictiveAnalyticsEngine(BaseAgent):
             vector.extend(
                 [
                     title_length,
-                    title_word_count,
-                    int(title_has_numbers),
-                    int(title_has_question),
-                    int(title_has_exclamation),
-                ]
+                        title_word_count,
+                        int(title_has_numbers),
+                        int(title_has_question),
+                        int(title_has_exclamation),
+                        ]
             )
 
             # Content features
             vector.extend(
                 [
                     features.duration_minutes or 10.0,
-                    features.word_count or 1000,
-                    features.sentiment_score or 0.5,
-                    features.readability_score or 70.0,
-                    features.trending_keywords_count or 0,
-                ]
+                        features.word_count or 1000,
+                        features.sentiment_score or 0.5,
+                        features.readability_score or 70.0,
+                        features.trending_keywords_count or 0,
+                        ]
             )
 
             # Keyword features
@@ -533,11 +543,12 @@ class PredictiveAnalyticsEngine(BaseAgent):
             content_type_encoded = hash(features.content_type.value) % 10
             vector.append(content_type_encoded)
 
-            return np.array(vector, dtype=float)
+            return np.array(vector, dtype = float)
 
         except Exception as e:
             self.logger.error(f"Feature vector extraction error: {e}")
             return None
+
 
     async def predict_content_success(
         self, features: ContentFeatures
@@ -545,7 +556,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
         """Predict content success using trained models."""
         try:
             # Extract feature vector
-            feature_vector = self._extract_feature_vector(features)
+                feature_vector = self._extract_feature_vector(features)
 
             if feature_vector is None:
                 return self._fallback_prediction(features)
@@ -566,11 +577,11 @@ class PredictiveAnalyticsEngine(BaseAgent):
                     )
                     viral_score = max(
                         0.0,
-                        min(
+                            min(
                             1.0,
-                            self.models[SuccessMetric.VIRAL_SCORE].predict(X_scaled)[0],
-                        ),
-                    )
+                                self.models[SuccessMetric.VIRAL_SCORE].predict(X_scaled)[0],
+                                ),
+                            )
 
                 except Exception as e:
                     self.logger.error(f"ML prediction error: {e}")
@@ -599,16 +610,16 @@ class PredictiveAnalyticsEngine(BaseAgent):
             confidence_upper = success_score * 1.2
 
             result = PredictionResult(
-                content_features=features,
-                predicted_views=predicted_views,
-                predicted_engagement=predicted_engagement,
-                viral_probability=viral_score,
-                success_score=success_score,
-                confidence_interval=(confidence_lower, confidence_upper),
-                optimization_suggestions=optimization_suggestions,
-                risk_factors=risk_factors,
-                best_publish_time=best_publish_time,
-            )
+                content_features = features,
+                    predicted_views = predicted_views,
+                    predicted_engagement = predicted_engagement,
+                    viral_probability = viral_score,
+                    success_score = success_score,
+                    confidence_interval=(confidence_lower, confidence_upper),
+                    optimization_suggestions = optimization_suggestions,
+                    risk_factors = risk_factors,
+                    best_publish_time = best_publish_time,
+                    )
 
             # Store prediction for tracking
             await self._store_prediction(result)
@@ -618,6 +629,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
         except Exception as e:
             self.logger.error(f"Prediction error: {e}")
             return self._fallback_prediction(features)
+
 
     def _fallback_prediction(self, features: ContentFeatures) -> PredictionResult:
         """Fallback heuristic prediction when ML models are unavailable."""
@@ -635,7 +647,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
         # Sentiment bonus
         sentiment_bonus = (features.sentiment_score or 0.5) * 0.2
 
-        # Duration optimization (8-15 minutes is optimal for videos)
+        # Duration optimization (8 - 15 minutes is optimal for videos)
         duration_score = 0.1
         if features.duration_minutes:
             if 8 <= features.duration_minutes <= 15:
@@ -645,12 +657,12 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         success_score = min(
             1.0,
-            base_score
+                base_score
             + title_score
             + trending_bonus
             + sentiment_bonus
             + duration_score,
-        )
+                )
 
         # Estimate views and engagement based on success score
         predicted_views = int(success_score * 10000)
@@ -658,21 +670,22 @@ class PredictiveAnalyticsEngine(BaseAgent):
         viral_probability = max(0.0, success_score - 0.6)
 
         return PredictionResult(
-            content_features=features,
-            predicted_views=predicted_views,
-            predicted_engagement=predicted_engagement,
-            viral_probability=viral_probability,
-            success_score=success_score,
-            confidence_interval=(success_score * 0.7, success_score * 1.3),
-            optimization_suggestions=[
+            content_features = features,
+                predicted_views = predicted_views,
+                predicted_engagement = predicted_engagement,
+                viral_probability = viral_probability,
+                success_score = success_score,
+                confidence_interval=(success_score * 0.7, success_score * 1.3),
+                optimization_suggestions=[
                 "Add trending keywords",
-                "Optimize title for engagement",
-            ],
-            risk_factors=["Limited historical data"] if success_score < 0.4 else [],
-            best_publish_time=datetime.now().replace(
-                hour=14, minute=0, second=0, microsecond=0
+                    "Optimize title for engagement",
+                    ],
+                risk_factors=["Limited historical data"] if success_score < 0.4 else [],
+                best_publish_time = datetime.now().replace(
+                hour = 14, minute = 0, second = 0, microsecond = 0
             ),
-        )
+                )
+
 
     def _calculate_success_score(
         self, views: int, engagement: float, viral_score: float
@@ -687,17 +700,18 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         return min(1.0, success_score)
 
+
     async def _generate_optimization_suggestions(
         self, features: ContentFeatures, success_score: float
     ) -> List[str]:
-        """Generate AI-powered optimization suggestions."""
+        """Generate AI - powered optimization suggestions."""
         suggestions = []
 
         try:
             # Title optimization
             if len(features.title) < 40:
                 suggestions.append(
-                    "Consider expanding title to 40-60 characters for better SEO"
+                    "Consider expanding title to 40 - 60 characters for better SEO"
                 )
             elif len(features.title) > 70:
                 suggestions.append(
@@ -707,7 +721,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Keyword optimization
             if not features.keywords or len(features.keywords) < 3:
                 suggestions.append(
-                    "Add 3-5 relevant keywords to improve discoverability"
+                    "Add 3 - 5 relevant keywords to improve discoverability"
                 )
 
             # Trending keywords
@@ -720,7 +734,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
             if features.content_type == ContentType.VIDEO:
                 if not features.duration_minutes:
                     suggestions.append(
-                        "Aim for 8-15 minute video duration for optimal engagement"
+                        "Aim for 8 - 15 minute video duration for optimal engagement"
                     )
                 elif features.duration_minutes < 5:
                     suggestions.append(
@@ -742,20 +756,20 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 suggestions.extend(
                     [
                         "Consider researching trending topics in your niche",
-                        "Analyze top-performing content for title patterns",
-                        "Add emotional hooks or curiosity gaps to title",
-                    ]
+                            "Analyze top - performing content for title patterns",
+                            "Add emotional hooks or curiosity gaps to title",
+                            ]
                 )
             elif success_score < 0.6:
                 suggestions.extend(
                     [
                         "Optimize thumbnail with bright, contrasting colors",
-                        "Add specific numbers or timeframes to title",
-                        "Consider collaboration opportunities",
-                    ]
+                            "Add specific numbers or timeframes to title",
+                            "Consider collaboration opportunities",
+                            ]
                 )
 
-            # AI-generated suggestions using Ollama
+            # AI - generated suggestions using Ollama
             ai_suggestions = await self._get_ai_optimization_insights(
                 features, success_score
             )
@@ -766,21 +780,22 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         return suggestions[:8]  # Limit to top 8 suggestions
 
+
     async def _get_ai_optimization_insights(
         self, features: ContentFeatures, success_score: float
     ) -> List[str]:
-        """Get AI-powered optimization insights using Ollama."""
+        """Get AI - powered optimization insights using Ollama."""
         try:
             prompt = f"""
             Analyze this content and provide 3 specific optimization suggestions:
-            
+
             Title: {features.title}
             Content Type: {features.content_type.value}
             Keywords: {features.keywords}
             Current Success Score: {success_score:.2f}/1.0
             Duration: {features.duration_minutes} minutes
             Topic: {features.topic_category}
-            
+
             Provide actionable suggestions to improve viral potential and engagement.
             Format as a simple list of suggestions.
             """
@@ -788,10 +803,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
             import requests
 
             response = requests.post(
-                "http://localhost:11434/api/generate",
-                json={"model": "llama3.2", "prompt": prompt, "stream": False},
-                timeout=15,
-            )
+                "http://localhost:11434 / api / generate",
+                    json={"model": "llama3.2", "prompt": prompt, "stream": False},
+                    timeout = 15,
+                    )
 
             if response.status_code == 200:
                 result = response.json()
@@ -817,6 +832,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
             self.logger.error(f"AI optimization insights error: {e}")
 
         return []
+
 
     def _identify_risk_factors(self, features: ContentFeatures) -> List[str]:
         """Identify potential risk factors that could hurt performance."""
@@ -850,6 +866,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         return risks
 
+
     async def _optimize_publish_time(self, features: ContentFeatures) -> datetime:
         """Determine optimal publish time based on content type and audience data."""
         try:
@@ -870,12 +887,12 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Find next occurrence of optimal time
             now = datetime.now()
             next_publish = now.replace(
-                hour=optimal_hour, minute=0, second=0, microsecond=0
+                hour = optimal_hour, minute = 0, second = 0, microsecond = 0
             )
 
             # If time has passed today, schedule for tomorrow
             if next_publish <= now:
-                next_publish += timedelta(days=1)
+                next_publish += timedelta(days = 1)
 
             # Avoid weekends for business content
             if (
@@ -883,13 +900,14 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 and next_publish.weekday() >= 5
             ):
                 days_to_monday = 7 - next_publish.weekday()
-                next_publish += timedelta(days=days_to_monday)
+                next_publish += timedelta(days = days_to_monday)
 
             return next_publish
 
         except Exception as e:
             self.logger.error(f"Publish time optimization error: {e}")
-            return datetime.now() + timedelta(hours=2)
+            return datetime.now() + timedelta(hours = 2)
+
 
     async def _get_optimal_publish_hours(
         self, content_type: ContentType
@@ -900,14 +918,14 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 cursor = conn.execute(
                     """
                     SELECT strftime('%H', publish_time) as hour, AVG(viral_score) as avg_score
-                    FROM content_performance 
+                    FROM content_performance
                     WHERE content_type = ? AND publish_time IS NOT NULL
                     GROUP BY hour
                     ORDER BY avg_score DESC
                     LIMIT 1
                     """,
-                    (content_type.value,),
-                )
+                        (content_type.value,),
+                        )
 
                 result = cursor.fetchone()
                 if result and result[0]:
@@ -917,6 +935,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
             self.logger.error(f"Optimal hours query error: {e}")
 
         return None
+
 
     async def _store_prediction(self, result: PredictionResult):
         """Store prediction result for accuracy tracking."""
@@ -928,36 +947,37 @@ class PredictiveAnalyticsEngine(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO prediction_results 
+                    INSERT OR REPLACE INTO prediction_results
                     (prediction_id, content_features, predicted_views, predicted_engagement,
-                     viral_probability, success_score, confidence_lower, confidence_upper,
-                     optimization_suggestions, risk_factors, best_publish_time)
+                        viral_probability, success_score, confidence_lower, confidence_upper,
+                         optimization_suggestions, risk_factors, best_publish_time)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (
+                        (
                         prediction_id,
-                        json.dumps(
+                            json.dumps(
                             {
                                 "title": result.content_features.title,
-                                "content_type": result.content_features.content_type.value,
-                                "keywords": result.content_features.keywords,
-                                "duration_minutes": result.content_features.duration_minutes,
-                            }
+                                    "content_type": result.content_features.content_type.value,
+                                    "keywords": result.content_features.keywords,
+                                    "duration_minutes": result.content_features.duration_minutes,
+                                    }
                         ),
-                        result.predicted_views,
-                        result.predicted_engagement,
-                        result.viral_probability,
-                        result.success_score,
-                        result.confidence_interval[0],
-                        result.confidence_interval[1],
-                        json.dumps(result.optimization_suggestions),
-                        json.dumps(result.risk_factors),
-                        result.best_publish_time,
-                    ),
-                )
+                            result.predicted_views,
+                            result.predicted_engagement,
+                            result.viral_probability,
+                            result.success_score,
+                            result.confidence_interval[0],
+                            result.confidence_interval[1],
+                            json.dumps(result.optimization_suggestions),
+                            json.dumps(result.risk_factors),
+                            result.best_publish_time,
+                            ),
+                        )
 
         except Exception as e:
             self.logger.error(f"Prediction storage error: {e}")
+
 
     async def update_actual_performance(
         self, content_id: str, performance: ContentPerformance
@@ -968,41 +988,42 @@ class PredictiveAnalyticsEngine(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO content_performance 
+                    INSERT OR REPLACE INTO content_performance
                     (content_id, title, description, keywords, content_type, duration_minutes,
-                     word_count, topic_category, sentiment_score, readability_score,
-                     trending_keywords_count, views_30d, engagement_rate, shares, comments,
-                     conversion_rate, viral_score, success_factors, performance_date)
+                        word_count, topic_category, sentiment_score, readability_score,
+                         trending_keywords_count, views_30d, engagement_rate, shares, comments,
+                         conversion_rate, viral_score, success_factors, performance_date)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (
+                        (
                         performance.content_id,
-                        performance.features.title,
-                        performance.features.description,
-                        json.dumps(performance.features.keywords),
-                        performance.features.content_type.value,
-                        performance.features.duration_minutes,
-                        performance.features.word_count,
-                        performance.features.topic_category,
-                        performance.features.sentiment_score,
-                        performance.features.readability_score,
-                        performance.features.trending_keywords_count,
-                        performance.views_30d,
-                        performance.engagement_rate,
-                        performance.shares,
-                        performance.comments,
-                        performance.conversion_rate,
-                        performance.viral_score,
-                        json.dumps(performance.success_factors),
-                        performance.performance_date,
-                    ),
-                )
+                            performance.features.title,
+                            performance.features.description,
+                            json.dumps(performance.features.keywords),
+                            performance.features.content_type.value,
+                            performance.features.duration_minutes,
+                            performance.features.word_count,
+                            performance.features.topic_category,
+                            performance.features.sentiment_score,
+                            performance.features.readability_score,
+                            performance.features.trending_keywords_count,
+                            performance.views_30d,
+                            performance.engagement_rate,
+                            performance.shares,
+                            performance.comments,
+                            performance.conversion_rate,
+                            performance.viral_score,
+                            json.dumps(performance.success_factors),
+                            performance.performance_date,
+                            ),
+                        )
 
             # Retrain models periodically
             await self._check_retrain_models()
 
         except Exception as e:
             self.logger.error(f"Performance update error: {e}")
+
 
     async def _check_retrain_models(self):
         """Check if models need retraining based on new data."""
@@ -1022,6 +1043,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         except Exception as e:
             self.logger.error(f"Retrain check error: {e}")
+
 
     async def _retrain_models(self):
         """Retrain models with updated data."""
@@ -1048,15 +1070,15 @@ class PredictiveAnalyticsEngine(BaseAgent):
             for metric in self.models.keys():
                 if metric == SuccessMetric.VIEWS:
                     self.models[metric] = RandomForestRegressor(
-                        n_estimators=150, random_state=42
+                        n_estimators = 150, random_state = 42
                     )
                     self.models[metric].fit(X, y_views)
                 elif metric == SuccessMetric.ENGAGEMENT:
-                    self.models[metric] = GradientBoostingRegressor(random_state=42)
+                    self.models[metric] = GradientBoostingRegressor(random_state = 42)
                     self.models[metric].fit(X, y_engagement)
                 elif metric == SuccessMetric.VIRAL_SCORE:
                     self.models[metric] = RandomForestRegressor(
-                        n_estimators=150, random_state=42
+                        n_estimators = 150, random_state = 42
                     )
                     self.models[metric].fit(X, y_viral)
 
@@ -1071,6 +1093,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
         except Exception as e:
             self.logger.error(f"Model retraining error: {e}")
 
+
     async def _load_performance_data(self) -> List[ContentPerformance]:
         """Load performance data from database."""
         performance_data = []
@@ -1080,9 +1103,9 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 cursor = conn.execute(
                     """
                     SELECT content_id, title, description, keywords, content_type, duration_minutes,
-                           word_count, topic_category, sentiment_score, readability_score,
-                           trending_keywords_count, views_30d, engagement_rate, shares, comments,
-                           conversion_rate, viral_score, success_factors, performance_date
+                        word_count, topic_category, sentiment_score, readability_score,
+                               trending_keywords_count, views_30d, engagement_rate, shares, comments,
+                               conversion_rate, viral_score, success_factors, performance_date
                     FROM content_performance
                     ORDER BY performance_date DESC
                     """
@@ -1094,30 +1117,30 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         success_factors = json.loads(row[17]) if row[17] else []
 
                         features = ContentFeatures(
-                            title=row[1],
-                            description=row[2],
-                            keywords=keywords,
-                            content_type=ContentType(row[4]),
-                            duration_minutes=row[5],
-                            word_count=row[6],
-                            topic_category=row[7],
-                            sentiment_score=row[8],
-                            readability_score=row[9],
-                            trending_keywords_count=row[10],
-                        )
+                            title = row[1],
+                                description = row[2],
+                                keywords = keywords,
+                                content_type = ContentType(row[4]),
+                                duration_minutes = row[5],
+                                word_count = row[6],
+                                topic_category = row[7],
+                                sentiment_score = row[8],
+                                readability_score = row[9],
+                                trending_keywords_count = row[10],
+                                )
 
                         performance = ContentPerformance(
-                            content_id=row[0],
-                            features=features,
-                            views_30d=row[11],
-                            engagement_rate=row[12],
-                            shares=row[13],
-                            comments=row[14],
-                            conversion_rate=row[15],
-                            viral_score=row[16],
-                            success_factors=success_factors,
-                            performance_date=datetime.fromisoformat(row[18]),
-                        )
+                            content_id = row[0],
+                                features = features,
+                                views_30d = row[11],
+                                engagement_rate = row[12],
+                                shares = row[13],
+                                comments = row[14],
+                                conversion_rate = row[15],
+                                viral_score = row[16],
+                                success_factors = success_factors,
+                                performance_date = datetime.fromisoformat(row[18]),
+                                )
 
                         performance_data.append(performance)
 
@@ -1130,6 +1153,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
         return performance_data
 
+
     def get_analytics_dashboard_data(self) -> Dict[str, Any]:
         """Get analytics data for the dashboard."""
         try:
@@ -1138,8 +1162,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 cursor = conn.execute(
                     """
                     SELECT AVG(prediction_accuracy) as avg_accuracy,
-                           COUNT(*) as total_predictions
-                    FROM prediction_results 
+                        COUNT(*) as total_predictions
+                    FROM prediction_results
                     WHERE prediction_accuracy IS NOT NULL
                     """
                 )
@@ -1149,8 +1173,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 cursor = conn.execute(
                     """
                     SELECT success_score, viral_probability, created_at
-                    FROM prediction_results 
-                    ORDER BY created_at DESC 
+                    FROM prediction_results
+                    ORDER BY created_at DESC
                     LIMIT 10
                     """
                 )
@@ -1160,8 +1184,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 cursor = conn.execute(
                     """
                     SELECT factor_name, impact_score, frequency
-                    FROM success_factors 
-                    ORDER BY impact_score DESC 
+                    FROM success_factors
+                    ORDER BY impact_score DESC
                     LIMIT 5
                     """
                 )
@@ -1170,54 +1194,54 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 return {
                     "prediction_accuracy": {
                         "average": accuracy_data[0] if accuracy_data[0] else 0.0,
-                        "total_predictions": (
+                            "total_predictions": (
                             accuracy_data[1] if accuracy_data[1] else 0
                         ),
-                    },
-                    "recent_predictions": [
+                            },
+                        "recent_predictions": [
                         {
                             "success_score": pred[0],
-                            "viral_probability": pred[1],
-                            "created_at": pred[2],
-                        }
+                                "viral_probability": pred[1],
+                                "created_at": pred[2],
+                                }
                         for pred in recent_predictions
                     ],
-                    "top_success_factors": [
+                        "top_success_factors": [
                         {
                             "factor": factor[0],
-                            "impact": factor[1],
-                            "frequency": factor[2],
-                        }
+                                "impact": factor[1],
+                                "frequency": factor[2],
+                                }
                         for factor in success_factors
                     ],
-                    "model_status": {
+                        "model_status": {
                         "views_model": self.models[SuccessMetric.VIEWS] is not None,
-                        "engagement_model": self.models[SuccessMetric.ENGAGEMENT]
+                            "engagement_model": self.models[SuccessMetric.ENGAGEMENT]
                         is not None,
-                        "viral_model": self.models[SuccessMetric.VIRAL_SCORE]
+                            "viral_model": self.models[SuccessMetric.VIRAL_SCORE]
                         is not None,
-                        "ml_available": ML_AVAILABLE,
-                    },
-                }
+                            "ml_available": ML_AVAILABLE,
+                            },
+                        }
 
         except Exception as e:
             self.logger.error(f"Analytics dashboard error: {e}")
             return {
                 "prediction_accuracy": {"average": 0.0, "total_predictions": 0},
-                "recent_predictions": [],
-                "top_success_factors": [],
-                "model_status": {
+                    "recent_predictions": [],
+                    "top_success_factors": [],
+                    "model_status": {
                     "views_model": False,
-                    "engagement_model": False,
-                    "viral_model": False,
-                    "ml_available": ML_AVAILABLE,
-                },
-            }
-
+                        "engagement_model": False,
+                        "viral_model": False,
+                        "ml_available": ML_AVAILABLE,
+                        },
+                    }
 
 # Example usage and testing
 if __name__ == "__main__":
     import asyncio
+
 
     async def test_predictive_analytics():
         engine = PredictiveAnalyticsEngine()
@@ -1225,16 +1249,16 @@ if __name__ == "__main__":
         # Test content features
         test_features = ContentFeatures(
             title="Ultimate AI Automation Guide for 2024",
-            description="Complete guide to AI automation tools and strategies",
-            keywords=["AI", "automation", "productivity", "2024", "guide"],
-            content_type=ContentType.VIDEO,
-            duration_minutes=12.5,
-            word_count=1500,
-            topic_category="tech_tutorials",
-            sentiment_score=0.8,
-            readability_score=75.0,
-            trending_keywords_count=3,
-        )
+                description="Complete guide to AI automation tools and strategies",
+                keywords=["AI", "automation", "productivity", "2024", "guide"],
+                content_type = ContentType.VIDEO,
+                duration_minutes = 12.5,
+                word_count = 1500,
+                topic_category="tech_tutorials",
+                sentiment_score = 0.8,
+                readability_score = 75.0,
+                trending_keywords_count = 3,
+                )
 
         # Get prediction
         prediction = await engine.predict_content_success(test_features)

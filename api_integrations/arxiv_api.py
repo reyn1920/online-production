@@ -13,60 +13,64 @@ logger = logging.getLogger(__name__)
 class ArxivAPI(BaseAPI):
     """arXiv API integration for academic research analysis"""
 
+
     def __init__(self):
         # arXiv API is free but has rate limits
         rate_config = RateLimitConfig(
-            requests_per_minute=20,  # Conservative rate limiting
-            requests_per_hour=300,
-            requests_per_day=3000,
-            burst_limit=5,
-        )
+            requests_per_minute = 20,  # Conservative rate limiting
+            requests_per_hour = 300,
+                requests_per_day = 3000,
+                burst_limit = 5,
+                )
         super().__init__(rate_config)
-        self.base_url = "http://export.arxiv.org/api/query"
+        self.base_url = "http://export.arxiv.org / api / query"
 
         # arXiv subject categories
         self.categories = {
             "cs": "Computer Science",
-            "math": "Mathematics",
-            "physics": "Physics",
-            "q-bio": "Quantitative Biology",
-            "q-fin": "Quantitative Finance",
-            "stat": "Statistics",
-            "eess": "Electrical Engineering and Systems Science",
-            "econ": "Economics",
-        }
+                "math": "Mathematics",
+                "physics": "Physics",
+                "q - bio": "Quantitative Biology",
+                "q - fin": "Quantitative Finance",
+                "stat": "Statistics",
+                "eess": "Electrical Engineering and Systems Science",
+                "econ": "Economics",
+                }
+
 
     async def health_check(self) -> bool:
         """Check if arXiv API is accessible"""
         try:
             # Simple test query
-            result = await self.search_papers(query="machine learning", max_results=1)
+            result = await self.search_papers(query="machine learning", max_results = 1)
             return len(result.get("papers", [])) > 0
         except Exception as e:
             logger.error(f"arXiv health check failed: {e}")
             return False
 
+
     async def get_quota_status(self) -> Dict[str, Any]:
         """Get current quota status"""
         return {
             "service": "arXiv API",
-            "daily_limit": self.rate_limiter.config.requests_per_day,
-            "daily_used": self.rate_limiter.daily_count,
-            "hourly_limit": self.rate_limiter.config.requests_per_hour,
-            "hourly_used": self.rate_limiter.hourly_count,
-            "tokens_available": int(self.rate_limiter.tokens),
-            "cost": "Free",
-        }
+                "daily_limit": self.rate_limiter.config.requests_per_day,
+                "daily_used": self.rate_limiter.daily_count,
+                "hourly_limit": self.rate_limiter.config.requests_per_hour,
+                "hourly_used": self.rate_limiter.hourly_count,
+                "tokens_available": int(self.rate_limiter.tokens),
+                "cost": "Free",
+                }
+
 
     async def search_papers(
         self,
-        query: str,
-        category: Optional[str] = None,
-        max_results: int = 50,
-        sort_by: str = "submittedDate",
-        sort_order: str = "descending",
-        start: int = 0,
-    ) -> Dict[str, Any]:
+            query: str,
+            category: Optional[str] = None,
+            max_results: int = 50,
+            sort_by: str = "submittedDate",
+            sort_order: str = "descending",
+            start: int = 0,
+            ) -> Dict[str, Any]:
         """Search arXiv papers"""
         await self.rate_limiter.acquire()
 
@@ -77,11 +81,11 @@ class ArxivAPI(BaseAPI):
 
         params = {
             "search_query": search_query,
-            "start": start,
-            "max_results": min(max_results, 2000),  # arXiv limit
+                "start": start,
+                "max_results": min(max_results, 2000),  # arXiv limit
             "sortBy": sort_by,
-            "sortOrder": sort_order,
-        }
+                "sortOrder": sort_order,
+                }
 
         try:
             # Make request to arXiv API
@@ -92,14 +96,15 @@ class ArxivAPI(BaseAPI):
 
             return {
                 "query": query,
-                "category": category,
-                "total_results": len(papers),
-                "papers": papers,
-                "search_timestamp": datetime.utcnow().isoformat(),
-            }
+                    "category": category,
+                    "total_results": len(papers),
+                    "papers": papers,
+                    "search_timestamp": datetime.utcnow().isoformat(),
+                    }
 
         except Exception as e:
             raise APIError(f"Failed to search arXiv papers: {e}")
+
 
     async def get_recent_papers(
         self, category: str, days_back: int = 7, max_results: int = 100
@@ -107,31 +112,32 @@ class ArxivAPI(BaseAPI):
         """Get recent papers from a specific category"""
         # Calculate date range
         end_date = datetime.utcnow()
-        start_date = end_date - timedelta(days=days_back)
+        start_date = end_date - timedelta(days = days_back)
 
         # Format dates for arXiv query
         date_query = f'submittedDate:[{start_date.strftime("%Y%m%d")}* TO {end_date.strftime("%Y%m%d")}*]'
 
         try:
             result = await self.search_papers(
-                query=date_query,
-                category=category,
-                max_results=max_results,
-                sort_by="submittedDate",
-                sort_order="descending",
-            )
+                query = date_query,
+                    category = category,
+                    max_results = max_results,
+                    sort_by="submittedDate",
+                    sort_order="descending",
+                    )
 
             return result.get("papers", [])
 
         except Exception as e:
             raise APIError(f"Failed to get recent papers: {e}")
 
+
     async def analyze_research_trends(
         self,
-        keywords: List[str],
-        categories: List[str] = None,
-        time_period_days: int = 30,
-    ) -> Dict[str, Any]:
+            keywords: List[str],
+            categories: List[str] = None,
+            time_period_days: int = 30,
+            ) -> Dict[str, Any]:
         """Analyze research trends for given keywords"""
         if not categories:
             categories = ["cs", "math", "physics", "stat"]
@@ -142,24 +148,24 @@ class ArxivAPI(BaseAPI):
             for keyword in keywords:
                 keyword_data = {
                     "keyword": keyword,
-                    "categories": {},
-                    "total_papers": 0,
-                    "recent_papers": 0,
-                }
+                        "categories": {},
+                        "total_papers": 0,
+                        "recent_papers": 0,
+                        }
 
                 for category in categories:
                     try:
-                        # Get all papers for this keyword/category
+                        # Get all papers for this keyword / category
                         all_papers = await self.search_papers(
-                            query=keyword, category=category, max_results=500
+                            query = keyword, category = category, max_results = 500
                         )
 
                         # Get recent papers
                         recent_papers = await self.get_recent_papers(
-                            category=category,
-                            days_back=time_period_days,
-                            max_results=100,
-                        )
+                            category = category,
+                                days_back = time_period_days,
+                                max_results = 100,
+                                )
 
                         # Filter recent papers by keyword
                         relevant_recent = [
@@ -171,9 +177,9 @@ class ArxivAPI(BaseAPI):
 
                         category_stats = {
                             "total_papers": len(all_papers.get("papers", [])),
-                            "recent_papers": len(relevant_recent),
-                            "growth_rate": 0,
-                            "top_papers": relevant_recent[:5],  # Top 5 recent papers
+                                "recent_papers": len(relevant_recent),
+                                "growth_rate": 0,
+                                "top_papers": relevant_recent[:5],  # Top 5 recent papers
                         }
 
                         # Calculate growth rate
@@ -209,26 +215,27 @@ class ArxivAPI(BaseAPI):
 
             # Rank keywords by trend score
             ranked_keywords = sorted(
-                trend_data.items(), key=lambda x: x[1]["trend_score"], reverse=True
+                trend_data.items(), key = lambda x: x[1]["trend_score"], reverse = True
             )
 
             return {
                 "keywords": trend_data,
-                "ranked_keywords": [{"keyword": k, **v} for k, v in ranked_keywords],
-                "analysis_period_days": time_period_days,
-                "categories_analyzed": categories,
-                "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+                    "ranked_keywords": [{"keyword": k, **v} for k, v in ranked_keywords],
+                    "analysis_period_days": time_period_days,
+                    "categories_analyzed": categories,
+                    "analysis_timestamp": datetime.utcnow().isoformat(),
+                    }
 
         except Exception as e:
             raise APIError(f"Failed to analyze research trends: {e}")
+
 
     async def get_paper_details(self, arxiv_id: str) -> Dict[str, Any]:
         """Get detailed information about a specific paper"""
         await self.rate_limiter.acquire()
 
         try:
-            result = await self.search_papers(query=f"id:{arxiv_id}", max_results=1)
+            result = await self.search_papers(query = f"id:{arxiv_id}", max_results = 1)
 
             papers = result.get("papers", [])
             if not papers:
@@ -238,6 +245,7 @@ class ArxivAPI(BaseAPI):
 
         except Exception as e:
             raise APIError(f"Failed to get paper details: {e}")
+
 
     async def find_emerging_topics(
         self, categories: List[str] = None, days_back: int = 30, min_papers: int = 5
@@ -254,7 +262,7 @@ class ArxivAPI(BaseAPI):
             for category in categories:
                 try:
                     recent_papers = await self.get_recent_papers(
-                        category=category, days_back=days_back, max_results=200
+                        category = category, days_back = days_back, max_results = 200
                     )
 
                     for paper in recent_papers:
@@ -270,9 +278,9 @@ class ArxivAPI(BaseAPI):
             if not all_papers:
                 return {
                     "emerging_topics": [],
-                    "total_papers_analyzed": 0,
-                    "error": "No papers found",
-                }
+                        "total_papers_analyzed": 0,
+                        "error": "No papers found",
+                        }
 
             # Extract keywords from titles and abstracts
             keyword_counts = {}
@@ -291,12 +299,12 @@ class ArxivAPI(BaseAPI):
                         and word
                         not in [
                             "paper",
-                            "study",
-                            "research",
-                            "analysis",
-                            "method",
-                            "approach",
-                        ]
+                                "study",
+                                "research",
+                                "analysis",
+                                "method",
+                                "approach",
+                                ]
                     ):
 
                         if word not in keyword_counts:
@@ -310,10 +318,10 @@ class ArxivAPI(BaseAPI):
                             keyword_papers[word].append(
                                 {
                                     "title": paper.get("title", ""),
-                                    "authors": paper.get("authors", []),
-                                    "category": paper.get("category", ""),
-                                    "published": paper.get("published", ""),
-                                }
+                                        "authors": paper.get("authors", []),
+                                        "category": paper.get("category", ""),
+                                        "published": paper.get("published", ""),
+                                        }
                             )
 
             # Filter and rank emerging topics
@@ -328,31 +336,32 @@ class ArxivAPI(BaseAPI):
                     emerging_topics.append(
                         {
                             "topic": keyword,
-                            "paper_count": count,
-                            "emergence_score": round(emergence_score, 2),
-                            "sample_papers": keyword_papers[keyword],
-                            "categories": list(
+                                "paper_count": count,
+                                "emergence_score": round(emergence_score, 2),
+                                "sample_papers": keyword_papers[keyword],
+                                "categories": list(
                                 set(
                                     paper["category"]
                                     for paper in keyword_papers[keyword]
                                 )
                             ),
-                        }
+                                }
                     )
 
             # Sort by emergence score
-            emerging_topics.sort(key=lambda x: x["emergence_score"], reverse=True)
+            emerging_topics.sort(key = lambda x: x["emergence_score"], reverse = True)
 
             return {
                 "emerging_topics": emerging_topics[:20],  # Top 20 topics
                 "total_papers_analyzed": len(all_papers),
-                "analysis_period_days": days_back,
-                "categories_analyzed": categories,
-                "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+                    "analysis_period_days": days_back,
+                    "categories_analyzed": categories,
+                    "analysis_timestamp": datetime.utcnow().isoformat(),
+                    }
 
         except Exception as e:
             raise APIError(f"Failed to find emerging topics: {e}")
+
 
     async def _make_arxiv_request(self, params: Dict[str, Any]) -> str:
         """Make request to arXiv API and return raw text"""
@@ -360,7 +369,7 @@ class ArxivAPI(BaseAPI):
             raise APIError("Session not initialized")
 
         try:
-            async with self.session.get(self.base_url, params=params) as response:
+            async with self.session.get(self.base_url, params = params) as response:
                 if response.status != 200:
                     raise APIError(f"arXiv API returned status {response.status}")
 
@@ -369,6 +378,7 @@ class ArxivAPI(BaseAPI):
         except Exception as e:
             raise APIError(f"Failed to make arXiv request: {e}")
 
+
     def _parse_arxiv_response(self, xml_text: str) -> List[Dict[str, Any]]:
         """Parse arXiv XML response into structured data"""
         try:
@@ -376,9 +386,9 @@ class ArxivAPI(BaseAPI):
 
             # Define namespaces
             namespaces = {
-                "atom": "http://www.w3.org/2005/Atom",
-                "arxiv": "http://arxiv.org/schemas/atom",
-            }
+                "atom": "http://www.w3.org / 2005 / Atom",
+                    "arxiv": "http://arxiv.org / schemas / atom",
+                    }
 
             papers = []
 

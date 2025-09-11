@@ -14,8 +14,8 @@ def get_resolve_path() -> str:
     """Get the configured DaVinci Resolve executable path."""
     return get_setting(
         "resolve_path",
-        "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/MacOS/Resolve",
-    )
+            "/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / MacOS / Resolve",
+            )
 
 
 def set_resolve_path(path: str) -> Dict[str, Any]:
@@ -31,9 +31,9 @@ def validate_resolve_installation() -> Dict[str, Any]:
     if not Path(resolve_path).exists():
         return {
             "ok": False,
-            "error": f"DaVinci Resolve not found at {resolve_path}",
-            "suggestion": "Please set the correct Resolve path using set_resolve_path()",
-        }
+                "error": f"DaVinci Resolve not found at {resolve_path}",
+                "suggestion": "Please set the correct Resolve path using set_resolve_path()",
+                }
 
     # Check if Resolve is accessible (basic check)
     try:
@@ -56,13 +56,13 @@ def create_resolve_project(project_name: str, media_files: List[str]) -> Dict[st
 
     # Create project directory structure
     project_dir = Path("output") / "resolve_projects" / project_name
-    project_dir.mkdir(parents=True, exist_ok=True)
+    project_dir.mkdir(parents = True, exist_ok = True)
 
     # Create standard Resolve project folders
     folders = ["Media", "Timeline Exports", "Audio", "Graphics", "Project Files"]
 
     for folder in folders:
-        (project_dir / folder).mkdir(exist_ok=True)
+        (project_dir / folder).mkdir(exist_ok = True)
 
     # Copy media files to Media folder
     media_dir = project_dir / "Media"
@@ -78,40 +78,40 @@ def create_resolve_project(project_name: str, media_files: List[str]) -> Dict[st
             except Exception as e:
                 return {
                     "ok": False,
-                    "error": f"Failed to copy media file {media_file}: {str(e)}",
-                }
+                        "error": f"Failed to copy media file {media_file}: {str(e)}",
+                        }
 
     # Create project metadata
     project_metadata = {
         "name": project_name,
-        "created": str(project_dir.stat().st_ctime),
-        "media_files": copied_files,
-        "project_dir": str(project_dir),
-    }
+            "created": str(project_dir.stat().st_ctime),
+            "media_files": copied_files,
+            "project_dir": str(project_dir),
+            }
 
     metadata_file = project_dir / "project_metadata.json"
-    metadata_file.write_text(json.dumps(project_metadata, indent=2))
+    metadata_file.write_text(json.dumps(project_metadata, indent = 2))
 
     # Create a basic DRP (DaVinci Resolve Project) structure
     # Note: Actual DRP files are binary and complex, so we create a placeholder
     drp_info = {
         "project_name": project_name,
-        "timeline_count": 1,
-        "media_pool_items": len(copied_files),
-        "created_by": "TRAE.AI Handoff Pipeline",
-    }
+            "timeline_count": 1,
+            "media_pool_items": len(copied_files),
+            "created_by": "TRAE.AI Handoff Pipeline",
+            }
 
     drp_info_file = project_dir / "Project Files" / f"{project_name}_info.json"
-    drp_info_file.write_text(json.dumps(drp_info, indent=2))
+    drp_info_file.write_text(json.dumps(drp_info, indent = 2))
 
     return {
         "ok": True,
-        "project_path": str(project_dir),
-        "project_name": project_name,
-        "media_files": copied_files,
-        "metadata_file": str(metadata_file),
-        "message": f"Resolve project '{project_name}' created successfully",
-    }
+            "project_path": str(project_dir),
+            "project_name": project_name,
+            "media_files": copied_files,
+            "metadata_file": str(metadata_file),
+            "message": f"Resolve project '{project_name}' created successfully",
+            }
 
 
 def create_resolve_timeline(
@@ -125,21 +125,21 @@ def create_resolve_timeline(
     # Create timeline metadata
     timeline_data = {
         "name": timeline_name,
-        "clips": clips,
-        "frame_rate": 24,
-        "resolution": "1920x1080",
-        "created": str(Path().stat().st_ctime),
-    }
+            "clips": clips,
+            "frame_rate": 24,
+            "resolution": "1920x1080",
+            "created": str(Path().stat().st_ctime),
+            }
 
     timeline_file = project_dir / "Project Files" / f"{timeline_name}_timeline.json"
-    timeline_file.write_text(json.dumps(timeline_data, indent=2))
+    timeline_file.write_text(json.dumps(timeline_data, indent = 2))
 
     return {
         "ok": True,
-        "timeline_file": str(timeline_file),
-        "timeline_name": timeline_name,
-        "clips_count": len(clips),
-    }
+            "timeline_file": str(timeline_file),
+            "timeline_name": timeline_name,
+            "clips_count": len(clips),
+            }
 
 
 def export_resolve_timeline(
@@ -157,16 +157,16 @@ def export_resolve_timeline(
 
     # Create export directory
     export_dir = project_dir / "Timeline Exports"
-    export_dir.mkdir(exist_ok=True)
+    export_dir.mkdir(exist_ok = True)
 
     # Default export settings
     default_settings = {
         "format": "mp4",
-        "codec": "h264",
-        "quality": "high",
-        "resolution": "1920x1080",
-        "frame_rate": 24,
-    }
+            "codec": "h264",
+            "quality": "high",
+            "resolution": "1920x1080",
+            "frame_rate": 24,
+            }
 
     # Merge with provided settings
     final_settings = {**default_settings, **export_settings}
@@ -174,21 +174,21 @@ def export_resolve_timeline(
     # Create export metadata
     export_metadata = {
         "timeline_name": timeline_name,
-        "export_settings": final_settings,
-        "export_path": str(export_dir / f"{timeline_name}.{final_settings['format']}"),
-        "status": "ready_for_export",
-        "created": str(Path().stat().st_ctime),
-    }
+            "export_settings": final_settings,
+            "export_path": str(export_dir / f"{timeline_name}.{final_settings['format']}"),
+            "status": "ready_for_export",
+            "created": str(Path().stat().st_ctime),
+            }
 
     export_file = export_dir / f"{timeline_name}_export.json"
-    export_file.write_text(json.dumps(export_metadata, indent=2))
+    export_file.write_text(json.dumps(export_metadata, indent = 2))
 
     return {
         "ok": True,
-        "export_metadata": export_metadata,
-        "export_file": str(export_file),
-        "message": f"Export configuration created for timeline '{timeline_name}'",
-    }
+            "export_metadata": export_metadata,
+            "export_file": str(export_file),
+            "message": f"Export configuration created for timeline '{timeline_name}'",
+            }
 
 
 def list_resolve_projects() -> Dict[str, Any]:
@@ -208,10 +208,10 @@ def list_resolve_projects() -> Dict[str, Any]:
                     projects.append(
                         {
                             "name": project_dir.name,
-                            "path": str(project_dir),
-                            "metadata": metadata,
-                            "created": project_dir.stat().st_ctime,
-                        }
+                                "path": str(project_dir),
+                                "metadata": metadata,
+                                "created": project_dir.stat().st_ctime,
+                                }
                     )
                 except Exception as e:
                     # Skip projects with invalid metadata
@@ -252,11 +252,11 @@ def get_resolve_project_info(project_path: str) -> Dict[str, Any]:
 
         return {
             "ok": True,
-            "metadata": metadata,
-            "timelines": timelines,
-            "exports": exports,
-            "project_path": project_path,
-        }
+                "metadata": metadata,
+                "timelines": timelines,
+                "exports": exports,
+                "project_path": project_path,
+                }
 
     except Exception as e:
         return {"ok": False, "error": f"Error reading project info: {str(e)}"}

@@ -1,16 +1,16 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Conservative Research System - Self-Healing Pipeline & Automation
+Conservative Research System - Self - Healing Pipeline & Automation
 
-This module implements advanced self-healing capabilities, automated problem detection,
+This module implements advanced self - healing capabilities, automated problem detection,
 and pipeline enhancements to ensure 100% uptime and automated repairs.
 
 Features:
 - Predictive failure detection
 - Automated problem resolution
 - Pipeline optimization and enhancement
-- Real-time monitoring and alerting
-- Self-healing infrastructure
+- Real - time monitoring and alerting
+- Self - healing infrastructure
 - Automated testing and deployment
 - Performance optimization
 - Error recovery and rollback
@@ -39,7 +39,7 @@ import numpy as np
 import psutil
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -88,8 +88,9 @@ class AutomationAction(Enum):
     UPDATE_CONFIGURATION = "update_configuration"
     REBUILD_INDEX = "rebuild_index"
 
-
 @dataclass
+
+
 class SystemMetrics:
     """System performance metrics"""
 
@@ -101,10 +102,11 @@ class SystemMetrics:
     error_rate: float
     throughput: float
     uptime: float
-    timestamp: datetime = field(default_factory=datetime.now)
-
+    timestamp: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class ProblemDetection:
     """Problem detection result"""
 
@@ -117,8 +119,9 @@ class ProblemDetection:
     recommended_actions: List[AutomationAction]
     auto_fix_available: bool = True
 
-
 @dataclass
+
+
 class AutomationResult:
     """Result of automated action"""
 
@@ -127,18 +130,19 @@ class AutomationResult:
     execution_time: float
     output: str
     error_message: Optional[str] = None
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory = datetime.now)
 
 
 class SelfHealingPipeline:
-    """Advanced self-healing pipeline system"""
+    """Advanced self - healing pipeline system"""
+
 
     def __init__(self, config_path: str = "pipeline_config.json"):
         self.config_path = config_path
         self.db_path = "self_healing.db"
         self.monitoring_interval = 30  # seconds
         self.is_running = False
-        self.executor = ThreadPoolExecutor(max_workers=20)
+        self.executor = ThreadPoolExecutor(max_workers = 20)
         self.problem_detectors = {}
         self.automation_handlers = {}
         self.system_metrics_history = []
@@ -150,8 +154,9 @@ class SelfHealingPipeline:
         self._initialize_automation_handlers()
         self._load_configuration()
 
+
     def _initialize_database(self):
-        """Initialize self-healing database"""
+        """Initialize self - healing database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
@@ -160,15 +165,15 @@ class SelfHealingPipeline:
             """
             CREATE TABLE IF NOT EXISTS system_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                cpu_usage REAL,
-                memory_usage REAL,
-                disk_usage REAL,
-                network_io TEXT,
-                response_time REAL,
-                error_rate REAL,
-                throughput REAL,
-                uptime REAL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    cpu_usage REAL,
+                    memory_usage REAL,
+                    disk_usage REAL,
+                    network_io TEXT,
+                    response_time REAL,
+                    error_rate REAL,
+                    throughput REAL,
+                    uptime REAL,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -178,16 +183,16 @@ class SelfHealingPipeline:
             """
             CREATE TABLE IF NOT EXISTS problem_detections (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                problem_type TEXT,
-                severity TEXT,
-                description TEXT,
-                affected_components TEXT,
-                detection_time DATETIME,
-                metrics TEXT,
-                recommended_actions TEXT,
-                auto_fix_available BOOLEAN,
-                resolved BOOLEAN DEFAULT FALSE,
-                resolution_time DATETIME
+                    problem_type TEXT,
+                    severity TEXT,
+                    description TEXT,
+                    affected_components TEXT,
+                    detection_time DATETIME,
+                    metrics TEXT,
+                    recommended_actions TEXT,
+                    auto_fix_available BOOLEAN,
+                    resolved BOOLEAN DEFAULT FALSE,
+                    resolution_time DATETIME
             )
         """
         )
@@ -197,12 +202,12 @@ class SelfHealingPipeline:
             """
             CREATE TABLE IF NOT EXISTS automation_results (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                action TEXT,
-                success BOOLEAN,
-                execution_time REAL,
-                output TEXT,
-                error_message TEXT,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    action TEXT,
+                    success BOOLEAN,
+                    execution_time REAL,
+                    output TEXT,
+                    error_message TEXT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -212,74 +217,77 @@ class SelfHealingPipeline:
             """
             CREATE TABLE IF NOT EXISTS pipeline_status (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                pipeline_name TEXT,
-                status TEXT,
-                last_run DATETIME,
-                success_rate REAL,
-                average_duration REAL,
-                error_count INTEGER,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    pipeline_name TEXT,
+                    status TEXT,
+                    last_run DATETIME,
+                    success_rate REAL,
+                    average_duration REAL,
+                    error_count INTEGER,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
 
         conn.commit()
         conn.close()
-        logger.info("Self-healing database initialized")
+        logger.info("Self - healing database initialized")
+
 
     def _initialize_problem_detectors(self):
         """Initialize problem detection functions"""
         self.problem_detectors = {
             ProblemType.HIGH_CPU_USAGE: self._detect_high_cpu,
-            ProblemType.HIGH_MEMORY_USAGE: self._detect_high_memory,
-            ProblemType.DISK_SPACE_LOW: self._detect_low_disk_space,
-            ProblemType.DATABASE_CONNECTION: self._detect_database_issues,
-            ProblemType.API_ENDPOINT_DOWN: self._detect_api_issues,
-            ProblemType.NETWORK_CONNECTIVITY: self._detect_network_issues,
-            ProblemType.SERVICE_CRASH: self._detect_service_crashes,
-            ProblemType.PERFORMANCE_DEGRADATION: self._detect_performance_issues,
-            ProblemType.PIPELINE_FAILURE: self._detect_pipeline_failures,
-            ProblemType.TEST_FAILURE: self._detect_test_failures,
-            ProblemType.DEPLOYMENT_FAILURE: self._detect_deployment_failures,
-        }
+                ProblemType.HIGH_MEMORY_USAGE: self._detect_high_memory,
+                ProblemType.DISK_SPACE_LOW: self._detect_low_disk_space,
+                ProblemType.DATABASE_CONNECTION: self._detect_database_issues,
+                ProblemType.API_ENDPOINT_DOWN: self._detect_api_issues,
+                ProblemType.NETWORK_CONNECTIVITY: self._detect_network_issues,
+                ProblemType.SERVICE_CRASH: self._detect_service_crashes,
+                ProblemType.PERFORMANCE_DEGRADATION: self._detect_performance_issues,
+                ProblemType.PIPELINE_FAILURE: self._detect_pipeline_failures,
+                ProblemType.TEST_FAILURE: self._detect_test_failures,
+                ProblemType.DEPLOYMENT_FAILURE: self._detect_deployment_failures,
+                }
+
 
     def _initialize_automation_handlers(self):
         """Initialize automation action handlers"""
         self.automation_handlers = {
             AutomationAction.RESTART_SERVICE: self._restart_service,
-            AutomationAction.CLEAR_CACHE: self._clear_cache,
-            AutomationAction.SCALE_RESOURCES: self._scale_resources,
-            AutomationAction.ROLLBACK_DEPLOYMENT: self._rollback_deployment,
-            AutomationAction.REPAIR_DATABASE: self._repair_database,
-            AutomationAction.OPTIMIZE_PERFORMANCE: self._optimize_performance,
-            AutomationAction.ALERT_ADMINISTRATORS: self._alert_administrators,
-            AutomationAction.BACKUP_DATA: self._backup_data,
-            AutomationAction.RUN_DIAGNOSTICS: self._run_diagnostics,
-            AutomationAction.UPDATE_CONFIGURATION: self._update_configuration,
-            AutomationAction.REBUILD_INDEX: self._rebuild_index,
-        }
+                AutomationAction.CLEAR_CACHE: self._clear_cache,
+                AutomationAction.SCALE_RESOURCES: self._scale_resources,
+                AutomationAction.ROLLBACK_DEPLOYMENT: self._rollback_deployment,
+                AutomationAction.REPAIR_DATABASE: self._repair_database,
+                AutomationAction.OPTIMIZE_PERFORMANCE: self._optimize_performance,
+                AutomationAction.ALERT_ADMINISTRATORS: self._alert_administrators,
+                AutomationAction.BACKUP_DATA: self._backup_data,
+                AutomationAction.RUN_DIAGNOSTICS: self._run_diagnostics,
+                AutomationAction.UPDATE_CONFIGURATION: self._update_configuration,
+                AutomationAction.REBUILD_INDEX: self._rebuild_index,
+                }
+
 
     def _load_configuration(self):
         """Load pipeline configuration"""
         default_config = {
             "monitoring_interval": 30,
-            "cpu_threshold": 80.0,
-            "memory_threshold": 85.0,
-            "disk_threshold": 90.0,
-            "response_time_threshold": 5.0,
-            "error_rate_threshold": 0.05,
-            "auto_healing_enabled": True,
-            "backup_retention_days": 30,
-            "alert_email": "admin@therightperspective.com",
-            "services_to_monitor": [
+                "cpu_threshold": 80.0,
+                "memory_threshold": 85.0,
+                "disk_threshold": 90.0,
+                "response_time_threshold": 5.0,
+                "error_rate_threshold": 0.05,
+                "auto_healing_enabled": True,
+                "backup_retention_days": 30,
+                "alert_email": "admin@therightperspective.com",
+                "services_to_monitor": [
                 "conservative_research_agent",
-                "news_scraper",
-                "youtube_analyzer",
-                "content_generator",
-                "database",
-                "web_server",
-            ],
-        }
+                    "news_scraper",
+                    "youtube_analyzer",
+                    "content_generator",
+                    "database",
+                    "web_server",
+                    ],
+                }
 
         if os.path.exists(self.config_path):
             with open(self.config_path, "r") as f:
@@ -287,15 +295,16 @@ class SelfHealingPipeline:
         else:
             self.config = default_config
             with open(self.config_path, "w") as f:
-                json.dump(self.config, f, indent=2)
+                json.dump(self.config, f, indent = 2)
 
         self.monitoring_interval = self.config.get("monitoring_interval", 30)
         logger.info(f"Configuration loaded: {len(self.config)} settings")
 
+
     async def collect_system_metrics(self) -> SystemMetrics:
         """Collect comprehensive system metrics"""
         # CPU usage
-        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_usage = psutil.cpu_percent(interval = 1)
 
         # Memory usage
         memory = psutil.virtual_memory()
@@ -305,14 +314,14 @@ class SelfHealingPipeline:
         disk = psutil.disk_usage("/")
         disk_usage = disk.percent
 
-        # Network I/O
+        # Network I / O
         network = psutil.net_io_counters()
         network_io = {
             "bytes_sent": network.bytes_sent,
-            "bytes_recv": network.bytes_recv,
-            "packets_sent": network.packets_sent,
-            "packets_recv": network.packets_recv,
-        }
+                "bytes_recv": network.bytes_recv,
+                "packets_sent": network.packets_sent,
+                "packets_recv": network.packets_recv,
+                }
 
         # Response time (simulate API response time)
         start_time = time.time()
@@ -320,10 +329,10 @@ class SelfHealingPipeline:
             # Test internal API endpoint
             async with aiohttp.ClientSession() as session:
                 async with session.get(
-                    "http://localhost:8000/health", timeout=5
+                    "http://localhost:8000 / health", timeout = 5
                 ) as response:
                     response_time = time.time() - start_time
-        except:
+        except Exception:
             response_time = 10.0  # Timeout or error
 
         # Error rate (simulate based on logs or metrics)
@@ -338,20 +347,21 @@ class SelfHealingPipeline:
         uptime = time.time() - psutil.boot_time()
 
         metrics = SystemMetrics(
-            cpu_usage=cpu_usage,
-            memory_usage=memory_usage,
-            disk_usage=disk_usage,
-            network_io=network_io,
-            response_time=response_time,
-            error_rate=error_rate,
-            throughput=throughput,
-            uptime=uptime,
-        )
+            cpu_usage = cpu_usage,
+                memory_usage = memory_usage,
+                disk_usage = disk_usage,
+                network_io = network_io,
+                response_time = response_time,
+                error_rate = error_rate,
+                throughput = throughput,
+                uptime = uptime,
+                )
 
         # Store metrics in database
         await self._store_metrics(metrics)
 
         return metrics
+
 
     async def _store_metrics(self, metrics: SystemMetrics):
         """Store system metrics in database"""
@@ -360,25 +370,26 @@ class SelfHealingPipeline:
 
         cursor.execute(
             """
-            INSERT INTO system_metrics 
-            (cpu_usage, memory_usage, disk_usage, network_io, response_time, 
-             error_rate, throughput, uptime)
+            INSERT INTO system_metrics
+            (cpu_usage, memory_usage, disk_usage, network_io, response_time,
+                error_rate, throughput, uptime)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 metrics.cpu_usage,
-                metrics.memory_usage,
-                metrics.disk_usage,
-                json.dumps(metrics.network_io),
-                metrics.response_time,
-                metrics.error_rate,
-                metrics.throughput,
-                metrics.uptime,
-            ),
-        )
+                    metrics.memory_usage,
+                    metrics.disk_usage,
+                    json.dumps(metrics.network_io),
+                    metrics.response_time,
+                    metrics.error_rate,
+                    metrics.throughput,
+                    metrics.uptime,
+                    ),
+                )
 
         conn.commit()
         conn.close()
+
 
     async def detect_problems(self, metrics: SystemMetrics) -> List[ProblemDetection]:
         """Detect system problems using various detection methods"""
@@ -400,6 +411,7 @@ class SelfHealingPipeline:
 
         return problems
 
+
     async def _store_problem_detection(self, problem: ProblemDetection):
         """Store problem detection in database"""
         conn = sqlite3.connect(self.db_path)
@@ -407,27 +419,29 @@ class SelfHealingPipeline:
 
         cursor.execute(
             """
-            INSERT INTO problem_detections 
-            (problem_type, severity, description, affected_components, 
-             detection_time, metrics, recommended_actions, auto_fix_available)
+            INSERT INTO problem_detections
+            (problem_type, severity, description, affected_components,
+                detection_time, metrics, recommended_actions, auto_fix_available)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 problem.problem_type.value,
-                problem.severity.value,
-                problem.description,
-                json.dumps(problem.affected_components),
-                problem.detection_time,
-                json.dumps(problem.metrics),
-                json.dumps([action.value for action in problem.recommended_actions]),
-                problem.auto_fix_available,
-            ),
-        )
+                    problem.severity.value,
+                    problem.description,
+                    json.dumps(problem.affected_components),
+                    problem.detection_time,
+                    json.dumps(problem.metrics),
+                    json.dumps([action.value for action in problem.recommended_actions]),
+                    problem.auto_fix_available,
+                    ),
+                )
 
         conn.commit()
         conn.close()
 
     # Problem Detection Methods
+
+
     async def _detect_high_cpu(
         self, metrics: SystemMetrics
     ) -> Optional[ProblemDetection]:
@@ -435,22 +449,23 @@ class SelfHealingPipeline:
         threshold = self.config.get("cpu_threshold", 80.0)
         if metrics.cpu_usage > threshold:
             return ProblemDetection(
-                problem_type=ProblemType.HIGH_CPU_USAGE,
-                severity=(
+                problem_type = ProblemType.HIGH_CPU_USAGE,
+                    severity=(
                     HealthStatus.CRITICAL
                     if metrics.cpu_usage > 95
                     else HealthStatus.WARNING
                 ),
-                description=f"High CPU usage detected: {metrics.cpu_usage:.1f}%",
-                affected_components=["system", "all_services"],
-                detection_time=datetime.now(),
-                metrics={"cpu_usage": metrics.cpu_usage, "threshold": threshold},
-                recommended_actions=[
+                    description = f"High CPU usage detected: {metrics.cpu_usage:.1f}%",
+                    affected_components=["system", "all_services"],
+                    detection_time = datetime.now(),
+                    metrics={"cpu_usage": metrics.cpu_usage, "threshold": threshold},
+                    recommended_actions=[
                     AutomationAction.OPTIMIZE_PERFORMANCE,
-                    AutomationAction.SCALE_RESOURCES,
-                ],
-            )
+                        AutomationAction.SCALE_RESOURCES,
+                        ],
+                    )
         return None
+
 
     async def _detect_high_memory(
         self, metrics: SystemMetrics
@@ -459,22 +474,23 @@ class SelfHealingPipeline:
         threshold = self.config.get("memory_threshold", 85.0)
         if metrics.memory_usage > threshold:
             return ProblemDetection(
-                problem_type=ProblemType.HIGH_MEMORY_USAGE,
-                severity=(
+                problem_type = ProblemType.HIGH_MEMORY_USAGE,
+                    severity=(
                     HealthStatus.CRITICAL
                     if metrics.memory_usage > 95
                     else HealthStatus.WARNING
                 ),
-                description=f"High memory usage detected: {metrics.memory_usage:.1f}%",
-                affected_components=["system", "all_services"],
-                detection_time=datetime.now(),
-                metrics={"memory_usage": metrics.memory_usage, "threshold": threshold},
-                recommended_actions=[
+                    description = f"High memory usage detected: {metrics.memory_usage:.1f}%",
+                    affected_components=["system", "all_services"],
+                    detection_time = datetime.now(),
+                    metrics={"memory_usage": metrics.memory_usage, "threshold": threshold},
+                    recommended_actions=[
                     AutomationAction.CLEAR_CACHE,
-                    AutomationAction.RESTART_SERVICE,
-                ],
-            )
+                        AutomationAction.RESTART_SERVICE,
+                        ],
+                    )
         return None
+
 
     async def _detect_low_disk_space(
         self, metrics: SystemMetrics
@@ -483,22 +499,23 @@ class SelfHealingPipeline:
         threshold = self.config.get("disk_threshold", 90.0)
         if metrics.disk_usage > threshold:
             return ProblemDetection(
-                problem_type=ProblemType.DISK_SPACE_LOW,
-                severity=(
+                problem_type = ProblemType.DISK_SPACE_LOW,
+                    severity=(
                     HealthStatus.CRITICAL
                     if metrics.disk_usage > 95
                     else HealthStatus.WARNING
                 ),
-                description=f"Low disk space detected: {metrics.disk_usage:.1f}% used",
-                affected_components=["storage", "database", "logs"],
-                detection_time=datetime.now(),
-                metrics={"disk_usage": metrics.disk_usage, "threshold": threshold},
-                recommended_actions=[
+                    description = f"Low disk space detected: {metrics.disk_usage:.1f}% used",
+                    affected_components=["storage", "database", "logs"],
+                    detection_time = datetime.now(),
+                    metrics={"disk_usage": metrics.disk_usage, "threshold": threshold},
+                    recommended_actions=[
                     AutomationAction.BACKUP_DATA,
-                    AutomationAction.CLEAR_CACHE,
-                ],
-            )
+                        AutomationAction.CLEAR_CACHE,
+                        ],
+                    )
         return None
+
 
     async def _detect_database_issues(
         self, metrics: SystemMetrics
@@ -506,24 +523,25 @@ class SelfHealingPipeline:
         """Detect database connection issues"""
         try:
             # Test database connection
-            conn = sqlite3.connect(self.db_path, timeout=5)
+            conn = sqlite3.connect(self.db_path, timeout = 5)
             cursor = conn.cursor()
             cursor.execute("SELECT 1")
             conn.close()
             return None
         except Exception as e:
             return ProblemDetection(
-                problem_type=ProblemType.DATABASE_CONNECTION,
-                severity=HealthStatus.CRITICAL,
-                description=f"Database connection failed: {str(e)}",
-                affected_components=["database", "conservative_research_agent"],
-                detection_time=datetime.now(),
-                metrics={"error": str(e)},
-                recommended_actions=[
+                problem_type = ProblemType.DATABASE_CONNECTION,
+                    severity = HealthStatus.CRITICAL,
+                    description = f"Database connection failed: {str(e)}",
+                    affected_components=["database", "conservative_research_agent"],
+                    detection_time = datetime.now(),
+                    metrics={"error": str(e)},
+                    recommended_actions=[
                     AutomationAction.REPAIR_DATABASE,
-                    AutomationAction.RESTART_SERVICE,
-                ],
-            )
+                        AutomationAction.RESTART_SERVICE,
+                        ],
+                    )
+
 
     async def _detect_api_issues(
         self, metrics: SystemMetrics
@@ -531,22 +549,23 @@ class SelfHealingPipeline:
         """Detect API endpoint issues"""
         if metrics.response_time > self.config.get("response_time_threshold", 5.0):
             return ProblemDetection(
-                problem_type=ProblemType.API_ENDPOINT_DOWN,
-                severity=(
+                problem_type = ProblemType.API_ENDPOINT_DOWN,
+                    severity=(
                     HealthStatus.CRITICAL
                     if metrics.response_time > 10
                     else HealthStatus.WARNING
                 ),
-                description=f"API response time too high: {metrics.response_time:.2f}s",
-                affected_components=["web_server", "api"],
-                detection_time=datetime.now(),
-                metrics={"response_time": metrics.response_time},
-                recommended_actions=[
+                    description = f"API response time too high: {metrics.response_time:.2f}s",
+                    affected_components=["web_server", "api"],
+                    detection_time = datetime.now(),
+                    metrics={"response_time": metrics.response_time},
+                    recommended_actions=[
                     AutomationAction.RESTART_SERVICE,
-                    AutomationAction.OPTIMIZE_PERFORMANCE,
-                ],
-            )
+                        AutomationAction.OPTIMIZE_PERFORMANCE,
+                        ],
+                    )
         return None
+
 
     async def _detect_network_issues(
         self, metrics: SystemMetrics
@@ -556,24 +575,25 @@ class SelfHealingPipeline:
             # Test external connectivity
             async with aiohttp.ClientSession() as session:
                 async with session.get(
-                    "https://www.google.com", timeout=10
+                    "https://www.google.com", timeout = 10
                 ) as response:
                     if response.status != 200:
                         raise Exception(f"HTTP {response.status}")
             return None
         except Exception as e:
             return ProblemDetection(
-                problem_type=ProblemType.NETWORK_CONNECTIVITY,
-                severity=HealthStatus.CRITICAL,
-                description=f"Network connectivity issue: {str(e)}",
-                affected_components=["network", "news_scraper", "youtube_analyzer"],
-                detection_time=datetime.now(),
-                metrics={"error": str(e)},
-                recommended_actions=[
+                problem_type = ProblemType.NETWORK_CONNECTIVITY,
+                    severity = HealthStatus.CRITICAL,
+                    description = f"Network connectivity issue: {str(e)}",
+                    affected_components=["network", "news_scraper", "youtube_analyzer"],
+                    detection_time = datetime.now(),
+                    metrics={"error": str(e)},
+                    recommended_actions=[
                     AutomationAction.RUN_DIAGNOSTICS,
-                    AutomationAction.ALERT_ADMINISTRATORS,
-                ],
-            )
+                        AutomationAction.ALERT_ADMINISTRATORS,
+                        ],
+                    )
+
 
     async def _detect_service_crashes(
         self, metrics: SystemMetrics
@@ -590,18 +610,19 @@ class SelfHealingPipeline:
 
         if crashed_services:
             return ProblemDetection(
-                problem_type=ProblemType.SERVICE_CRASH,
-                severity=HealthStatus.CRITICAL,
-                description=f"Services crashed: {', '.join(crashed_services)}",
-                affected_components=crashed_services,
-                detection_time=datetime.now(),
-                metrics={"crashed_services": crashed_services},
-                recommended_actions=[
+                problem_type = ProblemType.SERVICE_CRASH,
+                    severity = HealthStatus.CRITICAL,
+                    description = f"Services crashed: {', '.join(crashed_services)}",
+                    affected_components = crashed_services,
+                    detection_time = datetime.now(),
+                    metrics={"crashed_services": crashed_services},
+                    recommended_actions=[
                     AutomationAction.RESTART_SERVICE,
-                    AutomationAction.RUN_DIAGNOSTICS,
-                ],
-            )
+                        AutomationAction.RUN_DIAGNOSTICS,
+                        ],
+                    )
         return None
+
 
     async def _detect_performance_issues(
         self, metrics: SystemMetrics
@@ -620,18 +641,19 @@ class SelfHealingPipeline:
 
         if len(issues) >= 2:
             return ProblemDetection(
-                problem_type=ProblemType.PERFORMANCE_DEGRADATION,
-                severity=HealthStatus.WARNING,
-                description=f"Performance degradation detected: {', '.join(issues)}",
-                affected_components=["system", "all_services"],
-                detection_time=datetime.now(),
-                metrics={"issues": issues, "metrics": metrics.__dict__},
-                recommended_actions=[
+                problem_type = ProblemType.PERFORMANCE_DEGRADATION,
+                    severity = HealthStatus.WARNING,
+                    description = f"Performance degradation detected: {', '.join(issues)}",
+                    affected_components=["system", "all_services"],
+                    detection_time = datetime.now(),
+                    metrics={"issues": issues, "metrics": metrics.__dict__},
+                    recommended_actions=[
                     AutomationAction.OPTIMIZE_PERFORMANCE,
-                    AutomationAction.CLEAR_CACHE,
-                ],
-            )
+                        AutomationAction.CLEAR_CACHE,
+                        ],
+                    )
         return None
+
 
     async def _detect_pipeline_failures(
         self, metrics: SystemMetrics
@@ -640,18 +662,19 @@ class SelfHealingPipeline:
         # Check pipeline status (simplified)
         if metrics.error_rate > self.config.get("error_rate_threshold", 0.05):
             return ProblemDetection(
-                problem_type=ProblemType.PIPELINE_FAILURE,
-                severity=HealthStatus.CRITICAL,
-                description=f"Pipeline failure detected: error rate {metrics.error_rate:.3f}",
-                affected_components=["pipeline", "automation"],
-                detection_time=datetime.now(),
-                metrics={"error_rate": metrics.error_rate},
-                recommended_actions=[
+                problem_type = ProblemType.PIPELINE_FAILURE,
+                    severity = HealthStatus.CRITICAL,
+                    description = f"Pipeline failure detected: error rate {metrics.error_rate:.3f}",
+                    affected_components=["pipeline", "automation"],
+                    detection_time = datetime.now(),
+                    metrics={"error_rate": metrics.error_rate},
+                    recommended_actions=[
                     AutomationAction.ROLLBACK_DEPLOYMENT,
-                    AutomationAction.RUN_DIAGNOSTICS,
-                ],
-            )
+                        AutomationAction.RUN_DIAGNOSTICS,
+                        ],
+                    )
         return None
+
 
     async def _detect_test_failures(
         self, metrics: SystemMetrics
@@ -660,18 +683,19 @@ class SelfHealingPipeline:
         # Simulate test failure detection
         if metrics.throughput < 50:  # Low throughput might indicate test failures
             return ProblemDetection(
-                problem_type=ProblemType.TEST_FAILURE,
-                severity=HealthStatus.WARNING,
-                description=f"Test failures detected: low throughput {metrics.throughput}",
-                affected_components=["testing", "ci_cd"],
-                detection_time=datetime.now(),
-                metrics={"throughput": metrics.throughput},
-                recommended_actions=[
+                problem_type = ProblemType.TEST_FAILURE,
+                    severity = HealthStatus.WARNING,
+                    description = f"Test failures detected: low throughput {metrics.throughput}",
+                    affected_components=["testing", "ci_cd"],
+                    detection_time = datetime.now(),
+                    metrics={"throughput": metrics.throughput},
+                    recommended_actions=[
                     AutomationAction.RUN_DIAGNOSTICS,
-                    AutomationAction.ROLLBACK_DEPLOYMENT,
-                ],
-            )
+                        AutomationAction.ROLLBACK_DEPLOYMENT,
+                        ],
+                    )
         return None
+
 
     async def _detect_deployment_failures(
         self, metrics: SystemMetrics
@@ -680,23 +704,25 @@ class SelfHealingPipeline:
         # Check for deployment issues
         if metrics.response_time > 8 and metrics.error_rate > 0.03:
             return ProblemDetection(
-                problem_type=ProblemType.DEPLOYMENT_FAILURE,
-                severity=HealthStatus.CRITICAL,
-                description="Deployment failure detected: high response time and error rate",
-                affected_components=["deployment", "web_server"],
-                detection_time=datetime.now(),
-                metrics={
+                problem_type = ProblemType.DEPLOYMENT_FAILURE,
+                    severity = HealthStatus.CRITICAL,
+                    description="Deployment failure detected: high response time and error rate",
+                    affected_components=["deployment", "web_server"],
+                    detection_time = datetime.now(),
+                    metrics={
                     "response_time": metrics.response_time,
-                    "error_rate": metrics.error_rate,
-                },
-                recommended_actions=[
+                        "error_rate": metrics.error_rate,
+                        },
+                    recommended_actions=[
                     AutomationAction.ROLLBACK_DEPLOYMENT,
-                    AutomationAction.ALERT_ADMINISTRATORS,
-                ],
-            )
+                        AutomationAction.ALERT_ADMINISTRATORS,
+                        ],
+                    )
         return None
 
     # Automation Action Handlers
+
+
     async def _restart_service(self, problem: ProblemDetection) -> AutomationResult:
         """Restart affected services"""
         start_time = time.time()
@@ -705,19 +731,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(2)  # Simulate restart time
             output = f"Restarted services: {', '.join(problem.affected_components)}"
             return AutomationResult(
-                action=AutomationAction.RESTART_SERVICE,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.RESTART_SERVICE,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.RESTART_SERVICE,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.RESTART_SERVICE,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _clear_cache(self, problem: ProblemDetection) -> AutomationResult:
         """Clear system caches"""
@@ -727,19 +754,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(1)
             output = "System caches cleared successfully"
             return AutomationResult(
-                action=AutomationAction.CLEAR_CACHE,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.CLEAR_CACHE,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.CLEAR_CACHE,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.CLEAR_CACHE,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _scale_resources(self, problem: ProblemDetection) -> AutomationResult:
         """Scale system resources"""
@@ -749,19 +777,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(3)
             output = "System resources scaled up successfully"
             return AutomationResult(
-                action=AutomationAction.SCALE_RESOURCES,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.SCALE_RESOURCES,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.SCALE_RESOURCES,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.SCALE_RESOURCES,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _rollback_deployment(self, problem: ProblemDetection) -> AutomationResult:
         """Rollback to previous deployment"""
@@ -771,19 +800,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(5)
             output = "Deployment rolled back to previous stable version"
             return AutomationResult(
-                action=AutomationAction.ROLLBACK_DEPLOYMENT,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.ROLLBACK_DEPLOYMENT,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.ROLLBACK_DEPLOYMENT,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.ROLLBACK_DEPLOYMENT,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _repair_database(self, problem: ProblemDetection) -> AutomationResult:
         """Repair database issues"""
@@ -793,19 +823,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(4)
             output = "Database repaired and optimized"
             return AutomationResult(
-                action=AutomationAction.REPAIR_DATABASE,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.REPAIR_DATABASE,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.REPAIR_DATABASE,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.REPAIR_DATABASE,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _optimize_performance(
         self, problem: ProblemDetection
@@ -817,19 +848,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(3)
             output = "System performance optimized"
             return AutomationResult(
-                action=AutomationAction.OPTIMIZE_PERFORMANCE,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.OPTIMIZE_PERFORMANCE,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.OPTIMIZE_PERFORMANCE,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.OPTIMIZE_PERFORMANCE,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _alert_administrators(
         self, problem: ProblemDetection
@@ -841,19 +873,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(1)
             output = f"Alert sent to administrators about {problem.problem_type.value}"
             return AutomationResult(
-                action=AutomationAction.ALERT_ADMINISTRATORS,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.ALERT_ADMINISTRATORS,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.ALERT_ADMINISTRATORS,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.ALERT_ADMINISTRATORS,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _backup_data(self, problem: ProblemDetection) -> AutomationResult:
         """Backup critical data"""
@@ -863,19 +896,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(6)
             output = "Critical data backed up successfully"
             return AutomationResult(
-                action=AutomationAction.BACKUP_DATA,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.BACKUP_DATA,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.BACKUP_DATA,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.BACKUP_DATA,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _run_diagnostics(self, problem: ProblemDetection) -> AutomationResult:
         """Run system diagnostics"""
@@ -885,19 +919,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(2)
             output = "System diagnostics completed - all systems operational"
             return AutomationResult(
-                action=AutomationAction.RUN_DIAGNOSTICS,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.RUN_DIAGNOSTICS,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.RUN_DIAGNOSTICS,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.RUN_DIAGNOSTICS,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _update_configuration(
         self, problem: ProblemDetection
@@ -909,19 +944,20 @@ class SelfHealingPipeline:
             await asyncio.sleep(2)
             output = "System configuration updated"
             return AutomationResult(
-                action=AutomationAction.UPDATE_CONFIGURATION,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.UPDATE_CONFIGURATION,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.UPDATE_CONFIGURATION,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.UPDATE_CONFIGURATION,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def _rebuild_index(self, problem: ProblemDetection) -> AutomationResult:
         """Rebuild database indexes"""
@@ -931,26 +967,27 @@ class SelfHealingPipeline:
             await asyncio.sleep(4)
             output = "Database indexes rebuilt successfully"
             return AutomationResult(
-                action=AutomationAction.REBUILD_INDEX,
-                success=True,
-                execution_time=time.time() - start_time,
-                output=output,
-            )
+                action = AutomationAction.REBUILD_INDEX,
+                    success = True,
+                    execution_time = time.time() - start_time,
+                    output = output,
+                    )
         except Exception as e:
             return AutomationResult(
-                action=AutomationAction.REBUILD_INDEX,
-                success=False,
-                execution_time=time.time() - start_time,
-                output="",
-                error_message=str(e),
-            )
+                action = AutomationAction.REBUILD_INDEX,
+                    success = False,
+                    execution_time = time.time() - start_time,
+                    output="",
+                    error_message = str(e),
+                    )
+
 
     async def execute_automation(
         self, problem: ProblemDetection
     ) -> List[AutomationResult]:
         """Execute automated actions for a problem"""
         if not self.config.get("auto_healing_enabled", True):
-            logger.info("Auto-healing disabled, skipping automation")
+            logger.info("Auto - healing disabled, skipping automation")
             return []
 
         results = []
@@ -979,16 +1016,17 @@ class SelfHealingPipeline:
                         f"Error executing automation action {action.value}: {str(e)}"
                     )
                     error_result = AutomationResult(
-                        action=action,
-                        success=False,
-                        execution_time=0,
-                        output="",
-                        error_message=str(e),
-                    )
+                        action = action,
+                            success = False,
+                            execution_time = 0,
+                            output="",
+                            error_message = str(e),
+                            )
                     results.append(error_result)
                     await self._store_automation_result(error_result)
 
         return results
+
 
     async def _store_automation_result(self, result: AutomationResult):
         """Store automation result in database"""
@@ -997,21 +1035,22 @@ class SelfHealingPipeline:
 
         cursor.execute(
             """
-            INSERT INTO automation_results 
+            INSERT INTO automation_results
             (action, success, execution_time, output, error_message)
             VALUES (?, ?, ?, ?, ?)
         """,
             (
                 result.action.value,
-                result.success,
-                result.execution_time,
-                result.output,
-                result.error_message,
-            ),
-        )
+                    result.success,
+                    result.execution_time,
+                    result.output,
+                    result.error_message,
+                    ),
+                )
 
         conn.commit()
         conn.close()
+
 
     async def run_monitoring_cycle(self):
         """Run one complete monitoring and healing cycle"""
@@ -1059,6 +1098,7 @@ class SelfHealingPipeline:
         except Exception as e:
             logger.error(f"Error in monitoring cycle: {str(e)}")
 
+
     async def _mark_problem_resolved(self, problem: ProblemDetection):
         """Mark problem as resolved in database"""
         conn = sqlite3.connect(self.db_path)
@@ -1066,21 +1106,22 @@ class SelfHealingPipeline:
 
         cursor.execute(
             """
-            UPDATE problem_detections 
+            UPDATE problem_detections
             SET resolved = TRUE, resolution_time = ?
             WHERE problem_type = ? AND detection_time = ? AND resolved = FALSE
         """,
             (datetime.now(), problem.problem_type.value, problem.detection_time),
-        )
+                )
 
         conn.commit()
         conn.close()
 
+
     async def start_monitoring(self):
-        """Start continuous monitoring and self-healing"""
+        """Start continuous monitoring and self - healing"""
         self.is_running = True
         logger.info(
-            f"Starting self-healing pipeline monitoring (interval: {self.monitoring_interval}s)"
+            f"Starting self - healing pipeline monitoring (interval: {self.monitoring_interval}s)"
         )
 
         while self.is_running:
@@ -1094,10 +1135,12 @@ class SelfHealingPipeline:
                 logger.error(f"Unexpected error in monitoring loop: {str(e)}")
                 await asyncio.sleep(self.monitoring_interval)
 
+
     def stop_monitoring(self):
         """Stop monitoring"""
         self.is_running = False
-        logger.info("Self-healing pipeline monitoring stopped")
+        logger.info("Self - healing pipeline monitoring stopped")
+
 
     def get_system_status(self) -> Dict[str, Any]:
         """Get comprehensive system status"""
@@ -1107,9 +1150,9 @@ class SelfHealingPipeline:
         # Get recent problems
         cursor.execute(
             """
-            SELECT problem_type, COUNT(*) as count, 
-                   SUM(CASE WHEN resolved THEN 1 ELSE 0 END) as resolved_count
-            FROM problem_detections 
+            SELECT problem_type, COUNT(*) as count,
+                SUM(CASE WHEN resolved THEN 1 ELSE 0 END) as resolved_count
+            FROM problem_detections
             WHERE detection_time > datetime('now', '-24 hours')
             GROUP BY problem_type
         """
@@ -1119,9 +1162,9 @@ class SelfHealingPipeline:
         # Get automation success rate
         cursor.execute(
             """
-            SELECT action, COUNT(*) as total, 
-                   SUM(CASE WHEN success THEN 1 ELSE 0 END) as successful
-            FROM automation_results 
+            SELECT action, COUNT(*) as total,
+                SUM(CASE WHEN success THEN 1 ELSE 0 END) as successful
+            FROM automation_results
             WHERE timestamp > datetime('now', '-24 hours')
             GROUP BY action
         """
@@ -1137,27 +1180,28 @@ class SelfHealingPipeline:
 
         return {
             "monitoring_status": "RUNNING" if self.is_running else "STOPPED",
-            "latest_metrics": latest_metrics.__dict__ if latest_metrics else None,
-            "problem_statistics": {
+                "latest_metrics": latest_metrics.__dict__ if latest_metrics else None,
+                "problem_statistics": {
                 row[0]: {
                     "total": row[1],
-                    "resolved": row[2],
-                    "resolution_rate": row[2] / row[1] if row[1] > 0 else 0,
-                }
+                        "resolved": row[2],
+                        "resolution_rate": row[2] / row[1] if row[1] > 0 else 0,
+                        }
                 for row in problem_stats
             },
-            "automation_statistics": {
+                "automation_statistics": {
                 row[0]: {
                     "total": row[1],
-                    "successful": row[2],
-                    "success_rate": row[2] / row[1] if row[1] > 0 else 0,
-                }
+                        "successful": row[2],
+                        "success_rate": row[2] / row[1] if row[1] > 0 else 0,
+                        }
                 for row in automation_stats
             },
-            "system_health": self._calculate_system_health(),
-            "uptime_percentage": 99.99 if self.is_running else 0,
-            "auto_healing_enabled": self.config.get("auto_healing_enabled", True),
-        }
+                "system_health": self._calculate_system_health(),
+                "uptime_percentage": 99.99 if self.is_running else 0,
+                "auto_healing_enabled": self.config.get("auto_healing_enabled", True),
+                }
+
 
     def _calculate_system_health(self) -> str:
         """Calculate overall system health"""
@@ -1205,17 +1249,18 @@ class SelfHealingPipeline:
         else:
             return "CRITICAL"
 
-
 # CLI Interface
+
+
 async def main():
     """Main execution function"""
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Conservative Research Self-Healing Pipeline"
+        description="Conservative Research Self - Healing Pipeline"
     )
     parser.add_argument(
-        "--start", action="store_true", help="Start monitoring and self-healing"
+        "--start", action="store_true", help="Start monitoring and self - healing"
     )
     parser.add_argument("--status", action="store_true", help="Show system status")
     parser.add_argument("--test", action="store_true", help="Run test monitoring cycle")
@@ -1223,21 +1268,21 @@ async def main():
 
     args = parser.parse_args()
 
-    # Initialize self-healing pipeline
+    # Initialize self - healing pipeline
     config_path = args.config or "pipeline_config.json"
     pipeline = SelfHealingPipeline(config_path)
 
-    print("🔧 Conservative Research Self-Healing Pipeline")
+    print("🔧 Conservative Research Self - Healing Pipeline")
     print("🛡️  Ensuring 100% uptime with automated problem resolution...")
 
     if args.start:
-        print("\n🚀 Starting continuous monitoring and self-healing...")
-        print("Press Ctrl+C to stop")
+        print("\n🚀 Starting continuous monitoring and self - healing...")
+        print("Press Ctrl + C to stop")
         try:
             await pipeline.start_monitoring()
         except KeyboardInterrupt:
             pipeline.stop_monitoring()
-            print("\n✅ Self-healing pipeline stopped gracefully")
+            print("\n✅ Self - healing pipeline stopped gracefully")
 
     elif args.test:
         print("\n🧪 Running test monitoring cycle...")
@@ -1252,7 +1297,7 @@ async def main():
         print(f"System Health: {status['system_health']}")
         print(f"Uptime: {status['uptime_percentage']:.2f}%")
         print(
-            f"Auto-Healing: {'Enabled' if status['auto_healing_enabled'] else 'Disabled'}"
+            f"Auto - Healing: {'Enabled' if status['auto_healing_enabled'] else 'Disabled'}"
         )
 
         if status["latest_metrics"]:
@@ -1263,7 +1308,7 @@ async def main():
             print(f"  Disk Usage: {metrics['disk_usage']:.1f}%")
             print(f"  Response Time: {metrics['response_time']:.2f}s")
             print(f"  Error Rate: {metrics['error_rate']:.3f}")
-            print(f"  Throughput: {metrics['throughput']:.1f} req/s")
+            print(f"  Throughput: {metrics['throughput']:.1f} req / s")
 
         if status["problem_statistics"]:
             print("\nProblem Statistics (24h):")
@@ -1287,7 +1332,6 @@ async def main():
             "🔧 The system will automatically detect and fix problems to maintain 100% uptime"
         )
         print("📈 All repairs and optimizations are logged for analysis")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

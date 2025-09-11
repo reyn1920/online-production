@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Comprehensive Model Validation Pipeline for 100% Quality Assurance
 
@@ -6,14 +6,14 @@ This module provides extensive validation capabilities to ensure that all
 generated models meet strict quality standards before delivery.
 
 Features:
-- Multi-dimensional quality assessment
+- Multi - dimensional quality assessment
 - Automated content analysis
 - Technical validation (format, size, integrity)
 - Semantic validation (content appropriateness)
 - Performance validation (load times, compatibility)
 - Security validation (malware, exploits)
 - Compliance validation (content policies)
-- A/B testing integration
+- A / B testing integration
 - Quality scoring and ranking
 - Automatic rejection and regeneration
 - Quality trend analysis
@@ -53,7 +53,7 @@ from pydub import AudioSegment
 from transformers import AutoModel, AutoTokenizer, pipeline
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -108,8 +108,9 @@ class QualityMetric(Enum):
     APPROPRIATENESS = "appropriateness"
     TECHNICAL_CORRECTNESS = "technical_correctness"
 
-
 @dataclass
+
+
 class ValidationRule:
     """A validation rule"""
 
@@ -118,15 +119,16 @@ class ValidationRule:
     category: ValidationCategory
     model_types: List[ModelType]
     validator_function: str
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: Dict[str, Any] = field(default_factory = dict)
     weight: float = 1.0
     threshold: float = 7.0
     critical: bool = False
     enabled: bool = True
     description: str = ""
 
-
 @dataclass
+
+
 class ValidationResult:
     """Result of a validation check"""
 
@@ -138,27 +140,29 @@ class ValidationResult:
     threshold: float
     passed: bool
     message: str
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: Dict[str, Any] = field(default_factory = dict)
     execution_time_ms: int = 0
-    timestamp: datetime = field(default_factory=datetime.now)
-
+    timestamp: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class ModelValidationRequest:
     """Request for model validation"""
 
     request_id: str
     model_type: ModelType
     file_path: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    quality_requirements: Dict[str, float] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory = dict)
+    quality_requirements: Dict[str, float] = field(default_factory = dict)
     priority: int = 5
     timeout_seconds: int = 300
     validation_rules: Optional[List[str]] = None
     skip_cache: bool = False
 
-
 @dataclass
+
+
 class ModelValidationResponse:
     """Response from model validation"""
 
@@ -166,26 +170,28 @@ class ModelValidationResponse:
     status: ValidationStatus
     overall_score: float
     passed: bool
-    validation_results: List[ValidationResult] = field(default_factory=list)
-    quality_scores: Dict[QualityMetric, float] = field(default_factory=dict)
-    recommendations: List[str] = field(default_factory=list)
-    errors: List[str] = field(default_factory=list)
+    validation_results: List[ValidationResult] = field(default_factory = list)
+    quality_scores: Dict[QualityMetric, float] = field(default_factory = dict)
+    recommendations: List[str] = field(default_factory = list)
+    errors: List[str] = field(default_factory = list)
     processing_time_ms: int = 0
     cache_hit: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 
 class TechnicalValidator:
     """Validates technical aspects of models"""
 
+
     def __init__(self):
         self.supported_formats = {
             ModelType.AVATAR_VIDEO: [".mp4", ".avi", ".mov", ".mkv"],
-            ModelType.TTS_AUDIO: [".wav", ".mp3", ".flac", ".ogg"],
-            ModelType.IMAGE: [".jpg", ".jpeg", ".png", ".bmp", ".tiff"],
-            ModelType.TEXT: [".txt", ".json", ".xml"],
-            ModelType.ANIMATION: [".gif", ".mp4", ".webm"],
-        }
+                ModelType.TTS_AUDIO: [".wav", ".mp3", ".flac", ".ogg"],
+                ModelType.IMAGE: [".jpg", ".jpeg", ".png", ".bmp", ".tiff"],
+                ModelType.TEXT: [".txt", ".json", ".xml"],
+                ModelType.ANIMATION: [".gif", ".mp4", ".webm"],
+                }
+
 
     async def validate_file_format(
         self, file_path: str, model_type: ModelType
@@ -208,28 +214,29 @@ class TechnicalValidator:
 
             return ValidationResult(
                 rule_id="technical_format",
-                rule_name="File Format Validation",
-                category=ValidationCategory.TECHNICAL,
-                status=ValidationStatus.PASSED if passed else ValidationStatus.FAILED,
-                score=score,
-                threshold=7.0,
-                passed=passed,
-                message=message,
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="File Format Validation",
+                    category = ValidationCategory.TECHNICAL,
+                    status = ValidationStatus.PASSED if passed else ValidationStatus.FAILED,
+                    score = score,
+                    threshold = 7.0,
+                    passed = passed,
+                    message = message,
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="technical_format",
-                rule_name="File Format Validation",
-                category=ValidationCategory.TECHNICAL,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Format validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="File Format Validation",
+                    category = ValidationCategory.TECHNICAL,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Format validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
+
 
     async def validate_file_integrity(self, file_path: str) -> ValidationResult:
         """Validate file integrity"""
@@ -239,72 +246,73 @@ class TechnicalValidator:
             if not os.path.exists(file_path):
                 return ValidationResult(
                     rule_id="technical_integrity",
-                    rule_name="File Integrity Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=ValidationStatus.FAILED,
-                    score=0.0,
-                    threshold=7.0,
-                    passed=False,
-                    message="File does not exist",
-                    execution_time_ms=int((time.time() - start_time) * 1000),
-                )
+                        rule_name="File Integrity Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status = ValidationStatus.FAILED,
+                        score = 0.0,
+                        threshold = 7.0,
+                        passed = False,
+                        message="File does not exist",
+                        execution_time_ms = int((time.time() - start_time) * 1000),
+                        )
 
             # Check file size
             file_size = os.path.getsize(file_path)
             if file_size == 0:
                 return ValidationResult(
                     rule_id="technical_integrity",
-                    rule_name="File Integrity Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=ValidationStatus.FAILED,
-                    score=0.0,
-                    threshold=7.0,
-                    passed=False,
-                    message="File is empty",
-                    execution_time_ms=int((time.time() - start_time) * 1000),
-                )
+                        rule_name="File Integrity Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status = ValidationStatus.FAILED,
+                        score = 0.0,
+                        threshold = 7.0,
+                        passed = False,
+                        message="File is empty",
+                        execution_time_ms = int((time.time() - start_time) * 1000),
+                        )
 
             # Check file magic number
             try:
-                mime_type = magic.from_file(file_path, mime=True)
+                mime_type = magic.from_file(file_path, mime = True)
                 if mime_type:
                     score = 10.0
                     message = f"File integrity verified (MIME: {mime_type})"
                 else:
                     score = 5.0
                     message = "File integrity partially verified"
-            except:
+            except Exception:
                 score = 7.0
                 message = "File integrity basic check passed"
 
             return ValidationResult(
                 rule_id="technical_integrity",
-                rule_name="File Integrity Validation",
-                category=ValidationCategory.TECHNICAL,
-                status=ValidationStatus.PASSED,
-                score=score,
-                threshold=7.0,
-                passed=True,
-                message=message,
-                details={
+                    rule_name="File Integrity Validation",
+                    category = ValidationCategory.TECHNICAL,
+                    status = ValidationStatus.PASSED,
+                    score = score,
+                    threshold = 7.0,
+                    passed = True,
+                    message = message,
+                    details={
                     "file_size": file_size,
-                    "mime_type": mime_type if "mime_type" in locals() else None,
-                },
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                        "mime_type": mime_type if "mime_type" in locals() else None,
+                        },
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="technical_integrity",
-                rule_name="File Integrity Validation",
-                category=ValidationCategory.TECHNICAL,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Integrity validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="File Integrity Validation",
+                    category = ValidationCategory.TECHNICAL,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Integrity validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
+
 
     async def validate_video_technical(self, file_path: str) -> List[ValidationResult]:
         """Validate video technical properties"""
@@ -318,14 +326,14 @@ class TechnicalValidator:
                 results.append(
                     ValidationResult(
                         rule_id="video_technical",
-                        rule_name="Video Technical Validation",
-                        category=ValidationCategory.TECHNICAL,
-                        status=ValidationStatus.FAILED,
-                        score=0.0,
-                        threshold=7.0,
-                        passed=False,
-                        message="Cannot open video file",
-                    )
+                            rule_name="Video Technical Validation",
+                            category = ValidationCategory.TECHNICAL,
+                            status = ValidationStatus.FAILED,
+                            score = 0.0,
+                            threshold = 7.0,
+                            passed = False,
+                            message="Cannot open video file",
+                            )
                 )
                 return results
 
@@ -345,23 +353,23 @@ class TechnicalValidator:
             results.append(
                 ValidationResult(
                     rule_id="video_resolution",
-                    rule_name="Video Resolution Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=(
+                        rule_name="Video Resolution Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status=(
                         ValidationStatus.PASSED
                         if resolution_score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=resolution_score,
-                    threshold=7.0,
-                    passed=resolution_score >= 7.0,
-                    message=f"Resolution: {width}x{height}",
-                    details={
+                        score = resolution_score,
+                        threshold = 7.0,
+                        passed = resolution_score >= 7.0,
+                        message = f"Resolution: {width}x{height}",
+                        details={
                         "width": width,
-                        "height": height,
-                        "min_required": min_resolution,
-                    },
-                )
+                            "height": height,
+                            "min_required": min_resolution,
+                            },
+                        )
             )
 
             # Validate frame rate
@@ -370,23 +378,23 @@ class TechnicalValidator:
             results.append(
                 ValidationResult(
                     rule_id="video_fps",
-                    rule_name="Video Frame Rate Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=(
+                        rule_name="Video Frame Rate Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status=(
                         ValidationStatus.PASSED
                         if fps_score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=fps_score,
-                    threshold=7.0,
-                    passed=fps_score >= 7.0,
-                    message=f"Frame rate: {fps:.2f} FPS",
-                    details={
+                        score = fps_score,
+                        threshold = 7.0,
+                        passed = fps_score >= 7.0,
+                        message = f"Frame rate: {fps:.2f} FPS",
+                        details={
                         "fps": fps,
-                        "frame_count": frame_count,
-                        "duration": duration,
-                    },
-                )
+                            "frame_count": frame_count,
+                            "duration": duration,
+                            },
+                        )
             )
 
             # Validate duration
@@ -397,39 +405,40 @@ class TechnicalValidator:
             results.append(
                 ValidationResult(
                     rule_id="video_duration",
-                    rule_name="Video Duration Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=(
+                        rule_name="Video Duration Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status=(
                         ValidationStatus.PASSED
                         if duration_score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=duration_score,
-                    threshold=7.0,
-                    passed=duration_score >= 7.0,
-                    message=f"Duration: {duration:.2f} seconds",
-                    details={
+                        score = duration_score,
+                        threshold = 7.0,
+                        passed = duration_score >= 7.0,
+                        message = f"Duration: {duration:.2f} seconds",
+                        details={
                         "duration": duration,
-                        "recommended_range": "1-300 seconds",
-                    },
-                )
+                            "recommended_range": "1 - 300 seconds",
+                            },
+                        )
             )
 
         except Exception as e:
             results.append(
                 ValidationResult(
                     rule_id="video_technical",
-                    rule_name="Video Technical Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=ValidationStatus.FAILED,
-                    score=0.0,
-                    threshold=7.0,
-                    passed=False,
-                    message=f"Video technical validation error: {e}",
-                )
+                        rule_name="Video Technical Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status = ValidationStatus.FAILED,
+                        score = 0.0,
+                        threshold = 7.0,
+                        passed = False,
+                        message = f"Video technical validation error: {e}",
+                        )
             )
 
         return results
+
 
     async def validate_audio_technical(self, file_path: str) -> List[ValidationResult]:
         """Validate audio technical properties"""
@@ -437,7 +446,7 @@ class TechnicalValidator:
 
         try:
             # Load audio
-            y, sr = librosa.load(file_path, sr=None)
+            y, sr = librosa.load(file_path, sr = None)
             duration = len(y) / sr
 
             # Validate sample rate
@@ -446,19 +455,19 @@ class TechnicalValidator:
             results.append(
                 ValidationResult(
                     rule_id="audio_sample_rate",
-                    rule_name="Audio Sample Rate Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=(
+                        rule_name="Audio Sample Rate Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status=(
                         ValidationStatus.PASSED
                         if sr_score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=sr_score,
-                    threshold=7.0,
-                    passed=sr_score >= 7.0,
-                    message=f"Sample rate: {sr} Hz",
-                    details={"sample_rate": sr, "recommended_min": 22050},
-                )
+                        score = sr_score,
+                        threshold = 7.0,
+                        passed = sr_score >= 7.0,
+                        message = f"Sample rate: {sr} Hz",
+                        details={"sample_rate": sr, "recommended_min": 22050},
+                        )
             )
 
             # Validate duration
@@ -469,26 +478,26 @@ class TechnicalValidator:
             results.append(
                 ValidationResult(
                     rule_id="audio_duration",
-                    rule_name="Audio Duration Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=(
+                        rule_name="Audio Duration Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status=(
                         ValidationStatus.PASSED
                         if duration_score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=duration_score,
-                    threshold=7.0,
-                    passed=duration_score >= 7.0,
-                    message=f"Duration: {duration:.2f} seconds",
-                    details={
+                        score = duration_score,
+                        threshold = 7.0,
+                        passed = duration_score >= 7.0,
+                        message = f"Duration: {duration:.2f} seconds",
+                        details={
                         "duration": duration,
-                        "recommended_range": "0.5-600 seconds",
-                    },
-                )
+                            "recommended_range": "0.5 - 600 seconds",
+                            },
+                        )
             )
 
             # Validate audio level
-            rms = librosa.feature.rms(y=y)[0]
+            rms = librosa.feature.rms(y = y)[0]
             avg_rms = np.mean(rms)
             db_level = 20 * np.log10(avg_rms) if avg_rms > 0 else -100
 
@@ -499,33 +508,33 @@ class TechnicalValidator:
             results.append(
                 ValidationResult(
                     rule_id="audio_level",
-                    rule_name="Audio Level Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=(
+                        rule_name="Audio Level Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status=(
                         ValidationStatus.PASSED
                         if level_score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=level_score,
-                    threshold=7.0,
-                    passed=level_score >= 7.0,
-                    message=f"Audio level: {db_level:.2f} dB",
-                    details={"db_level": db_level, "recommended_range": "-30 to -6 dB"},
-                )
+                        score = level_score,
+                        threshold = 7.0,
+                        passed = level_score >= 7.0,
+                        message = f"Audio level: {db_level:.2f} dB",
+                        details={"db_level": db_level, "recommended_range": "-30 to -6 dB"},
+                        )
             )
 
         except Exception as e:
             results.append(
                 ValidationResult(
                     rule_id="audio_technical",
-                    rule_name="Audio Technical Validation",
-                    category=ValidationCategory.TECHNICAL,
-                    status=ValidationStatus.FAILED,
-                    score=0.0,
-                    threshold=7.0,
-                    passed=False,
-                    message=f"Audio technical validation error: {e}",
-                )
+                        rule_name="Audio Technical Validation",
+                        category = ValidationCategory.TECHNICAL,
+                        status = ValidationStatus.FAILED,
+                        score = 0.0,
+                        threshold = 7.0,
+                        passed = False,
+                        message = f"Audio technical validation error: {e}",
+                        )
             )
 
         return results
@@ -534,11 +543,13 @@ class TechnicalValidator:
 class QualityValidator:
     """Validates quality aspects of models"""
 
+
     def __init__(self):
         # Initialize AI models for quality assessment
         self.face_detector = None
         self.quality_models = {}
         self._initialize_models()
+
 
     def _initialize_models(self):
         """Initialize AI models for quality assessment"""
@@ -549,8 +560,9 @@ class QualityValidator:
         except Exception as e:
             logger.error(f"Failed to initialize quality models: {e}")
 
+
     async def validate_facial_quality(self, file_path: str) -> ValidationResult:
-        """Validate facial quality in images/videos"""
+        """Validate facial quality in images / videos"""
         start_time = time.time()
 
         try:
@@ -571,23 +583,23 @@ class QualityValidator:
 
                 return ValidationResult(
                     rule_id="facial_quality",
-                    rule_name="Facial Quality Validation",
-                    category=ValidationCategory.QUALITY,
-                    status=(
+                        rule_name="Facial Quality Validation",
+                        category = ValidationCategory.QUALITY,
+                        status=(
                         ValidationStatus.PASSED
                         if score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=score,
-                    threshold=7.0,
-                    passed=score >= 7.0,
-                    message=message,
-                    details={
+                        score = score,
+                        threshold = 7.0,
+                        passed = score >= 7.0,
+                        message = message,
+                        details={
                         "face_count": len(face_locations),
-                        "face_locations": face_locations,
-                    },
-                    execution_time_ms=int((time.time() - start_time) * 1000),
-                )
+                            "face_locations": face_locations,
+                            },
+                        execution_time_ms = int((time.time() - start_time) * 1000),
+                        )
 
             elif file_path.lower().endswith((".mp4", ".avi", ".mov")):
                 # Video face validation
@@ -631,37 +643,38 @@ class QualityValidator:
 
                 return ValidationResult(
                     rule_id="facial_quality",
-                    rule_name="Facial Quality Validation",
-                    category=ValidationCategory.QUALITY,
-                    status=(
+                        rule_name="Facial Quality Validation",
+                        category = ValidationCategory.QUALITY,
+                        status=(
                         ValidationStatus.PASSED
                         if score >= 7.0
                         else ValidationStatus.FAILED
                     ),
-                    score=score,
-                    threshold=7.0,
-                    passed=score >= 7.0,
-                    message=message,
-                    details={
+                        score = score,
+                        threshold = 7.0,
+                        passed = score >= 7.0,
+                        message = message,
+                        details={
                         "frames_checked": frame_count,
-                        "faces_detected": faces_detected,
-                        "face_ratio": face_ratio if "face_ratio" in locals() else 0,
-                    },
-                    execution_time_ms=int((time.time() - start_time) * 1000),
-                )
+                            "faces_detected": faces_detected,
+                            "face_ratio": face_ratio if "face_ratio" in locals() else 0,
+                            },
+                        execution_time_ms = int((time.time() - start_time) * 1000),
+                        )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="facial_quality",
-                rule_name="Facial Quality Validation",
-                category=ValidationCategory.QUALITY,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Facial quality validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Facial Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Facial quality validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
+
 
     async def validate_audio_quality(self, file_path: str) -> ValidationResult:
         """Validate audio quality"""
@@ -669,17 +682,17 @@ class QualityValidator:
 
         try:
             # Load audio
-            y, sr = librosa.load(file_path, sr=None)
+            y, sr = librosa.load(file_path, sr = None)
 
             # Calculate quality metrics
 
-            # 1. Signal-to-noise ratio estimation
+            # 1. Signal - to - noise ratio estimation
             # Use spectral rolloff as a proxy for SNR
-            spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)[0]
+            spectral_rolloff = librosa.feature.spectral_rolloff(y = y, sr = sr)[0]
             avg_rolloff = np.mean(spectral_rolloff)
 
             # 2. Spectral centroid (brightness)
-            spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)[0]
+            spectral_centroid = librosa.feature.spectral_centroid(y = y, sr = sr)[0]
             avg_centroid = np.mean(spectral_centroid)
 
             # 3. Zero crossing rate (speech clarity)
@@ -687,14 +700,14 @@ class QualityValidator:
             avg_zcr = np.mean(zcr)
 
             # 4. RMS energy (volume consistency)
-            rms = librosa.feature.rms(y=y)[0]
+            rms = librosa.feature.rms(y = y)[0]
             rms_std = np.std(rms)
 
             # Calculate composite quality score
             quality_factors = []
 
             # SNR factor (higher rolloff = better quality)
-            snr_factor = min(avg_rolloff / (sr * 0.4), 1.0)  # Normalize to 0-1
+            snr_factor = min(avg_rolloff / (sr * 0.4), 1.0)  # Normalize to 0 - 1
             quality_factors.append(snr_factor)
 
             # Brightness factor (moderate centroid is good)
@@ -716,42 +729,43 @@ class QualityValidator:
 
             return ValidationResult(
                 rule_id="audio_quality",
-                rule_name="Audio Quality Validation",
-                category=ValidationCategory.QUALITY,
-                status=(
+                    rule_name="Audio Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    status=(
                     ValidationStatus.PASSED
                     if quality_score >= 7.0
                     else ValidationStatus.FAILED
                 ),
-                score=quality_score,
-                threshold=7.0,
-                passed=quality_score >= 7.0,
-                message=message,
-                details={
+                    score = quality_score,
+                    threshold = 7.0,
+                    passed = quality_score >= 7.0,
+                    message = message,
+                    details={
                     "snr_factor": snr_factor,
-                    "brightness_factor": brightness_factor,
-                    "clarity_factor": clarity_factor,
-                    "consistency_factor": consistency_factor,
-                    "spectral_rolloff": avg_rolloff,
-                    "spectral_centroid": avg_centroid,
-                    "zero_crossing_rate": avg_zcr,
-                    "rms_std": rms_std,
-                },
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                        "brightness_factor": brightness_factor,
+                        "clarity_factor": clarity_factor,
+                        "consistency_factor": consistency_factor,
+                        "spectral_rolloff": avg_rolloff,
+                        "spectral_centroid": avg_centroid,
+                        "zero_crossing_rate": avg_zcr,
+                        "rms_std": rms_std,
+                        },
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="audio_quality",
-                rule_name="Audio Quality Validation",
-                category=ValidationCategory.QUALITY,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Audio quality validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Audio Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Audio quality validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
+
 
     async def validate_lip_sync_quality(self, file_path: str) -> ValidationResult:
         """Validate lip sync quality in videos"""
@@ -767,15 +781,15 @@ class QualityValidator:
             if not cap.isOpened():
                 return ValidationResult(
                     rule_id="lip_sync_quality",
-                    rule_name="Lip Sync Quality Validation",
-                    category=ValidationCategory.QUALITY,
-                    status=ValidationStatus.FAILED,
-                    score=0.0,
-                    threshold=7.0,
-                    passed=False,
-                    message="Cannot open video file",
-                    execution_time_ms=int((time.time() - start_time) * 1000),
-                )
+                        rule_name="Lip Sync Quality Validation",
+                        category = ValidationCategory.QUALITY,
+                        status = ValidationStatus.FAILED,
+                        score = 0.0,
+                        threshold = 7.0,
+                        passed = False,
+                        message="Cannot open video file",
+                        execution_time_ms = int((time.time() - start_time) * 1000),
+                        )
 
             # Sample frames for analysis
             frame_count = 0
@@ -816,7 +830,7 @@ class QualityValidator:
                 mouth_ratio = mouth_regions_detected / frame_count
 
                 # Simple heuristic: if mouth regions are consistently detected,
-                # assume reasonable lip sync quality
+                    # assume reasonable lip sync quality
                 if mouth_ratio >= 0.8:
                     score = 8.5  # Conservative score without detailed analysis
                     message = f"Good mouth region detection ({mouth_ratio:.2%})"
@@ -829,53 +843,55 @@ class QualityValidator:
 
             return ValidationResult(
                 rule_id="lip_sync_quality",
-                rule_name="Lip Sync Quality Validation",
-                category=ValidationCategory.QUALITY,
-                status=(
+                    rule_name="Lip Sync Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    status=(
                     ValidationStatus.PASSED if score >= 7.0 else ValidationStatus.FAILED
                 ),
-                score=score,
-                threshold=7.0,
-                passed=score >= 7.0,
-                message=message,
-                details={
+                    score = score,
+                    threshold = 7.0,
+                    passed = score >= 7.0,
+                    message = message,
+                    details={
                     "frames_analyzed": frame_count,
-                    "mouth_regions_detected": mouth_regions_detected,
-                    "mouth_detection_ratio": (
+                        "mouth_regions_detected": mouth_regions_detected,
+                        "mouth_detection_ratio": (
                         mouth_ratio if "mouth_ratio" in locals() else 0
                     ),
-                },
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                        },
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="lip_sync_quality",
-                rule_name="Lip Sync Quality Validation",
-                category=ValidationCategory.QUALITY,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Lip sync validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Lip Sync Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Lip sync validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
 
 class SecurityValidator:
     """Validates security aspects of models"""
 
+
     def __init__(self):
         self.malware_signatures = []
         self.suspicious_patterns = [
             rb"<script[^>]*>.*?</script>",
-            rb"javascript:",
-            rb"vbscript:",
-            rb"onload\s*=",
-            rb"onerror\s*=",
-            rb"eval\s*\(",
-            rb"document\.write",
-        ]
+                rb"javascript:",
+                rb"vbscript:",
+                rb"onload\s*=",
+                rb"onerror\s*=",
+                rb"eval\s*\(",
+                rb"document\.write",
+                ]
+
 
     async def validate_content_safety(self, file_path: str) -> ValidationResult:
         """Validate content safety"""
@@ -890,7 +906,7 @@ class SecurityValidator:
             suspicious_found = []
             for pattern in self.suspicious_patterns:
                 if re.search(pattern, content, re.IGNORECASE):
-                    suspicious_found.append(pattern.decode("utf-8", errors="ignore"))
+                    suspicious_found.append(pattern.decode("utf - 8", errors="ignore"))
 
             if suspicious_found:
                 score = 0.0
@@ -903,29 +919,30 @@ class SecurityValidator:
 
             return ValidationResult(
                 rule_id="content_safety",
-                rule_name="Content Safety Validation",
-                category=ValidationCategory.SECURITY,
-                status=ValidationStatus.PASSED if passed else ValidationStatus.FAILED,
-                score=score,
-                threshold=7.0,
-                passed=passed,
-                message=message,
-                details={"suspicious_patterns": suspicious_found},
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Content Safety Validation",
+                    category = ValidationCategory.SECURITY,
+                    status = ValidationStatus.PASSED if passed else ValidationStatus.FAILED,
+                    score = score,
+                    threshold = 7.0,
+                    passed = passed,
+                    message = message,
+                    details={"suspicious_patterns": suspicious_found},
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="content_safety",
-                rule_name="Content Safety Validation",
-                category=ValidationCategory.SECURITY,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Content safety validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Content Safety Validation",
+                    category = ValidationCategory.SECURITY,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Content safety validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
+
 
     async def validate_file_hash(self, file_path: str) -> ValidationResult:
         """Validate file hash against known malware"""
@@ -945,38 +962,40 @@ class SecurityValidator:
 
             return ValidationResult(
                 rule_id="file_hash",
-                rule_name="File Hash Validation",
-                category=ValidationCategory.SECURITY,
-                status=ValidationStatus.PASSED,
-                score=10.0,
-                threshold=7.0,
-                passed=True,
-                message="File hash calculated successfully",
-                details={"sha256": file_hash},
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="File Hash Validation",
+                    category = ValidationCategory.SECURITY,
+                    status = ValidationStatus.PASSED,
+                    score = 10.0,
+                    threshold = 7.0,
+                    passed = True,
+                    message="File hash calculated successfully",
+                    details={"sha256": file_hash},
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="file_hash",
-                rule_name="File Hash Validation",
-                category=ValidationCategory.SECURITY,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"File hash validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="File Hash Validation",
+                    category = ValidationCategory.SECURITY,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"File hash validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
 
 class ComplianceValidator:
     """Validates compliance with content policies"""
 
+
     def __init__(self):
         # Initialize content moderation models
         self.content_classifier = None
         self._initialize_models()
+
 
     def _initialize_models(self):
         """Initialize content moderation models"""
@@ -985,6 +1004,7 @@ class ComplianceValidator:
             logger.info("Compliance validator models initialized")
         except Exception as e:
             logger.error(f"Failed to initialize compliance models: {e}")
+
 
     async def validate_content_appropriateness(
         self, file_path: str, model_type: ModelType
@@ -1011,28 +1031,29 @@ class ComplianceValidator:
 
             return ValidationResult(
                 rule_id="content_appropriateness",
-                rule_name="Content Appropriateness Validation",
-                category=ValidationCategory.COMPLIANCE,
-                status=ValidationStatus.PASSED if passed else ValidationStatus.FAILED,
-                score=score,
-                threshold=7.0,
-                passed=passed,
-                message=message,
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Content Appropriateness Validation",
+                    category = ValidationCategory.COMPLIANCE,
+                    status = ValidationStatus.PASSED if passed else ValidationStatus.FAILED,
+                    score = score,
+                    threshold = 7.0,
+                    passed = passed,
+                    message = message,
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
 
         except Exception as e:
             return ValidationResult(
                 rule_id="content_appropriateness",
-                rule_name="Content Appropriateness Validation",
-                category=ValidationCategory.COMPLIANCE,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=7.0,
-                passed=False,
-                message=f"Content appropriateness validation error: {e}",
-                execution_time_ms=int((time.time() - start_time) * 1000),
-            )
+                    rule_name="Content Appropriateness Validation",
+                    category = ValidationCategory.COMPLIANCE,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = 7.0,
+                    passed = False,
+                    message = f"Content appropriateness validation error: {e}",
+                    execution_time_ms = int((time.time() - start_time) * 1000),
+                    )
+
 
     async def _validate_visual_content(self, file_path: str) -> float:
         """Validate visual content for appropriateness"""
@@ -1054,7 +1075,7 @@ class ComplianceValidator:
                 if width < 100 or height < 100:
                     return 5.0  # Too small
 
-                # Check if image is mostly black/white (potential inappropriate content)
+                # Check if image is mostly black / white (potential inappropriate content)
                 if image.mode == "RGB":
                     r_mean, g_mean, b_mean = stat.mean
                     overall_brightness = (r_mean + g_mean + b_mean) / 3
@@ -1099,14 +1120,15 @@ class ComplianceValidator:
         except Exception:
             return 5.0  # Error in validation
 
+
     async def _validate_audio_content(self, file_path: str) -> float:
         """Validate audio content for appropriateness"""
         # Simplified audio content validation
-        # In production, use speech-to-text + content moderation
+        # In production, use speech - to - text + content moderation
 
         try:
             # Load audio
-            y, sr = librosa.load(file_path, sr=None)
+            y, sr = librosa.load(file_path, sr = None)
             duration = len(y) / sr
 
             # Basic checks
@@ -1114,11 +1136,11 @@ class ComplianceValidator:
                 return 6.0  # Unusual duration
 
             # Check for silence (potential issue)
-            rms = librosa.feature.rms(y=y)[0]
+            rms = librosa.feature.rms(y = y)[0]
             avg_rms = np.mean(rms)
 
             if avg_rms < 0.001:
-                return 5.0  # Too quiet/silent
+                return 5.0  # Too quiet / silent
 
             # Check for clipping (potential quality issue)
             max_amplitude = np.max(np.abs(y))
@@ -1134,7 +1156,8 @@ class ComplianceValidator:
 class ModelValidator:
     """Main model validation system"""
 
-    def __init__(self, db_path: str = "data/validation_results.db"):
+
+    def __init__(self, db_path: str = "data / validation_results.db"):
         self.db_path = db_path
         self.technical_validator = TechnicalValidator()
         self.quality_validator = QualityValidator()
@@ -1152,9 +1175,10 @@ class ModelValidator:
 
         logger.info("ModelValidator initialized")
 
+
     def _init_database(self):
         """Initialize validation database"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -1164,18 +1188,18 @@ class ModelValidator:
                 """
                 CREATE TABLE IF NOT EXISTS validation_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    request_id TEXT NOT NULL,
-                    model_type TEXT NOT NULL,
-                    file_path TEXT NOT NULL,
-                    file_hash TEXT,
-                    status TEXT NOT NULL,
-                    overall_score REAL,
-                    passed BOOLEAN,
-                    processing_time_ms INTEGER,
-                    cache_hit BOOLEAN,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    validation_data TEXT,
-                    metadata TEXT
+                        request_id TEXT NOT NULL,
+                        model_type TEXT NOT NULL,
+                        file_path TEXT NOT NULL,
+                        file_hash TEXT,
+                        status TEXT NOT NULL,
+                        overall_score REAL,
+                        passed BOOLEAN,
+                        processing_time_ms INTEGER,
+                        cache_hit BOOLEAN,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        validation_data TEXT,
+                        metadata TEXT
                 )
             """
             )
@@ -1185,23 +1209,24 @@ class ModelValidator:
                 """
                 CREATE TABLE IF NOT EXISTS validation_checks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    request_id TEXT NOT NULL,
-                    rule_id TEXT NOT NULL,
-                    rule_name TEXT NOT NULL,
-                    category TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    score REAL,
-                    threshold REAL,
-                    passed BOOLEAN,
-                    message TEXT,
-                    execution_time_ms INTEGER,
-                    details TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        request_id TEXT NOT NULL,
+                        rule_id TEXT NOT NULL,
+                        rule_name TEXT NOT NULL,
+                        category TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        score REAL,
+                        threshold REAL,
+                        passed BOOLEAN,
+                        message TEXT,
+                        execution_time_ms INTEGER,
+                        details TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
 
             conn.commit()
+
 
     def _load_validation_rules(self) -> List[ValidationRule]:
         """Load validation rules"""
@@ -1209,94 +1234,95 @@ class ModelValidator:
             # Technical validation rules
             ValidationRule(
                 rule_id="technical_format",
-                name="File Format Validation",
-                category=ValidationCategory.TECHNICAL,
-                model_types=list(ModelType),
-                validator_function="validate_file_format",
-                weight=1.0,
-                threshold=7.0,
-                critical=True,
-            ),
-            ValidationRule(
+                    name="File Format Validation",
+                    category = ValidationCategory.TECHNICAL,
+                    model_types = list(ModelType),
+                    validator_function="validate_file_format",
+                    weight = 1.0,
+                    threshold = 7.0,
+                    critical = True,
+                    ),
+                ValidationRule(
                 rule_id="technical_integrity",
-                name="File Integrity Validation",
-                category=ValidationCategory.TECHNICAL,
-                model_types=list(ModelType),
-                validator_function="validate_file_integrity",
-                weight=1.0,
-                threshold=7.0,
-                critical=True,
-            ),
-            # Quality validation rules
+                    name="File Integrity Validation",
+                    category = ValidationCategory.TECHNICAL,
+                    model_types = list(ModelType),
+                    validator_function="validate_file_integrity",
+                    weight = 1.0,
+                    threshold = 7.0,
+                    critical = True,
+                    ),
+                # Quality validation rules
             ValidationRule(
                 rule_id="facial_quality",
-                name="Facial Quality Validation",
-                category=ValidationCategory.QUALITY,
-                model_types=[
+                    name="Facial Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    model_types=[
                     ModelType.AVATAR_VIDEO,
-                    ModelType.IMAGE,
-                    ModelType.FACE_SWAP,
-                ],
-                validator_function="validate_facial_quality",
-                weight=2.0,
-                threshold=7.0,
-                critical=False,
-            ),
-            ValidationRule(
+                        ModelType.IMAGE,
+                        ModelType.FACE_SWAP,
+                        ],
+                    validator_function="validate_facial_quality",
+                    weight = 2.0,
+                    threshold = 7.0,
+                    critical = False,
+                    ),
+                ValidationRule(
                 rule_id="audio_quality",
-                name="Audio Quality Validation",
-                category=ValidationCategory.QUALITY,
-                model_types=[ModelType.TTS_AUDIO, ModelType.VOICE_CLONE],
-                validator_function="validate_audio_quality",
-                weight=2.0,
-                threshold=7.0,
-                critical=False,
-            ),
-            ValidationRule(
+                    name="Audio Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    model_types=[ModelType.TTS_AUDIO, ModelType.VOICE_CLONE],
+                    validator_function="validate_audio_quality",
+                    weight = 2.0,
+                    threshold = 7.0,
+                    critical = False,
+                    ),
+                ValidationRule(
                 rule_id="lip_sync_quality",
-                name="Lip Sync Quality Validation",
-                category=ValidationCategory.QUALITY,
-                model_types=[ModelType.AVATAR_VIDEO],
-                validator_function="validate_lip_sync_quality",
-                weight=3.0,
-                threshold=7.0,
-                critical=False,
-            ),
-            # Security validation rules
+                    name="Lip Sync Quality Validation",
+                    category = ValidationCategory.QUALITY,
+                    model_types=[ModelType.AVATAR_VIDEO],
+                    validator_function="validate_lip_sync_quality",
+                    weight = 3.0,
+                    threshold = 7.0,
+                    critical = False,
+                    ),
+                # Security validation rules
             ValidationRule(
                 rule_id="content_safety",
-                name="Content Safety Validation",
-                category=ValidationCategory.SECURITY,
-                model_types=list(ModelType),
-                validator_function="validate_content_safety",
-                weight=2.0,
-                threshold=7.0,
-                critical=True,
-            ),
-            ValidationRule(
+                    name="Content Safety Validation",
+                    category = ValidationCategory.SECURITY,
+                    model_types = list(ModelType),
+                    validator_function="validate_content_safety",
+                    weight = 2.0,
+                    threshold = 7.0,
+                    critical = True,
+                    ),
+                ValidationRule(
                 rule_id="file_hash",
-                name="File Hash Validation",
-                category=ValidationCategory.SECURITY,
-                model_types=list(ModelType),
-                validator_function="validate_file_hash",
-                weight=1.0,
-                threshold=7.0,
-                critical=False,
-            ),
-            # Compliance validation rules
+                    name="File Hash Validation",
+                    category = ValidationCategory.SECURITY,
+                    model_types = list(ModelType),
+                    validator_function="validate_file_hash",
+                    weight = 1.0,
+                    threshold = 7.0,
+                    critical = False,
+                    ),
+                # Compliance validation rules
             ValidationRule(
                 rule_id="content_appropriateness",
-                name="Content Appropriateness Validation",
-                category=ValidationCategory.COMPLIANCE,
-                model_types=list(ModelType),
-                validator_function="validate_content_appropriateness",
-                weight=2.0,
-                threshold=7.0,
-                critical=True,
-            ),
-        ]
+                    name="Content Appropriateness Validation",
+                    category = ValidationCategory.COMPLIANCE,
+                    model_types = list(ModelType),
+                    validator_function="validate_content_appropriateness",
+                    weight = 2.0,
+                    threshold = 7.0,
+                    critical = True,
+                    ),
+                ]
 
         return rules
+
 
     async def validate_model(
         self, request: ModelValidationRequest
@@ -1318,11 +1344,11 @@ class ModelValidator:
 
         # Initialize response
         response = ModelValidationResponse(
-            request_id=request.request_id,
-            status=ValidationStatus.VALIDATING,
-            overall_score=0.0,
-            passed=False,
-        )
+            request_id = request.request_id,
+                status = ValidationStatus.VALIDATING,
+                overall_score = 0.0,
+                passed = False,
+                )
 
         try:
             # Get applicable validation rules
@@ -1348,7 +1374,7 @@ class ModelValidator:
 
             # Wait for all validations to complete
             validation_results = await asyncio.gather(
-                *validation_tasks, return_exceptions=True
+                *validation_tasks, return_exceptions = True
             )
 
             # Process results
@@ -1359,7 +1385,7 @@ class ModelValidator:
                     response.validation_results.append(result)
                 elif isinstance(result, list):
                     # Handle multiple results from single validator
-                    for sub_result in result:
+                        for sub_result in result:
                         if isinstance(sub_result, ValidationResult):
                             valid_results.append(sub_result)
                             response.validation_results.append(sub_result)
@@ -1378,8 +1404,8 @@ class ModelValidator:
                     # Find corresponding rule for weight
                     rule = next(
                         (r for r in applicable_rules if r.rule_id == result.rule_id),
-                        None,
-                    )
+                            None,
+                            )
                     weight = rule.weight if rule else 1.0
 
                     weighted_score += result.score * weight
@@ -1389,7 +1415,7 @@ class ModelValidator:
                     weighted_score / total_weight if total_weight > 0 else 0.0
                 )
 
-            # Determine pass/fail status
+            # Determine pass / fail status
             critical_failures = [
                 result
                 for result in valid_results
@@ -1442,6 +1468,7 @@ class ModelValidator:
 
         return response
 
+
     async def _execute_validation_rule(
         self, rule: ValidationRule, request: ModelValidationRequest
     ) -> Union[ValidationResult, List[ValidationResult]]:
@@ -1450,27 +1477,27 @@ class ModelValidator:
             # Map validator functions to methods
             validator_map = {
                 "validate_file_format": self.technical_validator.validate_file_format,
-                "validate_file_integrity": self.technical_validator.validate_file_integrity,
-                "validate_facial_quality": self.quality_validator.validate_facial_quality,
-                "validate_audio_quality": self.quality_validator.validate_audio_quality,
-                "validate_lip_sync_quality": self.quality_validator.validate_lip_sync_quality,
-                "validate_content_safety": self.security_validator.validate_content_safety,
-                "validate_file_hash": self.security_validator.validate_file_hash,
-                "validate_content_appropriateness": self.compliance_validator.validate_content_appropriateness,
-            }
+                    "validate_file_integrity": self.technical_validator.validate_file_integrity,
+                    "validate_facial_quality": self.quality_validator.validate_facial_quality,
+                    "validate_audio_quality": self.quality_validator.validate_audio_quality,
+                    "validate_lip_sync_quality": self.quality_validator.validate_lip_sync_quality,
+                    "validate_content_safety": self.security_validator.validate_content_safety,
+                    "validate_file_hash": self.security_validator.validate_file_hash,
+                    "validate_content_appropriateness": self.compliance_validator.validate_content_appropriateness,
+                    }
 
             validator_func = validator_map.get(rule.validator_function)
             if not validator_func:
                 return ValidationResult(
-                    rule_id=rule.rule_id,
-                    rule_name=rule.name,
-                    category=rule.category,
-                    status=ValidationStatus.FAILED,
-                    score=0.0,
-                    threshold=rule.threshold,
-                    passed=False,
-                    message=f"Validator function {rule.validator_function} not found",
-                )
+                    rule_id = rule.rule_id,
+                        rule_name = rule.name,
+                        category = rule.category,
+                        status = ValidationStatus.FAILED,
+                        score = 0.0,
+                        threshold = rule.threshold,
+                        passed = False,
+                        message = f"Validator function {rule.validator_function} not found",
+                        )
 
             # Execute validator with appropriate parameters
             if rule.validator_function == "validate_file_format":
@@ -1479,8 +1506,8 @@ class ModelValidator:
                 result = await validator_func(request.file_path, request.model_type)
             elif rule.validator_function in [
                 "validate_video_technical",
-                "validate_audio_technical",
-            ]:
+                    "validate_audio_technical",
+                    ]:
                 # These return lists of results
                 result = await validator_func(request.file_path)
             else:
@@ -1490,15 +1517,16 @@ class ModelValidator:
 
         except Exception as e:
             return ValidationResult(
-                rule_id=rule.rule_id,
-                rule_name=rule.name,
-                category=rule.category,
-                status=ValidationStatus.FAILED,
-                score=0.0,
-                threshold=rule.threshold,
-                passed=False,
-                message=f"Validation rule execution error: {e}",
-            )
+                rule_id = rule.rule_id,
+                    rule_name = rule.name,
+                    category = rule.category,
+                    status = ValidationStatus.FAILED,
+                    score = 0.0,
+                    threshold = rule.threshold,
+                    passed = False,
+                    message = f"Validation rule execution error: {e}",
+                    )
+
 
     async def _generate_recommendations(
         self, response: ModelValidationResponse, results: List[ValidationResult]
@@ -1518,7 +1546,7 @@ class ModelValidator:
             elif result.category == ValidationCategory.QUALITY:
                 if "facial" in result.rule_id.lower():
                     response.recommendations.append(
-                        "Improve facial detection - ensure clear, well-lit face"
+                        "Improve facial detection - ensure clear, well - lit face"
                     )
                 elif "audio" in result.rule_id.lower():
                     response.recommendations.append(
@@ -1537,7 +1565,7 @@ class ModelValidator:
             elif result.category == ValidationCategory.COMPLIANCE:
                 response.recommendations.append("Review content for policy compliance")
 
-        # Quality-specific recommendations
+        # Quality - specific recommendations
         if response.overall_score < 8.0:
             response.recommendations.append(
                 "Consider regenerating with higher quality settings"
@@ -1547,6 +1575,7 @@ class ModelValidator:
             response.recommendations.append(
                 "Multiple validation failures - review generation parameters"
             )
+
 
     async def _get_cached_result(
         self, request: ModelValidationRequest
@@ -1570,7 +1599,7 @@ class ModelValidator:
                     ORDER BY created_at DESC LIMIT 1
                 """,
                     (file_hash, request.model_type.value),
-                )
+                        )
 
                 row = cursor.fetchone()
                 if row:
@@ -1579,27 +1608,27 @@ class ModelValidator:
 
                     # Reconstruct response object
                     response = ModelValidationResponse(
-                        request_id=request.request_id,
-                        status=ValidationStatus(cached_data["status"]),
-                        overall_score=cached_data["overall_score"],
-                        passed=cached_data["passed"],
-                        cache_hit=True,
-                    )
+                        request_id = request.request_id,
+                            status = ValidationStatus(cached_data["status"]),
+                            overall_score = cached_data["overall_score"],
+                            passed = cached_data["passed"],
+                            cache_hit = True,
+                            )
 
                     # Reconstruct validation results
                     for result_data in cached_data.get("validation_results", []):
                         result = ValidationResult(
-                            rule_id=result_data["rule_id"],
-                            rule_name=result_data["rule_name"],
-                            category=ValidationCategory(result_data["category"]),
-                            status=ValidationStatus(result_data["status"]),
-                            score=result_data["score"],
-                            threshold=result_data["threshold"],
-                            passed=result_data["passed"],
-                            message=result_data["message"],
-                            details=result_data.get("details", {}),
-                            execution_time_ms=result_data.get("execution_time_ms", 0),
-                        )
+                            rule_id = result_data["rule_id"],
+                                rule_name = result_data["rule_name"],
+                                category = ValidationCategory(result_data["category"]),
+                                status = ValidationStatus(result_data["status"]),
+                                score = result_data["score"],
+                                threshold = result_data["threshold"],
+                                passed = result_data["passed"],
+                                message = result_data["message"],
+                                details = result_data.get("details", {}),
+                                execution_time_ms = result_data.get("execution_time_ms", 0),
+                                )
                         response.validation_results.append(result)
 
                     response.recommendations = cached_data.get("recommendations", [])
@@ -1611,6 +1640,7 @@ class ModelValidator:
             logger.error(f"Cache lookup error: {e}")
 
         return None
+
 
     async def _cache_validation_result(
         self, request: ModelValidationRequest, response: ModelValidationResponse
@@ -1638,6 +1668,7 @@ class ModelValidator:
         except Exception as e:
             logger.error(f"Cache storage error: {e}")
 
+
     async def _store_validation_result(
         self, request: ModelValidationRequest, response: ModelValidationResponse
     ):
@@ -1653,26 +1684,26 @@ class ModelValidator:
             # Serialize validation data
             validation_data = {
                 "status": response.status.value,
-                "overall_score": response.overall_score,
-                "passed": response.passed,
-                "validation_results": [
+                    "overall_score": response.overall_score,
+                    "passed": response.passed,
+                    "validation_results": [
                     {
                         "rule_id": r.rule_id,
-                        "rule_name": r.rule_name,
-                        "category": r.category.value,
-                        "status": r.status.value,
-                        "score": r.score,
-                        "threshold": r.threshold,
-                        "passed": r.passed,
-                        "message": r.message,
-                        "details": r.details,
-                        "execution_time_ms": r.execution_time_ms,
-                    }
+                            "rule_name": r.rule_name,
+                            "category": r.category.value,
+                            "status": r.status.value,
+                            "score": r.score,
+                            "threshold": r.threshold,
+                            "passed": r.passed,
+                            "message": r.message,
+                            "details": r.details,
+                            "execution_time_ms": r.execution_time_ms,
+                            }
                     for r in response.validation_results
                 ],
-                "recommendations": response.recommendations,
-                "errors": response.errors,
-            }
+                    "recommendations": response.recommendations,
+                    "errors": response.errors,
+                    }
 
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -1682,24 +1713,24 @@ class ModelValidator:
                     """
                     INSERT INTO validation_results (
                         request_id, model_type, file_path, file_hash, status,
-                        overall_score, passed, processing_time_ms, cache_hit,
-                        validation_data, metadata
+                            overall_score, passed, processing_time_ms, cache_hit,
+                            validation_data, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         request.request_id,
-                        request.model_type.value,
-                        request.file_path,
-                        file_hash,
-                        response.status.value,
-                        response.overall_score,
-                        response.passed,
-                        response.processing_time_ms,
-                        response.cache_hit,
-                        json.dumps(validation_data),
-                        json.dumps(request.metadata),
-                    ),
-                )
+                            request.model_type.value,
+                            request.file_path,
+                            file_hash,
+                            response.status.value,
+                            response.overall_score,
+                            response.passed,
+                            response.processing_time_ms,
+                            response.cache_hit,
+                            json.dumps(validation_data),
+                            json.dumps(request.metadata),
+                            ),
+                        )
 
                 # Store individual validation checks
                 for result in response.validation_results:
@@ -1707,28 +1738,29 @@ class ModelValidator:
                         """
                         INSERT INTO validation_checks (
                             request_id, rule_id, rule_name, category, status,
-                            score, threshold, passed, message, execution_time_ms, details
+                                score, threshold, passed, message, execution_time_ms, details
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                         (
                             request.request_id,
-                            result.rule_id,
-                            result.rule_name,
-                            result.category.value,
-                            result.status.value,
-                            result.score,
-                            result.threshold,
-                            result.passed,
-                            result.message,
-                            result.execution_time_ms,
-                            json.dumps(result.details),
-                        ),
-                    )
+                                result.rule_id,
+                                result.rule_name,
+                                result.category.value,
+                                result.status.value,
+                                result.score,
+                                result.threshold,
+                                result.passed,
+                                result.message,
+                                result.execution_time_ms,
+                                json.dumps(result.details),
+                                ),
+                            )
 
                 conn.commit()
 
         except Exception as e:
             logger.error(f"Failed to store validation result: {e}")
+
 
     async def get_validation_history(self, limit: int = 100) -> List[Dict[str, Any]]:
         """Get validation history"""
@@ -1738,13 +1770,13 @@ class ModelValidator:
                 cursor.execute(
                     """
                     SELECT request_id, model_type, file_path, status, overall_score,
-                           passed, processing_time_ms, created_at
+                        passed, processing_time_ms, created_at
                     FROM validation_results
                     ORDER BY created_at DESC
                     LIMIT ?
                 """,
                     (limit,),
-                )
+                        )
 
                 rows = cursor.fetchall()
 
@@ -1753,14 +1785,14 @@ class ModelValidator:
                     history.append(
                         {
                             "request_id": row[0],
-                            "model_type": row[1],
-                            "file_path": row[2],
-                            "status": row[3],
-                            "overall_score": row[4],
-                            "passed": row[5],
-                            "processing_time_ms": row[6],
-                            "created_at": row[7],
-                        }
+                                "model_type": row[1],
+                                "file_path": row[2],
+                                "status": row[3],
+                                "overall_score": row[4],
+                                "passed": row[5],
+                                "processing_time_ms": row[6],
+                                "created_at": row[7],
+                                }
                     )
 
                 return history
@@ -1768,6 +1800,7 @@ class ModelValidator:
         except Exception as e:
             logger.error(f"Failed to get validation history: {e}")
             return []
+
 
     async def get_validation_stats(self) -> Dict[str, Any]:
         """Get validation statistics"""
@@ -1778,11 +1811,11 @@ class ModelValidator:
                 # Overall stats
                 cursor.execute(
                     """
-                    SELECT 
+                    SELECT
                         COUNT(*) as total_validations,
-                        AVG(overall_score) as avg_score,
-                        SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count,
-                        AVG(processing_time_ms) as avg_processing_time
+                            AVG(overall_score) as avg_score,
+                            SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count,
+                            AVG(processing_time_ms) as avg_processing_time
                     FROM validation_results
                     WHERE created_at >= datetime('now', '-7 days')
                 """
@@ -1793,11 +1826,11 @@ class ModelValidator:
                 # Stats by model type
                 cursor.execute(
                     """
-                    SELECT 
+                    SELECT
                         model_type,
-                        COUNT(*) as count,
-                        AVG(overall_score) as avg_score,
-                        SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count
+                            COUNT(*) as count,
+                            AVG(overall_score) as avg_score,
+                            SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count
                     FROM validation_results
                     WHERE created_at >= datetime('now', '-7 days')
                     GROUP BY model_type
@@ -1809,12 +1842,12 @@ class ModelValidator:
                 # Stats by validation rule
                 cursor.execute(
                     """
-                    SELECT 
+                    SELECT
                         rule_id,
-                        rule_name,
-                        COUNT(*) as count,
-                        AVG(score) as avg_score,
-                        SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count
+                            rule_name,
+                            COUNT(*) as count,
+                            AVG(score) as avg_score,
+                            SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count
                     FROM validation_checks
                     WHERE created_at >= datetime('now', '-7 days')
                     GROUP BY rule_id, rule_name
@@ -1826,41 +1859,42 @@ class ModelValidator:
                 return {
                     "overall": {
                         "total_validations": overall_stats[0] or 0,
-                        "average_score": overall_stats[1] or 0.0,
-                        "passed_count": overall_stats[2] or 0,
-                        "pass_rate": (
+                            "average_score": overall_stats[1] or 0.0,
+                            "passed_count": overall_stats[2] or 0,
+                            "pass_rate": (
                             (overall_stats[2] / overall_stats[0])
                             if overall_stats[0]
                             else 0.0
                         ),
-                        "average_processing_time_ms": overall_stats[3] or 0.0,
-                    },
-                    "by_model_type": [
+                            "average_processing_time_ms": overall_stats[3] or 0.0,
+                            },
+                        "by_model_type": [
                         {
                             "model_type": row[0],
-                            "count": row[1],
-                            "average_score": row[2],
-                            "passed_count": row[3],
-                            "pass_rate": row[3] / row[1] if row[1] else 0.0,
-                        }
+                                "count": row[1],
+                                "average_score": row[2],
+                                "passed_count": row[3],
+                                "pass_rate": row[3] / row[1] if row[1] else 0.0,
+                                }
                         for row in model_stats
                     ],
-                    "by_rule": [
+                        "by_rule": [
                         {
                             "rule_id": row[0],
-                            "rule_name": row[1],
-                            "count": row[2],
-                            "average_score": row[3],
-                            "passed_count": row[4],
-                            "pass_rate": row[4] / row[2] if row[2] else 0.0,
-                        }
+                                "rule_name": row[1],
+                                "count": row[2],
+                                "average_score": row[3],
+                                "passed_count": row[4],
+                                "pass_rate": row[4] / row[2] if row[2] else 0.0,
+                                }
                         for row in rule_stats
                     ],
-                }
+                        }
 
         except Exception as e:
             logger.error(f"Failed to get validation stats: {e}")
             return {}
+
 
     async def cleanup_old_results(self, days_to_keep: int = 30):
         """Clean up old validation results"""
@@ -1874,7 +1908,7 @@ class ModelValidator:
                     DELETE FROM validation_results
                     WHERE created_at < datetime('now', '-{} days')
                 """.format(
-                        days_to_keep
+                    days_to_keep
                     )
                 )
 
@@ -1884,7 +1918,7 @@ class ModelValidator:
                     DELETE FROM validation_checks
                     WHERE created_at < datetime('now', '-{} days')
                 """.format(
-                        days_to_keep
+                    days_to_keep
                     )
                 )
 
@@ -1897,21 +1931,21 @@ class ModelValidator:
         except Exception as e:
             logger.error(f"Failed to cleanup old results: {e}")
 
-
 # Global validator instance
 model_validator = ModelValidator()
 
-
 # Convenience functions
+
+
 async def validate_avatar_video(
     file_path: str, request_id: str = None
 ) -> ModelValidationResponse:
     """Validate avatar video"""
     request = ModelValidationRequest(
-        request_id=request_id or f"avatar_video_{int(time.time())}",
-        model_type=ModelType.AVATAR_VIDEO,
-        file_path=file_path,
-    )
+        request_id = request_id or f"avatar_video_{int(time.time())}",
+            model_type = ModelType.AVATAR_VIDEO,
+            file_path = file_path,
+            )
     return await model_validator.validate_model(request)
 
 
@@ -1920,10 +1954,10 @@ async def validate_tts_audio(
 ) -> ModelValidationResponse:
     """Validate TTS audio"""
     request = ModelValidationRequest(
-        request_id=request_id or f"tts_audio_{int(time.time())}",
-        model_type=ModelType.TTS_AUDIO,
-        file_path=file_path,
-    )
+        request_id = request_id or f"tts_audio_{int(time.time())}",
+            model_type = ModelType.TTS_AUDIO,
+            file_path = file_path,
+            )
     return await model_validator.validate_model(request)
 
 
@@ -1932,10 +1966,10 @@ async def validate_image(
 ) -> ModelValidationResponse:
     """Validate image"""
     request = ModelValidationRequest(
-        request_id=request_id or f"image_{int(time.time())}",
-        model_type=ModelType.IMAGE,
-        file_path=file_path,
-    )
+        request_id = request_id or f"image_{int(time.time())}",
+            model_type = ModelType.IMAGE,
+            file_path = file_path,
+            )
     return await model_validator.validate_model(request)
 
 
@@ -1944,23 +1978,24 @@ async def validate_voice_clone(
 ) -> ModelValidationResponse:
     """Validate voice clone"""
     request = ModelValidationRequest(
-        request_id=request_id or f"voice_clone_{int(time.time())}",
-        model_type=ModelType.VOICE_CLONE,
-        file_path=file_path,
-    )
+        request_id = request_id or f"voice_clone_{int(time.time())}",
+            model_type = ModelType.VOICE_CLONE,
+            file_path = file_path,
+            )
     return await model_validator.validate_model(request)
-
 
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         # Test validation
         test_request = ModelValidationRequest(
             request_id="test_validation_001",
-            model_type=ModelType.AVATAR_VIDEO,
-            file_path="/path/to/test/video.mp4",
-            metadata={"test": True},
-        )
+                model_type = ModelType.AVATAR_VIDEO,
+                file_path="/path / to / test / video.mp4",
+                metadata={"test": True},
+                )
 
         result = await model_validator.validate_model(test_request)
 

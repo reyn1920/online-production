@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Dashboard Status Report
 Final comprehensive report on dashboard functionality and resolution
@@ -22,9 +22,9 @@ def generate_dashboard_report():
 
     # Test dashboard availability
     try:
-        response = requests.get(f"{base_url}/dashboard/", timeout=5)
+        response = requests.get(f"{base_url}/dashboard/", timeout = 5)
         dashboard_available = response.status_code == 200
-    except:
+    except Exception:
         dashboard_available = False
 
     print("🎯 DASHBOARD STATUS")
@@ -44,23 +44,23 @@ def generate_dashboard_report():
     print("-" * 30)
 
     api_endpoints = [
-        ("/dashboard/api/metrics", "System Metrics"),
-        ("/dashboard/api/services", "Service Status"),
-        ("/dashboard/api/system-info", "System Information"),
-    ]
+        ("/dashboard / api / metrics", "System Metrics"),
+            ("/dashboard / api / services", "Service Status"),
+            ("/dashboard / api / system - info", "System Information"),
+            ]
 
     for endpoint, description in api_endpoints:
         try:
-            response = requests.get(f"{base_url}{endpoint}", timeout=5)
+            response = requests.get(f"{base_url}{endpoint}", timeout = 5)
             if response.status_code == 200:
                 data = response.json()
                 print(f"✅ {description}: Working")
-                if endpoint == "/dashboard/api/metrics":
+                if endpoint == "/dashboard / api / metrics":
                     metrics = data.get("metrics", {})
-                    print(f"   Users: {metrics.get('total_users', 'N/A')}")
-                    print(f"   Sessions: {metrics.get('active_sessions', 'N/A')}")
-                    print(f"   API Calls: {metrics.get('api_calls_today', 'N/A')}")
-                elif endpoint == "/dashboard/api/services":
+                    print(f"   Users: {metrics.get('total_users', 'N / A')}")
+                    print(f"   Sessions: {metrics.get('active_sessions', 'N / A')}")
+                    print(f"   API Calls: {metrics.get('api_calls_today', 'N / A')}")
+                elif endpoint == "/dashboard / api / services":
                     services = data.get("services", {})
                     active_services = sum(
                         1 for s in services.values() if s.get("status") == "active"
@@ -78,11 +78,11 @@ def generate_dashboard_report():
     print("-" * 30)
 
     try:
-        health_response = requests.get(f"{base_url}/health", timeout=5)
+        health_response = requests.get(f"{base_url}/health", timeout = 5)
         if health_response.status_code == 200:
             health_data = health_response.json()
             print(f"✅ Main API: {health_data.get('status', 'unknown').upper()}")
-            print(f"   Timestamp: {health_data.get('timestamp', 'N/A')}")
+            print(f"   Timestamp: {health_data.get('timestamp', 'N / A')}")
         else:
             print(f"❌ Main API: HTTP {health_response.status_code}")
     except Exception as e:
@@ -90,7 +90,7 @@ def generate_dashboard_report():
 
     # Check version endpoint
     try:
-        version_response = requests.get(f"{base_url}/api/version", timeout=5)
+        version_response = requests.get(f"{base_url}/api / version", timeout = 5)
         if version_response.status_code == 200:
             version_data = version_response.json()
             print(f"✅ Version API: {version_data.get('version', 'unknown')}")
@@ -106,9 +106,9 @@ def generate_dashboard_report():
     print("🌐 DASHBOARD ACCESS INFORMATION")
     print("-" * 40)
     print(f"Main Dashboard URL: {base_url}/dashboard/")
-    print(f"Metrics API: {base_url}/dashboard/api/metrics")
-    print(f"Services API: {base_url}/dashboard/api/services")
-    print(f"System Info API: {base_url}/dashboard/api/system-info")
+    print(f"Metrics API: {base_url}/dashboard / api / metrics")
+    print(f"Services API: {base_url}/dashboard / api / services")
+    print(f"System Info API: {base_url}/dashboard / api / system - info")
     print()
 
     # Production notes
@@ -117,7 +117,7 @@ def generate_dashboard_report():
     print("✅ Dashboard router successfully imported and mounted")
     print("✅ All dashboard API endpoints are functional")
     print("✅ Dashboard templates are rendering correctly")
-    print("✅ Real-time metrics and service status available")
+    print("✅ Real - time metrics and service status available")
     print("ℹ️  API documentation disabled in production mode (security feature)")
     print("ℹ️  Dashboard includes paste functionality for AI assistant integration")
     print()
@@ -130,24 +130,23 @@ def generate_dashboard_report():
     print(
         "ROOT CAUSE: User may have been accessing wrong URL or expecting different behavior"
     )
-    print("SOLUTION: Dashboard is accessible at http://localhost:8000/dashboard/")
+    print("SOLUTION: Dashboard is accessible at http://localhost:8000 / dashboard/")
     print("STATUS: ✅ RESOLVED - Dashboard is working correctly")
     print()
 
     # Usage instructions
     print("📖 USAGE INSTRUCTIONS")
     print("-" * 30)
-    print("1. Access main dashboard: http://localhost:8000/dashboard/")
-    print("2. View system metrics via API: /dashboard/api/metrics")
-    print("3. Check service status via API: /dashboard/api/services")
-    print("4. Monitor system info via API: /dashboard/api/system-info")
+    print("1. Access main dashboard: http://localhost:8000 / dashboard/")
+    print("2. View system metrics via API: /dashboard / api / metrics")
+    print("3. Check service status via API: /dashboard / api / services")
+    print("4. Monitor system info via API: /dashboard / api / system - info")
     print("5. Use paste functionality for AI assistant communication")
-    print("6. Dashboard auto-refreshes every 30 seconds")
+    print("6. Dashboard auto - refreshes every 30 seconds")
     print()
 
     print("✅ Dashboard is fully operational and ready for production use!")
     print("=" * 60)
-
 
 if __name__ == "__main__":
     generate_dashboard_report()

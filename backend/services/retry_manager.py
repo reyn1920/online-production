@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Advanced Retry Manager with Circuit Breaker Patterns
 
@@ -32,7 +32,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -75,8 +75,9 @@ class RetryDecision(Enum):
     CIRCUIT_OPEN = "circuit_open"
     MAX_ATTEMPTS_REACHED = "max_attempts_reached"
 
-
 @dataclass
+
+
 class RetryConfig:
     """Configuration for retry behavior"""
 
@@ -87,17 +88,18 @@ class RetryConfig:
     jitter_factor: float = 0.1
     strategy: RetryStrategy = RetryStrategy.EXPONENTIAL_BACKOFF
     timeout_ms: int = 30000
-    retryable_exceptions: List[type] = field(default_factory=list)
-    non_retryable_exceptions: List[type] = field(default_factory=list)
+    retryable_exceptions: List[type] = field(default_factory = list)
+    non_retryable_exceptions: List[type] = field(default_factory = list)
     retryable_status_codes: List[int] = field(
-        default_factory=lambda: [429, 500, 502, 503, 504]
+        default_factory = lambda: [429, 500, 502, 503, 504]
     )
     circuit_breaker_enabled: bool = True
     bulkhead_enabled: bool = True
     adaptive_enabled: bool = True
 
-
 @dataclass
+
+
 class CircuitBreakerConfig:
     """Configuration for circuit breaker"""
 
@@ -109,8 +111,9 @@ class CircuitBreakerConfig:
     error_percentage_threshold: float = 50.0
     sliding_window_size: int = 100
 
-
 @dataclass
+
+
 class RetryAttempt:
     """Information about a retry attempt"""
 
@@ -120,10 +123,11 @@ class RetryAttempt:
     error: Optional[Exception] = None
     failure_type: Optional[FailureType] = None
     response_time_ms: Optional[int] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class RetryResult:
     """Result of retry operation"""
 
@@ -132,16 +136,18 @@ class RetryResult:
     error: Optional[Exception] = None
     total_attempts: int = 0
     total_time_ms: int = 0
-    attempts: List[RetryAttempt] = field(default_factory=list)
+    attempts: List[RetryAttempt] = field(default_factory = list)
     decision: Optional[RetryDecision] = None
     circuit_breaker_triggered: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 
 class FailureClassifier:
     """Classifies failures for appropriate retry handling"""
 
     @staticmethod
+
+
     def classify_exception(exception: Exception) -> FailureType:
         """Classify exception into failure type"""
         exception_name = type(exception).__name__.lower()
@@ -175,9 +181,11 @@ class FailureClassifier:
             return FailureType.UNKNOWN
 
     @staticmethod
+
+
     def is_retryable(failure_type: FailureType, config: RetryConfig) -> bool:
         """Determine if failure type is retryable"""
-        # Non-retryable failure types
+        # Non - retryable failure types
         non_retryable = {FailureType.CLIENT_ERROR, FailureType.VALIDATION_ERROR}
 
         if failure_type in non_retryable:
@@ -187,21 +195,24 @@ class FailureClassifier:
         return True
 
     @staticmethod
+
+
     def get_retry_delay_multiplier(failure_type: FailureType) -> float:
         """Get delay multiplier based on failure type"""
         multipliers = {
             FailureType.RATE_LIMIT: 2.0,  # Longer delays for rate limits
             FailureType.SERVER_ERROR: 1.5,
-            FailureType.TIMEOUT: 1.2,
-            FailureType.CONNECTION_ERROR: 1.0,
-            FailureType.RESOURCE_EXHAUSTED: 2.5,
-            FailureType.UNKNOWN: 1.0,
-        }
+                FailureType.TIMEOUT: 1.2,
+                FailureType.CONNECTION_ERROR: 1.0,
+                FailureType.RESOURCE_EXHAUSTED: 2.5,
+                FailureType.UNKNOWN: 1.0,
+                }
         return multipliers.get(failure_type, 1.0)
 
 
 class CircuitBreaker:
     """Advanced circuit breaker implementation"""
+
 
     def __init__(self, name: str, config: CircuitBreakerConfig):
         self.name = name
@@ -215,6 +226,7 @@ class CircuitBreaker:
         self.lock = threading.RLock()
 
         logger.info(f"Circuit breaker '{name}' initialized")
+
 
     def can_execute(self) -> bool:
         """Check if execution is allowed"""
@@ -240,6 +252,7 @@ class CircuitBreaker:
 
             return False
 
+
     def record_success(self):
         """Record successful execution"""
         with self.lock:
@@ -255,6 +268,7 @@ class CircuitBreaker:
             elif self.state == CircuitState.CLOSED:
                 self.failure_count = 0  # Reset failure count on success
 
+
     def record_failure(self):
         """Record failed execution"""
         with self.lock:
@@ -263,11 +277,11 @@ class CircuitBreaker:
             self.last_failure_time = datetime.now()
 
             if self.state == CircuitState.HALF_OPEN:
-                # Failure during half-open, go back to open
+                # Failure during half - open, go back to open
                 self.state = CircuitState.OPEN
                 self.success_count = 0
                 logger.warning(
-                    f"Circuit breaker '{self.name}' opened after half-open failure"
+                    f"Circuit breaker '{self.name}' opened after half - open failure"
                 )
             elif self.state == CircuitState.CLOSED:
                 # Check if we should open the circuit
@@ -280,6 +294,7 @@ class CircuitBreaker:
             if self.state == CircuitState.HALF_OPEN:
                 self.half_open_calls += 1
 
+
     def _add_to_history(self, success: bool):
         """Add call result to sliding window history"""
         self.call_history.append({"success": success, "timestamp": datetime.now()})
@@ -288,13 +303,14 @@ class CircuitBreaker:
         if len(self.call_history) > self.config.sliding_window_size:
             self.call_history.pop(0)
 
+
     def _should_open_circuit(self) -> bool:
         """Determine if circuit should be opened"""
-        # Simple threshold-based decision
+        # Simple threshold - based decision
         if self.failure_count >= self.config.failure_threshold:
             return True
 
-        # Percentage-based decision with minimum throughput
+        # Percentage - based decision with minimum throughput
         if len(self.call_history) >= self.config.minimum_throughput:
             failures = sum(1 for call in self.call_history if not call["success"])
             failure_percentage = (failures / len(self.call_history)) * 100
@@ -303,6 +319,7 @@ class CircuitBreaker:
                 return True
 
         return False
+
 
     def get_state_info(self) -> Dict[str, Any]:
         """Get current state information"""
@@ -317,28 +334,30 @@ class CircuitBreaker:
 
             return {
                 "name": self.name,
-                "state": self.state.value,
-                "failure_count": self.failure_count,
-                "success_count": self.success_count,
-                "half_open_calls": self.half_open_calls,
-                "recent_calls": recent_calls,
-                "recent_failures": recent_failures,
-                "failure_rate_percent": failure_rate,
-                "last_failure_time": (
+                    "state": self.state.value,
+                    "failure_count": self.failure_count,
+                    "success_count": self.success_count,
+                    "half_open_calls": self.half_open_calls,
+                    "recent_calls": recent_calls,
+                    "recent_failures": recent_failures,
+                    "failure_rate_percent": failure_rate,
+                    "last_failure_time": (
                     self.last_failure_time.isoformat()
                     if self.last_failure_time
                     else None
                 ),
-            }
+                    }
 
 
 class AdaptiveRetryCalculator:
     """Calculates adaptive retry delays based on historical performance"""
 
+
     def __init__(self):
         self.success_rates = {}  # service_name -> success_rate
         self.avg_response_times = {}  # service_name -> avg_response_time
         self.lock = threading.Lock()
+
 
     def update_metrics(self, service_name: str, success: bool, response_time_ms: int):
         """Update metrics for adaptive calculation"""
@@ -354,6 +373,7 @@ class AdaptiveRetryCalculator:
             if len(self.success_rates[service_name]) > 100:
                 self.success_rates[service_name].pop(0)
                 self.avg_response_times[service_name].pop(0)
+
 
     def calculate_adaptive_delay(
         self, service_name: str, base_delay_ms: int, attempt_number: int
@@ -385,21 +405,24 @@ class AdaptiveRetryCalculator:
 class BulkheadIsolation:
     """Implements bulkhead pattern for resource isolation"""
 
+
     def __init__(self, max_concurrent_calls: int = 10):
         self.max_concurrent_calls = max_concurrent_calls
         self.current_calls = 0
         self.semaphore = asyncio.Semaphore(max_concurrent_calls)
         self.lock = threading.Lock()
 
+
     async def acquire(self) -> bool:
         """Acquire a slot in the bulkhead"""
         try:
-            await asyncio.wait_for(self.semaphore.acquire(), timeout=1.0)
+            await asyncio.wait_for(self.semaphore.acquire(), timeout = 1.0)
             with self.lock:
                 self.current_calls += 1
             return True
         except asyncio.TimeoutError:
             return False
+
 
     def release(self):
         """Release a slot in the bulkhead"""
@@ -407,6 +430,7 @@ class BulkheadIsolation:
             if self.current_calls > 0:
                 self.current_calls -= 1
         self.semaphore.release()
+
 
     def get_utilization(self) -> float:
         """Get current utilization percentage"""
@@ -417,13 +441,14 @@ class BulkheadIsolation:
 class AdvancedRetryManager:
     """Advanced retry manager with circuit breakers and adaptive strategies"""
 
-    def __init__(self, db_path: str = "data/retry_manager.db"):
+
+    def __init__(self, db_path: str = "data / retry_manager.db"):
         self.db_path = db_path
         self.circuit_breakers: Dict[str, CircuitBreaker] = {}
         self.bulkheads: Dict[str, BulkheadIsolation] = {}
         self.adaptive_calculator = AdaptiveRetryCalculator()
         self.failure_classifier = FailureClassifier()
-        self.executor = ThreadPoolExecutor(max_workers=20)
+        self.executor = ThreadPoolExecutor(max_workers = 20)
         self.lock = threading.RLock()
 
         # Initialize database
@@ -431,9 +456,10 @@ class AdvancedRetryManager:
 
         logger.info("AdvancedRetryManager initialized")
 
+
     def _init_database(self):
         """Initialize retry tracking database"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -443,16 +469,16 @@ class AdvancedRetryManager:
                 """
                 CREATE TABLE IF NOT EXISTS retry_attempts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    service_name TEXT NOT NULL,
-                    operation_id TEXT NOT NULL,
-                    attempt_number INTEGER NOT NULL,
-                    success BOOLEAN NOT NULL,
-                    failure_type TEXT,
-                    delay_ms INTEGER,
-                    response_time_ms INTEGER,
-                    error_message TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    metadata TEXT
+                        service_name TEXT NOT NULL,
+                        operation_id TEXT NOT NULL,
+                        attempt_number INTEGER NOT NULL,
+                        success BOOLEAN NOT NULL,
+                        failure_type TEXT,
+                        delay_ms INTEGER,
+                        response_time_ms INTEGER,
+                        error_message TEXT,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        metadata TEXT
                 )
             """
             )
@@ -462,12 +488,12 @@ class AdvancedRetryManager:
                 """
                 CREATE TABLE IF NOT EXISTS circuit_breaker_events (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    circuit_name TEXT NOT NULL,
-                    event_type TEXT NOT NULL,
-                    previous_state TEXT,
-                    new_state TEXT,
-                    failure_count INTEGER,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        circuit_name TEXT NOT NULL,
+                        event_type TEXT NOT NULL,
+                        previous_state TEXT,
+                        new_state TEXT,
+                        failure_count INTEGER,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -477,16 +503,17 @@ class AdvancedRetryManager:
                 """
                 CREATE TABLE IF NOT EXISTS performance_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    service_name TEXT NOT NULL,
-                    success_rate REAL,
-                    avg_response_time_ms REAL,
-                    total_calls INTEGER,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        service_name TEXT NOT NULL,
+                        success_rate REAL,
+                        avg_response_time_ms REAL,
+                        total_calls INTEGER,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
 
             conn.commit()
+
 
     def get_or_create_circuit_breaker(
         self, name: str, config: CircuitBreakerConfig = None
@@ -499,6 +526,7 @@ class AdvancedRetryManager:
                 self.circuit_breakers[name] = CircuitBreaker(name, config)
             return self.circuit_breakers[name]
 
+
     def get_or_create_bulkhead(
         self, name: str, max_concurrent: int = 10
     ) -> BulkheadIsolation:
@@ -508,16 +536,17 @@ class AdvancedRetryManager:
                 self.bulkheads[name] = BulkheadIsolation(max_concurrent)
             return self.bulkheads[name]
 
+
     async def execute_with_retry(
         self,
-        func: Callable,
-        service_name: str,
-        operation_id: str = None,
-        config: RetryConfig = None,
-        circuit_config: CircuitBreakerConfig = None,
-        *args,
-        **kwargs,
-    ) -> RetryResult:
+            func: Callable,
+            service_name: str,
+            operation_id: str = None,
+            config: RetryConfig = None,
+            circuit_config: CircuitBreakerConfig = None,
+            *args,
+            **kwargs,
+            ) -> RetryResult:
         """
         Execute function with advanced retry logic
 
@@ -553,29 +582,29 @@ class AdvancedRetryManager:
             if config.circuit_breaker_enabled and not circuit_breaker.can_execute():
                 logger.warning(f"Circuit breaker open for {service_name}, failing fast")
                 return RetryResult(
-                    success=False,
-                    error=Exception(f"Circuit breaker open for {service_name}"),
-                    total_attempts=attempt - 1,
-                    total_time_ms=int((time.time() - start_time) * 1000),
-                    attempts=attempts,
-                    decision=RetryDecision.CIRCUIT_OPEN,
-                    circuit_breaker_triggered=True,
-                )
+                    success = False,
+                        error = Exception(f"Circuit breaker open for {service_name}"),
+                        total_attempts = attempt - 1,
+                        total_time_ms = int((time.time() - start_time) * 1000),
+                        attempts = attempts,
+                        decision = RetryDecision.CIRCUIT_OPEN,
+                        circuit_breaker_triggered = True,
+                        )
 
             # Acquire bulkhead slot
             if config.bulkhead_enabled:
                 if not await bulkhead.acquire():
                     logger.warning(f"Bulkhead full for {service_name}, failing fast")
                     return RetryResult(
-                        success=False,
-                        error=Exception(
+                        success = False,
+                            error = Exception(
                             f"Bulkhead capacity exceeded for {service_name}"
                         ),
-                        total_attempts=attempt - 1,
-                        total_time_ms=int((time.time() - start_time) * 1000),
-                        attempts=attempts,
-                        decision=RetryDecision.FAIL_FAST,
-                    )
+                            total_attempts = attempt - 1,
+                            total_time_ms = int((time.time() - start_time) * 1000),
+                            attempts = attempts,
+                            decision = RetryDecision.FAIL_FAST,
+                            )
 
             attempt_start = time.time()
 
@@ -583,7 +612,7 @@ class AdvancedRetryManager:
                 # Execute function with timeout
                 if asyncio.iscoroutinefunction(func):
                     result = await asyncio.wait_for(
-                        func(*args, **kwargs), timeout=config.timeout_ms / 1000
+                        func(*args, **kwargs), timeout = config.timeout_ms / 1000
                     )
                 else:
                     result = await asyncio.get_event_loop().run_in_executor(
@@ -594,11 +623,11 @@ class AdvancedRetryManager:
 
                 # Success!
                 attempt_info = RetryAttempt(
-                    attempt_number=attempt,
-                    delay_ms=0,
-                    timestamp=datetime.now(),
-                    response_time_ms=response_time_ms,
-                )
+                    attempt_number = attempt,
+                        delay_ms = 0,
+                        timestamp = datetime.now(),
+                        response_time_ms = response_time_ms,
+                        )
                 attempts.append(attempt_info)
 
                 # Update circuit breaker and metrics
@@ -618,12 +647,12 @@ class AdvancedRetryManager:
                     bulkhead.release()
 
                 return RetryResult(
-                    success=True,
-                    result=result,
-                    total_attempts=attempt,
-                    total_time_ms=int((time.time() - start_time) * 1000),
-                    attempts=attempts,
-                )
+                    success = True,
+                        result = result,
+                        total_attempts = attempt,
+                        total_time_ms = int((time.time() - start_time) * 1000),
+                        attempts = attempts,
+                        )
 
             except Exception as e:
                 response_time_ms = int((time.time() - attempt_start) * 1000)
@@ -633,13 +662,13 @@ class AdvancedRetryManager:
                 failure_type = self.failure_classifier.classify_exception(e)
 
                 attempt_info = RetryAttempt(
-                    attempt_number=attempt,
-                    delay_ms=0,
-                    timestamp=datetime.now(),
-                    error=e,
-                    failure_type=failure_type,
-                    response_time_ms=response_time_ms,
-                )
+                    attempt_number = attempt,
+                        delay_ms = 0,
+                        timestamp = datetime.now(),
+                        error = e,
+                        failure_type = failure_type,
+                        response_time_ms = response_time_ms,
+                        )
                 attempts.append(attempt_info)
 
                 # Update circuit breaker and metrics
@@ -664,16 +693,16 @@ class AdvancedRetryManager:
 
                 if not self.failure_classifier.is_retryable(failure_type, config):
                     logger.info(
-                        f"Non-retryable failure for {service_name}: {failure_type.value}"
+                        f"Non - retryable failure for {service_name}: {failure_type.value}"
                     )
                     return RetryResult(
-                        success=False,
-                        error=e,
-                        total_attempts=attempt,
-                        total_time_ms=int((time.time() - start_time) * 1000),
-                        attempts=attempts,
-                        decision=RetryDecision.FAIL_FAST,
-                    )
+                        success = False,
+                            error = e,
+                            total_attempts = attempt,
+                            total_time_ms = int((time.time() - start_time) * 1000),
+                            attempts = attempts,
+                            decision = RetryDecision.FAIL_FAST,
+                            )
 
                 # Calculate delay for next attempt
                 delay_ms = self._calculate_delay(
@@ -691,21 +720,22 @@ class AdvancedRetryManager:
 
         # All attempts failed
         return RetryResult(
-            success=False,
-            error=last_error,
-            total_attempts=config.max_attempts,
-            total_time_ms=int((time.time() - start_time) * 1000),
-            attempts=attempts,
-            decision=RetryDecision.MAX_ATTEMPTS_REACHED,
-        )
+            success = False,
+                error = last_error,
+                total_attempts = config.max_attempts,
+                total_time_ms = int((time.time() - start_time) * 1000),
+                attempts = attempts,
+                decision = RetryDecision.MAX_ATTEMPTS_REACHED,
+                )
+
 
     def _calculate_delay(
         self,
-        config: RetryConfig,
-        attempt: int,
-        failure_type: FailureType,
-        service_name: str,
-    ) -> int:
+            config: RetryConfig,
+            attempt: int,
+            failure_type: FailureType,
+            service_name: str,
+            ) -> int:
         """Calculate delay for next retry attempt"""
         base_delay = config.base_delay_ms
 
@@ -743,6 +773,7 @@ class AdvancedRetryManager:
 
         return delay
 
+
     def _log_attempt(
         self, service_name: str, operation_id: str, attempt: RetryAttempt, success: bool
     ):
@@ -752,26 +783,27 @@ class AdvancedRetryManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO retry_attempts 
-                    (service_name, operation_id, attempt_number, success, 
-                     failure_type, delay_ms, response_time_ms, error_message, metadata)
+                    INSERT INTO retry_attempts
+                    (service_name, operation_id, attempt_number, success,
+                        failure_type, delay_ms, response_time_ms, error_message, metadata)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         service_name,
-                        operation_id,
-                        attempt.attempt_number,
-                        success,
-                        attempt.failure_type.value if attempt.failure_type else None,
-                        attempt.delay_ms,
-                        attempt.response_time_ms,
-                        str(attempt.error) if attempt.error else None,
-                        json.dumps(attempt.metadata),
-                    ),
-                )
+                            operation_id,
+                            attempt.attempt_number,
+                            success,
+                            attempt.failure_type.value if attempt.failure_type else None,
+                            attempt.delay_ms,
+                            attempt.response_time_ms,
+                            str(attempt.error) if attempt.error else None,
+                            json.dumps(attempt.metadata),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             logger.error(f"Failed to log retry attempt: {e}")
+
 
     def get_service_metrics(self, service_name: str, hours: int = 24) -> Dict[str, Any]:
         """Get metrics for a service over specified time period"""
@@ -782,31 +814,31 @@ class AdvancedRetryManager:
                 # Get attempt statistics
                 cursor.execute(
                     """
-                    SELECT 
+                    SELECT
                         COUNT(*) as total_attempts,
-                        SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_attempts,
-                        AVG(response_time_ms) as avg_response_time,
-                        AVG(delay_ms) as avg_delay,
-                        MAX(attempt_number) as max_attempts_per_operation
-                    FROM retry_attempts 
-                    WHERE service_name = ? 
+                            SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successful_attempts,
+                            AVG(response_time_ms) as avg_response_time,
+                            AVG(delay_ms) as avg_delay,
+                            MAX(attempt_number) as max_attempts_per_operation
+                    FROM retry_attempts
+                    WHERE service_name = ?
                     AND timestamp > datetime('now', '-{} hours')
                 """.format(
-                        hours
+                    hours
                     ),
-                    (service_name,),
-                )
+                        (service_name,),
+                        )
 
                 stats = cursor.fetchone()
 
                 if stats and stats[0] > 0:
                     (
                         total_attempts,
-                        successful_attempts,
-                        avg_response_time,
-                        avg_delay,
-                        max_attempts,
-                    ) = stats
+                            successful_attempts,
+                            avg_response_time,
+                            avg_delay,
+                            max_attempts,
+                            ) = stats
                     success_rate = (successful_attempts / total_attempts) * 100
                 else:
                     total_attempts = successful_attempts = 0
@@ -824,27 +856,28 @@ class AdvancedRetryManager:
                         "current_utilization_percent": self.bulkheads[
                             service_name
                         ].get_utilization(),
-                        "max_concurrent_calls": self.bulkheads[
+                            "max_concurrent_calls": self.bulkheads[
                             service_name
                         ].max_concurrent_calls,
-                    }
+                            }
 
                 return {
                     "service_name": service_name,
-                    "time_period_hours": hours,
-                    "total_attempts": total_attempts,
-                    "successful_attempts": successful_attempts,
-                    "success_rate_percent": success_rate,
-                    "avg_response_time_ms": avg_response_time or 0,
-                    "avg_retry_delay_ms": avg_delay or 0,
-                    "max_attempts_per_operation": max_attempts or 0,
-                    "circuit_breaker": circuit_info,
-                    "bulkhead": bulkhead_info,
-                }
+                        "time_period_hours": hours,
+                        "total_attempts": total_attempts,
+                        "successful_attempts": successful_attempts,
+                        "success_rate_percent": success_rate,
+                        "avg_response_time_ms": avg_response_time or 0,
+                        "avg_retry_delay_ms": avg_delay or 0,
+                        "max_attempts_per_operation": max_attempts or 0,
+                        "circuit_breaker": circuit_info,
+                        "bulkhead": bulkhead_info,
+                        }
 
         except Exception as e:
             logger.error(f"Failed to get service metrics: {e}")
             return {}
+
 
     def get_system_status(self) -> Dict[str, Any]:
         """Get overall system status"""
@@ -857,23 +890,24 @@ class AdvancedRetryManager:
             for name, bh in self.bulkheads.items():
                 bulkhead_status[name] = {
                     "utilization_percent": bh.get_utilization(),
-                    "max_concurrent": bh.max_concurrent_calls,
-                }
+                        "max_concurrent": bh.max_concurrent_calls,
+                        }
 
             return {
                 "circuit_breakers": circuit_breaker_status,
-                "bulkheads": bulkhead_status,
-                "total_circuit_breakers": len(self.circuit_breakers),
-                "open_circuit_breakers": sum(
+                    "bulkheads": bulkhead_status,
+                    "total_circuit_breakers": len(self.circuit_breakers),
+                    "open_circuit_breakers": sum(
                     1
                     for cb in self.circuit_breakers.values()
                     if cb.state == CircuitState.OPEN
                 ),
-                "total_bulkheads": len(self.bulkheads),
-                "high_utilization_bulkheads": sum(
+                    "total_bulkheads": len(self.bulkheads),
+                    "high_utilization_bulkheads": sum(
                     1 for bh in self.bulkheads.values() if bh.get_utilization() > 80
                 ),
-            }
+                    }
+
 
     def reset_circuit_breaker(self, service_name: str):
         """Manually reset a circuit breaker"""
@@ -885,12 +919,12 @@ class AdvancedRetryManager:
                 cb.success_count = 0
                 logger.info(f"Circuit breaker '{service_name}' manually reset")
 
+
     def shutdown(self):
         """Shutdown retry manager"""
         logger.info("Shutting down AdvancedRetryManager...")
-        self.executor.shutdown(wait=True)
+        self.executor.shutdown(wait = True)
         logger.info("AdvancedRetryManager shutdown complete")
-
 
 # Global instance
 _global_retry_manager = None
@@ -903,27 +937,31 @@ def get_retry_manager() -> AdvancedRetryManager:
         _global_retry_manager = AdvancedRetryManager()
     return _global_retry_manager
 
-
 # Decorator for easy retry functionality
+
+
 def with_retry(
     service_name: str,
-    config: RetryConfig = None,
-    circuit_config: CircuitBreakerConfig = None,
+        config: RetryConfig = None,
+        circuit_config: CircuitBreakerConfig = None,
 ):
     """Decorator to add retry functionality to functions"""
 
+
     def decorator(func):
         @wraps(func)
+
+
         async def wrapper(*args, **kwargs):
             retry_manager = get_retry_manager()
             result = await retry_manager.execute_with_retry(
                 func,
-                service_name,
-                config=config,
-                circuit_config=circuit_config,
-                *args,
-                **kwargs,
-            )
+                    service_name,
+                    config = config,
+                    circuit_config = circuit_config,
+                    *args,
+                    **kwargs,
+                    )
 
             if result.success:
                 return result.result
@@ -934,13 +972,16 @@ def with_retry(
 
     return decorator
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         retry_manager = AdvancedRetryManager()
 
         # Example function that might fail
+
+
         async def unreliable_function(fail_probability: float = 0.7):
             if random.random() < fail_probability:
                 raise Exception("Random failure occurred")
@@ -948,15 +989,15 @@ if __name__ == "__main__":
 
         # Test retry with different configurations
         config = RetryConfig(
-            max_attempts=5,
-            base_delay_ms=1000,
-            strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
-            circuit_breaker_enabled=True,
-        )
+            max_attempts = 5,
+                base_delay_ms = 1000,
+                strategy = RetryStrategy.EXPONENTIAL_BACKOFF,
+                circuit_breaker_enabled = True,
+                )
 
         # Execute with retry
         result = await retry_manager.execute_with_retry(
-            unreliable_function, "test_service", config=config, fail_probability=0.3
+            unreliable_function, "test_service", config = config, fail_probability = 0.3
         )
 
         print(f"Result: {result.success}")
@@ -965,11 +1006,11 @@ if __name__ == "__main__":
 
         # Get service metrics
         metrics = retry_manager.get_service_metrics("test_service")
-        print(f"Service metrics: {json.dumps(metrics, indent=2)}")
+        print(f"Service metrics: {json.dumps(metrics, indent = 2)}")
 
         # Get system status
         status = retry_manager.get_system_status()
-        print(f"System status: {json.dumps(status, indent=2)}")
+        print(f"System status: {json.dumps(status, indent = 2)}")
 
         retry_manager.shutdown()
 

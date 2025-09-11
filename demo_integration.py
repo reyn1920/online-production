@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Linly Talker + DaVinci Resolve + Blender Integration Demo
 
@@ -23,30 +23,30 @@ from ai_video_pipeline import AIVideoProductionPipeline
 def create_sample_assets():
     """Create sample assets for demonstration"""
 
-    assets_dir = "/Users/thomasbrianreynolds/online production/sample_assets"
-    os.makedirs(assets_dir, exist_ok=True)
+    assets_dir = "/Users / thomasbrianreynolds / online production / sample_assets"
+    os.makedirs(assets_dir, exist_ok = True)
 
     # Sample script content
     sample_scripts = {
         "welcome": """
-        Hello and welcome to our AI-powered video production demonstration.
-        Today, I'll show you how artificial intelligence can create 
-        professional-quality videos with minimal human intervention.
+        Hello and welcome to our AI - powered video production demonstration.
+        Today, I'll show you how artificial intelligence can create
+        professional - quality videos with minimal human intervention.
         This technology represents the future of content creation.
         """,
-        "business_presentation": """
+            "business_presentation": """
         Good morning, team. Let me present our quarterly results.
         Our revenue has grown by 25% this quarter, exceeding all expectations.
         The new AI integration features have been particularly successful,
-        driving both customer satisfaction and operational efficiency.
+            driving both customer satisfaction and operational efficiency.
         """,
-        "educational": """
+            "educational": """
         In this lesson, we'll explore the fundamentals of machine learning.
         Machine learning is a subset of artificial intelligence that enables
         computers to learn and improve from experience without being explicitly programmed.
         Let's dive into the key concepts and practical applications.
         """,
-    }
+            }
 
     # Save sample scripts
     for name, content in sample_scripts.items():
@@ -66,7 +66,7 @@ def run_system_check():
     print("=" * 60)
 
     # Initialize pipeline
-    config_path = "/Users/thomasbrianreynolds/online production/pipeline_config.json"
+    config_path = "/Users / thomasbrianreynolds / online production / pipeline_config.json"
     pipeline = AIVideoProductionPipeline(config_path)
 
     return pipeline
@@ -83,7 +83,7 @@ def demo_basic_integration():
     assets_dir, sample_scripts = create_sample_assets()
 
     # Initialize pipeline
-    config_path = "/Users/thomasbrianreynolds/online production/pipeline_config.json"
+    config_path = "/Users / thomasbrianreynolds / online production / pipeline_config.json"
     pipeline = AIVideoProductionPipeline(config_path)
 
     # Use welcome script
@@ -94,7 +94,7 @@ def demo_basic_integration():
 
     # Run pipeline
     result = pipeline.run_complete_pipeline(
-        script_text=script_text, environment_type="studio"
+        script_text = script_text, environment_type="studio"
     )
 
     return result
@@ -111,13 +111,13 @@ def demo_advanced_integration():
     assets_dir, sample_scripts = create_sample_assets()
 
     # Initialize pipeline
-    config_path = "/Users/thomasbrianreynolds/online production/pipeline_config.json"
+    config_path = "/Users / thomasbrianreynolds / online production / pipeline_config.json"
     pipeline = AIVideoProductionPipeline(config_path)
 
     # Use business presentation script
     script_text = sample_scripts["business_presentation"]
 
-    # Look for existing assets (these would be user-provided)
+    # Look for existing assets (these would be user - provided)
     character_image = None
     voice_sample = None
     additional_assets = []
@@ -151,12 +151,12 @@ def demo_advanced_integration():
 
     # Run pipeline
     result = pipeline.run_complete_pipeline(
-        script_text=script_text,
-        character_image=character_image,
-        voice_sample=voice_sample,
-        additional_assets=additional_assets,
-        environment_type="studio",
-    )
+        script_text = script_text,
+            character_image = character_image,
+            voice_sample = voice_sample,
+            additional_assets = additional_assets,
+            environment_type="studio",
+            )
 
     return result
 
@@ -172,8 +172,8 @@ def create_installation_guide():
 ### 1. Linly Talker Setup
 ```bash
 # Clone Linly Talker repository
-git clone https://github.com/Kedreamix/Linly-Talker.git
-cd Linly-Talker
+git clone https://github.com / Kedreamix / Linly - Talker.git
+cd Linly - Talker
 
 # Install dependencies
 pip install -r requirements.txt
@@ -196,7 +196,7 @@ python app.py
 # Install Blender (macOS)
 brew install --cask blender
 
-# Or download from https://www.blender.org/download/
+# Or download from https://www.blender.org / download/
 # Ensure 'blender' command is available in PATH
 ```
 
@@ -221,9 +221,9 @@ python ai_video_pipeline.py --script "Your custom script here" --environment stu
 ```bash
 python ai_video_pipeline.py \
     --script "Your script" \
-    --image "/path/to/character.jpg" \
-    --voice "/path/to/voice_sample.wav" \
-    --environment studio
+        --image "/path / to / character.jpg" \
+        --voice "/path / to / voice_sample.wav" \
+        --environment studio
 ```
 
 ## Configuration
@@ -240,33 +240,33 @@ Edit `pipeline_config.json` to customize:
 ### Common Issues
 
 1. **Linly Talker not responding**
-   - Check if service is running on port 7860
+    - Check if service is running on port 7860
    - Verify firewall settings
    - Check console output for errors
 
 2. **DaVinci Resolve API not available**
-   - Ensure external scripting is enabled
+    - Ensure external scripting is enabled
    - Check if DaVinci Resolve is running
    - Verify installation paths
 
 3. **Blender command not found**
-   - Add Blender to system PATH
+    - Add Blender to system PATH
    - Update executable path in config
    - Test with: `blender --version`
 
 ### Performance Tips
 
 1. **GPU Acceleration**
-   - Enable CUDA for Blender rendering
-   - Use GPU-accelerated AI models in Linly Talker
+    - Enable CUDA for Blender rendering
+   - Use GPU - accelerated AI models in Linly Talker
 
 2. **Memory Management**
-   - Adjust memory limits in config
+    - Adjust memory limits in config
    - Close unnecessary applications
    - Use SSD for temp directories
 
 3. **Parallel Processing**
-   - Increase max_workers for multi-core systems
+    - Increase max_workers for multi - core systems
    - Enable GPU acceleration where available
 
 ## Support
@@ -274,12 +274,12 @@ Edit `pipeline_config.json` to customize:
 For issues and questions:
 1. Check the troubleshooting section above
 2. Review component documentation:
-   - Linly Talker: https://github.com/Kedreamix/Linly-Talker
+   - Linly Talker: https://github.com / Kedreamix / Linly - Talker
    - DaVinci Resolve: Blackmagic Design documentation
    - Blender: https://docs.blender.org/
 """
 
-    guide_path = "/Users/thomasbrianreynolds/online production/INSTALLATION_GUIDE.md"
+    guide_path = "/Users / thomasbrianreynolds / online production / INSTALLATION_GUIDE.md"
     with open(guide_path, "w") as f:
         f.write(guide_content)
 
@@ -310,7 +310,7 @@ def main():
 
         while True:
             try:
-                choice = input("\nSelect demo (1-4): ").strip()
+                choice = input("\nSelect demo (1 - 4): ").strip()
 
                 if choice == "1":
                     result = demo_basic_integration()
@@ -325,7 +325,7 @@ def main():
                     print("\nExiting demo")
                     return
                 else:
-                    print("Invalid choice. Please select 1-4.")
+                    print("Invalid choice. Please select 1 - 4.")
                     continue
 
             except KeyboardInterrupt:
@@ -373,7 +373,6 @@ def main():
 
         traceback.print_exc()
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

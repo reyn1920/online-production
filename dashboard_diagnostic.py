@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Dashboard Diagnostic Tool
 Comprehensive testing and verification of dashboard functionality
@@ -26,47 +26,47 @@ def test_dashboard_endpoints():
     test_cases = [
         {
             "name": "Dashboard Home Page",
-            "url": f"{base_url}/dashboard/",
-            "method": "GET",
-            "expected_status": 200,
-            "check_content": "Production Dashboard",
-        },
-        {
+                "url": f"{base_url}/dashboard/",
+                "method": "GET",
+                "expected_status": 200,
+                "check_content": "Production Dashboard",
+                },
+            {
             "name": "Dashboard Metrics API",
-            "url": f"{base_url}/dashboard/api/metrics",
-            "method": "GET",
-            "expected_status": 200,
-            "check_json": True,
-        },
-        {
+                "url": f"{base_url}/dashboard / api / metrics",
+                "method": "GET",
+                "expected_status": 200,
+                "check_json": True,
+                },
+            {
             "name": "Dashboard Services API",
-            "url": f"{base_url}/dashboard/api/services",
-            "method": "GET",
-            "expected_status": 200,
-            "check_json": True,
-        },
-        {
+                "url": f"{base_url}/dashboard / api / services",
+                "method": "GET",
+                "expected_status": 200,
+                "check_json": True,
+                },
+            {
             "name": "Dashboard System Info API",
-            "url": f"{base_url}/dashboard/api/system-info",
-            "method": "GET",
-            "expected_status": 200,
-            "check_json": True,
-        },
-        {
+                "url": f"{base_url}/dashboard / api / system - info",
+                "method": "GET",
+                "expected_status": 200,
+                "check_json": True,
+                },
+            {
             "name": "Main API Health Check",
-            "url": f"{base_url}/health",
-            "method": "GET",
-            "expected_status": 200,
-            "check_json": True,
-        },
-        {
+                "url": f"{base_url}/health",
+                "method": "GET",
+                "expected_status": 200,
+                "check_json": True,
+                },
+            {
             "name": "API Documentation",
-            "url": f"{base_url}/docs",
-            "method": "GET",
-            "expected_status": 200,
-            "check_content": "FastAPI",
-        },
-    ]
+                "url": f"{base_url}/docs",
+                "method": "GET",
+                "expected_status": 200,
+                "check_content": "FastAPI",
+                },
+            ]
 
     passed = 0
     failed = 0
@@ -76,9 +76,9 @@ def test_dashboard_endpoints():
             print(f"Testing: {test['name']}")
 
             if test["method"] == "GET":
-                response = requests.get(test["url"], timeout=10)
+                response = requests.get(test["url"], timeout = 10)
             else:
-                response = requests.post(test["url"], timeout=10)
+                response = requests.post(test["url"], timeout = 10)
 
             # Check status code
             if response.status_code == test["expected_status"]:
@@ -115,14 +115,14 @@ def test_dashboard_endpoints():
             results.append(
                 {
                     "test": test["name"],
-                    "status": (
+                        "status": (
                         "PASS"
                         if response.status_code == test["expected_status"]
                         else "FAIL"
                     ),
-                    "status_code": response.status_code,
-                    "response_time": response.elapsed.total_seconds(),
-                }
+                        "status_code": response.status_code,
+                        "response_time": response.elapsed.total_seconds(),
+                        }
             )
 
         except requests.exceptions.ConnectionError:
@@ -150,16 +150,16 @@ def test_dashboard_endpoints():
     print(f"Total tests: {len(test_cases)}")
     print(f"Passed: {passed} ✅")
     print(f"Failed: {failed} ❌")
-    print(f"Success rate: {(passed/len(test_cases)*100):.1f}%")
+    print(f"Success rate: {(passed / len(test_cases)*100):.1f}%")
     print()
 
-    # Dashboard-specific diagnostics
+    # Dashboard - specific diagnostics
     print("🔧 Dashboard Diagnostics")
     print("=" * 30)
 
     try:
         # Test dashboard metrics
-        metrics_response = requests.get(f"{base_url}/dashboard/api/metrics", timeout=5)
+        metrics_response = requests.get(f"{base_url}/dashboard / api / metrics", timeout = 5)
         if metrics_response.status_code == 200:
             metrics_data = metrics_response.json()
             print("Dashboard Metrics:")
@@ -170,7 +170,7 @@ def test_dashboard_endpoints():
 
         # Test dashboard services
         services_response = requests.get(
-            f"{base_url}/dashboard/api/services", timeout=5
+            f"{base_url}/dashboard / api / services", timeout = 5
         )
         if services_response.status_code == 200:
             services_data = services_response.json()
@@ -193,7 +193,7 @@ def test_dashboard_endpoints():
     if failed == 0:
         print("✅ All dashboard tests passed!")
         print("✅ Dashboard is fully operational")
-        print("✅ Access dashboard at: http://localhost:8000/dashboard/")
+        print("✅ Access dashboard at: http://localhost:8000 / dashboard/")
     else:
         print("⚠️  Some tests failed. Check the following:")
         print("   1. Ensure the server is running on port 8000")
@@ -204,13 +204,12 @@ def test_dashboard_endpoints():
     print()
     print("🌐 Dashboard Access URLs:")
     print(f"   Main Dashboard: {base_url}/dashboard/")
-    print(f"   API Metrics: {base_url}/dashboard/api/metrics")
-    print(f"   API Services: {base_url}/dashboard/api/services")
-    print(f"   System Info: {base_url}/dashboard/api/system-info")
+    print(f"   API Metrics: {base_url}/dashboard / api / metrics")
+    print(f"   API Services: {base_url}/dashboard / api / services")
+    print(f"   System Info: {base_url}/dashboard / api / system - info")
     print(f"   API Docs: {base_url}/docs")
 
     return passed == len(test_cases)
-
 
 if __name__ == "__main__":
     success = test_dashboard_endpoints()

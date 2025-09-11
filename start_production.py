@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Production Startup Script for TRAE.AI
 Loads production environment and starts the application with all services
@@ -12,7 +12,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load production environment variables
-load_dotenv(".env.production", override=True)
+load_dotenv(".env.production", override = True)
 
 # Set environment to production
 os.environ["ENVIRONMENT"] = "production"

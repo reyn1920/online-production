@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Basic Video Generator - Simple MP4 Creation Tool
 
@@ -45,52 +45,52 @@ def create_basic_video(
 
     # Ensure output directory exists
     output_dir = Path(output_path).parent
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents = True, exist_ok = True)
 
     # Build ffmpeg command based on audio availability
     if use_audio:
         # Command with audio
         command = [
             "ffmpeg",
-            "-loop",
-            "1",
-            "-i",
-            background_image_path,
-            "-i",
-            audio_path,
-            "-vf",
-            "scale=1920:1080,format=yuv420p",  # Standard 1080p
+                "-loop",
+                "1",
+                "-i",
+                background_image_path,
+                "-i",
+                audio_path,
+                "-vf",
+                "scale = 1920:1080,format = yuv420p",  # Standard 1080p
             "-c:v",
-            "libx264",
-            "-tune",
-            "stillimage",  # Optimize for static image
+                "libx264",
+                "-tune",
+                "stillimage",  # Optimize for static image
             "-c:a",
-            "aac",
-            "-b:a",
-            "192k",
-            "-shortest",  # End video when audio ends
+                "aac",
+                "-b:a",
+                "192k",
+                "-shortest",  # End video when audio ends
             "-y",  # Overwrite output file if it exists
             output_path,
-        ]
+                ]
     else:
         # Command for silent video (10 seconds duration)
         command = [
             "ffmpeg",
-            "-loop",
-            "1",
-            "-i",
-            background_image_path,
-            "-vf",
-            "scale=1920:1080,format=yuv420p",  # Standard 1080p
+                "-loop",
+                "1",
+                "-i",
+                background_image_path,
+                "-vf",
+                "scale = 1920:1080,format = yuv420p",  # Standard 1080p
             "-c:v",
-            "libx264",
-            "-tune",
-            "stillimage",  # Optimize for static image
+                "libx264",
+                "-tune",
+                "stillimage",  # Optimize for static image
             "-t",
-            "10",  # 10 seconds duration for silent video
+                "10",  # 10 seconds duration for silent video
             "-y",  # Overwrite output file if it exists
             output_path,
-        ]
+                ]
 
     try:
         logger.info(f"Generating basic video at: {output_path}")
@@ -100,7 +100,7 @@ def create_basic_video(
         else:
             logger.info("Creating silent video (10 seconds)")
 
-        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        result = subprocess.run(command, check = True, capture_output = True, text = True)
 
         # Verify output file was created
         if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
@@ -130,7 +130,7 @@ def create_basic_video_with_defaults(
     Args:
         audio_path (str): Path to the audio file
         title (str): Title for the video (used in filename)
-        output_dir (str): Output directory (defaults to ./output/basic_videos/)
+        output_dir (str): Output directory (defaults to ./output / basic_videos/)
 
     Returns:
         str: Path to the generated video file, or None if failed
@@ -139,17 +139,17 @@ def create_basic_video_with_defaults(
 
     # Set default output directory
     if output_dir is None:
-        output_dir = Path("./output/basic_videos")
+        output_dir = Path("./output / basic_videos")
     else:
         output_dir = Path(output_dir)
 
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents = True, exist_ok = True)
 
     # Create default background if it doesn't exist
-    background_path = Path("./assets/backgrounds/default_background.jpg")
+    background_path = Path("./assets / backgrounds / default_background.jpg")
     if not background_path.exists():
         # Create a simple colored background using ffmpeg
-        background_path.parent.mkdir(parents=True, exist_ok=True)
+        background_path.parent.mkdir(parents = True, exist_ok = True)
         create_default_background(str(background_path))
 
     # Generate output filename
@@ -189,36 +189,35 @@ def create_default_background(output_path: str) -> bool:
     # Create a gradient background with TRAE.AI branding
     command = [
         "ffmpeg",
-        "-f",
-        "lavfi",
-        "-i",
-        "color=c=#1e3c72:size=1920x1080:duration=1",
-        "-vf",
-        (
-            "drawtext=text='TRAE.AI':"
-            "fontcolor=white:fontsize=120:x=(w-text_w)/2:y=(h-text_h)/2-100,"
-            "drawtext=text='Production System':"
-            "fontcolor=#FFD700:fontsize=60:x=(w-text_w)/2:y=(h-text_h)/2+50"
+            "-f",
+            "lavfi",
+            "-i",
+            "color = c=#1e3c72:size = 1920x1080:duration = 1",
+            "-vf",
+            (
+            "drawtext = text='TRAE.AI':"
+            "fontcolor = white:fontsize = 120:x=(w - text_w)/2:y=(h - text_h)/2 - 100,"
+            "drawtext = text='Production System':"
+            "fontcolor=#FFD700:fontsize = 60:x=(w - text_w)/2:y=(h - text_h)/2 + 50"
         ),
-        "-frames:v",
-        "1",
-        "-y",
-        output_path,
-    ]
+            "-frames:v",
+            "1",
+            "-y",
+            output_path,
+            ]
 
     try:
         logger.info(f"Creating default background: {output_path}")
-        subprocess.run(command, check=True, capture_output=True, text=True)
+        subprocess.run(command, check = True, capture_output = True, text = True)
         logger.info("✅ Default background created successfully")
         return True
     except subprocess.CalledProcessError as e:
         logger.error(f"Failed to create default background: {e.stderr}")
         return False
 
-
 if __name__ == "__main__":
     # Test the basic video generator
-    import sys
+        import sys
 
     if len(sys.argv) < 3:
         print(

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Configuration Manager
 Centralized management of API keys, secrets, and configurations for 100+ APIs
@@ -34,12 +34,13 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class APIConfig:
     api_key: str
     api_name: str
@@ -60,8 +61,9 @@ class APIConfig:
     documentation_url: str
     health_check_url: Optional[str]
 
-
 @dataclass
+
+
 class DeploymentEnvironment:
     name: str
     description: str
@@ -75,15 +77,17 @@ class DeploymentEnvironment:
 
 
 class APIConfigManager:
+
+
     def __init__(self):
         self.config_dir = Path("api_configs")
         self.backup_dir = Path("config_backups")
         self.templates_dir = Path("config_templates")
 
         # Create directories
-        self.config_dir.mkdir(exist_ok=True)
-        self.backup_dir.mkdir(exist_ok=True)
-        self.templates_dir.mkdir(exist_ok=True)
+        self.config_dir.mkdir(exist_ok = True)
+        self.backup_dir.mkdir(exist_ok = True)
+        self.templates_dir.mkdir(exist_ok = True)
 
         self.encryption_key = self.get_or_create_encryption_key()
         self.cipher_suite = Fernet(self.encryption_key)
@@ -104,6 +108,7 @@ class APIConfigManager:
             logger.warning("API registry not found, using empty registry")
             self.api_registry = {}
 
+
     def get_or_create_encryption_key(self) -> bytes:
         """Get or create encryption key for sensitive data"""
         key_file = self.config_dir / "encryption.key"
@@ -113,15 +118,15 @@ class APIConfigManager:
                 return f.read()
         else:
             # Generate new key
-            password = os.getenv("CONFIG_MASTER_PASSWORD", "default-password-change-me")
+            password = os.getenv("CONFIG_MASTER_PASSWORD", "default - password - change - me")
             salt = os.urandom(16)
 
             kdf = PBKDF2HMAC(
-                algorithm=hashes.SHA256(),
-                length=32,
-                salt=salt,
-                iterations=100000,
-            )
+                algorithm = hashes.SHA256(),
+                    length = 32,
+                    salt = salt,
+                    iterations = 100000,
+                    )
             key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
             with open(key_file, "wb") as f:
@@ -130,43 +135,44 @@ class APIConfigManager:
             logger.info("Created new encryption key")
             return key
 
+
     def load_environments(self) -> Dict[str, DeploymentEnvironment]:
         """Load deployment environment configurations"""
         environments = {
             "development": DeploymentEnvironment(
                 name="development",
-                description="Local development environment",
-                base_url="http://localhost:8000",
-                config_file=".env.development",
-                is_production=False,
-                requires_approval=False,
-                auto_deploy=True,
-                secret_prefix="DEV_",
-                backup_retention_days=7,
-            ),
-            "staging": DeploymentEnvironment(
+                    description="Local development environment",
+                    base_url="http://localhost:8000",
+                    config_file=".env.development",
+                    is_production = False,
+                    requires_approval = False,
+                    auto_deploy = True,
+                    secret_prefix="DEV_",
+                    backup_retention_days = 7,
+                    ),
+                "staging": DeploymentEnvironment(
                 name="staging",
-                description="Staging environment for testing",
-                base_url="https://staging.example.com",
-                config_file=".env.staging",
-                is_production=False,
-                requires_approval=True,
-                auto_deploy=False,
-                secret_prefix="STAGING_",
-                backup_retention_days=30,
-            ),
-            "production": DeploymentEnvironment(
+                    description="Staging environment for testing",
+                    base_url="https://staging.example.com",
+                    config_file=".env.staging",
+                    is_production = False,
+                    requires_approval = True,
+                    auto_deploy = False,
+                    secret_prefix="STAGING_",
+                    backup_retention_days = 30,
+                    ),
+                "production": DeploymentEnvironment(
                 name="production",
-                description="Live production environment",
-                base_url="https://api.example.com",
-                config_file=".env.production",
-                is_production=True,
-                requires_approval=True,
-                auto_deploy=False,
-                secret_prefix="PROD_",
-                backup_retention_days=90,
-            ),
-        }
+                    description="Live production environment",
+                    base_url="https://api.example.com",
+                    config_file=".env.production",
+                    is_production = True,
+                    requires_approval = True,
+                    auto_deploy = False,
+                    secret_prefix="PROD_",
+                    backup_retention_days = 90,
+                    ),
+                }
 
         # Load custom environments if they exist
         env_config_file = self.config_dir / "environments.yaml"
@@ -181,6 +187,7 @@ class APIConfigManager:
 
         return environments
 
+
     def sync_with_registry(self):
         """Sync configurations with API registry"""
         logger.info("Syncing configurations with API registry...")
@@ -189,32 +196,33 @@ class APIConfigManager:
             if api_key not in self.api_configs:
                 # Create new configuration
                 config = APIConfig(
-                    api_key=api_key,
-                    api_name=api_info["name"],
-                    env_var=api_info.get("env_var", f"{api_key.upper()}_API_KEY"),
-                    current_value=os.getenv(
+                    api_key = api_key,
+                        api_name = api_info["name"],
+                        env_var = api_info.get("env_var", f"{api_key.upper()}_API_KEY"),
+                        current_value = os.getenv(
                         api_info.get("env_var", f"{api_key.upper()}_API_KEY")
                     ),
-                    is_configured=bool(
+                        is_configured = bool(
                         os.getenv(api_info.get("env_var", f"{api_key.upper()}_API_KEY"))
                     ),
-                    is_encrypted=False,
-                    last_updated=datetime.now().isoformat(),
-                    expires_at=None,
-                    backup_count=0,
-                    validation_status="pending",
-                    deployment_environments=["development"],
-                    cost_tier=api_info.get("cost", "free"),
-                    priority=api_info.get("priority", "medium"),
-                    phase=api_info.get("phase", 1),
-                    required_scopes=api_info.get("scopes", []),
-                    rate_limits=api_info.get("rate_limits", {}),
-                    documentation_url=api_info.get("docs_url", ""),
-                    health_check_url=api_info.get("health_url"),
-                )
+                        is_encrypted = False,
+                        last_updated = datetime.now().isoformat(),
+                        expires_at = None,
+                        backup_count = 0,
+                        validation_status="pending",
+                        deployment_environments=["development"],
+                        cost_tier = api_info.get("cost", "free"),
+                        priority = api_info.get("priority", "medium"),
+                        phase = api_info.get("phase", 1),
+                        required_scopes = api_info.get("scopes", []),
+                        rate_limits = api_info.get("rate_limits", {}),
+                        documentation_url = api_info.get("docs_url", ""),
+                        health_check_url = api_info.get("health_url"),
+                        )
                 self.api_configs[api_key] = config
 
         logger.info(f"Synced {len(self.api_configs)} API configurations")
+
 
     def load_all_configs(self):
         """Load all existing configurations from disk"""
@@ -231,6 +239,7 @@ class APIConfigManager:
 
         logger.info(f"Loaded {len(self.api_configs)} configurations from disk")
 
+
     def save_config(self, api_key: str):
         """Save configuration to disk"""
         if api_key not in self.api_configs:
@@ -244,7 +253,7 @@ class APIConfigManager:
 
         try:
             with open(config_file, "w") as f:
-                json.dump(asdict(config), f, indent=2)
+                json.dump(asdict(config), f, indent = 2)
 
             config.last_updated = datetime.now().isoformat()
             logger.info(f"Saved configuration for {api_key}")
@@ -252,6 +261,7 @@ class APIConfigManager:
         except Exception as e:
             logger.error(f"Failed to save config for {api_key}: {e}")
             raise
+
 
     def create_backup(self, api_key: str):
         """Create backup of configuration"""
@@ -264,13 +274,14 @@ class APIConfigManager:
 
         try:
             with open(backup_file, "w") as f:
-                json.dump(asdict(config), f, indent=2)
+                json.dump(asdict(config), f, indent = 2)
 
             config.backup_count += 1
             logger.debug(f"Created backup for {api_key}: {backup_file}")
 
         except Exception as e:
             logger.error(f"Failed to create backup for {api_key}: {e}")
+
 
     def encrypt_value(self, value: str) -> str:
         """Encrypt a sensitive value"""
@@ -279,6 +290,7 @@ class APIConfigManager:
 
         encrypted_bytes = self.cipher_suite.encrypt(value.encode())
         return base64.urlsafe_b64encode(encrypted_bytes).decode()
+
 
     def decrypt_value(self, encrypted_value: str) -> str:
         """Decrypt a sensitive value"""
@@ -292,6 +304,7 @@ class APIConfigManager:
         except Exception as e:
             logger.error(f"Failed to decrypt value: {e}")
             return encrypted_value
+
 
     def set_api_key(self, api_key: str, value: str, encrypt: bool = True):
         """Set API key value"""
@@ -316,6 +329,7 @@ class APIConfigManager:
 
         logger.info(f"Updated API key for {api_key} (encrypted: {encrypt})")
 
+
     def get_api_key(self, api_key: str, decrypt: bool = True) -> Optional[str]:
         """Get API key value"""
         if api_key not in self.api_configs:
@@ -330,6 +344,7 @@ class APIConfigManager:
             return self.decrypt_value(config.current_value)
         else:
             return config.current_value
+
 
     def validate_api_key(self, api_key: str) -> Dict[str, Any]:
         """Validate API key configuration"""
@@ -355,7 +370,7 @@ class APIConfigManager:
             if expires_dt < datetime.now():
                 validation_result["errors"].append("API key has expired")
                 validation_result["valid"] = False
-            elif expires_dt < datetime.now() + timedelta(days=7):
+            elif expires_dt < datetime.now() + timedelta(days = 7):
                 validation_result["warnings"].append("API key expires within 7 days")
 
         # Check environment variable
@@ -376,6 +391,7 @@ class APIConfigManager:
             config.validation_status = "invalid"
 
         return validation_result
+
 
     def generate_env_file(self, environment: str = "development") -> str:
         """Generate .env file for specific environment"""
@@ -409,12 +425,12 @@ class APIConfigManager:
         for phase in sorted(phases.keys()):
             env_lines.append(f"# Phase {phase} APIs")
 
-            for config in sorted(phases[phase], key=lambda x: x.api_name):
+            for config in sorted(phases[phase], key = lambda x: x.api_name):
                 if environment in config.deployment_environments:
                     api_key_value = self.get_api_key(config.api_key)
 
                     if api_key_value:
-                        # Add prefix for non-development environments
+                        # Add prefix for non - development environments
                         var_name = config.env_var
                         if not env_config.is_production and env_config.secret_prefix:
                             var_name = f"{env_config.secret_prefix}{config.env_var}"
@@ -434,6 +450,7 @@ class APIConfigManager:
 
         return "\n".join(env_lines)
 
+
     def deploy_to_environment(
         self, environment: str, dry_run: bool = False
     ) -> Dict[str, Any]:
@@ -444,16 +461,16 @@ class APIConfigManager:
         env_config = self.environments[environment]
         result = {
             "environment": environment,
-            "success": True,
-            "deployed_apis": [],
-            "skipped_apis": [],
-            "errors": [],
-        }
+                "success": True,
+                "deployed_apis": [],
+                "skipped_apis": [],
+                "errors": [],
+                }
 
         # Check if approval required
         if env_config.requires_approval and not dry_run:
             approval = input(
-                f"Deploy to {environment}? This is a {env_config.description}. (yes/no): "
+                f"Deploy to {environment}? This is a {env_config.description}. (yes / no): "
             )
             if approval.lower() != "yes":
                 result["success"] = False
@@ -492,6 +509,7 @@ class APIConfigManager:
 
         return result
 
+
     def rotate_api_key(self, api_key: str, new_value: str):
         """Rotate API key with backup"""
         if api_key not in self.api_configs:
@@ -503,27 +521,28 @@ class APIConfigManager:
         # Create backup with old value
         backup_data = {
             "api_key": api_key,
-            "old_value": old_value,
-            "new_value": new_value,
-            "rotated_at": datetime.now().isoformat(),
-            "rotated_by": os.getenv("USER", "unknown"),
-        }
+                "old_value": old_value,
+                "new_value": new_value,
+                "rotated_at": datetime.now().isoformat(),
+                "rotated_by": os.getenv("USER", "unknown"),
+                }
 
         rotation_file = (
             self.backup_dir
             / f"{api_key}_rotation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         )
         with open(rotation_file, "w") as f:
-            json.dump(backup_data, f, indent=2)
+            json.dump(backup_data, f, indent = 2)
 
         # Update with new value
         self.set_api_key(api_key, new_value)
 
         logger.info(f"Rotated API key for {api_key}")
 
+
     def cleanup_backups(self, retention_days: int = 30):
         """Clean up old backup files"""
-        cutoff_date = datetime.now() - timedelta(days=retention_days)
+        cutoff_date = datetime.now() - timedelta(days = retention_days)
         cleaned_count = 0
 
         for backup_file in self.backup_dir.glob("*.json"):
@@ -537,14 +556,15 @@ class APIConfigManager:
 
         logger.info(f"Cleaned up {cleaned_count} old backup files")
 
+
     def export_configurations(self, include_secrets: bool = False) -> Dict[str, Any]:
         """Export all configurations"""
         export_data = {
             "exported_at": datetime.now().isoformat(),
-            "include_secrets": include_secrets,
-            "environments": {k: asdict(v) for k, v in self.environments.items()},
-            "configurations": {},
-        }
+                "include_secrets": include_secrets,
+                "environments": {k: asdict(v) for k, v in self.environments.items()},
+                "configurations": {},
+                }
 
         for api_key, config in self.api_configs.items():
             config_data = asdict(config)
@@ -557,6 +577,7 @@ class APIConfigManager:
             export_data["configurations"][api_key] = config_data
 
         return export_data
+
 
     def import_configurations(
         self, import_data: Dict[str, Any], overwrite: bool = False
@@ -582,6 +603,7 @@ class APIConfigManager:
             f"Imported {imported_count} configurations, skipped {skipped_count}"
         )
 
+
     def generate_status_report(self) -> Dict[str, Any]:
         """Generate comprehensive status report"""
         total_apis = len(self.api_configs)
@@ -594,9 +616,9 @@ class APIConfigManager:
             phase_configs = [c for c in self.api_configs.values() if c.phase == phase]
             phase_stats[phase] = {
                 "total": len(phase_configs),
-                "configured": sum(1 for c in phase_configs if c.is_configured),
-                "encrypted": sum(1 for c in phase_configs if c.is_encrypted),
-            }
+                    "configured": sum(1 for c in phase_configs if c.is_configured),
+                    "encrypted": sum(1 for c in phase_configs if c.is_encrypted),
+                    }
 
         # Environment deployment status
         env_stats = {}
@@ -608,22 +630,23 @@ class APIConfigManager:
             ]
             env_stats[env_name] = {
                 "total_apis": len(deployed_apis),
-                "configured_apis": sum(1 for c in deployed_apis if c.is_configured),
-            }
+                    "configured_apis": sum(1 for c in deployed_apis if c.is_configured),
+                    }
 
         return {
             "summary": {
                 "total_apis": total_apis,
-                "configured_apis": configured_apis,
-                "encrypted_apis": encrypted_apis,
-                "configuration_rate": (
+                    "configured_apis": configured_apis,
+                    "encrypted_apis": encrypted_apis,
+                    "configuration_rate": (
                     (configured_apis / total_apis * 100) if total_apis > 0 else 0
                 ),
-            },
-            "phase_breakdown": phase_stats,
-            "environment_deployment": env_stats,
-            "generated_at": datetime.now().isoformat(),
-        }
+                    },
+                "phase_breakdown": phase_stats,
+                "environment_deployment": env_stats,
+                "generated_at": datetime.now().isoformat(),
+                }
+
 
     def interactive_menu(self):
         """Interactive configuration management menu"""
@@ -643,7 +666,7 @@ class APIConfigManager:
             print("11. 🧹 Cleanup backups")
             print("12. ❌ Exit")
 
-            choice = input("\nSelect option (1-12): ").strip()
+            choice = input("\nSelect option (1 - 12): ").strip()
 
             if choice == "1":
                 self.show_all_configurations()
@@ -674,6 +697,7 @@ class APIConfigManager:
                 print("❌ Invalid choice")
                 time.sleep(1)
 
+
     def show_all_configurations(self):
         """Show all API configurations"""
         print("\n📋 API Configurations:")
@@ -690,6 +714,7 @@ class APIConfigManager:
 
         input("\nPress Enter to continue...")
 
+
     def interactive_set_api_key(self):
         """Interactive API key setting"""
         api_key = input("Enter API key identifier: ").strip()
@@ -700,7 +725,7 @@ class APIConfigManager:
             return
 
         value = input("Enter API key value: ").strip()
-        encrypt = input("Encrypt value? (y/n): ").strip().lower() == "y"
+        encrypt = input("Encrypt value? (y / n): ").strip().lower() == "y"
 
         try:
             self.set_api_key(api_key, value, encrypt)
@@ -709,6 +734,7 @@ class APIConfigManager:
             print(f"❌ Failed to set API key: {e}")
 
         input("\nPress Enter to continue...")
+
 
     def interactive_view_api_key(self):
         """Interactive API key viewing"""
@@ -729,13 +755,14 @@ class APIConfigManager:
         print(f"Encrypted: {'Yes' if config.is_encrypted else 'No'}")
 
         if value:
-            show_value = input("Show value? (y/n): ").strip().lower() == "y"
+            show_value = input("Show value? (y / n): ").strip().lower() == "y"
             if show_value:
                 print(f"Value: {value}")
         else:
             print("Value: Not set")
 
         input("\nPress Enter to continue...")
+
 
     def interactive_validate_config(self):
         """Interactive configuration validation"""
@@ -775,6 +802,7 @@ class APIConfigManager:
 
         input("\nPress Enter to continue...")
 
+
     def interactive_generate_env_file(self):
         """Interactive .env file generation"""
         print("\nAvailable environments:")
@@ -797,7 +825,7 @@ class APIConfigManager:
             print(env_content[:500] + "..." if len(env_content) > 500 else env_content)
             print("-" * 50)
 
-            save = input(f"\nSave to {filename}? (y/n): ").strip().lower() == "y"
+            save = input(f"\nSave to {filename}? (y / n): ").strip().lower() == "y"
             if save:
                 with open(filename, "w") as f:
                     f.write(env_content)
@@ -807,6 +835,7 @@ class APIConfigManager:
             print(f"❌ Failed to generate .env file: {e}")
 
         input("\nPress Enter to continue...")
+
 
     def interactive_deploy_environment(self):
         """Interactive environment deployment"""
@@ -821,7 +850,7 @@ class APIConfigManager:
             input("Press Enter to continue...")
             return
 
-        dry_run = input("Dry run? (y/n): ").strip().lower() == "y"
+        dry_run = input("Dry run? (y / n): ").strip().lower() == "y"
 
         try:
             result = self.deploy_to_environment(environment, dry_run)
@@ -841,6 +870,7 @@ class APIConfigManager:
             print(f"❌ Deployment error: {e}")
 
         input("\nPress Enter to continue...")
+
 
     def interactive_rotate_key(self):
         """Interactive API key rotation"""
@@ -864,6 +894,7 @@ class APIConfigManager:
             print(f"❌ Failed to rotate API key: {e}")
 
         input("\nPress Enter to continue...")
+
 
     def show_status_report(self):
         """Show status report"""
@@ -890,15 +921,16 @@ class APIConfigManager:
 
         input("\nPress Enter to continue...")
 
+
     def interactive_export_configs(self):
         """Interactive configuration export"""
         include_secrets = (
-            input("Include secrets in export? (y/n): ").strip().lower() == "y"
+            input("Include secrets in export? (y / n): ").strip().lower() == "y"
         )
 
         if include_secrets:
             confirm = input(
-                "⚠️  This will export sensitive data. Are you sure? (yes/no): "
+                "⚠️  This will export sensitive data. Are you sure? (yes / no): "
             )
             if confirm.lower() != "yes":
                 print("Export cancelled")
@@ -912,7 +944,7 @@ class APIConfigManager:
             )
 
             with open(filename, "w") as f:
-                json.dump(export_data, f, indent=2)
+                json.dump(export_data, f, indent = 2)
 
             print(f"✅ Configurations exported to {filename}")
 
@@ -920,6 +952,7 @@ class APIConfigManager:
             print(f"❌ Export failed: {e}")
 
         input("\nPress Enter to continue...")
+
 
     def interactive_import_configs(self):
         """Interactive configuration import"""
@@ -931,7 +964,7 @@ class APIConfigManager:
             return
 
         overwrite = (
-            input("Overwrite existing configurations? (y/n): ").strip().lower() == "y"
+            input("Overwrite existing configurations? (y / n): ").strip().lower() == "y"
         )
 
         try:
@@ -945,6 +978,7 @@ class APIConfigManager:
             print(f"❌ Import failed: {e}")
 
         input("\nPress Enter to continue...")
+
 
     def interactive_cleanup_backups(self):
         """Interactive backup cleanup"""
@@ -972,7 +1006,6 @@ def main():
     except Exception as e:
         logger.error(f"Configuration manager error: {str(e)}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

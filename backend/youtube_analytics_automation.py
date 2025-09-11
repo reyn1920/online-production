@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI YouTube Analytics Automation System
 
 Comprehensive analytics system that provides:
-- Real-time performance tracking and monitoring
+- Real - time performance tracking and monitoring
 - Automated insights generation and trend analysis
-- Performance-based optimization recommendations
+- Performance - based optimization recommendations
 - Competitor analysis and benchmarking
 - Revenue and monetization tracking
 - Audience behavior analysis and segmentation
@@ -13,13 +13,13 @@ Comprehensive analytics system that provides:
 - Automated reporting and alerts
 
 Features:
-- AI-powered analytics insights
+- AI - powered analytics insights
 - Automated performance optimization
-- Real-time dashboard data
+- Real - time dashboard data
 - Predictive analytics and forecasting
 - Custom KPI tracking and alerts
 - Integration with content pipeline
-- Multi-channel analytics support
+- Multi - channel analytics support
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -112,8 +112,9 @@ class InsightType(Enum):
     SEASONAL_TRENDS = "seasonal_trends"
     COMPETITOR_ANALYSIS = "competitor_analysis"
 
-
 @dataclass
+
+
 class VideoMetrics:
     """Comprehensive video performance metrics."""
 
@@ -144,10 +145,11 @@ class VideoMetrics:
     playlist_additions: int
     recorded_at: datetime
 
-
 @dataclass
+
+
 class ChannelMetrics:
-    """Channel-level performance metrics."""
+    """Channel - level performance metrics."""
 
     channel_id: str
     channel_name: str
@@ -167,8 +169,9 @@ class ChannelMetrics:
     geography_breakdown: Dict[str, float]
     recorded_at: datetime
 
-
 @dataclass
+
+
 class AnalyticsInsight:
     """Automated analytics insight."""
 
@@ -186,8 +189,9 @@ class AnalyticsInsight:
     created_at: datetime
     expires_at: Optional[datetime]
 
-
 @dataclass
+
+
 class PerformanceAlert:
     """Performance monitoring alert."""
 
@@ -206,8 +210,9 @@ class PerformanceAlert:
     acknowledged: bool
     resolved: bool
 
-
 @dataclass
+
+
 class CompetitorAnalysis:
     """Competitor performance analysis."""
 
@@ -228,17 +233,18 @@ class CompetitorAnalysis:
 
 class YouTubeAnalyticsAutomation:
     """
-    Advanced YouTube analytics automation system with AI-powered insights,
-    real-time monitoring, and automated optimization recommendations.
+    Advanced YouTube analytics automation system with AI - powered insights,
+        real - time monitoring, and automated optimization recommendations.
     """
 
-    def __init__(self, config_path: str = "config/analytics_config.json"):
+
+    def __init__(self, config_path: str = "config / analytics_config.json"):
         self.logger = setup_logger("youtube_analytics")
         self.config_path = config_path
         self.config = self._load_config()
 
         # Initialize database
-        self.db_path = self.config.get("database_path", "data/youtube_analytics.sqlite")
+        self.db_path = self.config.get("database_path", "data / youtube_analytics.sqlite")
         self._init_database()
 
         # Initialize integrations
@@ -263,6 +269,7 @@ class YouTubeAnalyticsAutomation:
 
         self.logger.info("YouTube Analytics Automation initialized")
 
+
     def _load_config(self) -> Dict[str, Any]:
         """Load analytics configuration."""
         try:
@@ -273,50 +280,51 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error loading analytics config: {e}")
 
         return {
-            "database_path": "data/youtube_analytics.sqlite",
-            "update_interval_minutes": 30,
-            "metrics": {
+            "database_path": "data / youtube_analytics.sqlite",
+                "update_interval_minutes": 30,
+                "metrics": {
                 "track_video_metrics": True,
-                "track_channel_metrics": True,
-                "track_audience_metrics": True,
-                "track_revenue_metrics": True,
-                "historical_days": 90,
-            },
-            "insights": {
+                    "track_channel_metrics": True,
+                    "track_audience_metrics": True,
+                    "track_revenue_metrics": True,
+                    "historical_days": 90,
+                    },
+                "insights": {
                 "generate_insights": True,
-                "insight_frequency_hours": 6,
-                "min_confidence_threshold": 0.7,
-                "max_insights_per_run": 10,
-            },
-            "alerts": {
+                    "insight_frequency_hours": 6,
+                    "min_confidence_threshold": 0.7,
+                    "max_insights_per_run": 10,
+                    },
+                "alerts": {
                 "enabled": True,
-                "performance_drop_threshold": 0.3,  # 30% drop
+                    "performance_drop_threshold": 0.3,  # 30% drop
                 "viral_threshold_multiplier": 5.0,  # 5x average views
                 "subscriber_milestone_intervals": [1000, 10000, 100000, 1000000],
-                "revenue_threshold_drop": 0.25,  # 25% revenue drop
+                    "revenue_threshold_drop": 0.25,  # 25% revenue drop
             },
-            "competitors": {
+                "competitors": {
                 "track_competitors": True,
-                "competitor_channels": [],
-                "analysis_frequency_hours": 24,
-            },
-            "reporting": {
+                    "competitor_channels": [],
+                    "analysis_frequency_hours": 24,
+                    },
+                "reporting": {
                 "generate_reports": True,
-                "report_frequency": "daily",
-                "email_reports": False,
-                "dashboard_updates": True,
-            },
-            "optimization": {
+                    "report_frequency": "daily",
+                    "email_reports": False,
+                    "dashboard_updates": True,
+                    },
+                "optimization": {
                 "auto_optimize": True,
-                "optimization_frequency_hours": 12,
-                "learning_enabled": True,
-                "a_b_testing": True,
-            },
-        }
+                    "optimization_frequency_hours": 12,
+                    "learning_enabled": True,
+                    "a_b_testing": True,
+                    },
+                }
+
 
     def _init_database(self):
         """Initialize analytics database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             # Video metrics table
@@ -324,32 +332,32 @@ class YouTubeAnalyticsAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS video_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    video_id TEXT,
-                    title TEXT,
-                    published_at TIMESTAMP,
-                    views INTEGER,
-                    watch_time_minutes REAL,
-                    likes INTEGER,
-                    dislikes INTEGER,
-                    comments INTEGER,
-                    shares INTEGER,
-                    subscribers_gained INTEGER,
-                    click_through_rate REAL,
-                    average_view_duration REAL,
-                    audience_retention TEXT,
-                    impressions INTEGER,
-                    impression_ctr REAL,
-                    revenue REAL,
-                    rpm REAL,
-                    traffic_sources TEXT,
-                    demographics TEXT,
-                    engagement_rate REAL,
-                    thumbnail_impressions INTEGER,
-                    thumbnail_ctr REAL,
-                    end_screen_clicks INTEGER,
-                    card_clicks INTEGER,
-                    playlist_additions INTEGER,
-                    recorded_at TIMESTAMP
+                        video_id TEXT,
+                        title TEXT,
+                        published_at TIMESTAMP,
+                        views INTEGER,
+                        watch_time_minutes REAL,
+                        likes INTEGER,
+                        dislikes INTEGER,
+                        comments INTEGER,
+                        shares INTEGER,
+                        subscribers_gained INTEGER,
+                        click_through_rate REAL,
+                        average_view_duration REAL,
+                        audience_retention TEXT,
+                        impressions INTEGER,
+                        impression_ctr REAL,
+                        revenue REAL,
+                        rpm REAL,
+                        traffic_sources TEXT,
+                        demographics TEXT,
+                        engagement_rate REAL,
+                        thumbnail_impressions INTEGER,
+                        thumbnail_ctr REAL,
+                        end_screen_clicks INTEGER,
+                        card_clicks INTEGER,
+                        playlist_additions INTEGER,
+                        recorded_at TIMESTAMP
                 )
             """
             )
@@ -359,23 +367,23 @@ class YouTubeAnalyticsAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS channel_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    channel_id TEXT,
-                    channel_name TEXT,
-                    total_subscribers INTEGER,
-                    total_views INTEGER,
-                    total_watch_time_minutes REAL,
-                    total_videos INTEGER,
-                    subscriber_growth_rate REAL,
-                    average_views_per_video REAL,
-                    average_engagement_rate REAL,
-                    total_revenue REAL,
-                    estimated_monthly_revenue REAL,
-                    top_performing_videos TEXT,
-                    audience_demographics TEXT,
-                    traffic_sources TEXT,
-                    device_breakdown TEXT,
-                    geography_breakdown TEXT,
-                    recorded_at TIMESTAMP
+                        channel_id TEXT,
+                        channel_name TEXT,
+                        total_subscribers INTEGER,
+                        total_views INTEGER,
+                        total_watch_time_minutes REAL,
+                        total_videos INTEGER,
+                        subscriber_growth_rate REAL,
+                        average_views_per_video REAL,
+                        average_engagement_rate REAL,
+                        total_revenue REAL,
+                        estimated_monthly_revenue REAL,
+                        top_performing_videos TEXT,
+                        audience_demographics TEXT,
+                        traffic_sources TEXT,
+                        device_breakdown TEXT,
+                        geography_breakdown TEXT,
+                        recorded_at TIMESTAMP
                 )
             """
             )
@@ -385,18 +393,18 @@ class YouTubeAnalyticsAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS analytics_insights (
                     id TEXT PRIMARY KEY,
-                    insight_type TEXT,
-                    title TEXT,
-                    description TEXT,
-                    impact_score REAL,
-                    confidence_level REAL,
-                    recommendations TEXT,
-                    supporting_data TEXT,
-                    actionable_items TEXT,
-                    expected_improvement TEXT,
-                    priority TEXT,
-                    created_at TIMESTAMP,
-                    expires_at TIMESTAMP
+                        insight_type TEXT,
+                        title TEXT,
+                        description TEXT,
+                        impact_score REAL,
+                        confidence_level REAL,
+                        recommendations TEXT,
+                        supporting_data TEXT,
+                        actionable_items TEXT,
+                        expected_improvement TEXT,
+                        priority TEXT,
+                        created_at TIMESTAMP,
+                        expires_at TIMESTAMP
                 )
             """
             )
@@ -406,19 +414,19 @@ class YouTubeAnalyticsAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS performance_alerts (
                     id TEXT PRIMARY KEY,
-                    alert_type TEXT,
-                    severity TEXT,
-                    title TEXT,
-                    message TEXT,
-                    affected_videos TEXT,
-                    affected_channels TEXT,
-                    threshold_value REAL,
-                    current_value REAL,
-                    trend_direction TEXT,
-                    recommendations TEXT,
-                    created_at TIMESTAMP,
-                    acknowledged BOOLEAN,
-                    resolved BOOLEAN
+                        alert_type TEXT,
+                        severity TEXT,
+                        title TEXT,
+                        message TEXT,
+                        affected_videos TEXT,
+                        affected_channels TEXT,
+                        threshold_value REAL,
+                        current_value REAL,
+                        trend_direction TEXT,
+                        recommendations TEXT,
+                        created_at TIMESTAMP,
+                        acknowledged BOOLEAN,
+                        resolved BOOLEAN
                 )
             """
             )
@@ -428,19 +436,19 @@ class YouTubeAnalyticsAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS competitor_analysis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    competitor_channel_id TEXT,
-                    competitor_name TEXT,
-                    subscriber_count INTEGER,
-                    recent_video_performance TEXT,
-                    average_views REAL,
-                    posting_frequency REAL,
-                    content_categories TEXT,
-                    engagement_rate REAL,
-                    growth_rate REAL,
-                    competitive_advantages TEXT,
-                    opportunities TEXT,
-                    threats TEXT,
-                    analyzed_at TIMESTAMP
+                        competitor_channel_id TEXT,
+                        competitor_name TEXT,
+                        subscriber_count INTEGER,
+                        recent_video_performance TEXT,
+                        average_views REAL,
+                        posting_frequency REAL,
+                        content_categories TEXT,
+                        engagement_rate REAL,
+                        growth_rate REAL,
+                        competitive_advantages TEXT,
+                        opportunities TEXT,
+                        threats TEXT,
+                        analyzed_at TIMESTAMP
                 )
             """
             )
@@ -450,17 +458,18 @@ class YouTubeAnalyticsAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS performance_trends (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    metric_type TEXT,
-                    time_frame TEXT,
-                    value REAL,
-                    change_percentage REAL,
-                    trend_direction TEXT,
-                    recorded_at TIMESTAMP
+                        metric_type TEXT,
+                        time_frame TEXT,
+                        value REAL,
+                        change_percentage REAL,
+                        trend_direction TEXT,
+                        recorded_at TIMESTAMP
                 )
             """
             )
 
             conn.commit()
+
 
     def _init_ml_models(self):
         """Initialize machine learning models for analytics."""
@@ -478,13 +487,14 @@ class YouTubeAnalyticsAutomation:
             self.growth_scaler = StandardScaler()
 
             # Audience segmentation model
-            self.audience_segmentation = KMeans(n_clusters=5, random_state=42)
+            self.audience_segmentation = KMeans(n_clusters = 5, random_state = 42)
 
             # Load existing model data if available
             self._load_model_data()
 
         except Exception as e:
             self.logger.error(f"Error initializing ML models: {e}")
+
 
     async def collect_video_metrics(self, video_ids: List[str]) -> List[VideoMetrics]:
         """Collect comprehensive metrics for specified videos."""
@@ -522,6 +532,7 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error collecting video metrics: {e}")
             return []
 
+
     def _process_video_analytics(
         self, video_id: str, analytics_data: Dict[str, Any]
     ) -> VideoMetrics:
@@ -529,41 +540,42 @@ class YouTubeAnalyticsAutomation:
         try:
             # Extract metrics from analytics data
             metrics = VideoMetrics(
-                video_id=video_id,
-                title=analytics_data.get("title", ""),
-                published_at=datetime.fromisoformat(
+                video_id = video_id,
+                    title = analytics_data.get("title", ""),
+                    published_at = datetime.fromisoformat(
                     analytics_data.get("published_at", datetime.now().isoformat())
                 ),
-                views=analytics_data.get("views", 0),
-                watch_time_minutes=analytics_data.get("watch_time_minutes", 0.0),
-                likes=analytics_data.get("likes", 0),
-                dislikes=analytics_data.get("dislikes", 0),
-                comments=analytics_data.get("comments", 0),
-                shares=analytics_data.get("shares", 0),
-                subscribers_gained=analytics_data.get("subscribers_gained", 0),
-                click_through_rate=analytics_data.get("click_through_rate", 0.0),
-                average_view_duration=analytics_data.get("average_view_duration", 0.0),
-                audience_retention=analytics_data.get("audience_retention", {}),
-                impressions=analytics_data.get("impressions", 0),
-                impression_ctr=analytics_data.get("impression_ctr", 0.0),
-                revenue=analytics_data.get("revenue", 0.0),
-                rpm=analytics_data.get("rpm", 0.0),
-                traffic_sources=analytics_data.get("traffic_sources", {}),
-                demographics=analytics_data.get("demographics", {}),
-                engagement_rate=self._calculate_engagement_rate(analytics_data),
-                thumbnail_impressions=analytics_data.get("thumbnail_impressions", 0),
-                thumbnail_ctr=analytics_data.get("thumbnail_ctr", 0.0),
-                end_screen_clicks=analytics_data.get("end_screen_clicks", 0),
-                card_clicks=analytics_data.get("card_clicks", 0),
-                playlist_additions=analytics_data.get("playlist_additions", 0),
-                recorded_at=datetime.now(),
-            )
+                    views = analytics_data.get("views", 0),
+                    watch_time_minutes = analytics_data.get("watch_time_minutes", 0.0),
+                    likes = analytics_data.get("likes", 0),
+                    dislikes = analytics_data.get("dislikes", 0),
+                    comments = analytics_data.get("comments", 0),
+                    shares = analytics_data.get("shares", 0),
+                    subscribers_gained = analytics_data.get("subscribers_gained", 0),
+                    click_through_rate = analytics_data.get("click_through_rate", 0.0),
+                    average_view_duration = analytics_data.get("average_view_duration", 0.0),
+                    audience_retention = analytics_data.get("audience_retention", {}),
+                    impressions = analytics_data.get("impressions", 0),
+                    impression_ctr = analytics_data.get("impression_ctr", 0.0),
+                    revenue = analytics_data.get("revenue", 0.0),
+                    rpm = analytics_data.get("rpm", 0.0),
+                    traffic_sources = analytics_data.get("traffic_sources", {}),
+                    demographics = analytics_data.get("demographics", {}),
+                    engagement_rate = self._calculate_engagement_rate(analytics_data),
+                    thumbnail_impressions = analytics_data.get("thumbnail_impressions", 0),
+                    thumbnail_ctr = analytics_data.get("thumbnail_ctr", 0.0),
+                    end_screen_clicks = analytics_data.get("end_screen_clicks", 0),
+                    card_clicks = analytics_data.get("card_clicks", 0),
+                    playlist_additions = analytics_data.get("playlist_additions", 0),
+                    recorded_at = datetime.now(),
+                    )
 
             return metrics
 
         except Exception as e:
             self.logger.error(f"Error processing video analytics: {e}")
             raise
+
 
     def _calculate_engagement_rate(self, analytics_data: Dict[str, Any]) -> float:
         """Calculate engagement rate from analytics data."""
@@ -585,10 +597,11 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error calculating engagement rate: {e}")
             return 0.0
 
+
     async def collect_channel_metrics(
         self, channel_ids: List[str]
     ) -> List[ChannelMetrics]:
-        """Collect comprehensive channel-level metrics."""
+        """Collect comprehensive channel - level metrics."""
         try:
             self.logger.info(
                 f"Collecting channel metrics for {len(channel_ids)} channels"
@@ -624,40 +637,41 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error collecting channel metrics: {e}")
             return []
 
+
     def _process_channel_analytics(
         self, channel_id: str, analytics_data: Dict[str, Any]
     ) -> ChannelMetrics:
         """Process raw channel analytics data into structured metrics."""
         try:
             metrics = ChannelMetrics(
-                channel_id=channel_id,
-                channel_name=analytics_data.get("channel_name", ""),
-                total_subscribers=analytics_data.get("total_subscribers", 0),
-                total_views=analytics_data.get("total_views", 0),
-                total_watch_time_minutes=analytics_data.get(
+                channel_id = channel_id,
+                    channel_name = analytics_data.get("channel_name", ""),
+                    total_subscribers = analytics_data.get("total_subscribers", 0),
+                    total_views = analytics_data.get("total_views", 0),
+                    total_watch_time_minutes = analytics_data.get(
                     "total_watch_time_minutes", 0.0
                 ),
-                total_videos=analytics_data.get("total_videos", 0),
-                subscriber_growth_rate=analytics_data.get(
+                    total_videos = analytics_data.get("total_videos", 0),
+                    subscriber_growth_rate = analytics_data.get(
                     "subscriber_growth_rate", 0.0
                 ),
-                average_views_per_video=analytics_data.get(
+                    average_views_per_video = analytics_data.get(
                     "average_views_per_video", 0.0
                 ),
-                average_engagement_rate=analytics_data.get(
+                    average_engagement_rate = analytics_data.get(
                     "average_engagement_rate", 0.0
                 ),
-                total_revenue=analytics_data.get("total_revenue", 0.0),
-                estimated_monthly_revenue=analytics_data.get(
+                    total_revenue = analytics_data.get("total_revenue", 0.0),
+                    estimated_monthly_revenue = analytics_data.get(
                     "estimated_monthly_revenue", 0.0
                 ),
-                top_performing_videos=analytics_data.get("top_performing_videos", []),
-                audience_demographics=analytics_data.get("audience_demographics", {}),
-                traffic_sources=analytics_data.get("traffic_sources", {}),
-                device_breakdown=analytics_data.get("device_breakdown", {}),
-                geography_breakdown=analytics_data.get("geography_breakdown", {}),
-                recorded_at=datetime.now(),
-            )
+                    top_performing_videos = analytics_data.get("top_performing_videos", []),
+                    audience_demographics = analytics_data.get("audience_demographics", {}),
+                    traffic_sources = analytics_data.get("traffic_sources", {}),
+                    device_breakdown = analytics_data.get("device_breakdown", {}),
+                    geography_breakdown = analytics_data.get("geography_breakdown", {}),
+                    recorded_at = datetime.now(),
+                    )
 
             return metrics
 
@@ -665,8 +679,9 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error processing channel analytics: {e}")
             raise
 
+
     async def generate_insights(self, channel_ids: List[str]) -> List[AnalyticsInsight]:
-        """Generate AI-powered analytics insights."""
+        """Generate AI - powered analytics insights."""
         try:
             self.logger.info("Generating analytics insights...")
 
@@ -703,7 +718,7 @@ class YouTubeAnalyticsAutomation:
             # Limit number of insights
             max_insights = self.config["insights"]["max_insights_per_run"]
             filtered_insights = sorted(
-                filtered_insights, key=lambda x: x.impact_score, reverse=True
+                filtered_insights, key = lambda x: x.impact_score, reverse = True
             )[:max_insights]
 
             # Store insights
@@ -716,6 +731,7 @@ class YouTubeAnalyticsAutomation:
         except Exception as e:
             self.logger.error(f"Error generating insights: {e}")
             return []
+
 
     async def _generate_content_insights(
         self, channel_id: str, performance_data: Dict[str, Any]
@@ -731,8 +747,8 @@ class YouTubeAnalyticsAutomation:
                 return insights
 
             # Find top performing content characteristics
-            top_videos = sorted(video_metrics, key=lambda x: x.views, reverse=True)[:5]
-            bottom_videos = sorted(video_metrics, key=lambda x: x.views)[:5]
+            top_videos = sorted(video_metrics, key = lambda x: x.views, reverse = True)[:5]
+            bottom_videos = sorted(video_metrics, key = lambda x: x.views)[:5]
 
             # Analyze title patterns
             title_insight = self._analyze_title_patterns(top_videos, bottom_videos)
@@ -753,6 +769,7 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error generating content insights: {e}")
 
         return insights
+
 
     async def _generate_audience_insights(
         self, channel_id: str, performance_data: Dict[str, Any]
@@ -781,6 +798,7 @@ class YouTubeAnalyticsAutomation:
 
         return insights
 
+
     async def _generate_optimization_insights(
         self, channel_id: str, performance_data: Dict[str, Any]
     ) -> List[AnalyticsInsight]:
@@ -808,6 +826,7 @@ class YouTubeAnalyticsAutomation:
 
         return insights
 
+
     def _analyze_title_patterns(
         self, top_videos: List[VideoMetrics], bottom_videos: List[VideoMetrics]
     ) -> Optional[AnalyticsInsight]:
@@ -825,37 +844,38 @@ class YouTubeAnalyticsAutomation:
                 optimal_length = int(top_avg_length)
 
                 return AnalyticsInsight(
-                    id=f"title_length_{int(time.time())}",
-                    insight_type=InsightType.TITLE_OPTIMIZATION,
-                    title="Title Length Optimization",
-                    description=f"Top performing videos have titles averaging {optimal_length} characters, while lower performing videos average {int(bottom_avg_length)} characters.",
-                    impact_score=75.0,
-                    confidence_level=0.8,
-                    recommendations=[
+                    id = f"title_length_{int(time.time())}",
+                        insight_type = InsightType.TITLE_OPTIMIZATION,
+                        title="Title Length Optimization",
+                        description = f"Top performing videos have titles averaging {optimal_length} characters, while lower performing videos average {int(bottom_avg_length)} characters.",
+                        impact_score = 75.0,
+                        confidence_level = 0.8,
+                        recommendations=[
                         f"Optimize video titles to approximately {optimal_length} characters",
-                        "Focus on clear, descriptive titles that capture viewer interest",
-                        "A/B test different title lengths for your content type",
-                    ],
-                    supporting_data={
+                            "Focus on clear, descriptive titles that capture viewer interest",
+                            "A / B test different title lengths for your content type",
+                            ],
+                        supporting_data={
                         "top_avg_length": top_avg_length,
-                        "bottom_avg_length": bottom_avg_length,
-                        "sample_top_titles": top_titles[:3],
-                    },
-                    actionable_items=[
+                            "bottom_avg_length": bottom_avg_length,
+                            "sample_top_titles": top_titles[:3],
+                            },
+                        actionable_items=[
                         "Review upcoming video titles",
-                        "Adjust title length to optimal range",
-                        "Monitor performance of optimized titles",
-                    ],
-                    expected_improvement="10-25% increase in click-through rate",
-                    priority="high",
-                    created_at=datetime.now(),
-                    expires_at=datetime.now() + timedelta(days=30),
-                )
+                            "Adjust title length to optimal range",
+                            "Monitor performance of optimized titles",
+                            ],
+                        expected_improvement="10 - 25% increase in click - through rate",
+                        priority="high",
+                        created_at = datetime.now(),
+                        expires_at = datetime.now() + timedelta(days = 30),
+                        )
 
         except Exception as e:
             self.logger.error(f"Error analyzing title patterns: {e}")
 
         return None
+
 
     def _analyze_video_length_performance(
         self, video_metrics: List[VideoMetrics]
@@ -890,48 +910,49 @@ class YouTubeAnalyticsAutomation:
                     avg_performance[category] = statistics.mean(rates)
 
             if avg_performance:
-                best_category = max(avg_performance, key=avg_performance.get)
+                best_category = max(avg_performance, key = avg_performance.get)
                 best_performance = avg_performance[best_category]
 
                 duration_ranges = {
-                    "short": "2-3 minutes",
-                    "medium": "3-8 minutes",
-                    "long": "8-15 minutes",
-                    "very_long": "15+ minutes",
-                }
+                    "short": "2 - 3 minutes",
+                        "medium": "3 - 8 minutes",
+                        "long": "8 - 15 minutes",
+                        "very_long": "15+ minutes",
+                        }
 
                 return AnalyticsInsight(
-                    id=f"video_length_{int(time.time())}",
-                    insight_type=InsightType.CONTENT_OPTIMIZATION,
-                    title="Optimal Video Length Identified",
-                    description=f"Videos in the {duration_ranges[best_category]} range show {best_performance:.1f}% average engagement rate, outperforming other durations.",
-                    impact_score=80.0,
-                    confidence_level=0.85,
-                    recommendations=[
+                    id = f"video_length_{int(time.time())}",
+                        insight_type = InsightType.CONTENT_OPTIMIZATION,
+                        title="Optimal Video Length Identified",
+                        description = f"Videos in the {duration_ranges[best_category]} range show {best_performance:.1f}% average engagement rate, outperforming other durations.",
+                        impact_score = 80.0,
+                        confidence_level = 0.85,
+                        recommendations=[
                         f"Focus on creating videos in the {duration_ranges[best_category]} range",
-                        "Analyze top performing videos in this duration for content patterns",
-                        "Test different content structures within optimal duration",
-                    ],
-                    supporting_data={
+                            "Analyze top performing videos in this duration for content patterns",
+                            "Test different content structures within optimal duration",
+                            ],
+                        supporting_data={
                         "duration_performance": dict(avg_performance),
-                        "best_category": best_category,
-                        "optimal_range": duration_ranges[best_category],
-                    },
-                    actionable_items=[
+                            "best_category": best_category,
+                            "optimal_range": duration_ranges[best_category],
+                            },
+                        actionable_items=[
                         "Plan upcoming videos within optimal duration",
-                        "Edit existing long-form content into optimal segments",
-                        "Create content templates for optimal duration",
-                    ],
-                    expected_improvement="15-30% increase in engagement rate",
-                    priority="high",
-                    created_at=datetime.now(),
-                    expires_at=datetime.now() + timedelta(days=45),
-                )
+                            "Edit existing long - form content into optimal segments",
+                            "Create content templates for optimal duration",
+                            ],
+                        expected_improvement="15 - 30% increase in engagement rate",
+                        priority="high",
+                        created_at = datetime.now(),
+                        expires_at = datetime.now() + timedelta(days = 45),
+                        )
 
         except Exception as e:
             self.logger.error(f"Error analyzing video length performance: {e}")
 
         return None
+
 
     async def monitor_performance_alerts(
         self, channel_ids: List[str]
@@ -969,15 +990,16 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error monitoring performance alerts: {e}")
             return []
 
+
     async def _check_performance_drops(self, channel_id: str) -> List[PerformanceAlert]:
         """Check for significant performance drops."""
         alerts = []
 
         try:
             # Get recent performance data
-            recent_metrics = await self._get_recent_video_metrics(channel_id, days=7)
+            recent_metrics = await self._get_recent_video_metrics(channel_id, days = 7)
             historical_metrics = await self._get_recent_video_metrics(
-                channel_id, days=30
+                channel_id, days = 30
             )
 
             if len(recent_metrics) < 3 or len(historical_metrics) < 10:
@@ -997,26 +1019,26 @@ class YouTubeAnalyticsAutomation:
                 ) * 100
 
                 alert = PerformanceAlert(
-                    id=f"perf_drop_{channel_id}_{int(time.time())}",
-                    alert_type=AlertType.PERFORMANCE_DROP,
-                    severity="warning" if drop_percentage < 50 else "critical",
-                    title="Performance Drop Detected",
-                    message=f"Recent videos showing {drop_percentage:.1f}% decrease in average views compared to historical performance.",
-                    affected_videos=[m.video_id for m in recent_metrics],
-                    affected_channels=[channel_id],
-                    threshold_value=historical_avg_views * (1 - drop_threshold),
-                    current_value=recent_avg_views,
-                    trend_direction="down",
-                    recommendations=[
+                    id = f"perf_drop_{channel_id}_{int(time.time())}",
+                        alert_type = AlertType.PERFORMANCE_DROP,
+                        severity="warning" if drop_percentage < 50 else "critical",
+                        title="Performance Drop Detected",
+                        message = f"Recent videos showing {drop_percentage:.1f}% decrease in average views compared to historical performance.",
+                        affected_videos=[m.video_id for m in recent_metrics],
+                        affected_channels=[channel_id],
+                        threshold_value = historical_avg_views * (1 - drop_threshold),
+                        current_value = recent_avg_views,
+                        trend_direction="down",
+                        recommendations=[
                         "Review recent content for quality issues",
-                        "Analyze audience feedback and comments",
-                        "Check for algorithm changes or external factors",
-                        "Consider adjusting content strategy",
-                    ],
-                    created_at=datetime.now(),
-                    acknowledged=False,
-                    resolved=False,
-                )
+                            "Analyze audience feedback and comments",
+                            "Check for algorithm changes or external factors",
+                            "Consider adjusting content strategy",
+                            ],
+                        created_at = datetime.now(),
+                        acknowledged = False,
+                        resolved = False,
+                        )
 
                 alerts.append(alert)
 
@@ -1024,6 +1046,7 @@ class YouTubeAnalyticsAutomation:
             self.logger.error(f"Error checking performance drops: {e}")
 
         return alerts
+
 
     async def generate_performance_report(
         self, channel_id: str, time_frame: TimeFrame = TimeFrame.WEEK
@@ -1035,13 +1058,13 @@ class YouTubeAnalyticsAutomation:
             # Get performance data for time frame
             end_date = datetime.now()
             if time_frame == TimeFrame.DAY:
-                start_date = end_date - timedelta(days=1)
+                start_date = end_date - timedelta(days = 1)
             elif time_frame == TimeFrame.WEEK:
-                start_date = end_date - timedelta(days=7)
+                start_date = end_date - timedelta(days = 7)
             elif time_frame == TimeFrame.MONTH:
-                start_date = end_date - timedelta(days=30)
+                start_date = end_date - timedelta(days = 30)
             else:
-                start_date = end_date - timedelta(days=7)  # Default to week
+                start_date = end_date - timedelta(days = 7)  # Default to week
 
             # Collect metrics
             video_metrics = await self._get_video_metrics_by_date_range(
@@ -1061,25 +1084,26 @@ class YouTubeAnalyticsAutomation:
             # Create report
             report = {
                 "channel_id": channel_id,
-                "time_frame": time_frame.value,
-                "start_date": start_date.isoformat(),
-                "end_date": end_date.isoformat(),
-                "summary_statistics": summary_stats,
-                "channel_metrics": asdict(channel_metrics) if channel_metrics else {},
-                "video_performance": [asdict(vm) for vm in video_metrics],
-                "insights": [asdict(insight) for insight in insights],
-                "alerts": [asdict(alert) for alert in alerts],
-                "recommendations": self._generate_report_recommendations(
+                    "time_frame": time_frame.value,
+                    "start_date": start_date.isoformat(),
+                    "end_date": end_date.isoformat(),
+                    "summary_statistics": summary_stats,
+                    "channel_metrics": asdict(channel_metrics) if channel_metrics else {},
+                    "video_performance": [asdict(vm) for vm in video_metrics],
+                    "insights": [asdict(insight) for insight in insights],
+                    "alerts": [asdict(alert) for alert in alerts],
+                    "recommendations": self._generate_report_recommendations(
                     video_metrics, insights, alerts
                 ),
-                "generated_at": datetime.now().isoformat(),
-            }
+                    "generated_at": datetime.now().isoformat(),
+                    }
 
             return report
 
         except Exception as e:
             self.logger.error(f"Error generating performance report: {e}")
             return {"error": str(e)}
+
 
     def _calculate_summary_statistics(
         self, video_metrics: List[VideoMetrics]
@@ -1103,81 +1127,86 @@ class YouTubeAnalyticsAutomation:
 
             return {
                 "total_videos": len(video_metrics),
-                "total_views": total_views,
-                "total_watch_time_minutes": total_watch_time,
-                "total_engagement_actions": total_engagement,
-                "average_views_per_video": avg_views,
-                "average_engagement_rate": avg_engagement_rate,
-                "average_click_through_rate": avg_ctr,
-                "top_performing_video": max(
-                    video_metrics, key=lambda x: x.views
+                    "total_views": total_views,
+                    "total_watch_time_minutes": total_watch_time,
+                    "total_engagement_actions": total_engagement,
+                    "average_views_per_video": avg_views,
+                    "average_engagement_rate": avg_engagement_rate,
+                    "average_click_through_rate": avg_ctr,
+                    "top_performing_video": max(
+                    video_metrics, key = lambda x: x.views
                 ).video_id,
-                "most_engaging_video": max(
-                    video_metrics, key=lambda x: x.engagement_rate
+                    "most_engaging_video": max(
+                    video_metrics, key = lambda x: x.engagement_rate
                 ).video_id,
-            }
+                    }
 
         except Exception as e:
             self.logger.error(f"Error calculating summary statistics: {e}")
             return {}
 
     # Database helper methods
+
+
     async def _store_video_metrics(self, metrics: VideoMetrics):
         """Store video metrics in database."""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT INTO video_metrics 
+                    INSERT INTO video_metrics
                     (video_id, title, published_at, views, watch_time_minutes, likes, dislikes,
-                     comments, shares, subscribers_gained, click_through_rate, average_view_duration,
-                     audience_retention, impressions, impression_ctr, revenue, rpm, traffic_sources,
-                     demographics, engagement_rate, thumbnail_impressions, thumbnail_ctr,
-                     end_screen_clicks, card_clicks, playlist_additions, recorded_at)
+                        comments, shares, subscribers_gained, click_through_rate, average_view_duration,
+                         audience_retention, impressions, impression_ctr, revenue, rpm, traffic_sources,
+                         demographics, engagement_rate, thumbnail_impressions, thumbnail_ctr,
+                         end_screen_clicks, card_clicks, playlist_additions, recorded_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         metrics.video_id,
-                        metrics.title,
-                        metrics.published_at.isoformat(),
-                        metrics.views,
-                        metrics.watch_time_minutes,
-                        metrics.likes,
-                        metrics.dislikes,
-                        metrics.comments,
-                        metrics.shares,
-                        metrics.subscribers_gained,
-                        metrics.click_through_rate,
-                        metrics.average_view_duration,
-                        json.dumps(metrics.audience_retention),
-                        metrics.impressions,
-                        metrics.impression_ctr,
-                        metrics.revenue,
-                        metrics.rpm,
-                        json.dumps(metrics.traffic_sources),
-                        json.dumps(metrics.demographics),
-                        metrics.engagement_rate,
-                        metrics.thumbnail_impressions,
-                        metrics.thumbnail_ctr,
-                        metrics.end_screen_clicks,
-                        metrics.card_clicks,
-                        metrics.playlist_additions,
-                        metrics.recorded_at.isoformat(),
-                    ),
-                )
+                            metrics.title,
+                            metrics.published_at.isoformat(),
+                            metrics.views,
+                            metrics.watch_time_minutes,
+                            metrics.likes,
+                            metrics.dislikes,
+                            metrics.comments,
+                            metrics.shares,
+                            metrics.subscribers_gained,
+                            metrics.click_through_rate,
+                            metrics.average_view_duration,
+                            json.dumps(metrics.audience_retention),
+                            metrics.impressions,
+                            metrics.impression_ctr,
+                            metrics.revenue,
+                            metrics.rpm,
+                            json.dumps(metrics.traffic_sources),
+                            json.dumps(metrics.demographics),
+                            metrics.engagement_rate,
+                            metrics.thumbnail_impressions,
+                            metrics.thumbnail_ctr,
+                            metrics.end_screen_clicks,
+                            metrics.card_clicks,
+                            metrics.playlist_additions,
+                            metrics.recorded_at.isoformat(),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing video metrics: {e}")
+
 
     async def _store_channel_metrics(self, metrics: ChannelMetrics):
         """Store channel metrics in database."""
         # Implementation similar to video metrics storage
         pass
 
+
     async def _store_insight(self, insight: AnalyticsInsight):
         """Store analytics insight in database."""
         # Implementation for storing insights
         pass
+
 
     async def _store_alert(self, alert: PerformanceAlert):
         """Store performance alert in database."""
@@ -1185,6 +1214,7 @@ class YouTubeAnalyticsAutomation:
         pass
 
     # Additional helper methods would be implemented here...
+
 
     def get_analytics_status(self) -> Dict[str, Any]:
         """Get current analytics system status."""
@@ -1209,28 +1239,31 @@ class YouTubeAnalyticsAutomation:
 
                 return {
                     "status": "active",
-                    "last_update": (
+                        "last_update": (
                         self.last_update.isoformat() if self.last_update else None
                     ),
-                    "video_metrics_count": video_count,
-                    "channel_metrics_count": channel_count,
-                    "active_insights": active_insights,
-                    "active_alerts": active_alerts,
-                    "config": self.config,
-                }
+                        "video_metrics_count": video_count,
+                        "channel_metrics_count": channel_count,
+                        "active_insights": active_insights,
+                        "active_alerts": active_alerts,
+                        "config": self.config,
+                        }
         except Exception as e:
             self.logger.error(f"Error getting analytics status: {e}")
             return {"error": str(e)}
+
 
     def _load_model_data(self):
         """Load existing ML model data."""
         # Implementation would load trained models from disk
         pass
 
+
     async def _get_performance_data(self, channel_id: str) -> Dict[str, Any]:
         """Get performance data for analysis."""
         # Implementation would query database for performance data
         return {}
+
 
     async def _get_recent_video_metrics(
         self, channel_id: str, days: int
@@ -1239,12 +1272,14 @@ class YouTubeAnalyticsAutomation:
         # Implementation would query database
         return []
 
+
     async def _get_video_metrics_by_date_range(
         self, channel_id: str, start_date: datetime, end_date: datetime
     ) -> List[VideoMetrics]:
         """Get video metrics within date range."""
         # Implementation would query database
         return []
+
 
     async def _get_latest_channel_metrics(
         self, channel_id: str
@@ -1253,22 +1288,25 @@ class YouTubeAnalyticsAutomation:
         # Implementation would query database
         return None
 
+
     async def _get_recent_insights(self, channel_id: str) -> List[AnalyticsInsight]:
         """Get recent insights for channel."""
         # Implementation would query database
         return []
+
 
     async def _get_recent_alerts(self, channel_id: str) -> List[PerformanceAlert]:
         """Get recent alerts for channel."""
         # Implementation would query database
         return []
 
+
     def _generate_report_recommendations(
         self,
-        video_metrics: List[VideoMetrics],
-        insights: List[AnalyticsInsight],
-        alerts: List[PerformanceAlert],
-    ) -> List[str]:
+            video_metrics: List[VideoMetrics],
+            insights: List[AnalyticsInsight],
+            alerts: List[PerformanceAlert],
+            ) -> List[str]:
         """Generate recommendations based on performance data."""
         recommendations = []
 
@@ -1285,22 +1323,22 @@ class YouTubeAnalyticsAutomation:
 
         return list(set(recommendations))  # Remove duplicates
 
-
 # Factory function
+
+
 def create_youtube_analytics_automation() -> YouTubeAnalyticsAutomation:
     """Create and return YouTube analytics automation instance."""
     return YouTubeAnalyticsAutomation()
-
 
 # CLI interface for testing
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="YouTube Analytics Automation")
-    parser.add_argument("--collect", type=str, help="Collect metrics for channel ID")
-    parser.add_argument("--insights", type=str, help="Generate insights for channel ID")
-    parser.add_argument("--report", type=str, help="Generate report for channel ID")
-    parser.add_argument("--monitor", type=str, help="Monitor alerts for channel ID")
+    parser.add_argument("--collect", type = str, help="Collect metrics for channel ID")
+    parser.add_argument("--insights", type = str, help="Generate insights for channel ID")
+    parser.add_argument("--report", type = str, help="Generate report for channel ID")
+    parser.add_argument("--monitor", type = str, help="Monitor alerts for channel ID")
     parser.add_argument("--status", action="store_true", help="Get system status")
 
     args = parser.parse_args()
@@ -1322,7 +1360,7 @@ if __name__ == "__main__":
     elif args.report:
         # Generate report
         result = asyncio.run(analytics.generate_performance_report(args.report))
-        print(json.dumps(result, indent=2, default=str))
+        print(json.dumps(result, indent = 2, default = str))
 
     elif args.monitor:
         # Monitor alerts
@@ -1333,7 +1371,7 @@ if __name__ == "__main__":
 
     elif args.status:
         status = analytics.get_analytics_status()
-        print(json.dumps(status, indent=2, default=str))
+        print(json.dumps(status, indent = 2, default = str))
 
     else:
         print(

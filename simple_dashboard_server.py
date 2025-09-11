@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Simple standalone server for comprehensive dashboard
 """
@@ -25,38 +25,41 @@ try:
     # Import the comprehensive dashboard router
     from routers.comprehensive_dashboard import router as dashboard_router
 
-    app.include_router(dashboard_router, prefix="/comprehensive-dashboard")
+    app.include_router(dashboard_router, prefix="/comprehensive - dashboard")
     print("✓ Comprehensive dashboard router loaded successfully")
 except ImportError as e:
     print(f"✗ Failed to import comprehensive dashboard router: {e}")
 
     # Create a fallback route
-    @app.get("/comprehensive-dashboard")
+    @app.get("/comprehensive - dashboard")
+
+
     async def fallback_dashboard():
         return HTMLResponse(
             """
         <html>
-            <head><title>Dashboard Loading...</title></head>
+            <head><title > Dashboard Loading...</title></head>
             <body>
-                <h1>Comprehensive Dashboard</h1>
-                <p>Dashboard router is being initialized...</p>
-                <p>Error: Router import failed</p>
+                <h1 > Comprehensive Dashboard</h1>
+                <p > Dashboard router is being initialized...</p>
+                <p > Error: Router import failed</p>
             </body>
         </html>
         """
         )
 
-
 @app.get("/")
+
+
 async def root():
     return {"message": "Comprehensive Dashboard Server", "status": "running"}
 
-
 @app.get("/health")
+
+
 async def health():
     return {"status": "healthy"}
 
-
 if __name__ == "__main__":
     print("Starting simple dashboard server...")
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port = 8000, log_level="info")

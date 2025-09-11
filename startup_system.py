@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Application Startup and Management System
 
@@ -6,14 +6,14 @@ This script handles:
 1. System requirements validation
 2. Dependency installation and verification
 3. Application startup with proper order
-4. Process monitoring and auto-restart
+4. Process monitoring and auto - restart
 5. Resource optimization (closing unnecessary apps)
 6. Health monitoring and alerting
 
 Usage:
     python3 startup_system.py --mode production
     python3 startup_system.py --mode development
-    python3 startup_system.py --monitor-only
+    python3 startup_system.py --monitor - only
 """
 
 import argparse
@@ -42,14 +42,16 @@ except ImportError:
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("startup_system.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("startup_system.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
 
 class SystemManager:
+
+
     def __init__(self, mode: str = "production"):
         self.mode = mode
         self.project_root = Path.cwd()
@@ -66,62 +68,63 @@ class SystemManager:
         # System requirements
         self.system_requirements = {
             "python": "3.8+",
-            "node": "16+",
-            "memory_gb": 4,
-            "disk_space_gb": 2,
-        }
+                "node": "16+",
+                "memory_gb": 4,
+                "disk_space_gb": 2,
+                }
 
         # Applications to close for optimization
         self.apps_to_close = [
             "Spotify",
-            "Discord",
-            "Slack",
-            "Teams",
-            "Zoom",
-            "Skype",
-            "Firefox",
-            "Safari",
-            "Opera",
-            "Photoshop",
-            "Illustrator",
-            "Premiere Pro",
-            "After Effects",
-            "Steam",
-            "Epic Games Launcher",
-            "Battle.net",
-            "Dropbox",
-            "Google Drive",
-            "OneDrive",
-            "VLC",
-            "QuickTime Player",
-            "iTunes",
-            "Music",
-        ]
+                "Discord",
+                "Slack",
+                "Teams",
+                "Zoom",
+                "Skype",
+                "Firefox",
+                "Safari",
+                "Opera",
+                "Photoshop",
+                "Illustrator",
+                "Premiere Pro",
+                "After Effects",
+                "Steam",
+                "Epic Games Launcher",
+                "Battle.net",
+                "Dropbox",
+                "Google Drive",
+                "OneDrive",
+                "VLC",
+                "QuickTime Player",
+                "iTunes",
+                "Music",
+                ]
 
         # Essential apps to keep running
         self.essential_apps = [
             "Finder",
-            "System Preferences",
-            "Activity Monitor",
-            "Terminal",
-            "iTerm",
-            "Trae",
-            "Sublime Text",
-            "Python",
-            "Node",
-            "uvicorn",
-            "Ollama",
-            "Chrome",
-        ]
+                "System Preferences",
+                "Activity Monitor",
+                "Terminal",
+                "iTerm",
+                "Trae",
+                "Sublime Text",
+                "Python",
+                "Node",
+                "uvicorn",
+                "Ollama",
+                "Chrome",
+                ]
+
 
     def _init_monitoring_components(self):
         """Initialize monitoring components if available"""
         try:
             if SelfHealingMonitor:
                 self.self_healing_monitor = SelfHealingMonitor()
-                logger.info("✅ Self-healing monitor initialized")
+                logger.info("✅ Self - healing monitor initialized")
             else:
-                logger.warning("⚠️ Self-healing monitor not available")
+                logger.warning("⚠️ Self - healing monitor not available")
 
             if ProcessWatchdog:
                 self.process_watchdog = ProcessWatchdog()
@@ -132,6 +135,7 @@ class SystemManager:
         except Exception as e:
             logger.warning(f"⚠️ Failed to initialize monitoring components: {e}")
 
+
     def validate_system_requirements(self) -> bool:
         """Validate system meets minimum requirements"""
         logger.info("🔍 Validating system requirements...")
@@ -139,13 +143,13 @@ class SystemManager:
         try:
             # Check Python version
             python_version = subprocess.check_output(
-                ["python3", "--version"], text=True
+                ["python3", "--version"], text = True
             ).strip()
             logger.info(f"✅ Python: {python_version}")
 
             # Check Node version
             node_version = subprocess.check_output(
-                ["node", "--version"], text=True
+                ["node", "--version"], text = True
             ).strip()
             logger.info(f"✅ Node.js: {node_version}")
 
@@ -173,6 +177,7 @@ class SystemManager:
             logger.error(f"❌ System validation failed: {e}")
             return False
 
+
     def install_dependencies(self) -> bool:
         """Install and verify all dependencies"""
         logger.info("📦 Installing dependencies...")
@@ -191,10 +196,10 @@ class SystemManager:
                 # Install dependencies
                 result = subprocess.run(
                     [sys.executable, "-m", "pip", "install", "-r", req_file],
-                    capture_output=True,
-                    text=True,
-                    timeout=300,
-                )
+                        capture_output = True,
+                        text = True,
+                        timeout = 300,
+                        )
 
                 if result.returncode == 0:
                     logger.info(
@@ -216,7 +221,7 @@ class SystemManager:
             if (self.project_root / "package.json").exists():
                 logger.info("Installing Node.js packages...")
                 result = subprocess.run(
-                    ["npm", "install"], capture_output=True, text=True
+                    ["npm", "install"], capture_output = True, text = True
                 )
 
                 if result.returncode != 0:
@@ -236,6 +241,7 @@ class SystemManager:
                 f"⚠️ Error installing dependencies: {e}, continuing anyway..."
             )
             return True
+
 
     def optimize_system_resources(self) -> None:
         """Close unnecessary applications to free up resources"""
@@ -272,6 +278,7 @@ class SystemManager:
         else:
             logger.info("✅ No unnecessary applications found")
 
+
     def check_port_availability(self) -> Dict[int, bool]:
         """Check if required ports are available"""
         port_status = {}
@@ -292,6 +299,7 @@ class SystemManager:
 
         return port_status
 
+
     def start_essential_services(self) -> None:
         """Start essential services for the application"""
         try:
@@ -303,20 +311,20 @@ class SystemManager:
                 try:
                     subprocess.Popen(
                         ["ollama", "serve"],
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL,
-                    )
+                            stdout = subprocess.DEVNULL,
+                            stderr = subprocess.DEVNULL,
+                            )
                     time.sleep(5)
                     logger.info("Ollama service started successfully")
                 except FileNotFoundError:
                     logger.warning("Ollama not found in PATH, attempting to install...")
                     try:
-                        subprocess.run(["brew", "install", "ollama"], check=True)
+                        subprocess.run(["brew", "install", "ollama"], check = True)
                         subprocess.Popen(
                             ["ollama", "serve"],
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL,
-                        )
+                                stdout = subprocess.DEVNULL,
+                                stderr = subprocess.DEVNULL,
+                                )
                         time.sleep(5)
                         logger.info("Ollama installed and started successfully")
                     except Exception as install_error:
@@ -327,6 +335,7 @@ class SystemManager:
 
         except Exception as e:
             logger.error(f"Error starting essential services: {e}")
+
 
     def is_service_running(self, service_name: str) -> bool:
         """Check if a service is running"""
@@ -342,20 +351,21 @@ class SystemManager:
         except Exception:
             return False
 
+
     def start_chrome_with_tabs(self) -> None:
         """Start Chrome with predefined tabs to avoid bot detection"""
         try:
             essential_sites = [
                 "http://localhost:8000",
-                "http://localhost:9000",
-                "https://github.com",
-                "https://netlify.com",
-                "https://openai.com",
-                "https://anthropic.com",
-                "https://stackoverflow.com",
-                "https://docs.python.org",
-                "https://fastapi.tiangolo.com",
-            ]
+                    "http://localhost:9000",
+                    "https://github.com",
+                    "https://netlify.com",
+                    "https://openai.com",
+                    "https://anthropic.com",
+                    "https://stackoverflow.com",
+                    "https://docs.python.org",
+                    "https://fastapi.tiangolo.com",
+                    ]
 
             chrome_running = False
             for proc in psutil.process_iter(["name"]):
@@ -386,6 +396,7 @@ class SystemManager:
         except Exception as e:
             logger.error(f"Error starting Chrome: {e}")
 
+
     def start_application(self) -> bool:
         """Start the main application"""
         logger.info("🚀 Starting TRAE.AI application...")
@@ -413,19 +424,19 @@ class SystemManager:
             # Start the process
             process = subprocess.Popen(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                bufsize=1,
-                universal_newlines=True,
-            )
+                    stdout = subprocess.PIPE,
+                    stderr = subprocess.PIPE,
+                    text = True,
+                    bufsize = 1,
+                    universal_newlines = True,
+                    )
 
             self.processes["main_app"] = {
                 "process": process,
-                "cmd": cmd,
-                "start_time": datetime.now(),
-                "restart_count": 0,
-            }
+                    "cmd": cmd,
+                    "start_time": datetime.now(),
+                    "restart_count": 0,
+                    }
 
             # Give it a moment to start
             time.sleep(3)
@@ -444,6 +455,7 @@ class SystemManager:
         except Exception as e:
             logger.error(f"❌ Failed to start application: {e}")
             return False
+
 
     def monitor_processes(self) -> None:
         """Monitor running processes and restart if needed"""
@@ -475,12 +487,12 @@ class SystemManager:
 
                             new_process = subprocess.Popen(
                                 proc_info["cmd"],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                text=True,
-                                bufsize=1,
-                                universal_newlines=True,
-                            )
+                                    stdout = subprocess.PIPE,
+                                    stderr = subprocess.PIPE,
+                                    text = True,
+                                    bufsize = 1,
+                                    universal_newlines = True,
+                                    )
 
                             proc_info["process"] = new_process
                             proc_info["restart_count"] += 1
@@ -503,21 +515,22 @@ class SystemManager:
                 logger.error(f"❌ Monitoring error: {e}")
                 time.sleep(5)
 
+
     def _start_advanced_monitoring(self):
         """Start advanced monitoring components"""
         try:
-            # Start self-healing monitor
-            if self.self_healing_monitor:
+            # Start self - healing monitor
+                if self.self_healing_monitor:
                 monitor_thread = threading.Thread(
-                    target=self._run_self_healing_monitor, daemon=True
+                    target = self._run_self_healing_monitor, daemon = True
                 )
                 monitor_thread.start()
-                logger.info("🔧 Self-healing monitor started")
+                logger.info("🔧 Self - healing monitor started")
 
             # Start process watchdog
             if self.process_watchdog:
                 watchdog_thread = threading.Thread(
-                    target=self._run_process_watchdog, daemon=True
+                    target = self._run_process_watchdog, daemon = True
                 )
                 watchdog_thread.start()
                 logger.info("🐕 Process watchdog started")
@@ -525,12 +538,14 @@ class SystemManager:
         except Exception as e:
             logger.error(f"❌ Failed to start advanced monitoring: {e}")
 
+
     def _run_self_healing_monitor(self):
-        """Run self-healing monitor in thread"""
+        """Run self - healing monitor in thread"""
         try:
             asyncio.run(self.self_healing_monitor.start_monitoring())
         except Exception as e:
-            logger.error(f"Self-healing monitor error: {e}")
+            logger.error(f"Self - healing monitor error: {e}")
+
 
     def _run_process_watchdog(self):
         """Run process watchdog in thread"""
@@ -539,34 +554,35 @@ class SystemManager:
         except Exception as e:
             logger.error(f"Process watchdog error: {e}")
 
+
     def health_check(self) -> Dict[str, any]:
         """Perform comprehensive health check"""
         health_status = {
             "timestamp": datetime.now().isoformat(),
-            "overall_status": "healthy",
-            "services": {},
-            "system": {},
-            "issues": [],
-        }
+                "overall_status": "healthy",
+                "services": {},
+                "system": {},
+                "issues": [],
+                }
 
         try:
             # Check system resources
-            cpu_percent = psutil.cpu_percent(interval=1)
+            cpu_percent = psutil.cpu_percent(interval = 1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
 
             health_status["system"] = {
                 "cpu_usage": cpu_percent,
-                "memory_usage": memory.percent,
-                "memory_available_gb": memory.available / (1024**3),
-                "disk_free_gb": disk.free / (1024**3),
-            }
+                    "memory_usage": memory.percent,
+                    "memory_available_gb": memory.available / (1024**3),
+                    "disk_free_gb": disk.free / (1024**3),
+                    }
 
             # Check if main application is responding
             try:
                 import requests
 
-                response = requests.get("http://localhost:8000/health", timeout=5)
+                response = requests.get("http://localhost:8000 / health", timeout = 5)
                 if response.status_code == 200:
                     health_status["services"]["main_app"] = "healthy"
                 else:
@@ -596,6 +612,7 @@ class SystemManager:
 
         return health_status
 
+
     def shutdown(self) -> None:
         """Gracefully shutdown all processes"""
         logger.info("🛑 Shutting down system...")
@@ -611,7 +628,7 @@ class SystemManager:
 
                     # Wait for graceful shutdown
                     try:
-                        process.wait(timeout=10)
+                        process.wait(timeout = 10)
                         logger.info(f"✅ {name} stopped gracefully")
                     except subprocess.TimeoutExpired:
                         logger.warning(f"⚠️ Force killing {name}")
@@ -622,6 +639,7 @@ class SystemManager:
                 logger.error(f"❌ Error stopping {name}: {e}")
 
         logger.info("✅ System shutdown complete")
+
 
     def run(self) -> None:
         """Main execution method"""
@@ -649,16 +667,18 @@ class SystemManager:
             # Step 5: Start monitoring
             logger.info("✅ System startup complete")
             logger.info("🌐 Application should be available at: http://localhost:8000")
-            logger.info("📊 Health check available at: http://localhost:8000/health")
-            logger.info("📖 API documentation at: http://localhost:8000/docs")
+            logger.info("📊 Health check available at: http://localhost:8000 / health")
+            logger.info("📖 API documentation at: http://localhost:8000 / docs")
 
             # Start monitoring in background thread
             monitor_thread = threading.Thread(
-                target=self.monitor_processes, daemon=True
+                target = self.monitor_processes, daemon = True
             )
             monitor_thread.start()
 
             # Keep main thread alive and handle signals
+
+
             def signal_handler(signum, frame):
                 logger.info(f"Received signal {signum}")
                 self.shutdown()
@@ -691,24 +711,23 @@ def main():
     parser = argparse.ArgumentParser(description="TRAE.AI System Manager")
     parser.add_argument(
         "--mode",
-        choices=["development", "production"],
-        default="production",
-        help="Run mode",
-    )
+            choices=["development", "production"],
+            default="production",
+            help="Run mode",
+            )
     parser.add_argument(
-        "--monitor-only", action="store_true", help="Only monitor existing processes"
+        "--monitor - only", action="store_true", help="Only monitor existing processes"
     )
 
     args = parser.parse_args()
 
-    manager = SystemManager(mode=args.mode)
+    manager = SystemManager(mode = args.mode)
 
     if args.monitor_only:
-        logger.info("👁️ Monitor-only mode")
+        logger.info("👁️ Monitor - only mode")
         manager.monitor_processes()
     else:
         manager.run()
-
 
 if __name__ == "__main__":
     main()

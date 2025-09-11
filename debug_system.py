@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 System Debug Script for TRAE.AI
 
@@ -35,7 +35,7 @@ def main():
     print("\n=== Testing Database Connectivity ===")
     try:
         tqm = TaskQueueManager()
-        tasks = tqm.get_tasks(limit=5)
+        tasks = tqm.get_tasks(limit = 5)
         print(f"✓ Database connection successful - Found {len(tasks)} tasks")
 
         # Show recent tasks
@@ -61,11 +61,11 @@ def main():
     print("\n=== Testing File System ===")
     critical_files = [
         "schema.sql",
-        "launch_live.py",
-        "app/dashboard.py",
-        "backend/secret_store.py",
-        "backend/task_queue_manager.py",
-    ]
+            "launch_live.py",
+            "app / dashboard.py",
+            "backend / secret_store.py",
+            "backend / task_queue_manager.py",
+            ]
 
     for file_path in critical_files:
         if Path(file_path).exists():
@@ -83,7 +83,6 @@ def main():
         print(f"✗ Data directory missing")
 
     print("\n=== Debug Report Complete ===")
-
 
 if __name__ == "__main__":
     main()

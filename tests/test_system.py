@@ -12,19 +12,21 @@ sys.path.insert(0, str(project_root))
 class TestSystemIntegrity:
     """Test suite for system integrity and basic functionality."""
 
+
     def test_project_structure(self):
         """Verify essential project files and directories exist."""
         required_files = [
             "launch_live.py",
-            "requirements.txt",
-            "app/static/index.html",
-            "backend/__init__.py",
-            "utils/__init__.py",
-        ]
+                "requirements.txt",
+                "app / static / index.html",
+                "backend / __init__.py",
+                "utils / __init__.py",
+                ]
 
         for file_path in required_files:
             full_path = project_root / file_path
             assert full_path.exists(), f"Required file missing: {file_path}"
+
 
     def test_requirements_file(self):
         """Verify requirements.txt is readable and contains dependencies."""
@@ -35,11 +37,13 @@ class TestSystemIntegrity:
             content = f.read()
             assert len(content.strip()) > 0, "requirements.txt is empty"
 
+
     def test_launch_script_exists(self):
         """Verify main launch script exists and is readable."""
         launch_script = project_root / "launch_live.py"
         assert launch_script.exists(), "launch_live.py not found"
         assert launch_script.is_file(), "launch_live.py is not a file"
+
 
     def test_web_interface_exists(self):
         """Verify web interface files exist."""
@@ -49,6 +53,7 @@ class TestSystemIntegrity:
         with open(index_html, "r") as f:
             content = f.read()
             assert "html" in content.lower(), "index.html appears to be invalid"
+
 
     def test_backend_structure(self):
         """Verify backend module structure."""
@@ -63,28 +68,30 @@ class TestSystemIntegrity:
 class TestEnvironmentConfiguration:
     """Test suite for environment and configuration validation."""
 
+
     def test_python_version(self):
         """Verify Python version compatibility."""
         assert sys.version_info >= (3, 8), "Python 3.8+ required"
+
 
     def test_no_hardcoded_secrets(self):
         """Basic check for potential hardcoded secrets in main files."""
         sensitive_patterns = [
             "api_key",
-            "secret_key",
-            "password",
-            "token",
-            "auth_token",
-        ]
+                "secret_key",
+                "password",
+                "token",
+                "auth_token",
+                ]
 
         main_files = [
             project_root / "launch_live.py",
-            project_root / "app" / "static" / "index.html",
-        ]
+                project_root / "app" / "static" / "index.html",
+                ]
 
         for file_path in main_files:
             if file_path.exists():
-                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                     content = f.read().lower()
                     for pattern in sensitive_patterns:
                         # Allow pattern in comments or variable names, but flag suspicious values
@@ -103,7 +110,6 @@ class TestEnvironmentConfiguration:
                                     pytest.fail(
                                         f"Potential hardcoded secret found in {file_path}: {line.strip()}"
                                     )
-
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

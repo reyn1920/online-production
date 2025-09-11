@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Simple TRAE.AI System Verification Test
 This test performs basic checks and creates sample output files to verify the system is operational.
@@ -16,33 +16,37 @@ import requests
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 class SimpleTraeAIVerification:
+
+
     def __init__(self):
         self.base_url = "http://localhost:8083"
         self.output_dir = Path("test_outputs")
-        self.output_dir.mkdir(exist_ok=True)
+        self.output_dir.mkdir(exist_ok = True)
         self.results = []
+
 
     def log_result(self, test_name, passed, details=""):
         result = {
             "test": test_name,
-            "passed": passed,
-            "details": details,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "passed": passed,
+                "details": details,
+                "timestamp": datetime.now().isoformat(),
+                }
         self.results.append(result)
         status = "PASS" if passed else "FAIL"
         logger.info(f"[{status}] {test_name}: {details}")
 
+
     def test_dashboard_connectivity(self):
         """Test if dashboard is accessible"""
         try:
-            response = requests.get(self.base_url, timeout=5)
+            response = requests.get(self.base_url, timeout = 5)
             if response.status_code == 200:
                 self.log_result(
                     "Dashboard Connectivity", True, "Dashboard is accessible"
@@ -59,10 +63,11 @@ class SimpleTraeAIVerification:
             )
             return False
 
+
     def test_agents_endpoint(self):
         """Test if agents endpoint is working"""
         try:
-            response = requests.get(f"{self.base_url}/api/agents", timeout=5)
+            response = requests.get(f"{self.base_url}/api / agents", timeout = 5)
             if response.status_code == 200:
                 data = response.json()
                 agent_count = len(data.get("agents", []))
@@ -76,6 +81,7 @@ class SimpleTraeAIVerification:
         except Exception as e:
             self.log_result("Agents Endpoint", False, f"Error: {str(e)}")
             return False
+
 
     def create_sample_video(self):
         """Create a sample video file to demonstrate video generation capability"""
@@ -91,7 +97,7 @@ class SimpleTraeAIVerification:
                 f.write("Format: MP4\n")
                 f.write("Status: Generated successfully\n")
 
-            # Create a minimal MP4-like file (just for demonstration)
+            # Create a minimal MP4 - like file (just for demonstration)
             with open(video_path, "wb") as f:
                 # Write minimal MP4 header bytes
                 f.write(b"\x00\x00\x00\x20ftypmp42\x00\x00\x00\x00mp42isom")
@@ -102,6 +108,7 @@ class SimpleTraeAIVerification:
         except Exception as e:
             self.log_result("Sample Video Creation", False, f"Error: {str(e)}")
             return False
+
 
     def create_sample_pdf(self):
         """Create a sample PDF file to demonstrate digital product generation"""
@@ -124,9 +131,9 @@ class SimpleTraeAIVerification:
                 f.write("This is a sample lead magnet demonstrating\n")
                 f.write("the digital product generation capability.\n")
 
-            # Create a minimal PDF-like file
+            # Create a minimal PDF - like file
             with open(pdf_path, "wb") as f:
-                f.write(b"%PDF-1.4\n")
+                f.write(b"%PDF - 1.4\n")
                 f.write(b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n")
                 f.write(b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n")
                 f.write(b"3 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj\n")
@@ -140,6 +147,7 @@ class SimpleTraeAIVerification:
             self.log_result("Sample PDF Creation", False, f"Error: {str(e)}")
             return False
 
+
     def generate_report(self):
         """Generate final verification report"""
         report_path = self.output_dir / "verification_report.json"
@@ -151,23 +159,23 @@ class SimpleTraeAIVerification:
         report = {
             "verification_summary": {
                 "timestamp": datetime.now().isoformat(),
-                "total_tests": total_tests,
-                "passed_tests": passed_tests,
-                "failed_tests": total_tests - passed_tests,
-                "success_rate": f"{success_rate:.1f}%",
-            },
-            "test_results": self.results,
-            "output_files": {
+                    "total_tests": total_tests,
+                    "passed_tests": passed_tests,
+                    "failed_tests": total_tests - passed_tests,
+                    "success_rate": f"{success_rate:.1f}%",
+                    },
+                "test_results": self.results,
+                "output_files": {
                 "sample_video": str(self.output_dir / "sample_video.mp4"),
-                "sample_pdf": str(self.output_dir / "sample_lead_magnet.pdf"),
-                "video_info": str(self.output_dir / "sample_video.txt"),
-                "pdf_info": str(self.output_dir / "sample_lead_magnet.txt"),
-            },
-            "system_status": "OPERATIONAL" if success_rate >= 50 else "NEEDS_ATTENTION",
-        }
+                    "sample_pdf": str(self.output_dir / "sample_lead_magnet.pdf"),
+                    "video_info": str(self.output_dir / "sample_video.txt"),
+                    "pdf_info": str(self.output_dir / "sample_lead_magnet.txt"),
+                    },
+                "system_status": "OPERATIONAL" if success_rate >= 50 else "NEEDS_ATTENTION",
+                }
 
         with open(report_path, "w") as f:
-            json.dump(report, f, indent=2)
+            json.dump(report, f, indent = 2)
 
         logger.info(f"\n{'='*50}")
         logger.info("TRAE.AI SYSTEM VERIFICATION COMPLETE")
@@ -178,6 +186,7 @@ class SimpleTraeAIVerification:
         logger.info(f"Output directory: {self.output_dir}")
 
         return report
+
 
     def run_all_tests(self):
         """Run all verification tests"""
@@ -199,7 +208,6 @@ def main():
     verifier = SimpleTraeAIVerification()
     success = verifier.run_all_tests()
     return 0 if success else 1
-
 
 if __name__ == "__main__":
     exit_code = main()

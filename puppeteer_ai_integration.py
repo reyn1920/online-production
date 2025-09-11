@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Puppeteer AI Integration for Trae AI
 Uses MCP Puppeteer server to interact with AI websites for coding assistance.
@@ -12,11 +12,12 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class PuppeteerAIResponse:
     """Structure for Puppeteer AI service responses"""
 
@@ -33,35 +34,37 @@ class PuppeteerAIResponse:
 class PuppeteerAIIntegration:
     """Real browser automation for AI services using Puppeteer MCP"""
 
+
     def __init__(self):
         self.services = {
             "abacus": {
-                "url": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
-                "selectors": {
-                    "input": 'textarea[placeholder*="Type your message"], .chat-input, textarea.message-input',
-                    "submit": 'button[type="submit"], .send-button, .submit-btn',
-                    "response": ".message-content, .response-text, .assistant-message, .output",
-                },
-            },
-            "gemini": {
-                "url": "https://gemini.google.com/app",
-                "selectors": {
-                    "input": 'div[contenteditable="true"], textarea, .input-area',
-                    "submit": 'button[aria-label="Send"], .send-button',
-                    "response": ".model-response, .response-text, .message-content",
-                },
-            },
-            "chatgpt": {
+                "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
+                    "selectors": {
+                    "input": 'textarea[placeholder*="Type your message"], .chat - input, textarea.message - input',
+                        "submit": 'button[type="submit"], .send - button, .submit - btn',
+                        "response": ".message - content, .response - text, .assistant - message, .output",
+                        },
+                    },
+                "gemini": {
+                "url": "https://gemini.google.com / app",
+                    "selectors": {
+                    "input": 'div[contenteditable="true"], textarea, .input - area',
+                        "submit": 'button[aria - label="Send"], .send - button',
+                        "response": ".model - response, .response - text, .message - content",
+                        },
+                    },
+                "chatgpt": {
                 "url": "https://chatgpt.com/",
-                "selectors": {
-                    "input": '#prompt-textarea, textarea[placeholder*="Message"]',
-                    "submit": 'button[data-testid="send-button"]',
-                    "response": '.markdown, .message-content, [data-message-author-role="assistant"]',
-                },
-            },
-        }
+                    "selectors": {
+                    "input": '#prompt - textarea, textarea[placeholder*="Message"]',
+                        "submit": 'button[data - testid="send - button"]',
+                        "response": '.markdown, .message - content, [data - message - author - role="assistant"]',
+                        },
+                    },
+                }
         self.responses_cache = []
         self.current_browser_session = None
+
 
     async def navigate_to_service(self, service: str) -> bool:
         """
@@ -94,6 +97,7 @@ class PuppeteerAIIntegration:
             logger.error(f"Failed to navigate to {service}: {str(e)}")
             return False
 
+
     async def send_query_to_service(
         self, service: str, query: str
     ) -> PuppeteerAIResponse:
@@ -109,15 +113,15 @@ class PuppeteerAIIntegration:
         """
         if service not in self.services:
             return PuppeteerAIResponse(
-                service=service,
-                url="",
-                query=query,
-                response="",
-                screenshot_path=None,
-                timestamp=time.time(),
-                success=False,
-                error=f"Unknown service: {service}",
-            )
+                service = service,
+                    url="",
+                    query = query,
+                    response="",
+                    screenshot_path = None,
+                    timestamp = time.time(),
+                    success = False,
+                    error = f"Unknown service: {service}",
+                    )
 
         try:
             service_config = self.services[service]
@@ -159,14 +163,14 @@ class PuppeteerAIIntegration:
             logger.info(f"Taking final screenshot: {screenshot_after}")
 
             response = PuppeteerAIResponse(
-                service=service,
-                url=url,
-                query=query,
-                response=simulated_response,
-                screenshot_path=screenshot_after,
-                timestamp=time.time(),
-                success=True,
-            )
+                service = service,
+                    url = url,
+                    query = query,
+                    response = simulated_response,
+                    screenshot_path = screenshot_after,
+                    timestamp = time.time(),
+                    success = True,
+                    )
 
             self.responses_cache.append(response)
             return response
@@ -174,15 +178,16 @@ class PuppeteerAIIntegration:
         except Exception as e:
             logger.error(f"Error querying {service}: {str(e)}")
             return PuppeteerAIResponse(
-                service=service,
-                url=service_config.get("url", ""),
-                query=query,
-                response="",
-                screenshot_path=None,
-                timestamp=time.time(),
-                success=False,
-                error=str(e),
-            )
+                service = service,
+                    url = service_config.get("url", ""),
+                    query = query,
+                    response="",
+                    screenshot_path = None,
+                    timestamp = time.time(),
+                    success = False,
+                    error = str(e),
+                    )
+
 
     def _generate_simulated_response(self, service: str, query: str) -> str:
         """
@@ -257,6 +262,7 @@ Would you like me to help you write the migration script?"""
             # General coding assistance
             return f"{service.title()} suggests implementing proper error handling and following best practices for your query: {query[:100]}..."
 
+
     async def debug_with_all_services(
         self, error_message: str, code_context: str = ""
     ) -> Dict[str, PuppeteerAIResponse]:
@@ -291,6 +297,7 @@ Please provide:
         responses = await asyncio.gather(*tasks)
 
         return {response.service: response for response in responses}
+
 
     def generate_consolidated_report(
         self, responses: Dict[str, PuppeteerAIResponse]
@@ -337,6 +344,7 @@ Please provide:
 
         return report
 
+
     def export_session_data(self, filename: str = "ai_session_data.json") -> str:
         """
         Export all session data including responses and screenshots
@@ -350,31 +358,32 @@ Please provide:
         export_data = {
             "session_info": {
                 "timestamp": time.time(),
-                "total_queries": len(self.responses_cache),
-                "services_used": list(set(r.service for r in self.responses_cache)),
-            },
-            "responses": [
+                    "total_queries": len(self.responses_cache),
+                    "services_used": list(set(r.service for r in self.responses_cache)),
+                    },
+                "responses": [
                 {
                     "service": r.service,
-                    "url": r.url,
-                    "query": r.query,
-                    "response": r.response,
-                    "screenshot_path": r.screenshot_path,
-                    "timestamp": r.timestamp,
-                    "success": r.success,
-                    "error": r.error,
-                }
+                        "url": r.url,
+                        "query": r.query,
+                        "response": r.response,
+                        "screenshot_path": r.screenshot_path,
+                        "timestamp": r.timestamp,
+                        "success": r.success,
+                        "error": r.error,
+                        }
                 for r in self.responses_cache
             ],
-        }
+                }
 
         with open(filename, "w") as f:
-            json.dump(export_data, f, indent=2)
+            json.dump(export_data, f, indent = 2)
 
         return filename
 
-
 # Demo function
+
+
 async def demo_puppeteer_ai_integration():
     """Demonstrate the Puppeteer AI integration"""
     print("🌐 Puppeteer AI Integration Demo")
@@ -391,9 +400,9 @@ async def demo_puppeteer_ai_integration():
     # Database operation that failed
     cursor.execute(
         "SELECT * FROM api_discovery_tasks WHERE search_keywords LIKE ?",
-        ('%python%',)
+            ('%python%',)
     )
-    
+
     # Error occurred here:
     # sqlite3.OperationalError: no such column: search_keywords
     """
@@ -416,7 +425,6 @@ async def demo_puppeteer_ai_integration():
     print(
         "In production, it would use real browser automation via MCP Puppeteer server."
     )
-
 
 if __name__ == "__main__":
     asyncio.run(demo_puppeteer_ai_integration())

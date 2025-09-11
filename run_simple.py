@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Simple Startup Runner - Alternative to complex startup_system.py
 Provides basic server startup with monitoring integration
@@ -16,13 +16,14 @@ from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 class SimpleRunner:
     """Simple server runner with basic monitoring"""
+
 
     def __init__(self):
         self.processes = {}
@@ -33,11 +34,13 @@ class SimpleRunner:
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
+
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals"""
         logger.info(f"Received signal {signum}, shutting down...")
         self.shutdown()
         sys.exit(0)
+
 
     def check_dependencies(self) -> bool:
         """Check if required dependencies are available"""
@@ -61,14 +64,16 @@ class SimpleRunner:
 
         return True
 
+
     def setup_directories(self):
         """Create necessary directories"""
         logger.info("📁 Setting up directories...")
 
         directories = ["logs", "data", "monitoring"]
         for directory in directories:
-            Path(directory).mkdir(exist_ok=True)
+            Path(directory).mkdir(exist_ok = True)
             logger.info(f"✅ {directory}/ directory ready")
+
 
     def set_environment(self):
         """Set up environment variables"""
@@ -76,11 +81,11 @@ class SimpleRunner:
 
         defaults = {
             "ENVIRONMENT": "development",
-            "DEBUG": "true",
-            "HOST": "0.0.0.0",
-            "PORT": "8000",
-            "SECRET_KEY": "dev-secret-key-change-in-production",
-        }
+                "DEBUG": "true",
+                "HOST": "0.0.0.0",
+                "PORT": "8000",
+                "SECRET_KEY": "dev - secret - key - change - in - production",
+                }
 
         for key, value in defaults.items():
             if key not in os.environ:
@@ -88,6 +93,7 @@ class SimpleRunner:
                 logger.info(f"✅ Set {key}={value}")
             else:
                 logger.info(f"✅ Using existing {key}={os.environ[key]}")
+
 
     def start_main_server(self) -> bool:
         """Start the main FastAPI server"""
@@ -110,9 +116,9 @@ class SimpleRunner:
             server_process = subprocess.Popen(
                 [
                     sys.executable,
-                    "-c",
-                    f"import uvicorn; from main import app; uvicorn.run(app, host='{host}', port={port}, reload=False, log_level='info')",
-                ]
+                        "-c",
+                        f"import uvicorn; from main import app; uvicorn.run(app, host='{host}', port={port}, reload = False, log_level='info')",
+                        ]
             )
 
             self.processes["main_server"] = server_process
@@ -132,15 +138,17 @@ class SimpleRunner:
             logger.error(f"❌ Failed to start main server: {e}")
             return False
 
+
     def start_monitoring(self):
         """Start basic monitoring"""
         logger.info("👁️ Starting monitoring...")
 
         self.monitoring_thread = threading.Thread(
-            target=self._monitor_processes, daemon=True
+            target = self._monitor_processes, daemon = True
         )
         self.monitoring_thread.start()
         logger.info("✅ Monitoring started")
+
 
     def _monitor_processes(self):
         """Monitor running processes"""
@@ -162,7 +170,7 @@ class SimpleRunner:
                         # Check if server is responding
                         try:
                             response = requests.get(
-                                "http://localhost:8000/health", timeout=5
+                                "http://localhost:8000 / health", timeout = 5
                             )
                             if response.status_code == 200:
                                 logger.debug("✅ Main server health check passed")
@@ -174,7 +182,7 @@ class SimpleRunner:
                             logger.warning(f"⚠️ Main server health check failed: {e}")
 
                 # System resource check
-                cpu_percent = psutil.cpu_percent(interval=1)
+                cpu_percent = psutil.cpu_percent(interval = 1)
                 memory = psutil.virtual_memory()
 
                 if cpu_percent > 90:
@@ -190,9 +198,10 @@ class SimpleRunner:
                 logger.error(f"Monitoring error: {e}")
                 time.sleep(60)
 
+
     def wait_for_shutdown(self):
         """Wait for shutdown signal"""
-        logger.info("🎯 System ready - Press Ctrl+C to shutdown")
+        logger.info("🎯 System ready - Press Ctrl + C to shutdown")
 
         try:
             while self.running:
@@ -201,6 +210,7 @@ class SimpleRunner:
             logger.info("Received interrupt signal")
         finally:
             self.shutdown()
+
 
     def shutdown(self):
         """Shutdown all processes"""
@@ -215,7 +225,7 @@ class SimpleRunner:
 
                 # Wait for graceful termination
                 try:
-                    process.wait(timeout=10)
+                    process.wait(timeout = 10)
                     logger.info(f"✅ {name} stopped gracefully")
                 except subprocess.TimeoutExpired:
                     logger.warning(f"Force killing {name}...")
@@ -227,6 +237,7 @@ class SimpleRunner:
                 logger.error(f"Error stopping {name}: {e}")
 
         logger.info("👋 Shutdown complete")
+
 
     def run(self):
         """Main run method"""
@@ -265,7 +276,6 @@ def main():
     except Exception as e:
         logger.error(f"❌ Fatal error: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

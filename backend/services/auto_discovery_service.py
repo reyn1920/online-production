@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Auto Discovery Service
 
@@ -20,8 +20,9 @@ from .cost_tracking_service import CostTrackingService
 # Import our custom services
 from .web_search_service import APICandidate, WebSearchService
 
-
 @dataclass
+
+
 class ChannelProfile:
     """Profile for a marketing channel with discovery preferences."""
 
@@ -34,10 +35,11 @@ class ChannelProfile:
     last_discovery_run: Optional[datetime] = None
     discovery_frequency_days: int = 7
 
-
 @dataclass
+
+
 class DiscoveryResult:
-    """Result of an auto-discovery operation."""
+    """Result of an auto - discovery operation."""
 
     channel: str
     discovered_apis: List[APICandidate]
@@ -49,6 +51,7 @@ class DiscoveryResult:
 
 class AutoDiscoveryService:
     """Service for automatically discovering and managing APIs for channels."""
+
 
     def __init__(self, db_path: str = "auto_discovery.db"):
         self.logger = logging.getLogger(__name__)
@@ -66,53 +69,54 @@ class AutoDiscoveryService:
         self.default_profiles = {
             "youtube": ChannelProfile(
                 name="YouTube",
-                category="video_marketing",
-                priority_features=["analytics", "upload", "monetization"],
-                budget_limit=50.0,
-                preferred_pricing="freemium",
-                auto_discovery_enabled=True,
-                discovery_frequency_days=14,
-            ),
-            "tiktok": ChannelProfile(
+                    category="video_marketing",
+                    priority_features=["analytics", "upload", "monetization"],
+                    budget_limit = 50.0,
+                    preferred_pricing="freemium",
+                    auto_discovery_enabled = True,
+                    discovery_frequency_days = 14,
+                    ),
+                "tiktok": ChannelProfile(
                 name="TikTok",
-                category="short_video",
-                priority_features=["trending", "hashtags", "analytics"],
-                budget_limit=30.0,
-                preferred_pricing="free",
-                auto_discovery_enabled=True,
-                discovery_frequency_days=7,
-            ),
-            "instagram": ChannelProfile(
+                    category="short_video",
+                    priority_features=["trending", "hashtags", "analytics"],
+                    budget_limit = 30.0,
+                    preferred_pricing="free",
+                    auto_discovery_enabled = True,
+                    discovery_frequency_days = 7,
+                    ),
+                "instagram": ChannelProfile(
                 name="Instagram",
-                category="social_media",
-                priority_features=["stories", "reels", "analytics"],
-                budget_limit=40.0,
-                preferred_pricing="freemium",
-                auto_discovery_enabled=True,
-                discovery_frequency_days=10,
-            ),
-            "email": ChannelProfile(
+                    category="social_media",
+                    priority_features=["stories", "reels", "analytics"],
+                    budget_limit = 40.0,
+                    preferred_pricing="freemium",
+                    auto_discovery_enabled = True,
+                    discovery_frequency_days = 10,
+                    ),
+                "email": ChannelProfile(
                 name="Email Marketing",
-                category="email",
-                priority_features=["automation", "templates", "analytics"],
-                budget_limit=25.0,
-                preferred_pricing="freemium",
-                auto_discovery_enabled=True,
-                discovery_frequency_days=30,
-            ),
-            "sms": ChannelProfile(
+                    category="email",
+                    priority_features=["automation", "templates", "analytics"],
+                    budget_limit = 25.0,
+                    preferred_pricing="freemium",
+                    auto_discovery_enabled = True,
+                    discovery_frequency_days = 30,
+                    ),
+                "sms": ChannelProfile(
                 name="SMS Marketing",
-                category="messaging",
-                priority_features=["bulk_send", "automation", "delivery_reports"],
-                budget_limit=20.0,
-                preferred_pricing="freemium",
-                auto_discovery_enabled=True,
-                discovery_frequency_days=21,
-            ),
-        }
+                    category="messaging",
+                    priority_features=["bulk_send", "automation", "delivery_reports"],
+                    budget_limit = 20.0,
+                    preferred_pricing="freemium",
+                    auto_discovery_enabled = True,
+                    discovery_frequency_days = 21,
+                    ),
+                }
+
 
     def _init_database(self):
-        """Initialize the auto-discovery database."""
+        """Initialize the auto - discovery database."""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -122,16 +126,16 @@ class AutoDiscoveryService:
                     """
                     CREATE TABLE IF NOT EXISTS channel_profiles (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        name TEXT UNIQUE NOT NULL,
-                        category TEXT NOT NULL,
-                        priority_features TEXT NOT NULL,
-                        budget_limit REAL NOT NULL,
-                        preferred_pricing TEXT NOT NULL,
-                        auto_discovery_enabled BOOLEAN NOT NULL,
-                        last_discovery_run TEXT,
-                        discovery_frequency_days INTEGER NOT NULL,
-                        created_at TEXT NOT NULL,
-                        updated_at TEXT NOT NULL
+                            name TEXT UNIQUE NOT NULL,
+                            category TEXT NOT NULL,
+                            priority_features TEXT NOT NULL,
+                            budget_limit REAL NOT NULL,
+                            preferred_pricing TEXT NOT NULL,
+                            auto_discovery_enabled BOOLEAN NOT NULL,
+                            last_discovery_run TEXT,
+                            discovery_frequency_days INTEGER NOT NULL,
+                            created_at TEXT NOT NULL,
+                            updated_at TEXT NOT NULL
                     )
                 """
                 )
@@ -141,13 +145,13 @@ class AutoDiscoveryService:
                     """
                     CREATE TABLE IF NOT EXISTS discovery_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        channel TEXT NOT NULL,
-                        discovery_timestamp TEXT NOT NULL,
-                        apis_discovered INTEGER NOT NULL,
-                        apis_recommended INTEGER NOT NULL,
-                        total_cost_estimate REAL,
-                        discovery_data TEXT NOT NULL,
-                        created_at TEXT NOT NULL
+                            channel TEXT NOT NULL,
+                            discovery_timestamp TEXT NOT NULL,
+                            apis_discovered INTEGER NOT NULL,
+                            apis_recommended INTEGER NOT NULL,
+                            total_cost_estimate REAL,
+                            discovery_data TEXT NOT NULL,
+                            created_at TEXT NOT NULL
                     )
                 """
                 )
@@ -157,24 +161,25 @@ class AutoDiscoveryService:
                     """
                     CREATE TABLE IF NOT EXISTS api_recommendations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        channel TEXT NOT NULL,
-                        api_name TEXT NOT NULL,
-                        provider TEXT NOT NULL,
-                        pricing_model TEXT NOT NULL,
-                        quality_score REAL NOT NULL,
-                        recommendation_reason TEXT,
-                        status TEXT DEFAULT 'pending',
-                        created_at TEXT NOT NULL,
-                        updated_at TEXT NOT NULL
+                            channel TEXT NOT NULL,
+                            api_name TEXT NOT NULL,
+                            provider TEXT NOT NULL,
+                            pricing_model TEXT NOT NULL,
+                            quality_score REAL NOT NULL,
+                            recommendation_reason TEXT,
+                            status TEXT DEFAULT 'pending',
+                            created_at TEXT NOT NULL,
+                            updated_at TEXT NOT NULL
                     )
                 """
                 )
 
                 conn.commit()
-                self.logger.info("Auto-discovery database initialized")
+                self.logger.info("Auto - discovery database initialized")
 
         except Exception as e:
             self.logger.error(f"Error initializing database: {e}")
+
 
     def add_channel(
         self, channel_name: str, custom_profile: Optional[ChannelProfile] = None
@@ -187,15 +192,15 @@ class AutoDiscoveryService:
             else:
                 profile = self.default_profiles.get(
                     channel_name.lower(),
-                    ChannelProfile(
-                        name=channel_name,
-                        category="general",
-                        priority_features=["api_access", "documentation"],
-                        budget_limit=25.0,
-                        preferred_pricing="freemium",
-                        auto_discovery_enabled=True,
-                    ),
-                )
+                        ChannelProfile(
+                        name = channel_name,
+                            category="general",
+                            priority_features=["api_access", "documentation"],
+                            budget_limit = 25.0,
+                            preferred_pricing="freemium",
+                            auto_discovery_enabled = True,
+                            ),
+                        )
 
             # Save profile to database
             self._save_channel_profile(profile)
@@ -219,6 +224,7 @@ class AutoDiscoveryService:
             self.logger.error(f"Error adding channel {channel_name}: {e}")
             return False
 
+
     def discover_apis_for_channel(self, channel_name: str) -> Optional[DiscoveryResult]:
         """Discover APIs for a specific channel."""
         try:
@@ -232,7 +238,7 @@ class AutoDiscoveryService:
 
             # Step 1: Web search for APIs
             discovered_apis = self.web_search.search_apis_for_channel(
-                channel_name.lower(), max_results=15
+                channel_name.lower(), max_results = 15
             )
 
             # Step 2: Use API discovery service for additional candidates
@@ -250,14 +256,14 @@ class AutoDiscoveryService:
 
             # Step 5: Create discovery result
             discovery_result = DiscoveryResult(
-                channel=channel_name,
-                discovered_apis=unique_apis,
-                recommended_apis=recommended_apis,
-                cost_analysis=cost_analysis,
-                discovery_timestamp=datetime.now(),
-                next_discovery_date=datetime.now()
-                + timedelta(days=profile.discovery_frequency_days),
-            )
+                channel = channel_name,
+                    discovered_apis = unique_apis,
+                    recommended_apis = recommended_apis,
+                    cost_analysis = cost_analysis,
+                    discovery_timestamp = datetime.now(),
+                    next_discovery_date = datetime.now()
+                + timedelta(days = profile.discovery_frequency_days),
+                    )
 
             # Step 6: Save results
             self._save_discovery_result(discovery_result)
@@ -275,6 +281,7 @@ class AutoDiscoveryService:
         except Exception as e:
             self.logger.error(f"Error discovering APIs for channel {channel_name}: {e}")
             return None
+
 
     def run_scheduled_discovery(self) -> Dict[str, DiscoveryResult]:
         """Run discovery for all channels that are due for updates."""
@@ -299,6 +306,7 @@ class AutoDiscoveryService:
             self.logger.error(f"Error running scheduled discovery: {e}")
             return results
 
+
     def _deduplicate_apis(self, apis: List[APICandidate]) -> List[APICandidate]:
         """Remove duplicate APIs from the list."""
         seen = set()
@@ -311,6 +319,7 @@ class AutoDiscoveryService:
                 unique_apis.append(api)
 
         return unique_apis
+
 
     def _filter_and_rank_apis(
         self, apis: List[APICandidate], profile: ChannelProfile
@@ -336,7 +345,8 @@ class AutoDiscoveryService:
             filtered_apis.append(api)
 
         # Sort by quality score
-        return sorted(filtered_apis, key=lambda x: x.quality_score, reverse=True)
+        return sorted(filtered_apis, key = lambda x: x.quality_score, reverse = True)
+
 
     def _calculate_preference_score(
         self, api: APICandidate, profile: ChannelProfile
@@ -352,15 +362,16 @@ class AutoDiscoveryService:
         # Pricing model preference
         pricing_scores = {
             "free": {"free": 0.3, "freemium": 0.1, "paid": 0.0},
-            "freemium": {"free": 0.3, "freemium": 0.2, "paid": 0.1},
-            "paid": {"free": 0.2, "freemium": 0.2, "paid": 0.2},
-        }
+                "freemium": {"free": 0.3, "freemium": 0.2, "paid": 0.1},
+                "paid": {"free": 0.2, "freemium": 0.2, "paid": 0.2},
+                }
 
         score += pricing_scores.get(profile.preferred_pricing, {}).get(
             api.pricing_model, 0.0
         )
 
         return min(1.0, score)
+
 
     def _analyze_costs(
         self, apis: List[APICandidate], budget_limit: float
@@ -370,17 +381,17 @@ class AutoDiscoveryService:
             "total_free_apis": len(
                 [api for api in apis if api.pricing_model == "free"]
             ),
-            "total_freemium_apis": len(
+                "total_freemium_apis": len(
                 [api for api in apis if api.pricing_model == "freemium"]
             ),
-            "total_paid_apis": len(
+                "total_paid_apis": len(
                 [api for api in apis if api.pricing_model == "paid"]
             ),
-            "estimated_monthly_cost": 0.0,
-            "within_budget": True,
-            "budget_limit": budget_limit,
-            "cost_breakdown": [],
-        }
+                "estimated_monthly_cost": 0.0,
+                "within_budget": True,
+                "budget_limit": budget_limit,
+                "cost_breakdown": [],
+                }
 
         # Estimate costs (simplified)
         for api in apis:
@@ -389,7 +400,7 @@ class AutoDiscoveryService:
                 import re
 
                 cost_match = re.search(
-                    r"\$([0-9,]+(?:\.[0-9]{2})?)", api.cost_estimate or ""
+                    r"\$([0 - 9,]+(?:\.[0 - 9]{2})?)", api.cost_estimate or ""
                 )
                 if cost_match:
                     cost = float(cost_match.group(1).replace(",", ""))
@@ -397,14 +408,15 @@ class AutoDiscoveryService:
                     analysis["cost_breakdown"].append(
                         {
                             "api": api.name,
-                            "cost": cost,
-                            "pricing_model": api.pricing_model,
-                        }
+                                "cost": cost,
+                                "pricing_model": api.pricing_model,
+                                }
                     )
 
         analysis["within_budget"] = analysis["estimated_monthly_cost"] <= budget_limit
 
         return analysis
+
 
     def _save_channel_profile(self, profile: ChannelProfile):
         """Save channel profile to database."""
@@ -416,34 +428,35 @@ class AutoDiscoveryService:
 
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO channel_profiles 
-                    (name, category, priority_features, budget_limit, preferred_pricing, 
-                     auto_discovery_enabled, last_discovery_run, discovery_frequency_days, 
-                     created_at, updated_at)
+                    INSERT OR REPLACE INTO channel_profiles
+                    (name, category, priority_features, budget_limit, preferred_pricing,
+                        auto_discovery_enabled, last_discovery_run, discovery_frequency_days,
+                         created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         profile.name,
-                        profile.category,
-                        json.dumps(profile.priority_features),
-                        profile.budget_limit,
-                        profile.preferred_pricing,
-                        profile.auto_discovery_enabled,
-                        (
+                            profile.category,
+                            json.dumps(profile.priority_features),
+                            profile.budget_limit,
+                            profile.preferred_pricing,
+                            profile.auto_discovery_enabled,
+                            (
                             profile.last_discovery_run.isoformat()
                             if profile.last_discovery_run
                             else None
                         ),
-                        profile.discovery_frequency_days,
-                        now,
-                        now,
-                    ),
-                )
+                            profile.discovery_frequency_days,
+                            now,
+                            now,
+                            ),
+                        )
 
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error saving channel profile: {e}")
+
 
     def _get_channel_profile(self, channel_name: str) -> Optional[ChannelProfile]:
         """Get channel profile from database."""
@@ -458,23 +471,24 @@ class AutoDiscoveryService:
                 row = cursor.fetchone()
                 if row:
                     return ChannelProfile(
-                        name=row[1],
-                        category=row[2],
-                        priority_features=json.loads(row[3]),
-                        budget_limit=row[4],
-                        preferred_pricing=row[5],
-                        auto_discovery_enabled=bool(row[6]),
-                        last_discovery_run=(
+                        name = row[1],
+                            category = row[2],
+                            priority_features = json.loads(row[3]),
+                            budget_limit = row[4],
+                            preferred_pricing = row[5],
+                            auto_discovery_enabled = bool(row[6]),
+                            last_discovery_run=(
                             datetime.fromisoformat(row[7]) if row[7] else None
                         ),
-                        discovery_frequency_days=row[8],
-                    )
+                            discovery_frequency_days = row[8],
+                            )
 
                 return None
 
         except Exception as e:
             self.logger.error(f"Error getting channel profile: {e}")
             return None
+
 
     def _save_discovery_result(self, result: DiscoveryResult):
         """Save discovery result to database."""
@@ -484,26 +498,27 @@ class AutoDiscoveryService:
 
                 cursor.execute(
                     """
-                    INSERT INTO discovery_history 
-                    (channel, discovery_timestamp, apis_discovered, apis_recommended, 
-                     total_cost_estimate, discovery_data, created_at)
+                    INSERT INTO discovery_history
+                    (channel, discovery_timestamp, apis_discovered, apis_recommended,
+                        total_cost_estimate, discovery_data, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         result.channel,
-                        result.discovery_timestamp.isoformat(),
-                        len(result.discovered_apis),
-                        len(result.recommended_apis),
-                        result.cost_analysis.get("estimated_monthly_cost", 0.0),
-                        json.dumps(asdict(result), default=str),
-                        datetime.now().isoformat(),
-                    ),
-                )
+                            result.discovery_timestamp.isoformat(),
+                            len(result.discovered_apis),
+                            len(result.recommended_apis),
+                            result.cost_analysis.get("estimated_monthly_cost", 0.0),
+                            json.dumps(asdict(result), default = str),
+                            datetime.now().isoformat(),
+                            ),
+                        )
 
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error saving discovery result: {e}")
+
 
     def _save_api_recommendations(self, result: DiscoveryResult):
         """Save API recommendations to database."""
@@ -516,28 +531,29 @@ class AutoDiscoveryService:
                 for api in result.recommended_apis[:5]:  # Save top 5 recommendations
                     cursor.execute(
                         """
-                        INSERT OR REPLACE INTO api_recommendations 
-                        (channel, api_name, provider, pricing_model, quality_score, 
-                         recommendation_reason, status, created_at, updated_at)
+                        INSERT OR REPLACE INTO api_recommendations
+                        (channel, api_name, provider, pricing_model, quality_score,
+                            recommendation_reason, status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                         (
                             result.channel,
-                            api.name,
-                            api.provider,
-                            api.pricing_model,
-                            api.quality_score,
-                            f"High quality score ({api.quality_score:.2f}) with {api.pricing_model} pricing",
-                            "pending",
-                            now,
-                            now,
-                        ),
-                    )
+                                api.name,
+                                api.provider,
+                                api.pricing_model,
+                                api.quality_score,
+                                f"High quality score ({api.quality_score:.2f}) with {api.pricing_model} pricing",
+                                "pending",
+                                now,
+                                now,
+                                ),
+                            )
 
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error saving API recommendations: {e}")
+
 
     def _get_channels_due_for_discovery(self) -> List[str]:
         """Get channels that are due for discovery updates."""
@@ -549,8 +565,8 @@ class AutoDiscoveryService:
 
                 cursor.execute(
                     """
-                    SELECT name, last_discovery_run, discovery_frequency_days 
-                    FROM channel_profiles 
+                    SELECT name, last_discovery_run, discovery_frequency_days
+                    FROM channel_profiles
                     WHERE auto_discovery_enabled = 1
                 """
                 )
@@ -565,7 +581,7 @@ class AutoDiscoveryService:
                         due_channels.append(name)
                     else:
                         last_run = datetime.fromisoformat(last_run_str)
-                        next_run = last_run + timedelta(days=frequency_days)
+                        next_run = last_run + timedelta(days = frequency_days)
 
                         if now >= next_run:
                             due_channels.append(name)
@@ -576,6 +592,7 @@ class AutoDiscoveryService:
             self.logger.error(f"Error getting channels due for discovery: {e}")
             return []
 
+
     def get_channel_recommendations(self, channel_name: str) -> List[Dict[str, Any]]:
         """Get API recommendations for a channel."""
         try:
@@ -584,27 +601,27 @@ class AutoDiscoveryService:
 
                 cursor.execute(
                     """
-                    SELECT api_name, provider, pricing_model, quality_score, 
-                           recommendation_reason, status, created_at
-                    FROM api_recommendations 
+                    SELECT api_name, provider, pricing_model, quality_score,
+                        recommendation_reason, status, created_at
+                    FROM api_recommendations
                     WHERE channel = ?
                     ORDER BY quality_score DESC
                 """,
                     (channel_name,),
-                )
+                        )
 
                 recommendations = []
                 for row in cursor.fetchall():
                     recommendations.append(
                         {
                             "api_name": row[0],
-                            "provider": row[1],
-                            "pricing_model": row[2],
-                            "quality_score": row[3],
-                            "recommendation_reason": row[4],
-                            "status": row[5],
-                            "created_at": row[6],
-                        }
+                                "provider": row[1],
+                                "pricing_model": row[2],
+                                "quality_score": row[3],
+                                "recommendation_reason": row[4],
+                                "status": row[5],
+                                "created_at": row[6],
+                                }
                     )
 
                 return recommendations
@@ -612,6 +629,7 @@ class AutoDiscoveryService:
         except Exception as e:
             self.logger.error(f"Error getting channel recommendations: {e}")
             return []
+
 
     def get_discovery_stats(self) -> Dict[str, Any]:
         """Get overall discovery statistics."""
@@ -640,7 +658,7 @@ class AutoDiscoveryService:
                 # Recent activity
                 cursor.execute(
                     """
-                    SELECT COUNT(*) FROM discovery_history 
+                    SELECT COUNT(*) FROM discovery_history
                     WHERE created_at > datetime('now', '-7 days')
                 """
                 )
@@ -648,54 +666,53 @@ class AutoDiscoveryService:
 
                 return {
                     "total_channels": total_channels,
-                    "active_channels": active_channels,
-                    "total_discoveries": total_discoveries,
-                    "total_recommendations": total_recommendations,
-                    "recent_discoveries": recent_discoveries,
-                    "discovery_rate": (
+                        "active_channels": active_channels,
+                        "total_discoveries": total_discoveries,
+                        "total_recommendations": total_recommendations,
+                        "recent_discoveries": recent_discoveries,
+                        "discovery_rate": (
                         recent_discoveries / 7 if recent_discoveries > 0 else 0
                     ),
-                }
+                        }
 
         except Exception as e:
             self.logger.error(f"Error getting discovery stats: {e}")
             return {}
 
-
-# CLI interface for auto-discovery service
+# CLI interface for auto - discovery service
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Auto Discovery Service CLI")
     parser.add_argument(
         "--action",
-        choices=["add-channel", "discover", "scheduled", "stats", "recommendations"],
-        required=True,
-    )
+            choices=["add - channel", "discover", "scheduled", "stats", "recommendations"],
+            required = True,
+            )
     parser.add_argument("--channel", help="Channel name")
-    parser.add_argument("--budget", type=float, help="Budget limit for channel")
+    parser.add_argument("--budget", type = float, help="Budget limit for channel")
     parser.add_argument(
         "--pricing",
-        choices=["free", "freemium", "paid"],
-        help="Preferred pricing model",
-    )
+            choices=["free", "freemium", "paid"],
+            help="Preferred pricing model",
+            )
 
     args = parser.parse_args()
 
     service = AutoDiscoveryService()
 
-    if args.action == "add-channel" and args.channel:
-        # Create custom profile if budget/pricing specified
+    if args.action == "add - channel" and args.channel:
+        # Create custom profile if budget / pricing specified
         profile = None
         if args.budget or args.pricing:
             profile = ChannelProfile(
-                name=args.channel,
-                category="custom",
-                priority_features=["api_access", "documentation"],
-                budget_limit=args.budget or 25.0,
-                preferred_pricing=args.pricing or "freemium",
-                auto_discovery_enabled=True,
-            )
+                name = args.channel,
+                    category="custom",
+                    priority_features=["api_access", "documentation"],
+                    budget_limit = args.budget or 25.0,
+                    preferred_pricing = args.pricing or "freemium",
+                    auto_discovery_enabled = True,
+                    )
 
         success = service.add_channel(args.channel, profile)
         print(

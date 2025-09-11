@@ -1,17 +1,17 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 import sqlite3
 
 
 def check_rss_feeds():
     """Check RSS feeds status for all channels"""
     try:
-        conn = sqlite3.connect("data/right_perspective.db")
+        conn = sqlite3.connect("data / right_perspective.db")
         cursor = conn.cursor()
 
         cursor.execute(
             """
-            SELECT channel_id, feed_url, status, last_checked, error_count 
-            FROM channel_rss_feeds 
+            SELECT channel_id, feed_url, status, last_checked, error_count
+            FROM channel_rss_feeds
             ORDER BY channel_id
         """
         )
@@ -34,7 +34,6 @@ def check_rss_feeds():
 
     except Exception as e:
         print(f"Error checking RSS feeds: {e}")
-
 
 if __name__ == "__main__":
     check_rss_feeds()

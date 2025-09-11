@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI YouTube SEO Optimization Engine
 
@@ -11,12 +11,12 @@ Advanced SEO optimization system for YouTube content that provides:
 - Performance tracking and optimization recommendations
 
 Features:
-- Real-time trending topic analysis
-- AI-powered keyword generation
+- Real - time trending topic analysis
+- AI - powered keyword generation
 - Competitor content analysis
 - SEO score calculation
-- A/B testing for optimization
-- Multi-language SEO support
+- A / B testing for optimization
+- Multi - language SEO support
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -71,8 +71,9 @@ class TrendingSource(Enum):
     NEWS_FEEDS = "news_feeds"
     COMPETITOR_ANALYSIS = "competitor_analysis"
 
-
 @dataclass
+
+
 class KeywordData:
     """Keyword analysis data structure."""
 
@@ -86,8 +87,9 @@ class KeywordData:
     related_keywords: List[str]
     last_updated: datetime
 
-
 @dataclass
+
+
 class TrendingTopic:
     """Trending topic data structure."""
 
@@ -102,8 +104,9 @@ class TrendingTopic:
     geographic_data: Dict[str, float]
     timestamp: datetime
 
-
 @dataclass
+
+
 class CompetitorAnalysis:
     """Competitor analysis data structure."""
 
@@ -119,8 +122,9 @@ class CompetitorAnalysis:
     seo_strategies: List[str]
     last_analyzed: datetime
 
-
 @dataclass
+
+
 class SEOOptimization:
     """SEO optimization results."""
 
@@ -145,13 +149,14 @@ class YouTubeSEOOptimizer:
     SEO analysis, keyword research, trend analysis, and optimization recommendations.
     """
 
-    def __init__(self, config_path: str = "config/seo_config.json"):
+
+    def __init__(self, config_path: str = "config / seo_config.json"):
         self.logger = setup_logger("youtube_seo")
         self.config_path = config_path
         self.config = self._load_config()
 
         # Initialize database
-        self.db_path = self.config.get("database_path", "data/seo_optimization.sqlite")
+        self.db_path = self.config.get("database_path", "data / seo_optimization.sqlite")
         self._init_database()
 
         # Initialize integrations
@@ -168,6 +173,7 @@ class YouTubeSEOOptimizer:
 
         self.logger.info("YouTube SEO Optimizer initialized")
 
+
     def _load_config(self) -> Dict[str, Any]:
         """Load SEO configuration."""
         try:
@@ -178,42 +184,43 @@ class YouTubeSEOOptimizer:
             self.logger.error(f"Error loading SEO config: {e}")
 
         return {
-            "database_path": "data/seo_optimization.sqlite",
-            "keyword_research": {
+            "database_path": "data / seo_optimization.sqlite",
+                "keyword_research": {
                 "enabled": True,
-                "max_keywords_per_analysis": 50,
-                "min_search_volume": 100,
-                "cache_duration_hours": 24,
-            },
-            "trending_analysis": {
+                    "max_keywords_per_analysis": 50,
+                    "min_search_volume": 100,
+                    "cache_duration_hours": 24,
+                    },
+                "trending_analysis": {
                 "enabled": True,
-                "sources": ["youtube_trending", "google_trends"],
-                "update_interval_minutes": 60,
-                "trend_threshold": 10.0,
-            },
-            "competitor_analysis": {
+                    "sources": ["youtube_trending", "google_trends"],
+                    "update_interval_minutes": 60,
+                    "trend_threshold": 10.0,
+                    },
+                "competitor_analysis": {
                 "enabled": True,
-                "max_competitors": 10,
-                "analysis_depth": "detailed",
-                "update_interval_hours": 12,
-            },
-            "optimization": {
+                    "max_competitors": 10,
+                    "analysis_depth": "detailed",
+                    "update_interval_hours": 12,
+                    },
+                "optimization": {
                 "title_max_length": 60,
-                "description_max_length": 5000,
-                "max_tags": 15,
-                "keyword_density_target": 0.02,
-                "readability_target": 60.0,
-            },
-            "apis": {
+                    "description_max_length": 5000,
+                    "max_tags": 15,
+                    "keyword_density_target": 0.02,
+                    "readability_target": 60.0,
+                    },
+                "apis": {
                 "google_trends_enabled": True,
-                "youtube_api_enabled": True,
-                "social_media_apis": [],
-            },
-        }
+                    "youtube_api_enabled": True,
+                    "social_media_apis": [],
+                    },
+                }
+
 
     def _init_database(self):
         """Initialize SEO optimization database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             # Keywords table
@@ -221,14 +228,14 @@ class YouTubeSEOOptimizer:
                 """
                 CREATE TABLE IF NOT EXISTS keywords (
                     keyword TEXT PRIMARY KEY,
-                    search_volume INTEGER,
-                    competition REAL,
-                    relevance_score REAL,
-                    trend_direction TEXT,
-                    difficulty REAL,
-                    cpc REAL,
-                    related_keywords TEXT,
-                    last_updated TIMESTAMP
+                        search_volume INTEGER,
+                        competition REAL,
+                        relevance_score REAL,
+                        trend_direction TEXT,
+                        difficulty REAL,
+                        cpc REAL,
+                        related_keywords TEXT,
+                        last_updated TIMESTAMP
                 )
             """
             )
@@ -238,16 +245,16 @@ class YouTubeSEOOptimizer:
                 """
                 CREATE TABLE IF NOT EXISTS trending_topics (
                     id TEXT PRIMARY KEY,
-                    topic TEXT,
-                    category TEXT,
-                    trend_score REAL,
-                    search_volume INTEGER,
-                    growth_rate REAL,
-                    keywords TEXT,
-                    hashtags TEXT,
-                    source TEXT,
-                    geographic_data TEXT,
-                    timestamp TIMESTAMP
+                        topic TEXT,
+                        category TEXT,
+                        trend_score REAL,
+                        search_volume INTEGER,
+                        growth_rate REAL,
+                        keywords TEXT,
+                        hashtags TEXT,
+                        source TEXT,
+                        geographic_data TEXT,
+                        timestamp TIMESTAMP
                 )
             """
             )
@@ -257,16 +264,16 @@ class YouTubeSEOOptimizer:
                 """
                 CREATE TABLE IF NOT EXISTS competitor_analysis (
                     channel_id TEXT PRIMARY KEY,
-                    channel_name TEXT,
-                    subscriber_count INTEGER,
-                    avg_views INTEGER,
-                    upload_frequency REAL,
-                    top_keywords TEXT,
-                    content_themes TEXT,
-                    optimal_posting_times TEXT,
-                    engagement_rate REAL,
-                    seo_strategies TEXT,
-                    last_analyzed TIMESTAMP
+                        channel_name TEXT,
+                        subscriber_count INTEGER,
+                        avg_views INTEGER,
+                        upload_frequency REAL,
+                        top_keywords TEXT,
+                        content_themes TEXT,
+                        optimal_posting_times TEXT,
+                        engagement_rate REAL,
+                        seo_strategies TEXT,
+                        last_analyzed TIMESTAMP
                 )
             """
             )
@@ -276,36 +283,38 @@ class YouTubeSEOOptimizer:
                 """
                 CREATE TABLE IF NOT EXISTS seo_optimizations (
                     id TEXT PRIMARY KEY,
-                    video_id TEXT,
-                    original_title TEXT,
-                    optimized_title TEXT,
-                    original_description TEXT,
-                    optimized_description TEXT,
-                    original_tags TEXT,
-                    optimized_tags TEXT,
-                    keywords_used TEXT,
-                    seo_score REAL,
-                    improvement_score REAL,
-                    recommendations TEXT,
-                    thumbnail_suggestions TEXT,
-                    estimated_reach_increase REAL,
-                    optimization_timestamp TIMESTAMP
+                        video_id TEXT,
+                        original_title TEXT,
+                        optimized_title TEXT,
+                        original_description TEXT,
+                        optimized_description TEXT,
+                        original_tags TEXT,
+                        optimized_tags TEXT,
+                        keywords_used TEXT,
+                        seo_score REAL,
+                        improvement_score REAL,
+                        recommendations TEXT,
+                        thumbnail_suggestions TEXT,
+                        estimated_reach_increase REAL,
+                        optimization_timestamp TIMESTAMP
                 )
             """
             )
 
             conn.commit()
 
+
     def _init_nltk(self):
         """Initialize NLTK data for text analysis."""
         try:
             import nltk
 
-            nltk.download("punkt", quiet=True)
-            nltk.download("stopwords", quiet=True)
-            nltk.download("wordnet", quiet=True)
+            nltk.download("punkt", quiet = True)
+            nltk.download("stopwords", quiet = True)
+            nltk.download("wordnet", quiet = True)
         except Exception as e:
             self.logger.warning(f"Could not initialize NLTK: {e}")
+
 
     async def research_keywords(
         self, topic: str, niche: str = None, max_keywords: int = 50
@@ -339,14 +348,14 @@ class YouTubeSEOOptimizer:
 
             # Sort by relevance and search volume
             keywords.sort(
-                key=lambda k: (k.relevance_score * k.search_volume), reverse=True
+                key = lambda k: (k.relevance_score * k.search_volume), reverse = True
             )
 
             # Cache results
             self.keyword_cache[cache_key] = {
                 "keywords": keywords,
-                "timestamp": datetime.now(),
-            }
+                    "timestamp": datetime.now(),
+                    }
 
             # Store in database
             await self._store_keywords(keywords)
@@ -358,6 +367,7 @@ class YouTubeSEOOptimizer:
             self.logger.error(f"Error researching keywords: {e}")
             return []
 
+
     def _generate_base_keywords(self, topic: str, niche: str = None) -> List[str]:
         """Generate base keywords from topic and niche."""
         keywords = [topic.lower()]
@@ -366,7 +376,7 @@ class YouTubeSEOOptimizer:
         topic_words = topic.lower().split()
         keywords.extend(topic_words)
 
-        # Add niche-specific keywords
+        # Add niche - specific keywords
         if niche:
             niche_words = niche.lower().split()
             keywords.extend(niche_words)
@@ -378,27 +388,28 @@ class YouTubeSEOOptimizer:
         # Add common modifiers
         modifiers = [
             "how to",
-            "tutorial",
-            "guide",
-            "tips",
-            "tricks",
-            "best",
-            "top",
-            "review",
-            "explained",
-            "beginner",
-            "advanced",
-            "2024",
-            "latest",
-            "new",
-            "ultimate",
-        ]
+                "tutorial",
+                "guide",
+                "tips",
+                "tricks",
+                "best",
+                "top",
+                "review",
+                "explained",
+                "beginner",
+                "advanced",
+                "2024",
+                "latest",
+                "new",
+                "ultimate",
+                ]
 
         for modifier in modifiers:
             keywords.append(f"{modifier} {topic}")
             keywords.append(f"{topic} {modifier}")
 
         return list(set(keywords))  # Remove duplicates
+
 
     async def _expand_keywords(self, base_keywords: List[str]) -> List[str]:
         """Expand keywords using various methods."""
@@ -409,11 +420,12 @@ class YouTubeSEOOptimizer:
             related = await self._get_related_keywords(keyword)
             expanded.update(related)
 
-            # Add long-tail variations
+            # Add long - tail variations
             long_tail = self._generate_long_tail_keywords(keyword)
             expanded.update(long_tail)
 
         return list(expanded)
+
 
     async def _get_related_keywords(self, keyword: str) -> List[str]:
         """Get related keywords using various APIs and methods."""
@@ -434,43 +446,45 @@ class YouTubeSEOOptimizer:
 
         return related
 
+
     def _generate_long_tail_keywords(self, keyword: str) -> List[str]:
-        """Generate long-tail keyword variations."""
+        """Generate long - tail keyword variations."""
         long_tail = []
 
-        # Question-based long-tail
+        # Question - based long - tail
         question_starters = [
             "what is",
-            "how to",
-            "why is",
-            "when to",
-            "where to",
-            "who is",
-            "which is",
-            "how does",
-            "what are",
-            "how can",
-        ]
+                "how to",
+                "why is",
+                "when to",
+                "where to",
+                "who is",
+                "which is",
+                "how does",
+                "what are",
+                "how can",
+                ]
 
         for starter in question_starters:
             long_tail.append(f"{starter} {keyword}")
 
-        # Problem-solution long-tail
+        # Problem - solution long - tail
         problem_phrases = [
             "problems with",
-            "issues with",
-            "troubleshooting",
-            "fix",
-            "solve",
-            "repair",
-            "improve",
-        ]
+                "issues with",
+                "troubleshooting",
+                "fix",
+                "solve",
+                "repair",
+                "improve",
+                ]
 
         for phrase in problem_phrases:
             long_tail.append(f"{phrase} {keyword}")
             long_tail.append(f"{keyword} {phrase}")
 
         return long_tail
+
 
     async def _analyze_keyword(self, keyword: str, topic: str) -> Optional[KeywordData]:
         """Analyze a single keyword for SEO metrics."""
@@ -492,20 +506,21 @@ class YouTubeSEOOptimizer:
             related_keywords = await self._get_related_keywords(keyword)
 
             return KeywordData(
-                keyword=keyword,
-                search_volume=search_volume,
-                competition=competition,
-                relevance_score=relevance_score,
-                trend_direction=trend_direction,
-                difficulty=difficulty,
-                cpc=0.0,  # Would be populated from ads API
-                related_keywords=related_keywords[:10],  # Limit to top 10
-                last_updated=datetime.now(),
-            )
+                keyword = keyword,
+                    search_volume = search_volume,
+                    competition = competition,
+                    relevance_score = relevance_score,
+                    trend_direction = trend_direction,
+                    difficulty = difficulty,
+                    cpc = 0.0,  # Would be populated from ads API
+                related_keywords = related_keywords[:10],  # Limit to top 10
+                last_updated = datetime.now(),
+                    )
 
         except Exception as e:
             self.logger.error(f"Error analyzing keyword '{keyword}': {e}")
             return None
+
 
     def _calculate_relevance_score(self, keyword: str, topic: str) -> float:
         """Calculate relevance score between keyword and topic."""
@@ -533,6 +548,7 @@ class YouTubeSEOOptimizer:
             self.logger.error(f"Error calculating relevance score: {e}")
             return 0.0
 
+
     def _estimate_search_volume(self, keyword: str) -> int:
         """Estimate search volume for keyword (simplified implementation)."""
         # In production, this would use Google Keyword Planner API or similar
@@ -545,7 +561,7 @@ class YouTubeSEOOptimizer:
         if word_count == 1:
             base_volume *= 5  # Single words tend to have higher volume
         elif word_count > 4:
-            base_volume *= 0.3  # Long-tail keywords have lower volume
+            base_volume *= 0.3  # Long - tail keywords have lower volume
 
         # Adjust based on common terms
         high_volume_terms = ["how to", "tutorial", "review", "best", "top"]
@@ -555,6 +571,7 @@ class YouTubeSEOOptimizer:
                 break
 
         return int(base_volume * (0.5 + np.random.random()))  # Add some randomness
+
 
     def _calculate_competition(self, keyword: str) -> float:
         """Calculate competition level for keyword."""
@@ -571,14 +588,16 @@ class YouTubeSEOOptimizer:
         else:
             return 0.2 + np.random.random() * 0.4
 
+
     def _calculate_difficulty(
         self, keyword: str, search_volume: int, competition: float
     ) -> float:
         """Calculate SEO difficulty for keyword."""
         # Difficulty is based on competition and search volume
-        volume_factor = min(search_volume / 10000, 1.0)  # Normalize to 0-1
+        volume_factor = min(search_volume / 10000, 1.0)  # Normalize to 0 - 1
         difficulty = (competition * 0.7) + (volume_factor * 0.3)
         return min(difficulty, 1.0)
+
 
     async def analyze_trending_topics(
         self, niche: str = None, limit: int = 20
@@ -600,7 +619,7 @@ class YouTubeSEOOptimizer:
                 trending_topics.extend(google_trends)
 
             # Sort by trend score
-            trending_topics.sort(key=lambda t: t.trend_score, reverse=True)
+            trending_topics.sort(key = lambda t: t.trend_score, reverse = True)
 
             # Store in database
             await self._store_trending_topics(trending_topics[:limit])
@@ -611,6 +630,7 @@ class YouTubeSEOOptimizer:
         except Exception as e:
             self.logger.error(f"Error analyzing trending topics: {e}")
             return []
+
 
     async def analyze_competitors(
         self, channel_ids: List[str]
@@ -635,14 +655,15 @@ class YouTubeSEOOptimizer:
             self.logger.error(f"Error analyzing competitors: {e}")
             return []
 
+
     async def optimize_video_seo(
         self,
-        title: str,
-        description: str,
-        tags: List[str],
-        topic: str,
-        niche: str = None,
-    ) -> SEOOptimization:
+            title: str,
+            description: str,
+            tags: List[str],
+            topic: str,
+            niche: str = None,
+            ) -> SEOOptimization:
         """Optimize video SEO elements."""
         try:
             self.logger.info(f"Optimizing SEO for video: {title[:50]}...")
@@ -670,13 +691,13 @@ class YouTubeSEOOptimizer:
             # Generate recommendations
             recommendations = self._generate_seo_recommendations(
                 title,
-                optimized_title,
-                description,
-                optimized_description,
-                tags,
-                optimized_tags,
-                seo_score,
-            )
+                    optimized_title,
+                    description,
+                    optimized_description,
+                    tags,
+                    optimized_tags,
+                    seo_score,
+                    )
 
             # Generate thumbnail suggestions
             thumbnail_suggestions = self._generate_thumbnail_suggestions(
@@ -687,20 +708,20 @@ class YouTubeSEOOptimizer:
             estimated_reach_increase = self._estimate_reach_increase(seo_score)
 
             optimization = SEOOptimization(
-                original_title=title,
-                optimized_title=optimized_title,
-                original_description=description,
-                optimized_description=optimized_description,
-                original_tags=tags,
-                optimized_tags=optimized_tags,
-                keywords_used=top_keywords,
-                seo_score=seo_score,
-                improvement_score=seo_score - 50.0,  # Baseline of 50
-                recommendations=recommendations,
-                thumbnail_suggestions=thumbnail_suggestions,
-                estimated_reach_increase=estimated_reach_increase,
-                optimization_timestamp=datetime.now(),
-            )
+                original_title = title,
+                    optimized_title = optimized_title,
+                    original_description = description,
+                    optimized_description = optimized_description,
+                    original_tags = tags,
+                    optimized_tags = optimized_tags,
+                    keywords_used = top_keywords,
+                    seo_score = seo_score,
+                    improvement_score = seo_score - 50.0,  # Baseline of 50
+                recommendations = recommendations,
+                    thumbnail_suggestions = thumbnail_suggestions,
+                    estimated_reach_increase = estimated_reach_increase,
+                    optimization_timestamp = datetime.now(),
+                    )
 
             # Store optimization
             await self._store_seo_optimization(optimization)
@@ -711,6 +732,7 @@ class YouTubeSEOOptimizer:
         except Exception as e:
             self.logger.error(f"Error optimizing video SEO: {e}")
             return None
+
 
     def _optimize_title(self, title: str, keywords: List[str]) -> str:
         """Optimize video title for SEO."""
@@ -752,6 +774,7 @@ class YouTubeSEOOptimizer:
             self.logger.error(f"Error optimizing title: {e}")
             return title
 
+
     def _optimize_description(
         self, description: str, keywords: List[str], topic: str
     ) -> str:
@@ -762,17 +785,17 @@ class YouTubeSEOOptimizer:
             # Start with original description
             optimized = description
 
-            # Add SEO-optimized intro if description is short
+            # Add SEO - optimized intro if description is short
             if len(description) < 200:
                 intro = f"In this video, we explore {topic} and cover everything you need to know about {keywords[0] if keywords else topic}."
                 optimized = f"{intro}\n\n{description}"
 
-            # Add keyword-rich conclusion
+            # Add keyword - rich conclusion
             keyword_section = "\n\n🔍 Key Topics Covered:\n"
             for i, keyword in enumerate(keywords[:5]):
                 keyword_section += f"• {keyword.title()}\n"
 
-            # Add call-to-action
+            # Add call - to - action
             cta = "\n\n👍 Like this video if it helped you!\n📺 Subscribe for more content like this\n💬 Comment below with your questions"
 
             optimized += keyword_section + cta
@@ -793,6 +816,7 @@ class YouTubeSEOOptimizer:
             self.logger.error(f"Error optimizing description: {e}")
             return description
 
+
     def _optimize_tags(self, tags: List[str], keywords: List[str]) -> List[str]:
         """Optimize video tags for SEO."""
         try:
@@ -805,7 +829,7 @@ class YouTubeSEOOptimizer:
             # (In production, this would use actual search volume data)
             prioritized_tags = []
 
-            # Add high-priority keywords first
+            # Add high - priority keywords first
             for keyword in keywords[:5]:
                 if keyword not in prioritized_tags:
                     prioritized_tags.append(keyword)
@@ -825,6 +849,7 @@ class YouTubeSEOOptimizer:
         except Exception as e:
             self.logger.error(f"Error optimizing tags: {e}")
             return tags
+
 
     def _calculate_seo_score(
         self, title: str, description: str, tags: List[str], keywords: List[KeywordData]
@@ -877,7 +902,7 @@ class YouTubeSEOOptimizer:
                     readability_score = 10
                 elif reading_ease >= 30:
                     readability_score = 5
-            except:
+            except Exception:
                 readability_score = 5  # Default score
 
             total_score = (
@@ -892,39 +917,47 @@ class YouTubeSEOOptimizer:
     # Additional helper methods would be implemented here...
     # (Due to length constraints, showing key structure)
 
+
     async def _get_youtube_suggestions(self, keyword: str) -> List[str]:
         """Get YouTube search suggestions for keyword."""
         # Implementation would use YouTube API or scraping
         return [f"{keyword} tutorial", f"{keyword} guide", f"best {keyword}"]
+
 
     async def _get_google_trends_related(self, keyword: str) -> List[str]:
         """Get Google Trends related queries."""
         # Implementation would use Google Trends API
         return [f"{keyword} tips", f"{keyword} review"]
 
+
     async def _get_trend_direction(self, keyword: str) -> str:
         """Get trend direction for keyword."""
         # Implementation would analyze historical data
         return "stable"
+
 
     async def _store_keywords(self, keywords: List[KeywordData]):
         """Store keywords in database."""
         # Implementation would store in SQLite database
         pass
 
+
     async def _get_youtube_trending(self, niche: str) -> List[TrendingTopic]:
         """Get YouTube trending topics."""
         # Implementation would use YouTube API
         return []
+
 
     async def _get_google_trending(self, niche: str) -> List[TrendingTopic]:
         """Get Google trending topics."""
         # Implementation would use Google Trends API
         return []
 
+
     async def _store_trending_topics(self, topics: List[TrendingTopic]):
         """Store trending topics in database."""
         pass
+
 
     async def _analyze_single_competitor(
         self, channel_id: str
@@ -933,20 +966,22 @@ class YouTubeSEOOptimizer:
         # Implementation would analyze competitor data
         return None
 
+
     async def _store_competitor_analyses(self, analyses: List[CompetitorAnalysis]):
         """Store competitor analyses in database."""
         pass
 
+
     def _generate_seo_recommendations(
         self,
-        original_title: str,
-        optimized_title: str,
-        original_desc: str,
-        optimized_desc: str,
-        original_tags: List[str],
-        optimized_tags: List[str],
-        seo_score: float,
-    ) -> List[str]:
+            original_title: str,
+            optimized_title: str,
+            original_desc: str,
+            optimized_desc: str,
+            original_tags: List[str],
+            optimized_tags: List[str],
+            seo_score: float,
+            ) -> List[str]:
         """Generate SEO improvement recommendations."""
         recommendations = []
 
@@ -957,12 +992,13 @@ class YouTubeSEOOptimizer:
             recommendations.append("Expand description to at least 200 characters")
 
         if len(original_tags) < 5:
-            recommendations.append("Add more relevant tags (aim for 10-15)")
+            recommendations.append("Add more relevant tags (aim for 10 - 15)")
 
         if seo_score < 70:
-            recommendations.append("Consider adding more keyword-rich content")
+            recommendations.append("Consider adding more keyword - rich content")
 
         return recommendations
+
 
     def _generate_thumbnail_suggestions(
         self, topic: str, keywords: List[KeywordData]
@@ -970,11 +1006,12 @@ class YouTubeSEOOptimizer:
         """Generate thumbnail optimization suggestions."""
         return [
             f"Include text overlay with '{keywords[0].keyword if keywords else topic}'",
-            "Use bright, contrasting colors",
-            "Include human faces if relevant",
-            "Add arrows or highlighting elements",
-            "Keep text large and readable",
-        ]
+                "Use bright, contrasting colors",
+                "Include human faces if relevant",
+                "Add arrows or highlighting elements",
+                "Keep text large and readable",
+                ]
+
 
     def _estimate_reach_increase(self, seo_score: float) -> float:
         """Estimate potential reach increase from SEO optimization."""
@@ -990,29 +1027,30 @@ class YouTubeSEOOptimizer:
         else:
             return 5.0
 
+
     async def _store_seo_optimization(self, optimization: SEOOptimization):
         """Store SEO optimization in database."""
         # Implementation would store in SQLite database
         pass
 
-
 # Factory function
+
+
 def create_seo_optimizer() -> YouTubeSEOOptimizer:
     """Create and return YouTube SEO optimizer instance."""
     return YouTubeSEOOptimizer()
-
 
 # CLI interface for testing
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="YouTube SEO Optimizer")
-    parser.add_argument("--research", type=str, help="Research keywords for topic")
+    parser.add_argument("--research", type = str, help="Research keywords for topic")
     parser.add_argument(
         "--trending", action="store_true", help="Analyze trending topics"
     )
     parser.add_argument(
-        "--optimize", type=str, help="Optimize video SEO (provide title)"
+        "--optimize", type = str, help="Optimize video SEO (provide title)"
     )
 
     args = parser.parse_args()
@@ -1034,11 +1072,11 @@ if __name__ == "__main__":
     elif args.optimize:
         optimization = asyncio.run(
             optimizer.optimize_video_seo(
-                title=args.optimize,
-                description="Sample description",
-                tags=["sample", "video"],
-                topic=args.optimize,
-            )
+                title = args.optimize,
+                    description="Sample description",
+                    tags=["sample", "video"],
+                    topic = args.optimize,
+                    )
         )
         if optimization:
             print(f"SEO Score: {optimization.seo_score:.1f}")

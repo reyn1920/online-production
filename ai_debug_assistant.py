@@ -5,22 +5,22 @@ from ollama_integration import ask_ollama
 from web_search import web_search
 
 
-def ai_debug_sqlite_error(error_msg, num_results=3):
+def ai_debug_sqlite_error(error_msg, num_results = 3):
     """
-    AI-powered SQLite error debugging using web search and Ollama.
+    AI - powered SQLite error debugging using web search and Ollama.
 
     Args:
         error_msg (str): The SQLite error message
         num_results (int): Number of web search results to include
 
     Returns:
-        str: AI-generated fix suggestion
+        str: AI - generated fix suggestion
     """
     print(f"🔍 Analyzing SQLite error: {error_msg}")
 
     # Search the web for solutions
     print("📡 Searching web for solutions...")
-    results = web_search(error_msg, num_results=num_results)
+    results = web_search(error_msg, num_results = num_results)
 
     # Create comprehensive context for AI
     context = f"Error:\n{error_msg}\n\nWeb Results:\n" + "\n".join(results)
@@ -48,13 +48,13 @@ def auto_debug_with_ai():
     Demonstration of the AI debugging workflow.
     """
     # Example SQLite error
-    error_msg = "sqlite3.OperationalError: no such column: search_keywords"
+        error_msg = "sqlite3.OperationalError: no such column: search_keywords"
 
     try:
-        # Get AI-powered fix
+        # Get AI - powered fix
         fix = ai_debug_sqlite_error(error_msg)
 
-        print("\n💡 AI-Generated Fix:")
+        print("\n💡 AI - Generated Fix:")
         print("=" * 50)
         print(fix)
         print("=" * 50)
@@ -62,7 +62,6 @@ def auto_debug_with_ai():
     except Exception as e:
         print(f"❌ Error during AI debugging: {e}")
         traceback.print_exc()
-
 
 if __name__ == "__main__":
     # Run the AI debugging demonstration

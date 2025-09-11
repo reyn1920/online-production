@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Autonomous Decision Engine - AI-Powered Business Decision Making System
+Autonomous Decision Engine - AI - Powered Business Decision Making System
 
 This engine provides:
-1. Real-time opportunity detection
+1. Real - time opportunity detection
 2. Risk assessment and mitigation
-3. ROI-based decision optimization
-4. Multi-criteria decision analysis
+3. ROI - based decision optimization
+4. Multi - criteria decision analysis
 5. Predictive analytics for business outcomes
-6. Automated A/B testing decisions
+6. Automated A / B testing decisions
 7. Resource allocation optimization
 8. Market trend analysis and response
 
@@ -68,8 +68,9 @@ class ConfidenceLevel(Enum):
     HIGH = 0.8
     VERY_HIGH = 0.95
 
-
 @dataclass
+
+
 class MarketSignal:
     """Represents a market signal or trend."""
 
@@ -81,8 +82,9 @@ class MarketSignal:
     timestamp: datetime
     metadata: Dict[str, Any]
 
-
 @dataclass
+
+
 class OpportunityScore:
     """Scoring for business opportunities."""
 
@@ -94,10 +96,11 @@ class OpportunityScore:
     risk_adjusted_score: float
     confidence_level: float
 
-
 @dataclass
+
+
 class DecisionRecommendation:
-    """AI-generated decision recommendation."""
+    """AI - generated decision recommendation."""
 
     id: str
     category: DecisionCategory
@@ -117,7 +120,8 @@ class DecisionRecommendation:
 
 
 class AutonomousDecisionEngine:
-    """AI-powered autonomous decision making engine."""
+    """AI - powered autonomous decision making engine."""
+
 
     def __init__(self, config_path: str = "decision_engine_config.json"):
         self.config_path = config_path
@@ -125,7 +129,7 @@ class AutonomousDecisionEngine:
 
         # Decision history and learning
         self.decision_history: List[DecisionRecommendation] = []
-        self.performance_history: deque = deque(maxlen=1000)
+        self.performance_history: deque = deque(maxlen = 1000)
         self.market_signals: List[MarketSignal] = []
 
         # Predictive models (simplified)
@@ -136,21 +140,22 @@ class AutonomousDecisionEngine:
         # Decision criteria weights
         self.decision_weights = self.config.get(
             "decision_weights",
-            {
+                {
                 "revenue_potential": 0.25,
-                "cost_efficiency": 0.20,
-                "market_timing": 0.15,
-                "competitive_advantage": 0.15,
-                "implementation_feasibility": 0.15,
-                "risk_factor": 0.10,
-            },
-        )
+                    "cost_efficiency": 0.20,
+                    "market_timing": 0.15,
+                    "competitive_advantage": 0.15,
+                    "implementation_feasibility": 0.15,
+                    "risk_factor": 0.10,
+                    },
+                )
 
         # Database for persistence
         self.db_path = "decision_engine.db"
         self._init_database()
 
         logger.info("🧠 Autonomous Decision Engine initialized")
+
 
     def _load_config(self) -> Dict[str, Any]:
         """Load decision engine configuration."""
@@ -160,34 +165,36 @@ class AutonomousDecisionEngine:
         except FileNotFoundError:
             default_config = {
                 "min_confidence_threshold": 0.7,
-                "max_risk_tolerance": "medium",
-                "min_roi_threshold": 1.5,
-                "max_implementation_cost": 1000.0,
-                "decision_weights": {
+                    "max_risk_tolerance": "medium",
+                    "min_roi_threshold": 1.5,
+                    "max_implementation_cost": 1000.0,
+                    "decision_weights": {
                     "revenue_potential": 0.25,
-                    "cost_efficiency": 0.20,
-                    "market_timing": 0.15,
-                    "competitive_advantage": 0.15,
-                    "implementation_feasibility": 0.15,
-                    "risk_factor": 0.10,
-                },
-                "learning_rate": 0.1,
-                "market_signal_sources": [
+                        "cost_efficiency": 0.20,
+                        "market_timing": 0.15,
+                        "competitive_advantage": 0.15,
+                        "implementation_feasibility": 0.15,
+                        "risk_factor": 0.10,
+                        },
+                    "learning_rate": 0.1,
+                    "market_signal_sources": [
                     "internal_metrics",
-                    "competitor_analysis",
-                    "customer_feedback",
-                    "market_trends",
-                ],
-                "auto_execute_threshold": 0.9,
-                "simulation_runs": 1000,
-            }
+                        "competitor_analysis",
+                        "customer_feedback",
+                        "market_trends",
+                        ],
+                    "auto_execute_threshold": 0.9,
+                    "simulation_runs": 1000,
+                    }
             self._save_config(default_config)
             return default_config
+
 
     def _save_config(self, config: Dict[str, Any]):
         """Save configuration to file."""
         with open(self.config_path, "w") as f:
-            json.dump(config, f, indent=2, default=str)
+            json.dump(config, f, indent = 2, default = str)
+
 
     def _init_database(self):
         """Initialize decision engine database."""
@@ -199,22 +206,22 @@ class AutonomousDecisionEngine:
             """
             CREATE TABLE IF NOT EXISTS decision_recommendations (
                 id TEXT PRIMARY KEY,
-                category TEXT,
-                title TEXT,
-                description TEXT,
-                rationale TEXT,
-                opportunity_score TEXT,
-                risk_level TEXT,
-                expected_roi REAL,
-                implementation_cost REAL,
-                time_to_impact INTEGER,
-                success_probability REAL,
-                recommended_actions TEXT,
-                kpis_to_monitor TEXT,
-                rollback_plan TEXT,
-                timestamp TEXT,
-                executed BOOLEAN DEFAULT FALSE,
-                actual_outcome TEXT
+                    category TEXT,
+                    title TEXT,
+                    description TEXT,
+                    rationale TEXT,
+                    opportunity_score TEXT,
+                    risk_level TEXT,
+                    expected_roi REAL,
+                    implementation_cost REAL,
+                    time_to_impact INTEGER,
+                    success_probability REAL,
+                    recommended_actions TEXT,
+                    kpis_to_monitor TEXT,
+                    rollback_plan TEXT,
+                    timestamp TEXT,
+                    executed BOOLEAN DEFAULT FALSE,
+                    actual_outcome TEXT
             )
         """
         )
@@ -224,13 +231,13 @@ class AutonomousDecisionEngine:
             """
             CREATE TABLE IF NOT EXISTS market_signals (
                 id TEXT PRIMARY KEY,
-                signal_type TEXT,
-                strength REAL,
-                direction TEXT,
-                confidence REAL,
-                source TEXT,
-                timestamp TEXT,
-                metadata TEXT
+                    signal_type TEXT,
+                    strength REAL,
+                    direction TEXT,
+                    confidence REAL,
+                    source TEXT,
+                    timestamp TEXT,
+                    metadata TEXT
             )
         """
         )
@@ -240,12 +247,12 @@ class AutonomousDecisionEngine:
             """
             CREATE TABLE IF NOT EXISTS decision_performance (
                 decision_id TEXT,
-                metric_name TEXT,
-                predicted_value REAL,
-                actual_value REAL,
-                variance REAL,
-                timestamp TEXT,
-                FOREIGN KEY (decision_id) REFERENCES decision_recommendations (id)
+                    metric_name TEXT,
+                    predicted_value REAL,
+                    actual_value REAL,
+                    variance REAL,
+                    timestamp TEXT,
+                    FOREIGN KEY (decision_id) REFERENCES decision_recommendations (id)
             )
         """
         )
@@ -254,64 +261,68 @@ class AutonomousDecisionEngine:
         conn.close()
         logger.info("📊 Decision engine database initialized")
 
+
     def _initialize_revenue_model(self) -> Dict[str, Any]:
         """Initialize revenue prediction model."""
         return {
             "base_conversion_rate": 0.03,
-            "seasonal_factors": {
+                "seasonal_factors": {
                 "monday": 0.9,
-                "tuesday": 1.0,
-                "wednesday": 1.1,
-                "thursday": 1.0,
-                "friday": 0.8,
-                "saturday": 0.7,
-                "sunday": 0.6,
-            },
-            "channel_multipliers": {
+                    "tuesday": 1.0,
+                    "wednesday": 1.1,
+                    "thursday": 1.0,
+                    "friday": 0.8,
+                    "saturday": 0.7,
+                    "sunday": 0.6,
+                    },
+                "channel_multipliers": {
                 "email": 1.2,
-                "social_media": 0.8,
-                "paid_ads": 1.5,
-                "content": 1.0,
-                "referral": 1.8,
-                "direct": 1.3,
-            },
-            "market_conditions": {"bull": 1.3, "neutral": 1.0, "bear": 0.7},
-        }
+                    "social_media": 0.8,
+                    "paid_ads": 1.5,
+                    "content": 1.0,
+                    "referral": 1.8,
+                    "direct": 1.3,
+                    },
+                "market_conditions": {"bull": 1.3, "neutral": 1.0, "bear": 0.7},
+                }
+
 
     def _initialize_risk_model(self) -> Dict[str, Any]:
         """Initialize risk assessment model."""
         return {
             "base_risk_factors": {
                 "market_volatility": 0.15,
-                "competitive_pressure": 0.20,
-                "regulatory_risk": 0.10,
-                "technology_risk": 0.15,
-                "execution_risk": 0.25,
-                "financial_risk": 0.15,
-            },
-            "risk_mitigation_factors": {
+                    "competitive_pressure": 0.20,
+                    "regulatory_risk": 0.10,
+                    "technology_risk": 0.15,
+                    "execution_risk": 0.25,
+                    "financial_risk": 0.15,
+                    },
+                "risk_mitigation_factors": {
                 "diversification": 0.8,
-                "experience": 0.9,
-                "backup_plan": 0.85,
-                "gradual_rollout": 0.9,
-            },
-        }
+                    "experience": 0.9,
+                    "backup_plan": 0.85,
+                    "gradual_rollout": 0.9,
+                    },
+                }
+
 
     def _initialize_market_model(self) -> Dict[str, Any]:
         """Initialize market analysis model."""
         return {
             "trend_indicators": {
                 "growth_rate": 0.3,
-                "market_share": 0.25,
-                "customer_satisfaction": 0.2,
-                "competitive_position": 0.25,
-            },
-            "timing_factors": {
+                    "market_share": 0.25,
+                    "customer_satisfaction": 0.2,
+                    "competitive_position": 0.25,
+                    },
+                "timing_factors": {
                 "market_readiness": 0.4,
-                "competitive_landscape": 0.3,
-                "resource_availability": 0.3,
-            },
-        }
+                    "competitive_landscape": 0.3,
+                    "resource_availability": 0.3,
+                    },
+                }
+
 
     async def analyze_business_state(
         self, business_metrics: Dict[str, Any]
@@ -323,23 +334,24 @@ class AutonomousDecisionEngine:
             "current_performance": await self._assess_current_performance(
                 business_metrics
             ),
-            "market_signals": await self._collect_market_signals(),
-            "opportunity_areas": await self._identify_opportunity_areas(
+                "market_signals": await self._collect_market_signals(),
+                "opportunity_areas": await self._identify_opportunity_areas(
                 business_metrics
             ),
-            "risk_factors": await self._assess_risk_factors(business_metrics),
-            "competitive_position": await self._analyze_competitive_position(),
-            "resource_constraints": await self._analyze_resource_constraints(
+                "risk_factors": await self._assess_risk_factors(business_metrics),
+                "competitive_position": await self._analyze_competitive_position(),
+                "resource_constraints": await self._analyze_resource_constraints(
                 business_metrics
             ),
-        }
+                }
 
         return analysis
+
 
     async def generate_decision_recommendations(
         self, business_state: Dict[str, Any]
     ) -> List[DecisionRecommendation]:
-        """Generate AI-powered decision recommendations."""
+        """Generate AI - powered decision recommendations."""
         logger.info("🎯 Generating decision recommendations...")
 
         recommendations = []
@@ -373,10 +385,11 @@ class AutonomousDecisionEngine:
         filtered_recommendations = self._filter_recommendations(scored_recommendations)
 
         logger.info(
-            f"📋 Generated {len(filtered_recommendations)} high-quality decision recommendations"
+            f"📋 Generated {len(filtered_recommendations)} high - quality decision recommendations"
         )
 
         return filtered_recommendations
+
 
     async def _assess_current_performance(
         self, metrics: Dict[str, Any]
@@ -384,21 +397,22 @@ class AutonomousDecisionEngine:
         """Assess current business performance."""
         performance = {
             "revenue_trend": self._calculate_trend(metrics.get("daily_revenue", 0)),
-            "conversion_efficiency": metrics.get("conversion_rate", 0)
+                "conversion_efficiency": metrics.get("conversion_rate", 0)
             / 0.05,  # Normalized to 5% baseline
             "cost_efficiency": 1
             - (
                 metrics.get("operational_costs", 0)
                 / max(metrics.get("total_revenue", 1), 1)
             ),
-            "growth_momentum": metrics.get("growth_rate", 0),
-            "profitability": metrics.get("profit_margin", 0),
-        }
+                "growth_momentum": metrics.get("growth_rate", 0),
+                "profitability": metrics.get("profit_margin", 0),
+                }
 
         # Overall performance score
         performance["overall_score"] = sum(performance.values()) / len(performance)
 
         return performance
+
 
     async def _collect_market_signals(self) -> List[MarketSignal]:
         """Collect and analyze market signals."""
@@ -411,45 +425,46 @@ class AutonomousDecisionEngine:
         signals.append(
             MarketSignal(
                 signal_type="economic_indicator",
-                strength=0.7,
-                direction="positive",
-                confidence=0.8,
-                source="economic_data",
-                timestamp=current_time,
-                metadata={"indicator": "consumer_confidence", "value": 0.7},
-            )
+                    strength = 0.7,
+                    direction="positive",
+                    confidence = 0.8,
+                    source="economic_data",
+                    timestamp = current_time,
+                    metadata={"indicator": "consumer_confidence", "value": 0.7},
+                    )
         )
 
         # Competitive signals
         signals.append(
             MarketSignal(
                 signal_type="competitive_activity",
-                strength=0.6,
-                direction="neutral",
-                confidence=0.7,
-                source="competitor_analysis",
-                timestamp=current_time,
-                metadata={"activity": "pricing_changes", "impact": "moderate"},
-            )
+                    strength = 0.6,
+                    direction="neutral",
+                    confidence = 0.7,
+                    source="competitor_analysis",
+                    timestamp = current_time,
+                    metadata={"activity": "pricing_changes", "impact": "moderate"},
+                    )
         )
 
         # Customer behavior signals
         signals.append(
             MarketSignal(
                 signal_type="customer_behavior",
-                strength=0.8,
-                direction="positive",
-                confidence=0.9,
-                source="customer_analytics",
-                timestamp=current_time,
-                metadata={"behavior": "increased_engagement", "segment": "premium"},
-            )
+                    strength = 0.8,
+                    direction="positive",
+                    confidence = 0.9,
+                    source="customer_analytics",
+                    timestamp = current_time,
+                    metadata={"behavior": "increased_engagement", "segment": "premium"},
+                    )
         )
 
         self.market_signals.extend(signals)
         await self._save_market_signals(signals)
 
         return signals
+
 
     async def _identify_opportunity_areas(
         self, metrics: Dict[str, Any]
@@ -462,10 +477,10 @@ class AutonomousDecisionEngine:
             opportunities.append(
                 {
                     "area": "revenue_growth",
-                    "potential": 500 - metrics.get("daily_revenue", 0),
-                    "confidence": 0.8,
-                    "urgency": "high",
-                }
+                        "potential": 500 - metrics.get("daily_revenue", 0),
+                        "confidence": 0.8,
+                        "urgency": "high",
+                        }
             )
 
         # Conversion opportunities
@@ -473,10 +488,10 @@ class AutonomousDecisionEngine:
             opportunities.append(
                 {
                     "area": "conversion_optimization",
-                    "potential": (0.05 - metrics.get("conversion_rate", 0)) * 100,
-                    "confidence": 0.7,
-                    "urgency": "medium",
-                }
+                        "potential": (0.05 - metrics.get("conversion_rate", 0)) * 100,
+                        "confidence": 0.7,
+                        "urgency": "medium",
+                        }
             )
 
         # Cost optimization opportunities
@@ -484,10 +499,10 @@ class AutonomousDecisionEngine:
             opportunities.append(
                 {
                     "area": "cost_optimization",
-                    "potential": 0.3 - metrics.get("profit_margin", 0),
-                    "confidence": 0.9,
-                    "urgency": "high",
-                }
+                        "potential": 0.3 - metrics.get("profit_margin", 0),
+                        "confidence": 0.9,
+                        "urgency": "high",
+                        }
             )
 
         # Market expansion opportunities
@@ -495,28 +510,30 @@ class AutonomousDecisionEngine:
             opportunities.append(
                 {
                     "area": "market_expansion",
-                    "potential": 100,  # Estimated additional daily revenue
+                        "potential": 100,  # Estimated additional daily revenue
                     "confidence": 0.6,
-                    "urgency": "medium",
-                }
+                        "urgency": "medium",
+                        }
             )
 
         return opportunities
+
 
     async def _assess_risk_factors(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
         """Assess current risk factors."""
         risks = {
             "financial_risk": self._calculate_financial_risk(metrics),
-            "operational_risk": self._calculate_operational_risk(metrics),
-            "market_risk": self._calculate_market_risk(),
-            "competitive_risk": self._calculate_competitive_risk(),
-            "technology_risk": self._calculate_technology_risk(),
-        }
+                "operational_risk": self._calculate_operational_risk(metrics),
+                "market_risk": self._calculate_market_risk(),
+                "competitive_risk": self._calculate_competitive_risk(),
+                "technology_risk": self._calculate_technology_risk(),
+                }
 
         # Overall risk score
         risks["overall_risk"] = sum(risks.values()) / len(risks)
 
         return risks
+
 
     def _calculate_financial_risk(self, metrics: Dict[str, Any]) -> float:
         """Calculate financial risk score."""
@@ -536,6 +553,7 @@ class AutonomousDecisionEngine:
         else:
             return 0.1
 
+
     def _calculate_operational_risk(self, metrics: Dict[str, Any]) -> float:
         """Calculate operational risk score."""
         # Based on system stability and performance
@@ -546,6 +564,7 @@ class AutonomousDecisionEngine:
             return 0.5
         else:
             return 0.2
+
 
     def _calculate_market_risk(self) -> float:
         """Calculate market risk based on signals."""
@@ -560,15 +579,18 @@ class AutonomousDecisionEngine:
         else:
             return 0.2
 
+
     def _calculate_competitive_risk(self) -> float:
         """Calculate competitive risk."""
         # Simplified competitive risk assessment
         return 0.4  # Medium risk baseline
 
+
     def _calculate_technology_risk(self) -> float:
         """Calculate technology risk."""
         # Based on system complexity and dependencies
-        return 0.3  # Low-medium risk baseline
+        return 0.3  # Low - medium risk baseline
+
 
     async def _analyze_competitive_position(self) -> Dict[str, Any]:
         """Analyze competitive position."""
@@ -579,16 +601,18 @@ class AutonomousDecisionEngine:
             "barriers_to_entry": 0.6,  # Medium barriers
         }
 
+
     async def _analyze_resource_constraints(
         self, metrics: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Analyze resource constraints."""
         return {
             "financial_capacity": min(1.0, metrics.get("total_revenue", 0) / 1000),
-            "operational_capacity": 0.8,  # 80% capacity utilization
+                "operational_capacity": 0.8,  # 80% capacity utilization
             "technical_capacity": 0.9,  # High technical capability
             "human_resources": 0.7,  # Limited by automation focus
         }
+
 
     async def _generate_revenue_recommendations(
         self, business_state: Dict[str, Any]
@@ -605,63 +629,64 @@ class AutonomousDecisionEngine:
         for opp in revenue_opps:
             if opp["confidence"] >= 0.7:
                 rec = DecisionRecommendation(
-                    id=str(uuid.uuid4()),
-                    category=DecisionCategory.REVENUE_OPTIMIZATION,
-                    title="Aggressive Revenue Growth Campaign",
-                    description="Launch multi-channel marketing campaign to boost daily revenue",
-                    rationale=f"Current daily revenue is {opp['potential']} below target. High confidence opportunity.",
-                    opportunity_score=OpportunityScore(
-                        revenue_potential=0.9,
-                        cost_efficiency=0.7,
-                        market_timing=0.8,
-                        competitive_advantage=0.6,
-                        implementation_feasibility=0.8,
-                        risk_adjusted_score=0.76,
-                        confidence_level=opp["confidence"],
-                    ),
-                    risk_level=RiskLevel.MEDIUM,
-                    expected_roi=2.5,
-                    implementation_cost=200.0,
-                    time_to_impact=3,
-                    success_probability=0.8,
-                    recommended_actions=[
+                    id = str(uuid.uuid4()),
+                        category = DecisionCategory.REVENUE_OPTIMIZATION,
+                        title="Aggressive Revenue Growth Campaign",
+                        description="Launch multi - channel marketing campaign to boost daily revenue",
+                        rationale = f"Current daily revenue is {opp['potential']} below target. High confidence opportunity.",
+                        opportunity_score = OpportunityScore(
+                        revenue_potential = 0.9,
+                            cost_efficiency = 0.7,
+                            market_timing = 0.8,
+                            competitive_advantage = 0.6,
+                            implementation_feasibility = 0.8,
+                            risk_adjusted_score = 0.76,
+                            confidence_level = opp["confidence"],
+                            ),
+                        risk_level = RiskLevel.MEDIUM,
+                        expected_roi = 2.5,
+                        implementation_cost = 200.0,
+                        time_to_impact = 3,
+                        success_probability = 0.8,
+                        recommended_actions=[
                         {
                             "type": "marketing_campaign",
-                            "description": "Launch targeted social media campaign",
-                            "budget": 100.0,
-                            "duration": 7,
-                        },
-                        {
+                                "description": "Launch targeted social media campaign",
+                                "budget": 100.0,
+                                "duration": 7,
+                                },
+                            {
                             "type": "email_campaign",
-                            "description": "Send personalized email sequence",
-                            "budget": 50.0,
-                            "duration": 5,
-                        },
-                        {
+                                "description": "Send personalized email sequence",
+                                "budget": 50.0,
+                                "duration": 5,
+                                },
+                            {
                             "type": "content_optimization",
-                            "description": "Optimize landing pages for conversion",
-                            "budget": 50.0,
-                            "duration": 2,
-                        },
-                    ],
-                    kpis_to_monitor=[
+                                "description": "Optimize landing pages for conversion",
+                                "budget": 50.0,
+                                "duration": 2,
+                                },
+                            ],
+                        kpis_to_monitor=[
                         "daily_revenue",
-                        "conversion_rate",
-                        "customer_acquisition_cost",
-                    ],
-                    rollback_plan={
+                            "conversion_rate",
+                            "customer_acquisition_cost",
+                            ],
+                        rollback_plan={
                         "trigger": "roi_below_1.5_after_7_days",
-                        "actions": [
+                            "actions": [
                             "pause_campaigns",
-                            "analyze_performance",
-                            "adjust_targeting",
-                        ],
-                    },
-                    timestamp=datetime.now(),
-                )
+                                "analyze_performance",
+                                "adjust_targeting",
+                                ],
+                            },
+                        timestamp = datetime.now(),
+                        )
                 recommendations.append(rec)
 
         return recommendations
+
 
     async def _generate_cost_recommendations(
         self, business_state: Dict[str, Any]
@@ -675,59 +700,60 @@ class AutonomousDecisionEngine:
         for opp in cost_opps:
             if opp["confidence"] >= 0.8:
                 rec = DecisionRecommendation(
-                    id=str(uuid.uuid4()),
-                    category=DecisionCategory.COST_REDUCTION,
-                    title="Operational Cost Optimization",
-                    description="Optimize API usage and reduce operational overhead",
-                    rationale="Profit margin below target. High confidence in cost reduction potential.",
-                    opportunity_score=OpportunityScore(
-                        revenue_potential=0.6,
-                        cost_efficiency=0.95,
-                        market_timing=0.9,
-                        competitive_advantage=0.5,
-                        implementation_feasibility=0.9,
-                        risk_adjusted_score=0.78,
-                        confidence_level=opp["confidence"],
-                    ),
-                    risk_level=RiskLevel.LOW,
-                    expected_roi=3.0,
-                    implementation_cost=50.0,
-                    time_to_impact=1,
-                    success_probability=0.9,
-                    recommended_actions=[
+                    id = str(uuid.uuid4()),
+                        category = DecisionCategory.COST_REDUCTION,
+                        title="Operational Cost Optimization",
+                        description="Optimize API usage and reduce operational overhead",
+                        rationale="Profit margin below target. High confidence in cost reduction potential.",
+                        opportunity_score = OpportunityScore(
+                        revenue_potential = 0.6,
+                            cost_efficiency = 0.95,
+                            market_timing = 0.9,
+                            competitive_advantage = 0.5,
+                            implementation_feasibility = 0.9,
+                            risk_adjusted_score = 0.78,
+                            confidence_level = opp["confidence"],
+                            ),
+                        risk_level = RiskLevel.LOW,
+                        expected_roi = 3.0,
+                        implementation_cost = 50.0,
+                        time_to_impact = 1,
+                        success_probability = 0.9,
+                        recommended_actions=[
                         {
                             "type": "api_optimization",
-                            "description": "Optimize API call patterns and caching",
-                            "budget": 0.0,
-                            "duration": 1,
-                        },
-                        {
+                                "description": "Optimize API call patterns and caching",
+                                "budget": 0.0,
+                                "duration": 1,
+                                },
+                            {
                             "type": "resource_consolidation",
-                            "description": "Consolidate redundant services",
-                            "budget": 25.0,
-                            "duration": 2,
-                        },
-                        {
+                                "description": "Consolidate redundant services",
+                                "budget": 25.0,
+                                "duration": 2,
+                                },
+                            {
                             "type": "automation_enhancement",
-                            "description": "Enhance automation to reduce manual overhead",
-                            "budget": 25.0,
-                            "duration": 3,
-                        },
-                    ],
-                    kpis_to_monitor=[
+                                "description": "Enhance automation to reduce manual overhead",
+                                "budget": 25.0,
+                                "duration": 3,
+                                },
+                            ],
+                        kpis_to_monitor=[
                         "operational_costs",
-                        "profit_margin",
-                        "system_efficiency",
-                    ],
-                    rollback_plan={
+                            "profit_margin",
+                            "system_efficiency",
+                            ],
+                        rollback_plan={
                         "trigger": "performance_degradation",
-                        "actions": ["restore_previous_config", "gradual_rollback"],
-                    },
-                    timestamp=datetime.now(),
-                )
+                            "actions": ["restore_previous_config", "gradual_rollback"],
+                            },
+                        timestamp = datetime.now(),
+                        )
                 recommendations.append(rec)
 
         return recommendations
+
 
     async def _generate_market_recommendations(
         self, business_state: Dict[str, Any]
@@ -743,62 +769,63 @@ class AutonomousDecisionEngine:
         for opp in market_opps:
             if opp["confidence"] >= 0.6:
                 rec = DecisionRecommendation(
-                    id=str(uuid.uuid4()),
-                    category=DecisionCategory.MARKET_EXPANSION,
-                    title="Multi-Channel Market Expansion",
-                    description="Expand to new marketing channels and customer segments",
-                    rationale="Limited market presence. Opportunity for expansion with moderate confidence.",
-                    opportunity_score=OpportunityScore(
-                        revenue_potential=0.8,
-                        cost_efficiency=0.6,
-                        market_timing=0.7,
-                        competitive_advantage=0.7,
-                        implementation_feasibility=0.7,
-                        risk_adjusted_score=0.70,
-                        confidence_level=opp["confidence"],
-                    ),
-                    risk_level=RiskLevel.MEDIUM,
-                    expected_roi=2.0,
-                    implementation_cost=150.0,
-                    time_to_impact=7,
-                    success_probability=0.7,
-                    recommended_actions=[
+                    id = str(uuid.uuid4()),
+                        category = DecisionCategory.MARKET_EXPANSION,
+                        title="Multi - Channel Market Expansion",
+                        description="Expand to new marketing channels and customer segments",
+                        rationale="Limited market presence. Opportunity for expansion with moderate confidence.",
+                        opportunity_score = OpportunityScore(
+                        revenue_potential = 0.8,
+                            cost_efficiency = 0.6,
+                            market_timing = 0.7,
+                            competitive_advantage = 0.7,
+                            implementation_feasibility = 0.7,
+                            risk_adjusted_score = 0.70,
+                            confidence_level = opp["confidence"],
+                            ),
+                        risk_level = RiskLevel.MEDIUM,
+                        expected_roi = 2.0,
+                        implementation_cost = 150.0,
+                        time_to_impact = 7,
+                        success_probability = 0.7,
+                        recommended_actions=[
                         {
                             "type": "channel_expansion",
-                            "description": "Add new marketing channels",
-                            "budget": 75.0,
-                            "duration": 5,
-                        },
-                        {
+                                "description": "Add new marketing channels",
+                                "budget": 75.0,
+                                "duration": 5,
+                                },
+                            {
                             "type": "audience_research",
-                            "description": "Research new customer segments",
-                            "budget": 25.0,
-                            "duration": 3,
-                        },
-                        {
+                                "description": "Research new customer segments",
+                                "budget": 25.0,
+                                "duration": 3,
+                                },
+                            {
                             "type": "content_localization",
-                            "description": "Create targeted content for new segments",
-                            "budget": 50.0,
-                            "duration": 7,
-                        },
-                    ],
-                    kpis_to_monitor=[
+                                "description": "Create targeted content for new segments",
+                                "budget": 50.0,
+                                "duration": 7,
+                                },
+                            ],
+                        kpis_to_monitor=[
                         "market_reach",
-                        "customer_acquisition",
-                        "channel_performance",
-                    ],
-                    rollback_plan={
+                            "customer_acquisition",
+                            "channel_performance",
+                            ],
+                        rollback_plan={
                         "trigger": "poor_channel_performance_after_14_days",
-                        "actions": [
+                            "actions": [
                             "pause_underperforming_channels",
-                            "reallocate_budget",
-                        ],
-                    },
-                    timestamp=datetime.now(),
-                )
+                                "reallocate_budget",
+                                ],
+                            },
+                        timestamp = datetime.now(),
+                        )
                 recommendations.append(rec)
 
         return recommendations
+
 
     async def _generate_operational_recommendations(
         self, business_state: Dict[str, Any]
@@ -808,55 +835,56 @@ class AutonomousDecisionEngine:
 
         # Always recommend operational improvements
         rec = DecisionRecommendation(
-            id=str(uuid.uuid4()),
-            category=DecisionCategory.OPERATIONAL_EFFICIENCY,
-            title="AI-Driven Process Optimization",
-            description="Enhance automation and optimize business processes",
-            rationale="Continuous improvement opportunity with high success probability.",
-            opportunity_score=OpportunityScore(
-                revenue_potential=0.7,
-                cost_efficiency=0.9,
-                market_timing=0.8,
-                competitive_advantage=0.8,
-                implementation_feasibility=0.9,
-                risk_adjusted_score=0.82,
-                confidence_level=0.85,
-            ),
-            risk_level=RiskLevel.LOW,
-            expected_roi=2.8,
-            implementation_cost=75.0,
-            time_to_impact=2,
-            success_probability=0.85,
-            recommended_actions=[
+            id = str(uuid.uuid4()),
+                category = DecisionCategory.OPERATIONAL_EFFICIENCY,
+                title="AI - Driven Process Optimization",
+                description="Enhance automation and optimize business processes",
+                rationale="Continuous improvement opportunity with high success probability.",
+                opportunity_score = OpportunityScore(
+                revenue_potential = 0.7,
+                    cost_efficiency = 0.9,
+                    market_timing = 0.8,
+                    competitive_advantage = 0.8,
+                    implementation_feasibility = 0.9,
+                    risk_adjusted_score = 0.82,
+                    confidence_level = 0.85,
+                    ),
+                risk_level = RiskLevel.LOW,
+                expected_roi = 2.8,
+                implementation_cost = 75.0,
+                time_to_impact = 2,
+                success_probability = 0.85,
+                recommended_actions=[
                 {
                     "type": "process_automation",
-                    "description": "Automate manual processes",
-                    "budget": 25.0,
-                    "duration": 2,
-                },
-                {
+                        "description": "Automate manual processes",
+                        "budget": 25.0,
+                        "duration": 2,
+                        },
+                    {
                     "type": "performance_optimization",
-                    "description": "Optimize system performance",
-                    "budget": 25.0,
-                    "duration": 1,
-                },
-                {
+                        "description": "Optimize system performance",
+                        "budget": 25.0,
+                        "duration": 1,
+                        },
+                    {
                     "type": "workflow_enhancement",
-                    "description": "Enhance business workflows",
-                    "budget": 25.0,
-                    "duration": 3,
-                },
-            ],
-            kpis_to_monitor=["process_efficiency", "automation_rate", "response_time"],
-            rollback_plan={
+                        "description": "Enhance business workflows",
+                        "budget": 25.0,
+                        "duration": 3,
+                        },
+                    ],
+                kpis_to_monitor=["process_efficiency", "automation_rate", "response_time"],
+                rollback_plan={
                 "trigger": "system_instability",
-                "actions": ["restore_backup", "gradual_implementation"],
-            },
-            timestamp=datetime.now(),
-        )
+                    "actions": ["restore_backup", "gradual_implementation"],
+                    },
+                timestamp = datetime.now(),
+                )
         recommendations.append(rec)
 
         return recommendations
+
 
     async def _generate_risk_recommendations(
         self, business_state: Dict[str, Any]
@@ -868,82 +896,83 @@ class AutonomousDecisionEngine:
 
         if risk_factors["overall_risk"] > 0.6:
             rec = DecisionRecommendation(
-                id=str(uuid.uuid4()),
-                category=DecisionCategory.RISK_MITIGATION,
-                title="Comprehensive Risk Mitigation",
-                description="Implement risk mitigation strategies across key areas",
-                rationale="Overall risk level is elevated. Proactive mitigation required.",
-                opportunity_score=OpportunityScore(
-                    revenue_potential=0.5,
-                    cost_efficiency=0.8,
-                    market_timing=0.9,
-                    competitive_advantage=0.6,
-                    implementation_feasibility=0.8,
-                    risk_adjusted_score=0.72,
-                    confidence_level=0.8,
-                ),
-                risk_level=RiskLevel.LOW,  # Risk mitigation reduces risk
-                expected_roi=1.8,
-                implementation_cost=100.0,
-                time_to_impact=5,
-                success_probability=0.8,
-                recommended_actions=[
+                id = str(uuid.uuid4()),
+                    category = DecisionCategory.RISK_MITIGATION,
+                    title="Comprehensive Risk Mitigation",
+                    description="Implement risk mitigation strategies across key areas",
+                    rationale="Overall risk level is elevated. Proactive mitigation required.",
+                    opportunity_score = OpportunityScore(
+                    revenue_potential = 0.5,
+                        cost_efficiency = 0.8,
+                        market_timing = 0.9,
+                        competitive_advantage = 0.6,
+                        implementation_feasibility = 0.8,
+                        risk_adjusted_score = 0.72,
+                        confidence_level = 0.8,
+                        ),
+                    risk_level = RiskLevel.LOW,  # Risk mitigation reduces risk
+                expected_roi = 1.8,
+                    implementation_cost = 100.0,
+                    time_to_impact = 5,
+                    success_probability = 0.8,
+                    recommended_actions=[
                     {
                         "type": "financial_hedging",
-                        "description": "Implement financial risk controls",
-                        "budget": 30.0,
-                        "duration": 2,
-                    },
-                    {
+                            "description": "Implement financial risk controls",
+                            "budget": 30.0,
+                            "duration": 2,
+                            },
+                        {
                         "type": "operational_backup",
-                        "description": "Create operational backup systems",
-                        "budget": 40.0,
-                        "duration": 5,
-                    },
-                    {
+                            "description": "Create operational backup systems",
+                            "budget": 40.0,
+                            "duration": 5,
+                            },
+                        {
                         "type": "market_diversification",
-                        "description": "Diversify market exposure",
-                        "budget": 30.0,
-                        "duration": 7,
-                    },
-                ],
-                kpis_to_monitor=[
+                            "description": "Diversify market exposure",
+                            "budget": 30.0,
+                            "duration": 7,
+                            },
+                        ],
+                    kpis_to_monitor=[
                     "risk_score",
-                    "system_stability",
-                    "revenue_volatility",
-                ],
-                rollback_plan={
+                        "system_stability",
+                        "revenue_volatility",
+                        ],
+                    rollback_plan={
                     "trigger": "increased_operational_complexity",
-                    "actions": ["simplify_systems", "focus_on_core_operations"],
-                },
-                timestamp=datetime.now(),
-            )
+                        "actions": ["simplify_systems", "focus_on_core_operations"],
+                        },
+                    timestamp = datetime.now(),
+                    )
             recommendations.append(rec)
 
         return recommendations
 
+
     async def _score_and_rank_recommendations(
         self,
-        recommendations: List[DecisionRecommendation],
-        business_state: Dict[str, Any],
-    ) -> List[DecisionRecommendation]:
+            recommendations: List[DecisionRecommendation],
+            business_state: Dict[str, Any],
+            ) -> List[DecisionRecommendation]:
         """Score and rank recommendations based on multiple criteria."""
         for rec in recommendations:
             # Calculate composite score
             score_components = {
                 "revenue_potential": rec.opportunity_score.revenue_potential
                 * self.decision_weights["revenue_potential"],
-                "cost_efficiency": rec.opportunity_score.cost_efficiency
+                    "cost_efficiency": rec.opportunity_score.cost_efficiency
                 * self.decision_weights["cost_efficiency"],
-                "market_timing": rec.opportunity_score.market_timing
+                    "market_timing": rec.opportunity_score.market_timing
                 * self.decision_weights["market_timing"],
-                "competitive_advantage": rec.opportunity_score.competitive_advantage
+                    "competitive_advantage": rec.opportunity_score.competitive_advantage
                 * self.decision_weights["competitive_advantage"],
-                "implementation_feasibility": rec.opportunity_score.implementation_feasibility
+                    "implementation_feasibility": rec.opportunity_score.implementation_feasibility
                 * self.decision_weights["implementation_feasibility"],
-                "risk_adjustment": (1 - self._risk_level_to_score(rec.risk_level))
+                    "risk_adjustment": (1 - self._risk_level_to_score(rec.risk_level))
                 * self.decision_weights["risk_factor"],
-            }
+                    }
 
             composite_score = sum(score_components.values())
 
@@ -953,26 +982,28 @@ class AutonomousDecisionEngine:
 
             final_score = composite_score * roi_factor * probability_factor
 
-            # Update the risk-adjusted score
+            # Update the risk - adjusted score
             rec.opportunity_score.risk_adjusted_score = final_score
 
-        # Sort by risk-adjusted score (descending)
+        # Sort by risk - adjusted score (descending)
         recommendations.sort(
-            key=lambda x: x.opportunity_score.risk_adjusted_score, reverse=True
+            key = lambda x: x.opportunity_score.risk_adjusted_score, reverse = True
         )
 
         return recommendations
+
 
     def _risk_level_to_score(self, risk_level: RiskLevel) -> float:
         """Convert risk level to numeric score."""
         risk_scores = {
             RiskLevel.VERY_LOW: 0.1,
-            RiskLevel.LOW: 0.25,
-            RiskLevel.MEDIUM: 0.5,
-            RiskLevel.HIGH: 0.75,
-            RiskLevel.VERY_HIGH: 0.9,
-        }
+                RiskLevel.LOW: 0.25,
+                RiskLevel.MEDIUM: 0.5,
+                RiskLevel.HIGH: 0.75,
+                RiskLevel.VERY_HIGH: 0.9,
+                }
         return risk_scores.get(risk_level, 0.5)
+
 
     def _filter_recommendations(
         self, recommendations: List[DecisionRecommendation]
@@ -1000,8 +1031,8 @@ class AutonomousDecisionEngine:
             max_risk = self.config["max_risk_tolerance"]
             if max_risk == "low" and rec.risk_level in [
                 RiskLevel.HIGH,
-                RiskLevel.VERY_HIGH,
-            ]:
+                    RiskLevel.VERY_HIGH,
+                    ]:
                 continue
             elif max_risk == "medium" and rec.risk_level == RiskLevel.VERY_HIGH:
                 continue
@@ -1010,12 +1041,13 @@ class AutonomousDecisionEngine:
 
         return filtered
 
+
     def _calculate_trend(self, current_value: float) -> float:
         """Calculate trend based on historical data."""
         # Simplified trend calculation
         # In real implementation, this would use historical data
         if not hasattr(self, "_historical_values"):
-            self._historical_values = deque(maxlen=30)
+            self._historical_values = deque(maxlen = 30)
 
         self._historical_values.append(current_value)
 
@@ -1038,6 +1070,7 @@ class AutonomousDecisionEngine:
 
         return (recent_avg - older_avg) / older_avg
 
+
     async def _save_market_signals(self, signals: List[MarketSignal]):
         """Save market signals to database."""
         try:
@@ -1049,26 +1082,27 @@ class AutonomousDecisionEngine:
                     """
                     INSERT INTO market_signals (
                         id, signal_type, strength, direction, confidence,
-                        source, timestamp, metadata
+                            source, timestamp, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         str(uuid.uuid4()),
-                        signal.signal_type,
-                        signal.strength,
-                        signal.direction,
-                        signal.confidence,
-                        signal.source,
-                        signal.timestamp.isoformat(),
-                        json.dumps(signal.metadata),
-                    ),
-                )
+                            signal.signal_type,
+                            signal.strength,
+                            signal.direction,
+                            signal.confidence,
+                            signal.source,
+                            signal.timestamp.isoformat(),
+                            json.dumps(signal.metadata),
+                            ),
+                        )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"Error saving market signals: {e}")
+
 
     async def save_recommendation(self, recommendation: DecisionRecommendation):
         """Save recommendation to database."""
@@ -1080,36 +1114,37 @@ class AutonomousDecisionEngine:
                 """
                 INSERT INTO decision_recommendations (
                     id, category, title, description, rationale,
-                    opportunity_score, risk_level, expected_roi,
-                    implementation_cost, time_to_impact, success_probability,
-                    recommended_actions, kpis_to_monitor, rollback_plan,
-                    timestamp
+                        opportunity_score, risk_level, expected_roi,
+                        implementation_cost, time_to_impact, success_probability,
+                        recommended_actions, kpis_to_monitor, rollback_plan,
+                        timestamp
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     recommendation.id,
-                    recommendation.category.value,
-                    recommendation.title,
-                    recommendation.description,
-                    recommendation.rationale,
-                    json.dumps(asdict(recommendation.opportunity_score)),
-                    recommendation.risk_level.value,
-                    recommendation.expected_roi,
-                    recommendation.implementation_cost,
-                    recommendation.time_to_impact,
-                    recommendation.success_probability,
-                    json.dumps(recommendation.recommended_actions),
-                    json.dumps(recommendation.kpis_to_monitor),
-                    json.dumps(recommendation.rollback_plan),
-                    recommendation.timestamp.isoformat(),
-                ),
-            )
+                        recommendation.category.value,
+                        recommendation.title,
+                        recommendation.description,
+                        recommendation.rationale,
+                        json.dumps(asdict(recommendation.opportunity_score)),
+                        recommendation.risk_level.value,
+                        recommendation.expected_roi,
+                        recommendation.implementation_cost,
+                        recommendation.time_to_impact,
+                        recommendation.success_probability,
+                        json.dumps(recommendation.recommended_actions),
+                        json.dumps(recommendation.kpis_to_monitor),
+                        json.dumps(recommendation.rollback_plan),
+                        recommendation.timestamp.isoformat(),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"Error saving recommendation: {e}")
+
 
     async def learn_from_outcomes(
         self, decision_id: str, actual_outcomes: Dict[str, Any]
@@ -1163,12 +1198,13 @@ class AutonomousDecisionEngine:
         except Exception as e:
             logger.error(f"Error learning from outcomes: {e}")
 
+
     async def _save_performance_data(
         self,
-        decision_id: str,
-        recommendation: DecisionRecommendation,
-        outcomes: Dict[str, Any],
-    ):
+            decision_id: str,
+            recommendation: DecisionRecommendation,
+            outcomes: Dict[str, Any],
+            ):
         """Save performance data for learning."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -1183,13 +1219,13 @@ class AutonomousDecisionEngine:
             """,
                 (
                     decision_id,
-                    "roi",
-                    recommendation.expected_roi,
-                    outcomes.get("actual_roi", 0),
-                    abs(recommendation.expected_roi - outcomes.get("actual_roi", 0)),
-                    datetime.now().isoformat(),
-                ),
-            )
+                        "roi",
+                        recommendation.expected_roi,
+                        outcomes.get("actual_roi", 0),
+                        abs(recommendation.expected_roi - outcomes.get("actual_roi", 0)),
+                        datetime.now().isoformat(),
+                        ),
+                    )
 
             # Save other metrics if available
             for metric, actual_value in outcomes.items():
@@ -1202,13 +1238,13 @@ class AutonomousDecisionEngine:
                     """,
                         (
                             decision_id,
-                            metric,
-                            0,  # We don't have predicted values for all metrics
+                                metric,
+                                0,  # We don't have predicted values for all metrics
                             actual_value,
-                            0,
-                            datetime.now().isoformat(),
-                        ),
-                    )
+                                0,
+                                datetime.now().isoformat(),
+                                ),
+                            )
 
             conn.commit()
             conn.close()
@@ -1216,8 +1252,9 @@ class AutonomousDecisionEngine:
         except Exception as e:
             logger.error(f"Error saving performance data: {e}")
 
+
     def get_decision_insights(self) -> Dict[str, Any]:
-        """Get insights about decision-making performance."""
+        """Get insights about decision - making performance."""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -1226,7 +1263,7 @@ class AutonomousDecisionEngine:
             cursor.execute(
                 """
                 SELECT AVG(ABS(predicted_value - actual_value) / predicted_value) as avg_error
-                FROM decision_performance 
+                    FROM decision_performance
                 WHERE metric_name = 'roi' AND predicted_value > 0
             """
             )
@@ -1239,7 +1276,7 @@ class AutonomousDecisionEngine:
             cursor.execute(
                 """
                 SELECT category, COUNT(*) as count, AVG(expected_roi) as avg_expected_roi
-                FROM decision_recommendations 
+                FROM decision_recommendations
                 WHERE executed = TRUE
                 GROUP BY category
             """
@@ -1250,14 +1287,14 @@ class AutonomousDecisionEngine:
 
             return {
                 "roi_prediction_accuracy": roi_accuracy,
-                "total_decisions": len(self.decision_history),
-                "category_performance": [
+                    "total_decisions": len(self.decision_history),
+                    "category_performance": [
                     {"category": cat, "count": count, "avg_expected_roi": avg_roi}
                     for cat, count, avg_roi in category_performance
                 ],
-                "current_weights": self.decision_weights,
-                "market_signals_count": len(self.market_signals),
-            }
+                    "current_weights": self.decision_weights,
+                    "market_signals_count": len(self.market_signals),
+                    }
 
         except Exception as e:
             logger.error(f"Error getting decision insights: {e}")
@@ -1268,23 +1305,24 @@ def main():
     """Test the decision engine."""
     import asyncio
 
+
     async def test_engine():
         engine = AutonomousDecisionEngine()
 
         # Test business state analysis
         test_metrics = {
             "daily_revenue": 300,
-            "conversion_rate": 0.03,
-            "profit_margin": 0.25,
-            "operational_costs": 100,
-            "total_revenue": 9000,
-            "active_campaigns": 3,
-            "growth_rate": 0.1,
-        }
+                "conversion_rate": 0.03,
+                "profit_margin": 0.25,
+                "operational_costs": 100,
+                "total_revenue": 9000,
+                "active_campaigns": 3,
+                "growth_rate": 0.1,
+                }
 
         business_state = await engine.analyze_business_state(test_metrics)
         print("Business State Analysis:")
-        print(json.dumps(business_state, indent=2, default=str))
+        print(json.dumps(business_state, indent = 2, default = str))
 
         # Generate recommendations
         recommendations = await engine.generate_decision_recommendations(business_state)
@@ -1299,7 +1337,6 @@ def main():
             print(f"   Score: {rec.opportunity_score.risk_adjusted_score:.3f}")
 
     asyncio.run(test_engine())
-
 
 if __name__ == "__main__":
     main()

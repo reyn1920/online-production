@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-TRAE.AI Autonomous System - Comprehensive End-to-End Test
+TRAE.AI Autonomous System - Comprehensive End - to - End Test
 
 This script performs a complete validation of the TRAE.AI autonomous system,
 testing all components, agents, and integrations to ensure the system operates
@@ -12,7 +12,7 @@ Test Categories:
 3. Task Queue & Coordination Tests
 4. Dashboard & Monitoring Tests
 5. Integration & API Tests
-6. Resilience & Self-Healing Tests
+6. Resilience & Self - Healing Tests
 7. Performance & Load Tests
 8. Security & Secrets Management Tests
 """
@@ -49,8 +49,9 @@ except ImportError as e:
     print(f"Warning: Could not import some components: {e}")
     print("Some tests may be skipped.")
 
-
 @dataclass
+
+
 class TestResult:
     """Test result data structure"""
 
@@ -66,12 +67,13 @@ class TestResult:
 class AutonomousSystemTester:
     """Comprehensive test suite for TRAE.AI autonomous system"""
 
+
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.setup_logging()
 
         # Test configuration
-        self.db_path = "data/right_perspective.db"
+        self.db_path = "data / right_perspective.db"
         self.test_results: List[TestResult] = []
         self.start_time = datetime.now()
 
@@ -87,16 +89,18 @@ class AutonomousSystemTester:
 
         self.logger.info("TRAE.AI Autonomous System Tester initialized")
 
+
     def setup_logging(self):
         """Setup logging configuration"""
         logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[
+            level = logging.INFO,
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                handlers=[
                 logging.FileHandler("test_autonomous_system.log"),
-                logging.StreamHandler(sys.stdout),
-            ],
-        )
+                    logging.StreamHandler(sys.stdout),
+                    ],
+                )
+
 
     def run_all_tests(self) -> Dict[str, Any]:
         """Run all test categories"""
@@ -104,14 +108,14 @@ class AutonomousSystemTester:
 
         test_categories = [
             ("Core Infrastructure", self.test_core_infrastructure),
-            ("Agent Functionality", self.test_agent_functionality),
-            ("Task Queue & Coordination", self.test_task_queue_coordination),
-            ("Dashboard & Monitoring", self.test_dashboard_monitoring),
-            ("Integration & API", self.test_integration_api),
-            ("Resilience & Self-Healing", self.test_resilience_self_healing),
-            ("Performance & Load", self.test_performance_load),
-            ("Security & Secrets", self.test_security_secrets),
-        ]
+                ("Agent Functionality", self.test_agent_functionality),
+                ("Task Queue & Coordination", self.test_task_queue_coordination),
+                ("Dashboard & Monitoring", self.test_dashboard_monitoring),
+                ("Integration & API", self.test_integration_api),
+                ("Resilience & Self - Healing", self.test_resilience_self_healing),
+                ("Performance & Load", self.test_performance_load),
+                ("Security & Secrets", self.test_security_secrets),
+                ]
 
         for category_name, test_function in test_categories:
             self.logger.info(f"Running {category_name} tests...")
@@ -121,14 +125,15 @@ class AutonomousSystemTester:
                 self.logger.error(f"Error in {category_name} tests: {e}")
                 self.add_test_result(
                     f"{category_name} - Critical Error",
-                    category_name,
-                    "FAIL",
-                    0.0,
-                    f"Critical error prevented test execution: {str(e)}",
-                    error=str(e),
-                )
+                        category_name,
+                        "FAIL",
+                        0.0,
+                        f"Critical error prevented test execution: {str(e)}",
+                        error = str(e),
+                        )
 
         return self.generate_test_report()
+
 
     def test_core_infrastructure(self):
         """Test core infrastructure components"""
@@ -137,7 +142,7 @@ class AutonomousSystemTester:
         start_time = time.time()
         try:
             # Ensure data directory exists
-            Path("data").mkdir(exist_ok=True)
+            Path("data").mkdir(exist_ok = True)
 
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
@@ -167,33 +172,33 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Database Connectivity & Schema",
-            "Core Infrastructure",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Core Infrastructure",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: File system permissions and directories
         start_time = time.time()
         try:
             required_dirs = [
                 "data",
-                "backend/agents",
-                "backend/core",
-                "backend/dashboard",
-                "config",
-                "logs",
-                "temp",
-            ]
+                    "backend / agents",
+                    "backend / core",
+                    "backend / dashboard",
+                    "config",
+                    "logs",
+                    "temp",
+                    ]
 
             created_dirs = []
             for dir_path in required_dirs:
-                Path(dir_path).mkdir(parents=True, exist_ok=True)
+                Path(dir_path).mkdir(parents = True, exist_ok = True)
                 if Path(dir_path).exists():
                     created_dirs.append(dir_path)
 
             # Test write permissions
-            test_file = Path("temp/test_write_permissions.txt")
+            test_file = Path("temp / test_write_permissions.txt")
             test_file.write_text("Test write permissions")
             test_file.unlink()
 
@@ -206,26 +211,26 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "File System Permissions",
-            "Core Infrastructure",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Core Infrastructure",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 3: Python dependencies
         start_time = time.time()
         try:
             required_packages = [
                 "requests",
-                "sqlite3",
-                "json",
-                "threading",
-                "subprocess",
-                "pathlib",
-                "datetime",
-                "logging",
-                "dataclasses",
-            ]
+                    "sqlite3",
+                    "json",
+                    "threading",
+                    "subprocess",
+                    "pathlib",
+                    "datetime",
+                    "logging",
+                    "dataclasses",
+                    ]
 
             missing_packages = []
             for package in required_packages:
@@ -249,22 +254,23 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Python Dependencies",
-            "Core Infrastructure",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Core Infrastructure",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def test_agent_functionality(self):
         """Test individual agent functionality"""
 
         agent_classes = {
             "PlannerAgent": PlannerAgent,
-            "SystemAgent": SystemAgent,
-            "ResearchAgent": ResearchAgent,
-            "MarketingAgent": MarketingAgent,
-            "ContentAgent": ContentAgent,
-        }
+                "SystemAgent": SystemAgent,
+                "ResearchAgent": ResearchAgent,
+                "MarketingAgent": MarketingAgent,
+                "ContentAgent": ContentAgent,
+                }
 
         for agent_name, agent_class in agent_classes.items():
             start_time = time.time()
@@ -282,12 +288,12 @@ class AutonomousSystemTester:
                     if hasattr(agent, "process_task"):
                         # Create a simple test task
                         test_task = Task(
-                            task_id=f"test_{agent_name.lower()}_task",
-                            task_type="test",
-                            agent_type=agent_name,
-                            data={"test": True},
-                            priority=1,
-                        )
+                            task_id = f"test_{agent_name.lower()}_task",
+                                task_type="test",
+                                agent_type = agent_name,
+                                data={"test": True},
+                                priority = 1,
+                                )
 
                         # Note: We don't actually execute the task to avoid side effects
                         # Just verify the method exists and is callable
@@ -308,11 +314,12 @@ class AutonomousSystemTester:
 
             self.add_test_result(
                 f"{agent_name} Initialization",
-                "Agent Functionality",
-                status,
-                time.time() - start_time,
-                details,
-            )
+                    "Agent Functionality",
+                    status,
+                    time.time() - start_time,
+                    details,
+                    )
+
 
     def test_task_queue_coordination(self):
         """Test task queue and agent coordination"""
@@ -325,11 +332,11 @@ class AutonomousSystemTester:
             # Test basic queue operations
             test_task = Task(
                 task_id="test_coordination_task",
-                task_type="test",
-                agent_type="TestAgent",
-                data={"test": "coordination"},
-                priority=1,
-            )
+                    task_type="test",
+                    agent_type="TestAgent",
+                    data={"test": "coordination"},
+                    priority = 1,
+                    )
 
             # Add task to queue
             task_id = self.task_queue.add_task(test_task)
@@ -348,11 +355,11 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Task Queue Initialization",
-            "Task Queue & Coordination",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Task Queue & Coordination",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: Task priority and scheduling
         start_time = time.time()
@@ -361,19 +368,19 @@ class AutonomousSystemTester:
                 # Add multiple tasks with different priorities
                 high_priority_task = Task(
                     task_id="high_priority_test",
-                    task_type="test",
-                    agent_type="TestAgent",
-                    data={"priority": "high"},
-                    priority=3,
-                )
+                        task_type="test",
+                        agent_type="TestAgent",
+                        data={"priority": "high"},
+                        priority = 3,
+                        )
 
                 low_priority_task = Task(
                     task_id="low_priority_test",
-                    task_type="test",
-                    agent_type="TestAgent",
-                    data={"priority": "low"},
-                    priority=1,
-                )
+                        task_type="test",
+                        agent_type="TestAgent",
+                        data={"priority": "low"},
+                        priority = 1,
+                        )
 
                 high_id = self.task_queue.add_task(high_priority_task)
                 low_id = self.task_queue.add_task(low_priority_task)
@@ -397,11 +404,12 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Task Priority Scheduling",
-            "Task Queue & Coordination",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Task Queue & Coordination",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def test_dashboard_monitoring(self):
         """Test dashboard and monitoring functionality"""
@@ -410,7 +418,7 @@ class AutonomousSystemTester:
         start_time = time.time()
         try:
             # Test dashboard class instantiation
-            dashboard = TotalAccessDashboard(port=8083, debug=False)
+            dashboard = TotalAccessDashboard(port = 8083, debug = False)
 
             # Test dashboard methods without starting the server
             if hasattr(dashboard, "get_system_health"):
@@ -430,11 +438,11 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Dashboard Initialization",
-            "Dashboard & Monitoring",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Dashboard & Monitoring",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: Metrics collection
         start_time = time.time()
@@ -442,7 +450,7 @@ class AutonomousSystemTester:
             # Test system metrics collection
             import psutil
 
-            cpu_usage = psutil.cpu_percent(interval=0.1)
+            cpu_usage = psutil.cpu_percent(interval = 0.1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
 
@@ -459,11 +467,12 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "System Metrics Collection",
-            "Dashboard & Monitoring",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Dashboard & Monitoring",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def test_integration_api(self):
         """Test external API integrations"""
@@ -472,7 +481,7 @@ class AutonomousSystemTester:
         start_time = time.time()
         try:
             # Test basic internet connectivity
-            response = requests.get("https://httpbin.org/status/200", timeout=10)
+            response = requests.get("https://httpbin.org / status / 200", timeout = 10)
 
             if response.status_code == 200:
                 status = "PASS"
@@ -487,29 +496,29 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Network Connectivity",
-            "Integration & API",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Integration & API",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: Local API endpoints (if available)
         start_time = time.time()
         try:
             # Test if any local services are running
             local_endpoints = [
-                "http://localhost:8080/health",
-                "http://localhost:8081/api/status",
-                "http://localhost:8082/api/system/health",
-            ]
+                "http://localhost:8080 / health",
+                    "http://localhost:8081 / api / status",
+                    "http://localhost:8082 / api / system / health",
+                    ]
 
             available_endpoints = []
             for endpoint in local_endpoints:
                 try:
-                    response = requests.get(endpoint, timeout=2)
+                    response = requests.get(endpoint, timeout = 2)
                     if response.status_code < 500:
                         available_endpoints.append(endpoint)
-                except:
+                except Exception:
                     pass
 
             if available_endpoints:
@@ -525,14 +534,15 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Local API Endpoints",
-            "Integration & API",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Integration & API",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def test_resilience_self_healing(self):
-        """Test system resilience and self-healing capabilities"""
+        """Test system resilience and self - healing capabilities"""
 
         # Test 1: Error handling and recovery
         start_time = time.time()
@@ -542,11 +552,11 @@ class AutonomousSystemTester:
                 # Test invalid task handling
                 invalid_task = Task(
                     task_id="invalid_test_task",
-                    task_type="invalid_type",
-                    agent_type="NonExistentAgent",
-                    data={"invalid": True},
-                    priority=1,
-                )
+                        task_type="invalid_type",
+                        agent_type="NonExistentAgent",
+                        data={"invalid": True},
+                        priority = 1,
+                        )
 
                 # This should not crash the system
                 task_id = self.task_queue.add_task(invalid_task)
@@ -569,11 +579,11 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Error Handling & Recovery",
-            "Resilience & Self-Healing",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Resilience & Self - Healing",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: Resource cleanup
         start_time = time.time()
@@ -581,7 +591,7 @@ class AutonomousSystemTester:
             # Test temporary file cleanup
             temp_files = []
             for i in range(5):
-                temp_file = Path(f"temp/test_cleanup_{i}.tmp")
+                temp_file = Path(f"temp / test_cleanup_{i}.tmp")
                 temp_file.write_text(f"Test cleanup file {i}")
                 temp_files.append(temp_file)
 
@@ -601,11 +611,12 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Resource Cleanup",
-            "Resilience & Self-Healing",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Resilience & Self - Healing",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def test_performance_load(self):
         """Test system performance under load"""
@@ -620,12 +631,12 @@ class AutonomousSystemTester:
 
                 for i in range(task_count):
                     test_task = Task(
-                        task_id=f"perf_test_task_{i}",
-                        task_type="performance_test",
-                        agent_type="TestAgent",
-                        data={"index": i},
-                        priority=1,
-                    )
+                        task_id = f"perf_test_task_{i}",
+                            task_type="performance_test",
+                            agent_type="TestAgent",
+                            data={"index": i},
+                            priority = 1,
+                            )
                     self.task_queue.add_task(test_task)
 
                 db_duration = time.time() - start_db_time
@@ -634,11 +645,11 @@ class AutonomousSystemTester:
                 if tasks_per_second > 10:  # Reasonable threshold
                     status = "PASS"
                     details = (
-                        f"Database performance: {tasks_per_second:.1f} tasks/second"
+                        f"Database performance: {tasks_per_second:.1f} tasks / second"
                     )
                 else:
                     status = "FAIL"
-                    details = f"Database performance below threshold: {tasks_per_second:.1f} tasks/second"
+                    details = f"Database performance below threshold: {tasks_per_second:.1f} tasks / second"
             else:
                 status = "SKIP"
                 details = "Task queue not available for performance testing"
@@ -649,11 +660,11 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Database Performance",
-            "Performance & Load",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Performance & Load",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: Memory usage
         start_time = time.time()
@@ -695,11 +706,12 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Memory Usage",
-            "Performance & Load",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Performance & Load",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def test_security_secrets(self):
         """Test security and secrets management"""
@@ -729,7 +741,7 @@ class AutonomousSystemTester:
             # Cleanup test secret
             try:
                 self.secret_store.delete_secret(test_secret_key)
-            except:
+            except Exception:
                 pass
 
         except Exception as e:
@@ -738,17 +750,17 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "Secret Store Functionality",
-            "Security & Secrets",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Security & Secrets",
+                status,
+                time.time() - start_time,
+                details,
+                )
 
         # Test 2: File permissions and security
         start_time = time.time()
         try:
             # Check that sensitive files have appropriate permissions
-            sensitive_files = [self.db_path, "config/com.trae.ai.autonomous.plist"]
+            sensitive_files = [self.db_path, "config / com.trae.ai.autonomous.plist"]
 
             secure_files = 0
             for file_path in sensitive_files:
@@ -771,87 +783,89 @@ class AutonomousSystemTester:
 
         self.add_test_result(
             "File Security",
-            "Security & Secrets",
-            status,
-            time.time() - start_time,
-            details,
-        )
+                "Security & Secrets",
+                status,
+                time.time() - start_time,
+                details,
+                )
+
 
     def create_database_schema(self, conn):
         """Create required database tables"""
         schema_sql = """
         CREATE TABLE IF NOT EXISTS tasks (
             task_id TEXT PRIMARY KEY,
-            task_type TEXT NOT NULL,
-            agent_type TEXT NOT NULL,
-            status TEXT DEFAULT 'pending',
-            priority INTEGER DEFAULT 1,
-            data TEXT,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            started_at TEXT,
-            completed_at TEXT,
-            error_message TEXT
+                task_type TEXT NOT NULL,
+                agent_type TEXT NOT NULL,
+                status TEXT DEFAULT 'pending',
+                priority INTEGER DEFAULT 1,
+                data TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                started_at TEXT,
+                completed_at TEXT,
+                error_message TEXT
         );
-        
+
         CREATE TABLE IF NOT EXISTS agents (
             agent_id TEXT PRIMARY KEY,
-            agent_type TEXT NOT NULL,
-            status TEXT DEFAULT 'idle',
-            last_heartbeat TEXT DEFAULT CURRENT_TIMESTAMP,
-            capabilities TEXT
+                agent_type TEXT NOT NULL,
+                status TEXT DEFAULT 'idle',
+                last_heartbeat TEXT DEFAULT CURRENT_TIMESTAMP,
+                capabilities TEXT
         );
-        
+
         CREATE TABLE IF NOT EXISTS system_metrics (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            metric_name TEXT NOT NULL,
-            metric_value REAL,
-            details TEXT,
-            timestamp TEXT DEFAULT CURRENT_TIMESTAMP
+                metric_name TEXT NOT NULL,
+                metric_value REAL,
+                details TEXT,
+                timestamp TEXT DEFAULT CURRENT_TIMESTAMP
         );
-        
+
         CREATE TABLE IF NOT EXISTS insights (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            insight_type TEXT NOT NULL,
-            content TEXT NOT NULL,
-            confidence_score REAL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                insight_type TEXT NOT NULL,
+                content TEXT NOT NULL,
+                confidence_score REAL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
-        
+
         CREATE TABLE IF NOT EXISTS decision_explanations (
             decision_id TEXT PRIMARY KEY,
-            agent_type TEXT NOT NULL,
-            decision_type TEXT NOT NULL,
-            input_data TEXT,
-            reasoning_steps TEXT,
-            confidence_score REAL,
-            alternative_options TEXT,
-            outcome TEXT,
-            timestamp TEXT DEFAULT CURRENT_TIMESTAMP
+                agent_type TEXT NOT NULL,
+                decision_type TEXT NOT NULL,
+                input_data TEXT,
+                reasoning_steps TEXT,
+                confidence_score REAL,
+                alternative_options TEXT,
+                outcome TEXT,
+                timestamp TEXT DEFAULT CURRENT_TIMESTAMP
         );
         """
 
         conn.executescript(schema_sql)
         conn.commit()
 
+
     def add_test_result(
         self,
-        test_name: str,
-        category: str,
-        status: str,
-        duration: float,
-        details: str,
-        error: str = None,
-    ):
+            test_name: str,
+            category: str,
+            status: str,
+            duration: float,
+            details: str,
+            error: str = None,
+            ):
         """Add a test result to the results list"""
         result = TestResult(
-            test_name=test_name,
-            category=category,
-            status=status,
-            duration=duration,
-            details=details,
-            timestamp=datetime.now(),
-            error=error,
-        )
+            test_name = test_name,
+                category = category,
+                status = status,
+                duration = duration,
+                details = details,
+                timestamp = datetime.now(),
+                error = error,
+                )
 
         self.test_results.append(result)
 
@@ -864,6 +878,7 @@ class AutonomousSystemTester:
         self.logger.log(
             log_level, f"{status}: {test_name} ({duration:.2f}s) - {details}"
         )
+
 
     def generate_test_report(self) -> Dict[str, Any]:
         """Generate comprehensive test report"""
@@ -895,11 +910,11 @@ class AutonomousSystemTester:
 
             category_summaries[category] = {
                 "total_tests": category_total,
-                "passed": category_passed,
-                "failed": len([r for r in results if r.status == "FAIL"]),
-                "skipped": len([r for r in results if r.status == "SKIP"]),
-                "success_rate": category_success_rate,
-            }
+                    "passed": category_passed,
+                    "failed": len([r for r in results if r.status == "FAIL"]),
+                    "skipped": len([r for r in results if r.status == "SKIP"]),
+                    "success_rate": category_success_rate,
+                    }
 
         # Determine overall system status
         if success_rate >= 90:
@@ -916,31 +931,32 @@ class AutonomousSystemTester:
         report = {
             "test_summary": {
                 "total_tests": total_tests,
-                "passed": passed_tests,
-                "failed": failed_tests,
-                "skipped": skipped_tests,
-                "success_rate": success_rate,
-                "total_duration": total_duration,
-                "overall_status": overall_status,
-            },
-            "category_summaries": category_summaries,
-            "detailed_results": [
+                    "passed": passed_tests,
+                    "failed": failed_tests,
+                    "skipped": skipped_tests,
+                    "success_rate": success_rate,
+                    "total_duration": total_duration,
+                    "overall_status": overall_status,
+                    },
+                "category_summaries": category_summaries,
+                "detailed_results": [
                 {
                     "test_name": r.test_name,
-                    "category": r.category,
-                    "status": r.status,
-                    "duration": r.duration,
-                    "details": r.details,
-                    "timestamp": r.timestamp.isoformat(),
-                    "error": r.error,
-                }
+                        "category": r.category,
+                        "status": r.status,
+                        "duration": r.duration,
+                        "details": r.details,
+                        "timestamp": r.timestamp.isoformat(),
+                        "error": r.error,
+                        }
                 for r in self.test_results
             ],
-            "recommendations": self.generate_recommendations(),
-            "generated_at": datetime.now().isoformat(),
-        }
+                "recommendations": self.generate_recommendations(),
+                "generated_at": datetime.now().isoformat(),
+                }
 
         return report
+
 
     def generate_recommendations(self) -> List[str]:
         """Generate recommendations based on test results"""
@@ -953,7 +969,7 @@ class AutonomousSystemTester:
                 f"Address {len(failed_tests)} failed tests before production deployment"
             )
 
-        # Category-specific recommendations
+        # Category - specific recommendations
         categories = {}
         for result in self.test_results:
             if result.category not in categories:
@@ -990,6 +1006,7 @@ class AutonomousSystemTester:
 
         return recommendations
 
+
     def save_report(self, report: Dict[str, Any], filename: str = None):
         """Save test report to file"""
         if filename is None:
@@ -997,10 +1014,10 @@ class AutonomousSystemTester:
             filename = f"autonomous_system_test_report_{timestamp}.json"
 
         report_path = Path("logs") / filename
-        report_path.parent.mkdir(exist_ok=True)
+        report_path.parent.mkdir(exist_ok = True)
 
         with open(report_path, "w") as f:
-            json.dump(report, f, indent=2, default=str)
+            json.dump(report, f, indent = 2, default = str)
 
         self.logger.info(f"Test report saved to: {report_path}")
         return report_path
@@ -1056,7 +1073,6 @@ def main():
     except Exception as e:
         print(f"\nCRITICAL ERROR: Test execution failed: {e}")
         return 2
-
 
 if __name__ == "__main__":
     exit_code = main()

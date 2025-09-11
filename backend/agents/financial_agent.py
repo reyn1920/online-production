@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Financial Agent - Autonomous Financial Management System
 
 This agent continuously analyzes channel profitability, optimizes resource allocation,
 and manages financial operations for maximum ROI. It implements autonomous financial
-decision-making protocols for strategic resource management.
+decision - making protocols for strategic resource management.
 
 Features:
-- Real-time profitability analysis across all channels
+- Real - time profitability analysis across all channels
 - Automated resource allocation optimization
 - Revenue vs. cost analysis with ML predictions
 - Autonomous budget reallocation protocols
@@ -42,7 +42,7 @@ except ImportError:
 # Import base agent and tools
 from .base_agents import BaseAgent
 from .web_automation_tools import (ActionType, AutomationAction, AutomationTarget,
-                                   StealthLevel, WebAutomationAgent)
+    StealthLevel, WebAutomationAgent)
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +76,9 @@ class AllocationStrategy(Enum):
     RISK_BALANCED = "risk_balanced"
     DIVERSIFIED = "diversified"
 
-
 @dataclass
+
+
 class ChannelFinancials:
     """Financial data for a content channel"""
 
@@ -94,12 +95,13 @@ class ChannelFinancials:
     resource_consumption: Dict[ResourceType, float]
     performance_metrics: Dict[str, float]
     growth_rate: float
-    risk_score: float  # 0-1 scale
-    last_updated: datetime = field(default_factory=datetime.now)
+    risk_score: float  # 0 - 1 scale
+    last_updated: datetime = field(default_factory = datetime.now)
     status: ChannelStatus = ChannelStatus.BREAK_EVEN
 
-
 @dataclass
+
+
 class ResourceAllocation:
     """Resource allocation plan"""
 
@@ -113,10 +115,11 @@ class ResourceAllocation:
     priority_score: float
     effective_date: datetime
     duration_days: int
-    created_at: datetime = field(default_factory=datetime.now)
-
+    created_at: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class FinancialAlert:
     """Financial performance alert"""
 
@@ -128,11 +131,12 @@ class FinancialAlert:
     current_value: float
     threshold_value: float
     recommended_action: str
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory = datetime.now)
     resolved: bool = False
 
-
 @dataclass
+
+
 class FinancialMetrics:
     """Overall financial performance metrics"""
 
@@ -153,15 +157,16 @@ class FinancialAgent(BaseAgent):
     Autonomous Financial Management Agent
 
     Continuously analyzes financial performance, optimizes resource allocation,
-    and implements autonomous financial decision-making protocols.
+        and implements autonomous financial decision - making protocols.
     """
+
 
     def __init__(
         self,
-        agent_id: str = "financial_agent",
-        name: str = "Financial Agent",
-        config: Dict[str, Any] = None,
-    ):
+            agent_id: str = "financial_agent",
+            name: str = "Financial Agent",
+            config: Dict[str, Any] = None,
+            ):
         super().__init__(agent_id, name)
         self.config = config or {}
         self.agent_type = "financial"
@@ -188,7 +193,7 @@ class FinancialAgent(BaseAgent):
         # Resource limits and costs
         self.resource_limits = self.config.get(
             "resource_limits",
-            {
+                {
                 ResourceType.COMPUTE_TIME: 10000,  # hours per month
                 ResourceType.STORAGE: 1000,  # GB
                 ResourceType.BANDWIDTH: 5000,  # GB per month
@@ -196,11 +201,11 @@ class FinancialAgent(BaseAgent):
                 ResourceType.PROCESSING_SLOTS: 50,  # concurrent slots
                 ResourceType.RENDER_TIME: 2000,  # hours per month
             },
-        )
+                )
 
         self.resource_costs = self.config.get(
             "resource_costs",
-            {
+                {
                 ResourceType.COMPUTE_TIME: 0.10,  # $ per hour
                 ResourceType.STORAGE: 0.02,  # $ per GB per month
                 ResourceType.BANDWIDTH: 0.05,  # $ per GB
@@ -208,7 +213,7 @@ class FinancialAgent(BaseAgent):
                 ResourceType.PROCESSING_SLOTS: 1.00,  # $ per slot per hour
                 ResourceType.RENDER_TIME: 0.15,  # $ per hour
             },
-        )
+                )
 
         # Initialize financial tools
         self._initialize_financial_tools()
@@ -219,6 +224,7 @@ class FinancialAgent(BaseAgent):
         logger.info(
             f"FinancialAgent initialized with {self.allocation_strategy.value} strategy"
         )
+
 
     def _initialize_financial_tools(self):
         """Initialize financial analysis and automation tools"""
@@ -234,6 +240,7 @@ class FinancialAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to initialize financial tools: {e}")
 
+
     def _setup_financial_database(self):
         """Setup database tables for financial tracking"""
         try:
@@ -247,21 +254,21 @@ class FinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS channel_financials (
                         channel_id TEXT PRIMARY KEY,
-                        channel_name TEXT NOT NULL,
-                        platform TEXT NOT NULL,
-                        revenue_streams TEXT,
-                        total_revenue REAL DEFAULT 0.0,
-                        production_costs TEXT,
-                        total_costs REAL DEFAULT 0.0,
-                        net_profit REAL DEFAULT 0.0,
-                        profit_margin REAL DEFAULT 0.0,
-                        roi REAL DEFAULT 0.0,
-                        resource_consumption TEXT,
-                        performance_metrics TEXT,
-                        growth_rate REAL DEFAULT 0.0,
-                        risk_score REAL DEFAULT 0.0,
-                        status TEXT DEFAULT 'break_even',
-                        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            channel_name TEXT NOT NULL,
+                            platform TEXT NOT NULL,
+                            revenue_streams TEXT,
+                            total_revenue REAL DEFAULT 0.0,
+                            production_costs TEXT,
+                            total_costs REAL DEFAULT 0.0,
+                            net_profit REAL DEFAULT 0.0,
+                            profit_margin REAL DEFAULT 0.0,
+                            roi REAL DEFAULT 0.0,
+                            resource_consumption TEXT,
+                            performance_metrics TEXT,
+                            growth_rate REAL DEFAULT 0.0,
+                            risk_score REAL DEFAULT 0.0,
+                            status TEXT DEFAULT 'break_even',
+                            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -271,17 +278,17 @@ class FinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS resource_allocations (
                         allocation_id TEXT PRIMARY KEY,
-                        channel_id TEXT NOT NULL,
-                        resource_type TEXT NOT NULL,
-                        allocated_amount REAL NOT NULL,
-                        previous_amount REAL DEFAULT 0.0,
-                        allocation_reason TEXT,
-                        expected_roi REAL DEFAULT 0.0,
-                        priority_score REAL DEFAULT 0.0,
-                        effective_date TIMESTAMP NOT NULL,
-                        duration_days INTEGER DEFAULT 30,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
+                            channel_id TEXT NOT NULL,
+                            resource_type TEXT NOT NULL,
+                            allocated_amount REAL NOT NULL,
+                            previous_amount REAL DEFAULT 0.0,
+                            allocation_reason TEXT,
+                            expected_roi REAL DEFAULT 0.0,
+                            priority_score REAL DEFAULT 0.0,
+                            effective_date TIMESTAMP NOT NULL,
+                            duration_days INTEGER DEFAULT 30,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
                     )
                 """
                 )
@@ -291,16 +298,16 @@ class FinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS financial_alerts (
                         alert_id TEXT PRIMARY KEY,
-                        alert_type TEXT NOT NULL,
-                        channel_id TEXT NOT NULL,
-                        severity TEXT NOT NULL,
-                        message TEXT NOT NULL,
-                        current_value REAL,
-                        threshold_value REAL,
-                        recommended_action TEXT,
-                        resolved BOOLEAN DEFAULT FALSE,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
+                            alert_type TEXT NOT NULL,
+                            channel_id TEXT NOT NULL,
+                            severity TEXT NOT NULL,
+                            message TEXT NOT NULL,
+                            current_value REAL,
+                            threshold_value REAL,
+                            recommended_action TEXT,
+                            resolved BOOLEAN DEFAULT FALSE,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
                     )
                 """
                 )
@@ -310,16 +317,16 @@ class FinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS financial_metrics_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        total_revenue REAL DEFAULT 0.0,
-                        total_costs REAL DEFAULT 0.0,
-                        net_profit REAL DEFAULT 0.0,
-                        average_roi REAL DEFAULT 0.0,
-                        profit_growth_rate REAL DEFAULT 0.0,
-                        cost_efficiency REAL DEFAULT 0.0,
-                        resource_utilization REAL DEFAULT 0.0,
-                        active_channels INTEGER DEFAULT 0,
-                        profitable_channels INTEGER DEFAULT 0,
-                        recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            total_revenue REAL DEFAULT 0.0,
+                            total_costs REAL DEFAULT 0.0,
+                            net_profit REAL DEFAULT 0.0,
+                            average_roi REAL DEFAULT 0.0,
+                            profit_growth_rate REAL DEFAULT 0.0,
+                            cost_efficiency REAL DEFAULT 0.0,
+                            resource_utilization REAL DEFAULT 0.0,
+                            active_channels INTEGER DEFAULT 0,
+                            profitable_channels INTEGER DEFAULT 0,
+                            recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -329,15 +336,15 @@ class FinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS affiliate_payouts (
                         payout_id TEXT PRIMARY KEY,
-                        affiliate_program TEXT NOT NULL,
-                        channel_id TEXT,
-                        expected_amount REAL NOT NULL,
-                        actual_amount REAL,
-                        payout_date DATE NOT NULL,
-                        verification_status TEXT DEFAULT 'pending',
-                        discrepancy_amount REAL DEFAULT 0.0,
-                        last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
+                            affiliate_program TEXT NOT NULL,
+                            channel_id TEXT,
+                            expected_amount REAL NOT NULL,
+                            actual_amount REAL,
+                            payout_date DATE NOT NULL,
+                            verification_status TEXT DEFAULT 'pending',
+                            discrepancy_amount REAL DEFAULT 0.0,
+                            last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
                     )
                 """
                 )
@@ -348,13 +355,18 @@ class FinancialAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to setup financial database: {e}")
 
+
     def _setup_profit_calculator(self):
         """Setup profit calculation utilities"""
 
+
         class ProfitCalculator:
+
+
             def __init__(self, resource_costs, resource_limits):
                 self.resource_costs = resource_costs
                 self.resource_limits = resource_limits
+
 
             def calculate_roi(self, revenue: float, costs: float) -> float:
                 """Calculate Return on Investment"""
@@ -362,11 +374,13 @@ class FinancialAgent(BaseAgent):
                     return float("inf") if revenue > 0 else 0.0
                 return (revenue - costs) / costs
 
+
             def calculate_profit_margin(self, revenue: float, costs: float) -> float:
                 """Calculate profit margin percentage"""
                 if revenue == 0:
                     return 0.0
                 return ((revenue - costs) / revenue) * 100
+
 
             def calculate_resource_cost(
                 self, resource_type: ResourceType, amount: float
@@ -374,6 +388,7 @@ class FinancialAgent(BaseAgent):
                 """Calculate cost for specific resource usage"""
                 unit_cost = self.resource_costs.get(resource_type, 0.0)
                 return unit_cost * amount
+
 
             def optimize_resource_allocation(
                 self, channels_data: List[Dict]
@@ -385,7 +400,7 @@ class FinancialAgent(BaseAgent):
 
                 # Sort channels by ROI
                 sorted_channels = sorted(
-                    channels_data, key=lambda x: x.get("roi", 0), reverse=True
+                    channels_data, key = lambda x: x.get("roi", 0), reverse = True
                 )
 
                 remaining_budget = total_budget
@@ -407,13 +422,18 @@ class FinancialAgent(BaseAgent):
 
         return ProfitCalculator(self.resource_costs, self.resource_limits)
 
+
     def _setup_roi_optimizer(self):
         """Setup ROI optimization utilities"""
 
+
         class ROIOptimizer:
+
+
             def __init__(self, min_roi_threshold, allocation_strategy):
                 self.min_roi_threshold = min_roi_threshold
                 self.allocation_strategy = allocation_strategy
+
 
             def analyze_channel_performance(self, channel_data: Dict) -> Dict[str, Any]:
                 """Analyze individual channel performance"""
@@ -423,13 +443,14 @@ class FinancialAgent(BaseAgent):
 
                 performance = {
                     "roi": roi,
-                    "meets_threshold": roi >= self.min_roi_threshold,
-                    "revenue_efficiency": revenue / costs if costs > 0 else 0,
-                    "growth_potential": self._assess_growth_potential(channel_data),
-                    "risk_level": self._assess_risk_level(channel_data),
-                }
+                        "meets_threshold": roi >= self.min_roi_threshold,
+                        "revenue_efficiency": revenue / costs if costs > 0 else 0,
+                        "growth_potential": self._assess_growth_potential(channel_data),
+                        "risk_level": self._assess_risk_level(channel_data),
+                        }
 
                 return performance
+
 
             def recommend_optimizations(self, channels_data: List[Dict]) -> List[Dict]:
                 """Generate optimization recommendations"""
@@ -442,31 +463,32 @@ class FinancialAgent(BaseAgent):
                         recommendations.append(
                             {
                                 "channel_id": channel.get("id"),
-                                "type": "underperforming",
-                                "current_roi": performance["roi"],
-                                "target_roi": self.min_roi_threshold,
-                                "action": (
+                                    "type": "underperforming",
+                                    "current_roi": performance["roi"],
+                                    "target_roi": self.min_roi_threshold,
+                                    "action": (
                                     "reduce_allocation"
                                     if performance["roi"] < 0
                                     else "optimize_costs"
                                 ),
-                            }
+                                    }
                         )
                     elif performance["growth_potential"] > 0.7:
                         recommendations.append(
                             {
                                 "channel_id": channel.get("id"),
-                                "type": "growth_opportunity",
-                                "current_roi": performance["roi"],
-                                "growth_score": performance["growth_potential"],
-                                "action": "increase_allocation",
-                            }
+                                    "type": "growth_opportunity",
+                                    "current_roi": performance["roi"],
+                                    "growth_score": performance["growth_potential"],
+                                    "action": "increase_allocation",
+                                    }
                         )
 
                 return recommendations
 
+
             def _assess_growth_potential(self, channel_data: Dict) -> float:
-                """Assess growth potential (0-1 scale)"""
+                """Assess growth potential (0 - 1 scale)"""
                 growth_rate = channel_data.get("growth_rate", 0)
                 roi = channel_data.get("roi", 0)
 
@@ -474,8 +496,9 @@ class FinancialAgent(BaseAgent):
                 potential = min(1.0, (growth_rate * 0.5 + roi * 0.3 + 0.2))
                 return max(0.0, potential)
 
+
             def _assess_risk_level(self, channel_data: Dict) -> float:
-                """Assess risk level (0-1 scale)"""
+                """Assess risk level (0 - 1 scale)"""
                 volatility = channel_data.get("volatility", 0.5)
                 market_stability = channel_data.get("market_stability", 0.7)
 
@@ -485,14 +508,15 @@ class FinancialAgent(BaseAgent):
 
         return ROIOptimizer(self.min_roi_threshold, self.allocation_strategy)
 
+
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process financial management tasks"""
         # Check if financial actions are enabled
         if not self.is_action_allowed("financial_management"):
             return {
                 "status": "error",
-                "message": "Financial management actions are currently disabled in configuration",
-            }
+                    "message": "Financial management actions are currently disabled in configuration",
+                    }
 
         task_type = task.get("type", "")
 
@@ -516,19 +540,20 @@ class FinancialAgent(BaseAgent):
             logger.error(f"Error processing financial task {task_type}: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _analyze_channel_profitability(self) -> Dict[str, Any]:
         """Analyze profitability of all channels"""
         logger.info("Starting channel profitability analysis")
 
         analysis_results = {
             "channels_analyzed": 0,
-            "profitable_channels": 0,
-            "underperforming_channels": 0,
-            "total_profit": 0.0,
-            "average_roi": 0.0,
-            "recommendations": [],
-            "timestamp": datetime.now().isoformat(),
-        }
+                "profitable_channels": 0,
+                "underperforming_channels": 0,
+                "total_profit": 0.0,
+                "average_roi": 0.0,
+                "recommendations": [],
+                "timestamp": datetime.now().isoformat(),
+                }
 
         try:
             # Get all active channels
@@ -552,13 +577,13 @@ class FinancialAgent(BaseAgent):
                     # Categorize channel performance
                     if financials.status in [
                         ChannelStatus.HIGHLY_PROFITABLE,
-                        ChannelStatus.PROFITABLE,
-                    ]:
+                            ChannelStatus.PROFITABLE,
+                            ]:
                         analysis_results["profitable_channels"] += 1
                     elif financials.status in [
                         ChannelStatus.UNDERPERFORMING,
-                        ChannelStatus.LOSS_MAKING,
-                    ]:
+                            ChannelStatus.LOSS_MAKING,
+                            ]:
                         analysis_results["underperforming_channels"] += 1
 
                     # Generate recommendations
@@ -583,6 +608,7 @@ class FinancialAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Profitability analysis failed: {e}")
             return {"status": "error", "message": str(e)}
+
 
     async def _calculate_channel_financials(
         self, channel: Dict[str, Any]
@@ -618,22 +644,22 @@ class FinancialAgent(BaseAgent):
             status = self._determine_channel_status(roi, profit_margin, growth_rate)
 
             return ChannelFinancials(
-                channel_id=channel_id,
-                channel_name=channel.get("name", "Unknown"),
-                platform=channel.get("platform", "Unknown"),
-                revenue_streams=revenue_streams,
-                total_revenue=total_revenue,
-                production_costs=production_costs,
-                total_costs=total_costs,
-                net_profit=net_profit,
-                profit_margin=profit_margin,
-                roi=roi,
-                resource_consumption=resource_consumption,
-                performance_metrics=performance_metrics,
-                growth_rate=growth_rate,
-                risk_score=risk_score,
-                status=status,
-            )
+                channel_id = channel_id,
+                    channel_name = channel.get("name", "Unknown"),
+                    platform = channel.get("platform", "Unknown"),
+                    revenue_streams = revenue_streams,
+                    total_revenue = total_revenue,
+                    production_costs = production_costs,
+                    total_costs = total_costs,
+                    net_profit = net_profit,
+                    profit_margin = profit_margin,
+                    roi = roi,
+                    resource_consumption = resource_consumption,
+                    performance_metrics = performance_metrics,
+                    growth_rate = growth_rate,
+                    risk_score = risk_score,
+                    status = status,
+                    )
 
         except Exception as e:
             logger.error(
@@ -641,17 +667,18 @@ class FinancialAgent(BaseAgent):
             )
             return None
 
+
     async def _optimize_resource_allocation(self) -> Dict[str, Any]:
         """Optimize resource allocation across channels"""
         logger.info("Starting resource allocation optimization")
 
         optimization_results = {
             "reallocations_made": 0,
-            "expected_profit_increase": 0.0,
-            "resources_optimized": [],
-            "affected_channels": [],
-            "timestamp": datetime.now().isoformat(),
-        }
+                "expected_profit_increase": 0.0,
+                "resources_optimized": [],
+                "affected_channels": [],
+                "timestamp": datetime.now().isoformat(),
+                }
 
         try:
             # Analyze current allocation efficiency
@@ -688,18 +715,19 @@ class FinancialAgent(BaseAgent):
             logger.error(f"Resource optimization failed: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _verify_affiliate_payouts(self) -> Dict[str, Any]:
         """Verify affiliate payouts using stealth web automation"""
         logger.info("Starting affiliate payout verification")
 
         verification_results = {
             "programs_checked": 0,
-            "payouts_verified": 0,
-            "discrepancies_found": 0,
-            "total_discrepancy_amount": 0.0,
-            "verification_details": [],
-            "timestamp": datetime.now().isoformat(),
-        }
+                "payouts_verified": 0,
+                "discrepancies_found": 0,
+                "total_discrepancy_amount": 0.0,
+                "verification_details": [],
+                "timestamp": datetime.now().isoformat(),
+                }
 
         try:
             # Get affiliate programs to check
@@ -735,6 +763,7 @@ class FinancialAgent(BaseAgent):
             logger.error(f"Payout verification failed: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _verify_program_payouts(self, program: Dict[str, Any]) -> Dict[str, Any]:
         """Verify payouts for a specific affiliate program"""
         program_name = program.get("name", "Unknown")
@@ -742,20 +771,20 @@ class FinancialAgent(BaseAgent):
 
         results = {
             "program_name": program_name,
-            "payouts_verified": 0,
-            "discrepancies_found": 0,
-            "discrepancy_amount": 0.0,
-            "verification_status": "success",
-        }
+                "payouts_verified": 0,
+                "discrepancies_found": 0,
+                "discrepancy_amount": 0.0,
+                "verification_status": "success",
+                }
 
         try:
             # Use stealth web automation to access affiliate dashboard
             dashboard_config = {
                 "url": program.get("dashboard_url"),
-                "login_credentials": program.get("credentials"),
-                "stealth_level": StealthLevel.MAXIMUM,
-                "selectors": program.get("selectors", {}),
-            }
+                    "login_credentials": program.get("credentials"),
+                    "stealth_level": StealthLevel.MAXIMUM,
+                    "selectors": program.get("selectors", {}),
+                    }
 
             # Login to affiliate dashboard
             login_result = await self._stealth_login_to_dashboard(dashboard_config)
@@ -804,6 +833,7 @@ class FinancialAgent(BaseAgent):
 
         return results
 
+
     async def start_autonomous_financial_management(self):
         """Start the autonomous financial management loop"""
         logger.info("Starting autonomous financial management")
@@ -836,54 +866,59 @@ class FinancialAgent(BaseAgent):
                 await asyncio.sleep(300)  # Wait 5 minutes before retry
 
     @property
+
+
     def capabilities(self) -> List[str]:
         """Return list of agent capabilities"""
         return [
             "profitability_analysis",
-            "resource_optimization",
-            "roi_calculation",
-            "cost_analysis",
-            "revenue_tracking",
-            "payout_verification",
-            "financial_reporting",
-            "budget_allocation",
-            "risk_assessment",
-            "performance_monitoring",
-        ]
+                "resource_optimization",
+                "roi_calculation",
+                "cost_analysis",
+                "revenue_tracking",
+                "payout_verification",
+                "financial_reporting",
+                "budget_allocation",
+                "risk_assessment",
+                "performance_monitoring",
+                ]
+
 
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
         return {
             "agent_type": self.agent_type,
-            "active_channels": len(self.channel_financials),
-            "total_revenue": self.financial_metrics.total_revenue,
-            "total_profit": self.financial_metrics.net_profit,
-            "average_roi": self.financial_metrics.average_roi,
-            "profitable_channels": self.financial_metrics.profitable_channels,
-            "allocation_strategy": self.allocation_strategy.value,
-            "active_alerts": len([a for a in self.financial_alerts if not a.resolved]),
-            "capabilities": self.capabilities,
-            "last_analysis": (
+                "active_channels": len(self.channel_financials),
+                "total_revenue": self.financial_metrics.total_revenue,
+                "total_profit": self.financial_metrics.net_profit,
+                "average_roi": self.financial_metrics.average_roi,
+                "profitable_channels": self.financial_metrics.profitable_channels,
+                "allocation_strategy": self.allocation_strategy.value,
+                "active_alerts": len([a for a in self.financial_alerts if not a.resolved]),
+                "capabilities": self.capabilities,
+                "last_analysis": (
                 self.financial_metrics.last_calculated.isoformat()
                 if self.financial_metrics.last_calculated
                 else None
             ),
-        }
+                }
+
 
     async def _execute_with_monitoring(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute task with monitoring - required by BaseAgent"""
         return await self.process_task(task)
+
 
     async def _rephrase_task(self, task: str) -> str:
         """Rephrase task for financial context - required by BaseAgent"""
         # Simple rephrasing for financial tasks
         financial_keywords = {
             "analyze": "perform financial analysis of",
-            "optimize": "optimize resource allocation for",
-            "check": "verify financial status of",
-            "report": "generate financial report for",
-            "monitor": "monitor financial performance of",
-        }
+                "optimize": "optimize resource allocation for",
+                "check": "verify financial status of",
+                "report": "generate financial report for",
+                "monitor": "monitor financial performance of",
+                }
 
         rephrased = task.lower()
         for keyword, replacement in financial_keywords.items():
@@ -893,18 +928,19 @@ class FinancialAgent(BaseAgent):
 
         return f"Financial Agent: {rephrased}"
 
+
     async def _validate_rephrase_accuracy(self, original: str, rephrased: str) -> bool:
         """Validate rephrase accuracy - required by BaseAgent"""
         # Simple validation - check if key financial terms are preserved
         financial_terms = [
             "financial",
-            "profit",
-            "revenue",
-            "cost",
-            "roi",
-            "allocation",
-            "budget",
-        ]
+                "profit",
+                "revenue",
+                "cost",
+                "roi",
+                "allocation",
+                "budget",
+                ]
 
         original_lower = original.lower()
         rephrased_lower = rephrased.lower()

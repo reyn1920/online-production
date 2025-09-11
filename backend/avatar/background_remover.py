@@ -10,15 +10,17 @@ from PIL import Image, ImageFilter
 
 
 class BackgroundRemover:
-    """AI-powered background removal for avatar images with transparency support."""
+    """AI - powered background removal for avatar images with transparency support."""
+
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
+
     def remove_background_ai(
         self, image_data: Union[bytes, str, Image.Image]
     ) -> Image.Image:
-        """Remove background using AI-based segmentation techniques.
+        """Remove background using AI - based segmentation techniques.
 
         Args:
             image_data: Input image as bytes, base64 string, or PIL Image
@@ -43,7 +45,7 @@ class BackgroundRemover:
             if image.mode != "RGBA":
                 image = image.convert("RGBA")
 
-            # Apply AI-based background removal
+            # Apply AI - based background removal
             processed_image = self._apply_smart_segmentation(image)
 
             return processed_image
@@ -51,6 +53,7 @@ class BackgroundRemover:
         except Exception as e:
             self.logger.error(f"Error in AI background removal: {e}")
             return self._fallback_background_removal(image_data)
+
 
     def _apply_smart_segmentation(self, image: Image.Image) -> Image.Image:
         """Apply intelligent segmentation for background removal."""
@@ -64,10 +67,10 @@ class BackgroundRemover:
         height, width = cv_image.shape[:2]
         rect = (
             int(width * 0.1),
-            int(height * 0.1),
-            int(width * 0.8),
-            int(height * 0.8),
-        )
+                int(height * 0.1),
+                int(width * 0.8),
+                int(height * 0.8),
+                )
 
         # Initialize foreground and background models
         bgd_model = np.zeros((1, 65), np.float64)
@@ -98,10 +101,11 @@ class BackgroundRemover:
 
         return Image.fromarray(result_array, "RGBA")
 
+
     def _fallback_background_removal(
         self, image_data: Union[bytes, str, Image.Image]
     ) -> Image.Image:
-        """Fallback method using color-based segmentation."""
+        """Fallback method using color - based segmentation."""
         try:
             # Convert input to PIL Image
             if isinstance(image_data, str):
@@ -117,26 +121,26 @@ class BackgroundRemover:
             if image.mode != "RGBA":
                 image = image.convert("RGBA")
 
-            # Simple color-based background removal
+            # Simple color - based background removal
             data = np.array(image)
 
             # Detect background color (most common color in corners)
             corners = [
-                data[0, 0],  # top-left
-                data[0, -1],  # top-right
-                data[-1, 0],  # bottom-left
-                data[-1, -1],  # bottom-right
+                data[0, 0],  # top - left
+                data[0, -1],  # top - right
+                data[-1, 0],  # bottom - left
+                data[-1, -1],  # bottom - right
             ]
 
             # Use most common corner color as background
             bg_color = max(
                 set(tuple(c[:3]) for c in corners),
-                key=lambda x: sum(1 for c in corners if tuple(c[:3]) == x),
-            )
+                    key = lambda x: sum(1 for c in corners if tuple(c[:3]) == x),
+                    )
 
             # Create mask based on color similarity
             tolerance = 30
-            mask = np.all(np.abs(data[:, :, :3] - bg_color) < tolerance, axis=2)
+            mask = np.all(np.abs(data[:, :, :3] - bg_color) < tolerance, axis = 2)
 
             # Apply mask to alpha channel
             data[:, :, 3] = np.where(mask, 0, 255)
@@ -152,6 +156,7 @@ class BackgroundRemover:
                 else Image.open(io.BytesIO(image_data))
             )
 
+
     def enhance_transparency(self, image: Image.Image) -> Image.Image:
         """Enhance transparency and smooth edges."""
         if image.mode != "RGBA":
@@ -159,13 +164,14 @@ class BackgroundRemover:
 
         # Apply edge smoothing
         alpha = image.split()[-1]
-        alpha = alpha.filter(ImageFilter.GaussianBlur(radius=1))
+        alpha = alpha.filter(ImageFilter.GaussianBlur(radius = 1))
 
         # Reconstruct image with smoothed alpha
         rgb = image.convert("RGB")
         result = Image.merge("RGBA", rgb.split() + (alpha,))
 
         return result
+
 
     def process_avatar_upload(
         self, image_data: Union[bytes, str, Image.Image], enhance: bool = True
@@ -187,18 +193,19 @@ class BackgroundRemover:
             if enhance:
                 processed_image = self.enhance_transparency(processed_image)
 
-            # Convert to base64 for storage/transmission
+            # Convert to base64 for storage / transmission
             buffer = io.BytesIO()
-            processed_image.save(buffer, format="PNG", optimize=True)
+            processed_image.save(buffer, format="PNG", optimize = True)
             buffer.seek(0)
 
-            base64_result = base64.b64encode(buffer.getvalue()).decode("utf-8")
+            base64_result = base64.b64encode(buffer.getvalue()).decode("utf - 8")
 
-            return processed_image, f"data:image/png;base64,{base64_result}"
+            return processed_image, f"data:image / png;base64,{base64_result}"
 
         except Exception as e:
             self.logger.error(f"Error in avatar processing pipeline: {e}")
             raise
+
 
     def batch_process_avatars(self, image_list: list) -> list:
         """Process multiple avatar images in batch.
@@ -217,24 +224,25 @@ class BackgroundRemover:
                 results.append(
                     {
                         "index": i,
-                        "image": processed_image,
-                        "base64": base64_data,
-                        "status": "success",
-                    }
+                            "image": processed_image,
+                            "base64": base64_data,
+                            "status": "success",
+                            }
                 )
             except Exception as e:
                 self.logger.error(f"Error processing image {i}: {e}")
                 results.append(
                     {
                         "index": i,
-                        "image": None,
-                        "base64": None,
-                        "status": "error",
-                        "error": str(e),
-                    }
+                            "image": None,
+                            "base64": None,
+                            "status": "error",
+                            "error": str(e),
+                            }
                 )
 
         return results
+
 
     def validate_image_format(self, image_data: Union[bytes, str]) -> bool:
         """Validate if the input is a valid image format.
@@ -260,6 +268,7 @@ class BackgroundRemover:
         except Exception:
             return False
 
+
     def get_image_info(self, image_data: Union[bytes, str, Image.Image]) -> dict:
         """Get information about the input image.
 
@@ -282,21 +291,22 @@ class BackgroundRemover:
 
             return {
                 "width": image.width,
-                "height": image.height,
-                "mode": image.mode,
-                "format": image.format,
-                "has_transparency": image.mode in ("RGBA", "LA")
+                    "height": image.height,
+                    "mode": image.mode,
+                    "format": image.format,
+                    "has_transparency": image.mode in ("RGBA", "LA")
                 or "transparency" in image.info,
-                "size_bytes": (
+                    "size_bytes": (
                     len(image_data) if isinstance(image_data, bytes) else None
                 ),
-            }
+                    }
 
         except Exception as e:
             return {"error": str(e)}
 
-
 # Utility functions for integration
+
+
 def remove_background_from_upload(image_data: Union[bytes, str]) -> str:
     """Quick function to remove background from uploaded image.
 
@@ -326,9 +336,9 @@ def validate_and_process_avatar(image_data: Union[bytes, str]) -> dict:
     if not remover.validate_image_format(image_data):
         return {
             "success": False,
-            "error": "Invalid image format",
-            "processed_image": None,
-        }
+                "error": "Invalid image format",
+                "processed_image": None,
+                }
 
     try:
         # Get image info
@@ -339,10 +349,10 @@ def validate_and_process_avatar(image_data: Union[bytes, str]) -> dict:
 
         return {
             "success": True,
-            "processed_image": base64_result,
-            "original_info": info,
-            "processed_info": remover.get_image_info(processed_image),
-        }
+                "processed_image": base64_result,
+                "original_info": info,
+                "processed_info": remover.get_image_info(processed_image),
+                }
 
     except Exception as e:
         return {"success": False, "error": str(e), "processed_image": None}

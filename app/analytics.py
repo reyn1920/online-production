@@ -6,8 +6,9 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
-
 @dataclass
+
+
 class AnalyticsEvent:
     """Represents an analytics event"""
 
@@ -17,6 +18,7 @@ class AnalyticsEvent:
     session_id: Optional[str] = None
     properties: Dict[str, Any] = None
 
+
     def __post_init__(self):
         if self.properties is None:
             self.properties = {}
@@ -24,6 +26,7 @@ class AnalyticsEvent:
 
 class AnalyticsEngine:
     """Main analytics engine for dashboard insights"""
+
 
     def __init__(self):
         self.events: List[AnalyticsEvent] = []
@@ -33,57 +36,60 @@ class AnalyticsEngine:
         # Initialize with sample data
         self._generate_sample_data()
 
+
     def _generate_sample_data(self):
         """Generate sample analytics data for demonstration"""
         now = datetime.now()
 
         # Generate events for the last 30 days
         for i in range(30):
-            date = now - timedelta(days=i)
+            date = now - timedelta(days = i)
             daily_events = random.randint(50, 200)
 
             for j in range(daily_events):
                 event_time = date.replace(
-                    hour=random.randint(0, 23),
-                    minute=random.randint(0, 59),
-                    second=random.randint(0, 59),
-                )
+                    hour = random.randint(0, 23),
+                        minute = random.randint(0, 59),
+                        second = random.randint(0, 59),
+                        )
 
                 event_types = [
                     "page_view",
-                    "api_call",
-                    "user_action",
-                    "error",
-                    "performance_metric",
-                    "feature_usage",
-                ]
+                        "api_call",
+                        "user_action",
+                        "error",
+                        "performance_metric",
+                        "feature_usage",
+                        ]
 
                 event = AnalyticsEvent(
-                    event_type=random.choice(event_types),
-                    timestamp=event_time,
-                    user_id=f"user_{random.randint(1, 100)}",
-                    session_id=f"session_{random.randint(1, 500)}",
-                    properties={
+                    event_type = random.choice(event_types),
+                        timestamp = event_time,
+                        user_id = f"user_{random.randint(1, 100)}",
+                        session_id = f"session_{random.randint(1, 500)}",
+                        properties={
                         "page": random.choice(
-                            ["/dashboard", "/api/status", "/api/metrics", "/health"]
+                            ["/dashboard", "/api / status", "/api / metrics", "/health"]
                         ),
-                        "duration": random.randint(100, 5000),
-                        "status": random.choice(["success", "error", "warning"]),
-                        "browser": random.choice(
+                            "duration": random.randint(100, 5000),
+                            "status": random.choice(["success", "error", "warning"]),
+                            "browser": random.choice(
                             ["Chrome", "Firefox", "Safari", "Edge"]
                         ),
-                        "device": random.choice(["desktop", "mobile", "tablet"]),
-                    },
-                )
+                            "device": random.choice(["desktop", "mobile", "tablet"]),
+                            },
+                        )
                 self.events.append(event)
+
 
     def track_event(self, event: AnalyticsEvent):
         """Track a new analytics event"""
         self.events.append(event)
 
+
     def get_dashboard_overview(self, days: int = 7) -> Dict[str, Any]:
         """Get dashboard analytics overview"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
         recent_events = [e for e in self.events if e.timestamp >= cutoff_date]
 
         total_events = len(recent_events)
@@ -109,20 +115,21 @@ class AnalyticsEngine:
 
         return {
             "period": f"Last {days} days",
-            "total_events": total_events,
-            "unique_users": unique_users,
-            "unique_sessions": unique_sessions,
-            "avg_events_per_user": round(total_events / max(unique_users, 1), 2),
-            "event_types": dict(event_types),
-            "daily_activity": dict(daily_activity),
-            "top_pages": dict(
-                sorted(page_views.items(), key=lambda x: x[1], reverse=True)[:10]
+                "total_events": total_events,
+                "unique_users": unique_users,
+                "unique_sessions": unique_sessions,
+                "avg_events_per_user": round(total_events / max(unique_users, 1), 2),
+                "event_types": dict(event_types),
+                "daily_activity": dict(daily_activity),
+                "top_pages": dict(
+                sorted(page_views.items(), key = lambda x: x[1], reverse = True)[:10]
             ),
-        }
+                }
+
 
     def get_performance_metrics(self, days: int = 7) -> Dict[str, Any]:
         """Get performance analytics"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
         recent_events = [e for e in self.events if e.timestamp >= cutoff_date]
 
         # Response times
@@ -148,16 +155,17 @@ class AnalyticsEngine:
 
         return {
             "avg_response_time_ms": round(avg_response_time, 2),
-            "error_rate_percent": round(error_rate, 2),
-            "total_requests": len(response_times),
-            "errors": error_count,
-            "successes": success_count,
-            "uptime_percent": round(100 - error_rate, 2),
-        }
+                "error_rate_percent": round(error_rate, 2),
+                "total_requests": len(response_times),
+                "errors": error_count,
+                "successes": success_count,
+                "uptime_percent": round(100 - error_rate, 2),
+                }
+
 
     def get_user_analytics(self, days: int = 7) -> Dict[str, Any]:
         """Get user behavior analytics"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
         recent_events = [e for e in self.events if e.timestamp >= cutoff_date]
 
         # Device breakdown
@@ -179,18 +187,19 @@ class AnalyticsEngine:
 
         return {
             "device_breakdown": dict(devices),
-            "browser_breakdown": dict(browsers),
-            "hourly_activity": dict(hourly_activity),
-            "peak_hour": (
-                max(hourly_activity.items(), key=lambda x: x[1])[0]
+                "browser_breakdown": dict(browsers),
+                "hourly_activity": dict(hourly_activity),
+                "peak_hour": (
+                max(hourly_activity.items(), key = lambda x: x[1])[0]
                 if hourly_activity
                 else 0
             ),
-        }
+                }
+
 
     def get_feature_usage(self, days: int = 7) -> Dict[str, Any]:
         """Get feature usage analytics"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
         recent_events = [
             e
             for e in self.events
@@ -204,48 +213,51 @@ class AnalyticsEngine:
 
         return {
             "feature_usage": dict(
-                sorted(feature_usage.items(), key=lambda x: x[1], reverse=True)
+                sorted(feature_usage.items(), key = lambda x: x[1], reverse = True)
             ),
-            "total_feature_interactions": sum(feature_usage.values()),
-        }
+                "total_feature_interactions": sum(feature_usage.values()),
+                }
+
 
     def get_real_time_stats(self) -> Dict[str, Any]:
-        """Get real-time statistics"""
+        """Get real - time statistics"""
         now = datetime.now()
-        last_hour = now - timedelta(hours=1)
-        last_minute = now - timedelta(minutes=1)
+        last_hour = now - timedelta(hours = 1)
+        last_minute = now - timedelta(minutes = 1)
 
         recent_events = [e for e in self.events if e.timestamp >= last_hour]
         very_recent_events = [e for e in self.events if e.timestamp >= last_minute]
 
         return {
             "events_last_hour": len(recent_events),
-            "events_last_minute": len(very_recent_events),
-            "active_users_estimate": len(
+                "events_last_minute": len(very_recent_events),
+                "active_users_estimate": len(
                 set(e.user_id for e in recent_events if e.user_id)
             ),
-            "current_load": (
+                "current_load": (
                 "low"
                 if len(very_recent_events) < 10
                 else "medium" if len(very_recent_events) < 50 else "high"
             ),
-        }
+                }
+
 
     def generate_report(self, days: int = 7) -> Dict[str, Any]:
         """Generate comprehensive analytics report"""
         return {
             "generated_at": datetime.now().isoformat(),
-            "period": f"Last {days} days",
-            "overview": self.get_dashboard_overview(days),
-            "performance": self.get_performance_metrics(days),
-            "users": self.get_user_analytics(days),
-            "features": self.get_feature_usage(days),
-            "real_time": self.get_real_time_stats(),
-        }
+                "period": f"Last {days} days",
+                "overview": self.get_dashboard_overview(days),
+                "performance": self.get_performance_metrics(days),
+                "users": self.get_user_analytics(days),
+                "features": self.get_feature_usage(days),
+                "real_time": self.get_real_time_stats(),
+                }
+
 
     def export_data(self, format: str = "json", days: int = 30) -> str:
         """Export analytics data in specified format"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
         recent_events = [e for e in self.events if e.timestamp >= cutoff_date]
 
         if format.lower() == "json":
@@ -254,7 +266,7 @@ class AnalyticsEngine:
                 event_dict = asdict(event)
                 event_dict["timestamp"] = event.timestamp.isoformat()
                 data.append(event_dict)
-            return json.dumps(data, indent=2)
+            return json.dumps(data, indent = 2)
 
         elif format.lower() == "csv":
             import csv
@@ -273,18 +285,17 @@ class AnalyticsEngine:
                 writer.writerow(
                     [
                         event.timestamp.isoformat(),
-                        event.event_type,
-                        event.user_id or "",
-                        event.session_id or "",
-                        json.dumps(event.properties or {}),
-                    ]
+                            event.event_type,
+                            event.user_id or "",
+                            event.session_id or "",
+                            json.dumps(event.properties or {}),
+                            ]
                 )
 
             return output.getvalue()
 
         else:
             raise ValueError(f"Unsupported format: {format}")
-
 
 # Global analytics instance
 analytics_engine = AnalyticsEngine()
@@ -296,11 +307,11 @@ def track_page_view(page: str, user_id: str = None, session_id: str = None, **kw
     """Track a page view event"""
     event = AnalyticsEvent(
         event_type="page_view",
-        timestamp=datetime.now(),
-        user_id=user_id,
-        session_id=session_id,
-        properties={"page": page, **kwargs},
-    )
+            timestamp = datetime.now(),
+            user_id = user_id,
+            session_id = session_id,
+            properties={"page": page, **kwargs},
+            )
     analytics_engine.track_event(event)
 
 
@@ -310,16 +321,16 @@ def track_api_call(
     """Track an API call event"""
     event = AnalyticsEvent(
         event_type="api_call",
-        timestamp=datetime.now(),
-        properties={
+            timestamp = datetime.now(),
+            properties={
             "endpoint": endpoint,
-            "method": method,
-            "status_code": status_code,
-            "duration": duration_ms,
-            "status": "success" if 200 <= status_code < 400 else "error",
-            **kwargs,
-        },
-    )
+                "method": method,
+                "status_code": status_code,
+                "duration": duration_ms,
+                "status": "success" if 200 <= status_code < 400 else "error",
+                **kwargs,
+                },
+            )
     analytics_engine.track_event(event)
 
 
@@ -329,11 +340,11 @@ def track_user_action(
     """Track a user action event"""
     event = AnalyticsEvent(
         event_type="user_action",
-        timestamp=datetime.now(),
-        user_id=user_id,
-        session_id=session_id,
-        properties={"action": action, **kwargs},
-    )
+            timestamp = datetime.now(),
+            user_id = user_id,
+            session_id = session_id,
+            properties={"action": action, **kwargs},
+            )
     analytics_engine.track_event(event)
 
 
@@ -341,8 +352,8 @@ def track_feature_usage(feature: str, user_id: str = None, **kwargs):
     """Track feature usage event"""
     event = AnalyticsEvent(
         event_type="feature_usage",
-        timestamp=datetime.now(),
-        user_id=user_id,
-        properties={"feature": feature, **kwargs},
-    )
+            timestamp = datetime.now(),
+            user_id = user_id,
+            properties={"feature": feature, **kwargs},
+            )
     analytics_engine.track_event(event)

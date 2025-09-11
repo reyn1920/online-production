@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Database Migration and Production Setup Script
 
@@ -6,9 +6,9 @@ This script helps migrate from SQLite to PostgreSQL and verifies
 production database configuration.
 
 Usage:
-    python scripts/database_migration.py --check
-    python scripts/database_migration.py --migrate
-    python scripts/database_migration.py --verify-production
+    python scripts / database_migration.py --check
+    python scripts / database_migration.py --migrate
+    python scripts / database_migration.py --verify - production
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -39,9 +39,11 @@ except ImportError as e:
 class DatabaseMigrationManager:
     """Manages database migration and production setup"""
 
+
     def __init__(self):
-        self.current_db_url = os.getenv("DATABASE_URL", "sqlite:///data/trae_master.db")
+        self.current_db_url = os.getenv("DATABASE_URL", "sqlite:///data / trae_master.db")
         self.production_db_url = os.getenv("PRODUCTION_DATABASE_URL")
+
 
     def check_current_database(self) -> Dict[str, Any]:
         """Check current database configuration and health"""
@@ -49,11 +51,11 @@ class DatabaseMigrationManager:
 
         result = {
             "database_url": self.current_db_url,
-            "database_type": self._get_db_type(self.current_db_url),
-            "health_check": None,
-            "tables": [],
-            "recommendations": [],
-        }
+                "database_type": self._get_db_type(self.current_db_url),
+                "health_check": None,
+                "tables": [],
+                "recommendations": [],
+                }
 
         # Perform health check
         try:
@@ -89,17 +91,18 @@ class DatabaseMigrationManager:
 
         return result
 
+
     def verify_production_setup(self) -> Dict[str, Any]:
         """Verify production database setup"""
         print("🏭 Verifying production database setup...")
 
         result = {
             "environment_check": self._check_environment_variables(),
-            "postgresql_dependencies": self._check_postgresql_dependencies(),
-            "connection_test": None,
-            "schema_validation": None,
-            "recommendations": [],
-        }
+                "postgresql_dependencies": self._check_postgresql_dependencies(),
+                "connection_test": None,
+                "schema_validation": None,
+                "recommendations": [],
+                }
 
         # Test production database connection if URL is provided
         if self.production_db_url:
@@ -131,6 +134,7 @@ class DatabaseMigrationManager:
 
         return result
 
+
     def migrate_to_production(self, dry_run: bool = True) -> Dict[str, Any]:
         """Migrate from SQLite to PostgreSQL"""
         if dry_run:
@@ -143,11 +147,11 @@ class DatabaseMigrationManager:
 
         result = {
             "source_db": self.current_db_url,
-            "target_db": self.production_db_url,
-            "dry_run": dry_run,
-            "steps": [],
-            "success": False,
-        }
+                "target_db": self.production_db_url,
+                "dry_run": dry_run,
+                "steps": [],
+                "success": False,
+                }
 
         try:
             # Step 1: Validate source database
@@ -182,9 +186,9 @@ class DatabaseMigrationManager:
             result["steps"].append(
                 {
                     "step": 3,
-                    "status": "completed",
-                    "description": f'Data export ({len(exported_data.get("tables", []))} tables)',
-                }
+                        "status": "completed",
+                        "description": f'Data export ({len(exported_data.get("tables", []))} tables)',
+                        }
             )
 
             # Step 4: Import data
@@ -206,9 +210,9 @@ class DatabaseMigrationManager:
             result["steps"].append(
                 {
                     "step": 5,
-                    "status": "completed",
-                    "description": "Migration validation",
-                }
+                        "status": "completed",
+                        "description": "Migration validation",
+                        }
             )
 
             result["success"] = True
@@ -220,6 +224,7 @@ class DatabaseMigrationManager:
 
         return result
 
+
     def _get_db_type(self, url: str) -> str:
         """Determine database type from URL"""
         if url.startswith("postgresql://"):
@@ -229,15 +234,16 @@ class DatabaseMigrationManager:
         else:
             return "sqlite"  # Default
 
+
     def _check_environment_variables(self) -> Dict[str, Any]:
         """Check required environment variables"""
         required_vars = [
             "DATABASE_URL",
-            "PRODUCTION_DATABASE_URL",
-            "DB_NAME",
-            "DB_USER",
-            "DB_PASSWORD",
-        ]
+                "PRODUCTION_DATABASE_URL",
+                "DB_NAME",
+                "DB_USER",
+                "DB_PASSWORD",
+                ]
 
         result = {"missing": [], "present": [], "recommendations": []}
 
@@ -254,6 +260,7 @@ class DatabaseMigrationManager:
 
         return result
 
+
     def _check_postgresql_dependencies(self) -> Dict[str, Any]:
         """Check if PostgreSQL dependencies are installed"""
         result = {"psycopg2": False, "sqlalchemy": False, "recommendations": []}
@@ -264,7 +271,7 @@ class DatabaseMigrationManager:
             result["psycopg2"] = True
         except ImportError:
             result["recommendations"].append(
-                "Install psycopg2: pip install psycopg2-binary"
+                "Install psycopg2: pip install psycopg2 - binary"
             )
 
         try:
@@ -277,6 +284,7 @@ class DatabaseMigrationManager:
             )
 
         return result
+
 
     def _validate_production_schema(
         self, manager: ProductionDatabaseManager
@@ -293,6 +301,7 @@ class DatabaseMigrationManager:
                 return {"success": True, "tables_found": len(tables), "tables": tables}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def _export_sqlite_data(self) -> Dict[str, Any]:
         """Export data from SQLite database"""
@@ -312,14 +321,15 @@ class DatabaseMigrationManager:
                     exported["tables"].append(
                         {
                             "name": table,
-                            "row_count": len(rows),
-                            "data": [dict(row) for row in rows],
-                        }
+                                "row_count": len(rows),
+                                "data": [dict(row) for row in rows],
+                                }
                     )
         except Exception as e:
             exported["error"] = str(e)
 
         return exported
+
 
     def _import_postgresql_data(
         self, manager: ProductionDatabaseManager, data: Dict[str, Any]
@@ -344,6 +354,7 @@ class DatabaseMigrationManager:
                     values = [row[col] for col in columns]
                     cursor.execute(insert_sql, values)
 
+
     def _validate_migration(
         self, manager: ProductionDatabaseManager, source_check: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -360,12 +371,13 @@ class DatabaseMigrationManager:
 
             return {
                 "success": len(target_tables) >= len(source_tables),
-                "source_tables": len(source_tables),
-                "target_tables": len(target_tables),
-                "missing_tables": list(set(source_tables) - set(target_tables)),
-            }
+                    "source_tables": len(source_tables),
+                    "target_tables": len(target_tables),
+                    "missing_tables": list(set(source_tables) - set(target_tables)),
+                    }
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def _generate_recommendations(self, check_result: Dict[str, Any]) -> List[str]:
         """Generate recommendations based on current database check"""
@@ -384,6 +396,7 @@ class DatabaseMigrationManager:
             recommendations.append("Initialize database schema")
 
         return recommendations
+
 
     def _generate_production_recommendations(self, result: Dict[str, Any]) -> List[str]:
         """Generate production setup recommendations"""
@@ -409,13 +422,13 @@ def main():
     parser = argparse.ArgumentParser(description="TRAE.AI Database Migration Tool")
     parser.add_argument("--check", action="store_true", help="Check current database")
     parser.add_argument(
-        "--verify-production", action="store_true", help="Verify production setup"
+        "--verify - production", action="store_true", help="Verify production setup"
     )
     parser.add_argument(
         "--migrate", action="store_true", help="Migrate to production database"
     )
     parser.add_argument(
-        "--dry-run", action="store_true", help="Run migration in dry-run mode"
+        "--dry - run", action="store_true", help="Run migration in dry - run mode"
     )
     parser.add_argument("--output", help="Output results to JSON file")
 
@@ -436,12 +449,12 @@ def main():
             results["production_verification"] = manager.verify_production_setup()
 
         if args.migrate:
-            results["migration"] = manager.migrate_to_production(dry_run=args.dry_run)
+            results["migration"] = manager.migrate_to_production(dry_run = args.dry_run)
 
         # Output results
         if args.output:
             with open(args.output, "w") as f:
-                json.dump(results, f, indent=2, default=str)
+                json.dump(results, f, indent = 2, default = str)
             print(f"📄 Results saved to {args.output}")
 
         # Print summary
@@ -457,7 +470,6 @@ def main():
     except Exception as e:
         print(f"❌ Error: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

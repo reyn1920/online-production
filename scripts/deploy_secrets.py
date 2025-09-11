@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Secrets Management Production Deployment Script
 
@@ -6,9 +6,9 @@ This script handles the production deployment of the SecretStore system,
 including database initialization, security validation, and system checks.
 
 Usage:
-    python scripts/deploy_secrets.py --environment production
-    python scripts/deploy_secrets.py --environment staging --validate-only
-    python scripts/deploy_secrets.py --init-database --backup-existing
+    python scripts / deploy_secrets.py --environment production
+    python scripts / deploy_secrets.py --environment staging --validate - only
+    python scripts / deploy_secrets.py --init - database --backup - existing
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -35,8 +35,9 @@ class SecretsDeployment:
     Production deployment manager for the SecretStore system.
 
     Handles database initialization, security validation, backup management,
-    and production readiness checks.
+        and production readiness checks.
     """
+
 
     def __init__(self, environment: str = "production"):
         self.environment = environment
@@ -45,15 +46,16 @@ class SecretsDeployment:
         self.backup_dir = self.project_root / "backups" / "secrets"
         self.config = self._load_deployment_config()
 
-        # Environment-specific settings
+        # Environment - specific settings
         self.db_path = self.config.get(
             "database_path",
-            {
-                "production": "data/secrets.sqlite",
-                "staging": "data/secrets_staging.sqlite",
-                "development": "data/secrets_dev.sqlite",
-            },
-        ).get(environment, "data/secrets.sqlite")
+                {
+                "production": "data / secrets.sqlite",
+                    "staging": "data / secrets_staging.sqlite",
+                    "development": "data / secrets_dev.sqlite",
+                    },
+                ).get(environment, "data / secrets.sqlite")
+
 
     def _load_deployment_config(self) -> Dict:
         """Load deployment configuration from file."""
@@ -61,21 +63,21 @@ class SecretsDeployment:
 
         default_config = {
             "database_path": {
-                "production": "data/secrets.sqlite",
-                "staging": "data/secrets_staging.sqlite",
-                "development": "data/secrets_dev.sqlite",
-            },
-            "backup_retention_days": 30,
-            "security_checks": {
+                "production": "data / secrets.sqlite",
+                    "staging": "data / secrets_staging.sqlite",
+                    "development": "data / secrets_dev.sqlite",
+                    },
+                "backup_retention_days": 30,
+                "security_checks": {
                 "require_master_key": True,
-                "validate_permissions": True,
-                "check_encryption": True,
-            },
-            "production_requirements": {
+                    "validate_permissions": True,
+                    "check_encryption": True,
+                    },
+                "production_requirements": {
                 "min_python_version": "3.8",
-                "required_packages": ["cryptography", "sqlite3"],
-            },
-        }
+                    "required_packages": ["cryptography", "sqlite3"],
+                    },
+                }
 
         if config_file.exists():
             try:
@@ -91,6 +93,7 @@ class SecretsDeployment:
                 print("Using default configuration.")
 
         return default_config
+
 
     def validate_environment(self) -> bool:
         """
@@ -168,17 +171,18 @@ class SecretsDeployment:
         if self.environment == "production" and checks_passed < total_checks:
             print("❌ Production deployment requires all checks to pass.")
             return False
-        elif checks_passed >= (total_checks * 0.8):  # 80% for staging/dev
+        elif checks_passed >= (total_checks * 0.8):  # 80% for staging / dev
             print("✅ Environment validation passed.")
             return True
         else:
             print("❌ Environment validation failed.")
             return False
 
+
     def _check_directory_permissions(self, directory: Path) -> bool:
         """Check if directory has appropriate permissions."""
         try:
-            directory.mkdir(parents=True, exist_ok=True)
+            directory.mkdir(parents = True, exist_ok = True)
             # Test write permissions
             test_file = directory / ".permission_test"
             test_file.write_text("test")
@@ -187,8 +191,9 @@ class SecretsDeployment:
         except Exception:
             return False
 
+
     def _check_file_permissions(self, file_path: Path) -> bool:
-        """Check if file has appropriate permissions (readable/writable by owner only)."""
+        """Check if file has appropriate permissions (readable / writable by owner only)."""
         try:
             stat = file_path.stat()
             # Check if file is readable and writable by owner
@@ -196,12 +201,13 @@ class SecretsDeployment:
         except Exception:
             return False
 
+
     def _test_encryption(self) -> bool:
         """Test encryption functionality with a temporary store."""
         try:
             # Create a temporary database for testing
             test_db = self.data_dir / "test_encryption.sqlite"
-            test_db.parent.mkdir(parents=True, exist_ok=True)
+            test_db.parent.mkdir(parents = True, exist_ok = True)
 
             # Test with a temporary master key
             os.environ["TRAE_MASTER_KEY_TEST"] = "test_key_for_validation"
@@ -233,6 +239,7 @@ class SecretsDeployment:
             print(f"Encryption test failed: {e}")
             return False
 
+
     def backup_existing_database(self) -> Optional[str]:
         """
         Create a backup of the existing database before deployment.
@@ -247,7 +254,7 @@ class SecretsDeployment:
             return None
 
         # Create backup directory
-        self.backup_dir.mkdir(parents=True, exist_ok=True)
+        self.backup_dir.mkdir(parents = True, exist_ok = True)
 
         # Generate backup filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -267,6 +274,7 @@ class SecretsDeployment:
             print(f"✗ Backup failed: {e}")
             return None
 
+
     def _cleanup_old_backups(self) -> None:
         """Remove old backup files based on retention policy."""
         retention_days = self.config.get("backup_retention_days", 30)
@@ -280,6 +288,7 @@ class SecretsDeployment:
         except Exception as e:
             print(f"Warning: Could not clean up old backups: {e}")
 
+
     def initialize_database(self) -> bool:
         """
         Initialize the secrets database for production use.
@@ -291,7 +300,7 @@ class SecretsDeployment:
 
         try:
             # Ensure data directory exists
-            Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+            Path(self.db_path).parent.mkdir(parents = True, exist_ok = True)
 
             # Check if master key is available
             master_key = os.getenv("TRAE_MASTER_KEY")
@@ -310,7 +319,7 @@ class SecretsDeployment:
 
                 if retrieved == test_value:
                     print("✓ Database initialization successful")
-                    print("✓ Encryption/decryption test passed")
+                    print("✓ Encryption / decryption test passed")
 
                     # Clean up test secret
                     store.delete_secret(test_key)
@@ -330,21 +339,23 @@ class SecretsDeployment:
             print(f"✗ Unexpected error during initialization: {e}")
             return False
 
+
     def _set_secure_permissions(self, file_path: Path) -> None:
-        """Set secure file permissions (owner read/write only)."""
+        """Set secure file permissions (owner read / write only)."""
         try:
-            # Set permissions to 600 (owner read/write only)
+            # Set permissions to 600 (owner read / write only)
             os.chmod(file_path, 0o600)
             print(f"✓ Secure permissions set for: {file_path}")
         except Exception as e:
             print(f"Warning: Could not set secure permissions: {e}")
 
+
     def deploy(
         self,
-        validate_only: bool = False,
-        backup_existing: bool = True,
-        init_database: bool = True,
-    ) -> bool:
+            validate_only: bool = False,
+            backup_existing: bool = True,
+            init_database: bool = True,
+            ) -> bool:
         """
         Execute the complete deployment process.
 
@@ -367,7 +378,7 @@ class SecretsDeployment:
             return False
 
         if validate_only:
-            print("\n✅ Validation-only mode completed successfully.")
+            print("\n✅ Validation - only mode completed successfully.")
             return True
 
         # Step 2: Backup existing database
@@ -391,13 +402,13 @@ class SecretsDeployment:
                 test_operations = [
                     (
                         "store_secret",
-                        lambda: store.store_secret("_final_test", "test_value"),
-                    ),
-                    ("get_secret", lambda: store.get_secret("_final_test")),
-                    ("secret_exists", lambda: store.secret_exists("_final_test")),
-                    ("list_secrets", lambda: store.list_secrets()),
-                    ("delete_secret", lambda: store.delete_secret("_final_test")),
-                ]
+                            lambda: store.store_secret("_final_test", "test_value"),
+                            ),
+                        ("get_secret", lambda: store.get_secret("_final_test")),
+                        ("secret_exists", lambda: store.secret_exists("_final_test")),
+                        ("list_secrets", lambda: store.list_secrets()),
+                        ("delete_secret", lambda: store.delete_secret("_final_test")),
+                        ]
 
                 for operation_name, operation in test_operations:
                     try:
@@ -420,61 +431,61 @@ def main():
     """Main entry point for the deployment script."""
     parser = argparse.ArgumentParser(
         description="TRAE.AI Secrets Management Production Deployment",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+            formatter_class = argparse.RawDescriptionHelpFormatter,
+            epilog="""
 Examples:
   %(prog)s --environment production
-  %(prog)s --environment staging --validate-only
-  %(prog)s --init-database --backup-existing
-  %(prog)s --environment production --no-backup
+  %(prog)s --environment staging --validate - only
+  %(prog)s --init - database --backup - existing
+  %(prog)s --environment production --no - backup
 
 Environment Variables:
   TRAE_MASTER_KEY: Master password for encryption (required)
   TRAE_SECRETS_DB: Override default database path (optional)
         """,
-    )
+            )
 
     parser.add_argument(
         "--environment",
-        "-e",
-        choices=["production", "staging", "development"],
-        default="production",
-        help="Deployment environment",
-    )
+            "-e",
+            choices=["production", "staging", "development"],
+            default="production",
+            help="Deployment environment",
+            )
 
     parser.add_argument(
-        "--validate-only",
-        action="store_true",
-        help="Only validate environment, do not deploy",
-    )
+        "--validate - only",
+            action="store_true",
+            help="Only validate environment, do not deploy",
+            )
 
     parser.add_argument(
-        "--backup-existing",
-        action="store_true",
-        default=True,
-        help="Create backup of existing database",
-    )
+        "--backup - existing",
+            action="store_true",
+            default = True,
+            help="Create backup of existing database",
+            )
 
     parser.add_argument(
-        "--no-backup",
-        dest="backup_existing",
-        action="store_false",
-        help="Skip backup of existing database",
-    )
+        "--no - backup",
+            dest="backup_existing",
+            action="store_false",
+            help="Skip backup of existing database",
+            )
 
     parser.add_argument(
-        "--init-database",
-        action="store_true",
-        default=True,
-        help="Initialize database during deployment",
-    )
+        "--init - database",
+            action="store_true",
+            default = True,
+            help="Initialize database during deployment",
+            )
 
     parser.add_argument(
-        "--no-init",
-        dest="init_database",
-        action="store_false",
-        help="Skip database initialization",
-    )
+        "--no - init",
+            dest="init_database",
+            action="store_false",
+            help="Skip database initialization",
+            )
 
     args = parser.parse_args()
 
@@ -487,13 +498,12 @@ Environment Variables:
 
     # Execute deployment
     success = deployment.deploy(
-        validate_only=args.validate_only,
-        backup_existing=args.backup_existing,
-        init_database=args.init_database,
-    )
+        validate_only = args.validate_only,
+            backup_existing = args.backup_existing,
+            init_database = args.init_database,
+            )
 
     sys.exit(0 if success else 1)
-
 
 if __name__ == "__main__":
     main()

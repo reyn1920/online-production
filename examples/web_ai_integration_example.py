@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Web AI Integration Example
 Demonstrates how to use web AI platforms for avatar generation and chat completion
@@ -23,6 +23,7 @@ from integrations.web_ai_client import WebAIClient, WebAIPlatform
 class WebAIIntegration:
     """Integrated web AI client for avatar generation and chat"""
 
+
     def __init__(self, config_path: str = None):
         """Initialize web AI integration"""
         self.web_ai_client = WebAIClient(config_path)
@@ -30,18 +31,19 @@ class WebAIIntegration:
         self.mcp_client = MCPClient()
         self.session_stats = {
             "total_requests": 0,
-            "successful_requests": 0,
-            "failed_requests": 0,
-            "platform_usage": {},
-            "session_start": datetime.now(),
-        }
+                "successful_requests": 0,
+                "failed_requests": 0,
+                "platform_usage": {},
+                "session_start": datetime.now(),
+                }
+
 
     async def generate_avatar_prompt(
         self,
-        description: str,
-        style: str = "realistic",
-        platform: WebAIPlatform = WebAIPlatform.CHATGPT,
-    ) -> str:
+            description: str,
+            style: str = "realistic",
+            platform: WebAIPlatform = WebAIPlatform.CHATGPT,
+            ) -> str:
         """
         Generate an optimized prompt for avatar creation
 
@@ -59,16 +61,16 @@ class WebAIIntegration:
             messages = [
                 {
                     "role": "system",
-                    "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high-quality avatar images.",
-                },
-                {
+                        "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high - quality avatar images.",
+                        },
+                    {
                     "role": "user",
-                    "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, and quality modifiers that work well with AI image generators.",
-                },
-            ]
+                        "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, and quality modifiers that work well with AI image generators.",
+                        },
+                    ]
 
             response = await self.web_ai_client.chat_completion(
-                messages=messages, platform=platform
+                messages = messages, platform = platform
             )
 
             self._update_stats(platform, response.success)
@@ -84,6 +86,7 @@ class WebAIIntegration:
             print(f"❌ Avatar prompt generation failed: {e}")
             self._update_stats(platform, False)
             return f"A {style} avatar of {description}"
+
 
     async def chat_with_platform(
         self, messages: List[Dict], platform: WebAIPlatform = WebAIPlatform.CHATGPT
@@ -102,7 +105,7 @@ class WebAIIntegration:
             print(f"💬 Sending chat request to {platform.value}...")
 
             response = await self.web_ai_client.chat_completion(
-                messages=messages, platform=platform
+                messages = messages, platform = platform
             )
 
             self._update_stats(platform, response.success)
@@ -111,22 +114,23 @@ class WebAIIntegration:
                 print(f"✅ Chat response received from {platform.value}")
                 return {
                     "success": True,
-                    "content": response.content,
-                    "platform": platform.value,
-                    "response_time": response.response_time,
-                }
+                        "content": response.content,
+                        "platform": platform.value,
+                        "response_time": response.response_time,
+                        }
             else:
                 print(f"❌ Chat request failed: {response.error}")
                 return {
                     "success": False,
-                    "error": response.error,
-                    "platform": platform.value,
-                }
+                        "error": response.error,
+                        "platform": platform.value,
+                        }
 
         except Exception as e:
             print(f"❌ Chat request exception: {e}")
             self._update_stats(platform, False)
             return {"success": False, "error": str(e), "platform": platform.value}
+
 
     async def multi_platform_comparison(
         self, prompt: str, platforms: List[WebAIPlatform] = None
@@ -144,9 +148,9 @@ class WebAIIntegration:
         if platforms is None:
             platforms = [
                 WebAIPlatform.CHATGPT,
-                WebAIPlatform.GEMINI,
-                WebAIPlatform.CLAUDE,
-            ]
+                    WebAIPlatform.GEMINI,
+                    WebAIPlatform.CLAUDE,
+                    ]
 
         print(f"🔄 Comparing responses across {len(platforms)} platforms...")
 
@@ -167,11 +171,12 @@ class WebAIIntegration:
             except Exception as e:
                 results[platform.value] = {
                     "success": False,
-                    "error": str(e),
-                    "platform": platform.value,
-                }
+                        "error": str(e),
+                        "platform": platform.value,
+                        }
 
         return results
+
 
     async def generate_avatar_workflow(
         self, description: str, style: str = "realistic"
@@ -190,11 +195,11 @@ class WebAIIntegration:
 
         workflow_results = {
             "description": description,
-            "style": style,
-            "steps": {},
-            "final_prompt": None,
-            "success": False,
-        }
+                "style": style,
+                "steps": {},
+                "final_prompt": None,
+                "success": False,
+                }
 
         try:
             # Step 1: Generate optimized prompt
@@ -204,8 +209,8 @@ class WebAIIntegration:
             )
             workflow_results["steps"]["prompt_generation"] = {
                 "success": True,
-                "prompt": optimized_prompt,
-            }
+                    "prompt": optimized_prompt,
+                    }
             workflow_results["final_prompt"] = optimized_prompt
 
             # Step 2: Validate prompt with another platform
@@ -213,8 +218,8 @@ class WebAIIntegration:
             validation_messages = [
                 {
                     "role": "user",
-                    "content": f"Rate this AI image generation prompt on a scale of 1-10 and suggest improvements: {optimized_prompt}",
-                }
+                        "content": f"Rate this AI image generation prompt on a scale of 1 - 10 and suggest improvements: {optimized_prompt}",
+                        }
             ]
 
             validation_response = await self.chat_with_platform(
@@ -228,8 +233,8 @@ class WebAIIntegration:
             alternative_messages = [
                 {
                     "role": "user",
-                    "content": f"Create 2 alternative prompts for this avatar: {description} (style: {style}). Make them different but equally detailed.",
-                }
+                        "content": f"Create 2 alternative prompts for this avatar: {description} (style: {style}). Make them different but equally detailed.",
+                        }
             ]
 
             alternatives_response = await self.chat_with_platform(
@@ -247,6 +252,7 @@ class WebAIIntegration:
 
         return workflow_results
 
+
     def _update_stats(self, platform: WebAIPlatform, success: bool):
         """Update session statistics"""
         self.session_stats["total_requests"] += 1
@@ -260,15 +266,16 @@ class WebAIIntegration:
         if platform_name not in self.session_stats["platform_usage"]:
             self.session_stats["platform_usage"][platform_name] = {
                 "requests": 0,
-                "successes": 0,
-                "failures": 0,
-            }
+                    "successes": 0,
+                    "failures": 0,
+                    }
 
         self.session_stats["platform_usage"][platform_name]["requests"] += 1
         if success:
             self.session_stats["platform_usage"][platform_name]["successes"] += 1
         else:
             self.session_stats["platform_usage"][platform_name]["failures"] += 1
+
 
     async def get_session_analytics(self) -> Dict:
         """Get comprehensive session analytics"""
@@ -278,17 +285,17 @@ class WebAIIntegration:
 
         analytics = {
             "session_duration_seconds": session_duration,
-            "total_requests": self.session_stats["total_requests"],
-            "success_rate": (
+                "total_requests": self.session_stats["total_requests"],
+                "success_rate": (
                 self.session_stats["successful_requests"]
                 / max(self.session_stats["total_requests"], 1)
             )
             * 100,
-            "platform_usage": self.session_stats["platform_usage"],
-            "requests_per_minute": (
+                "platform_usage": self.session_stats["platform_usage"],
+                "requests_per_minute": (
                 self.session_stats["total_requests"] / max(session_duration / 60, 1)
             ),
-        }
+                }
 
         # Add platform health checks
         health_checks = {}
@@ -296,12 +303,13 @@ class WebAIIntegration:
             try:
                 # Quick health check (placeholder)
                 health_checks[platform.value] = "healthy"
-            except:
+            except Exception:
                 health_checks[platform.value] = "error"
 
         analytics["platform_health"] = health_checks
 
         return analytics
+
 
     async def cleanup(self):
         """Cleanup resources"""
@@ -324,13 +332,13 @@ async def main():
         print("-" * 30)
 
         web_health = await integration.web_ai_client.health_check()
-        print(f"Web AI Client: {json.dumps(web_health, indent=2)}")
+        print(f"Web AI Client: {json.dumps(web_health, indent = 2)}")
 
         puppeteer_health = await integration.puppeteer_service.health_check()
-        print(f"Puppeteer Service: {json.dumps(puppeteer_health, indent=2)}")
+        print(f"Puppeteer Service: {json.dumps(puppeteer_health, indent = 2)}")
 
         mcp_health = await integration.mcp_client.health_check()
-        print(f"MCP Client: {json.dumps(mcp_health, indent=2)}")
+        print(f"MCP Client: {json.dumps(mcp_health, indent = 2)}")
 
         # Test 2: Simple chat completion
         print("\n💬 Simple Chat Test")
@@ -343,7 +351,7 @@ async def main():
         chat_result = await integration.chat_with_platform(
             simple_messages, WebAIPlatform.CHATGPT
         )
-        print(f"Chat Result: {json.dumps(chat_result, indent=2)}")
+        print(f"Chat Result: {json.dumps(chat_result, indent = 2)}")
 
         # Test 3: Avatar generation workflow
         print("\n🎭 Avatar Generation Workflow")
@@ -352,23 +360,23 @@ async def main():
         avatar_result = await integration.generate_avatar_workflow(
             "A friendly robot with blue eyes and a warm smile", "cartoon"
         )
-        print(f"Avatar Workflow: {json.dumps(avatar_result, indent=2)}")
+        print(f"Avatar Workflow: {json.dumps(avatar_result, indent = 2)}")
 
-        # Test 4: Multi-platform comparison
-        print("\n🔄 Multi-Platform Comparison")
+        # Test 4: Multi - platform comparison
+        print("\n🔄 Multi - Platform Comparison")
         print("-" * 30)
 
         comparison_result = await integration.multi_platform_comparison(
             "What makes a good avatar design?"
         )
-        print(f"Platform Comparison: {json.dumps(comparison_result, indent=2)}")
+        print(f"Platform Comparison: {json.dumps(comparison_result, indent = 2)}")
 
         # Test 5: Session analytics
         print("\n📈 Session Analytics")
         print("-" * 30)
 
         analytics = await integration.get_session_analytics()
-        print(f"Analytics: {json.dumps(analytics, indent=2)}")
+        print(f"Analytics: {json.dumps(analytics, indent = 2)}")
 
     except Exception as e:
         print(f"❌ Demo failed: {e}")
@@ -377,7 +385,6 @@ async def main():
         # Cleanup
         await integration.cleanup()
         print("\n✅ Demo completed")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

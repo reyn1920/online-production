@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Master Dashboard
 Unified interface for managing 100+ APIs
@@ -36,8 +36,9 @@ except ImportError:
     )
     sys.exit(1)
 
-
 @dataclass
+
+
 class APIStatus:
     name: str
     registered: bool
@@ -53,6 +54,8 @@ class APIStatus:
 
 
 class APIMasterDashboard:
+
+
     def __init__(self):
         self.registration_manager = APIRegistrationManager()
         self.tester = APITester()
@@ -60,6 +63,7 @@ class APIMasterDashboard:
         self.usage_file = "api_usage_tracking.json"
         self.load_status()
         self.load_usage()
+
 
     def load_status(self):
         """Load API status from file"""
@@ -71,11 +75,13 @@ class APIMasterDashboard:
             self.api_status = {}
             self.initialize_status()
 
+
     def save_status(self):
         """Save API status to file"""
         data = {k: asdict(v) for k, v in self.api_status.items()}
         with open(self.status_file, "w") as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent = 2)
+
 
     def load_usage(self):
         """Load API usage tracking"""
@@ -85,32 +91,35 @@ class APIMasterDashboard:
         except FileNotFoundError:
             self.usage_data = {
                 "daily_usage": {},
-                "monthly_costs": {},
-                "rate_limits": {},
-                "last_updated": datetime.now().isoformat(),
-            }
+                    "monthly_costs": {},
+                    "rate_limits": {},
+                    "last_updated": datetime.now().isoformat(),
+                    }
+
 
     def save_usage(self):
         """Save API usage tracking"""
         self.usage_data["last_updated"] = datetime.now().isoformat()
         with open(self.usage_file, "w") as f:
-            json.dump(self.usage_data, f, indent=2)
+            json.dump(self.usage_data, f, indent = 2)
+
 
     def initialize_status(self):
         """Initialize API status from registry"""
         for api_key, api_info in API_REGISTRY.items():
             self.api_status[api_key] = APIStatus(
-                name=api_info["name"],
-                registered=self.registration_manager.is_registered(api_key),
-                has_key=bool(os.getenv(api_info["env_var"])),
-                last_tested=None,
-                test_status=None,
-                response_time=None,
-                cost_tier=api_info["cost"],
-                phase=api_info["phase"],
-                priority=api_info["priority"],
-            )
+                name = api_info["name"],
+                    registered = self.registration_manager.is_registered(api_key),
+                    has_key = bool(os.getenv(api_info["env_var"])),
+                    last_tested = None,
+                    test_status = None,
+                    response_time = None,
+                    cost_tier = api_info["cost"],
+                    phase = api_info["phase"],
+                    priority = api_info["priority"],
+                    )
         self.save_status()
+
 
     def update_api_status(self, api_key: str, test_result: APITestResult):
         """Update API status with test results"""
@@ -122,6 +131,7 @@ class APIMasterDashboard:
             if test_result.error_message:
                 status.last_error = test_result.error_message
             self.save_status()
+
 
     def get_dashboard_stats(self) -> Dict:
         """Get comprehensive dashboard statistics"""
@@ -143,10 +153,10 @@ class APIMasterDashboard:
             phase_apis = [s for s in self.api_status.values() if s.phase == phase]
             phase_stats[phase] = {
                 "total": len(phase_apis),
-                "registered": sum(1 for s in phase_apis if s.registered),
-                "has_key": sum(1 for s in phase_apis if s.has_key),
-                "working": sum(1 for s in phase_apis if s.test_status == "success"),
-            }
+                    "registered": sum(1 for s in phase_apis if s.registered),
+                    "has_key": sum(1 for s in phase_apis if s.has_key),
+                    "working": sum(1 for s in phase_apis if s.test_status == "success"),
+                    }
 
         # Cost breakdown
         cost_stats = {}
@@ -156,25 +166,26 @@ class APIMasterDashboard:
             ]
             cost_stats[cost_tier] = {
                 "total": len(cost_apis),
-                "registered": sum(1 for s in cost_apis if s.registered),
-                "working": sum(1 for s in cost_apis if s.test_status == "success"),
-            }
+                    "registered": sum(1 for s in cost_apis if s.registered),
+                    "working": sum(1 for s in cost_apis if s.test_status == "success"),
+                    }
 
         return {
             "total_apis": total_apis,
-            "registered": registered_count,
-            "has_keys": has_key_count,
-            "tested": tested_count,
-            "working": working_count,
-            "registration_rate": (
+                "registered": registered_count,
+                "has_keys": has_key_count,
+                "tested": tested_count,
+                "working": working_count,
+                "registration_rate": (
                 (registered_count / total_apis * 100) if total_apis > 0 else 0
             ),
-            "success_rate": (
+                "success_rate": (
                 (working_count / tested_count * 100) if tested_count > 0 else 0
             ),
-            "phase_stats": phase_stats,
-            "cost_stats": cost_stats,
-        }
+                "phase_stats": phase_stats,
+                "cost_stats": cost_stats,
+                }
+
 
     def display_dashboard(self):
         """Display the main dashboard"""
@@ -197,29 +208,30 @@ class APIMasterDashboard:
         print("\n📋 Phase Breakdown:")
         for phase, data in stats["phase_stats"].items():
             print(
-                f"  Phase {phase}: {data['working']}/{data['registered']}/{data['total']} (Working/Registered/Total)"
+                f"  Phase {phase}: {data['working']}/{data['registered']}/{data['total']} (Working / Registered / Total)"
             )
 
         print("\n💰 Cost Breakdown:")
         for cost_tier, data in stats["cost_stats"].items():
             print(
-                f"  {cost_tier}: {data['working']}/{data['registered']}/{data['total']} (Working/Registered/Total)"
+                f"  {cost_tier}: {data['working']}/{data['registered']}/{data['total']} (Working / Registered / Total)"
             )
 
         # Recent activity
         recent_tests = [(k, v) for k, v in self.api_status.items() if v.last_tested]
-        recent_tests.sort(key=lambda x: x[1].last_tested or "", reverse=True)
+        recent_tests.sort(key = lambda x: x[1].last_tested or "", reverse = True)
 
         if recent_tests:
             print("\n🕒 Recent Test Results:")
             for api_key, status in recent_tests[:5]:
                 status_emoji = {
                     "success": "✅",
-                    "failed": "❌",
-                    "no_key": "🔑",
-                    "error": "💥",
-                }.get(status.test_status, "❓")
+                        "failed": "❌",
+                        "no_key": "🔑",
+                        "error": "💥",
+                        }.get(status.test_status, "❓")
                 print(f"  {status_emoji} {status.name}: {status.test_status}")
+
 
     def show_api_details(self, api_key: str):
         """Show detailed information for a specific API"""
@@ -249,10 +261,11 @@ class APIMasterDashboard:
             print(f"❌ Last Error: {status.last_error}")
 
         if api_info:
-            print(f"\n🔗 Registration URL: {api_info.get('signup_url', 'N/A')}")
-            print(f"🔗 Login URL: {api_info.get('login_url', 'N/A')}")
-            print(f"🔧 Environment Variable: {api_info.get('env_var', 'N/A')}")
-            print(f"📝 Instructions: {api_info.get('instructions', 'N/A')}")
+            print(f"\n🔗 Registration URL: {api_info.get('signup_url', 'N / A')}")
+            print(f"🔗 Login URL: {api_info.get('login_url', 'N / A')}")
+            print(f"🔧 Environment Variable: {api_info.get('env_var', 'N / A')}")
+            print(f"📝 Instructions: {api_info.get('instructions', 'N / A')}")
+
 
     def register_api_interactive(self, api_key: str):
         """Interactive API registration"""
@@ -272,6 +285,7 @@ class APIMasterDashboard:
                 )
                 self.save_status()
 
+
     def test_api_interactive(self, api_key: str):
         """Interactive API testing"""
         print(f"\n🧪 Testing {api_key}...")
@@ -286,11 +300,12 @@ class APIMasterDashboard:
                     print(f"⚡ Response time: {result.response_time:.3f}s")
             elif result.status == "no_key":
                 print(f"🔑 {result.api_name} needs an API key")
-                register = input("Would you like to register now? (y/n): ").lower()
+                register = input("Would you like to register now? (y / n): ").lower()
                 if register == "y":
                     self.register_api_interactive(api_key)
             else:
                 print(f"❌ {result.api_name} test failed: {result.error_message}")
+
 
     def bulk_test_apis(self, phase: Optional[int] = None):
         """Test multiple APIs in bulk"""
@@ -315,7 +330,8 @@ class APIMasterDashboard:
         success_count = sum(1 for r in results if r.status == "success")
         print(f"\n📊 Bulk Test Summary:")
         print(f"✅ Successful: {success_count}/{len(results)}")
-        print(f"📈 Success Rate: {success_count/len(results)*100:.1f}%")
+        print(f"📈 Success Rate: {success_count / len(results)*100:.1f}%")
+
 
     def generate_registration_plan(self):
         """Generate a prioritized registration plan"""
@@ -326,7 +342,7 @@ class APIMasterDashboard:
         # Sort by phase and priority
         priority_order = {"high": 0, "medium": 1, "low": 2}
         unregistered_apis.sort(
-            key=lambda x: (x[1].phase, priority_order.get(x[1].priority, 3))
+            key = lambda x: (x[1].phase, priority_order.get(x[1].priority, 3))
         )
 
         print("\n📋 Registration Plan (Prioritized)")
@@ -346,6 +362,7 @@ class APIMasterDashboard:
             )
 
         print(f"\n📊 Total unregistered: {len(unregistered_apis)} APIs")
+
 
     def export_env_template(self):
         """Export environment template with current status"""
@@ -388,10 +405,11 @@ class APIMasterDashboard:
 
         print(f"✅ Exported environment template to {template_file}")
 
+
     def run_health_monitor(self):
         """Run continuous health monitoring"""
         print("\n🏥 Starting Health Monitor...")
-        print("Press Ctrl+C to stop")
+        print("Press Ctrl + C to stop")
 
         try:
             while True:
@@ -411,10 +429,10 @@ class APIMasterDashboard:
                             self.update_api_status(api_key, result)
                             status_emoji = {
                                 "success": "✅",
-                                "failed": "❌",
-                                "no_key": "🔑",
-                                "error": "💥",
-                            }.get(result.status, "❓")
+                                    "failed": "❌",
+                                    "no_key": "🔑",
+                                    "error": "💥",
+                                    }.get(result.status, "❓")
                             print(
                                 f"  {status_emoji} {result.api_name}: {result.status}"
                             )
@@ -424,6 +442,7 @@ class APIMasterDashboard:
 
         except KeyboardInterrupt:
             print("\n🛑 Health monitor stopped")
+
 
     def interactive_menu(self):
         """Main interactive menu"""
@@ -441,7 +460,7 @@ class APIMasterDashboard:
             print("8. 🔄 Refresh dashboard")
             print("9. ❌ Exit")
 
-            choice = input("\nSelect action (1-9): ").strip()
+            choice = input("\nSelect action (1 - 9): ").strip()
 
             if choice == "1":
                 api_key = input("Enter API key: ").strip()
@@ -459,7 +478,7 @@ class APIMasterDashboard:
                 input("\nPress Enter to continue...")
 
             elif choice == "4":
-                phase = input("Enter phase (1-4) or 'all': ").strip()
+                phase = input("Enter phase (1 - 4) or 'all': ").strip()
                 if phase == "all":
                     self.bulk_test_apis()
                 else:
@@ -468,7 +487,7 @@ class APIMasterDashboard:
                         if 1 <= phase_num <= 4:
                             self.bulk_test_apis(phase_num)
                         else:
-                            print("❌ Invalid phase. Use 1-4 or 'all'")
+                            print("❌ Invalid phase. Use 1 - 4 or 'all'")
                     except ValueError:
                         print("❌ Invalid input")
                 input("\nPress Enter to continue...")
@@ -506,7 +525,6 @@ def main():
     except Exception as e:
         print(f"💥 Error: {str(e)}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

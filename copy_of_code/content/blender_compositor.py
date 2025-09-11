@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Blender Compositor - Avatar Video Compositing with Checkpointed Rendering
 
@@ -33,6 +33,7 @@ try:
     from utils.logger import get_logger
 except ImportError:
 
+
     def get_logger(name):
         return logging.getLogger(name)
 
@@ -62,8 +63,9 @@ class CompositeMode(Enum):
     FULL_COMPOSITE = "full_composite"
     GREEN_SCREEN = "green_screen"
 
-
 @dataclass
+
+
 class RenderConfig:
     """Configuration for Blender rendering."""
 
@@ -83,10 +85,11 @@ class RenderConfig:
     thread_count: Optional[int] = None
     output_format: str = "PNG"  # PNG, JPEG, EXR, etc.
     color_depth: str = "8"  # 8, 16, 32
-    compression: int = 15  # 0-100 for JPEG, 0-100 for PNG
-
+    compression: int = 15  # 0 - 100 for JPEG, 0 - 100 for PNG
 
 @dataclass
+
+
 class CompositeLayer:
     """Represents a layer in the composite."""
 
@@ -102,12 +105,14 @@ class CompositeLayer:
     end_frame: Optional[int] = None
     properties: Dict[str, Any] = None
 
+
     def __post_init__(self):
         if self.properties is None:
             self.properties = {}
 
-
 @dataclass
+
+
 class RenderJob:
     """Represents a Blender render job."""
 
@@ -127,6 +132,7 @@ class RenderJob:
     rendered_frames: List[int] = None
     metadata: Dict[str, Any] = None
 
+
     def __post_init__(self):
         if self.checkpoint_data is None:
             self.checkpoint_data = {}
@@ -139,74 +145,76 @@ class RenderJob:
 class BlenderScriptGenerator:
     """Generates Blender Python scripts for compositing."""
 
+
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
+
 
     def generate_composite_script(self, job: RenderJob) -> str:
         """Generate Blender Python script for compositing."""
         script_lines = [
             "import bpy",
-            "import bmesh",
-            "import os",
-            "import sys",
-            "from mathutils import Vector",
-            "",
-            "# Clear existing mesh objects",
-            "bpy.ops.object.select_all(action='SELECT')",
-            "bpy.ops.object.delete(use_global=False)",
-            "",
-            "# Set render settings",
-            f"bpy.context.scene.render.engine = '{job.config.engine.value}'",
-            f"bpy.context.scene.render.resolution_x = {job.config.resolution_x}",
-            f"bpy.context.scene.render.resolution_y = {job.config.resolution_y}",
-            f"bpy.context.scene.frame_start = {job.config.frame_start}",
-            f"bpy.context.scene.frame_end = {job.config.frame_end}",
-            f"bpy.context.scene.render.fps = {job.config.fps}",
-            f"bpy.context.scene.render.filepath = '{job.output_path}'",
-            f"bpy.context.scene.render.image_settings.file_format = '{job.config.output_format}'",
-            f"bpy.context.scene.render.image_settings.color_depth = '{job.config.color_depth}'",
-            "",
-        ]
+                "import bmesh",
+                "import os",
+                "import sys",
+                "from mathutils import Vector",
+                "",
+                "# Clear existing mesh objects",
+                "bpy.ops.object.select_all(action='SELECT')",
+                "bpy.ops.object.delete(use_global = False)",
+                "",
+                "# Set render settings",
+                f"bpy.context.scene.render.engine = '{job.config.engine.value}'",
+                f"bpy.context.scene.render.resolution_x = {job.config.resolution_x}",
+                f"bpy.context.scene.render.resolution_y = {job.config.resolution_y}",
+                f"bpy.context.scene.frame_start = {job.config.frame_start}",
+                f"bpy.context.scene.frame_end = {job.config.frame_end}",
+                f"bpy.context.scene.render.fps = {job.config.fps}",
+                f"bpy.context.scene.render.filepath = '{job.output_path}'",
+                f"bpy.context.scene.render.image_settings.file_format = '{job.config.output_format}'",
+                f"bpy.context.scene.render.image_settings.color_depth = '{job.config.color_depth}'",
+                "",
+                ]
 
-        # Add engine-specific settings
+        # Add engine - specific settings
         if job.config.engine == RenderEngine.CYCLES:
             script_lines.extend(
                 [
                     "# Cycles settings",
-                    f"bpy.context.scene.cycles.samples = {job.config.samples}",
-                    f"bpy.context.scene.cycles.use_denoising = {job.config.use_denoising}",
-                    f"bpy.context.scene.render.use_motion_blur = {job.config.use_motion_blur}",
-                    "",
-                ]
+                        f"bpy.context.scene.cycles.samples = {job.config.samples}",
+                        f"bpy.context.scene.cycles.use_denoising = {job.config.use_denoising}",
+                        f"bpy.context.scene.render.use_motion_blur = {job.config.use_motion_blur}",
+                        "",
+                        ]
             )
         elif job.config.engine == RenderEngine.EEVEE:
             script_lines.extend(
                 [
                     "# Eevee settings",
-                    f"bpy.context.scene.eevee.taa_render_samples = {job.config.samples}",
-                    "bpy.context.scene.eevee.use_bloom = True",
-                    "bpy.context.scene.eevee.use_ssr = True",
-                    "",
-                ]
+                        f"bpy.context.scene.eevee.taa_render_samples = {job.config.samples}",
+                        "bpy.context.scene.eevee.use_bloom = True",
+                        "bpy.context.scene.eevee.use_ssr = True",
+                        "",
+                        ]
             )
 
         # Setup compositor
-        script_lines.extend(
+            script_lines.extend(
             [
                 "# Enable compositor",
-                "bpy.context.scene.use_nodes = True",
-                "tree = bpy.context.scene.node_tree",
-                "tree.nodes.clear()",
-                "",
-                "# Create render layers node",
-                "render_layers = tree.nodes.new('CompositorNodeRLayers')",
-                "render_layers.location = (0, 0)",
-                "",
-                "# Create composite output",
-                "composite = tree.nodes.new('CompositorNodeComposite')",
-                "composite.location = (800, 0)",
-                "",
-            ]
+                    "bpy.context.scene.use_nodes = True",
+                    "tree = bpy.context.scene.node_tree",
+                    "tree.nodes.clear()",
+                    "",
+                    "# Create render layers node",
+                    "render_layers = tree.nodes.new('CompositorNodeRLayers')",
+                    "render_layers.location = (0, 0)",
+                    "",
+                    "# Create composite output",
+                    "composite = tree.nodes.new('CompositorNodeComposite')",
+                    "composite.location = (800, 0)",
+                    "",
+                    ]
         )
 
         # Add layers
@@ -219,14 +227,14 @@ class BlenderScriptGenerator:
         script_lines.extend(
             [
                 "",
-                "# Connect final composite",
-                "if len(tree.nodes) > 2:",
-                "    last_node = [n for n in tree.nodes if n.type != 'COMPOSITE'][-1]",
-                "    tree.links.new(last_node.outputs[0], composite.inputs[0])",
-                "else:",
-                "    tree.links.new(render_layers.outputs[0], composite.inputs[0])",
-                "",
-            ]
+                    "# Connect final composite",
+                    "if len(tree.nodes) > 2:",
+                    "    last_node = [n for n in tree.nodes if n.type != 'COMPOSITE'][-1]",
+                    "    tree.links.new(last_node.outputs[0], composite.inputs[0])",
+                    "else:",
+                    "    tree.links.new(render_layers.outputs[0], composite.inputs[0])",
+                    "",
+                    ]
         )
 
         # Add checkpoint rendering logic
@@ -234,39 +242,40 @@ class BlenderScriptGenerator:
 
         return "\n".join(script_lines)
 
+
     def _generate_layer_nodes(
         self, layer: CompositeLayer, index: int, y_offset: int
     ) -> List[str]:
         """Generate compositor nodes for a layer."""
         lines = [
             f"# Layer {index}: {layer.name}",
-        ]
+                ]
 
         if layer.type == "video":
             lines.extend(
                 [
                     f"movie_clip_{index} = tree.nodes.new('CompositorNodeMovieClip')",
-                    f"movie_clip_{index}.location = (200, {y_offset})",
-                    f"# Load movie clip",
-                    f"try:",
-                    f"    clip = bpy.data.movieclips.load('{layer.source_path}')",
-                    f"    movie_clip_{index}.clip = clip",
-                    f"except:",
-                    f"    print('Failed to load video: {layer.source_path}')",
-                ]
+                        f"movie_clip_{index}.location = (200, {y_offset})",
+                        f"# Load movie clip",
+                        f"try:",
+                        f"    clip = bpy.data.movieclips.load('{layer.source_path}')",
+                        f"    movie_clip_{index}.clip = clip",
+                        f"except Exception:",
+                        f"    print('Failed to load video: {layer.source_path}')",
+                        ]
             )
         elif layer.type == "image":
             lines.extend(
                 [
                     f"image_{index} = tree.nodes.new('CompositorNodeImage')",
-                    f"image_{index}.location = (200, {y_offset})",
-                    f"# Load image",
-                    f"try:",
-                    f"    img = bpy.data.images.load('{layer.source_path}')",
-                    f"    image_{index}.image = img",
-                    f"except:",
-                    f"    print('Failed to load image: {layer.source_path}')",
-                ]
+                        f"image_{index}.location = (200, {y_offset})",
+                        f"# Load image",
+                        f"try:",
+                        f"    img = bpy.data.images.load('{layer.source_path}')",
+                        f"    image_{index}.image = img",
+                        f"except Exception:",
+                        f"    print('Failed to load image: {layer.source_path}')",
+                        ]
             )
 
         # Add transform nodes
@@ -278,12 +287,12 @@ class BlenderScriptGenerator:
             lines.extend(
                 [
                     f"transform_{index} = tree.nodes.new('CompositorNodeTransform')",
-                    f"transform_{index}.location = (400, {y_offset})",
-                    f"transform_{index}.inputs['X'].default_value = {layer.position[0]}",
-                    f"transform_{index}.inputs['Y'].default_value = {layer.position[1]}",
-                    f"transform_{index}.inputs['Angle'].default_value = {layer.rotation}",
-                    f"transform_{index}.inputs['Scale'].default_value = {layer.scale[0]}",
-                ]
+                        f"transform_{index}.location = (400, {y_offset})",
+                        f"transform_{index}.inputs['X'].default_value = {layer.position[0]}",
+                        f"transform_{index}.inputs['Y'].default_value = {layer.position[1]}",
+                        f"transform_{index}.inputs['Angle'].default_value = {layer.rotation}",
+                        f"transform_{index}.inputs['Scale'].default_value = {layer.scale[0]}",
+                        ]
             )
 
         # Add alpha over node for blending
@@ -291,87 +300,89 @@ class BlenderScriptGenerator:
             lines.extend(
                 [
                     f"alpha_over_{index} = tree.nodes.new('CompositorNodeAlphaOver')",
-                    f"alpha_over_{index}.location = (600, {y_offset})",
-                    f"alpha_over_{index}.inputs['Fac'].default_value = {layer.opacity}",
-                ]
+                        f"alpha_over_{index}.location = (600, {y_offset})",
+                        f"alpha_over_{index}.inputs['Fac'].default_value = {layer.opacity}",
+                        ]
             )
 
         lines.append("")
         return lines
 
+
     def _generate_checkpoint_script(self, job: RenderJob) -> List[str]:
         """Generate checkpointed rendering script."""
         return [
             "# Checkpointed rendering function",
-            "def render_with_checkpoints():",
-            "    import json",
-            "    import os",
-            f"    checkpoint_file = '{job.output_path}_checkpoint.json'",
-            f"    ",
-            "    # Load checkpoint if exists",
-            "    start_frame = bpy.context.scene.frame_start",
-            "    if os.path.exists(checkpoint_file):",
-            "        try:",
-            "            with open(checkpoint_file, 'r') as f:",
-            "                checkpoint = json.load(f)",
-            "            start_frame = checkpoint.get('last_frame', start_frame) + 1",
-            "            print(f'Resuming from frame {start_frame}')",
-            "        except:",
-            "            print('Failed to load checkpoint, starting from beginning')",
-            "    ",
-            "    # Render frames with checkpointing",
-            "    for frame in range(start_frame, bpy.context.scene.frame_end + 1):",
-            "        try:",
-            "            bpy.context.scene.frame_set(frame)",
-            "            ",
-            "            # Set output filename with frame number",
-            f"            output_file = '{job.output_path}_' + str(frame).zfill(4)",
-            "            bpy.context.scene.render.filepath = output_file",
-            "            ",
-            "            # Render single frame",
-            "            bpy.ops.render.render(write_still=True)",
-            "            ",
-            "            print(f'Rendered frame {frame}')",
-            "            ",
-            "            # Save checkpoint every N frames",
-            f"            if frame % {job.config.checkpoint_interval} == 0:",
-            "                checkpoint_data = {",
-            "                    'last_frame': frame,",
-            "                    'timestamp': str(bpy.context.scene.frame_current),",
-            "                    'total_frames': bpy.context.scene.frame_end",
-            "                }",
-            "                with open(checkpoint_file, 'w') as f:",
-            "                    json.dump(checkpoint_data, f)",
-            "                print(f'Checkpoint saved at frame {frame}')",
-            "            ",
-            "        except Exception as e:",
-            "            print(f'Error rendering frame {frame}: {e}')",
-            "            # Save error checkpoint",
-            "            error_checkpoint = {",
-            "                'last_frame': frame - 1,",
-            "                'error_frame': frame,",
-            "                'error': str(e),",
-            "                'timestamp': str(bpy.context.scene.frame_current)",
-            "            }",
-            "            with open(checkpoint_file, 'w') as f:",
-            "                json.dump(error_checkpoint, f)",
-            "            break",
-            "    ",
-            "    # Clean up checkpoint file on successful completion",
-            "    if frame == bpy.context.scene.frame_end:",
-            "        try:",
-            "            os.remove(checkpoint_file)",
-            "            print('Rendering completed successfully')",
-            "        except:",
-            "            pass",
-            "",
-            "# Execute checkpointed rendering",
-            "render_with_checkpoints()",
-        ]
+                "def render_with_checkpoints():",
+                "    import json",
+                "    import os",
+                f"    checkpoint_file = '{job.output_path}_checkpoint.json'",
+                f"    ",
+                "    # Load checkpoint if exists",
+                "    start_frame = bpy.context.scene.frame_start",
+                "    if os.path.exists(checkpoint_file):",
+                "        try:",
+                "            with open(checkpoint_file, 'r') as f:",
+                "                checkpoint = json.load(f)",
+                "            start_frame = checkpoint.get('last_frame', start_frame) + 1",
+                "            print(f'Resuming from frame {start_frame}')",
+                "        except Exception:",
+                "            print('Failed to load checkpoint, starting from beginning')",
+                "    ",
+                "    # Render frames with checkpointing",
+                "    for frame in range(start_frame, bpy.context.scene.frame_end + 1):",
+                "        try:",
+                "            bpy.context.scene.frame_set(frame)",
+                "            ",
+                "            # Set output filename with frame number",
+                f"            output_file = '{job.output_path}_' + str(frame).zfill(4)",
+                "            bpy.context.scene.render.filepath = output_file",
+                "            ",
+                "            # Render single frame",
+                "            bpy.ops.render.render(write_still = True)",
+                "            ",
+                "            print(f'Rendered frame {frame}')",
+                "            ",
+                "            # Save checkpoint every N frames",
+                f"            if frame % {job.config.checkpoint_interval} == 0:",
+                "                checkpoint_data = {",
+                "                    'last_frame': frame,",
+                "                    'timestamp': str(bpy.context.scene.frame_current),",
+                "                    'total_frames': bpy.context.scene.frame_end",
+                "                }",
+                "                with open(checkpoint_file, 'w') as f:",
+                "                    json.dump(checkpoint_data, f)",
+                "                print(f'Checkpoint saved at frame {frame}')",
+                "            ",
+                "        except Exception as e:",
+                "            print(f'Error rendering frame {frame}: {e}')",
+                "            # Save error checkpoint",
+                "            error_checkpoint = {",
+                "                'last_frame': frame - 1,",
+                "                'error_frame': frame,",
+                "                'error': str(e),",
+                "                'timestamp': str(bpy.context.scene.frame_current)",
+                "            }",
+                "            with open(checkpoint_file, 'w') as f:",
+                "                json.dump(error_checkpoint, f)",
+                "            break",
+                "    ",
+                "    # Clean up checkpoint file on successful completion",
+                "    if frame == bpy.context.scene.frame_end:",
+                "        try:",
+                "            os.remove(checkpoint_file)",
+                "            print('Rendering completed successfully')",
+                "        except Exception:",
+                "            pass",
+                "",
+                "# Execute checkpointed rendering",
+                "render_with_checkpoints()",
+                ]
 
 
 class BlenderCompositor:
     """Main class for Blender compositing operations."""
+
 
     def __init__(self, blender_executable: Optional[str] = None):
         self.blender_executable = blender_executable or self._find_blender()
@@ -381,22 +392,23 @@ class BlenderCompositor:
         # Job tracking
         self.active_jobs: Dict[str, RenderJob] = {}
         self.job_queue = queue.Queue()
-        self.executor = ThreadPoolExecutor(max_workers=2)
+        self.executor = ThreadPoolExecutor(max_workers = 2)
 
         # Setup temp directory
         self.temp_dir = Path(tempfile.gettempdir()) / "blender_compositor"
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
+        self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Validate Blender installation
         if not self._validate_blender():
             self.logger.warning("Blender not found or invalid installation")
 
+
     def _find_blender(self) -> str:
         """Find Blender executable."""
         possible_paths = [
-            "/Applications/Blender.app/Contents/MacOS/Blender",  # macOS
-            "/usr/bin/blender",  # Linux
-            "/usr/local/bin/blender",  # Linux
+            "/Applications / Blender.app / Contents / MacOS / Blender",  # macOS
+            "/usr / bin / blender",  # Linux
+            "/usr / local / bin / blender",  # Linux
             "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",  # Windows
             "blender",  # In PATH
         ]
@@ -407,15 +419,16 @@ class BlenderCompositor:
 
         return "blender"  # Fallback
 
+
     def _validate_blender(self) -> bool:
         """Validate Blender installation."""
         try:
             result = subprocess.run(
                 [self.blender_executable, "--version"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+                    capture_output = True,
+                    text = True,
+                    timeout = 10,
+                    )
 
             if result.returncode == 0 and "Blender" in result.stdout:
                 self.logger.info(f"Blender found: {result.stdout.split()[1]}")
@@ -428,14 +441,15 @@ class BlenderCompositor:
             self.logger.error(f"Blender validation error: {e}")
             return False
 
+
     def create_composite_job(
         self,
-        layers: List[CompositeLayer],
-        output_path: str,
-        job_id: Optional[str] = None,
-        config: Optional[RenderConfig] = None,
-        mode: CompositeMode = CompositeMode.FULL_COMPOSITE,
-    ) -> RenderJob:
+            layers: List[CompositeLayer],
+            output_path: str,
+            job_id: Optional[str] = None,
+            config: Optional[RenderConfig] = None,
+            mode: CompositeMode = CompositeMode.FULL_COMPOSITE,
+            ) -> RenderJob:
         """Create a new composite job."""
         if job_id is None:
             job_id = f"composite_{int(time.time())}_{len(self.active_jobs)}"
@@ -446,31 +460,32 @@ class BlenderCompositor:
                 raise FileNotFoundError(f"Layer source not found: {layer.source_path}")
 
         # Create output directory
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(output_path).parent.mkdir(parents = True, exist_ok = True)
 
         # Generate project file path
         project_file = str(self.temp_dir / f"{job_id}.blend")
 
         job = RenderJob(
-            job_id=job_id,
-            project_file=project_file,
-            output_path=output_path,
-            layers=layers,
-            config=config or RenderConfig(),
-            mode=mode,
-            metadata={
+            job_id = job_id,
+                project_file = project_file,
+                output_path = output_path,
+                layers = layers,
+                config = config or RenderConfig(),
+                mode = mode,
+                metadata={
                 "created_at": datetime.now().isoformat(),
-                "layer_count": len(layers),
-                "estimated_frames": (
+                    "layer_count": len(layers),
+                    "estimated_frames": (
                     config.frame_end - config.frame_start + 1 if config else 250
                 ),
-            },
-        )
+                    },
+                )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Composite job created: {job_id}")
 
         return job
+
 
     def process_job(self, job_id: str) -> bool:
         """Process a composite job."""
@@ -523,16 +538,17 @@ class BlenderCompositor:
             self.logger.error(f"Composite job error: {job_id} - {e}")
             return False
 
+
     def _execute_blender_script(self, job: RenderJob, script_path: str) -> bool:
         """Execute Blender with the generated script."""
         try:
             cmd = [
                 self.blender_executable,
-                "--background",  # Run in background
-                "--factory-startup",  # Start with factory settings
+                    "--background",  # Run in background
+                "--factory - startup",  # Start with factory settings
                 "--python",
-                script_path,
-            ]
+                    script_path,
+                    ]
 
             # Add memory limit if specified
             if job.config.max_memory_gb > 0:
@@ -545,11 +561,11 @@ class BlenderCompositor:
             # Start process with progress monitoring
             process = subprocess.Popen(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                cwd=str(self.temp_dir),
-            )
+                    stdout = subprocess.PIPE,
+                    stderr = subprocess.PIPE,
+                    text = True,
+                    cwd = str(self.temp_dir),
+                    )
 
             # Monitor progress
             self._monitor_render_progress(job, process)
@@ -570,10 +586,12 @@ class BlenderCompositor:
             job.error_message = str(e)
             return False
 
+
     def _monitor_render_progress(
         self, job: RenderJob, process: subprocess.Popen
     ) -> None:
         """Monitor render progress and update job status."""
+
 
         def monitor():
             total_frames = job.config.frame_end - job.config.frame_start + 1
@@ -598,8 +616,9 @@ class BlenderCompositor:
                     self.logger.debug(f"Progress monitoring error: {e}")
 
         # Start monitoring in separate thread
-        monitor_thread = threading.Thread(target=monitor, daemon=True)
+        monitor_thread = threading.Thread(target = monitor, daemon = True)
         monitor_thread.start()
+
 
     def _collect_rendered_frames(self, job: RenderJob) -> List[int]:
         """Collect list of successfully rendered frames."""
@@ -617,6 +636,7 @@ class BlenderCompositor:
 
         return rendered_frames
 
+
     def resume_job(self, job_id: str) -> bool:
         """Resume a failed or paused job from checkpoint."""
         if job_id not in self.active_jobs:
@@ -633,6 +653,7 @@ class BlenderCompositor:
         self.logger.info(f"Resuming job: {job_id}")
         return self.process_job(job_id)
 
+
     def pause_job(self, job_id: str) -> bool:
         """Pause a running job."""
         if job_id not in self.active_jobs:
@@ -646,6 +667,7 @@ class BlenderCompositor:
 
         return False
 
+
     def cancel_job(self, job_id: str) -> bool:
         """Cancel a job."""
         if job_id in self.active_jobs:
@@ -656,9 +678,11 @@ class BlenderCompositor:
             return True
         return False
 
+
     def get_job_status(self, job_id: str) -> Optional[RenderJob]:
         """Get status of a composite job."""
         return self.active_jobs.get(job_id)
+
 
     def cleanup_temp_files(self, job_id: Optional[str] = None) -> None:
         """Clean up temporary files."""
@@ -668,40 +692,41 @@ class BlenderCompositor:
                 patterns = [f"{job_id}*"]
                 for pattern in patterns:
                     for file_path in self.temp_dir.glob(pattern):
-                        file_path.unlink(missing_ok=True)
+                        file_path.unlink(missing_ok = True)
             else:
                 # Clean up all temp files
                 shutil.rmtree(self.temp_dir)
-                self.temp_dir.mkdir(parents=True, exist_ok=True)
+                self.temp_dir.mkdir(parents = True, exist_ok = True)
 
             self.logger.info(f"Temporary files cleaned up: {job_id or 'all'}")
         except Exception as e:
             self.logger.error(f"Cleanup failed: {e}")
 
+
     def create_avatar_composite(
         self,
-        avatar_video: str,
-        background_image: str,
-        output_path: str,
-        effects: Optional[List[str]] = None,
-    ) -> str:
+            avatar_video: str,
+            background_image: str,
+            output_path: str,
+            effects: Optional[List[str]] = None,
+            ) -> str:
         """Convenience method to create avatar composite."""
         layers = [
             CompositeLayer(
                 name="background",
-                type="image",
-                source_path=background_image,
-                blend_mode="ALPHA_OVER",
-                opacity=1.0,
-            ),
-            CompositeLayer(
+                    type="image",
+                    source_path = background_image,
+                    blend_mode="ALPHA_OVER",
+                    opacity = 1.0,
+                    ),
+                CompositeLayer(
                 name="avatar",
-                type="video",
-                source_path=avatar_video,
-                blend_mode="ALPHA_OVER",
-                opacity=1.0,
-            ),
-        ]
+                    type="video",
+                    source_path = avatar_video,
+                    blend_mode="ALPHA_OVER",
+                    opacity = 1.0,
+                    ),
+                ]
 
         # Add effect layers if specified
         if effects:
@@ -709,32 +734,32 @@ class BlenderCompositor:
                 if Path(effect).exists():
                     layers.append(
                         CompositeLayer(
-                            name=f"effect_{i}",
-                            type=(
+                            name = f"effect_{i}",
+                                type=(
                                 "image"
                                 if effect.lower().endswith((".png", ".jpg", ".jpeg"))
                                 else "video"
                             ),
-                            source_path=effect,
-                            blend_mode="SCREEN",
-                            opacity=0.5,
-                        )
+                                source_path = effect,
+                                blend_mode="SCREEN",
+                                opacity = 0.5,
+                                )
                     )
 
         config = RenderConfig(
-            engine=RenderEngine.EEVEE,
-            quality=RenderQuality.PRODUCTION,
-            resolution_x=1920,
-            resolution_y=1080,
-            fps=24,
-        )
+            engine = RenderEngine.EEVEE,
+                quality = RenderQuality.PRODUCTION,
+                resolution_x = 1920,
+                resolution_y = 1080,
+                fps = 24,
+                )
 
         job = self.create_composite_job(
-            layers=layers,
-            output_path=output_path,
-            config=config,
-            mode=CompositeMode.AVATAR_BACKGROUND,
-        )
+            layers = layers,
+                output_path = output_path,
+                config = config,
+                mode = CompositeMode.AVATAR_BACKGROUND,
+                )
 
         if self.process_job(job.job_id):
             return job.job_id
@@ -743,11 +768,10 @@ class BlenderCompositor:
                 f"Failed to create avatar composite: {job.error_message}"
             )
 
-
 # Example usage and testing
 if __name__ == "__main__":
     # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level = logging.INFO)
 
     # Create BlenderCompositor instance
     compositor = BlenderCompositor()
@@ -756,11 +780,11 @@ if __name__ == "__main__":
     try:
         # Create avatar composite
         job_id = compositor.create_avatar_composite(
-            avatar_video="./assets/avatar_animation.mp4",
-            background_image="./assets/office_background.jpg",
-            output_path="./output/final_composite",
-            effects=["./assets/particle_effect.mp4"],
-        )
+            avatar_video="./assets / avatar_animation.mp4",
+                background_image="./assets / office_background.jpg",
+                output_path="./output / final_composite",
+                effects=["./assets / particle_effect.mp4"],
+                )
 
         print(f"Avatar composite job created: {job_id}")
 

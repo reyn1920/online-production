@@ -1,4 +1,4 @@
-# backend/integrations/pets_adapter.py
+# backend / integrations / pets_adapter.py
 import json
 import logging
 import os
@@ -16,7 +16,7 @@ TIMEOUT_S = 15
 def get_active_pets_provider() -> Dict:
     """Get the currently active pets provider from the registry."""
     try:
-        r = http_get_with_backoff(f"{BASE}/integrations/active/pets", timeout=10)
+        r = http_get_with_backoff(f"{BASE}/integrations / active / pets", timeout = 10)
         r.raise_for_status()
         return r.json()["active"]
     except Exception as e:
@@ -50,10 +50,10 @@ def _get_credentials(provider_key: str) -> Dict[str, str]:
 
 def _report_usage(
     provider_key: str,
-    success: bool,
-    error: Optional[str] = None,
-    took_ms: Optional[int] = None,
-    quota_remaining: Optional[int] = None,
+        success: bool,
+        error: Optional[str] = None,
+        took_ms: Optional[int] = None,
+        quota_remaining: Optional[int] = None,
 ):
     """Report usage metrics to the integrations registry."""
     try:
@@ -63,7 +63,7 @@ def _report_usage(
         if quota_remaining is not None:
             payload["quota_remaining"] = quota_remaining
 
-        requests.post(f"{BASE}/integrations/report", json=payload, timeout=10)
+        requests.post(f"{BASE}/integrations / report", json = payload, timeout = 10)
     except Exception as e:
         logger.warning(f"Failed to report usage for {provider_key}: {e}")
 
@@ -74,23 +74,23 @@ def _fetch_thecatapi_images(
     """Fetch cat images from TheCatAPI."""
     headers = {}
     if api_key:
-        headers["x-api-key"] = api_key
+        headers["x - api - key"] = api_key
 
     params = {
         "limit": min(limit, 100),  # TheCatAPI max is 100
         "size": "med",
-        "mime_types": "jpg,png",
-        "format": "json",
-        "has_breeds": "true",
-        "order": "RANDOM",
-    }
+            "mime_types": "jpg,png",
+            "format": "json",
+            "has_breeds": "true",
+            "order": "RANDOM",
+            }
 
     resp = http_get_with_backoff(
-        "https://api.thecatapi.com/v1/images/search",
-        headers=headers,
-        params=params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.thecatapi.com / v1 / images / search",
+            headers = headers,
+            params = params,
+            timeout = TIMEOUT_S,
+            )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -101,39 +101,39 @@ def _fetch_thecatapi_images(
             pets.append(
                 {
                     "id": cat["id"],
-                    "type": "cat",
-                    "image_url": cat["url"],
-                    "width": cat.get("width"),
-                    "height": cat.get("height"),
-                    "breed": breed_info.get("name", "Mixed"),
-                    "breed_info": (
+                        "type": "cat",
+                        "image_url": cat["url"],
+                        "width": cat.get("width"),
+                        "height": cat.get("height"),
+                        "breed": breed_info.get("name", "Mixed"),
+                        "breed_info": (
                         {
                             "name": breed_info.get("name"),
-                            "temperament": breed_info.get("temperament"),
-                            "origin": breed_info.get("origin"),
-                            "description": breed_info.get("description"),
-                            "life_span": breed_info.get("life_span"),
-                            "weight": breed_info.get("weight", {}).get("metric"),
-                        }
+                                "temperament": breed_info.get("temperament"),
+                                "origin": breed_info.get("origin"),
+                                "description": breed_info.get("description"),
+                                "life_span": breed_info.get("life_span"),
+                                "weight": breed_info.get("weight", {}).get("metric"),
+                                }
                         if breed_info
                         else None
                     ),
-                    "source": "thecatapi",
-                    "provider": "thecatapi",
-                }
+                        "source": "thecatapi",
+                        "provider": "thecatapi",
+                        }
             )
 
         return {
             "success": True,
-            "pets": pets,
-            "total": len(pets),
-            "quota_remaining": None,  # TheCatAPI doesn't provide quota info
+                "pets": pets,
+                "total": len(pets),
+                "quota_remaining": None,  # TheCatAPI doesn't provide quota info
         }
     else:
         return {
             "success": False,
-            "error": f"TheCatAPI error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"TheCatAPI error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def _fetch_thedogapi_images(
@@ -142,23 +142,23 @@ def _fetch_thedogapi_images(
     """Fetch dog images from TheDogAPI."""
     headers = {}
     if api_key:
-        headers["x-api-key"] = api_key
+        headers["x - api - key"] = api_key
 
     params = {
         "limit": min(limit, 100),  # TheDogAPI max is 100
         "size": "med",
-        "mime_types": "jpg,png",
-        "format": "json",
-        "has_breeds": "true",
-        "order": "RANDOM",
-    }
+            "mime_types": "jpg,png",
+            "format": "json",
+            "has_breeds": "true",
+            "order": "RANDOM",
+            }
 
     resp = http_get_with_backoff(
-        "https://api.thedogapi.com/v1/images/search",
-        headers=headers,
-        params=params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.thedogapi.com / v1 / images / search",
+            headers = headers,
+            params = params,
+            timeout = TIMEOUT_S,
+            )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -169,42 +169,42 @@ def _fetch_thedogapi_images(
             pets.append(
                 {
                     "id": dog["id"],
-                    "type": "dog",
-                    "image_url": dog["url"],
-                    "width": dog.get("width"),
-                    "height": dog.get("height"),
-                    "breed": breed_info.get("name", "Mixed"),
-                    "breed_info": (
+                        "type": "dog",
+                        "image_url": dog["url"],
+                        "width": dog.get("width"),
+                        "height": dog.get("height"),
+                        "breed": breed_info.get("name", "Mixed"),
+                        "breed_info": (
                         {
                             "name": breed_info.get("name"),
-                            "temperament": breed_info.get("temperament"),
-                            "origin": breed_info.get("origin"),
-                            "description": breed_info.get("description"),
-                            "life_span": breed_info.get("life_span"),
-                            "weight": breed_info.get("weight", {}).get("metric"),
-                            "height": breed_info.get("height", {}).get("metric"),
-                            "bred_for": breed_info.get("bred_for"),
-                            "breed_group": breed_info.get("breed_group"),
-                        }
+                                "temperament": breed_info.get("temperament"),
+                                "origin": breed_info.get("origin"),
+                                "description": breed_info.get("description"),
+                                "life_span": breed_info.get("life_span"),
+                                "weight": breed_info.get("weight", {}).get("metric"),
+                                "height": breed_info.get("height", {}).get("metric"),
+                                "bred_for": breed_info.get("bred_for"),
+                                "breed_group": breed_info.get("breed_group"),
+                                }
                         if breed_info
                         else None
                     ),
-                    "source": "thedogapi",
-                    "provider": "thedogapi",
-                }
+                        "source": "thedogapi",
+                        "provider": "thedogapi",
+                        }
             )
 
         return {
             "success": True,
-            "pets": pets,
-            "total": len(pets),
-            "quota_remaining": None,  # TheDogAPI doesn't provide quota info
+                "pets": pets,
+                "total": len(pets),
+                "quota_remaining": None,  # TheDogAPI doesn't provide quota info
         }
     else:
         return {
             "success": False,
-            "error": f"TheDogAPI error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"TheDogAPI error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def _get_petfinder_token(api_key: str, secret: str) -> Optional[str]:
@@ -212,12 +212,12 @@ def _get_petfinder_token(api_key: str, secret: str) -> Optional[str]:
     try:
         data = {
             "grant_type": "client_credentials",
-            "client_id": api_key,
-            "client_secret": secret,
-        }
+                "client_id": api_key,
+                "client_secret": secret,
+                }
 
         resp = requests.post(
-            "https://api.petfinder.com/v2/oauth2/token", data=data, timeout=TIMEOUT_S
+            "https://api.petfinder.com / v2 / oauth2 / token", data = data, timeout = TIMEOUT_S
         )
 
         if resp.status_code == 200:
@@ -246,17 +246,17 @@ def _fetch_petfinder_animals(
 
     params = {
         "type": animal_type,
-        "limit": min(limit, 100),  # Petfinder max is 100
+            "limit": min(limit, 100),  # Petfinder max is 100
         "status": "adoptable",
-        "sort": "random",
-    }
+            "sort": "random",
+            }
 
     resp = http_get_with_backoff(
-        "https://api.petfinder.com/v2/animals",
-        headers=headers,
-        params=params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.petfinder.com / v2 / animals",
+            headers = headers,
+            params = params,
+            timeout = TIMEOUT_S,
+            )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -270,43 +270,43 @@ def _fetch_petfinder_animals(
             pets.append(
                 {
                     "id": str(animal["id"]),
-                    "type": animal["type"].lower(),
-                    "image_url": image_url,
-                    "width": None,  # Not provided by Petfinder
+                        "type": animal["type"].lower(),
+                        "image_url": image_url,
+                        "width": None,  # Not provided by Petfinder
                     "height": None,  # Not provided by Petfinder
                     "breed": animal.get("breeds", {}).get("primary", "Mixed"),
-                    "name": animal.get("name"),
-                    "age": animal.get("age"),
-                    "gender": animal.get("gender"),
-                    "size": animal.get("size"),
-                    "description": animal.get("description"),
-                    "status": animal.get("status"),
-                    "organization_id": animal.get("organization_id"),
-                    "contact": animal.get("contact"),
-                    "breed_info": {
+                        "name": animal.get("name"),
+                        "age": animal.get("age"),
+                        "gender": animal.get("gender"),
+                        "size": animal.get("size"),
+                        "description": animal.get("description"),
+                        "status": animal.get("status"),
+                        "organization_id": animal.get("organization_id"),
+                        "contact": animal.get("contact"),
+                        "breed_info": {
                         "primary": animal.get("breeds", {}).get("primary"),
-                        "secondary": animal.get("breeds", {}).get("secondary"),
-                        "mixed": animal.get("breeds", {}).get("mixed"),
-                        "unknown": animal.get("breeds", {}).get("unknown"),
-                    },
-                    "attributes": animal.get("attributes", {}),
-                    "environment": animal.get("environment", {}),
-                    "source": "petfinder",
-                    "provider": "petfinder",
-                }
+                            "secondary": animal.get("breeds", {}).get("secondary"),
+                            "mixed": animal.get("breeds", {}).get("mixed"),
+                            "unknown": animal.get("breeds", {}).get("unknown"),
+                            },
+                        "attributes": animal.get("attributes", {}),
+                        "environment": animal.get("environment", {}),
+                        "source": "petfinder",
+                        "provider": "petfinder",
+                        }
             )
 
         return {
             "success": True,
-            "pets": pets,
-            "total": data.get("pagination", {}).get("total_count", len(pets)),
-            "quota_remaining": None,  # Petfinder doesn't provide quota info
+                "pets": pets,
+                "total": data.get("pagination", {}).get("total_count", len(pets)),
+                "quota_remaining": None,  # Petfinder doesn't provide quota info
         }
     else:
         return {
             "success": False,
-            "error": f"Petfinder API error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"Petfinder API error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def fetch_pets(
@@ -329,10 +329,10 @@ def fetch_pets(
                 error_msg = f"No credentials found for {provider_key}"
                 _report_usage(
                     provider_key,
-                    False,
-                    error_msg,
-                    int((time.time() - start_time) * 1000),
-                )
+                        False,
+                        error_msg,
+                        int((time.time() - start_time) * 1000),
+                        )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -343,16 +343,16 @@ def fetch_pets(
                 else:
                     result = {
                         "success": False,
-                        "error": f"TheCatAPI doesn't support {pet_type}",
-                    }
+                            "error": f"TheCatAPI doesn't support {pet_type}",
+                            }
             elif provider_key == "thedogapi":
                 if pet_type in ["dog", "random"]:
                     result = _fetch_thedogapi_images(limit, creds.get("api_key"))
                 else:
                     result = {
                         "success": False,
-                        "error": f"TheDogAPI doesn't support {pet_type}",
-                    }
+                            "error": f"TheDogAPI doesn't support {pet_type}",
+                            }
             elif (
                 provider_key == "petfinder" and "api_key" in creds and "secret" in creds
             ):
@@ -364,8 +364,8 @@ def fetch_pets(
             else:
                 result = {
                     "success": False,
-                    "error": f"No adapter implementation for {provider_key}",
-                }
+                        "error": f"No adapter implementation for {provider_key}",
+                        }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -376,11 +376,11 @@ def fetch_pets(
                 )
                 return {
                     "provider": provider_key,
-                    "ok": True,
-                    "data": result["pets"],
-                    "total": result.get("total", len(result["pets"])),
-                    "took_ms": took_ms,
-                }
+                        "ok": True,
+                        "data": result["pets"],
+                        "total": result.get("total", len(result["pets"])),
+                        "took_ms": took_ms,
+                        }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -391,7 +391,7 @@ def fetch_pets(
                     try:
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
-                            f"{BASE}/integrations/rotate?category=pets", timeout=10
+                            f"{BASE}/integrations / rotate?category = pets", timeout = 10
                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
@@ -409,10 +409,10 @@ def fetch_pets(
                 # Return error if no more retries
                 return {
                     "provider": provider_key,
-                    "ok": False,
-                    "error": error_msg,
-                    "took_ms": took_ms,
-                }
+                        "ok": False,
+                        "error": error_msg,
+                        "took_ms": took_ms,
+                        }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -423,26 +423,27 @@ def fetch_pets(
             try:
                 active = get_active_pets_provider()
                 _report_usage(active["key"], False, error_msg, took_ms)
-            except:
+            except Exception:
                 pass
 
             return {
                 "provider": "unknown",
-                "ok": False,
-                "error": error_msg,
-                "took_ms": took_ms,
-            }
+                    "ok": False,
+                    "error": error_msg,
+                    "took_ms": took_ms,
+                    }
 
     # Should not reach here
     return {
         "provider": "unknown",
-        "ok": False,
-        "error": "Max retries exceeded",
-        "took_ms": int((time.time() - start_time) * 1000),
-    }
-
+            "ok": False,
+            "error": "Max retries exceeded",
+            "took_ms": int((time.time() - start_time) * 1000),
+            }
 
 # Convenience functions for backward compatibility
+
+
 def get_random_pets(limit: int = 10) -> List[Dict[str, Any]]:
     """Get random pet images and return just the pet list."""
     result = fetch_pets("random", limit)

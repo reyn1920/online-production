@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Intelligent Model Router for RouteLL API
 Routes requests to optimal models based on cost, performance, and task requirements
@@ -38,12 +38,13 @@ class ModelTier(Enum):
     """Model performance and cost tiers"""
 
     FREE = "free"  # Unlimited models, no cost
-    STANDARD = "standard"  # Balanced cost/performance
-    PREMIUM = "premium"  # High-cost, high-performance
-    SPECIALIZED = "specialized"  # Task-specific models
-
+    STANDARD = "standard"  # Balanced cost / performance
+    PREMIUM = "premium"  # High - cost, high - performance
+    SPECIALIZED = "specialized"  # Task - specific models
 
 @dataclass
+
+
 class ModelCapability:
     """Represents a model's capabilities and characteristics"""
 
@@ -53,8 +54,8 @@ class ModelCapability:
     max_tokens: int
     strengths: List[TaskType]
     avg_response_time: float = 2.0
-    quality_score: float = 0.8  # 0-1 scale
-    availability_score: float = 1.0  # 0-1 scale
+    quality_score: float = 0.8  # 0 - 1 scale
+    availability_score: float = 1.0  # 0 - 1 scale
     context_window: int = 4096
 
 
@@ -63,10 +64,11 @@ class ModelRouter:
     Intelligent router that selects optimal models based on multiple factors
     """
 
+
     def __init__(self, config_path: str = None, rate_limiter: RateLimiter = None):
         self.config_path = (
             config_path
-            or "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
+            or "/Users / thomasbrianreynolds / online production / config / routellm_config.json"
         )
         self.config = self._load_config()
         self.rate_limiter = rate_limiter or RateLimiter()
@@ -83,10 +85,11 @@ class ModelRouter:
         self.task_patterns = self._load_task_patterns()
 
         # Setup logging
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level = logging.INFO)
         self.logger = logging.getLogger(__name__)
 
         self.logger.info(f"🎯 Model Router initialized with {len(self.models)} models")
+
 
     def _load_config(self) -> Dict:
         """Load configuration from file"""
@@ -97,39 +100,41 @@ class ModelRouter:
             self.logger.error(f"Failed to load config: {e}")
             return self._get_default_config()
 
+
     def _get_default_config(self) -> Dict:
         """Get default configuration"""
         return {
             "model_routing": {
                 "enabled": True,
-                "learning_enabled": True,
-                "fallback_model": "route-llm",
-                "max_routing_time": 0.1,
-            },
-            "credit_system": {
-                "unlimited_models": ["llama-3.1-8b", "gemma-2-9b"],
-                "high_cost_models": ["gpt-4", "claude-3-opus", "gemini-pro"],
-            },
-        }
+                    "learning_enabled": True,
+                    "fallback_model": "route - llm",
+                    "max_routing_time": 0.1,
+                    },
+                "credit_system": {
+                "unlimited_models": ["llama - 3.1 - 8b", "gemma - 2-9b"],
+                    "high_cost_models": ["gpt - 4", "claude - 3-opus", "gemini - pro"],
+                    },
+                }
+
 
     def _initialize_models(self) -> Dict[str, ModelCapability]:
         """Initialize the model registry with capabilities"""
         models = {}
 
-        # Free/Unlimited models
+        # Free / Unlimited models
         unlimited_models = self.config.get("credit_system", {}).get(
             "unlimited_models", []
         )
         for model in unlimited_models:
             models[model] = ModelCapability(
-                name=model,
-                tier=ModelTier.FREE,
-                cost_per_token=0.0,
-                max_tokens=4096,
-                strengths=[TaskType.GENERAL_CHAT, TaskType.QUESTION_ANSWERING],
-                avg_response_time=2.0,
-                quality_score=0.7,
-            )
+                name = model,
+                    tier = ModelTier.FREE,
+                    cost_per_token = 0.0,
+                    max_tokens = 4096,
+                    strengths=[TaskType.GENERAL_CHAT, TaskType.QUESTION_ANSWERING],
+                    avg_response_time = 2.0,
+                    quality_score = 0.7,
+                    )
 
         # Premium models
         premium_models = self.config.get("credit_system", {}).get(
@@ -137,151 +142,153 @@ class ModelRouter:
         )
         for model in premium_models:
             models[model] = ModelCapability(
-                name=model,
-                tier=ModelTier.PREMIUM,
-                cost_per_token=0.01,
-                max_tokens=8192,
-                strengths=[
+                name = model,
+                    tier = ModelTier.PREMIUM,
+                    cost_per_token = 0.01,
+                    max_tokens = 8192,
+                    strengths=[
                     TaskType.CODE_GENERATION,
-                    TaskType.ANALYSIS,
-                    TaskType.CREATIVE_WRITING,
-                ],
-                avg_response_time=3.0,
-                quality_score=0.95,
-            )
+                        TaskType.ANALYSIS,
+                        TaskType.CREATIVE_WRITING,
+                        ],
+                    avg_response_time = 3.0,
+                    quality_score = 0.95,
+                    )
 
-        # Default route-llm model
-        models["route-llm"] = ModelCapability(
-            name="route-llm",
-            tier=ModelTier.STANDARD,
-            cost_per_token=0.002,
-            max_tokens=4096,
-            strengths=[
+        # Default route - llm model
+        models["route - llm"] = ModelCapability(
+            name="route - llm",
+                tier = ModelTier.STANDARD,
+                cost_per_token = 0.002,
+                max_tokens = 4096,
+                strengths=[
                 TaskType.GENERAL_CHAT,
-                TaskType.SUMMARIZATION,
-                TaskType.QUESTION_ANSWERING,
-            ],
-            avg_response_time=1.5,
-            quality_score=0.85,
-        )
+                    TaskType.SUMMARIZATION,
+                    TaskType.QUESTION_ANSWERING,
+                    ],
+                avg_response_time = 1.5,
+                quality_score = 0.85,
+                )
 
         # Specialized models (if available)
         specialized_models = {
-            "code-llama": ModelCapability(
-                name="code-llama",
-                tier=ModelTier.SPECIALIZED,
-                cost_per_token=0.003,
-                max_tokens=4096,
-                strengths=[TaskType.CODE_GENERATION],
-                avg_response_time=2.5,
-                quality_score=0.9,
-            ),
-            "math-llm": ModelCapability(
-                name="math-llm",
-                tier=ModelTier.SPECIALIZED,
-                cost_per_token=0.004,
-                max_tokens=2048,
-                strengths=[TaskType.MATH_REASONING],
-                avg_response_time=3.0,
-                quality_score=0.92,
-            ),
-        }
+            "code - llama": ModelCapability(
+                name="code - llama",
+                    tier = ModelTier.SPECIALIZED,
+                    cost_per_token = 0.003,
+                    max_tokens = 4096,
+                    strengths=[TaskType.CODE_GENERATION],
+                    avg_response_time = 2.5,
+                    quality_score = 0.9,
+                    ),
+                "math - llm": ModelCapability(
+                name="math - llm",
+                    tier = ModelTier.SPECIALIZED,
+                    cost_per_token = 0.004,
+                    max_tokens = 2048,
+                    strengths=[TaskType.MATH_REASONING],
+                    avg_response_time = 3.0,
+                    quality_score = 0.92,
+                    ),
+                }
 
         models.update(specialized_models)
         return models
+
 
     def _load_task_patterns(self) -> Dict[TaskType, List[str]]:
         """Load patterns for task classification"""
         return {
             TaskType.CODE_GENERATION: [
                 "write code",
-                "function",
-                "class",
-                "algorithm",
-                "debug",
-                "programming",
-                "python",
-                "javascript",
-                "java",
-                "c++",
-                "sql",
-                "html",
-                "css",
-                "react",
-            ],
-            TaskType.MATH_REASONING: [
+                    "function",
+                    "class",
+                    "algorithm",
+                    "debug",
+                    "programming",
+                    "python",
+                    "javascript",
+                    "java",
+                    "c++",
+                    "sql",
+                    "html",
+                    "css",
+                    "react",
+                    ],
+                TaskType.MATH_REASONING: [
                 "calculate",
-                "solve",
-                "equation",
-                "mathematics",
-                "algebra",
-                "geometry",
-                "statistics",
-                "probability",
-                "integral",
-                "derivative",
-                "theorem",
-            ],
-            TaskType.CREATIVE_WRITING: [
+                    "solve",
+                    "equation",
+                    "mathematics",
+                    "algebra",
+                    "geometry",
+                    "statistics",
+                    "probability",
+                    "integral",
+                    "derivative",
+                    "theorem",
+                    ],
+                TaskType.CREATIVE_WRITING: [
                 "story",
-                "poem",
-                "creative",
-                "narrative",
-                "character",
-                "plot",
-                "write a",
-                "compose",
-                "imagine",
-                "fiction",
-                "novel",
-            ],
-            TaskType.ANALYSIS: [
+                    "poem",
+                    "creative",
+                    "narrative",
+                    "character",
+                    "plot",
+                    "write a",
+                    "compose",
+                    "imagine",
+                    "fiction",
+                    "novel",
+                    ],
+                TaskType.ANALYSIS: [
                 "analyze",
-                "compare",
-                "evaluate",
-                "assess",
-                "review",
-                "examine",
-                "pros and cons",
-                "advantages",
-                "disadvantages",
-                "critique",
-            ],
-            TaskType.SUMMARIZATION: [
+                    "compare",
+                    "evaluate",
+                    "assess",
+                    "review",
+                    "examine",
+                    "pros and cons",
+                    "advantages",
+                    "disadvantages",
+                    "critique",
+                    ],
+                TaskType.SUMMARIZATION: [
                 "summarize",
-                "summary",
-                "brief",
-                "overview",
-                "key points",
-                "main ideas",
-                "tldr",
-                "condensed",
-                "abstract",
-            ],
-            TaskType.TRANSLATION: [
+                    "summary",
+                    "brief",
+                    "overview",
+                    "key points",
+                    "main ideas",
+                    "tldr",
+                    "condensed",
+                    "abstract",
+                    ],
+                TaskType.TRANSLATION: [
                 "translate",
-                "translation",
-                "language",
-                "french",
-                "spanish",
-                "german",
-                "chinese",
-                "japanese",
-                "convert to",
-            ],
-            TaskType.QUESTION_ANSWERING: [
+                    "translation",
+                    "language",
+                    "french",
+                    "spanish",
+                    "german",
+                    "chinese",
+                    "japanese",
+                    "convert to",
+                    ],
+                TaskType.QUESTION_ANSWERING: [
                 "what is",
-                "how to",
-                "why",
-                "when",
-                "where",
-                "who",
-                "explain",
-                "definition",
-                "meaning",
-                "help me understand",
-            ],
-        }
+                    "how to",
+                    "why",
+                    "when",
+                    "where",
+                    "who",
+                    "explain",
+                    "definition",
+                    "meaning",
+                    "help me understand",
+                    ],
+                }
+
 
     def classify_task(self, messages: List[Dict]) -> TaskType:
         """Classify the task type based on message content"""
@@ -304,12 +311,13 @@ class ModelRouter:
 
         # Return the highest scoring task type
         if task_scores:
-            return max(task_scores.items(), key=lambda x: x[1])[0]
+            return max(task_scores.items(), key = lambda x: x[1])[0]
 
         return TaskType.GENERAL_CHAT
 
+
     def estimate_complexity(self, messages: List[Dict]) -> float:
-        """Estimate task complexity (0-1 scale)"""
+        """Estimate task complexity (0 - 1 scale)"""
         if not messages:
             return 0.3
 
@@ -327,17 +335,18 @@ class ModelRouter:
                 word in content.lower()
                 for word in ["complex", "detailed", "comprehensive", "thorough"]
             ),
-            content.count("?") > 2,  # Multiple questions
+                content.count("?") > 2,  # Multiple questions
             any(
                 word in content.lower()
                 for word in ["analyze", "compare", "evaluate", "explain in detail"]
             ),
-        ]
+                ]
 
         base_complexity = 0.3
         complexity_boost = sum(complexity_indicators) * 0.15
 
         return min(1.0, base_complexity + complexity_boost)
+
 
     def route_request(
         self, messages: List[Dict], preferences: Dict = None, constraints: Dict = None
@@ -373,7 +382,7 @@ class ModelRouter:
         if not candidates:
             # Fallback to default model
             fallback_model = self.config.get("model_routing", {}).get(
-                "fallback_model", "route-llm"
+                "fallback_model", "route - llm"
             )
             return self._create_routing_result(
                 fallback_model, messages, task_type, "No suitable candidates"
@@ -397,19 +406,20 @@ class ModelRouter:
         self._record_routing_decision(
             {
                 "timestamp": time.time(),
-                "task_type": task_type.value,
-                "complexity": complexity,
-                "selected_model": best_model,
-                "candidates_count": len(candidates),
-                "routing_time": routing_time,
-                "preferences": preferences,
-            }
+                    "task_type": task_type.value,
+                    "complexity": complexity,
+                    "selected_model": best_model,
+                    "candidates_count": len(candidates),
+                    "routing_time": routing_time,
+                    "preferences": preferences,
+                    }
         )
 
         self.logger.info(
             f"✅ Selected model: {best_model} (routing time: {routing_time:.3f}s)"
         )
         return result
+
 
     def _get_candidate_models(
         self, task_type: TaskType, constraints: Dict
@@ -439,14 +449,15 @@ class ModelRouter:
 
         return candidates
 
+
     def _score_candidates(
         self,
-        candidates: List[str],
-        task_type: TaskType,
-        complexity: float,
-        preferences: Dict,
-        constraints: Dict,
-    ) -> List[Tuple[str, float]]:
+            candidates: List[str],
+            task_type: TaskType,
+            complexity: float,
+            preferences: Dict,
+            constraints: Dict,
+            ) -> List[Tuple[str, float]]:
         """Score and rank candidate models"""
         scored = []
 
@@ -458,17 +469,18 @@ class ModelRouter:
             scored.append((model_name, score))
 
         # Sort by score (descending)
-        return sorted(scored, key=lambda x: x[1], reverse=True)
+        return sorted(scored, key = lambda x: x[1], reverse = True)
+
 
     def _calculate_model_score(
         self,
-        model: ModelCapability,
-        task_type: TaskType,
-        complexity: float,
-        preferences: Dict,
-    ) -> float:
+            model: ModelCapability,
+            task_type: TaskType,
+            complexity: float,
+            preferences: Dict,
+            ) -> float:
         """Calculate a composite score for a model"""
-        # Base scores (0-1 scale)
+        # Base scores (0 - 1 scale)
         quality_score = model.quality_score
 
         # Speed score (inverse of response time, normalized)
@@ -480,7 +492,7 @@ class ModelRouter:
         else:
             cost_score = max(
                 0, 1 - (model.cost_per_token / 0.02)
-            )  # Normalize to $0.02/token max
+            )  # Normalize to $0.02 / token max
 
         # Task suitability score
         task_score = 1.0 if task_type in model.strengths else 0.7
@@ -488,8 +500,8 @@ class ModelRouter:
         # Complexity adjustment
         if complexity > 0.7 and model.tier in [
             ModelTier.PREMIUM,
-            ModelTier.SPECIALIZED,
-        ]:
+                ModelTier.SPECIALIZED,
+                ]:
             quality_score *= 1.2  # Boost premium models for complex tasks
         elif complexity < 0.4 and model.tier == ModelTier.FREE:
             cost_score *= 1.3  # Boost free models for simple tasks
@@ -508,6 +520,7 @@ class ModelRouter:
 
         return min(1.0, composite_score)  # Cap at 1.0
 
+
     def _get_historical_performance_boost(
         self, model_name: str, task_type: TaskType
     ) -> float:
@@ -521,6 +534,7 @@ class ModelRouter:
 
         return 0.0  # No historical data
 
+
     def _create_routing_result(
         self, model_name: str, messages: List[Dict], task_type: TaskType, reason: str
     ) -> Dict:
@@ -528,7 +542,7 @@ class ModelRouter:
         model = self.models.get(model_name)
         if not model:
             model_name = self.config.get("model_routing", {}).get(
-                "fallback_model", "route-llm"
+                "fallback_model", "route - llm"
             )
             model = self.models.get(model_name)
 
@@ -547,23 +561,24 @@ class ModelRouter:
         result = {
             "routing_decision": {
                 "selected_model": model_name,
-                "task_type": task_type.value,
-                "reason": reason,
-                "model_tier": model.tier.value if model else "unknown",
-                "estimated_cost": model.cost_per_token if model else 0,
-                "timestamp": datetime.now().isoformat(),
-            },
-            "optimized_params": optimized_params,
-            "model_info": {
+                    "task_type": task_type.value,
+                    "reason": reason,
+                    "model_tier": model.tier.value if model else "unknown",
+                    "estimated_cost": model.cost_per_token if model else 0,
+                    "timestamp": datetime.now().isoformat(),
+                    },
+                "optimized_params": optimized_params,
+                "model_info": {
                 "name": model_name,
-                "tier": model.tier.value if model else "unknown",
-                "cost_per_token": model.cost_per_token if model else 0,
-                "max_tokens": model.max_tokens if model else 4096,
-                "strengths": [s.value for s in model.strengths] if model else [],
-            },
-        }
+                    "tier": model.tier.value if model else "unknown",
+                    "cost_per_token": model.cost_per_token if model else 0,
+                    "max_tokens": model.max_tokens if model else 4096,
+                    "strengths": [s.value for s in model.strengths] if model else [],
+                    },
+                }
 
         return result
+
 
     def _record_routing_decision(self, decision: Dict):
         """Record routing decision for learning and analytics"""
@@ -573,24 +588,25 @@ class ModelRouter:
         if len(self.routing_history) > 1000:
             self.routing_history = self.routing_history[-1000:]
 
+
     def record_request_outcome(
         self,
-        model_name: str,
-        task_type: TaskType,
-        success: bool,
-        response_time: float,
-        quality_rating: float = None,
-    ):
+            model_name: str,
+            task_type: TaskType,
+            success: bool,
+            response_time: float,
+            quality_rating: float = None,
+            ):
         """Record the outcome of a routed request for learning"""
         cache_key = f"{model_name}_{task_type.value}"
 
         if cache_key not in self.performance_cache:
             self.performance_cache[cache_key] = {
                 "success_count": 0,
-                "total_count": 0,
-                "avg_response_time": 0,
-                "avg_quality": 0,
-            }
+                    "total_count": 0,
+                    "avg_response_time": 0,
+                    "avg_quality": 0,
+                    }
 
         perf = self.performance_cache[cache_key]
         perf["total_count"] += 1
@@ -615,6 +631,7 @@ class ModelRouter:
             f"📊 Updated performance for {model_name} on {task_type.value}: "
             f"success_rate={perf['success_rate']:.2f}, avg_time={perf['avg_response_time']:.2f}s"
         )
+
 
     def get_routing_analytics(self) -> Dict:
         """Get comprehensive routing analytics"""
@@ -645,16 +662,17 @@ class ModelRouter:
 
         return {
             "total_routing_decisions": total_decisions,
-            "avg_routing_time": avg_routing_time,
-            "avg_task_complexity": avg_complexity,
-            "model_usage_distribution": model_usage,
-            "task_type_distribution": task_distribution,
-            "performance_cache": dict(self.performance_cache),
-            "available_models": list(self.models.keys()),
-            "model_tiers": {
+                "avg_routing_time": avg_routing_time,
+                "avg_task_complexity": avg_complexity,
+                "model_usage_distribution": model_usage,
+                "task_type_distribution": task_distribution,
+                "performance_cache": dict(self.performance_cache),
+                "available_models": list(self.models.keys()),
+                "model_tiers": {
                 name: model.tier.value for name, model in self.models.items()
             },
-        }
+                }
+
 
     def suggest_model_for_task(
         self, task_description: str, budget_constraint: float = None
@@ -668,17 +686,16 @@ class ModelRouter:
             constraints["max_cost_per_token"] = budget_constraint
 
         # Route the request
-        result = self.route_request(messages, constraints=constraints)
+        result = self.route_request(messages, constraints = constraints)
 
         return {
             "recommended_model": result["routing_decision"]["selected_model"],
-            "task_type": result["routing_decision"]["task_type"],
-            "reason": result["routing_decision"]["reason"],
-            "estimated_cost_per_token": result["model_info"]["cost_per_token"],
-            "model_tier": result["model_info"]["tier"],
-            "model_strengths": result["model_info"]["strengths"],
-        }
-
+                "task_type": result["routing_decision"]["task_type"],
+                "reason": result["routing_decision"]["reason"],
+                "estimated_cost_per_token": result["model_info"]["cost_per_token"],
+                "model_tier": result["model_info"]["tier"],
+                "model_strengths": result["model_info"]["strengths"],
+                }
 
 # Usage example and testing
 if __name__ == "__main__":
@@ -691,12 +708,12 @@ if __name__ == "__main__":
     # Test routing for different tasks
     test_cases = [
         "Write a Python function to calculate fibonacci numbers",
-        "What is the meaning of life?",
-        "Solve this equation: 2x + 5 = 15",
-        "Write a creative story about a robot",
-        "Summarize the key points of machine learning",
-        "Translate 'Hello world' to French",
-    ]
+            "What is the meaning of life?",
+            "Solve this equation: 2x + 5 = 15",
+            "Write a creative story about a robot",
+            "Summarize the key points of machine learning",
+            "Translate 'Hello world' to French",
+            ]
 
     print("\n🧪 Testing routing decisions:")
     for i, task in enumerate(test_cases, 1):
@@ -707,16 +724,16 @@ if __name__ == "__main__":
         print(f"   Selected: {result['routing_decision']['selected_model']}")
         print(f"   Task Type: {result['routing_decision']['task_type']}")
         print(f"   Tier: {result['model_info']['tier']}")
-        print(f"   Cost/token: ${result['model_info']['cost_per_token']:.4f}")
+        print(f"   Cost / token: ${result['model_info']['cost_per_token']:.4f}")
 
         # Simulate request outcome
         router.record_request_outcome(
             result["routing_decision"]["selected_model"],
-            TaskType(result["routing_decision"]["task_type"]),
-            success=True,
-            response_time=2.0,
-            quality_rating=0.85,
-        )
+                TaskType(result["routing_decision"]["task_type"]),
+                success = True,
+                response_time = 2.0,
+                quality_rating = 0.85,
+                )
 
     # Show analytics
     analytics = router.get_routing_analytics()
@@ -728,6 +745,6 @@ if __name__ == "__main__":
 
     # Test model suggestion
     suggestion = router.suggest_model_for_task(
-        "Help me debug this complex algorithm", budget_constraint=0.005
+        "Help me debug this complex algorithm", budget_constraint = 0.005
     )
     print(f"\n💡 Model suggestion: {suggestion}")

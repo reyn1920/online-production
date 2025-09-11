@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Database Schema Fix Script
 Adds missing columns to resolve dashboard errors:
@@ -151,7 +151,6 @@ def fix_database_schema():
     print("\n✅ Dashboard errors should now be resolved.")
 
     return True
-
 
 if __name__ == "__main__":
     success = fix_database_schema()

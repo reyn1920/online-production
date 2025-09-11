@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Phoenix Protocol Installer
 This master script automates the entire deployment, configuration, and
@@ -24,11 +24,11 @@ LAUNCH_SCRIPT_PATH = os.path.join(PROJECT_ROOT, "launch_live.py")
 DASHBOARD_URL = "http://localhost:8080"
 
 
-def run_command(command, check=True):
+def run_command(command, check = True):
     """Runs a command and streams its output."""
     print(f"\n--- Running Command: {' '.join(command)} ---")
     process = subprocess.Popen(
-        command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+        command, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, text = True
     )
     for line in iter(process.stdout.readline, ""):
         print(line, end="")
@@ -72,13 +72,13 @@ def main():
     # Step 4: Secure Configuration
     print("\n--- Phase 4: Secure Configuration ---")
     print("You will now be prompted to enter your secure credentials.")
-    print("This is a one-time setup to populate the encrypted secret store.")
+    print("This is a one - time setup to populate the encrypted secret store.")
     print("Please add all required API keys and affiliate credentials.")
     run_command(
-        [sys.executable, SECRETS_CLI_PATH, "list"], check=False
+        [sys.executable, SECRETS_CLI_PATH, "list"], check = False
     )  # Show existing keys
     print(
-        "\nExample command to add a secret: python scripts/secrets_cli.py add SECRET_NAME 'your_secret_value'"
+        "\nExample command to add a secret: python scripts / secrets_cli.py add SECRET_NAME 'your_secret_value'"
     )
     input("Press Enter to continue after you have added all your secrets...")
 
@@ -99,7 +99,7 @@ def main():
 
     for i in range(30):  # Wait up to 30 seconds
         try:
-            response = requests.get(f"{DASHBOARD_URL}/api/health", timeout=1)
+            response = requests.get(f"{DASHBOARD_URL}/api / health", timeout = 1)
             if (
                 response.status_code == 200
                 and response.json().get("status") == "healthy"
@@ -114,7 +114,7 @@ def main():
         sys.exit(1)
 
     print("Verifying agent status...")
-    response = requests.get(f"{DASHBOARD_URL}/api/agents/status")
+    response = requests.get(f"{DASHBOARD_URL}/api / agents / status")
     if response.status_code == 200:
         print("✅ Agent status endpoint is responsive.")
     else:
@@ -137,7 +137,6 @@ def main():
     print("=" * 60)
 
     app_process.wait()  # Keep the installer alive while the app runs
-
 
 if __name__ == "__main__":
     main()

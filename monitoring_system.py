@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Comprehensive Monitoring System for TRAE.AI Production
 Detects stuck processes, initialization loops, and connection failures
@@ -22,9 +22,9 @@ import psutil
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("monitoring.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("monitoring.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
@@ -32,12 +32,14 @@ logger = logging.getLogger(__name__)
 class ProcessMonitor:
     """Monitors system processes for stuck or looping behavior"""
 
+
     def __init__(self):
         self.process_history = defaultdict(deque)
         self.restart_counts = defaultdict(int)
         self.last_check = time.time()
         self.loop_detection_window = 300  # 5 minutes
         self.max_restarts_per_hour = 5
+
 
     def detect_initialization_loop(
         self, process_name: str, log_patterns: List[str]
@@ -83,6 +85,7 @@ class ProcessMonitor:
 
         return False
 
+
     def kill_stuck_process(self, process_name: str) -> bool:
         """Kill a stuck process"""
         try:
@@ -106,12 +109,14 @@ class ProcessMonitor:
 class ServiceHealthMonitor:
     """Monitors service health and availability"""
 
+
     def __init__(self):
         self.services = {
-            "main_api": {"url": "http://localhost:8000/health", "timeout": 5},
-            "minimal_server": {"url": "http://localhost:8000/health", "timeout": 3},
-        }
+            "main_api": {"url": "http://localhost:8000 / health", "timeout": 5},
+                "minimal_server": {"url": "http://localhost:8000 / health", "timeout": 3},
+                }
         self.health_history = defaultdict(list)
+
 
     async def check_service_health(
         self, service_name: str, config: Dict[str, Any]
@@ -119,21 +124,21 @@ class ServiceHealthMonitor:
         """Check health of a specific service"""
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get(config["url"], timeout=config["timeout"])
+                response = await client.get(config["url"], timeout = config["timeout"])
                 healthy = response.status_code == 200
 
                 result = {
                     "service": service_name,
-                    "healthy": healthy,
-                    "status_code": response.status_code,
-                    "response_time": response.elapsed.total_seconds(),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "healthy": healthy,
+                        "status_code": response.status_code,
+                        "response_time": response.elapsed.total_seconds(),
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
                 if healthy:
                     try:
                         result["data"] = response.json()
-                    except:
+                    except Exception:
                         result["data"] = response.text[:200]
 
                 return result
@@ -141,10 +146,11 @@ class ServiceHealthMonitor:
         except httpx.RequestError as e:
             return {
                 "service": service_name,
-                "healthy": False,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "healthy": False,
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def check_all_services(self) -> Dict[str, Any]:
         """Check health of all monitored services"""
@@ -167,18 +173,20 @@ class ServiceHealthMonitor:
 
 
 class SelfHealingSystem:
-    """Implements self-healing mechanisms"""
+    """Implements self - healing mechanisms"""
+
 
     def __init__(self):
         self.process_monitor = ProcessMonitor()
         self.health_monitor = ServiceHealthMonitor()
         self.healing_actions = {
             "restart_minimal_server": self._restart_minimal_server,
-            "kill_stuck_main_server": self._kill_stuck_main_server,
-            "start_emergency_server": self._start_emergency_server,
-        }
+                "kill_stuck_main_server": self._kill_stuck_main_server,
+                "start_emergency_server": self._start_emergency_server,
+                }
         self.last_healing_action = {}
         self.healing_cooldown = 60  # 1 minute between healing actions
+
 
     def _restart_minimal_server(self) -> bool:
         """Restart the minimal server"""
@@ -186,14 +194,14 @@ class SelfHealingSystem:
             logger.info("🔄 Restarting minimal server...")
 
             # Kill existing minimal server
-            subprocess.run(["pkill", "-f", "minimal_server.py"], check=False)
+            subprocess.run(["pkill", "-f", "minimal_server.py"], check = False)
             time.sleep(2)
 
             # Start new minimal server
             subprocess.Popen(
                 ["python3", "minimal_server.py"],
-                cwd="/Users/thomasbrianreynolds/online production",
-            )
+                    cwd="/Users / thomasbrianreynolds / online production",
+                    )
 
             logger.info("✅ Minimal server restart initiated")
             return True
@@ -202,14 +210,15 @@ class SelfHealingSystem:
             logger.error(f"❌ Failed to restart minimal server: {e}")
             return False
 
+
     def _kill_stuck_main_server(self) -> bool:
         """Kill stuck main server processes"""
         try:
             logger.info("🔪 Killing stuck main server processes...")
 
             # Kill main.py processes
-            subprocess.run(["pkill", "-f", "main.py"], check=False)
-            subprocess.run(["pkill", "-f", "run_simple.py"], check=False)
+            subprocess.run(["pkill", "-f", "main.py"], check = False)
+            subprocess.run(["pkill", "-f", "run_simple.py"], check = False)
 
             logger.info("✅ Stuck processes killed")
             return True
@@ -218,6 +227,7 @@ class SelfHealingSystem:
             logger.error(f"❌ Failed to kill stuck processes: {e}")
             return False
 
+
     def _start_emergency_server(self) -> bool:
         """Start emergency minimal server"""
         try:
@@ -225,8 +235,8 @@ class SelfHealingSystem:
 
             subprocess.Popen(
                 ["python3", "minimal_server.py"],
-                cwd="/Users/thomasbrianreynolds/online production",
-            )
+                    cwd="/Users / thomasbrianreynolds / online production",
+                    )
 
             logger.info("✅ Emergency server started")
             return True
@@ -235,15 +245,16 @@ class SelfHealingSystem:
             logger.error(f"❌ Failed to start emergency server: {e}")
             return False
 
+
     async def perform_healing_check(self) -> Dict[str, Any]:
         """Perform comprehensive healing check"""
         current_time = time.time()
         healing_report = {
             "timestamp": datetime.now().isoformat(),
-            "actions_taken": [],
-            "issues_detected": [],
-            "service_status": {},
-        }
+                "actions_taken": [],
+                "issues_detected": [],
+                "service_status": {},
+                }
 
         # Check service health
         service_results = await self.health_monitor.check_all_services()
@@ -289,10 +300,12 @@ class SelfHealingSystem:
 class MonitoringSystem:
     """Main monitoring system coordinator"""
 
+
     def __init__(self):
         self.self_healing = SelfHealingSystem()
         self.running = False
         self.check_interval = 30  # 30 seconds
+
 
     async def start_monitoring(self):
         """Start the monitoring loop"""
@@ -306,7 +319,7 @@ class MonitoringSystem:
 
                 # Log significant events
                 if report["issues_detected"] or report["actions_taken"]:
-                    logger.info(f"📊 Monitoring Report: {json.dumps(report, indent=2)}")
+                    logger.info(f"📊 Monitoring Report: {json.dumps(report, indent = 2)}")
 
                 # Save report to file
                 with open("monitoring_reports.jsonl", "a") as f:
@@ -317,6 +330,7 @@ class MonitoringSystem:
             except Exception as e:
                 logger.error(f"❌ Monitoring error: {e}")
                 await asyncio.sleep(self.check_interval)
+
 
     def stop_monitoring(self):
         """Stop the monitoring loop"""
@@ -334,7 +348,6 @@ async def main():
         logger.info("🛑 Monitoring stopped by user")
     finally:
         monitoring.stop_monitoring()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

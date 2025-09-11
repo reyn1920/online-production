@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Revenue Streams API - Production Ready Monetization System
 
 This module provides comprehensive API endpoints for managing individual income streams
 with full production capabilities including:
-- Individual stream on/off control
-- Auto-start functionality
+- Individual stream on / off control
+- Auto - start functionality
 - Comprehensive testing for each stream
-- Real-time revenue tracking
+- Real - time revenue tracking
 - Payment processing integration
 - Live monitoring and analytics
 
@@ -41,7 +41,7 @@ except ImportError:
     ai_revenue_integration = None
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -71,8 +71,9 @@ class StreamStatus(Enum):
     ERROR = "error"
     STOPPING = "stopping"
 
-
 @dataclass
+
+
 class RevenueStream:
     """Revenue stream configuration"""
 
@@ -89,8 +90,9 @@ class RevenueStream:
     last_updated: datetime
     error_message: Optional[str] = None
 
-
 @dataclass
+
+
 class TestResult:
     """Test result for a stream component"""
 
@@ -102,18 +104,19 @@ class TestResult:
 
 
 class RevenueStreamsAPI:
-    """Production-ready revenue streams management API"""
+    """Production - ready revenue streams management API"""
 
-    def __init__(self, db_path: str = "data/revenue_streams.db"):
+
+    def __init__(self, db_path: str = "data / revenue_streams.db"):
         self.db_path = db_path
         self.streams: Dict[str, RevenueStream] = {}
-        self.executor = ThreadPoolExecutor(max_workers=20)
+        self.executor = ThreadPoolExecutor(max_workers = 20)
         self.app = Flask(__name__)
         CORS(self.app)
 
         # Initialize AI revenue integration
         self.ai_revenue_integration = ai_revenue_integration
-        
+
         # Initialize database and streams
         self._init_database()
         self._init_default_streams()
@@ -124,9 +127,10 @@ class RevenueStreamsAPI:
 
         logger.info("Revenue Streams API initialized successfully")
 
+
     def _init_database(self):
         """Initialize SQLite database for revenue streams"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -136,16 +140,16 @@ class RevenueStreamsAPI:
             """
             CREATE TABLE IF NOT EXISTS revenue_streams (
                 stream_id TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                description TEXT,
-                stream_type TEXT NOT NULL,
-                status TEXT NOT NULL,
-                monthly_target REAL DEFAULT 0,
-                current_revenue REAL DEFAULT 0,
-                auto_start BOOLEAN DEFAULT 0,
-                config TEXT DEFAULT '{}',
-                last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
-                error_message TEXT
+                    name TEXT NOT NULL,
+                    description TEXT,
+                    stream_type TEXT NOT NULL,
+                    status TEXT NOT NULL,
+                    monthly_target REAL DEFAULT 0,
+                    current_revenue REAL DEFAULT 0,
+                    auto_start BOOLEAN DEFAULT 0,
+                    config TEXT DEFAULT '{}',
+                    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    error_message TEXT
             )
         """
         )
@@ -155,13 +159,13 @@ class RevenueStreamsAPI:
             """
             CREATE TABLE IF NOT EXISTS revenue_transactions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                stream_id TEXT NOT NULL,
-                amount REAL NOT NULL,
-                transaction_type TEXT NOT NULL,
-                description TEXT,
-                metadata TEXT DEFAULT '{}',
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (stream_id) REFERENCES revenue_streams (stream_id)
+                    stream_id TEXT NOT NULL,
+                    amount REAL NOT NULL,
+                    transaction_type TEXT NOT NULL,
+                    description TEXT,
+                    metadata TEXT DEFAULT '{}',
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (stream_id) REFERENCES revenue_streams (stream_id)
             )
         """
         )
@@ -171,13 +175,13 @@ class RevenueStreamsAPI:
             """
             CREATE TABLE IF NOT EXISTS test_results (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                stream_id TEXT NOT NULL,
-                test_name TEXT NOT NULL,
-                status TEXT NOT NULL,
-                message TEXT,
-                execution_time REAL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (stream_id) REFERENCES revenue_streams (stream_id)
+                    stream_id TEXT NOT NULL,
+                    test_name TEXT NOT NULL,
+                    status TEXT NOT NULL,
+                    message TEXT,
+                    execution_time REAL,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (stream_id) REFERENCES revenue_streams (stream_id)
             )
         """
         )
@@ -187,14 +191,14 @@ class RevenueStreamsAPI:
             """
             CREATE TABLE IF NOT EXISTS subscriptions (
                 id TEXT PRIMARY KEY,
-                customer_email TEXT NOT NULL,
-                plan_id TEXT NOT NULL,
-                status TEXT DEFAULT 'active',
-                stripe_customer_id TEXT,
-                stripe_subscription_id TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                next_billing_date TIMESTAMP,
-                cancelled_at TIMESTAMP
+                    customer_email TEXT NOT NULL,
+                    plan_id TEXT NOT NULL,
+                    status TEXT DEFAULT 'active',
+                    stripe_customer_id TEXT,
+                    stripe_subscription_id TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    next_billing_date TIMESTAMP,
+                    cancelled_at TIMESTAMP
             )
         """
         )
@@ -204,12 +208,12 @@ class RevenueStreamsAPI:
             """
             CREATE TABLE IF NOT EXISTS api_usage (
                 id TEXT PRIMARY KEY,
-                api_key TEXT NOT NULL,
-                endpoint TEXT NOT NULL,
-                requests_count INTEGER DEFAULT 0,
-                usage_date DATE,
-                customer_id TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    api_key TEXT NOT NULL,
+                    endpoint TEXT NOT NULL,
+                    requests_count INTEGER DEFAULT 0,
+                    usage_date DATE,
+                    customer_id TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -218,227 +222,233 @@ class RevenueStreamsAPI:
         conn.close()
         logger.info("Database initialized successfully")
 
+
     def _init_default_streams(self):
         """Initialize default revenue streams"""
         default_streams = {
             "youtube_ads": {
                 "name": "YouTube Ad Revenue",
-                "description": "Monetize video content through YouTube Partner Program",
-                "stream_type": RevenueStreamType.YOUTUBE_ADS,
-                "monthly_target": 5000.0,
-                "test_endpoints": [
-                    "/api/youtube/auth",
-                    "/api/youtube/analytics",
-                    "/api/youtube/monetization",
-                ],
-                "config": {
+                    "description": "Monetize video content through YouTube Partner Program",
+                    "stream_type": RevenueStreamType.YOUTUBE_ADS,
+                    "monthly_target": 5000.0,
+                    "test_endpoints": [
+                    "/api / youtube / auth",
+                        "/api / youtube / analytics",
+                        "/api / youtube / monetization",
+                        ],
+                    "config": {
                     "channel_id": "",
-                    "api_key": "",
-                    "min_cpm": 2.0,
-                    "target_views": 100000,
-                },
-            },
-            "affiliate_marketing": {
+                        "api_key": "",
+                        "min_cpm": 2.0,
+                        "target_views": 100000,
+                        },
+                    },
+                "affiliate_marketing": {
                 "name": "Affiliate Marketing",
-                "description": "Commission-based product recommendations",
-                "stream_type": RevenueStreamType.AFFILIATE_MARKETING,
-                "monthly_target": 8000.0,
-                "test_endpoints": [
-                    "/api/affiliate/programs",
-                    "/api/affiliate/tracking",
-                    "/api/affiliate/payouts",
-                ],
-                "config": {
+                    "description": "Commission - based product recommendations",
+                    "stream_type": RevenueStreamType.AFFILIATE_MARKETING,
+                    "monthly_target": 8000.0,
+                    "test_endpoints": [
+                    "/api / affiliate / programs",
+                        "/api / affiliate / tracking",
+                        "/api / affiliate / payouts",
+                        ],
+                    "config": {
                     "programs": [],
-                    "commission_rate": 0.08,
-                    "conversion_rate": 0.03,
-                    "tracking_enabled": True,
-                },
-            },
-            "digital_products": {
+                        "commission_rate": 0.08,
+                        "conversion_rate": 0.03,
+                        "tracking_enabled": True,
+                        },
+                    },
+                "digital_products": {
                 "name": "Digital Products",
-                "description": "eBooks, courses, and digital downloads",
-                "stream_type": RevenueStreamType.DIGITAL_PRODUCTS,
-                "monthly_target": 12000.0,
-                "test_endpoints": [
-                    "/api/products/catalog",
-                    "/api/products/payments",
-                    "/api/products/delivery",
-                ],
-                "config": {
+                    "description": "eBooks, courses, and digital downloads",
+                    "stream_type": RevenueStreamType.DIGITAL_PRODUCTS,
+                    "monthly_target": 12000.0,
+                    "test_endpoints": [
+                    "/api / products / catalog",
+                        "/api / products / payments",
+                        "/api / products / delivery",
+                        ],
+                    "config": {
                     "stripe_key": "",
-                    "products": [],
-                    "auto_delivery": True,
-                    "refund_policy": "30_days",
-                },
-            },
-            "merchandise": {
+                        "products": [],
+                        "auto_delivery": True,
+                        "refund_policy": "30_days",
+                        },
+                    },
+                "merchandise": {
                 "name": "Merchandise Sales",
-                "description": "Physical products and branded items",
-                "stream_type": RevenueStreamType.MERCHANDISE,
-                "monthly_target": 6000.0,
-                "test_endpoints": [
-                    "/api/merch/inventory",
-                    "/api/merch/orders",
-                    "/api/merch/fulfillment",
-                ],
-                "config": {
+                    "description": "Physical products and branded items",
+                    "stream_type": RevenueStreamType.MERCHANDISE,
+                    "monthly_target": 6000.0,
+                    "test_endpoints": [
+                    "/api / merch / inventory",
+                        "/api / merch / orders",
+                        "/api / merch / fulfillment",
+                        ],
+                    "config": {
                     "print_on_demand": True,
-                    "inventory_tracking": True,
-                    "fulfillment_partner": "printful",
-                    "profit_margin": 0.40,
-                },
-            },
-            "newsletter": {
+                        "inventory_tracking": True,
+                        "fulfillment_partner": "printful",
+                        "profit_margin": 0.40,
+                        },
+                    },
+                "newsletter": {
                 "name": "Newsletter Monetization",
-                "description": "Paid subscriptions and sponsored content",
-                "stream_type": RevenueStreamType.NEWSLETTER,
-                "monthly_target": 4000.0,
-                "test_endpoints": [
-                    "/api/newsletter/subscribers",
-                    "/api/newsletter/campaigns",
-                    "/api/newsletter/analytics",
-                ],
-                "config": {
+                    "description": "Paid subscriptions and sponsored content",
+                    "stream_type": RevenueStreamType.NEWSLETTER,
+                    "monthly_target": 4000.0,
+                    "test_endpoints": [
+                    "/api / newsletter / subscribers",
+                        "/api / newsletter / campaigns",
+                        "/api / newsletter / analytics",
+                        ],
+                    "config": {
                     "subscription_price": 9.99,
-                    "free_tier": True,
-                    "sponsored_rate": 500.0,
-                    "email_provider": "mailchimp",
-                },
-            },
-            "sponsored_content": {
+                        "free_tier": True,
+                        "sponsored_rate": 500.0,
+                        "email_provider": "mailchimp",
+                        },
+                    },
+                "sponsored_content": {
                 "name": "Sponsored Content",
-                "description": "Brand partnerships and sponsored posts",
-                "stream_type": RevenueStreamType.SPONSORED_CONTENT,
-                "monthly_target": 10000.0,
-                "test_endpoints": [
-                    "/api/sponsors/campaigns",
-                    "/api/sponsors/tracking",
-                    "/api/sponsors/payments",
-                ],
-                "config": {
+                    "description": "Brand partnerships and sponsored posts",
+                    "stream_type": RevenueStreamType.SPONSORED_CONTENT,
+                    "monthly_target": 10000.0,
+                    "test_endpoints": [
+                    "/api / sponsors / campaigns",
+                        "/api / sponsors / tracking",
+                        "/api / sponsors / payments",
+                        ],
+                    "config": {
                     "rate_per_thousand": 15.0,
-                    "minimum_deal": 1000.0,
-                    "content_types": ["blog", "video", "social"],
-                    "disclosure_required": True,
-                },
-            },
-            "membership": {
+                        "minimum_deal": 1000.0,
+                        "content_types": ["blog", "video", "social"],
+                        "disclosure_required": True,
+                        },
+                    },
+                "membership": {
                 "name": "Membership Program",
-                "description": "Premium subscriptions and exclusive content",
-                "stream_type": RevenueStreamType.MEMBERSHIP,
-                "monthly_target": 15000.0,
-                "test_endpoints": [
-                    "/api/membership/tiers",
-                    "/api/membership/billing",
-                    "/api/membership/content",
-                ],
-                "config": {
+                    "description": "Premium subscriptions and exclusive content",
+                    "stream_type": RevenueStreamType.MEMBERSHIP,
+                    "monthly_target": 15000.0,
+                    "test_endpoints": [
+                    "/api / membership / tiers",
+                        "/api / membership / billing",
+                        "/api / membership / content",
+                        ],
+                    "config": {
                     "tiers": [
                         {"name": "Basic", "price": 9.99, "features": []},
-                        {"name": "Premium", "price": 29.99, "features": []},
-                        {"name": "VIP", "price": 99.99, "features": []},
-                    ],
-                    "billing_cycle": "monthly",
-                    "free_trial": 7,
-                },
-            },
-            "consulting": {
+                            {"name": "Premium", "price": 29.99, "features": []},
+                            {"name": "VIP", "price": 99.99, "features": []},
+                            ],
+                        "billing_cycle": "monthly",
+                        "free_trial": 7,
+                        },
+                    },
+                "consulting": {
                 "name": "Consulting Services",
-                "description": "One-on-one and group consulting sessions",
-                "stream_type": RevenueStreamType.CONSULTING,
-                "monthly_target": 20000.0,
-                "test_endpoints": [
-                    "/api/consulting/bookings",
-                    "/api/consulting/payments",
-                    "/api/consulting/calendar",
-                ],
-                "config": {
+                    "description": "One - on - one and group consulting sessions",
+                    "stream_type": RevenueStreamType.CONSULTING,
+                    "monthly_target": 20000.0,
+                    "test_endpoints": [
+                    "/api / consulting / bookings",
+                        "/api / consulting / payments",
+                        "/api / consulting / calendar",
+                        ],
+                    "config": {
                     "hourly_rate": 200.0,
-                    "package_deals": True,
-                    "calendar_integration": "calendly",
-                    "payment_upfront": True,
-                },
-            },
-            "software_tools": {
+                        "package_deals": True,
+                        "calendar_integration": "calendly",
+                        "payment_upfront": True,
+                        },
+                    },
+                "software_tools": {
                 "name": "Software Tools",
-                "description": "SaaS products and software licensing",
-                "stream_type": RevenueStreamType.SOFTWARE_TOOLS,
-                "monthly_target": 25000.0,
-                "test_endpoints": [
-                    "/api/software/licensing",
-                    "/api/software/usage",
-                    "/api/software/billing",
-                ],
-                "config": {
+                    "description": "SaaS products and software licensing",
+                    "stream_type": RevenueStreamType.SOFTWARE_TOOLS,
+                    "monthly_target": 25000.0,
+                    "test_endpoints": [
+                    "/api / software / licensing",
+                        "/api / software / usage",
+                        "/api / software / billing",
+                        ],
+                    "config": {
                     "pricing_model": "subscription",
-                    "usage_tracking": True,
-                    "api_limits": True,
-                    "enterprise_tier": True,
-                },
-            },
-            "live_events": {
+                        "usage_tracking": True,
+                        "api_limits": True,
+                        "enterprise_tier": True,
+                        },
+                    },
+                "live_events": {
                 "name": "Live Events & Webinars",
-                "description": "Paid workshops, seminars, and online events",
-                "stream_type": RevenueStreamType.LIVE_EVENTS,
-                "monthly_target": 8000.0,
-                "test_endpoints": [
-                    "/api/events/registration",
-                    "/api/events/streaming",
-                    "/api/events/payments",
-                ],
-                "config": {
+                    "description": "Paid workshops, seminars, and online events",
+                    "stream_type": RevenueStreamType.LIVE_EVENTS,
+                    "monthly_target": 8000.0,
+                    "test_endpoints": [
+                    "/api / events / registration",
+                        "/api / events / streaming",
+                        "/api / events / payments",
+                        ],
+                    "config": {
                     "ticket_price": 97.0,
-                    "capacity_limit": 500,
-                    "recording_available": True,
-                    "platform": "zoom",
-                },
-            },
-            "subscription_revenue": {
+                        "capacity_limit": 500,
+                        "recording_available": True,
+                        "platform": "zoom",
+                        },
+                    },
+                "subscription_revenue": {
                 "name": "Subscription Revenue",
-                "description": "Recurring subscription-based revenue streams",
-                "stream_type": RevenueStreamType.SUBSCRIPTION_REVENUE,
-                "monthly_target": 18000.0,
-                "test_endpoints": [
-                    "/api/subscriptions/plans",
-                    "/api/subscriptions/create-checkout-session",
-                    "/api/subscriptions/webhook",
-                ],
-                "config": {
+                    "description": "Recurring subscription - based revenue streams",
+                    "stream_type": RevenueStreamType.SUBSCRIPTION_REVENUE,
+                    "monthly_target": 18000.0,
+                    "test_endpoints": [
+                    "/api / subscriptions / plans",
+                        "/api / subscriptions / create - checkout - session",
+                        "/api / subscriptions / webhook",
+                        ],
+                    "config": {
                     "stripe_enabled": True,
-                    "plans": ["basic", "pro", "enterprise"],
-                    "billing_cycle": "monthly",
-                    "free_trial": 14,
-                },
-            },
-        }
+                        "plans": ["basic", "pro", "enterprise"],
+                        "billing_cycle": "monthly",
+                        "free_trial": 14,
+                        },
+                    },
+                }
 
         for stream_id, config in default_streams.items():
             stream = RevenueStream(
-                stream_id=stream_id,
-                name=config["name"],
-                description=config["description"],
-                stream_type=config["stream_type"],
-                status=StreamStatus.INACTIVE,
-                monthly_target=config["monthly_target"],
-                current_revenue=0.0,
-                auto_start=False,
-                test_endpoints=config["test_endpoints"],
-                config=config["config"],
-                last_updated=datetime.now(),
-            )
+                stream_id = stream_id,
+                    name = config["name"],
+                    description = config["description"],
+                    stream_type = config["stream_type"],
+                    status = StreamStatus.INACTIVE,
+                    monthly_target = config["monthly_target"],
+                    current_revenue = 0.0,
+                    auto_start = False,
+                    test_endpoints = config["test_endpoints"],
+                    config = config["config"],
+                    last_updated = datetime.now(),
+                    )
             self.streams[stream_id] = stream
             self._save_stream(stream)
+
 
     def _setup_routes(self):
         """Setup Flask routes for the API"""
 
-        @self.app.route("/revenue-streams")
+        @self.app.route("/revenue - streams")
+
+
         def revenue_streams_page():
             """Serve the revenue streams management page"""
             return render_template("revenue_streams.html")
 
-        @self.app.route("/api/revenue/status")
+        @self.app.route("/api / revenue / status")
+
+
         def get_revenue_status():
             """Get current status of all revenue streams"""
             try:
@@ -448,30 +458,32 @@ class RevenueStreamsAPI:
                 for stream_id, stream in self.streams.items():
                     streams_data[stream_id] = {
                         "name": stream.name,
-                        "description": stream.description,
-                        "status": stream.status.value,
-                        "monthlyTarget": stream.monthly_target,
-                        "currentRevenue": stream.current_revenue,
-                        "isActive": stream.status == StreamStatus.ACTIVE,
-                        "autoStart": stream.auto_start,
-                        "lastUpdated": stream.last_updated.isoformat(),
-                        "errorMessage": stream.error_message,
-                    }
+                            "description": stream.description,
+                            "status": stream.status.value,
+                            "monthlyTarget": stream.monthly_target,
+                            "currentRevenue": stream.current_revenue,
+                            "isActive": stream.status == StreamStatus.ACTIVE,
+                            "autoStart": stream.auto_start,
+                            "lastUpdated": stream.last_updated.isoformat(),
+                            "errorMessage": stream.error_message,
+                            }
                     total_revenue += stream.current_revenue
 
                 return jsonify(
                     {
                         "success": True,
-                        "streams": streams_data,
-                        "totalRevenue": total_revenue,
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "streams": streams_data,
+                            "totalRevenue": total_revenue,
+                            "timestamp": datetime.now().isoformat(),
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error getting revenue status: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/streams")
+        @self.app.route("/api / revenue / streams")
+
+
         def get_revenue_streams():
             """Get all revenue streams (alias for status endpoint)"""
             try:
@@ -481,16 +493,16 @@ class RevenueStreamsAPI:
                     streams_data.append(
                         {
                             "id": stream_id,
-                            "name": stream.name,
-                            "description": stream.description,
-                            "status": stream.status.value,
-                            "monthlyTarget": stream.monthly_target,
-                            "currentRevenue": stream.current_revenue,
-                            "isActive": stream.status == StreamStatus.ACTIVE,
-                            "autoStart": stream.auto_start,
-                            "lastUpdated": stream.last_updated.isoformat(),
-                            "errorMessage": stream.error_message,
-                        }
+                                "name": stream.name,
+                                "description": stream.description,
+                                "status": stream.status.value,
+                                "monthlyTarget": stream.monthly_target,
+                                "currentRevenue": stream.current_revenue,
+                                "isActive": stream.status == StreamStatus.ACTIVE,
+                                "autoStart": stream.auto_start,
+                                "lastUpdated": stream.last_updated.isoformat(),
+                                "errorMessage": stream.error_message,
+                                }
                     )
 
                 return jsonify({"success": True, "streams": streams_data})
@@ -498,9 +510,11 @@ class RevenueStreamsAPI:
                 logger.error(f"Error getting revenue streams: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/streams/<stream_id>/toggle", methods=["POST"])
+        @self.app.route("/api / revenue / streams/<stream_id>/toggle", methods=["POST"])
+
+
         def toggle_stream(stream_id):
-            """Toggle a revenue stream on/off"""
+            """Toggle a revenue stream on / off"""
             try:
                 if stream_id not in self.streams:
                     return jsonify({"success": False, "error": "Stream not found"}), 404
@@ -525,7 +539,9 @@ class RevenueStreamsAPI:
                 logger.error(f"Error toggling stream {stream_id}: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/analytics")
+        @self.app.route("/api / revenue / analytics")
+
+
         def get_revenue_analytics():
             """Get revenue analytics data"""
             try:
@@ -549,109 +565,117 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "total_revenue": total_revenue,
-                        "active_streams": active_streams,
-                        "total_streams": len(self.streams),
-                        "monthly_target": total_target,
-                        "performance_rate": round(performance_rate, 2),
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "total_revenue": total_revenue,
+                            "active_streams": active_streams,
+                            "total_streams": len(self.streams),
+                            "monthly_target": total_target,
+                            "performance_rate": round(performance_rate, 2),
+                            "timestamp": datetime.now().isoformat(),
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error getting revenue analytics: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/ai-platforms")
+        @self.app.route("/api / revenue / ai - platforms")
+
+
         def get_ai_platform_revenue():
             """Get AI platform revenue and cost data"""
             try:
                 if not self.ai_revenue_integration:
                     return jsonify({"success": False, "error": "AI revenue integration not available"}), 503
-                
+
                 # Get current month data
                 end_date = datetime.now()
-                start_date = end_date.replace(day=1)
-                
+                start_date = end_date.replace(day = 1)
+
                 revenue_data = self.ai_revenue_integration.get_ai_platform_revenue(
                     start_date, end_date
                 )
-                
+
                 return jsonify({"success": True, "data": revenue_data})
             except Exception as e:
                 logger.error(f"Error getting AI platform revenue: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
-        
-        @self.app.route("/api/revenue/ai-platforms/metrics")
+
+        @self.app.route("/api / revenue / ai - platforms / metrics")
+
+
         def get_ai_platform_metrics():
             """Get AI platform usage metrics and cost analysis"""
             try:
                 if not self.ai_revenue_integration:
                     return jsonify({"success": False, "error": "AI revenue integration not available"}), 503
-                
+
                 metrics = self.ai_revenue_integration.get_platform_metrics()
-                
+
                 return jsonify({"success": True, "data": metrics})
             except Exception as e:
                 logger.error(f"Error getting AI platform metrics: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
         # Subscription Revenue Stream with Stripe Integration
-        @self.app.route("/api/subscriptions/plans", methods=["GET"])
+        @self.app.route("/api / subscriptions / plans", methods=["GET"])
+
+
         def get_subscription_plans():
             """Get available subscription plans"""
             plans = {
                 "basic": {
                     "name": "Basic Plan",
-                    "price": 9.99,
-                    "interval": "month",
-                    "features": ["Basic Features", "Email Support", "5GB Storage"],
-                    "stripe_price_id": "price_basic_monthly",
-                },
-                "pro": {
+                        "price": 9.99,
+                        "interval": "month",
+                        "features": ["Basic Features", "Email Support", "5GB Storage"],
+                        "stripe_price_id": "price_basic_monthly",
+                        },
+                    "pro": {
                     "name": "Pro Plan",
-                    "price": 29.99,
-                    "interval": "month",
-                    "features": [
+                        "price": 29.99,
+                        "interval": "month",
+                        "features": [
                         "All Basic Features",
-                        "Priority Support",
-                        "50GB Storage",
-                        "Advanced Analytics",
-                    ],
-                    "stripe_price_id": "price_pro_monthly",
-                },
-                "enterprise": {
+                            "Priority Support",
+                            "50GB Storage",
+                            "Advanced Analytics",
+                            ],
+                        "stripe_price_id": "price_pro_monthly",
+                        },
+                    "enterprise": {
                     "name": "Enterprise Plan",
-                    "price": 99.99,
-                    "interval": "month",
-                    "features": [
+                        "price": 99.99,
+                        "interval": "month",
+                        "features": [
                         "All Pro Features",
-                        "24/7 Support",
-                        "Unlimited Storage",
-                        "Custom Integrations",
-                    ],
-                    "stripe_price_id": "price_enterprise_monthly",
-                },
-            }
+                            "24 / 7 Support",
+                            "Unlimited Storage",
+                            "Custom Integrations",
+                            ],
+                        "stripe_price_id": "price_enterprise_monthly",
+                        },
+                    }
             return jsonify({"success": True, "plans": plans})
 
-        @self.app.route("/api/subscriptions/create-checkout-session", methods=["POST"])
+        @self.app.route("/api / subscriptions / create - checkout - session", methods=["POST"])
+
+
         def create_checkout_session():
             """Create Stripe checkout session for subscription"""
             try:
                 data = request.get_json()
                 plan_id = data.get("plan_id")
                 customer_email = data.get("customer_email")
-                success_url = data.get("success_url", "http://localhost:8082/success")
-                cancel_url = data.get("cancel_url", "http://localhost:8082/cancel")
+                success_url = data.get("success_url", "http://localhost:8082 / success")
+                cancel_url = data.get("cancel_url", "http://localhost:8082 / cancel")
 
                 plans = {
                     "basic": {"price": 9.99, "stripe_price_id": "price_basic_monthly"},
-                    "pro": {"price": 29.99, "stripe_price_id": "price_pro_monthly"},
-                    "enterprise": {
+                        "pro": {"price": 29.99, "stripe_price_id": "price_pro_monthly"},
+                        "enterprise": {
                         "price": 99.99,
-                        "stripe_price_id": "price_enterprise_monthly",
-                    },
-                }
+                            "stripe_price_id": "price_enterprise_monthly",
+                            },
+                        }
 
                 if plan_id not in plans:
                     return jsonify({"success": False, "error": "Invalid plan ID"}), 400
@@ -659,34 +683,40 @@ class RevenueStreamsAPI:
                 # Simulate Stripe checkout session creation
                 checkout_session = {
                     "id": f"cs_{int(time.time())}",
-                    "url": f"{success_url}?session_id=cs_{int(time.time())}",
-                    "plan_id": plan_id,
-                    "customer_email": customer_email,
-                }
+                        "url": f"{success_url}?session_id = cs_{int(time.time())}",
+                        "plan_id": plan_id,
+                        "customer_email": customer_email,
+                        }
 
                 return jsonify(
                     {
                         "success": True,
-                        "checkout_url": checkout_session["url"],
-                        "session_id": checkout_session["id"],
-                    }
+                            "checkout_url": checkout_session["url"],
+                            "session_id": checkout_session["id"],
+                            }
                 )
 
             except Exception as e:
                 logger.error(f"Error creating checkout session: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/subscriptions/checkout", methods=["POST"])
+        @self.app.route("/api / revenue / subscriptions / checkout", methods=["POST"])
+
+
         def revenue_subscription_checkout():
             """Create subscription checkout - alias for test compatibility"""
             return create_checkout_session()
 
-        @self.app.route("/api/revenue/subscriptions/plans", methods=["GET"])
+        @self.app.route("/api / revenue / subscriptions / plans", methods=["GET"])
+
+
         def revenue_subscription_plans():
             """Get subscription plans - alias for test compatibility"""
             return get_subscription_plans()
 
-        @self.app.route("/api/subscriptions/webhook", methods=["POST"])
+        @self.app.route("/api / subscriptions / webhook", methods=["POST"])
+
+
         def stripe_webhook():
             """Handle Stripe webhooks for subscription events"""
             try:
@@ -702,7 +732,9 @@ class RevenueStreamsAPI:
                 logger.error(f"Error handling webhook: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/subscriptions/list", methods=["GET"])
+        @self.app.route("/api / subscriptions / list", methods=["GET"])
+
+
         def list_subscriptions():
             """List user subscriptions"""
             try:
@@ -711,9 +743,9 @@ class RevenueStreamsAPI:
                 subscriptions = [
                     {
                         "id": "sub_123",
-                        "plan": "pro",
-                        "status": "active",
-                        "current_period_end": int(time.time())
+                            "plan": "pro",
+                            "status": "active",
+                            "current_period_end": int(time.time())
                         + 2592000,  # 30 days from now
                     }
                 ]
@@ -722,6 +754,7 @@ class RevenueStreamsAPI:
             except Exception as e:
                 logger.error(f"Error listing subscriptions: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
+
 
     def _handle_successful_payment(self, session):
         """Handle successful payment from Stripe webhook"""
@@ -734,24 +767,24 @@ class RevenueStreamsAPI:
             cursor = conn.cursor()
 
             subscription_id = f"sub_{int(time.time())}"
-            next_billing = datetime.now() + timedelta(days=30)
+            next_billing = datetime.now() + timedelta(days = 30)
 
             cursor.execute(
                 """
-                INSERT INTO subscriptions 
+                INSERT INTO subscriptions
                 (id, customer_email, plan_id, status, stripe_customer_id, stripe_subscription_id, next_billing_date)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     subscription_id,
-                    customer_email,
-                    plan_id,
-                    "active",
-                    session.get("customer"),
-                    session.get("subscription"),
-                    next_billing.isoformat(),
-                ),
-            )
+                        customer_email,
+                        plan_id,
+                        "active",
+                        session.get("customer"),
+                        session.get("subscription"),
+                        next_billing.isoformat(),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -774,20 +807,20 @@ class RevenueStreamsAPI:
 
                 cursor.execute(
                     """
-                    INSERT INTO revenue_transactions 
+                    INSERT INTO revenue_transactions
                     (stream_id, amount, transaction_type, description, metadata)
                     VALUES (?, ?, ?, ?, ?)
                 """,
                     (
                         "membership",
-                        amount,
-                        "subscription_payment",
-                        f"New {plan_id} subscription",
-                        json.dumps(
+                            amount,
+                            "subscription_payment",
+                            f"New {plan_id} subscription",
+                            json.dumps(
                             {"customer_email": customer_email, "plan_id": plan_id}
                         ),
-                    ),
-                )
+                            ),
+                        )
 
                 conn.commit()
                 conn.close()
@@ -799,6 +832,7 @@ class RevenueStreamsAPI:
         except Exception as e:
             logger.error(f"Error handling successful payment: {e}")
 
+
     def _handle_subscription_renewal(self, invoice):
         """Handle subscription renewal from Stripe webhook"""
         try:
@@ -809,15 +843,15 @@ class RevenueStreamsAPI:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            next_billing = datetime.now() + timedelta(days=30)
+            next_billing = datetime.now() + timedelta(days = 30)
             cursor.execute(
                 """
-                UPDATE subscriptions 
+                UPDATE subscriptions
                 SET next_billing_date = ?
                 WHERE stripe_subscription_id = ?
             """,
                 (next_billing.isoformat(), subscription_id),
-            )
+                    )
 
             conn.commit()
             conn.close()
@@ -835,18 +869,18 @@ class RevenueStreamsAPI:
 
                 cursor.execute(
                     """
-                    INSERT INTO revenue_transactions 
+                    INSERT INTO revenue_transactions
                     (stream_id, amount, transaction_type, description, metadata)
                     VALUES (?, ?, ?, ?, ?)
                 """,
                     (
                         "membership",
-                        amount,
-                        "subscription_renewal",
-                        "Monthly subscription renewal",
-                        json.dumps({"subscription_id": subscription_id}),
-                    ),
-                )
+                            amount,
+                            "subscription_renewal",
+                            "Monthly subscription renewal",
+                            json.dumps({"subscription_id": subscription_id}),
+                            ),
+                        )
 
                 conn.commit()
                 conn.close()
@@ -857,6 +891,7 @@ class RevenueStreamsAPI:
 
         except Exception as e:
             logger.error(f"Error handling subscription renewal: {e}")
+
 
     def _handle_subscription_cancellation(self, subscription):
         """Handle subscription cancellation from Stripe webhook"""
@@ -869,12 +904,12 @@ class RevenueStreamsAPI:
 
             cursor.execute(
                 """
-                UPDATE subscriptions 
+                UPDATE subscriptions
                 SET status = 'cancelled', cancelled_at = ?
                 WHERE stripe_subscription_id = ?
             """,
                 (datetime.now().isoformat(), subscription_id),
-            )
+                    )
 
             conn.commit()
             conn.close()
@@ -886,7 +921,9 @@ class RevenueStreamsAPI:
         except Exception as e:
             logger.error(f"Error handling subscription cancellation: {e}")
 
-        @self.app.route("/api/revenue/start/<stream_id>", methods=["POST"])
+        @self.app.route("/api / revenue / start/<stream_id>", methods=["POST"])
+
+
         def start_stream(stream_id):
             """Start a specific revenue stream"""
             try:
@@ -907,15 +944,17 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "message": f"{stream.name} is starting...",
-                        "status": stream.status.value,
-                    }
+                            "message": f"{stream.name} is starting...",
+                            "status": stream.status.value,
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error starting stream {stream_id}: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/stop/<stream_id>", methods=["POST"])
+        @self.app.route("/api / revenue / stop/<stream_id>", methods=["POST"])
+
+
         def stop_stream(stream_id):
             """Stop a specific revenue stream"""
             try:
@@ -935,15 +974,17 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "message": f"{stream.name} is stopping...",
-                        "status": stream.status.value,
-                    }
+                            "message": f"{stream.name} is stopping...",
+                            "status": stream.status.value,
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error stopping stream {stream_id}: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/test/<stream_id>", methods=["POST"])
+        @self.app.route("/api / revenue / test/<stream_id>", methods=["POST"])
+
+
         def test_stream(stream_id):
             """Run comprehensive tests on a specific revenue stream"""
             try:
@@ -956,22 +997,24 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "stream": stream.name,
-                        "results": {
+                            "stream": stream.name,
+                            "results": {
                             result.test_name: {
                                 "status": result.status,
-                                "message": result.message,
-                                "executionTime": result.execution_time,
-                            }
+                                    "message": result.message,
+                                    "executionTime": result.execution_time,
+                                    }
                             for result in test_results
                         },
-                    }
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error testing stream {stream_id}: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/test/all", methods=["POST"])
+        @self.app.route("/api / revenue / test / all", methods=["POST"])
+
+
         def test_all_streams():
             """Run comprehensive tests on all revenue streams"""
             try:
@@ -982,24 +1025,26 @@ class RevenueStreamsAPI:
                     all_results[stream.name] = {
                         result.test_name: {
                             "status": result.status,
-                            "message": result.message,
-                            "executionTime": result.execution_time,
-                        }
+                                "message": result.message,
+                                "executionTime": result.execution_time,
+                                }
                         for result in test_results
                     }
 
                 return jsonify(
                     {
                         "success": True,
-                        "results": all_results,
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "results": all_results,
+                            "timestamp": datetime.now().isoformat(),
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error testing all streams: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/config/<stream_id>", methods=["PUT"])
+        @self.app.route("/api / revenue / config/<stream_id>", methods=["PUT"])
+
+
         def update_stream_config(stream_id):
             """Update configuration for a specific revenue stream"""
             try:
@@ -1027,7 +1072,9 @@ class RevenueStreamsAPI:
                 logger.error(f"Error updating stream config {stream_id}: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/transaction", methods=["POST"])
+        @self.app.route("/api / revenue / transaction", methods=["POST"])
+
+
         def record_transaction():
             """Record a revenue transaction"""
             try:
@@ -1037,8 +1084,8 @@ class RevenueStreamsAPI:
                 if not all(field in data for field in required_fields):
                     return (
                         jsonify({"success": False, "error": "Missing required fields"}),
-                        400,
-                    )
+                            400,
+                            )
 
                 stream_id = data["stream_id"]
                 if stream_id not in self.streams:
@@ -1050,18 +1097,18 @@ class RevenueStreamsAPI:
 
                 cursor.execute(
                     """
-                    INSERT INTO revenue_transactions 
+                    INSERT INTO revenue_transactions
                     (stream_id, amount, transaction_type, description, metadata)
                     VALUES (?, ?, ?, ?, ?)
                 """,
                     (
                         stream_id,
-                        float(data["amount"]),
-                        data["transaction_type"],
-                        data.get("description", ""),
-                        json.dumps(data.get("metadata", {})),
-                    ),
-                )
+                            float(data["amount"]),
+                            data["transaction_type"],
+                            data.get("description", ""),
+                            json.dumps(data.get("metadata", {})),
+                            ),
+                        )
 
                 conn.commit()
                 conn.close()
@@ -1080,62 +1127,66 @@ class RevenueStreamsAPI:
                 return jsonify({"success": False, "error": str(e)}), 500
 
         # Subscription Revenue Stream with Stripe Integration
-        @self.app.route("/api/subscriptions/plans", methods=["GET"])
+        @self.app.route("/api / subscriptions / plans", methods=["GET"])
+
+
         def get_subscription_plans():
             """Get available subscription plans"""
             plans = {
                 "basic": {
                     "name": "Basic Plan",
-                    "price": 9.99,
-                    "interval": "month",
-                    "features": ["Basic Features", "Email Support", "5GB Storage"],
-                    "stripe_price_id": "price_basic_monthly",
-                },
-                "pro": {
+                        "price": 9.99,
+                        "interval": "month",
+                        "features": ["Basic Features", "Email Support", "5GB Storage"],
+                        "stripe_price_id": "price_basic_monthly",
+                        },
+                    "pro": {
                     "name": "Pro Plan",
-                    "price": 29.99,
-                    "interval": "month",
-                    "features": [
+                        "price": 29.99,
+                        "interval": "month",
+                        "features": [
                         "All Basic Features",
-                        "Priority Support",
-                        "50GB Storage",
-                        "Advanced Analytics",
-                    ],
-                    "stripe_price_id": "price_pro_monthly",
-                },
-                "enterprise": {
+                            "Priority Support",
+                            "50GB Storage",
+                            "Advanced Analytics",
+                            ],
+                        "stripe_price_id": "price_pro_monthly",
+                        },
+                    "enterprise": {
                     "name": "Enterprise Plan",
-                    "price": 99.99,
-                    "interval": "month",
-                    "features": [
+                        "price": 99.99,
+                        "interval": "month",
+                        "features": [
                         "All Pro Features",
-                        "24/7 Support",
-                        "Unlimited Storage",
-                        "Custom Integrations",
-                    ],
-                    "stripe_price_id": "price_enterprise_monthly",
-                },
-            }
+                            "24 / 7 Support",
+                            "Unlimited Storage",
+                            "Custom Integrations",
+                            ],
+                        "stripe_price_id": "price_enterprise_monthly",
+                        },
+                    }
             return jsonify({"success": True, "plans": plans})
 
-        @self.app.route("/api/subscriptions/create-checkout-session", methods=["POST"])
+        @self.app.route("/api / subscriptions / create - checkout - session", methods=["POST"])
+
+
         def create_checkout_session():
             """Create Stripe checkout session for subscription"""
             try:
                 data = request.get_json()
                 plan_id = data.get("plan_id")
                 customer_email = data.get("customer_email")
-                success_url = data.get("success_url", "http://localhost:8082/success")
-                cancel_url = data.get("cancel_url", "http://localhost:8082/cancel")
+                success_url = data.get("success_url", "http://localhost:8082 / success")
+                cancel_url = data.get("cancel_url", "http://localhost:8082 / cancel")
 
                 plans = {
                     "basic": {"price": 9.99, "stripe_price_id": "price_basic_monthly"},
-                    "pro": {"price": 29.99, "stripe_price_id": "price_pro_monthly"},
-                    "enterprise": {
+                        "pro": {"price": 29.99, "stripe_price_id": "price_pro_monthly"},
+                        "enterprise": {
                         "price": 99.99,
-                        "stripe_price_id": "price_enterprise_monthly",
-                    },
-                }
+                            "stripe_price_id": "price_enterprise_monthly",
+                            },
+                        }
 
                 if plan_id not in plans:
                     return jsonify({"success": False, "error": "Invalid plan ID"}), 400
@@ -1143,34 +1194,40 @@ class RevenueStreamsAPI:
                 # Simulate Stripe checkout session creation
                 checkout_session = {
                     "id": f"cs_{int(time.time())}",
-                    "url": f"{success_url}?session_id=cs_{int(time.time())}",
-                    "plan_id": plan_id,
-                    "customer_email": customer_email,
-                }
+                        "url": f"{success_url}?session_id = cs_{int(time.time())}",
+                        "plan_id": plan_id,
+                        "customer_email": customer_email,
+                        }
 
                 return jsonify(
                     {
                         "success": True,
-                        "checkout_url": checkout_session["url"],
-                        "session_id": checkout_session["id"],
-                    }
+                            "checkout_url": checkout_session["url"],
+                            "session_id": checkout_session["id"],
+                            }
                 )
 
             except Exception as e:
                 logger.error(f"Error creating checkout session: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/revenue/subscriptions/checkout", methods=["POST"])
+        @self.app.route("/api / revenue / subscriptions / checkout", methods=["POST"])
+
+
         def revenue_subscription_checkout():
             """Create subscription checkout - alias for test compatibility"""
             return create_checkout_session()
 
-        @self.app.route("/api/revenue/subscriptions/plans", methods=["GET"])
+        @self.app.route("/api / revenue / subscriptions / plans", methods=["GET"])
+
+
         def revenue_subscription_plans():
             """Get subscription plans - alias for test compatibility"""
             return get_subscription_plans()
 
-        @self.app.route("/api/subscriptions/webhook", methods=["POST"])
+        @self.app.route("/api / subscriptions / webhook", methods=["POST"])
+
+
         def stripe_webhook():
             """Handle Stripe webhooks for subscription events"""
             try:
@@ -1192,7 +1249,9 @@ class RevenueStreamsAPI:
                 logger.error(f"Error handling webhook: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/subscriptions/list", methods=["GET"])
+        @self.app.route("/api / subscriptions / list", methods=["GET"])
+
+
         def list_subscriptions():
             """List all subscriptions"""
             try:
@@ -1210,12 +1269,12 @@ class RevenueStreamsAPI:
                     subscriptions.append(
                         {
                             "id": row[0],
-                            "customer_email": row[1],
-                            "plan_id": row[2],
-                            "status": row[3],
-                            "created_at": row[4],
-                            "next_billing_date": row[5],
-                        }
+                                "customer_email": row[1],
+                                "plan_id": row[2],
+                                "status": row[3],
+                                "created_at": row[4],
+                                "next_billing_date": row[5],
+                                }
                     )
 
                 conn.close()
@@ -1223,18 +1282,20 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "subscriptions": subscriptions,
-                        "total_count": len(subscriptions),
-                        "active_count": len(
+                            "subscriptions": subscriptions,
+                            "total_count": len(subscriptions),
+                            "active_count": len(
                             [s for s in subscriptions if s["status"] == "active"]
                         ),
-                    }
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error listing subscriptions: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/subscriptions/cancel/<subscription_id>", methods=["POST"])
+        @self.app.route("/api / subscriptions / cancel/<subscription_id>", methods=["POST"])
+
+
         def cancel_subscription(subscription_id):
             """Cancel a subscription"""
             try:
@@ -1243,19 +1304,19 @@ class RevenueStreamsAPI:
 
                 cursor.execute(
                     """
-                    UPDATE subscriptions 
+                    UPDATE subscriptions
                     SET status = 'cancelled', cancelled_at = ?
                     WHERE id = ?
                 """,
                     (datetime.now().isoformat(), subscription_id),
-                )
+                        )
 
                 if cursor.rowcount == 0:
                     conn.close()
                     return (
                         jsonify({"success": False, "error": "Subscription not found"}),
-                        404,
-                    )
+                            404,
+                            )
 
                 conn.commit()
                 conn.close()
@@ -1269,7 +1330,9 @@ class RevenueStreamsAPI:
                 return jsonify({"success": False, "error": str(e)}), 500
 
         # API Monetization System
-        @self.app.route("/api/monetization/generate-key", methods=["POST"])
+        @self.app.route("/api / monetization / generate - key", methods=["POST"])
+
+
         def generate_api_key():
             """Generate a new API key for a customer"""
             try:
@@ -1280,8 +1343,8 @@ class RevenueStreamsAPI:
                 if not customer_email:
                     return (
                         jsonify({"success": False, "error": "Customer email required"}),
-                        400,
-                    )
+                            400,
+                            )
 
                 # Generate API key
                 api_key = f"ak_{int(time.time())}_{hash(customer_email) % 10000}"
@@ -1294,28 +1357,28 @@ class RevenueStreamsAPI:
                     """
                      CREATE TABLE IF NOT EXISTS api_keys (
                          api_key TEXT PRIMARY KEY,
-                         customer_email TEXT NOT NULL,
-                         plan_type TEXT DEFAULT 'basic',
-                         status TEXT DEFAULT 'active',
-                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                             customer_email TEXT NOT NULL,
+                             plan_type TEXT DEFAULT 'basic',
+                             status TEXT DEFAULT 'active',
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                      )
                  """
                 )
 
                 cursor.execute(
                     """
-                     INSERT OR REPLACE INTO api_keys 
+                     INSERT OR REPLACE INTO api_keys
                      (api_key, customer_email, plan_type, status, created_at)
                      VALUES (?, ?, ?, ?, ?)
                  """,
-                    (
+                     (
                         api_key,
-                        customer_email,
-                        plan_type,
-                        "active",
-                        datetime.now().isoformat(),
-                    ),
-                )
+                            customer_email,
+                            plan_type,
+                            "active",
+                            datetime.now().isoformat(),
+                            ),
+                        )
 
                 conn.commit()
                 conn.close()
@@ -1323,17 +1386,19 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "api_key": api_key,
-                        "plan_type": plan_type,
-                        "rate_limits": self._get_rate_limits(plan_type),
-                    }
+                            "api_key": api_key,
+                            "plan_type": plan_type,
+                            "rate_limits": self._get_rate_limits(plan_type),
+                            }
                 )
 
             except Exception as e:
                 logger.error(f"Error generating API key: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/monetization/validate-key", methods=["POST"])
+        @self.app.route("/api / monetization / validate - key", methods=["POST"])
+
+
         def validate_api_key():
             """Validate an API key and check rate limits"""
             try:
@@ -1350,11 +1415,11 @@ class RevenueStreamsAPI:
 
                 cursor.execute(
                     """
-                    SELECT customer_email, plan_type, status FROM api_keys 
+                    SELECT customer_email, plan_type, status FROM api_keys
                     WHERE api_key = ?
                 """,
                     (api_key,),
-                )
+                        )
 
                 result = cursor.fetchone()
                 if not result:
@@ -1367,8 +1432,8 @@ class RevenueStreamsAPI:
                     conn.close()
                     return (
                         jsonify({"success": False, "error": "API key is inactive"}),
-                        401,
-                    )
+                            401,
+                            )
 
                 # Check rate limits
                 rate_limit_ok, remaining_requests = self._check_rate_limit(
@@ -1381,12 +1446,12 @@ class RevenueStreamsAPI:
                         jsonify(
                             {
                                 "success": False,
-                                "error": "Rate limit exceeded",
-                                "remaining_requests": 0,
-                            }
+                                    "error": "Rate limit exceeded",
+                                    "remaining_requests": 0,
+                                    }
                         ),
-                        429,
-                    )
+                            429,
+                            )
 
                 # Record API usage
                 self._record_api_usage(api_key, endpoint, customer_email)
@@ -1396,17 +1461,19 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "customer_email": customer_email,
-                        "plan_type": plan_type,
-                        "remaining_requests": remaining_requests,
-                    }
+                            "customer_email": customer_email,
+                            "plan_type": plan_type,
+                            "remaining_requests": remaining_requests,
+                            }
                 )
 
             except Exception as e:
                 logger.error(f"Error validating API key: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/monetization/usage/<api_key>", methods=["GET"])
+        @self.app.route("/api / monetization / usage/<api_key>", methods=["GET"])
+
+
         def get_api_usage(api_key):
             """Get API usage statistics for a key"""
             try:
@@ -1418,12 +1485,12 @@ class RevenueStreamsAPI:
                 cursor.execute(
                     """
                     SELECT endpoint, SUM(requests_count) as total_requests
-                    FROM api_usage 
+                    FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
                     GROUP BY endpoint
                 """,
                     (api_key, current_month),
-                )
+                        )
 
                 usage_by_endpoint = {}
                 total_requests = 0
@@ -1439,7 +1506,7 @@ class RevenueStreamsAPI:
                     SELECT plan_type FROM api_keys WHERE api_key = ?
                 """,
                     (api_key,),
-                )
+                        )
 
                 result = cursor.fetchone()
                 plan_type = result[0] if result else "basic"
@@ -1451,23 +1518,25 @@ class RevenueStreamsAPI:
                 return jsonify(
                     {
                         "success": True,
-                        "api_key": api_key,
-                        "plan_type": plan_type,
-                        "current_month": current_month,
-                        "total_requests": total_requests,
-                        "usage_by_endpoint": usage_by_endpoint,
-                        "rate_limits": rate_limits,
-                        "remaining_requests": max(
+                            "api_key": api_key,
+                            "plan_type": plan_type,
+                            "current_month": current_month,
+                            "total_requests": total_requests,
+                            "usage_by_endpoint": usage_by_endpoint,
+                            "rate_limits": rate_limits,
+                            "remaining_requests": max(
                             0, rate_limits["monthly_limit"] - total_requests
                         ),
-                    }
+                            }
                 )
 
             except Exception as e:
                 logger.error(f"Error getting API usage: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/monetization/billing/<api_key>", methods=["GET"])
+        @self.app.route("/api / monetization / billing/<api_key>", methods=["GET"])
+
+
         def get_api_billing(api_key):
             """Calculate billing for API usage"""
             try:
@@ -1479,11 +1548,11 @@ class RevenueStreamsAPI:
                 cursor.execute(
                     """
                      SELECT SUM(requests_count) as total_requests
-                     FROM api_usage 
+                     FROM api_usage
                      WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
                  """,
-                    (api_key, current_month),
-                )
+                     (api_key, current_month),
+                        )
 
                 result = cursor.fetchone()
                 total_requests = result[0] if result and result[0] else 0
@@ -1493,16 +1562,16 @@ class RevenueStreamsAPI:
                     """
                      SELECT plan_type, customer_email FROM api_keys WHERE api_key = ?
                  """,
-                    (api_key,),
-                )
+                     (api_key,),
+                        )
 
                 result = cursor.fetchone()
                 if not result:
                     conn.close()
                     return (
                         jsonify({"success": False, "error": "API key not found"}),
-                        404,
-                    )
+                            404,
+                            )
 
                 plan_type, customer_email = result
                 conn.close()
@@ -1512,10 +1581,10 @@ class RevenueStreamsAPI:
                 billing_info.update(
                     {
                         "api_key": api_key,
-                        "customer_email": customer_email,
-                        "billing_period": current_month,
-                        "total_requests": total_requests,
-                    }
+                            "customer_email": customer_email,
+                            "billing_period": current_month,
+                            "total_requests": total_requests,
+                            }
                 )
 
                 return jsonify({"success": True, "billing": billing_info})
@@ -1524,29 +1593,31 @@ class RevenueStreamsAPI:
                 logger.error(f"Error calculating API billing: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
+
     def _get_rate_limits(self, plan_type):
         """Get rate limits for a plan type"""
         limits = {
             "basic": {
                 "requests_per_minute": 60,
-                "requests_per_hour": 1000,
-                "monthly_limit": 10000,
-                "cost_per_request": 0.001,
-            },
-            "pro": {
+                    "requests_per_hour": 1000,
+                    "monthly_limit": 10000,
+                    "cost_per_request": 0.001,
+                    },
+                "pro": {
                 "requests_per_minute": 300,
-                "requests_per_hour": 10000,
-                "monthly_limit": 100000,
-                "cost_per_request": 0.0008,
-            },
-            "enterprise": {
+                    "requests_per_hour": 10000,
+                    "monthly_limit": 100000,
+                    "cost_per_request": 0.0008,
+                    },
+                "enterprise": {
                 "requests_per_minute": 1000,
-                "requests_per_hour": 50000,
-                "monthly_limit": 1000000,
-                "cost_per_request": 0.0005,
-            },
-        }
+                    "requests_per_hour": 50000,
+                    "monthly_limit": 1000000,
+                    "cost_per_request": 0.0005,
+                    },
+                }
         return limits.get(plan_type, limits["basic"])
+
 
     def _check_rate_limit(self, api_key, endpoint, plan_type):
         """Check if API key has exceeded rate limits"""
@@ -1561,11 +1632,11 @@ class RevenueStreamsAPI:
             cursor.execute(
                 """
                 SELECT SUM(requests_count) as total_requests
-                FROM api_usage 
+                FROM api_usage
                 WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
             """,
                 (api_key, current_month),
-            )
+                    )
 
             result = cursor.fetchone()
             monthly_usage = result[0] if result and result[0] else 0
@@ -1579,11 +1650,11 @@ class RevenueStreamsAPI:
             cursor.execute(
                 """
                 SELECT SUM(requests_count) as hourly_requests
-                FROM api_usage 
+                FROM api_usage
                 WHERE api_key = ? AND strftime('%Y-%m-%d %H', created_at) = ?
             """,
                 (api_key, current_hour),
-            )
+                    )
 
             result = cursor.fetchone()
             hourly_usage = result[0] if result and result[0] else 0
@@ -1598,6 +1669,7 @@ class RevenueStreamsAPI:
         except Exception as e:
             logger.error(f"Error checking rate limit: {e}")
             return False, 0
+
 
     def _record_api_usage(self, api_key, endpoint, customer_email):
         """Record API usage for billing"""
@@ -1614,11 +1686,11 @@ class RevenueStreamsAPI:
             # Check if usage record exists for today
             cursor.execute(
                 """
-                SELECT id, requests_count FROM api_usage 
+                SELECT id, requests_count FROM api_usage
                 WHERE api_key = ? AND endpoint = ? AND usage_date = ?
             """,
                 (api_key, endpoint, usage_date),
-            )
+                    )
 
             result = cursor.fetchone()
 
@@ -1627,28 +1699,29 @@ class RevenueStreamsAPI:
                 usage_id, current_count = result
                 cursor.execute(
                     """
-                    UPDATE api_usage 
+                    UPDATE api_usage
                     SET requests_count = requests_count + 1
                     WHERE id = ?
                 """,
                     (usage_id,),
-                )
+                        )
             else:
                 # Create new record
                 cursor.execute(
                     """
-                    INSERT INTO api_usage 
+                    INSERT INTO api_usage
                     (id, api_key, endpoint, requests_count, usage_date, customer_id)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """,
                     (usage_id, api_key, endpoint, 1, usage_date, customer_email),
-                )
+                        )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"Error recording API usage: {e}")
+
 
     def _calculate_api_billing(self, plan_type, total_requests):
         """Calculate billing amount for API usage"""
@@ -1673,14 +1746,15 @@ class RevenueStreamsAPI:
 
         return {
             "plan_type": plan_type,
-            "base_cost": base_cost,
-            "included_requests": monthly_limit,
-            "total_requests": total_requests,
-            "overage_requests": overage_requests,
-            "overage_cost": overage_cost,
-            "total_cost": total_cost,
-            "cost_per_request": cost_per_request,
-        }
+                "base_cost": base_cost,
+                "included_requests": monthly_limit,
+                "total_requests": total_requests,
+                "overage_requests": overage_requests,
+                "overage_cost": overage_cost,
+                "total_cost": total_cost,
+                "cost_per_request": cost_per_request,
+                }
+
 
     def _start_stream_async(self, stream_id: str):
         """Start a revenue stream asynchronously"""
@@ -1691,7 +1765,7 @@ class RevenueStreamsAPI:
             # Simulate stream startup process
             time.sleep(2)  # Simulate initialization time
 
-            # Run pre-start tests
+            # Run pre - start tests
             test_results = self._run_stream_tests(stream)
             failed_tests = [r for r in test_results if r.status == "fail"]
 
@@ -1704,7 +1778,7 @@ class RevenueStreamsAPI:
                     f"Stream {stream_id} failed to start: {stream.error_message}"
                 )
             else:
-                # Initialize stream-specific components
+                # Initialize stream - specific components
                 self._initialize_stream_components(stream)
 
                 stream.status = StreamStatus.ACTIVE
@@ -1722,6 +1796,7 @@ class RevenueStreamsAPI:
             stream.last_updated = datetime.now()
             self._save_stream(stream)
 
+
     def _stop_stream_async(self, stream_id: str):
         """Stop a revenue stream asynchronously"""
         try:
@@ -1731,7 +1806,7 @@ class RevenueStreamsAPI:
             # Simulate stream shutdown process
             time.sleep(1)  # Simulate cleanup time
 
-            # Cleanup stream-specific components
+            # Cleanup stream - specific components
             self._cleanup_stream_components(stream)
 
             stream.status = StreamStatus.INACTIVE
@@ -1749,6 +1824,7 @@ class RevenueStreamsAPI:
             stream.last_updated = datetime.now()
             self._save_stream(stream)
 
+
     def _run_stream_tests(self, stream: RevenueStream) -> List[TestResult]:
         """Run comprehensive tests for a revenue stream"""
         results = []
@@ -1760,21 +1836,21 @@ class RevenueStreamsAPI:
             results.append(
                 TestResult(
                     test_name="Configuration Validation",
-                    status="pass",
-                    message="Stream configuration is valid",
-                    execution_time=time.time() - start_time,
-                    timestamp=datetime.now(),
-                )
+                        status="pass",
+                        message="Stream configuration is valid",
+                        execution_time = time.time() - start_time,
+                        timestamp = datetime.now(),
+                        )
             )
         except Exception as e:
             results.append(
                 TestResult(
                     test_name="Configuration Validation",
-                    status="fail",
-                    message=f"Configuration error: {str(e)}",
-                    execution_time=time.time() - start_time,
-                    timestamp=datetime.now(),
-                )
+                        status="fail",
+                        message = f"Configuration error: {str(e)}",
+                        execution_time = time.time() - start_time,
+                        timestamp = datetime.now(),
+                        )
             )
 
         # Test 2: API endpoint connectivity
@@ -1786,51 +1862,51 @@ class RevenueStreamsAPI:
 
                 results.append(
                     TestResult(
-                        test_name=f"API Endpoint: {endpoint}",
-                        status="pass",
-                        message="Endpoint is accessible",
-                        execution_time=time.time() - start_time,
-                        timestamp=datetime.now(),
-                    )
+                        test_name = f"API Endpoint: {endpoint}",
+                            status="pass",
+                            message="Endpoint is accessible",
+                            execution_time = time.time() - start_time,
+                            timestamp = datetime.now(),
+                            )
                 )
             except Exception as e:
                 results.append(
                     TestResult(
-                        test_name=f"API Endpoint: {endpoint}",
-                        status="fail",
-                        message=f"Endpoint error: {str(e)}",
-                        execution_time=time.time() - start_time,
-                        timestamp=datetime.now(),
-                    )
+                        test_name = f"API Endpoint: {endpoint}",
+                            status="fail",
+                            message = f"Endpoint error: {str(e)}",
+                            execution_time = time.time() - start_time,
+                            timestamp = datetime.now(),
+                            )
                 )
 
         # Test 3: Payment processing (if applicable)
         if stream.stream_type in [
             RevenueStreamType.DIGITAL_PRODUCTS,
-            RevenueStreamType.MEMBERSHIP,
-            RevenueStreamType.CONSULTING,
-        ]:
+                RevenueStreamType.MEMBERSHIP,
+                RevenueStreamType.CONSULTING,
+                ]:
             start_time = time.time()
             try:
                 self._test_payment_processing(stream)
                 results.append(
                     TestResult(
                         test_name="Payment Processing",
-                        status="pass",
-                        message="Payment system is functional",
-                        execution_time=time.time() - start_time,
-                        timestamp=datetime.now(),
-                    )
+                            status="pass",
+                            message="Payment system is functional",
+                            execution_time = time.time() - start_time,
+                            timestamp = datetime.now(),
+                            )
                 )
             except Exception as e:
                 results.append(
                     TestResult(
                         test_name="Payment Processing",
-                        status="fail",
-                        message=f"Payment error: {str(e)}",
-                        execution_time=time.time() - start_time,
-                        timestamp=datetime.now(),
-                    )
+                            status="fail",
+                            message = f"Payment error: {str(e)}",
+                            execution_time = time.time() - start_time,
+                            timestamp = datetime.now(),
+                            )
                 )
 
         # Test 4: Database connectivity
@@ -1841,21 +1917,21 @@ class RevenueStreamsAPI:
             results.append(
                 TestResult(
                     test_name="Database Connectivity",
-                    status="pass",
-                    message="Database is accessible",
-                    execution_time=time.time() - start_time,
-                    timestamp=datetime.now(),
-                )
+                        status="pass",
+                        message="Database is accessible",
+                        execution_time = time.time() - start_time,
+                        timestamp = datetime.now(),
+                        )
             )
         except Exception as e:
             results.append(
                 TestResult(
                     test_name="Database Connectivity",
-                    status="fail",
-                    message=f"Database error: {str(e)}",
-                    execution_time=time.time() - start_time,
-                    timestamp=datetime.now(),
-                )
+                        status="fail",
+                        message = f"Database error: {str(e)}",
+                        execution_time = time.time() - start_time,
+                        timestamp = datetime.now(),
+                        )
             )
 
         # Save test results
@@ -1863,12 +1939,13 @@ class RevenueStreamsAPI:
 
         return results
 
+
     def _validate_stream_config(self, stream: RevenueStream):
         """Validate stream configuration"""
         if not stream.config:
             raise ValueError("Stream configuration is empty")
 
-        # Stream-specific validation
+        # Stream - specific validation
         if stream.stream_type == RevenueStreamType.YOUTUBE_ADS:
             if not stream.config.get("channel_id"):
                 raise ValueError("YouTube channel ID is required")
@@ -1879,6 +1956,7 @@ class RevenueStreamsAPI:
 
         # Add more validation as needed
 
+
     def _test_payment_processing(self, stream: RevenueStream):
         """Test payment processing functionality"""
         # In production, test actual payment gateway connectivity
@@ -1886,11 +1964,12 @@ class RevenueStreamsAPI:
         if "stripe_key" in stream.config and not stream.config["stripe_key"]:
             raise ValueError("Payment gateway not configured")
 
+
     def _initialize_stream_components(self, stream: RevenueStream):
-        """Initialize stream-specific components"""
+        """Initialize stream - specific components"""
         logger.info(f"Initializing components for {stream.name}")
 
-        # Stream-specific initialization logic
+        # Stream - specific initialization logic
         if stream.stream_type == RevenueStreamType.YOUTUBE_ADS:
             self._init_youtube_components(stream)
         elif stream.stream_type == RevenueStreamType.AFFILIATE_MARKETING:
@@ -1899,25 +1978,30 @@ class RevenueStreamsAPI:
             self._init_digital_products_components(stream)
         # Add more initialization as needed
 
+
     def _cleanup_stream_components(self, stream: RevenueStream):
-        """Cleanup stream-specific components"""
+        """Cleanup stream - specific components"""
         logger.info(f"Cleaning up components for {stream.name}")
-        # Stream-specific cleanup logic
+        # Stream - specific cleanup logic
+
 
     def _init_youtube_components(self, stream: RevenueStream):
         """Initialize YouTube monetization components"""
         # Initialize YouTube API client, analytics tracking, etc.
         pass
 
+
     def _init_affiliate_components(self, stream: RevenueStream):
         """Initialize affiliate marketing components"""
         # Initialize affiliate tracking, commission calculations, etc.
         pass
 
+
     def _init_digital_products_components(self, stream: RevenueStream):
         """Initialize digital products components"""
         # Initialize payment processing, product delivery, etc.
         pass
+
 
     def _save_stream(self, stream: RevenueStream):
         """Save stream to database"""
@@ -1926,28 +2010,29 @@ class RevenueStreamsAPI:
 
         cursor.execute(
             """
-            INSERT OR REPLACE INTO revenue_streams 
-            (stream_id, name, description, stream_type, status, monthly_target, 
-             current_revenue, auto_start, config, last_updated, error_message)
+            INSERT OR REPLACE INTO revenue_streams
+            (stream_id, name, description, stream_type, status, monthly_target,
+                current_revenue, auto_start, config, last_updated, error_message)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 stream.stream_id,
-                stream.name,
-                stream.description,
-                stream.stream_type.value,
-                stream.status.value,
-                stream.monthly_target,
-                stream.current_revenue,
-                stream.auto_start,
-                json.dumps(stream.config),
-                stream.last_updated.isoformat(),
-                stream.error_message,
-            ),
-        )
+                    stream.name,
+                    stream.description,
+                    stream.stream_type.value,
+                    stream.status.value,
+                    stream.monthly_target,
+                    stream.current_revenue,
+                    stream.auto_start,
+                    json.dumps(stream.config),
+                    stream.last_updated.isoformat(),
+                    stream.error_message,
+                    ),
+                )
 
         conn.commit()
         conn.close()
+
 
     def _save_test_results(self, stream_id: str, results: List[TestResult]):
         """Save test results to database"""
@@ -1957,33 +2042,35 @@ class RevenueStreamsAPI:
         for result in results:
             cursor.execute(
                 """
-                INSERT INTO test_results 
+                INSERT INTO test_results
                 (stream_id, test_name, status, message, execution_time, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
                 (
                     stream_id,
-                    result.test_name,
-                    result.status,
-                    result.message,
-                    result.execution_time,
-                    result.timestamp.isoformat(),
-                ),
-            )
+                        result.test_name,
+                        result.status,
+                        result.message,
+                        result.execution_time,
+                        result.timestamp.isoformat(),
+                        ),
+                    )
 
         conn.commit()
         conn.close()
 
+
     def _start_monitoring(self):
-        """Start background monitoring and auto-start functionality"""
+        """Start background monitoring and auto - start functionality"""
+
 
         def monitor_streams():
             while True:
                 try:
-                    # Auto-start streams that are configured for auto-start
+                    # Auto - start streams that are configured for auto - start
                     for stream_id, stream in self.streams.items():
                         if stream.auto_start and stream.status == StreamStatus.INACTIVE:
-                            logger.info(f"Auto-starting stream: {stream.name}")
+                            logger.info(f"Auto - starting stream: {stream.name}")
                             self.executor.submit(self._start_stream_async, stream_id)
 
                     # Monitor active streams for health
@@ -1998,9 +2085,10 @@ class RevenueStreamsAPI:
                     time.sleep(60)
 
         # Start monitoring in background thread
-        monitor_thread = threading.Thread(target=monitor_streams, daemon=True)
+        monitor_thread = threading.Thread(target = monitor_streams, daemon = True)
         monitor_thread.start()
         logger.info("Background monitoring started")
+
 
     def _perform_health_check(self, stream: RevenueStream):
         """Perform health check on active stream"""
@@ -2015,17 +2103,17 @@ class RevenueStreamsAPI:
             stream.last_updated = datetime.now()
             self._save_stream(stream)
 
-    def run(self, host="0.0.0.0", port=8082, debug=False):
+
+    def run(self, host="0.0.0.0", port = 8082, debug = False):
         """Run the revenue streams API server"""
         logger.info(f"Starting Revenue Streams API on {host}:{port}")
-        self.app.run(host=host, port=port, debug=debug, threaded=True)
+        self.app.run(host = host, port = port, debug = debug, threaded = True)
 
 
 def main():
     """Main entry point"""
     api = RevenueStreamsAPI()
-    api.run(debug=True)
-
+    api.run(debug = True)
 
 if __name__ == "__main__":
     main()

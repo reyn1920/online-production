@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Web Search Service
 
@@ -17,8 +17,9 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 
-
 @dataclass
+
+
 class SearchResult:
     """Represents a web search result."""
 
@@ -30,8 +31,9 @@ class SearchResult:
     pricing_info: Optional[str] = None
     documentation_url: Optional[str] = None
 
-
 @dataclass
+
+
 class APICandidate:
     """Represents a discovered API candidate."""
 
@@ -52,6 +54,7 @@ class APICandidate:
 class WebSearchService:
     """Service for discovering APIs through web search."""
 
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
@@ -59,67 +62,68 @@ class WebSearchService:
         self.api_search_patterns = {
             "youtube": [
                 "YouTube API free alternatives",
-                "YouTube data API competitors",
-                "video platform APIs free tier",
-                "YouTube analytics API alternatives",
-            ],
-            "tiktok": [
+                    "YouTube data API competitors",
+                    "video platform APIs free tier",
+                    "YouTube analytics API alternatives",
+                    ],
+                "tiktok": [
                 "TikTok API alternatives free",
-                "short video platform APIs",
-                "TikTok marketing API competitors",
-                "social media video APIs",
-            ],
-            "instagram": [
+                    "short video platform APIs",
+                    "TikTok marketing API competitors",
+                    "social media video APIs",
+                    ],
+                "instagram": [
                 "Instagram API alternatives",
-                "Instagram marketing API free",
-                "social media photo APIs",
-                "Instagram analytics alternatives",
-            ],
-            "email": [
+                    "Instagram marketing API free",
+                    "social media photo APIs",
+                    "Instagram analytics alternatives",
+                    ],
+                "email": [
                 "email marketing API free tier",
-                "transactional email API alternatives",
-                "bulk email service APIs",
-                "newsletter API providers",
-            ],
-            "sms": [
+                    "transactional email API alternatives",
+                    "bulk email service APIs",
+                    "newsletter API providers",
+                    ],
+                "sms": [
                 "SMS API free tier providers",
-                "text messaging API alternatives",
-                "bulk SMS service APIs",
-                "notification SMS APIs",
-            ],
-            "ai_content": [
+                    "text messaging API alternatives",
+                    "bulk SMS service APIs",
+                    "notification SMS APIs",
+                    ],
+                "ai_content": [
                 "AI content generation API free",
-                "text generation API alternatives",
-                "GPT API competitors free tier",
-                "content writing API services",
-            ],
-        }
+                    "text generation API alternatives",
+                    "GPT API competitors free tier",
+                    "content writing API services",
+                    ],
+                }
 
         # API quality indicators
         self.quality_indicators = {
             "positive": [
                 "free tier",
-                "free plan",
-                "no cost",
-                "open source",
-                "generous limits",
-                "good documentation",
-                "active community",
-                "reliable uptime",
-                "fast response",
-                "easy integration",
-            ],
-            "negative": [
+                    "free plan",
+                    "no cost",
+                    "open source",
+                    "generous limits",
+                    "good documentation",
+                    "active community",
+                    "reliable uptime",
+                    "fast response",
+                    "easy integration",
+                    ],
+                "negative": [
                 "expensive",
-                "limited free",
-                "poor documentation",
-                "unreliable",
-                "slow response",
-                "complex setup",
-                "deprecated",
-                "shutting down",
-            ],
-        }
+                    "limited free",
+                    "poor documentation",
+                    "unreliable",
+                    "slow response",
+                    "complex setup",
+                    "deprecated",
+                    "shutting down",
+                    ],
+                }
+
 
     def search_apis_for_channel(
         self, channel: str, max_results: int = 10
@@ -135,7 +139,7 @@ class WebSearchService:
                 self.logger.info(f"Searching for: {query}")
 
                 # Simulate web search (in production, integrate with actual search API)
-                search_results = self._perform_web_search(query, max_results=5)
+                search_results = self._perform_web_search(query, max_results = 5)
 
                 # Extract API candidates from search results
                 candidates = self._extract_api_candidates(search_results, channel)
@@ -154,6 +158,7 @@ class WebSearchService:
             self.logger.error(f"Error searching APIs for channel {channel}: {e}")
             return []
 
+
     def _perform_web_search(
         self, query: str, max_results: int = 5
     ) -> List[SearchResult]:
@@ -165,47 +170,48 @@ class WebSearchService:
             "YouTube API free alternatives": [
                 {
                     "title": "YouTube Data API v3 - Free Tier",
-                    "url": "https://developers.google.com/youtube/v3",
-                    "snippet": "YouTube Data API v3 provides free access to YouTube data with 10,000 units per day quota.",
-                    "api_indicators": ["free tier", "quota limits", "official API"],
-                },
-                {
+                        "url": "https://developers.google.com / youtube / v3",
+                        "snippet": "YouTube Data API v3 provides free access to YouTube data with 10,000 units per day quota.",
+                        "api_indicators": ["free tier", "quota limits", "official API"],
+                        },
+                    {
                     "title": "Invidious API - Open Source YouTube Alternative",
-                    "url": "https://docs.invidious.io/api/",
-                    "snippet": "Open source alternative to YouTube API with no rate limits or API keys required.",
-                    "api_indicators": ["open source", "no limits", "free"],
-                },
-            ],
-            "email marketing API free tier": [
+                        "url": "https://docs.invidious.io / api/",
+                        "snippet": "Open source alternative to YouTube API with no rate limits or API keys required.",
+                        "api_indicators": ["open source", "no limits", "free"],
+                        },
+                    ],
+                "email marketing API free tier": [
                 {
-                    "title": "Mailgun Free Tier - 5000 emails/month",
-                    "url": "https://www.mailgun.com/pricing/",
-                    "snippet": "Mailgun offers 5,000 free emails per month with full API access and analytics.",
-                    "api_indicators": ["free tier", "5000 emails", "full API"],
-                },
-                {
-                    "title": "SendGrid Free Plan - 100 emails/day",
-                    "url": "https://sendgrid.com/pricing/",
-                    "snippet": "SendGrid provides 100 free emails per day with comprehensive API and SMTP access.",
-                    "api_indicators": ["free plan", "100 daily", "SMTP"],
-                },
-            ],
-        }
+                    "title": "Mailgun Free Tier - 5000 emails / month",
+                        "url": "https://www.mailgun.com / pricing/",
+                        "snippet": "Mailgun offers 5,000 free emails per month with full API access and analytics.",
+                        "api_indicators": ["free tier", "5000 emails", "full API"],
+                        },
+                    {
+                    "title": "SendGrid Free Plan - 100 emails / day",
+                        "url": "https://sendgrid.com / pricing/",
+                        "snippet": "SendGrid provides 100 free emails per day with comprehensive API and SMTP access.",
+                        "api_indicators": ["free plan", "100 daily", "SMTP"],
+                        },
+                    ],
+                }
 
         results = []
         mock_data = mock_results.get(query, [])
 
         for item in mock_data[:max_results]:
             result = SearchResult(
-                title=item["title"],
-                url=item["url"],
-                snippet=item["snippet"],
-                relevance_score=0.8,
-                api_indicators=item["api_indicators"],
-            )
+                title = item["title"],
+                    url = item["url"],
+                    snippet = item["snippet"],
+                    relevance_score = 0.8,
+                    api_indicators = item["api_indicators"],
+                    )
             results.append(result)
 
         return results
+
 
     def _extract_api_candidates(
         self, search_results: List[SearchResult], channel: str
@@ -225,19 +231,19 @@ class WebSearchService:
                 rate_limits = self._extract_rate_limits(result.snippet)
 
                 candidate = APICandidate(
-                    name=name,
-                    provider=provider,
-                    category=channel,
-                    pricing_model=pricing_model,
-                    api_url=result.url,
-                    documentation_url=result.url,
-                    signup_url=self._generate_signup_url(result.url),
-                    features=features,
-                    rate_limits=rate_limits,
-                    cost_estimate=self._estimate_cost(result.snippet),
-                    quality_score=self._calculate_quality_score(result),
-                    discovered_at=datetime.now(),
-                )
+                    name = name,
+                        provider = provider,
+                        category = channel,
+                        pricing_model = pricing_model,
+                        api_url = result.url,
+                        documentation_url = result.url,
+                        signup_url = self._generate_signup_url(result.url),
+                        features = features,
+                        rate_limits = rate_limits,
+                        cost_estimate = self._estimate_cost(result.snippet),
+                        quality_score = self._calculate_quality_score(result),
+                        discovered_at = datetime.now(),
+                        )
 
                 candidates.append(candidate)
 
@@ -246,14 +252,16 @@ class WebSearchService:
 
         return candidates
 
+
     def _extract_api_name(self, title: str) -> str:
         """Extract API name from search result title."""
         # Remove common suffixes and clean up
         name = re.sub(
-            r"\s*-\s*(API|Free|Tier|Plan|Pricing).*$", "", title, flags=re.IGNORECASE
+            r"\s*-\s*(API|Free|Tier|Plan|Pricing).*$", "", title, flags = re.IGNORECASE
         )
-        name = re.sub(r"\s*(API|Service)\s*$", "", name, flags=re.IGNORECASE)
+        name = re.sub(r"\s*(API|Service)\s*$", "", name, flags = re.IGNORECASE)
         return name.strip()
+
 
     def _extract_provider(self, url: str) -> str:
         """Extract provider name from URL."""
@@ -262,6 +270,7 @@ class WebSearchService:
         provider = re.sub(r"^www\.", "", domain)
         provider = re.sub(r"\.(com|org|net|io)$", "", provider)
         return provider.title()
+
 
     def _determine_pricing_model(self, snippet: str, indicators: List[str]) -> str:
         """Determine pricing model from snippet and indicators."""
@@ -276,22 +285,23 @@ class WebSearchService:
         else:
             return "freemium"  # Default assumption
 
+
     def _extract_features(self, snippet: str) -> List[str]:
         """Extract API features from snippet."""
         features = []
 
         # Common API features to look for
-        feature_patterns = {
+            feature_patterns = {
             "analytics": r"analytic|metric|stat|report",
-            "real-time": r"real.?time|live|instant",
-            "webhook": r"webhook|callback|notification",
-            "rate_limiting": r"rate.?limit|quota|throttl",
-            "authentication": r"auth|token|key|oauth",
-            "documentation": r"doc|guide|tutorial",
-            "sdk": r"sdk|library|wrapper",
-            "rest_api": r"rest|http|json",
-            "graphql": r"graphql|graph.?ql",
-        }
+                "real - time": r"real.?time|live|instant",
+                "webhook": r"webhook|callback|notification",
+                "rate_limiting": r"rate.?limit|quota|throttl",
+                "authentication": r"auth|token|key|oauth",
+                "documentation": r"doc|guide|tutorial",
+                "sdk": r"sdk|library|wrapper",
+                "rest_api": r"rest|http|json",
+                "graphql": r"graphql|graph.?ql",
+                }
 
         for feature, pattern in feature_patterns.items():
             if re.search(pattern, snippet, re.IGNORECASE):
@@ -299,14 +309,15 @@ class WebSearchService:
 
         return features
 
+
     def _extract_rate_limits(self, snippet: str) -> Optional[str]:
         """Extract rate limit information from snippet."""
         # Look for common rate limit patterns
         patterns = [
-            r"(\d+[,\d]*?)\s*(requests?|calls?|emails?)\s*per\s*(day|month|hour|minute)",
-            r"(\d+[,\d]*?)\s*(units?)\s*per\s*(day|month)",
-            r"quota\s*of\s*(\d+[,\d]*?)",
-        ]
+            r"(\d+[,\d]*?)\s*(requests?|calls?|emails?)\s * per\s*(day|month|hour|minute)",
+                r"(\d+[,\d]*?)\s*(units?)\s * per\s*(day|month)",
+                r"quota\s * of\s*(\d+[,\d]*?)",
+                ]
 
         for pattern in patterns:
             match = re.search(pattern, snippet, re.IGNORECASE)
@@ -315,23 +326,25 @@ class WebSearchService:
 
         return None
 
+
     def _generate_signup_url(self, api_url: str) -> str:
         """Generate likely signup URL from API URL."""
         base_url = f"{urlparse(api_url).scheme}://{urlparse(api_url).netloc}"
 
         # Common signup paths
-        signup_paths = ["/signup", "/register", "/get-started", "/pricing", "/plans"]
+        signup_paths = ["/signup", "/register", "/get - started", "/pricing", "/plans"]
 
         # Return the first likely signup URL (in production, verify these exist)
         return urljoin(base_url, "/signup")
+
 
     def _estimate_cost(self, snippet: str) -> Optional[str]:
         """Estimate cost from snippet text."""
         # Look for pricing information
         price_patterns = [
-            r"\$([0-9,]+(?:\.[0-9]{2})?)\s*(?:per|/)?\s*(month|year|request)",
-            r"([0-9,]+)\s*free\s*(emails?|requests?|calls?)",
-        ]
+            r"\$([0 - 9,]+(?:\.[0 - 9]{2})?)\s*(?:per|/)?\s*(month|year|request)",
+                r"([0 - 9,]+)\s * free\s*(emails?|requests?|calls?)",
+                ]
 
         for pattern in price_patterns:
             match = re.search(pattern, snippet, re.IGNORECASE)
@@ -339,6 +352,7 @@ class WebSearchService:
                 return match.group(0)
 
         return None
+
 
     def _calculate_quality_score(self, result: SearchResult) -> float:
         """Calculate quality score for an API candidate."""
@@ -359,20 +373,21 @@ class WebSearchService:
         if "official" in result.title.lower() or "developers." in result.url:
             score += 0.2
 
-        # Boost for well-known providers
+        # Boost for well - known providers
         well_known = [
             "google",
-            "microsoft",
-            "amazon",
-            "github",
-            "mailgun",
-            "sendgrid",
-            "twilio",
-        ]
+                "microsoft",
+                "amazon",
+                "github",
+                "mailgun",
+                "sendgrid",
+                "twilio",
+                ]
         if any(provider in result.url.lower() for provider in well_known):
             score += 0.15
 
         return min(1.0, max(0.0, score))
+
 
     def _deduplicate_candidates(
         self, candidates: List[APICandidate]
@@ -391,8 +406,10 @@ class WebSearchService:
 
         return unique_candidates
 
+
     def _rank_candidates(self, candidates: List[APICandidate]) -> List[APICandidate]:
         """Rank API candidates by quality and suitability."""
+
 
         def ranking_key(candidate):
             # Prioritize free > freemium > paid
@@ -403,25 +420,27 @@ class WebSearchService:
             # Combine quality score with pricing preference
             return (pricing_score, candidate.quality_score)
 
-        return sorted(candidates, key=ranking_key, reverse=True)
+        return sorted(candidates, key = ranking_key, reverse = True)
+
 
     def discover_trending_apis(self, category: str = "marketing") -> List[APICandidate]:
         """Discover trending APIs in a category."""
         trending_queries = [
             f"best {category} APIs 2024",
-            f"new {category} API services",
-            f"trending {category} tools API",
-            f"popular {category} integrations",
-        ]
+                f"new {category} API services",
+                f"trending {category} tools API",
+                f"popular {category} integrations",
+                ]
 
         all_candidates = []
 
         for query in trending_queries:
-            results = self._perform_web_search(query, max_results=3)
+            results = self._perform_web_search(query, max_results = 3)
             candidates = self._extract_api_candidates(results, category)
             all_candidates.extend(candidates)
 
         return self._rank_candidates(self._deduplicate_candidates(all_candidates))
+
 
     def evaluate_api_quality(self, api_url: str) -> Dict[str, Any]:
         """Evaluate the quality of a specific API."""
@@ -429,27 +448,27 @@ class WebSearchService:
             # In production, this would:
             # 1. Check API documentation quality
             # 2. Test API endpoints
-            # 3. Check uptime/reliability
+            # 3. Check uptime / reliability
             # 4. Analyze community feedback
 
             # Mock evaluation
             evaluation = {
                 "documentation_quality": 0.8,
-                "api_reliability": 0.9,
-                "community_support": 0.7,
-                "ease_of_integration": 0.8,
-                "pricing_transparency": 0.9,
-                "overall_score": 0.82,
-                "recommendations": [
+                    "api_reliability": 0.9,
+                    "community_support": 0.7,
+                    "ease_of_integration": 0.8,
+                    "pricing_transparency": 0.9,
+                    "overall_score": 0.82,
+                    "recommendations": [
                     "Good documentation with examples",
-                    "Reliable uptime and fast responses",
-                    "Clear pricing structure",
-                ],
-                "concerns": [
+                        "Reliable uptime and fast responses",
+                        "Clear pricing structure",
+                        ],
+                    "concerns": [
                     "Limited community tutorials",
-                    "Rate limits could be higher",
-                ],
-            }
+                        "Rate limits could be higher",
+                        ],
+                    }
 
             return evaluation
 
@@ -457,20 +476,19 @@ class WebSearchService:
             self.logger.error(f"Error evaluating API quality for {api_url}: {e}")
             return {"overall_score": 0.5, "error": str(e)}
 
-
 # CLI interface for web search service
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Web Search Service CLI")
     parser.add_argument(
-        "--action", choices=["search", "trending", "evaluate"], required=True
+        "--action", choices=["search", "trending", "evaluate"], required = True
     )
     parser.add_argument("--channel", help="Marketing channel to search APIs for")
     parser.add_argument("--category", help="Category for trending search")
-    parser.add_argument("--api-url", help="API URL to evaluate")
+    parser.add_argument("--api - url", help="API URL to evaluate")
     parser.add_argument(
-        "--max-results", type=int, default=10, help="Maximum results to return"
+        "--max - results", type = int, default = 10, help="Maximum results to return"
     )
 
     args = parser.parse_args()
@@ -500,7 +518,7 @@ if __name__ == "__main__":
     elif args.action == "evaluate" and args.api_url:
         evaluation = service.evaluate_api_quality(args.api_url)
         print(f"\nAPI Quality Evaluation for {args.api_url}:")
-        print(f"Overall Score: {evaluation.get('overall_score', 'N/A')}")
+        print(f"Overall Score: {evaluation.get('overall_score', 'N / A')}")
         if "recommendations" in evaluation:
             print("Recommendations:")
             for rec in evaluation["recommendations"]:

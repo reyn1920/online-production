@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 DaVinci Voice Cloning System
 Integrates voice cloning capabilities using audio samples for voice synthesis
-Supports multiple voice cloning engines and sample-based voice generation
+Supports multiple voice cloning engines and sample - based voice generation
 """
 
 import asyncio
@@ -18,12 +18,13 @@ from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class VoiceSample:
     """Voice sample data structure"""
 
@@ -35,8 +36,9 @@ class VoiceSample:
     speaker_id: str = "unknown"
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class VoiceCloneRequest:
     """Voice cloning request structure"""
 
@@ -52,14 +54,17 @@ class VoiceCloneRequest:
 class VoiceCloneEngine:
     """Base class for voice cloning engines"""
 
+
     def __init__(self, name: str):
         self.name = name
         self.is_available = False
         self._check_availability()
 
+
     def _check_availability(self):
         """Check if the engine is available"""
         pass
+
 
     async def clone_voice(self, request: VoiceCloneRequest) -> Dict[str, Any]:
         """Clone voice using the provided sample"""
@@ -69,9 +74,11 @@ class VoiceCloneEngine:
 class ElevenLabsCloneEngine(VoiceCloneEngine):
     """ElevenLabs voice cloning engine"""
 
+
     def __init__(self):
         self.api_key = os.getenv("ELEVENLABS_API_KEY")
         super().__init__("ElevenLabs")
+
 
     def _check_availability(self):
         """Check if ElevenLabs is available"""
@@ -83,6 +90,7 @@ class ElevenLabsCloneEngine(VoiceCloneEngine):
         except ImportError:
             logger.warning(f"❌ {self.name} engine requires 'requests' package")
             self.is_available = False
+
 
     async def clone_voice(self, request: VoiceCloneRequest) -> Dict[str, Any]:
         """Clone voice using ElevenLabs API"""
@@ -99,7 +107,7 @@ class ElevenLabsCloneEngine(VoiceCloneEngine):
             )
 
             # Create output directory
-            os.makedirs(os.path.dirname(request.output_path), exist_ok=True)
+            os.makedirs(os.path.dirname(request.output_path), exist_ok = True)
 
             # For demo purposes, copy the sample and add metadata
             import shutil
@@ -108,18 +116,18 @@ class ElevenLabsCloneEngine(VoiceCloneEngine):
 
             return {
                 "success": True,
-                "output_path": request.output_path,
-                "engine": self.name,
-                "duration": request.voice_sample.duration,
-                "metadata": {
+                    "output_path": request.output_path,
+                    "engine": self.name,
+                    "duration": request.voice_sample.duration,
+                    "metadata": {
                     "text": request.text,
-                    "voice_sample": request.voice_sample.name,
-                    "speed": request.speed,
-                    "pitch": request.pitch,
-                    "emotion": request.emotion,
-                    "style": request.style,
-                },
-            }
+                        "voice_sample": request.voice_sample.name,
+                        "speed": request.speed,
+                        "pitch": request.pitch,
+                        "emotion": request.emotion,
+                        "style": request.style,
+                        },
+                    }
 
         except Exception as e:
             logger.error(f"❌ {self.name} cloning failed: {e}")
@@ -127,10 +135,12 @@ class ElevenLabsCloneEngine(VoiceCloneEngine):
 
 
 class LocalVoiceCloneEngine(VoiceCloneEngine):
-    """Local voice cloning using Real-Time-Voice-Cloning"""
+    """Local voice cloning using Real - Time - Voice - Cloning"""
+
 
     def __init__(self):
         super().__init__("LocalClone")
+
 
     def _check_availability(self):
         """Check if local voice cloning is available"""
@@ -144,8 +154,9 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
         except ImportError as e:
             logger.warning(f"❌ {self.name} engine missing dependencies: {e}")
 
+
     async def clone_voice(self, request: VoiceCloneRequest) -> Dict[str, Any]:
-        """Clone voice using local Real-Time-Voice-Cloning"""
+        """Clone voice using local Real - Time - Voice - Cloning"""
         if not self.is_available:
             raise RuntimeError(f"{self.name} engine not available")
 
@@ -155,10 +166,10 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
             )
 
             # Create output directory
-            os.makedirs(os.path.dirname(request.output_path), exist_ok=True)
+            os.makedirs(os.path.dirname(request.output_path), exist_ok = True)
 
             # Simulate local voice cloning process
-            # In production, this would use actual Real-Time-Voice-Cloning
+            # In production, this would use actual Real - Time - Voice - Cloning
             await asyncio.sleep(2)  # Simulate processing time
 
             # For demo, create a simple audio file
@@ -166,29 +177,30 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
 
             return {
                 "success": True,
-                "output_path": request.output_path,
-                "engine": self.name,
-                "duration": len(request.text) * 0.1,  # Estimate duration
+                    "output_path": request.output_path,
+                    "engine": self.name,
+                    "duration": len(request.text) * 0.1,  # Estimate duration
                 "metadata": {
                     "text": request.text,
-                    "voice_sample": request.voice_sample.name,
-                    "speed": request.speed,
-                    "pitch": request.pitch,
-                    "emotion": request.emotion,
-                    "style": request.style,
-                },
-            }
+                        "voice_sample": request.voice_sample.name,
+                        "speed": request.speed,
+                        "pitch": request.pitch,
+                        "emotion": request.emotion,
+                        "style": request.style,
+                        },
+                    }
 
         except Exception as e:
             logger.error(f"❌ {self.name} cloning failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     def _create_demo_audio(self, output_path: str, text: str):
         """Create demo audio file using system TTS"""
         try:
             # Use macOS say command for demo
             subprocess.run(
-                ["say", "-o", output_path.replace(".mp3", ".aiff"), text], check=True
+                ["say", "-o", output_path.replace(".mp3", ".aiff"), text], check = True
             )
 
             # Convert AIFF to MP3 if ffmpeg is available
@@ -197,14 +209,14 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
                     subprocess.run(
                         [
                             "ffmpeg",
-                            "-i",
-                            output_path.replace(".mp3", ".aiff"),
-                            "-y",
-                            output_path,
-                        ],
-                        check=True,
-                        capture_output=True,
-                    )
+                                "-i",
+                                output_path.replace(".mp3", ".aiff"),
+                                "-y",
+                                output_path,
+                                ],
+                            check = True,
+                            capture_output = True,
+                            )
                     os.remove(output_path.replace(".mp3", ".aiff"))
                 except subprocess.CalledProcessError:
                     # Keep AIFF if conversion fails
@@ -217,15 +229,16 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
 class DaVinciVoiceCloner:
     """Main DaVinci voice cloning system"""
 
-    def __init__(self, output_dir: str = "output/voice_clones"):
+
+    def __init__(self, output_dir: str = "output / voice_clones"):
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir.mkdir(parents = True, exist_ok = True)
 
         # Initialize engines
         self.engines = {
             "elevenlabs": ElevenLabsCloneEngine(),
-            "local": LocalVoiceCloneEngine(),
-        }
+                "local": LocalVoiceCloneEngine(),
+                }
 
         # Voice samples database
         self.voice_samples: Dict[str, VoiceSample] = {}
@@ -235,19 +248,20 @@ class DaVinciVoiceCloner:
             f"🎙️ DaVinci Voice Cloner initialized with {len(self.engines)} engines"
         )
 
+
     def _load_voice_samples(self):
         """Load available voice samples"""
-        samples_dir = Path("assets/voice_samples")
+        samples_dir = Path("assets / voice_samples")
         if samples_dir.exists():
             for audio_file in samples_dir.glob("*.wav"):
                 sample = VoiceSample(
-                    name=audio_file.stem,
-                    file_path=str(audio_file),
-                    duration=self._get_audio_duration(str(audio_file)),
-                    quality_score=0.8,  # Default quality score
+                    name = audio_file.stem,
+                        file_path = str(audio_file),
+                        duration = self._get_audio_duration(str(audio_file)),
+                        quality_score = 0.8,  # Default quality score
                     language="en",
-                    speaker_id=audio_file.stem,
-                )
+                        speaker_id = audio_file.stem,
+                        )
                 self.voice_samples[sample.name] = sample
 
         # Add demo samples if no samples found
@@ -255,6 +269,7 @@ class DaVinciVoiceCloner:
             self._create_demo_samples()
 
         logger.info(f"📁 Loaded {len(self.voice_samples)} voice samples")
+
 
     def _get_audio_duration(self, file_path: str) -> float:
         """Get audio file duration"""
@@ -264,66 +279,70 @@ class DaVinciVoiceCloner:
             result = subprocess.run(
                 [
                     "ffprobe",
-                    "-v",
-                    "quiet",
-                    "-show_entries",
-                    "format=duration",
-                    "-of",
-                    "csv=p=0",
-                    file_path,
-                ],
-                capture_output=True,
-                text=True,
-            )
+                        "-v",
+                        "quiet",
+                        "-show_entries",
+                        "format = duration",
+                        "-of",
+                        "csv = p=0",
+                        file_path,
+                        ],
+                    capture_output = True,
+                    text = True,
+                    )
             return float(result.stdout.strip())
-        except:
+        except Exception:
             return 5.0  # Default duration
+
 
     def _create_demo_samples(self):
         """Create demo voice samples"""
         demo_samples = [
             {
                 "name": "narrator",
-                "text": "Welcome to our professional voice cloning system.",
-            },
-            {"name": "assistant", "text": "I am your AI assistant, ready to help you."},
-            {
+                    "text": "Welcome to our professional voice cloning system.",
+                    },
+                {"name": "assistant", "text": "I am your AI assistant, ready to help you."},
+                {
                 "name": "presenter",
-                "text": "This is a demonstration of voice synthesis technology.",
-            },
-        ]
+                    "text": "This is a demonstration of voice synthesis technology.",
+                    },
+                ]
 
-        samples_dir = Path("assets/voice_samples")
-        samples_dir.mkdir(parents=True, exist_ok=True)
+        samples_dir = Path("assets / voice_samples")
+        samples_dir.mkdir(parents = True, exist_ok = True)
 
         for demo in demo_samples:
             sample_path = samples_dir / f"{demo['name']}.aiff"
             try:
                 subprocess.run(
-                    ["say", "-o", str(sample_path), demo["text"]], check=True
+                    ["say", "-o", str(sample_path), demo["text"]], check = True
                 )
 
                 sample = VoiceSample(
-                    name=demo["name"],
-                    file_path=str(sample_path),
-                    duration=len(demo["text"]) * 0.1,
-                    quality_score=0.7,
-                    language="en",
-                    speaker_id=demo["name"],
-                    metadata={"demo": True, "original_text": demo["text"]},
-                )
+                    name = demo["name"],
+                        file_path = str(sample_path),
+                        duration = len(demo["text"]) * 0.1,
+                        quality_score = 0.7,
+                        language="en",
+                        speaker_id = demo["name"],
+                        metadata={"demo": True, "original_text": demo["text"]},
+                        )
                 self.voice_samples[sample.name] = sample
 
             except subprocess.CalledProcessError:
                 logger.warning(f"Failed to create demo sample: {demo['name']}")
 
+
     def get_available_engines(self) -> List[str]:
         """Get list of available engines"""
         return [name for name, engine in self.engines.items() if engine.is_available]
 
+
     def get_voice_samples(self) -> Dict[str, VoiceSample]:
         """Get available voice samples"""
         return self.voice_samples
+
 
     async def clone_voice(
         self, text: str, voice_sample_name: str, engine_name: str = "local", **kwargs
@@ -348,7 +367,7 @@ class DaVinciVoiceCloner:
         output_path = str(self.output_dir / output_filename)
 
         request = VoiceCloneRequest(
-            text=text, voice_sample=voice_sample, output_path=output_path, **kwargs
+            text = text, voice_sample = voice_sample, output_path = output_path, **kwargs
         )
 
         # Clone voice
@@ -366,6 +385,7 @@ class DaVinciVoiceCloner:
 
         return result
 
+
     async def batch_clone_voices(
         self, texts: List[str], voice_sample_name: str, engine_name: str = "local"
     ) -> List[Dict[str, Any]]:
@@ -377,7 +397,7 @@ class DaVinciVoiceCloner:
             self.clone_voice(text, voice_sample_name, engine_name) for text in texts
         ]
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        results = await asyncio.gather(*tasks, return_exceptions = True)
 
         # Process results
         successful = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
@@ -385,27 +405,28 @@ class DaVinciVoiceCloner:
 
         return results
 
+
     def generate_voice_showcase(self) -> Dict[str, Any]:
         """Generate a showcase of all available voices"""
         showcase_text = "This is a demonstration of our voice cloning capabilities."
 
         showcase_info = {
             "text": showcase_text,
-            "samples": [],
-            "engines": self.get_available_engines(),
-            "total_samples": len(self.voice_samples),
-        }
+                "samples": [],
+                "engines": self.get_available_engines(),
+                "total_samples": len(self.voice_samples),
+                }
 
         for name, sample in self.voice_samples.items():
             showcase_info["samples"].append(
                 {
                     "name": name,
-                    "duration": sample.duration,
-                    "quality_score": sample.quality_score,
-                    "language": sample.language,
-                    "speaker_id": sample.speaker_id,
-                    "metadata": sample.metadata,
-                }
+                        "duration": sample.duration,
+                        "quality_score": sample.quality_score,
+                        "language": sample.language,
+                        "speaker_id": sample.speaker_id,
+                        "metadata": sample.metadata,
+                        }
             )
 
         return showcase_info
@@ -439,12 +460,12 @@ async def main():
         for engine_name in cloner.get_available_engines():
             try:
                 result = await cloner.clone_voice(
-                    text=test_text,
-                    voice_sample_name=sample_name,
-                    engine_name=engine_name,
-                    speed=1.0,
-                    emotion="professional",
-                )
+                    text = test_text,
+                        voice_sample_name = sample_name,
+                        engine_name = engine_name,
+                        speed = 1.0,
+                        emotion="professional",
+                        )
 
                 if result["success"]:
                     print(f"✅ {engine_name}: {result['output_path']}")
@@ -461,13 +482,13 @@ async def main():
 
         batch_texts = [
             "Welcome to our service.",
-            "Thank you for choosing us.",
-            "Have a great day!",
-        ]
+                "Thank you for choosing us.",
+                "Have a great day!",
+                ]
 
         print(f"\n🎵 Testing batch voice cloning...")
         batch_results = await cloner.batch_clone_voices(
-            texts=batch_texts, voice_sample_name=sample_name, engine_name=engine_name
+            texts = batch_texts, voice_sample_name = sample_name, engine_name = engine_name
         )
 
         successful_batch = sum(
@@ -476,7 +497,6 @@ async def main():
         print(f"✅ Batch results: {successful_batch}/{len(batch_texts)} successful")
 
     print("\n🎉 Voice cloning demonstration completed!")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Task Queue Manager
 
-This module provides the TaskQueueManager class for managing database-backed task queues
+This module provides the TaskQueueManager class for managing database - backed task queues
 within the TRAE.AI system. It handles task creation, retrieval, status updates, and
 queue management operations.
 
@@ -86,13 +86,13 @@ class TaskQueueError(Exception):
 
 class TaskQueueManager:
     """
-    TaskQueueManager handles all database-backed task queue operations.
+    TaskQueueManager handles all database - backed task queue operations.
 
     This class provides a comprehensive interface for managing tasks within the TRAE.AI
     system, including task creation, retrieval, status updates, and queue management.
 
     Features:
-    - Database-backed task persistence
+    - Database - backed task persistence
     - Task priority and status management
     - Agent assignment and tracking
     - Performance monitoring
@@ -101,9 +101,11 @@ class TaskQueueManager:
     """
 
     @staticmethod
+
+
     def _serialize_safe(obj: Any) -> str:
         """
-        Safely serialize objects to JSON, handling coroutines and other non-serializable types.
+        Safely serialize objects to JSON, handling coroutines and other non - serializable types.
 
         Args:
             obj: Object to serialize
@@ -111,6 +113,7 @@ class TaskQueueManager:
         Returns:
             str: JSON string representation
         """
+
 
         def _convert_obj(item):
             if inspect.iscoroutine(item):
@@ -140,11 +143,12 @@ class TaskQueueManager:
                 {"error": f"Serialization failed: {str(e)}", "repr": str(obj)}
             )
 
+
     def __init__(
         self,
-        db_path: str = "data/trae_master.db",
-        secret_store: Optional[SecretStore] = None,
-    ):
+            db_path: str = "data / trae_master.db",
+            secret_store: Optional[SecretStore] = None,
+            ):
         """
         Initialize the TaskQueueManager.
 
@@ -157,12 +161,13 @@ class TaskQueueManager:
         self.logger = get_logger(__name__)
 
         # Ensure database directory exists
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
 
         # Initialize database if it doesn't exist
         self._initialize_database()
 
         self.logger.info(f"TaskQueueManager initialized with database: {self.db_path}")
+
 
     def _initialize_database(self) -> None:
         """
@@ -177,7 +182,7 @@ class TaskQueueManager:
                 # Check if task_queue table exists
                 cursor.execute(
                     """
-                    SELECT name FROM sqlite_master 
+                    SELECT name FROM sqlite_master
                     WHERE type='table' AND name='task_queue'
                 """
                 )
@@ -188,22 +193,22 @@ class TaskQueueManager:
                         """
                         CREATE TABLE task_queue (
                             id TEXT PRIMARY KEY,
-                            task_type TEXT NOT NULL,
-                            priority TEXT NOT NULL DEFAULT 'medium',
-                            status TEXT NOT NULL DEFAULT 'pending',
-                            assigned_agent TEXT,
-                            payload TEXT NOT NULL,
-                            result TEXT,
-                            error_message TEXT,
-                            retry_count INTEGER DEFAULT 0,
-                            max_retries INTEGER DEFAULT 3,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            scheduled_at TIMESTAMP,
-                            started_at TIMESTAMP,
-                            completed_at TIMESTAMP,
-                            dependencies TEXT,
-                            metadata TEXT
+                                task_type TEXT NOT NULL,
+                                priority TEXT NOT NULL DEFAULT 'medium',
+                                status TEXT NOT NULL DEFAULT 'pending',
+                                assigned_agent TEXT,
+                                payload TEXT NOT NULL,
+                                result TEXT,
+                                error_message TEXT,
+                                retry_count INTEGER DEFAULT 0,
+                                max_retries INTEGER DEFAULT 3,
+                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                scheduled_at TIMESTAMP,
+                                started_at TIMESTAMP,
+                                completed_at TIMESTAMP,
+                                dependencies TEXT,
+                                metadata TEXT
                         )
                     """
                     )
@@ -238,10 +243,10 @@ class TaskQueueManager:
                     # Create trigger for updated_at
                     cursor.execute(
                         """
-                        CREATE TRIGGER update_task_queue_timestamp 
+                        CREATE TRIGGER update_task_queue_timestamp
                         AFTER UPDATE ON task_queue
                         BEGIN
-                            UPDATE task_queue SET updated_at = CURRENT_TIMESTAMP 
+                            UPDATE task_queue SET updated_at = CURRENT_TIMESTAMP
                             WHERE id = NEW.id;
                         END
                     """
@@ -255,6 +260,8 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to initialize database: {e}")
 
     @contextmanager
+
+
     def _get_db_connection(self):
         """
         Get a database connection with proper error handling.
@@ -264,7 +271,7 @@ class TaskQueueManager:
         """
         conn = None
         try:
-            conn = sqlite3.connect(str(self.db_path), timeout=30.0)
+            conn = sqlite3.connect(str(self.db_path), timeout = 30.0)
             conn.row_factory = sqlite3.Row  # Enable column access by name
             conn.execute("PRAGMA foreign_keys = ON")  # Enable foreign key constraints
             yield conn
@@ -277,17 +284,18 @@ class TaskQueueManager:
             if conn:
                 conn.close()
 
+
     def add_task(
         self,
-        task_type: Union[str, TaskType],
-        payload: Dict[str, Any],
-        priority: Union[str, TaskPriority] = TaskPriority.MEDIUM,
-        assigned_agent: Optional[str] = None,
-        scheduled_at: Optional[datetime] = None,
-        dependencies: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        max_retries: int = 3,
-    ) -> str:
+            task_type: Union[str, TaskType],
+            payload: Dict[str, Any],
+            priority: Union[str, TaskPriority] = TaskPriority.MEDIUM,
+            assigned_agent: Optional[str] = None,
+            scheduled_at: Optional[datetime] = None,
+            dependencies: Optional[List[str]] = None,
+            metadata: Optional[Dict[str, Any]] = None,
+            max_retries: int = 3,
+            ) -> str:
         """
         Add a new task to the queue.
 
@@ -323,21 +331,21 @@ class TaskQueueManager:
                     """
                     INSERT INTO task_queue (
                         id, task_type, priority, payload, assigned_agent,
-                        scheduled_at, dependencies, metadata, max_retries
+                            scheduled_at, dependencies, metadata, max_retries
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         task_id,
-                        task_type,
-                        priority,
-                        self._serialize_safe(payload),
-                        assigned_agent,
-                        scheduled_at.isoformat() if scheduled_at else None,
-                        self._serialize_safe(dependencies) if dependencies else None,
-                        self._serialize_safe(metadata) if metadata else None,
-                        max_retries,
-                    ),
-                )
+                            task_type,
+                            priority,
+                            self._serialize_safe(payload),
+                            assigned_agent,
+                            scheduled_at.isoformat() if scheduled_at else None,
+                            self._serialize_safe(dependencies) if dependencies else None,
+                            self._serialize_safe(metadata) if metadata else None,
+                            max_retries,
+                            ),
+                        )
 
                 conn.commit()
 
@@ -350,6 +358,7 @@ class TaskQueueManager:
         except sqlite3.Error as e:
             self.logger.error(f"Failed to add task: {e}")
             raise TaskQueueError(f"Failed to add task: {e}")
+
 
     def get_next_task(
         self, agent_id: Optional[str] = None, task_types: Optional[List[str]] = None
@@ -370,7 +379,7 @@ class TaskQueueManager:
 
                 # Build query with filters
                 query = """
-                    SELECT * FROM task_queue 
+                    SELECT * FROM task_queue
                     WHERE status = 'pending'
                     AND (scheduled_at IS NULL OR scheduled_at <= ?)
                 """
@@ -387,14 +396,14 @@ class TaskQueueManager:
 
                 # Order by priority and creation time
                 query += """
-                    ORDER BY 
-                        CASE priority 
+                    ORDER BY
+                        CASE priority
                             WHEN 'urgent' THEN 1
                             WHEN 'high' THEN 2
                             WHEN 'medium' THEN 3
                             WHEN 'low' THEN 4
                         END,
-                        created_at ASC
+                            created_at ASC
                     LIMIT 1
                 """
 
@@ -432,6 +441,7 @@ class TaskQueueManager:
             self.logger.error(f"Failed to retrieve next task: {e}")
             raise TaskQueueError(f"Failed to retrieve next task: {e}")
 
+
     async def get_task_for_agent(self, agent_id: str) -> Optional[Dict[str, Any]]:
         """
         Get the next available task for a specific agent.
@@ -442,16 +452,17 @@ class TaskQueueManager:
         Returns:
             Dict containing task data or None if no tasks available
         """
-        return self.get_next_task(agent_id=agent_id)
+        return self.get_next_task(agent_id = agent_id)
+
 
     def update_task_status(
         self,
-        task_id: str,
-        status: Union[str, TaskStatus],
-        agent_id: Optional[str] = None,
-        result: Optional[Dict[str, Any]] = None,
-        error_message: Optional[str] = None,
-    ) -> bool:
+            task_id: str,
+            status: Union[str, TaskStatus],
+            agent_id: Optional[str] = None,
+            result: Optional[Dict[str, Any]] = None,
+            error_message: Optional[str] = None,
+            ) -> bool:
         """
         Update the status of a task.
 
@@ -493,9 +504,9 @@ class TaskQueueManager:
                     update_fields.append("started_at = CURRENT_TIMESTAMP")
                 elif status in [
                     TaskStatus.COMPLETED.value,
-                    TaskStatus.FAILED.value,
-                    TaskStatus.CANCELLED.value,
-                ]:
+                        TaskStatus.FAILED.value,
+                        TaskStatus.CANCELLED.value,
+                        ]:
                     update_fields.append("completed_at = CURRENT_TIMESTAMP")
 
                 params.append(task_id)
@@ -515,6 +526,7 @@ class TaskQueueManager:
         except sqlite3.Error as e:
             self.logger.error(f"Failed to update task status: {e}")
             raise TaskQueueError(f"Failed to update task status: {e}")
+
 
     def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
         """
@@ -558,13 +570,14 @@ class TaskQueueManager:
             self.logger.error(f"Failed to retrieve task {task_id}: {e}")
             raise TaskQueueError(f"Failed to retrieve task: {e}")
 
+
     def get_pending_tasks(
         self,
-        agent_id: Optional[str] = None,
-        agent_type: Optional[str] = None,
-        task_types: Optional[List[str]] = None,
-        limit: int = 100,
-    ) -> List[Dict[str, Any]]:
+            agent_id: Optional[str] = None,
+            agent_type: Optional[str] = None,
+            task_types: Optional[List[str]] = None,
+            limit: int = 100,
+            ) -> List[Dict[str, Any]]:
         """
         Retrieve pending tasks from the queue.
 
@@ -581,17 +594,18 @@ class TaskQueueManager:
         effective_agent_id = agent_type if agent_type else agent_id
 
         return self.get_tasks(
-            status=TaskStatus.PENDING, agent_id=effective_agent_id, limit=limit
+            status = TaskStatus.PENDING, agent_id = effective_agent_id, limit = limit
         )
+
 
     def get_tasks(
         self,
-        status: Optional[Union[str, TaskStatus]] = None,
-        task_type: Optional[Union[str, TaskType]] = None,
-        agent_id: Optional[str] = None,
-        limit: int = 100,
-        offset: int = 0,
-    ) -> List[Dict[str, Any]]:
+            status: Optional[Union[str, TaskStatus]] = None,
+            task_type: Optional[Union[str, TaskType]] = None,
+            agent_id: Optional[str] = None,
+            limit: int = 100,
+            offset: int = 0,
+            ) -> List[Dict[str, Any]]:
         """
         Retrieve multiple tasks with optional filtering.
 
@@ -610,7 +624,7 @@ class TaskQueueManager:
                 cursor = conn.cursor()
 
                 # Build query with filters
-                query = "SELECT * FROM task_queue WHERE 1=1"
+                query = "SELECT * FROM task_queue WHERE 1 = 1"
                 params = []
 
                 if status:
@@ -661,6 +675,7 @@ class TaskQueueManager:
             self.logger.error(f"Failed to retrieve tasks: {e}")
             raise TaskQueueError(f"Failed to retrieve tasks: {e}")
 
+
     def retry_task(self, task_id: str) -> bool:
         """
         Retry a failed task if it hasn't exceeded max retries.
@@ -678,8 +693,8 @@ class TaskQueueManager:
                 # Get current task info
                 cursor.execute(
                     "SELECT retry_count, max_retries FROM task_queue WHERE id = ?",
-                    (task_id,),
-                )
+                        (task_id,),
+                        )
                 row = cursor.fetchone()
 
                 if not row:
@@ -697,17 +712,17 @@ class TaskQueueManager:
                 # Update task for retry
                 cursor.execute(
                     """
-                    UPDATE task_queue 
-                    SET status = 'pending', 
+                    UPDATE task_queue
+                    SET status = 'pending',
                         retry_count = retry_count + 1,
-                        error_message = NULL,
-                        started_at = NULL,
-                        completed_at = NULL,
-                        updated_at = CURRENT_TIMESTAMP
+                            error_message = NULL,
+                            started_at = NULL,
+                            completed_at = NULL,
+                            updated_at = CURRENT_TIMESTAMP
                     WHERE id = ?
                 """,
                     (task_id,),
-                )
+                        )
 
                 conn.commit()
 
@@ -723,9 +738,10 @@ class TaskQueueManager:
             self.logger.error(f"Failed to retry task {task_id}: {e}")
             raise TaskQueueError(f"Failed to retry task: {e}")
 
+
     def cancel_task(self, task_id: str) -> bool:
         """
-        Cancel a pending or in-progress task.
+        Cancel a pending or in - progress task.
 
         Args:
             task_id: Unique task identifier
@@ -734,6 +750,7 @@ class TaskQueueManager:
             bool: True if task was cancelled
         """
         return self.update_task_status(task_id, TaskStatus.CANCELLED)
+
 
     def get_queue_stats(self) -> Dict[str, Any]:
         """
@@ -749,8 +766,8 @@ class TaskQueueManager:
                 # Get status counts
                 cursor.execute(
                     """
-                    SELECT status, COUNT(*) as count 
-                    FROM task_queue 
+                    SELECT status, COUNT(*) as count
+                    FROM task_queue
                     GROUP BY status
                 """
                 )
@@ -759,8 +776,8 @@ class TaskQueueManager:
                 # Get type counts
                 cursor.execute(
                     """
-                    SELECT task_type, COUNT(*) as count 
-                    FROM task_queue 
+                    SELECT task_type, COUNT(*) as count
+                    FROM task_queue
                     GROUP BY task_type
                 """
                 )
@@ -769,8 +786,8 @@ class TaskQueueManager:
                 # Get priority counts
                 cursor.execute(
                     """
-                    SELECT priority, COUNT(*) as count 
-                    FROM task_queue 
+                    SELECT priority, COUNT(*) as count
+                    FROM task_queue
                     GROUP BY priority
                 """
                 )
@@ -786,9 +803,9 @@ class TaskQueueManager:
                     SELECT AVG(
                         (julianday(completed_at) - julianday(started_at)) * 24 * 60 * 60
                     ) as avg_execution_time
-                    FROM task_queue 
-                    WHERE status = 'completed' 
-                    AND started_at IS NOT NULL 
+                    FROM task_queue
+                    WHERE status = 'completed'
+                    AND started_at IS NOT NULL
                     AND completed_at IS NOT NULL
                 """
                 )
@@ -796,20 +813,22 @@ class TaskQueueManager:
 
                 return {
                     "total_tasks": total_tasks,
-                    "status_counts": status_counts,
-                    "type_counts": type_counts,
-                    "priority_counts": priority_counts,
-                    "avg_execution_time_seconds": round(avg_execution_time, 2),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "status_counts": status_counts,
+                        "type_counts": type_counts,
+                        "priority_counts": priority_counts,
+                        "avg_execution_time_seconds": round(avg_execution_time, 2),
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
         except sqlite3.Error as e:
             self.logger.error(f"Failed to get queue stats: {e}")
             raise TaskQueueError(f"Failed to get queue stats: {e}")
 
+
     def get_task_stats(self) -> Dict[str, Any]:
         """Alias for get_queue_stats for dashboard compatibility."""
         return self.get_queue_stats()
+
 
     def cleanup_old_tasks(self, days_old: int = 30) -> int:
         """
@@ -822,19 +841,19 @@ class TaskQueueManager:
             int: Number of tasks cleaned up
         """
         try:
-            cutoff_date = datetime.now() - timedelta(days=days_old)
+            cutoff_date = datetime.now() - timedelta(days = days_old)
 
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
 
                 cursor.execute(
                     """
-                    DELETE FROM task_queue 
-                    WHERE status IN ('completed', 'cancelled') 
+                    DELETE FROM task_queue
+                    WHERE status IN ('completed', 'cancelled')
                     AND completed_at < ?
                 """,
                     (cutoff_date.isoformat(),),
-                )
+                        )
 
                 conn.commit()
                 deleted_count = cursor.rowcount
@@ -845,6 +864,7 @@ class TaskQueueManager:
         except sqlite3.Error as e:
             self.logger.error(f"Failed to cleanup old tasks: {e}")
             raise TaskQueueError(f"Failed to cleanup old tasks: {e}")
+
 
     def health_check(self) -> Dict[str, Any]:
         """
@@ -867,8 +887,8 @@ class TaskQueueManager:
                     # Check for stuck tasks (in_progress for too long)
                     cursor.execute(
                         """
-                        SELECT COUNT(*) FROM task_queue 
-                        WHERE status = 'in_progress' 
+                        SELECT COUNT(*) FROM task_queue
+                        WHERE status = 'in_progress'
                         AND started_at < datetime('now', '-1 hour')
                     """
                     )
@@ -876,20 +896,21 @@ class TaskQueueManager:
 
                     return {
                         "status": "healthy",
-                        "database_connection": "ok",
-                        "response_time_ms": round(timer.elapsed_time * 1000, 2),
-                        "queue_stats": stats,
-                        "stuck_tasks": stuck_tasks,
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "database_connection": "ok",
+                            "response_time_ms": round(timer.elapsed_time * 1000, 2),
+                            "queue_stats": stats,
+                            "stuck_tasks": stuck_tasks,
+                            "timestamp": datetime.now().isoformat(),
+                            }
 
         except Exception as e:
             self.logger.error(f"Health check failed: {e}")
             return {
                 "status": "unhealthy",
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     def create_video_task(self, script_content: str, output_path: str = None) -> str:
         """Create a video generation task that produces real MP4 files."""
@@ -900,20 +921,21 @@ class TaskQueueManager:
         if not output_path:
             # Ensure videos directory exists
             videos_dir = Path("videos")
-            videos_dir.mkdir(exist_ok=True)
-            output_path = f"videos/video_{task_id}.mp4"
+            videos_dir.mkdir(exist_ok = True)
+            output_path = f"videos / video_{task_id}.mp4"
 
         task_data = {
             "script_content": script_content,
-            "output_path": output_path,
-            "created_at": datetime.now().isoformat(),
-            "duration": 10,  # Default 10 second video
+                "output_path": output_path,
+                "created_at": datetime.now().isoformat(),
+                "duration": 10,  # Default 10 second video
             "resolution": "1920x1080",
-        }
+                }
 
         return self.add_task(
-            task_type=TaskType.CONTENT, payload=task_data, priority=TaskPriority.HIGH
+            task_type = TaskType.CONTENT, payload = task_data, priority = TaskPriority.HIGH
         )
+
 
     def _create_real_video(
         self, script_content: str, output_path: str, duration: int = 10
@@ -925,7 +947,7 @@ class TaskQueueManager:
         try:
             # Ensure output directory exists
             output_dir = Path(output_path).parent
-            output_dir.mkdir(parents=True, exist_ok=True)
+            output_dir.mkdir(parents = True, exist_ok = True)
 
             # Try FFmpeg first (professional video creation)
             if shutil.which("ffmpeg"):
@@ -934,23 +956,23 @@ class TaskQueueManager:
                 # Create a simple video with text overlay
                 cmd = [
                     "ffmpeg",
-                    "-y",  # Overwrite output file
+                        "-y",  # Overwrite output file
                     "-f",
-                    "lavfi",
-                    "-i",
-                    f"color=c=black:size=1920x1080:duration={duration}",
-                    "-vf",
-                    f'drawtext=text="{script_content[:50]}...":fontcolor=white:fontsize=48:x=(w-text_w)/2:y=(h-text_h)/2',
-                    "-c:v",
-                    "libx264",
-                    "-pix_fmt",
-                    "yuv420p",
-                    "-r",
-                    "30",
-                    output_path,
-                ]
+                        "lavfi",
+                        "-i",
+                        f"color = c=black:size = 1920x1080:duration={duration}",
+                        "-vf",
+                        f'drawtext = text="{script_content[:50]}...":fontcolor = white:fontsize = 48:x=(w - text_w)/2:y=(h - text_h)/2',
+                        "-c:v",
+                        "libx264",
+                        "-pix_fmt",
+                        "yuv420p",
+                        "-r",
+                        "30",
+                        output_path,
+                        ]
 
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+                result = subprocess.run(cmd, capture_output = True, text = True, timeout = 60)
 
                 if result.returncode == 0 and Path(output_path).exists():
                     self.logger.info(
@@ -968,47 +990,47 @@ class TaskQueueManager:
                 [
                     # ftyp box
                     0x00,
+                        0x00,
+                        0x00,
+                        0x20,
+                        0x66,
+                        0x74,
+                        0x79,
+                        0x70,
+                        0x69,
+                        0x73,
+                        0x6F,
+                        0x6D,
+                        0x00,
+                        0x00,
+                        0x02,
+                        0x00,
+                        0x69,
+                        0x73,
+                        0x6F,
+                        0x6D,
+                        0x69,
+                        0x73,
+                        0x6F,
+                        0x32,
+                        0x61,
+                        0x76,
+                        0x63,
+                        0x31,
+                        0x6D,
+                        0x70,
+                        0x34,
+                        0x31,
+                        # mdat box (minimal)
                     0x00,
-                    0x00,
-                    0x20,
-                    0x66,
-                    0x74,
-                    0x79,
-                    0x70,
-                    0x69,
-                    0x73,
-                    0x6F,
-                    0x6D,
-                    0x00,
-                    0x00,
-                    0x02,
-                    0x00,
-                    0x69,
-                    0x73,
-                    0x6F,
-                    0x6D,
-                    0x69,
-                    0x73,
-                    0x6F,
-                    0x32,
-                    0x61,
-                    0x76,
-                    0x63,
-                    0x31,
-                    0x6D,
-                    0x70,
-                    0x34,
-                    0x31,
-                    # mdat box (minimal)
-                    0x00,
-                    0x00,
-                    0x00,
-                    0x08,
-                    0x6D,
-                    0x64,
-                    0x61,
-                    0x74,
-                ]
+                        0x00,
+                        0x00,
+                        0x08,
+                        0x6D,
+                        0x64,
+                        0x61,
+                        0x74,
+                        ]
             )
 
             with open(output_path, "wb") as f:
@@ -1026,6 +1048,7 @@ class TaskQueueManager:
             self.logger.error(f"Video creation failed: {str(e)}")
             return False
 
+
     def process_content_task(self, task_data: Dict[str, Any]) -> bool:
         """Process content generation tasks including video creation."""
         try:
@@ -1038,20 +1061,20 @@ class TaskQueueManager:
 
                 # Create real video file
                 success = self._create_real_video(
-                    script_content=payload["script_content"],
-                    output_path=payload["output_path"],
-                    duration=payload.get("duration", 10),
-                )
+                    script_content = payload["script_content"],
+                        output_path = payload["output_path"],
+                        duration = payload.get("duration", 10),
+                        )
 
                 if success:
                     # Update task with video file path
                     result = {
                         "status": "completed",
-                        "output_path": payload["output_path"],
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "output_path": payload["output_path"],
+                            "timestamp": datetime.now().isoformat(),
+                            }
                     self.update_task_status(
-                        task_id, TaskStatus.COMPLETED, result=result
+                        task_id, TaskStatus.COMPLETED, result = result
                     )
                     self.logger.info(
                         f"Video created successfully: {payload['output_path']}"
@@ -1061,9 +1084,9 @@ class TaskQueueManager:
                     self.logger.error(f"Video creation failed for task: {task_id}")
                     self.update_task_status(
                         task_id,
-                        TaskStatus.FAILED,
-                        error_message="Video creation failed",
-                    )
+                            TaskStatus.FAILED,
+                            error_message="Video creation failed",
+                            )
                     return False
 
             # Handle other content tasks
@@ -1076,21 +1099,20 @@ class TaskQueueManager:
             # Update task with results
             result = {
                 "status": "completed",
-                "output": f"Content generated for {task_type}",
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "output": f"Content generated for {task_type}",
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
-            self.update_task_status(task_id, TaskStatus.COMPLETED, result=result)
+            self.update_task_status(task_id, TaskStatus.COMPLETED, result = result)
             return True
 
         except Exception as e:
             self.logger.error(f"Content task processing failed: {str(e)}")
             if "task_id" in locals():
                 self.update_task_status(
-                    task_id, TaskStatus.FAILED, error_message=str(e)
+                    task_id, TaskStatus.FAILED, error_message = str(e)
                 )
             return False
-
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -1099,16 +1121,16 @@ if __name__ == "__main__":
 
     # Add some test tasks
     task1_id = tqm.add_task(
-        task_type=TaskType.CONTENT,
-        payload={"action": "create_blog_post", "topic": "AI Technology"},
-        priority=TaskPriority.HIGH,
-    )
+        task_type = TaskType.CONTENT,
+            payload={"action": "create_blog_post", "topic": "AI Technology"},
+            priority = TaskPriority.HIGH,
+            )
 
     task2_id = tqm.add_task(
-        task_type=TaskType.RESEARCH,
-        payload={"query": "market trends 2024", "sources": ["web", "reports"]},
-        priority=TaskPriority.MEDIUM,
-    )
+        task_type = TaskType.RESEARCH,
+            payload={"query": "market trends 2024", "sources": ["web", "reports"]},
+            priority = TaskPriority.MEDIUM,
+            )
 
     # Create a video task
     video_task_id = tqm.create_video_task(
@@ -1128,9 +1150,9 @@ if __name__ == "__main__":
             # Simulate other task completion
             tqm.update_task_status(
                 next_task["id"],
-                TaskStatus.COMPLETED,
-                result={"status": "success", "output": "Task completed successfully"},
-            )
+                    TaskStatus.COMPLETED,
+                    result={"status": "success", "output": "Task completed successfully"},
+                    )
 
     # Get queue statistics
     stats = tqm.get_queue_stats()

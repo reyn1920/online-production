@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Blender API Integration Demo
 Demonstrates how to access and use Blender's Python API from the existing system.
@@ -68,14 +68,14 @@ print("\n✓ Blender Python API is fully accessible and functional!")
 """
 
     # Write test script to temporary file
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete = False) as f:
         f.write(test_script)
         script_path = f.name
 
     try:
         # Run the test script through Blender
         cmd = [blender_path, "--background", "--python", script_path]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        result = subprocess.run(cmd, capture_output = True, text = True, timeout = 30)
 
         if result.returncode == 0:
             print("✓ BlenderCompositor integration successful")
@@ -129,51 +129,50 @@ def show_api_capabilities():
     capabilities = {
         "Scene Management": [
             "Create, modify, and delete objects",
-            "Manage scenes, collections, and hierarchies",
-            "Control viewport and render settings",
-        ],
-        "3D Modeling": [
+                "Manage scenes, collections, and hierarchies",
+                "Control viewport and render settings",
+                ],
+            "3D Modeling": [
             "Create primitive objects (cubes, spheres, etc.)",
-            "Advanced mesh editing with bmesh",
-            "Procedural modeling and modifiers",
-        ],
-        "Materials & Shading": [
+                "Advanced mesh editing with bmesh",
+                "Procedural modeling and modifiers",
+                ],
+            "Materials & Shading": [
             "Create and assign materials",
-            "Set up shader nodes programmatically",
-            "Texture mapping and UV coordinates",
-        ],
-        "Animation": [
+                "Set up shader nodes programmatically",
+                "Texture mapping and UV coordinates",
+                ],
+            "Animation": [
             "Keyframe animation for any property",
-            "Curve and path animations",
-            "Armature and bone animations",
-        ],
-        "Rendering": [
+                "Curve and path animations",
+                "Armature and bone animations",
+                ],
+            "Rendering": [
             "Configure render engines (Cycles, Eevee Next)",
-            "Batch rendering and automation",
-            "Custom render passes and AOVs",
-        ],
-        "Compositor": [
-            "Node-based compositing workflows",
-            "Image processing and effects",
-            "Multi-layer compositing",
-        ],
-        "File I/O": [
-            "Import/export various 3D formats",
-            "Batch file processing",
-            "Asset library management",
-        ],
-        "Scripting & Automation": [
+                "Batch rendering and automation",
+                "Custom render passes and AOVs",
+                ],
+            "Compositor": [
+            "Node - based compositing workflows",
+                "Image processing and effects",
+                "Multi - layer compositing",
+                ],
+            "File I / O": [
+            "Import / export various 3D formats",
+                "Batch file processing",
+                "Asset library management",
+                ],
+            "Scripting & Automation": [
             "Custom operators and panels",
-            "Automated workflows and pipelines",
-            "Integration with external systems",
-        ],
-    }
+                "Automated workflows and pipelines",
+                "Integration with external systems",
+                ],
+            }
 
     for category, features in capabilities.items():
         print(f"\n{category}:")
         for feature in features:
             print(f"  • {feature}")
-
 
 if __name__ == "__main__":
     success = test_blender_api_access()

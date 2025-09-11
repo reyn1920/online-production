@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Master Orchestrator - Live Production Launch System
 
 This is the master orchestrator that initializes and manages all TRAE.AI agents,
-systems, and services in a coordinated, production-ready environment.
+systems, and services in a coordinated, production - ready environment.
 
 Features:
 - Complete agent lifecycle management
-- Real-time monitoring and health checks
+- Real - time monitoring and health checks
 - Graceful shutdown and error recovery
 - Integration with unified dashboard
 - Autonomous task distribution and execution
@@ -41,26 +41,28 @@ try:
     load_dotenv(".env.local")
     load_dotenv(".env")
 except ImportError:
-    # If python-dotenv is not available, continue without it
+    # If python - dotenv is not available, continue without it
     pass
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-    datefmt="%H:%M:%S",
+    level = logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+        datefmt="%H:%M:%S",
 )
 logger = logging.getLogger("trae_ai.orchestrator")
 
-
 # IDE Probe Filter to reduce log noise
+
+
 class IDEProbeFilter(logging.Filter):
+
+
     def filter(self, record):
         # Suppress log lines for IDE webview probes
         return "ide_webview_request_time=" not in record.getMessage()
 
-
-# Apply to werkzeug/flask request logger
+# Apply to werkzeug / flask request logger
 logging.getLogger("werkzeug").addFilter(IDEProbeFilter())
 
 # This global instance is the bridge between the orchestrator and dashboard
@@ -76,8 +78,7 @@ def get_orchestrator_instance():
 def set_orchestrator_instance(orchestrator):
     """Set the global orchestrator instance."""
     global _global_orchestrator
-    _global_orchestrator = orchestrator
-
+        _global_orchestrator = orchestrator
 
 # Import components after the bridge is defined
 # Import components with individual error handling
@@ -98,8 +99,9 @@ EvolutionAgent = None
 BreakingNewsWatcher = None
 CompetitorAnalyzer = None
 
-
 # Deferred imports - these will be imported after migration
+
+
 def _import_dashboard():
     global DashboardApp
     try:
@@ -118,12 +120,11 @@ def _import_task_queue():
     except ImportError as e:
         logger.warning(f"TaskQueueManager not available: {e}")
 
-
-# Import Phase 1-4 specialized agents
+# Import Phase 1 - 4 specialized agents
 try:
     from backend.agents.base_agents import AgentCapability, AgentStatus
     from backend.agents.specialized_agents import (ContentAgent, MarketingAgent,
-                                                   ResearchAgent, SystemAgent)
+        ResearchAgent, SystemAgent)
 except ImportError as e:
     logger.warning(f"Specialized agents not available: {e}")
     SystemAgent = None
@@ -169,7 +170,7 @@ except ImportError as e:
     BreakingNewsWatcher = None
     CompetitorAnalyzer = None
 
-# Import Phase 1-4 system components
+# Import Phase 1 - 4 system components
 try:
     from breaking_news_watcher import RSSIntelligenceEngine
 except ImportError as e:
@@ -221,7 +222,8 @@ except ImportError as e:
 class AutonomousOrchestrator:
     """Master orchestrator for all TRAE.AI agents and systems."""
 
-    def __init__(self, main_loop=None):
+
+    def __init__(self, main_loop = None):
         """Initialize the master orchestrator with all agents and systems."""
         self.agent_states = {}
         self.agent_threads = {}
@@ -232,7 +234,7 @@ class AutonomousOrchestrator:
         self.news_monitoring_service = None
         self.shutdown_event = threading.Event()
         self.thread_pool = ThreadPoolExecutor(
-            max_workers=10, thread_name_prefix="TRAE-Agent"
+            max_workers = 10, thread_name_prefix="TRAE - Agent"
         )
         self.main_loop = main_loop  # Store the main event loop for agent threads
 
@@ -254,6 +256,7 @@ class AutonomousOrchestrator:
         self._start_health_monitor()
 
         logger.info("✅ Master Orchestrator initialization complete")
+
 
     def _initialize_core_systems(self):
         """Initialize core systems like task queue, secret store, etc."""
@@ -279,8 +282,9 @@ class AutonomousOrchestrator:
             self.secret_store = None
             self.task_queue = None
 
+
     def _initialize_system_components(self):
-        """Initialize Phase 1-4 system components."""
+        """Initialize Phase 1 - 4 system components."""
         logger.info("Initializing system components...")
 
         # Initialize RSS Intelligence Engine
@@ -319,8 +323,9 @@ class AutonomousOrchestrator:
                 logger.error(f"✗ Failed to initialize Research Validation Service: {e}")
                 self.research_validation = None
 
+
     def _initialize_agents(self):
-        """Initialize all Phase 1-4 specialized agents."""
+        """Initialize all Phase 1 - 4 specialized agents."""
         self.agents = {}
         logger.info("Initializing agents...")
 
@@ -329,28 +334,28 @@ class AutonomousOrchestrator:
             try:
                 agent = SystemAgent(
                     agent_id="system_agent",
-                    name="System Management Agent",
-                    main_loop=self.main_loop,
-                )
+                        name="System Management Agent",
+                        main_loop = self.main_loop,
+                        )
                 self.agents["SystemAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 1,
-                        "description": "System monitoring and management",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 1,
+                            "description": "System monitoring and management",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("SystemAgent", "initialized")
                 logger.info(
                     "✅ SystemAgent initialized: System monitoring and management"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize SystemAgent: {e}")
-                self.update_agent_status("SystemAgent", "error", error=str(e))
+                self.update_agent_status("SystemAgent", "error", error = str(e))
 
         # Research Agent
         if ResearchAgent:
@@ -360,23 +365,23 @@ class AutonomousOrchestrator:
                 )
                 self.agents["ResearchAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 2,
-                        "description": "Research and intelligence gathering",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 2,
+                            "description": "Research and intelligence gathering",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("ResearchAgent", "initialized")
                 logger.info(
                     "✅ ResearchAgent initialized: Research and intelligence gathering"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize ResearchAgent: {e}")
-                self.update_agent_status("ResearchAgent", "error", error=str(e))
+                self.update_agent_status("ResearchAgent", "error", error = str(e))
 
         # Content Agent
         if ContentAgent:
@@ -386,23 +391,23 @@ class AutonomousOrchestrator:
                 )
                 self.agents["ContentAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 3,
-                        "description": "Content creation and evolution",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 3,
+                            "description": "Content creation and evolution",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("ContentAgent", "initialized")
                 logger.info(
                     "✅ ContentAgent initialized: Content creation and evolution"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize ContentAgent: {e}")
-                self.update_agent_status("ContentAgent", "error", error=str(e))
+                self.update_agent_status("ContentAgent", "error", error = str(e))
 
         # Marketing Agent
         if MarketingAgent:
@@ -412,23 +417,23 @@ class AutonomousOrchestrator:
                 )
                 self.agents["MarketingAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 4,
-                        "description": "Marketing automation and strategy",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 4,
+                            "description": "Marketing automation and strategy",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("MarketingAgent", "initialized")
                 logger.info(
                     "✅ MarketingAgent initialized: Marketing automation and strategy"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize MarketingAgent: {e}")
-                self.update_agent_status("MarketingAgent", "error", error=str(e))
+                self.update_agent_status("MarketingAgent", "error", error = str(e))
 
         # Financial Agent
         if FinancialAgent:
@@ -438,40 +443,40 @@ class AutonomousOrchestrator:
                 )
                 self.agents["FinancialAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 5,
-                        "description": "Financial analysis and trading automation",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 5,
+                            "description": "Financial analysis and trading automation",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("FinancialAgent", "initialized")
                 logger.info(
                     "✅ FinancialAgent initialized: Financial analysis and trading automation"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize FinancialAgent: {e}")
-                self.update_agent_status("FinancialAgent", "error", error=str(e))
+                self.update_agent_status("FinancialAgent", "error", error = str(e))
 
         # YouTube Engagement Agent
         if YouTubeEngagementAgent:
             try:
-                agent = YouTubeEngagementAgent(db_path="data/youtube_engagement.sqlite")
+                agent = YouTubeEngagementAgent(db_path="data / youtube_engagement.sqlite")
                 self.agents["YouTubeEngagementAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 6,
-                        "description": "YouTube content engagement and optimization",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 6,
+                            "description": "YouTube content engagement and optimization",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("YouTubeEngagementAgent", "initialized")
                 logger.info(
                     "✅ YouTubeEngagementAgent initialized: YouTube content engagement and optimization"
@@ -479,7 +484,7 @@ class AutonomousOrchestrator:
             except Exception as e:
                 logger.error(f"❌ Failed to initialize YouTubeEngagementAgent: {e}")
                 self.update_agent_status(
-                    "YouTubeEngagementAgent", "error", error=str(e)
+                    "YouTubeEngagementAgent", "error", error = str(e)
                 )
 
         # Progressive Self Repair Agent
@@ -488,29 +493,29 @@ class AutonomousOrchestrator:
                 agent = ProgressiveSelfRepairAgent(
                     config={
                         "agent_id": "progressive_self_repair_agent",
-                        "name": "Self Repair Agent",
-                    }
+                            "name": "Self Repair Agent",
+                            }
                 )
                 self.agents["ProgressiveSelfRepairAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 7,
-                        "description": "System self-repair and optimization",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 7,
+                            "description": "System self - repair and optimization",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("ProgressiveSelfRepairAgent", "initialized")
                 logger.info(
-                    "✅ ProgressiveSelfRepairAgent initialized: System self-repair and optimization"
+                    "✅ ProgressiveSelfRepairAgent initialized: System self - repair and optimization"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize ProgressiveSelfRepairAgent: {e}")
                 self.update_agent_status(
-                    "ProgressiveSelfRepairAgent", "error", error=str(e)
+                    "ProgressiveSelfRepairAgent", "error", error = str(e)
                 )
 
         # Proactive Niche Domination Agent
@@ -518,20 +523,20 @@ class AutonomousOrchestrator:
             try:
                 agent = ProactiveNicheDominationAgent(
                     agent_id="proactive_niche_domination_agent",
-                    name="Niche Domination Agent",
-                )
+                        name="Niche Domination Agent",
+                        )
                 self.agents["ProactiveNicheDominationAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 8,
-                        "description": "Market niche identification and domination",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 8,
+                            "description": "Market niche identification and domination",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("ProactiveNicheDominationAgent", "initialized")
                 logger.info(
                     "✅ ProactiveNicheDominationAgent initialized: Market niche identification and domination"
@@ -541,7 +546,7 @@ class AutonomousOrchestrator:
                     f"❌ Failed to initialize ProactiveNicheDominationAgent: {e}"
                 )
                 self.update_agent_status(
-                    "ProactiveNicheDominationAgent", "error", error=str(e)
+                    "ProactiveNicheDominationAgent", "error", error = str(e)
                 )
 
         # Evolution Agent
@@ -552,27 +557,28 @@ class AutonomousOrchestrator:
                 )
                 self.agents["EvolutionAgent"] = {
                     "instance": agent,
-                    "config": {
+                        "config": {
                         "enabled": True,
-                        "priority": 9,
-                        "description": "Continuous system evolution and adaptation",
-                    },
-                    "status": "initialized",
-                    "last_heartbeat": datetime.now(),
-                    "task_count": 0,
-                    "error_count": 0,
-                }
+                            "priority": 9,
+                            "description": "Continuous system evolution and adaptation",
+                            },
+                        "status": "initialized",
+                        "last_heartbeat": datetime.now(),
+                        "task_count": 0,
+                        "error_count": 0,
+                        }
                 self.update_agent_status("EvolutionAgent", "initialized")
                 logger.info(
                     "✅ EvolutionAgent initialized: Continuous system evolution and adaptation"
                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize EvolutionAgent: {e}")
-                self.update_agent_status("EvolutionAgent", "error", error=str(e))
+                self.update_agent_status("EvolutionAgent", "error", error = str(e))
 
         logger.info(f"Initialized {len(self.agents)} available agent configurations")
         if len(self.agents) == 0:
             logger.warning("No agents available - running in minimal mode")
+
 
     def _initialize_news_monitoring(self):
         """Initialize the news monitoring service for Right Perspective content triggers."""
@@ -589,22 +595,23 @@ class AutonomousOrchestrator:
         else:
             logger.warning("⚠️  News Monitoring Service not available")
 
+
     def update_agent_status(
         self,
-        agent_name: str,
-        status: str,
-        task_id: Optional[str] = None,
-        error: Optional[str] = None,
-    ):
+            agent_name: str,
+            status: str,
+            task_id: Optional[str] = None,
+            error: Optional[str] = None,
+            ):
         """Update agent status with thread safety."""
         with self.agent_state_lock:
             self.agent_states[agent_name] = {
                 "status": status,
-                "task_id": task_id,
-                "error": error,
-                "timestamp": datetime.now(),
-                "uptime": (datetime.now() - self.start_time).total_seconds(),
-            }
+                    "task_id": task_id,
+                    "error": error,
+                    "timestamp": datetime.now(),
+                    "uptime": (datetime.now() - self.start_time).total_seconds(),
+                    }
 
             # Update agent heartbeat
             if agent_name in self.agents:
@@ -612,12 +619,14 @@ class AutonomousOrchestrator:
                 if status == "error":
                     self.agents[agent_name]["error_count"] += 1
 
+
     def get_agent_status(self, agent_name: Optional[str] = None) -> Dict[str, Any]:
         """Get current status of agents."""
         with self.agent_state_lock:
             if agent_name:
                 return self.agent_states.get(agent_name, {})
             return dict(self.agent_states)
+
 
     def get_system_stats(self) -> Dict[str, Any]:
         """Get comprehensive system statistics."""
@@ -627,22 +636,23 @@ class AutonomousOrchestrator:
 
         return {
             "uptime": f"{int(uptime // 3600)}h {int((uptime % 3600) // 60)}m",
-            "uptime_seconds": uptime,
-            "memory_usage": psutil.virtual_memory().percent,
-            "cpu_usage": psutil.cpu_percent(interval=1),
-            "disk_usage": psutil.disk_usage("/").percent,
-            "active_agents": len(
+                "uptime_seconds": uptime,
+                "memory_usage": psutil.virtual_memory().percent,
+                "cpu_usage": psutil.cpu_percent(interval = 1),
+                "disk_usage": psutil.disk_usage("/").percent,
+                "active_agents": len(
                 [
                     a
                     for a in self.agent_states.values()
                     if a.get("status") not in ["error", "stopped"]
                 ]
             ),
-            "total_agents": len(self.agents),
-            "database_health": self._check_database_health(),
-            "task_queue_size": self._get_task_queue_size(),
-            "start_time": self.start_time.isoformat(),
-        }
+                "total_agents": len(self.agents),
+                "database_health": self._check_database_health(),
+                "task_queue_size": self._get_task_queue_size(),
+                "start_time": self.start_time.isoformat(),
+                }
+
 
     def _check_database_health(self) -> bool:
         """Check database connectivity and health."""
@@ -654,6 +664,7 @@ class AutonomousOrchestrator:
         except Exception:
             return False
 
+
     def _get_task_queue_size(self) -> int:
         """Get current task queue size."""
         try:
@@ -662,6 +673,7 @@ class AutonomousOrchestrator:
             return 0
         except Exception:
             return 0
+
 
     async def _run_agent_loop(self, agent_name: str):
         """Main execution loop for an agent with proper shutdown handling."""
@@ -677,7 +689,7 @@ class AutonomousOrchestrator:
         while self.running and not self.shutdown_event.is_set():
             try:
                 # Check for shutdown every iteration
-                if self.shutdown_event.wait(timeout=0.1):
+                if self.shutdown_event.wait(timeout = 0.1):
                     break
 
                 with self.agent_state_lock:
@@ -692,7 +704,7 @@ class AutonomousOrchestrator:
                         )
                         with self.agent_state_lock:
                             self.update_agent_status(
-                                agent_name, "processing", task_id=task.get("id")
+                                agent_name, "processing", task_id = task.get("id")
                             )
 
                         # Process the task with timeout and defensive programming
@@ -701,13 +713,13 @@ class AutonomousOrchestrator:
                                 getattr(agent, "process_task", None)
                             ):
                                 await asyncio.wait_for(
-                                    agent.process_task(task), timeout=60.0
+                                    agent.process_task(task), timeout = 60.0
                                 )
                             elif hasattr(agent, "execute") and callable(
                                 getattr(agent, "execute", None)
                             ):
                                 await asyncio.wait_for(
-                                    agent.execute(task), timeout=60.0
+                                    agent.execute(task), timeout = 60.0
                                 )
                             else:
                                 logger.warning(
@@ -725,12 +737,12 @@ class AutonomousOrchestrator:
                             f"✅ {agent_name} completed task: {task.get('id', 'unknown')}"
                         )
 
-                # Agent-specific autonomous operations with defensive programming
+                # Agent - specific autonomous operations with defensive programming
                 if hasattr(agent, "autonomous_cycle") and callable(
                     getattr(agent, "autonomous_cycle", None)
                 ):
                     try:
-                        await asyncio.wait_for(agent.autonomous_cycle(), timeout=30.0)
+                        await asyncio.wait_for(agent.autonomous_cycle(), timeout = 30.0)
                     except asyncio.TimeoutError:
                         logger.warning(
                             f"⏰ Autonomous cycle timeout for agent {agent_name}"
@@ -742,19 +754,20 @@ class AutonomousOrchestrator:
                     self.update_agent_status(agent_name, "idle")
 
                 # Use shutdown event for interruptible sleep
-                if self.shutdown_event.wait(timeout=10.0):
+                if self.shutdown_event.wait(timeout = 10.0):
                     break
 
             except Exception as e:
                 logger.error(f"❌ Error in {agent_name} loop: {e}")
                 with self.agent_state_lock:
-                    self.update_agent_status(agent_name, "error", error=str(e))
+                    self.update_agent_status(agent_name, "error", error = str(e))
 
                 # Wait before retrying, but allow interruption
-                if self.shutdown_event.wait(timeout=30.0):
+                if self.shutdown_event.wait(timeout = 30.0):
                     break
 
         logger.info(f"🛑 Agent loop stopped: {agent_name}")
+
 
     async def _get_next_task_for_agent(
         self, agent_name: str
@@ -769,6 +782,7 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(f"Error getting task for {agent_name}: {e}")
             return None
+
 
     def _run_agent_thread(self, agent_name: str):
         """Run agent loop in a separate thread with proper error handling."""
@@ -791,7 +805,8 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(f"❌ Agent {agent_name} thread crashed: {e}")
             with self.agent_state_lock:
-                self.update_agent_status(agent_name, "error", error=str(e))
+                self.update_agent_status(agent_name, "error", error = str(e))
+
 
     def start_agent_threads(self):
         """Start threads for all enabled agents using thread pool."""
@@ -809,8 +824,10 @@ class AutonomousOrchestrator:
         logger.info(f"🎯 Started {len(futures)} agent threads")
         return futures
 
+
     def _start_health_monitor(self):
         """Start the health monitoring thread."""
+
 
         def health_monitor():
             while self.running:
@@ -822,10 +839,11 @@ class AutonomousOrchestrator:
                     time.sleep(60)  # Wait longer on error
 
         health_thread = threading.Thread(
-            target=health_monitor, name="HealthMonitor", daemon=True
+            target = health_monitor, name="HealthMonitor", daemon = True
         )
         health_thread.start()
         logger.info("💓 Health monitor started")
+
 
     def _perform_health_checks(self):
         """Perform comprehensive health checks."""
@@ -864,6 +882,7 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(f"Error checking system resources: {e}")
 
+
     def pause_agent(self, agent_name: str) -> bool:
         """Pause a specific agent."""
         if agent_name in self.agents:
@@ -872,6 +891,7 @@ class AutonomousOrchestrator:
             return True
         return False
 
+
     def resume_agent(self, agent_name: str) -> bool:
         """Resume a paused agent."""
         if agent_name in self.agents:
@@ -879,6 +899,7 @@ class AutonomousOrchestrator:
             logger.info(f"▶️  Resumed agent: {agent_name}")
             return True
         return False
+
 
     def restart_agent(self, agent_name: str) -> bool:
         """Restart a specific agent."""
@@ -890,8 +911,9 @@ class AutonomousOrchestrator:
             return True
         return False
 
+
     def control_agent(self, agent_id: str, action: str) -> bool:
-        """Control agent operations (pause/restart)."""
+        """Control agent operations (pause / restart)."""
         try:
             if action == "pause":
                 return self.pause_agent(agent_id)
@@ -905,6 +927,7 @@ class AutonomousOrchestrator:
                 f"Failed to control agent {agent_id} with action {action}: {e}"
             )
             return False
+
 
     def shutdown(self, timeout: int = 30):
         """Gracefully shutdown the orchestrator and all agents with timeout."""
@@ -925,7 +948,7 @@ class AutonomousOrchestrator:
         logger.info(f"⏳ Shutting down agent threads (timeout: {timeout}s)...")
         try:
             # Use shutdown without timeout for compatibility
-            self.thread_pool.shutdown(wait=True)
+            self.thread_pool.shutdown(wait = True)
             logger.info("✅ All agent threads stopped gracefully")
         except Exception as e:
             logger.warning(f"⚠️ Some agent threads may not have stopped cleanly: {e}")
@@ -964,6 +987,7 @@ def main():
     # Create and start event loop in a dedicated thread
     main_loop = asyncio.new_event_loop()
 
+
     def run_event_loop():
         """Run the event loop in a dedicated thread"""
         asyncio.set_event_loop(main_loop)
@@ -973,7 +997,7 @@ def main():
             logger.error(f"Event loop error: {e}")
 
     loop_thread = threading.Thread(
-        target=run_event_loop, daemon=True, name="AsyncEventLoop"
+        target = run_event_loop, daemon = True, name="AsyncEventLoop"
     )
     loop_thread.start()
 
@@ -989,6 +1013,7 @@ def main():
     else:
         logger.error("❌ Failed to start event loop")
         return 1
+
 
     def graceful_shutdown(signum, frame):
         """Singleton signal handler for graceful shutdown."""
@@ -1035,7 +1060,7 @@ def main():
 
         # Initialize orchestrator with main event loop
         logger.info("🎯 Initializing Master Orchestrator...")
-        orchestrator = AutonomousOrchestrator(main_loop=main_loop)
+        orchestrator = AutonomousOrchestrator(main_loop = main_loop)
         set_orchestrator_instance(orchestrator)
         logger.info("✅ Master Orchestrator initialized")
 
@@ -1052,40 +1077,44 @@ def main():
                     f"[dashboard] attempting to bind to http://127.0.0.1:{dashboard_port}"
                 )
 
-                dashboard_app = DashboardApp(orchestrator=orchestrator)
+                dashboard_app = DashboardApp(orchestrator = orchestrator)
 
                 # Add debug routes for verification
                 @dashboard_app.app.route("/_whoami")
+
+
                 def _whoami():
                     return {"port": dashboard_port, "ok": True}
 
-                @dashboard_app.app.route("/api/routes")
+                @dashboard_app.app.route("/api / routes")
+
+
                 def _routes():
                     return {
                         "count": len(dashboard_app.app.url_map._rules),
-                        "routes": [
+                            "routes": [
                             {"rule": r.rule, "methods": list(r.methods)}
                             for r in dashboard_app.app.url_map.iter_rules()
                         ],
-                    }
+                            }
 
                 print(f"🚀 Starting dashboard on port {dashboard_port}")
 
                 # Force consistent binding with CORS fix
                 dashboard_future = orchestrator.thread_pool.submit(
-                    lambda: dashboard_app.run(use_waitress=True)
+                    lambda: dashboard_app.run(use_waitress = True)
                 )
                 logger.info(f"✅ Dashboard started on port {dashboard_port}")
             except OSError as e:
                 # Handle port binding failures specifically
-                if getattr(e, "errno", None) in (48, 98):  # EADDRINUSE mac/linux
+                if getattr(e, "errno", None) in (48, 98):  # EADDRINUSE mac / linux
                     logger.error(f"❌ Port {dashboard_port} is already in use")
                     # Try fallback port 5000
                     try:
                         fallback_port = 5000
                         logger.info(f"🔄 Trying fallback port {fallback_port}")
                         dashboard_future = orchestrator.thread_pool.submit(
-                            lambda: dashboard_app.run(use_waitress=True)
+                            lambda: dashboard_app.run(use_waitress = True)
                         )
                         logger.info(
                             f"✅ Dashboard started on fallback port {fallback_port}"
@@ -1207,11 +1236,10 @@ def main():
         # Wait for dashboard thread to finish
         if dashboard_thread and dashboard_thread.is_alive():
             logger.info("⏳ Waiting for dashboard to shutdown...")
-            dashboard_thread.join(timeout=5)
+            dashboard_thread.join(timeout = 5)
 
         logger.info("✅ TRAE.AI Master Orchestrator shutdown complete")
         logger.info("=" * 60)
-
 
 if __name__ == "__main__":
     sys.exit(main())

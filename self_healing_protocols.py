@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Self-Healing Protocols - Autonomous System Recovery and Optimization
+Self - Healing Protocols - Autonomous System Recovery and Optimization
 
 Provides:
 1. Automatic error detection and recovery
@@ -42,7 +42,7 @@ try:
     from ai_ceo_master_controller import AICEOMasterController
     from autonomous_decision_engine import AutonomousDecisionEngine
     from full_automation_pipeline import (FullAutomationPipeline, PipelineStatus,
-                                          TaskPriority)
+        TaskPriority)
     from monitoring_dashboard import MonitoringDashboard
 except ImportError as e:
     logging.warning(f"Some components not available: {e}")
@@ -72,8 +72,9 @@ class RecoveryAction(Enum):
     EMERGENCY_SHUTDOWN = "emergency_shutdown"
     BACKUP_RESTORE = "backup_restore"
 
-
 @dataclass
+
+
 class HealthCheck:
     """Health check configuration."""
 
@@ -88,8 +89,9 @@ class HealthCheck:
     consecutive_failures: int = 0
     last_success: Optional[datetime] = None
 
-
 @dataclass
+
+
 class RecoveryPlan:
     """Recovery plan for system issues."""
 
@@ -102,8 +104,9 @@ class RecoveryPlan:
     max_attempts: int = 3
     current_attempt: int = 0
 
-
 @dataclass
+
+
 class SystemSnapshot:
     """System state snapshot for rollback."""
 
@@ -118,13 +121,14 @@ class SystemSnapshot:
 class SelfHealingProtocols:
     """Autonomous system recovery and optimization."""
 
+
     def __init__(self, pipeline: Optional[FullAutomationPipeline] = None):
         self.pipeline = pipeline
 
         # Health monitoring
         self.health_checks = self._setup_health_checks()
         self.system_health = HealthStatus.HEALTHY
-        self.health_history = deque(maxlen=1000)
+        self.health_history = deque(maxlen = 1000)
 
         # Recovery system
         self.recovery_plans = self._setup_recovery_plans()
@@ -132,7 +136,7 @@ class SelfHealingProtocols:
         self.recovery_history = []
 
         # System snapshots
-        self.snapshots = deque(maxlen=50)
+        self.snapshots = deque(maxlen = 50)
         self.snapshot_interval = 300  # 5 minutes
 
         # Performance optimization
@@ -142,213 +146,217 @@ class SelfHealingProtocols:
         # Resource management
         self.resource_limits = {
             "cpu_threshold": 0.8,
-            "memory_threshold": 0.8,
-            "disk_threshold": 0.9,
-            "network_threshold": 0.8,
-        }
+                "memory_threshold": 0.8,
+                "disk_threshold": 0.9,
+                "network_threshold": 0.8,
+                }
 
         # Database connection
         self.db_path = "self_healing.db"
         self._init_healing_database()
 
         # Threading
-        self.executor = ThreadPoolExecutor(max_workers=5)
+        self.executor = ThreadPoolExecutor(max_workers = 5)
         self.running = False
         self.healing_thread = None
 
         # Backup system
         self.backup_dir = Path("system_backups")
-        self.backup_dir.mkdir(exist_ok=True)
+        self.backup_dir.mkdir(exist_ok = True)
 
-        logger.info("🔧 Self-Healing Protocols initialized")
+        logger.info("🔧 Self - Healing Protocols initialized")
+
 
     def _setup_health_checks(self) -> List[HealthCheck]:
         """Setup system health checks."""
         return [
             HealthCheck(
                 name="Pipeline Health",
-                check_function="check_pipeline_health",
-                interval_seconds=30,
-                timeout_seconds=10,
-                failure_threshold=3,
-                recovery_actions=[RecoveryAction.RESTART_COMPONENT],
-            ),
-            HealthCheck(
+                    check_function="check_pipeline_health",
+                    interval_seconds = 30,
+                    timeout_seconds = 10,
+                    failure_threshold = 3,
+                    recovery_actions=[RecoveryAction.RESTART_COMPONENT],
+                    ),
+                HealthCheck(
                 name="System Resources",
-                check_function="check_system_resources",
-                interval_seconds=60,
-                timeout_seconds=5,
-                failure_threshold=2,
-                recovery_actions=[
+                    check_function="check_system_resources",
+                    interval_seconds = 60,
+                    timeout_seconds = 5,
+                    failure_threshold = 2,
+                    recovery_actions=[
                     RecoveryAction.SCALE_RESOURCES,
-                    RecoveryAction.OPTIMIZE_PERFORMANCE,
-                ],
-            ),
-            HealthCheck(
+                        RecoveryAction.OPTIMIZE_PERFORMANCE,
+                        ],
+                    ),
+                HealthCheck(
                 name="Database Integrity",
-                check_function="check_database_integrity",
-                interval_seconds=300,
-                timeout_seconds=30,
-                failure_threshold=1,
-                recovery_actions=[
+                    check_function="check_database_integrity",
+                    interval_seconds = 300,
+                    timeout_seconds = 30,
+                    failure_threshold = 1,
+                    recovery_actions=[
                     RecoveryAction.REPAIR_DATABASE,
-                    RecoveryAction.BACKUP_RESTORE,
-                ],
-            ),
-            HealthCheck(
+                        RecoveryAction.BACKUP_RESTORE,
+                        ],
+                    ),
+                HealthCheck(
                 name="API Endpoints",
-                check_function="check_api_endpoints",
-                interval_seconds=60,
-                timeout_seconds=15,
-                failure_threshold=2,
-                recovery_actions=[
+                    check_function="check_api_endpoints",
+                    interval_seconds = 60,
+                    timeout_seconds = 15,
+                    failure_threshold = 2,
+                    recovery_actions=[
                     RecoveryAction.RESTART_COMPONENT,
-                    RecoveryAction.CLEAR_CACHE,
-                ],
-            ),
-            HealthCheck(
+                        RecoveryAction.CLEAR_CACHE,
+                        ],
+                    ),
+                HealthCheck(
                 name="Agent Performance",
-                check_function="check_agent_performance",
-                interval_seconds=120,
-                timeout_seconds=20,
-                failure_threshold=3,
-                recovery_actions=[
+                    check_function="check_agent_performance",
+                    interval_seconds = 120,
+                    timeout_seconds = 20,
+                    failure_threshold = 3,
+                    recovery_actions=[
                     RecoveryAction.OPTIMIZE_PERFORMANCE,
-                    RecoveryAction.RESTART_COMPONENT,
-                ],
-            ),
-            HealthCheck(
+                        RecoveryAction.RESTART_COMPONENT,
+                        ],
+                    ),
+                HealthCheck(
                 name="File System",
-                check_function="check_file_system",
-                interval_seconds=180,
-                timeout_seconds=10,
-                failure_threshold=1,
-                recovery_actions=[
+                    check_function="check_file_system",
+                    interval_seconds = 180,
+                    timeout_seconds = 10,
+                    failure_threshold = 1,
+                    recovery_actions=[
                     RecoveryAction.CLEAR_CACHE,
-                    RecoveryAction.OPTIMIZE_PERFORMANCE,
-                ],
-            ),
-            HealthCheck(
+                        RecoveryAction.OPTIMIZE_PERFORMANCE,
+                        ],
+                    ),
+                HealthCheck(
                 name="Network Connectivity",
-                check_function="check_network_connectivity",
-                interval_seconds=90,
-                timeout_seconds=10,
-                failure_threshold=2,
-                recovery_actions=[RecoveryAction.RESTART_COMPONENT],
-            ),
-        ]
+                    check_function="check_network_connectivity",
+                    interval_seconds = 90,
+                    timeout_seconds = 10,
+                    failure_threshold = 2,
+                    recovery_actions=[RecoveryAction.RESTART_COMPONENT],
+                    ),
+                ]
+
 
     def _setup_recovery_plans(self) -> Dict[str, RecoveryPlan]:
         """Setup recovery plans for different issues."""
         return {
             "high_cpu_usage": RecoveryPlan(
                 issue_type="high_cpu_usage",
-                severity=HealthStatus.WARNING,
-                actions=[
+                    severity = HealthStatus.WARNING,
+                    actions=[
                     RecoveryAction.OPTIMIZE_PERFORMANCE,
-                    RecoveryAction.SCALE_RESOURCES,
-                ],
-                estimated_duration=120,
-                success_criteria=["cpu_usage < 0.7"],
-            ),
-            "high_memory_usage": RecoveryPlan(
+                        RecoveryAction.SCALE_RESOURCES,
+                        ],
+                    estimated_duration = 120,
+                    success_criteria=["cpu_usage < 0.7"],
+                    ),
+                "high_memory_usage": RecoveryPlan(
                 issue_type="high_memory_usage",
-                severity=HealthStatus.WARNING,
-                actions=[
+                    severity = HealthStatus.WARNING,
+                    actions=[
                     RecoveryAction.CLEAR_CACHE,
-                    RecoveryAction.OPTIMIZE_PERFORMANCE,
-                ],
-                estimated_duration=60,
-                success_criteria=["memory_usage < 0.7"],
-            ),
-            "pipeline_failure": RecoveryPlan(
+                        RecoveryAction.OPTIMIZE_PERFORMANCE,
+                        ],
+                    estimated_duration = 60,
+                    success_criteria=["memory_usage < 0.7"],
+                    ),
+                "pipeline_failure": RecoveryPlan(
                 issue_type="pipeline_failure",
-                severity=HealthStatus.CRITICAL,
-                actions=[
+                    severity = HealthStatus.CRITICAL,
+                    actions=[
                     RecoveryAction.RESTART_COMPONENT,
-                    RecoveryAction.ROLLBACK_CHANGES,
-                ],
-                estimated_duration=180,
-                success_criteria=["pipeline_status == 'running'"],
-                rollback_plan=[RecoveryAction.BACKUP_RESTORE],
-            ),
-            "database_corruption": RecoveryPlan(
+                        RecoveryAction.ROLLBACK_CHANGES,
+                        ],
+                    estimated_duration = 180,
+                    success_criteria=["pipeline_status == 'running'"],
+                    rollback_plan=[RecoveryAction.BACKUP_RESTORE],
+                    ),
+                "database_corruption": RecoveryPlan(
                 issue_type="database_corruption",
-                severity=HealthStatus.CRITICAL,
-                actions=[RecoveryAction.REPAIR_DATABASE, RecoveryAction.BACKUP_RESTORE],
-                estimated_duration=300,
-                success_criteria=["database_integrity == True"],
-            ),
-            "disk_space_low": RecoveryPlan(
+                    severity = HealthStatus.CRITICAL,
+                    actions=[RecoveryAction.REPAIR_DATABASE, RecoveryAction.BACKUP_RESTORE],
+                    estimated_duration = 300,
+                    success_criteria=["database_integrity is True"],
+                    ),
+                "disk_space_low": RecoveryPlan(
                 issue_type="disk_space_low",
-                severity=HealthStatus.WARNING,
-                actions=[
+                    severity = HealthStatus.WARNING,
+                    actions=[
                     RecoveryAction.CLEAR_CACHE,
-                    RecoveryAction.OPTIMIZE_PERFORMANCE,
-                ],
-                estimated_duration=90,
-                success_criteria=["disk_usage < 0.8"],
-            ),
-            "agent_performance_degraded": RecoveryPlan(
+                        RecoveryAction.OPTIMIZE_PERFORMANCE,
+                        ],
+                    estimated_duration = 90,
+                    success_criteria=["disk_usage < 0.8"],
+                    ),
+                "agent_performance_degraded": RecoveryPlan(
                 issue_type="agent_performance_degraded",
-                severity=HealthStatus.WARNING,
-                actions=[
+                    severity = HealthStatus.WARNING,
+                    actions=[
                     RecoveryAction.OPTIMIZE_PERFORMANCE,
-                    RecoveryAction.RESTART_COMPONENT,
-                ],
-                estimated_duration=150,
-                success_criteria=["agent_success_rate > 0.8"],
-            ),
-            "system_overload": RecoveryPlan(
+                        RecoveryAction.RESTART_COMPONENT,
+                        ],
+                    estimated_duration = 150,
+                    success_criteria=["agent_success_rate > 0.8"],
+                    ),
+                "system_overload": RecoveryPlan(
                 issue_type="system_overload",
-                severity=HealthStatus.CRITICAL,
-                actions=[
+                    severity = HealthStatus.CRITICAL,
+                    actions=[
                     RecoveryAction.SCALE_RESOURCES,
-                    RecoveryAction.OPTIMIZE_PERFORMANCE,
-                ],
-                estimated_duration=240,
-                success_criteria=["system_load < 0.7"],
-                rollback_plan=[RecoveryAction.EMERGENCY_SHUTDOWN],
-            ),
-        }
+                        RecoveryAction.OPTIMIZE_PERFORMANCE,
+                        ],
+                    estimated_duration = 240,
+                    success_criteria=["system_load < 0.7"],
+                    rollback_plan=[RecoveryAction.EMERGENCY_SHUTDOWN],
+                    ),
+                }
+
 
     def _setup_optimization_rules(self) -> List[Dict[str, Any]]:
         """Setup performance optimization rules."""
         return [
             {
                 "name": "CPU Optimization",
-                "condition": "cpu_usage > 0.6",
-                "actions": ["reduce_concurrent_tasks", "optimize_algorithms"],
-                "priority": "high",
-            },
-            {
+                    "condition": "cpu_usage > 0.6",
+                    "actions": ["reduce_concurrent_tasks", "optimize_algorithms"],
+                    "priority": "high",
+                    },
+                {
                 "name": "Memory Optimization",
-                "condition": "memory_usage > 0.6",
-                "actions": ["clear_unused_cache", "garbage_collection"],
-                "priority": "high",
-            },
-            {
+                    "condition": "memory_usage > 0.6",
+                    "actions": ["clear_unused_cache", "garbage_collection"],
+                    "priority": "high",
+                    },
+                {
                 "name": "Database Optimization",
-                "condition": "db_response_time > 1.0",
-                "actions": ["optimize_queries", "rebuild_indexes"],
-                "priority": "medium",
-            },
-            {
+                    "condition": "db_response_time > 1.0",
+                    "actions": ["optimize_queries", "rebuild_indexes"],
+                    "priority": "medium",
+                    },
+                {
                 "name": "Network Optimization",
-                "condition": "network_latency > 500",
-                "actions": ["optimize_connections", "enable_compression"],
-                "priority": "medium",
-            },
-            {
+                    "condition": "network_latency > 500",
+                    "actions": ["optimize_connections", "enable_compression"],
+                    "priority": "medium",
+                    },
+                {
                 "name": "Task Queue Optimization",
-                "condition": "queue_size > 100",
-                "actions": ["increase_workers", "prioritize_tasks"],
-                "priority": "high",
-            },
-        ]
+                    "condition": "queue_size > 100",
+                    "actions": ["increase_workers", "prioritize_tasks"],
+                    "priority": "high",
+                    },
+                ]
+
 
     def _init_healing_database(self):
-        """Initialize self-healing database."""
+        """Initialize self - healing database."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
@@ -357,11 +365,11 @@ class SelfHealingProtocols:
             """
             CREATE TABLE IF NOT EXISTS health_checks (
                 timestamp TEXT,
-                check_name TEXT,
-                status TEXT,
-                details TEXT,
-                duration_ms INTEGER,
-                PRIMARY KEY (timestamp, check_name)
+                    check_name TEXT,
+                    status TEXT,
+                    details TEXT,
+                    duration_ms INTEGER,
+                    PRIMARY KEY (timestamp, check_name)
             )
         """
         )
@@ -371,13 +379,13 @@ class SelfHealingProtocols:
             """
             CREATE TABLE IF NOT EXISTS recovery_actions (
                 id TEXT PRIMARY KEY,
-                issue_type TEXT,
-                action_type TEXT,
-                started_at TEXT,
-                completed_at TEXT,
-                success BOOLEAN,
-                details TEXT,
-                duration_seconds INTEGER
+                    issue_type TEXT,
+                    action_type TEXT,
+                    started_at TEXT,
+                    completed_at TEXT,
+                    success BOOLEAN,
+                    details TEXT,
+                    duration_seconds INTEGER
             )
         """
         )
@@ -387,11 +395,11 @@ class SelfHealingProtocols:
             """
             CREATE TABLE IF NOT EXISTS system_snapshots (
                 timestamp TEXT PRIMARY KEY,
-                metrics TEXT,
-                component_states TEXT,
-                configuration TEXT,
-                performance_baseline TEXT,
-                backup_paths TEXT
+                    metrics TEXT,
+                    component_states TEXT,
+                    configuration TEXT,
+                    performance_baseline TEXT,
+                    backup_paths TEXT
             )
         """
         )
@@ -401,20 +409,21 @@ class SelfHealingProtocols:
             """
             CREATE TABLE IF NOT EXISTS performance_baselines (
                 component TEXT PRIMARY KEY,
-                baseline_metrics TEXT,
-                last_updated TEXT,
-                sample_count INTEGER
+                    baseline_metrics TEXT,
+                    last_updated TEXT,
+                    sample_count INTEGER
             )
         """
         )
 
         conn.commit()
         conn.close()
-        logger.info("🔧 Self-healing database initialized")
+        logger.info("🔧 Self - healing database initialized")
+
 
     def start_healing_protocols(self):
-        """Start the self-healing system."""
-        logger.info("🔧 Starting Self-Healing Protocols...")
+        """Start the self - healing system."""
+        logger.info("🔧 Starting Self - Healing Protocols...")
 
         self.running = True
 
@@ -422,14 +431,15 @@ class SelfHealingProtocols:
         self._create_system_snapshot()
 
         # Start healing thread
-        self.healing_thread = threading.Thread(target=self._healing_loop, daemon=True)
+        self.healing_thread = threading.Thread(target = self._healing_loop, daemon = True)
         self.healing_thread.start()
 
-        logger.info("✅ Self-Healing Protocols started")
+        logger.info("✅ Self - Healing Protocols started")
+
 
     def _healing_loop(self):
         """Main healing loop."""
-        logger.info("🔄 Self-healing loop started")
+        logger.info("🔄 Self - healing loop started")
 
         last_snapshot = time.time()
 
@@ -461,7 +471,8 @@ class SelfHealingProtocols:
                 logger.error(traceback.format_exc())
                 time.sleep(60)  # Wait longer on error
 
-        logger.info("🛑 Self-healing loop stopped")
+        logger.info("🛑 Self - healing loop stopped")
+
 
     def _run_health_checks(self):
         """Run all enabled health checks."""
@@ -507,19 +518,21 @@ class SelfHealingProtocols:
                 logger.error(f"❌ Health check '{health_check.name}' failed: {e}")
                 health_check.consecutive_failures += 1
 
+
     def _execute_health_check(self, health_check: HealthCheck) -> Dict[str, Any]:
         """Execute a specific health check."""
         check_function = getattr(self, health_check.check_function, None)
         if not check_function:
             return {
                 "success": False,
-                "error": f"Check function {health_check.check_function} not found",
-            }
+                    "error": f"Check function {health_check.check_function} not found",
+                    }
 
         try:
             return check_function()
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def check_pipeline_health(self) -> Dict[str, Any]:
         """Check pipeline health."""
@@ -532,8 +545,8 @@ class SelfHealingProtocols:
             if status["status"] != "running":
                 return {
                     "success": False,
-                    "error": f'Pipeline status: {status["status"]}',
-                }
+                        "error": f'Pipeline status: {status["status"]}',
+                        }
 
             # Check success rate
             metrics = status.get("metrics", {})
@@ -547,10 +560,11 @@ class SelfHealingProtocols:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+
     def check_system_resources(self) -> Dict[str, Any]:
         """Check system resource usage."""
         try:
-            cpu_usage = psutil.cpu_percent(interval=1) / 100.0
+            cpu_usage = psutil.cpu_percent(interval = 1) / 100.0
             memory = psutil.virtual_memory()
             memory_usage = memory.percent / 100.0
             disk = psutil.disk_usage("/")
@@ -572,15 +586,16 @@ class SelfHealingProtocols:
 
             return {
                 "success": True,
-                "details": {
+                    "details": {
                     "cpu_usage": cpu_usage,
-                    "memory_usage": memory_usage,
-                    "disk_usage": disk_usage,
-                },
-            }
+                        "memory_usage": memory_usage,
+                        "disk_usage": disk_usage,
+                        },
+                    }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def check_database_integrity(self) -> Dict[str, Any]:
         """Check database integrity."""
@@ -603,8 +618,8 @@ class SelfHealingProtocols:
                     conn.close()
                     return {
                         "success": False,
-                        "error": f"Database {db_path} integrity check failed: {result[0]}",
-                    }
+                            "error": f"Database {db_path} integrity check failed: {result[0]}",
+                            }
 
                 conn.close()
 
@@ -613,6 +628,7 @@ class SelfHealingProtocols:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+
     def check_api_endpoints(self) -> Dict[str, Any]:
         """Check API endpoint health."""
         try:
@@ -620,15 +636,15 @@ class SelfHealingProtocols:
 
             # Check local endpoints
             endpoints = [
-                "http://localhost:8000/health",
-                "http://localhost:5000/api/status",
-            ]
+                "http://localhost:8000 / health",
+                    "http://localhost:5000 / api / status",
+                    ]
 
             failed_endpoints = []
 
             for endpoint in endpoints:
                 try:
-                    response = requests.get(endpoint, timeout=5)
+                    response = requests.get(endpoint, timeout = 5)
                     if response.status_code != 200:
                         failed_endpoints.append(f"{endpoint}: {response.status_code}")
                 except requests.RequestException as e:
@@ -637,13 +653,14 @@ class SelfHealingProtocols:
             if failed_endpoints:
                 return {
                     "success": False,
-                    "error": f"Failed endpoints: {failed_endpoints}",
-                }
+                        "error": f"Failed endpoints: {failed_endpoints}",
+                        }
 
             return {"success": True, "details": "All endpoints healthy"}
 
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def check_agent_performance(self) -> Dict[str, Any]:
         """Check agent performance."""
@@ -663,13 +680,14 @@ class SelfHealingProtocols:
             if poor_performers:
                 return {
                     "success": False,
-                    "error": f"Poor performing agents: {poor_performers}",
-                }
+                        "error": f"Poor performing agents: {poor_performers}",
+                        }
 
             return {"success": True, "details": agent_status}
 
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def check_file_system(self) -> Dict[str, Any]:
         """Check file system health."""
@@ -700,6 +718,7 @@ class SelfHealingProtocols:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+
     def check_network_connectivity(self) -> Dict[str, Any]:
         """Check network connectivity."""
         try:
@@ -715,7 +734,7 @@ class SelfHealingProtocols:
             try:
                 import urllib.request
 
-                urllib.request.urlopen("http://google.com", timeout=5)
+                urllib.request.urlopen("http://google.com", timeout = 5)
             except Exception as e:
                 return {"success": False, "error": f"HTTP connectivity failed: {e}"}
 
@@ -723,6 +742,7 @@ class SelfHealingProtocols:
 
         except Exception as e:
             return {"success": False, "error": str(e)}
+
 
     def _trigger_recovery(
         self, health_check: HealthCheck, check_result: Dict[str, Any]
@@ -743,13 +763,14 @@ class SelfHealingProtocols:
         recovery_id = str(uuid.uuid4())
         self.active_recoveries[recovery_id] = {
             "plan": recovery_plan,
-            "started_at": datetime.now(),
-            "health_check": health_check.name,
-            "issue_details": check_result,
-        }
+                "started_at": datetime.now(),
+                "health_check": health_check.name,
+                "issue_details": check_result,
+                }
 
         # Execute recovery in background
         self.executor.submit(self._execute_recovery_plan, recovery_id, recovery_plan)
+
 
     def _determine_issue_type(
         self, health_check: HealthCheck, check_result: Dict[str, Any]
@@ -771,6 +792,7 @@ class SelfHealingProtocols:
             return "agent_performance_degraded"
         else:
             return "system_overload"
+
 
     def _execute_recovery_plan(self, recovery_id: str, recovery_plan: RecoveryPlan):
         """Execute a recovery plan."""
@@ -832,6 +854,7 @@ class SelfHealingProtocols:
             # Remove from active recoveries
             self.active_recoveries.pop(recovery_id, None)
 
+
     def _execute_recovery_action(self, action: RecoveryAction) -> bool:
         """Execute a specific recovery action."""
         try:
@@ -859,6 +882,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Recovery action {action.value} failed: {e}")
             return False
 
+
     def _restart_component(self) -> bool:
         """Restart system components."""
         logger.info("🔄 Restarting components...")
@@ -877,6 +901,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Component restart failed: {e}")
             return False
+
 
     def _scale_resources(self) -> bool:
         """Scale system resources."""
@@ -898,6 +923,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Resource scaling failed: {e}")
             return False
+
 
     def _rollback_changes(self) -> bool:
         """Rollback to previous system state."""
@@ -921,6 +947,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Rollback failed: {e}")
             return False
 
+
     def _clear_cache(self) -> bool:
         """Clear system caches."""
         logger.info("🧹 Clearing caches...")
@@ -931,8 +958,8 @@ class SelfHealingProtocols:
 
             for temp_dir in temp_dirs:
                 if temp_dir.exists():
-                    shutil.rmtree(temp_dir, ignore_errors=True)
-                    temp_dir.mkdir(exist_ok=True)
+                    shutil.rmtree(temp_dir, ignore_errors = True)
+                    temp_dir.mkdir(exist_ok = True)
 
             # Clear Python cache
             import gc
@@ -944,6 +971,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Cache clearing failed: {e}")
             return False
+
 
     def _repair_database(self) -> bool:
         """Repair database issues."""
@@ -981,6 +1009,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Database repair failed: {e}")
             return False
 
+
     def _optimize_performance(self) -> bool:
         """Optimize system performance."""
         logger.info("⚡ Optimizing performance...")
@@ -1003,12 +1032,13 @@ class SelfHealingProtocols:
             logger.error(f"❌ Performance optimization failed: {e}")
             return False
 
+
     def _emergency_shutdown(self) -> bool:
         """Emergency system shutdown."""
         logger.critical("🚨 Emergency shutdown initiated")
 
         try:
-            # Stop all non-critical processes
+            # Stop all non - critical processes
             if self.pipeline:
                 # This would stop the pipeline
                 logger.info("🛑 Pipeline stopped")
@@ -1022,6 +1052,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Emergency shutdown failed: {e}")
             return False
 
+
     def _backup_restore(self) -> bool:
         """Restore from backup."""
         logger.info("💾 Restoring from backup...")
@@ -1033,7 +1064,7 @@ class SelfHealingProtocols:
                 logger.error("❌ No backup files found")
                 return False
 
-            latest_backup = max(backup_files, key=lambda x: x.stat().st_mtime)
+            latest_backup = max(backup_files, key = lambda x: x.stat().st_mtime)
 
             # Restore backup
             # This would restore system from backup
@@ -1044,6 +1075,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Backup restore failed: {e}")
             return False
+
 
     def _clear_stuck_processes(self):
         """Clear stuck processes."""
@@ -1062,6 +1094,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Error clearing stuck processes: {e}")
 
+
     def _clear_unused_resources(self):
         """Clear unused system resources."""
         try:
@@ -1072,12 +1105,13 @@ class SelfHealingProtocols:
 
             # Clear system caches
             try:
-                subprocess.run(["sync"], check=False, timeout=10)
+                subprocess.run(["sync"], check = False, timeout = 10)
             except (subprocess.TimeoutExpired, FileNotFoundError):
                 pass
 
         except Exception as e:
             logger.error(f"❌ Error clearing unused resources: {e}")
+
 
     def _check_recovery_success(self, recovery_plan: RecoveryPlan) -> bool:
         """Check if recovery was successful."""
@@ -1091,13 +1125,14 @@ class SelfHealingProtocols:
             logger.error(f"❌ Error checking recovery success: {e}")
             return False
 
+
     def _evaluate_success_criteria(self, criteria: str) -> bool:
         """Evaluate a success criteria."""
         try:
             # Simple criteria evaluation
             if "cpu_usage <" in criteria:
                 threshold = float(criteria.split("< ")[1])
-                current_cpu = psutil.cpu_percent(interval=1) / 100.0
+                current_cpu = psutil.cpu_percent(interval = 1) / 100.0
                 return current_cpu < threshold
 
             elif "memory_usage < " in criteria:
@@ -1118,17 +1153,18 @@ class SelfHealingProtocols:
             logger.error(f"❌ Error evaluating criteria '{criteria}': {e}")
             return False
 
+
     def _create_system_snapshot(self):
         """Create a system state snapshot."""
         try:
             snapshot = SystemSnapshot(
-                timestamp=datetime.now(),
-                system_metrics=self._get_system_metrics(),
-                component_states=self._get_component_states(),
-                configuration=self._get_system_configuration(),
-                performance_baseline=self._get_performance_baseline(),
-                backup_paths=self._create_backups(),
-            )
+                timestamp = datetime.now(),
+                    system_metrics = self._get_system_metrics(),
+                    component_states = self._get_component_states(),
+                    configuration = self._get_system_configuration(),
+                    performance_baseline = self._get_performance_baseline(),
+                    backup_paths = self._create_backups(),
+                    )
 
             self.snapshots.append(snapshot)
 
@@ -1140,21 +1176,23 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Error creating system snapshot: {e}")
 
+
     def _get_system_metrics(self) -> Dict[str, Any]:
         """Get current system metrics."""
         try:
             return {
-                "cpu_usage": psutil.cpu_percent(interval=1) / 100.0,
-                "memory_usage": psutil.virtual_memory().percent / 100.0,
-                "disk_usage": psutil.disk_usage("/").used
+                "cpu_usage": psutil.cpu_percent(interval = 1) / 100.0,
+                    "memory_usage": psutil.virtual_memory().percent / 100.0,
+                    "disk_usage": psutil.disk_usage("/").used
                 / psutil.disk_usage("/").total,
-                "network_io": dict(psutil.net_io_counters()._asdict()),
-                "process_count": len(psutil.pids()),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "network_io": dict(psutil.net_io_counters()._asdict()),
+                    "process_count": len(psutil.pids()),
+                    "timestamp": datetime.now().isoformat(),
+                    }
         except Exception as e:
             logger.error(f"❌ Error getting system metrics: {e}")
             return {}
+
 
     def _get_component_states(self) -> Dict[str, Any]:
         """Get current component states."""
@@ -1167,29 +1205,31 @@ class SelfHealingProtocols:
             # Add other component states
             states["self_healing"] = {
                 "status": self.system_health.value,
-                "active_recoveries": len(self.active_recoveries),
-                "health_checks_enabled": sum(
+                    "active_recoveries": len(self.active_recoveries),
+                    "health_checks_enabled": sum(
                     1 for hc in self.health_checks if hc.enabled
                 ),
-            }
+                    }
 
             return states
         except Exception as e:
             logger.error(f"❌ Error getting component states: {e}")
             return {}
 
+
     def _get_system_configuration(self) -> Dict[str, Any]:
         """Get current system configuration."""
         try:
             return {
                 "resource_limits": self.resource_limits,
-                "snapshot_interval": self.snapshot_interval,
-                "health_checks": [hc.name for hc in self.health_checks if hc.enabled],
-                "recovery_plans": list(self.recovery_plans.keys()),
-            }
+                    "snapshot_interval": self.snapshot_interval,
+                    "health_checks": [hc.name for hc in self.health_checks if hc.enabled],
+                    "recovery_plans": list(self.recovery_plans.keys()),
+                    }
         except Exception as e:
             logger.error(f"❌ Error getting system configuration: {e}")
             return {}
+
 
     def _get_performance_baseline(self) -> Dict[str, float]:
         """Get performance baseline metrics."""
@@ -1198,12 +1238,13 @@ class SelfHealingProtocols:
             return {
                 "avg_cpu_usage": 0.3,  # This would be calculated from history
                 "avg_memory_usage": 0.4,
-                "avg_response_time": 0.5,
-                "avg_success_rate": 0.95,
-            }
+                    "avg_response_time": 0.5,
+                    "avg_success_rate": 0.95,
+                    }
         except Exception as e:
             logger.error(f"❌ Error getting performance baseline: {e}")
             return {}
+
 
     def _create_backups(self) -> List[str]:
         """Create system backups."""
@@ -1239,6 +1280,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Error creating backups: {e}")
             return []
 
+
     def _save_snapshot_to_db(self, snapshot: SystemSnapshot):
         """Save snapshot to database."""
         try:
@@ -1247,25 +1289,26 @@ class SelfHealingProtocols:
 
             cursor.execute(
                 """
-                INSERT INTO system_snapshots 
+                INSERT INTO system_snapshots
                 (timestamp, metrics, component_states, configuration, performance_baseline, backup_paths)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
                 (
                     snapshot.timestamp.isoformat(),
-                    json.dumps(snapshot.system_metrics, default=str),
-                    json.dumps(snapshot.component_states, default=str),
-                    json.dumps(snapshot.configuration, default=str),
-                    json.dumps(snapshot.performance_baseline, default=str),
-                    json.dumps(snapshot.backup_paths, default=str),
-                ),
-            )
+                        json.dumps(snapshot.system_metrics, default = str),
+                        json.dumps(snapshot.component_states, default = str),
+                        json.dumps(snapshot.configuration, default = str),
+                        json.dumps(snapshot.performance_baseline, default = str),
+                        json.dumps(snapshot.backup_paths, default = str),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"❌ Error saving snapshot to database: {e}")
+
 
     def _log_health_check(
         self, check_name: str, result: Dict[str, Any], duration_ms: int
@@ -1277,18 +1320,18 @@ class SelfHealingProtocols:
 
             cursor.execute(
                 """
-                INSERT INTO health_checks 
+                INSERT INTO health_checks
                 (timestamp, check_name, status, details, duration_ms)
                 VALUES (?, ?, ?, ?, ?)
             """,
                 (
                     datetime.now().isoformat(),
-                    check_name,
-                    "success" if result["success"] else "failure",
-                    json.dumps(result, default=str),
-                    duration_ms,
-                ),
-            )
+                        check_name,
+                        "success" if result["success"] else "failure",
+                        json.dumps(result, default = str),
+                        duration_ms,
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -1296,13 +1339,14 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Error logging health check: {e}")
 
+
     def _log_recovery_action(
         self,
-        recovery_id: str,
-        recovery_plan: RecoveryPlan,
-        success: bool,
-        duration: float,
-    ):
+            recovery_id: str,
+            recovery_plan: RecoveryPlan,
+            success: bool,
+            duration: float,
+            ):
         """Log recovery action result."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -1310,27 +1354,28 @@ class SelfHealingProtocols:
 
             cursor.execute(
                 """
-                INSERT INTO recovery_actions 
+                INSERT INTO recovery_actions
                 (id, issue_type, action_type, started_at, completed_at, success, details, duration_seconds)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     recovery_id,
-                    recovery_plan.issue_type,
-                    ",".join([action.value for action in recovery_plan.actions]),
-                    (datetime.now() - timedelta(seconds=duration)).isoformat(),
-                    datetime.now().isoformat(),
-                    success,
-                    json.dumps(asdict(recovery_plan), default=str),
-                    int(duration),
-                ),
-            )
+                        recovery_plan.issue_type,
+                        ",".join([action.value for action in recovery_plan.actions]),
+                        (datetime.now() - timedelta(seconds = duration)).isoformat(),
+                        datetime.now().isoformat(),
+                        success,
+                        json.dumps(asdict(recovery_plan), default = str),
+                        int(duration),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"❌ Error logging recovery action: {e}")
+
 
     def _check_recovery_needs(self):
         """Check if any recovery actions are needed."""
@@ -1345,6 +1390,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Error checking recovery needs: {e}")
 
+
     def _get_recent_health_failures(self) -> List[Dict[str, Any]]:
         """Get recent health check failures."""
         try:
@@ -1352,16 +1398,16 @@ class SelfHealingProtocols:
             cursor = conn.cursor()
 
             # Get failures from last hour
-            one_hour_ago = (datetime.now() - timedelta(hours=1)).isoformat()
+            one_hour_ago = (datetime.now() - timedelta(hours = 1)).isoformat()
 
             cursor.execute(
                 """
-                SELECT * FROM health_checks 
+                SELECT * FROM health_checks
                 WHERE timestamp > ? AND status = 'failure'
                 ORDER BY timestamp DESC
             """,
                 (one_hour_ago,),
-            )
+                    )
 
             failures = cursor.fetchall()
             conn.close()
@@ -1375,6 +1421,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Error getting recent health failures: {e}")
             return []
 
+
     def _run_performance_optimizations(self):
         """Run performance optimization checks."""
         try:
@@ -1387,6 +1434,7 @@ class SelfHealingProtocols:
 
         except Exception as e:
             logger.error(f"❌ Error running performance optimizations: {e}")
+
 
     def _should_apply_optimization(
         self, rule: Dict[str, Any], metrics: Dict[str, Any]
@@ -1411,6 +1459,7 @@ class SelfHealingProtocols:
             logger.error(f"❌ Error evaluating optimization condition: {e}")
             return False
 
+
     def _apply_optimization_rule(self, rule: Dict[str, Any]):
         """Apply an optimization rule."""
         try:
@@ -1432,6 +1481,7 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Error applying optimization rule: {e}")
 
+
     def _cleanup_old_data(self):
         """Clean up old data to prevent database bloat."""
         try:
@@ -1439,11 +1489,11 @@ class SelfHealingProtocols:
             cursor = conn.cursor()
 
             # Clean up old health checks (keep last 7 days)
-            week_ago = (datetime.now() - timedelta(days=7)).isoformat()
+            week_ago = (datetime.now() - timedelta(days = 7)).isoformat()
             cursor.execute("DELETE FROM health_checks WHERE timestamp < ?", (week_ago,))
 
             # Clean up old recovery actions (keep last 30 days)
-            month_ago = (datetime.now() - timedelta(days=30)).isoformat()
+            month_ago = (datetime.now() - timedelta(days = 30)).isoformat()
             cursor.execute(
                 "DELETE FROM recovery_actions WHERE started_at < ?", (month_ago,)
             )
@@ -1451,9 +1501,9 @@ class SelfHealingProtocols:
             # Clean up old snapshots (keep last 100)
             cursor.execute(
                 """
-                DELETE FROM system_snapshots 
+                DELETE FROM system_snapshots
                 WHERE timestamp NOT IN (
-                    SELECT timestamp FROM system_snapshots 
+                    SELECT timestamp FROM system_snapshots
                     ORDER BY timestamp DESC LIMIT 100
                 )
             """
@@ -1471,69 +1521,73 @@ class SelfHealingProtocols:
         except Exception as e:
             logger.error(f"❌ Error cleaning up old data: {e}")
 
+
     def get_healing_status(self) -> Dict[str, Any]:
         """Get current healing system status."""
         try:
             return {
                 "system_health": self.system_health.value,
-                "active_recoveries": len(self.active_recoveries),
-                "health_checks_enabled": sum(
+                    "active_recoveries": len(self.active_recoveries),
+                    "health_checks_enabled": sum(
                     1 for hc in self.health_checks if hc.enabled
                 ),
-                "snapshots_count": len(self.snapshots),
-                "last_snapshot": (
+                    "snapshots_count": len(self.snapshots),
+                    "last_snapshot": (
                     self.snapshots[-1].timestamp.isoformat() if self.snapshots else None
                 ),
-                "recovery_plans_available": len(self.recovery_plans),
-                "optimization_rules": len(self.optimization_rules),
-                "running": self.running,
-            }
+                    "recovery_plans_available": len(self.recovery_plans),
+                    "optimization_rules": len(self.optimization_rules),
+                    "running": self.running,
+                    }
         except Exception as e:
             logger.error(f"❌ Error getting healing status: {e}")
             return {"error": str(e)}
 
+
     def stop_healing_protocols(self):
-        """Stop the self-healing system."""
-        logger.info("🛑 Stopping Self-Healing Protocols...")
+        """Stop the self - healing system."""
+        logger.info("🛑 Stopping Self - Healing Protocols...")
 
         self.running = False
 
         # Wait for healing thread to finish
         if self.healing_thread and self.healing_thread.is_alive():
-            self.healing_thread.join(timeout=10)
+            self.healing_thread.join(timeout = 10)
 
         # Shutdown executor
-        self.executor.shutdown(wait=True)
+            self.executor.shutdown(wait = True)
 
-        logger.info("✅ Self-Healing Protocols stopped")
+        logger.info("✅ Self - Healing Protocols stopped")
+
 
     def connect_pipeline(self, pipeline: FullAutomationPipeline):
         """Connect to a pipeline instance."""
         self.pipeline = pipeline
-        logger.info("🔗 Pipeline connected to self-healing system")
+        logger.info("🔗 Pipeline connected to self - healing system")
+
 
     def disconnect_pipeline(self):
         """Disconnect from pipeline."""
         self.pipeline = None
-        logger.info("🔌 Pipeline disconnected from self-healing system")
+        logger.info("🔌 Pipeline disconnected from self - healing system")
 
 
 def main():
-    """Main function to run the self-healing protocols."""
+    """Main function to run the self - healing protocols."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Self-Healing Protocols")
-    parser.add_argument("--test-mode", action="store_true", help="Run in test mode")
+    parser = argparse.ArgumentParser(description="Self - Healing Protocols")
+    parser.add_argument("--test - mode", action="store_true", help="Run in test mode")
     args = parser.parse_args()
 
     # Setup logging
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.FileHandler("self_healing.log"), logging.StreamHandler()],
-    )
+        level = logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[logging.FileHandler("self_healing.log"), logging.StreamHandler()],
+            )
 
-    # Create and start self-healing system
+    # Create and start self - healing system
     healing_system = SelfHealingProtocols()
 
     try:
@@ -1542,7 +1596,7 @@ def main():
             logger.info("🧪 Running in test mode")
             healing_system._run_health_checks()
             status = healing_system.get_healing_status()
-            print(json.dumps(status, indent=2, default=str))
+            print(json.dumps(status, indent = 2, default = str))
         else:
             # Start continuous monitoring
             healing_system.start_healing_protocols()
@@ -1555,12 +1609,11 @@ def main():
                 logger.info("🛑 Keyboard interrupt received")
 
     except Exception as e:
-        logger.error(f"❌ Self-healing system error: {e}")
+        logger.error(f"❌ Self - healing system error: {e}")
         logger.error(traceback.format_exc())
 
     finally:
         healing_system.stop_healing_protocols()
-
 
 if __name__ == "__main__":
     main()

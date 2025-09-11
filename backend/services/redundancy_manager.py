@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Multi-Layer Redundancy Manager for 100% Model Generation Reliability
+Multi - Layer Redundancy Manager for 100% Model Generation Reliability
 
 This module implements a sophisticated redundancy system with multiple model generation
 backends and automatic failover capabilities to ensure 100% uptime and reliability.
@@ -10,9 +10,9 @@ Features:
 - Automatic failover and load balancing
 - Health monitoring and performance tracking
 - Dynamic backend selection based on load and performance
-- Backup model caching and pre-warming
+- Backup model caching and pre - warming
 - Geographic distribution support
-- Real-time synchronization between backends
+- Real - time synchronization between backends
 - Disaster recovery mechanisms
 """
 
@@ -41,7 +41,7 @@ from .health_monitor import ComponentHealth, HealthMonitor, get_health_monitor
 from .retry_manager import AdvancedRetryManager, RetryConfig, get_retry_manager
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -89,22 +89,24 @@ class FailoverStrategy(Enum):
     HEALTH_BASED = "health_based"
     PERFORMANCE_BASED = "performance_based"
 
-
 @dataclass
+
+
 class ModelRequest:
     """Model generation request"""
 
     request_id: str
     model_type: str
     parameters: Dict[str, Any]
-    priority: int = 5  # 1-10, 10 being highest
+    priority: int = 5  # 1 - 10, 10 being highest
     timeout_ms: int = 30000
-    quality_requirements: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=datetime.now)
-
+    quality_requirements: Dict[str, Any] = field(default_factory = dict)
+    metadata: Dict[str, Any] = field(default_factory = dict)
+    created_at: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class ModelResponse:
     """Model generation response"""
 
@@ -116,11 +118,12 @@ class ModelResponse:
     generation_time_ms: int = 0
     quality_score: float = 0.0
     error: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    completed_at: datetime = field(default_factory=datetime.now)
-
+    metadata: Dict[str, Any] = field(default_factory = dict)
+    completed_at: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class BackendConfig:
     """Configuration for a model generation backend"""
 
@@ -133,14 +136,15 @@ class BackendConfig:
     weight: float = 1.0
     priority: int = 5
     health_check_interval_ms: int = 30000
-    capabilities: List[str] = field(default_factory=list)
+    capabilities: List[str] = field(default_factory = list)
     geographic_region: Optional[str] = None
     cost_per_request: float = 0.0
-    quality_tier: int = 5  # 1-10
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    quality_tier: int = 5  # 1 - 10
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class BackendMetrics:
     """Performance metrics for a backend"""
 
@@ -159,6 +163,7 @@ class BackendMetrics:
 class ModelGenerationBackend(ABC):
     """Abstract base class for model generation backends"""
 
+
     def __init__(self, config: BackendConfig):
         self.config = config
         self.metrics = BackendMetrics()
@@ -167,24 +172,33 @@ class ModelGenerationBackend(ABC):
         self.last_health_check = None
 
     @abstractmethod
+
+
     async def generate_model(self, request: ModelRequest) -> ModelResponse:
         """Generate a model based on the request"""
         pass
 
     @abstractmethod
+
+
     async def health_check(self) -> bool:
         """Check if backend is healthy"""
         pass
 
     @abstractmethod
+
+
     async def initialize(self) -> bool:
         """Initialize the backend"""
         pass
 
     @abstractmethod
+
+
     async def shutdown(self):
         """Shutdown the backend"""
         pass
+
 
     def update_metrics(
         self, success: bool, response_time_ms: int, quality_score: float = 0.0
@@ -222,9 +236,11 @@ class ModelGenerationBackend(ABC):
                     self.metrics.successful_requests / self.metrics.total_requests
                 ) * 100
 
+
     def get_load_factor(self) -> float:
         """Get current load factor (0.0 to 1.0)"""
         return min(self.metrics.current_load / self.config.max_concurrent_requests, 1.0)
+
 
     def get_performance_score(self) -> float:
         """Calculate performance score based on multiple factors"""
@@ -253,10 +269,12 @@ class ModelGenerationBackend(ABC):
 class LocalModelBackend(ModelGenerationBackend):
     """Local model generation backend"""
 
+
     def __init__(self, config: BackendConfig):
         super().__init__(config)
         self.model_cache = {}
-        self.executor = ThreadPoolExecutor(max_workers=config.max_concurrent_requests)
+        self.executor = ThreadPoolExecutor(max_workers = config.max_concurrent_requests)
+
 
     async def initialize(self) -> bool:
         """Initialize local backend"""
@@ -267,7 +285,7 @@ class LocalModelBackend(ModelGenerationBackend):
                 logger.warning(f"Local model directory not found: {model_dir}")
                 return False
 
-            # Pre-load common models
+            # Pre - load common models
             await self._preload_models()
 
             self.status = BackendStatus.HEALTHY
@@ -279,18 +297,20 @@ class LocalModelBackend(ModelGenerationBackend):
             self.status = BackendStatus.OFFLINE
             return False
 
+
     async def _preload_models(self):
-        """Pre-load commonly used models"""
+        """Pre - load commonly used models"""
         try:
             # This would load actual model files in a real implementation
             common_models = ["avatar", "tts", "image_generation"]
             for model_type in common_models:
                 self.model_cache[model_type] = f"cached_{model_type}_model"
 
-            logger.info(f"Pre-loaded {len(common_models)} models for local backend")
+            logger.info(f"Pre - loaded {len(common_models)} models for local backend")
 
         except Exception as e:
-            logger.error(f"Failed to pre-load models: {e}")
+            logger.error(f"Failed to pre - load models: {e}")
+
 
     async def generate_model(self, request: ModelRequest) -> ModelResponse:
         """Generate model locally"""
@@ -313,14 +333,14 @@ class LocalModelBackend(ModelGenerationBackend):
                 generation_time = int((time.time() - start_time) * 1000)
 
             response = ModelResponse(
-                request_id=request.request_id,
-                success=True,
-                model_data=model_data,
-                backend_used=self.config.name,
-                generation_time_ms=generation_time,
-                quality_score=8.5,  # Local models typically high quality
-                completed_at=datetime.now(),
-            )
+                request_id = request.request_id,
+                    success = True,
+                    model_data = model_data,
+                    backend_used = self.config.name,
+                    generation_time_ms = generation_time,
+                    quality_score = 8.5,  # Local models typically high quality
+                completed_at = datetime.now(),
+                    )
 
             self.update_metrics(True, generation_time, 8.5)
             return response
@@ -330,17 +350,18 @@ class LocalModelBackend(ModelGenerationBackend):
             self.update_metrics(False, generation_time)
 
             return ModelResponse(
-                request_id=request.request_id,
-                success=False,
-                backend_used=self.config.name,
-                generation_time_ms=generation_time,
-                error=str(e),
-                completed_at=datetime.now(),
-            )
+                request_id = request.request_id,
+                    success = False,
+                    backend_used = self.config.name,
+                    generation_time_ms = generation_time,
+                    error = str(e),
+                    completed_at = datetime.now(),
+                    )
 
         finally:
             with self.lock:
                 self.metrics.current_load = max(0, self.metrics.current_load - 1)
+
 
     async def _generate_new_model(self, request: ModelRequest) -> Any:
         """Generate a new model (placeholder implementation)"""
@@ -348,13 +369,14 @@ class LocalModelBackend(ModelGenerationBackend):
         await asyncio.sleep(2.0)  # Simulate generation time
         return f"local_generated_{request.model_type}_{request.request_id}"
 
+
     async def health_check(self) -> bool:
         """Check local backend health"""
         try:
             # Check system resources
             import psutil
 
-            cpu_percent = psutil.cpu_percent(interval=1)
+            cpu_percent = psutil.cpu_percent(interval = 1)
             memory_percent = psutil.virtual_memory().percent
             disk_percent = psutil.disk_usage("/").percent
 
@@ -374,42 +396,45 @@ class LocalModelBackend(ModelGenerationBackend):
             self.status = BackendStatus.UNHEALTHY
             return False
 
+
     async def shutdown(self):
         """Shutdown local backend"""
-        self.executor.shutdown(wait=True)
+        self.executor.shutdown(wait = True)
         self.status = BackendStatus.OFFLINE
         logger.info(f"Local backend '{self.config.name}' shutdown complete")
 
 
 class CloudModelBackend(ModelGenerationBackend):
-    """Cloud-based model generation backend"""
+    """Cloud - based model generation backend"""
+
 
     def __init__(self, config: BackendConfig):
         super().__init__(config)
         self.session = None
         self.connection_pool = None
 
+
     async def initialize(self) -> bool:
         """Initialize cloud backend"""
         try:
             # Create HTTP session with connection pooling
             connector = aiohttp.TCPConnector(
-                limit=self.config.max_concurrent_requests,
-                limit_per_host=self.config.max_concurrent_requests,
-                ttl_dns_cache=300,
-                use_dns_cache=True,
-            )
+                limit = self.config.max_concurrent_requests,
+                    limit_per_host = self.config.max_concurrent_requests,
+                    ttl_dns_cache = 300,
+                    use_dns_cache = True,
+                    )
 
-            timeout = aiohttp.ClientTimeout(total=self.config.timeout_ms / 1000)
+            timeout = aiohttp.ClientTimeout(total = self.config.timeout_ms / 1000)
 
             self.session = aiohttp.ClientSession(
-                connector=connector,
-                timeout=timeout,
-                headers={
+                connector = connector,
+                    timeout = timeout,
+                    headers={
                     "Authorization": f"Bearer {self.config.api_key}",
-                    "Content-Type": "application/json",
-                },
-            )
+                        "Content - Type": "application / json",
+                        },
+                    )
 
             # Test connection
             if await self.health_check():
@@ -427,6 +452,7 @@ class CloudModelBackend(ModelGenerationBackend):
             self.status = BackendStatus.OFFLINE
             return False
 
+
     async def generate_model(self, request: ModelRequest) -> ModelResponse:
         """Generate model via cloud API"""
         start_time = time.time()
@@ -438,14 +464,14 @@ class CloudModelBackend(ModelGenerationBackend):
             # Prepare API request
             payload = {
                 "model_type": request.model_type,
-                "parameters": request.parameters,
-                "request_id": request.request_id,
-                "priority": request.priority,
-            }
+                    "parameters": request.parameters,
+                    "request_id": request.request_id,
+                    "priority": request.priority,
+                    }
 
             # Make API call
             async with self.session.post(
-                f"{self.config.endpoint}/generate", json=payload
+                f"{self.config.endpoint}/generate", json = payload
             ) as response:
 
                 generation_time = int((time.time() - start_time) * 1000)
@@ -454,15 +480,15 @@ class CloudModelBackend(ModelGenerationBackend):
                     result = await response.json()
 
                     model_response = ModelResponse(
-                        request_id=request.request_id,
-                        success=True,
-                        model_data=result.get("model_data"),
-                        model_path=result.get("model_path"),
-                        backend_used=self.config.name,
-                        generation_time_ms=generation_time,
-                        quality_score=result.get("quality_score", 7.0),
-                        completed_at=datetime.now(),
-                    )
+                        request_id = request.request_id,
+                            success = True,
+                            model_data = result.get("model_data"),
+                            model_path = result.get("model_path"),
+                            backend_used = self.config.name,
+                            generation_time_ms = generation_time,
+                            quality_score = result.get("quality_score", 7.0),
+                            completed_at = datetime.now(),
+                            )
 
                     self.update_metrics(
                         True, generation_time, result.get("quality_score", 7.0)
@@ -474,30 +500,31 @@ class CloudModelBackend(ModelGenerationBackend):
                     self.update_metrics(False, generation_time)
 
                     return ModelResponse(
-                        request_id=request.request_id,
-                        success=False,
-                        backend_used=self.config.name,
-                        generation_time_ms=generation_time,
-                        error=f"HTTP {response.status}: {error_text}",
-                        completed_at=datetime.now(),
-                    )
+                        request_id = request.request_id,
+                            success = False,
+                            backend_used = self.config.name,
+                            generation_time_ms = generation_time,
+                            error = f"HTTP {response.status}: {error_text}",
+                            completed_at = datetime.now(),
+                            )
 
         except Exception as e:
             generation_time = int((time.time() - start_time) * 1000)
             self.update_metrics(False, generation_time)
 
             return ModelResponse(
-                request_id=request.request_id,
-                success=False,
-                backend_used=self.config.name,
-                generation_time_ms=generation_time,
-                error=str(e),
-                completed_at=datetime.now(),
-            )
+                request_id = request.request_id,
+                    success = False,
+                    backend_used = self.config.name,
+                    generation_time_ms = generation_time,
+                    error = str(e),
+                    completed_at = datetime.now(),
+                    )
 
         finally:
             with self.lock:
                 self.metrics.current_load = max(0, self.metrics.current_load - 1)
+
 
     async def health_check(self) -> bool:
         """Check cloud backend health"""
@@ -506,7 +533,7 @@ class CloudModelBackend(ModelGenerationBackend):
                 return False
 
             async with self.session.get(
-                f"{self.config.endpoint}/health", timeout=aiohttp.ClientTimeout(total=5)
+                f"{self.config.endpoint}/health", timeout = aiohttp.ClientTimeout(total = 5)
             ) as response:
 
                 if response.status == 200:
@@ -531,6 +558,7 @@ class CloudModelBackend(ModelGenerationBackend):
             self.status = BackendStatus.UNHEALTHY
             return False
 
+
     async def shutdown(self):
         """Shutdown cloud backend"""
         if self.session:
@@ -542,16 +570,18 @@ class CloudModelBackend(ModelGenerationBackend):
 class HybridModelBackend(ModelGenerationBackend):
     """Hybrid backend that combines local and cloud generation"""
 
+
     def __init__(
         self,
-        config: BackendConfig,
-        local_backend: LocalModelBackend,
-        cloud_backend: CloudModelBackend,
-    ):
+            config: BackendConfig,
+            local_backend: LocalModelBackend,
+            cloud_backend: CloudModelBackend,
+            ):
         super().__init__(config)
         self.local_backend = local_backend
         self.cloud_backend = cloud_backend
         self.hybrid_strategy = "adaptive"  # adaptive, local_first, cloud_first
+
 
     async def initialize(self) -> bool:
         """Initialize hybrid backend"""
@@ -572,6 +602,7 @@ class HybridModelBackend(ModelGenerationBackend):
             self.status = BackendStatus.OFFLINE
             return False
 
+
     async def generate_model(self, request: ModelRequest) -> ModelResponse:
         """Generate model using hybrid strategy"""
         # Determine which backend to use
@@ -579,8 +610,8 @@ class HybridModelBackend(ModelGenerationBackend):
 
         if use_local and self.local_backend.status in [
             BackendStatus.HEALTHY,
-            BackendStatus.DEGRADED,
-        ]:
+                BackendStatus.DEGRADED,
+                ]:
             response = await self.local_backend.generate_model(request)
             if response.success:
                 response.backend_used = f"{self.config.name}(local)"
@@ -596,20 +627,21 @@ class HybridModelBackend(ModelGenerationBackend):
         # Both failed, try the other one
         if not use_local and self.local_backend.status in [
             BackendStatus.HEALTHY,
-            BackendStatus.DEGRADED,
-        ]:
+                BackendStatus.DEGRADED,
+                ]:
             response = await self.local_backend.generate_model(request)
             response.backend_used = f"{self.config.name}(local_fallback)"
             return response
 
         # Complete failure
         return ModelResponse(
-            request_id=request.request_id,
-            success=False,
-            backend_used=self.config.name,
-            error="Both local and cloud backends failed",
-            completed_at=datetime.now(),
-        )
+            request_id = request.request_id,
+                success = False,
+                backend_used = self.config.name,
+                error="Both local and cloud backends failed",
+                completed_at = datetime.now(),
+                )
+
 
     async def _should_use_local(self, request: ModelRequest) -> bool:
         """Determine if local backend should be used"""
@@ -632,6 +664,7 @@ class HybridModelBackend(ModelGenerationBackend):
 
         return True
 
+
     async def health_check(self) -> bool:
         """Check hybrid backend health"""
         local_healthy = await self.local_backend.health_check()
@@ -647,6 +680,7 @@ class HybridModelBackend(ModelGenerationBackend):
             self.status = BackendStatus.UNHEALTHY
             return False
 
+
     async def shutdown(self):
         """Shutdown hybrid backend"""
         await self.local_backend.shutdown()
@@ -658,7 +692,8 @@ class HybridModelBackend(ModelGenerationBackend):
 class RedundancyManager:
     """Manages multiple model generation backends with automatic failover"""
 
-    def __init__(self, db_path: str = "data/redundancy_manager.db"):
+
+    def __init__(self, db_path: str = "data / redundancy_manager.db"):
         self.db_path = db_path
         self.backends: Dict[str, ModelGenerationBackend] = {}
         self.load_balancing_strategy = LoadBalancingStrategy.PERFORMANCE_BASED
@@ -680,9 +715,10 @@ class RedundancyManager:
 
         logger.info("RedundancyManager initialized")
 
+
     def _init_database(self):
         """Initialize redundancy tracking database"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -692,14 +728,14 @@ class RedundancyManager:
                 """
                 CREATE TABLE IF NOT EXISTS backend_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    backend_name TEXT NOT NULL,
-                    total_requests INTEGER,
-                    successful_requests INTEGER,
-                    failed_requests INTEGER,
-                    avg_response_time_ms REAL,
-                    uptime_percentage REAL,
-                    quality_score REAL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        backend_name TEXT NOT NULL,
+                        total_requests INTEGER,
+                        successful_requests INTEGER,
+                        failed_requests INTEGER,
+                        avg_response_time_ms REAL,
+                        uptime_percentage REAL,
+                        quality_score REAL,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -709,11 +745,11 @@ class RedundancyManager:
                 """
                 CREATE TABLE IF NOT EXISTS failover_events (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    from_backend TEXT,
-                    to_backend TEXT,
-                    reason TEXT,
-                    request_id TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        from_backend TEXT,
+                        to_backend TEXT,
+                        reason TEXT,
+                        request_id TEXT,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -723,17 +759,18 @@ class RedundancyManager:
                 """
                 CREATE TABLE IF NOT EXISTS request_routing (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    request_id TEXT NOT NULL,
-                    backend_used TEXT NOT NULL,
-                    success BOOLEAN,
-                    response_time_ms INTEGER,
-                    quality_score REAL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        request_id TEXT NOT NULL,
+                        backend_used TEXT NOT NULL,
+                        success BOOLEAN,
+                        response_time_ms INTEGER,
+                        quality_score REAL,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
 
             conn.commit()
+
 
     async def add_backend(self, backend: ModelGenerationBackend) -> bool:
         """Add a backend to the redundancy pool"""
@@ -744,7 +781,7 @@ class RedundancyManager:
                     self.backends[backend.config.name] = backend
 
                 # Register with health monitor
-                self.health_monitor.register_component(
+                    self.health_monitor.register_component(
                     backend.config.name, "model_backend", backend.health_check
                 )
 
@@ -758,6 +795,7 @@ class RedundancyManager:
             logger.error(f"Error adding backend '{backend.config.name}': {e}")
             return False
 
+
     async def remove_backend(self, backend_name: str):
         """Remove a backend from the redundancy pool"""
         with self.lock:
@@ -767,9 +805,10 @@ class RedundancyManager:
                 del self.backends[backend_name]
 
                 # Unregister from health monitor
-                self.health_monitor.unregister_component(backend_name)
+                    self.health_monitor.unregister_component(backend_name)
 
                 logger.info(f"Backend '{backend_name}' removed")
+
 
     async def generate_model_with_redundancy(
         self, request: ModelRequest
@@ -786,11 +825,11 @@ class RedundancyManager:
 
         if not available_backends:
             return ModelResponse(
-                request_id=request.request_id,
-                success=False,
-                error="No available backends",
-                completed_at=datetime.now(),
-            )
+                request_id = request.request_id,
+                    success = False,
+                    error="No available backends",
+                    completed_at = datetime.now(),
+                    )
 
         last_error = None
 
@@ -801,16 +840,16 @@ class RedundancyManager:
             try:
                 # Use retry manager for each backend attempt
                 retry_config = RetryConfig(
-                    max_attempts=3, base_delay_ms=1000, circuit_breaker_enabled=True
+                    max_attempts = 3, base_delay_ms = 1000, circuit_breaker_enabled = True
                 )
 
                 result = await self.retry_manager.execute_with_retry(
                     backend.generate_model,
-                    f"backend_{backend_name}",
-                    request.request_id,
-                    retry_config,
-                    request,
-                )
+                        f"backend_{backend_name}",
+                        request.request_id,
+                        retry_config,
+                        request,
+                        )
 
                 if result.success:
                     response = result.result
@@ -818,16 +857,16 @@ class RedundancyManager:
                     # Log successful routing
                     self._log_request_routing(
                         request.request_id,
-                        backend_name,
-                        True,
-                        response.generation_time_ms,
-                        response.quality_score,
-                    )
+                            backend_name,
+                            True,
+                            response.generation_time_ms,
+                            response.quality_score,
+                            )
 
                     return response
                 else:
                     last_error = result.error
-                    logger.warning(f"Backend '{backend_name}' failed: {last_error}")
+                        logger.warning(f"Backend '{backend_name}' failed: {last_error}")
 
                     # Log failover event
                     self._log_failover_event(
@@ -842,12 +881,13 @@ class RedundancyManager:
         total_time = int((time.time() - start_time) * 1000)
 
         return ModelResponse(
-            request_id=request.request_id,
-            success=False,
-            generation_time_ms=total_time,
-            error=f"All backends failed. Last error: {last_error}",
-            completed_at=datetime.now(),
-        )
+            request_id = request.request_id,
+                success = False,
+                generation_time_ms = total_time,
+                error = f"All backends failed. Last error: {last_error}",
+                completed_at = datetime.now(),
+                )
+
 
     async def _get_available_backends(self, request: ModelRequest) -> List[str]:
         """Get list of available backends in priority order"""
@@ -866,21 +906,21 @@ class RedundancyManager:
             # Sort by strategy
             if self.load_balancing_strategy == LoadBalancingStrategy.PERFORMANCE_BASED:
                 healthy_backends.sort(
-                    key=lambda name: self.backends[name].get_performance_score(),
-                    reverse=True,
-                )
+                    key = lambda name: self.backends[name].get_performance_score(),
+                        reverse = True,
+                        )
             elif (
                 self.load_balancing_strategy
                 == LoadBalancingStrategy.LEAST_RESPONSE_TIME
             ):
                 healthy_backends.sort(
-                    key=lambda name: self.backends[name].metrics.avg_response_time_ms
+                    key = lambda name: self.backends[name].metrics.avg_response_time_ms
                 )
             elif (
                 self.load_balancing_strategy == LoadBalancingStrategy.LEAST_CONNECTIONS
             ):
                 healthy_backends.sort(
-                    key=lambda name: self.backends[name].metrics.current_load
+                    key = lambda name: self.backends[name].metrics.current_load
                 )
             elif self.load_balancing_strategy == LoadBalancingStrategy.ROUND_ROBIN:
                 # Rotate starting position
@@ -894,35 +934,37 @@ class RedundancyManager:
 
             return healthy_backends
 
+
     def _log_request_routing(
         self,
-        request_id: str,
-        backend_name: str,
-        success: bool,
-        response_time_ms: int,
-        quality_score: float,
-    ):
+            request_id: str,
+            backend_name: str,
+            success: bool,
+            response_time_ms: int,
+            quality_score: float,
+            ):
         """Log request routing information"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO request_routing 
+                    INSERT INTO request_routing
                     (request_id, backend_used, success, response_time_ms, quality_score)
                     VALUES (?, ?, ?, ?, ?)
                 """,
                     (
                         request_id,
-                        backend_name,
-                        success,
-                        response_time_ms,
-                        quality_score,
-                    ),
-                )
+                            backend_name,
+                            success,
+                            response_time_ms,
+                            quality_score,
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             logger.error(f"Failed to log request routing: {e}")
+
 
     def _log_failover_event(
         self, from_backend: str, to_backend: Optional[str], reason: str, request_id: str
@@ -933,15 +975,16 @@ class RedundancyManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO failover_events 
+                    INSERT INTO failover_events
                     (from_backend, to_backend, reason, request_id)
                     VALUES (?, ?, ?, ?)
                 """,
                     (from_backend, to_backend, reason, request_id),
-                )
+                        )
                 conn.commit()
         except Exception as e:
             logger.error(f"Failed to log failover event: {e}")
+
 
     async def start_background_tasks(self):
         """Start background monitoring tasks"""
@@ -958,6 +1001,7 @@ class RedundancyManager:
 
         logger.info("Background tasks started")
 
+
     async def stop_background_tasks(self):
         """Stop background monitoring tasks"""
         self.running = False
@@ -969,6 +1013,7 @@ class RedundancyManager:
             self.metrics_task.cancel()
 
         logger.info("Background tasks stopped")
+
 
     async def _health_check_loop(self):
         """Background health checking loop"""
@@ -989,6 +1034,7 @@ class RedundancyManager:
                 logger.error(f"Health check loop error: {e}")
                 await asyncio.sleep(5)
 
+
     async def _metrics_collection_loop(self):
         """Background metrics collection loop"""
         while self.running:
@@ -1002,6 +1048,7 @@ class RedundancyManager:
                 logger.error(f"Metrics collection loop error: {e}")
                 await asyncio.sleep(30)
 
+
     async def _collect_and_store_metrics(self):
         """Collect and store backend metrics"""
         try:
@@ -1013,26 +1060,27 @@ class RedundancyManager:
 
                     cursor.execute(
                         """
-                        INSERT INTO backend_metrics 
+                        INSERT INTO backend_metrics
                         (backend_name, total_requests, successful_requests, failed_requests,
-                         avg_response_time_ms, uptime_percentage, quality_score)
+                            avg_response_time_ms, uptime_percentage, quality_score)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
                         (
                             backend_name,
-                            metrics.total_requests,
-                            metrics.successful_requests,
-                            metrics.failed_requests,
-                            metrics.avg_response_time_ms,
-                            metrics.uptime_percentage,
-                            metrics.quality_score,
-                        ),
-                    )
+                                metrics.total_requests,
+                                metrics.successful_requests,
+                                metrics.failed_requests,
+                                metrics.avg_response_time_ms,
+                                metrics.uptime_percentage,
+                                metrics.quality_score,
+                                ),
+                            )
 
                 conn.commit()
 
         except Exception as e:
             logger.error(f"Failed to store metrics: {e}")
+
 
     def get_system_status(self) -> Dict[str, Any]:
         """Get comprehensive system status"""
@@ -1044,32 +1092,33 @@ class RedundancyManager:
             for name, backend in self.backends.items():
                 backend_status[name] = {
                     "type": backend.config.backend_type.value,
-                    "status": backend.status.value,
-                    "performance_score": backend.get_performance_score(),
-                    "load_factor": backend.get_load_factor(),
-                    "metrics": {
+                        "status": backend.status.value,
+                        "performance_score": backend.get_performance_score(),
+                        "load_factor": backend.get_load_factor(),
+                        "metrics": {
                         "total_requests": backend.metrics.total_requests,
-                        "success_rate": backend.metrics.uptime_percentage,
-                        "avg_response_time_ms": backend.metrics.avg_response_time_ms,
-                        "current_load": backend.metrics.current_load,
-                    },
-                }
+                            "success_rate": backend.metrics.uptime_percentage,
+                            "avg_response_time_ms": backend.metrics.avg_response_time_ms,
+                            "current_load": backend.metrics.current_load,
+                            },
+                        }
 
                 if backend.status in [BackendStatus.HEALTHY, BackendStatus.DEGRADED]:
                     healthy_backends += 1
 
             return {
                 "total_backends": total_backends,
-                "healthy_backends": healthy_backends,
-                "availability_percentage": (
+                    "healthy_backends": healthy_backends,
+                    "availability_percentage": (
                     (healthy_backends / total_backends * 100)
                     if total_backends > 0
                     else 0
                 ),
-                "load_balancing_strategy": self.load_balancing_strategy.value,
-                "failover_strategy": self.failover_strategy.value,
-                "backends": backend_status,
-            }
+                    "load_balancing_strategy": self.load_balancing_strategy.value,
+                    "failover_strategy": self.failover_strategy.value,
+                    "backends": backend_status,
+                    }
+
 
     async def shutdown(self):
         """Shutdown redundancy manager"""
@@ -1085,7 +1134,6 @@ class RedundancyManager:
         self.backends.clear()
 
         logger.info("RedundancyManager shutdown complete")
-
 
 # Global instance
 _global_redundancy_manager = None
@@ -1106,42 +1154,42 @@ async def setup_default_backends() -> RedundancyManager:
     # Local backend configuration
     local_config = BackendConfig(
         name="local_primary",
-        backend_type=BackendType.LOCAL,
-        max_concurrent_requests=5,
-        timeout_ms=30000,
-        weight=1.0,
-        priority=8,
-        capabilities=["avatar", "tts", "image_generation"],
-        quality_tier=9,
-    )
+            backend_type = BackendType.LOCAL,
+            max_concurrent_requests = 5,
+            timeout_ms = 30000,
+            weight = 1.0,
+            priority = 8,
+            capabilities=["avatar", "tts", "image_generation"],
+            quality_tier = 9,
+            )
 
     # Cloud primary backend
     cloud_primary_config = BackendConfig(
         name="cloud_primary",
-        backend_type=BackendType.CLOUD_PRIMARY,
-        endpoint="https://api.primary-cloud.com/v1",
-        api_key=os.getenv("CLOUD_PRIMARY_API_KEY"),
-        max_concurrent_requests=20,
-        timeout_ms=45000,
-        weight=1.5,
-        priority=7,
-        capabilities=["avatar", "tts", "image_generation", "video_generation"],
-        quality_tier=8,
-    )
+            backend_type = BackendType.CLOUD_PRIMARY,
+            endpoint="https://api.primary - cloud.com / v1",
+            api_key = os.getenv("CLOUD_PRIMARY_API_KEY"),
+            max_concurrent_requests = 20,
+            timeout_ms = 45000,
+            weight = 1.5,
+            priority = 7,
+            capabilities=["avatar", "tts", "image_generation", "video_generation"],
+            quality_tier = 8,
+            )
 
     # Cloud secondary backend
     cloud_secondary_config = BackendConfig(
         name="cloud_secondary",
-        backend_type=BackendType.CLOUD_SECONDARY,
-        endpoint="https://api.secondary-cloud.com/v1",
-        api_key=os.getenv("CLOUD_SECONDARY_API_KEY"),
-        max_concurrent_requests=15,
-        timeout_ms=60000,
-        weight=1.0,
-        priority=6,
-        capabilities=["avatar", "tts", "image_generation"],
-        quality_tier=7,
-    )
+            backend_type = BackendType.CLOUD_SECONDARY,
+            endpoint="https://api.secondary - cloud.com / v1",
+            api_key = os.getenv("CLOUD_SECONDARY_API_KEY"),
+            max_concurrent_requests = 15,
+            timeout_ms = 60000,
+            weight = 1.0,
+            priority = 6,
+            capabilities=["avatar", "tts", "image_generation"],
+            quality_tier = 7,
+            )
 
     # Create backends
     local_backend = LocalModelBackend(local_config)
@@ -1151,13 +1199,13 @@ async def setup_default_backends() -> RedundancyManager:
     # Hybrid backend combining local and cloud primary
     hybrid_config = BackendConfig(
         name="hybrid_adaptive",
-        backend_type=BackendType.HYBRID,
-        max_concurrent_requests=25,
-        weight=2.0,
-        priority=9,
-        capabilities=["avatar", "tts", "image_generation", "video_generation"],
-        quality_tier=9,
-    )
+            backend_type = BackendType.HYBRID,
+            max_concurrent_requests = 25,
+            weight = 2.0,
+            priority = 9,
+            capabilities=["avatar", "tts", "image_generation", "video_generation"],
+            quality_tier = 9,
+            )
 
     hybrid_backend = HybridModelBackend(
         hybrid_config, local_backend, cloud_primary_backend
@@ -1175,9 +1223,10 @@ async def setup_default_backends() -> RedundancyManager:
     logger.info("Default backend configuration setup complete")
     return redundancy_manager
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         # Setup redundancy manager with default backends
         redundancy_manager = await setup_default_backends()
@@ -1185,14 +1234,14 @@ if __name__ == "__main__":
         # Create a test request
         request = ModelRequest(
             request_id="test_001",
-            model_type="avatar",
-            parameters={
+                model_type="avatar",
+                parameters={
                 "voice_id": "default",
-                "text": "Hello, this is a test",
-                "quality": "high",
-            },
-            priority=8,
-        )
+                    "text": "Hello, this is a test",
+                    "quality": "high",
+                    },
+                priority = 8,
+                )
 
         # Generate model with full redundancy
         response = await redundancy_manager.generate_model_with_redundancy(request)
@@ -1204,7 +1253,7 @@ if __name__ == "__main__":
 
         # Get system status
         status = redundancy_manager.get_system_status()
-        print(f"System status: {json.dumps(status, indent=2)}")
+        print(f"System status: {json.dumps(status, indent = 2)}")
 
         # Shutdown
         await redundancy_manager.shutdown()

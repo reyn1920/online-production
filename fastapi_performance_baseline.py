@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 FastAPI Performance Baseline for MacBook Air M1 (16GB)
 Comprehensive performance testing and optimization toolkit
@@ -26,32 +26,35 @@ except ImportError:
 class MacBookAirM1Benchmark:
     """Performance baseline testing for FastAPI on MacBook Air M1"""
 
+
     def __init__(self, base_url: str = "http://localhost:8000"):
         self.base_url = base_url
         self.results = []
         self.system_info = self.get_system_info()
 
+
     def get_system_info(self) -> Dict[str, Any]:
         """Collect MacBook Air M1 system information"""
         return {
             "cpu_count": psutil.cpu_count(),
-            "cpu_count_logical": psutil.cpu_count(logical=True),
-            "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-            "memory_available_gb": round(
+                "cpu_count_logical": psutil.cpu_count(logical = True),
+                "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
+                "memory_available_gb": round(
                 psutil.virtual_memory().available / (1024**3), 2
             ),
-            "platform": "MacBook Air M1",
-        }
+                "platform": "MacBook Air M1",
+                }
+
 
     def check_hey_installation(self) -> bool:
         """Check if hey is installed, install if needed"""
         try:
-            result = subprocess.run(["hey", "-h"], capture_output=True, text=True)
+            result = subprocess.run(["hey", "-h"], capture_output = True, text = True)
             return result.returncode == 0
         except FileNotFoundError:
             print("📦 Installing hey load testing tool...")
             try:
-                subprocess.run(["brew", "install", "hey"], check=True)
+                subprocess.run(["brew", "install", "hey"], check = True)
                 print("✅ hey installed successfully")
                 return True
             except subprocess.CalledProcessError:
@@ -59,6 +62,7 @@ class MacBookAirM1Benchmark:
                     "❌ Failed to install hey. Please install manually: brew install hey"
                 )
                 return False
+
 
     def run_hey_benchmark(
         self, endpoint: str, duration: str = "30s", concurrency: int = 50
@@ -74,28 +78,29 @@ class MacBookAirM1Benchmark:
         print(f"   Duration: {duration}, Concurrency: {concurrency}")
 
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 120)
             if result.returncode == 0:
                 # Parse hey JSON output
                 data = json.loads(result.stdout)
                 return {
                     "tool": "hey",
-                    "endpoint": endpoint,
-                    "duration": duration,
-                    "concurrency": concurrency,
-                    "total_requests": data.get("summary", {}).get("total", 0),
-                    "requests_per_sec": data.get("summary", {}).get("rps", 0),
-                    "avg_latency_ms": data.get("summary", {}).get("average", 0) * 1000,
-                    "fastest_ms": data.get("summary", {}).get("fastest", 0) * 1000,
-                    "slowest_ms": data.get("summary", {}).get("slowest", 0) * 1000,
-                    "success_rate": (1 - data.get("summary", {}).get("errorRate", 0))
+                        "endpoint": endpoint,
+                        "duration": duration,
+                        "concurrency": concurrency,
+                        "total_requests": data.get("summary", {}).get("total", 0),
+                        "requests_per_sec": data.get("summary", {}).get("rps", 0),
+                        "avg_latency_ms": data.get("summary", {}).get("average", 0) * 1000,
+                        "fastest_ms": data.get("summary", {}).get("fastest", 0) * 1000,
+                        "slowest_ms": data.get("summary", {}).get("slowest", 0) * 1000,
+                        "success_rate": (1 - data.get("summary", {}).get("errorRate", 0))
                     * 100,
-                    "status_codes": data.get("statusCodeDist", {}),
-                }
+                        "status_codes": data.get("statusCodeDist", {}),
+                        }
             else:
                 return {"error": f"hey failed: {result.stderr}"}
         except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception) as e:
             return {"error": f"hey execution failed: {str(e)}"}
+
 
     async def async_benchmark(
         self, endpoint: str, concurrent_users: int = 50, duration_seconds: int = 30
@@ -104,11 +109,11 @@ class MacBookAirM1Benchmark:
         print(f"🐍 Running async Python benchmark: {self.base_url}{endpoint}")
         print(f"   Concurrent users: {concurrent_users}, Duration: {duration_seconds}s")
 
-        limits = httpx.Limits(max_keepalive_connections=200, max_connections=400)
+        limits = httpx.Limits(max_keepalive_connections = 200, max_connections = 400)
         timeout = httpx.Timeout(10.0)
 
         async with httpx.AsyncClient(
-            limits=limits, timeout=timeout, verify=False
+            limits = limits, timeout = timeout, verify = False
         ) as client:
             start_time = time.perf_counter()
             end_time = start_time + duration_seconds
@@ -131,13 +136,14 @@ class MacBookAirM1Benchmark:
 
             # Wait for remaining tasks
             if tasks:
-                remaining = await asyncio.gather(*tasks, return_exceptions=True)
+                remaining = await asyncio.gather(*tasks, return_exceptions = True)
                 for result in remaining:
                     if isinstance(result, dict):
                         results.append(result)
 
             actual_duration = time.perf_counter() - start_time
             return self.analyze_async_results(results, actual_duration, endpoint)
+
 
     async def single_request(
         self, client: httpx.AsyncClient, endpoint: str
@@ -150,19 +156,20 @@ class MacBookAirM1Benchmark:
 
             return {
                 "status": response.status_code,
-                "duration": end_time - start_time,
-                "success": response.status_code == 200,
-                "size": len(response.content),
-            }
+                    "duration": end_time - start_time,
+                    "success": response.status_code == 200,
+                    "size": len(response.content),
+                    }
         except Exception as e:
             end_time = time.perf_counter()
             return {
                 "status": 0,
-                "duration": end_time - start_time,
-                "success": False,
-                "error": str(e),
-                "size": 0,
-            }
+                    "duration": end_time - start_time,
+                    "success": False,
+                    "error": str(e),
+                    "size": 0,
+                    }
+
 
     def analyze_async_results(
         self, results: List[Dict], duration: float, endpoint: str
@@ -174,42 +181,43 @@ class MacBookAirM1Benchmark:
         if not successful:
             return {
                 "tool": "async_python",
-                "endpoint": endpoint,
-                "error": "No successful requests",
-                "total_requests": len(results),
-                "failed_requests": len(failed),
-            }
+                    "endpoint": endpoint,
+                    "error": "No successful requests",
+                    "total_requests": len(results),
+                    "failed_requests": len(failed),
+                    }
 
         durations = [r["duration"] for r in successful]
 
         return {
             "tool": "async_python",
-            "endpoint": endpoint,
-            "duration_seconds": round(duration, 2),
-            "total_requests": len(results),
-            "successful_requests": len(successful),
-            "failed_requests": len(failed),
-            "requests_per_sec": round(len(successful) / duration, 2),
-            "success_rate": round(len(successful) / len(results) * 100, 2),
-            "avg_latency_ms": round(statistics.mean(durations) * 1000, 2),
-            "median_latency_ms": round(statistics.median(durations) * 1000, 2),
-            "p95_latency_ms": (
-                round(statistics.quantiles(durations, n=20)[18] * 1000, 2)
+                "endpoint": endpoint,
+                "duration_seconds": round(duration, 2),
+                "total_requests": len(results),
+                "successful_requests": len(successful),
+                "failed_requests": len(failed),
+                "requests_per_sec": round(len(successful) / duration, 2),
+                "success_rate": round(len(successful) / len(results) * 100, 2),
+                "avg_latency_ms": round(statistics.mean(durations) * 1000, 2),
+                "median_latency_ms": round(statistics.median(durations) * 1000, 2),
+                "p95_latency_ms": (
+                round(statistics.quantiles(durations, n = 20)[18] * 1000, 2)
                 if len(durations) > 20
                 else 0
             ),
-            "p99_latency_ms": (
-                round(statistics.quantiles(durations, n=100)[98] * 1000, 2)
+                "p99_latency_ms": (
+                round(statistics.quantiles(durations, n = 100)[98] * 1000, 2)
                 if len(durations) > 100
                 else 0
             ),
-            "fastest_ms": round(min(durations) * 1000, 2),
-            "slowest_ms": round(max(durations) * 1000, 2),
-        }
+                "fastest_ms": round(min(durations) * 1000, 2),
+                "slowest_ms": round(max(durations) * 1000, 2),
+                }
+
 
     def check_nginx_config(self) -> Dict[str, Any]:
         """Check Nginx configuration for M1 optimization"""
-        nginx_config_path = Path("nginx/nginx.conf")
+        nginx_config_path = Path("nginx / nginx.conf")
 
         if not nginx_config_path.exists():
             return {"error": "nginx.conf not found"}
@@ -221,29 +229,31 @@ class MacBookAirM1Benchmark:
             checks = {
                 "worker_processes_2": "worker_processes 2" in config
                 or "worker_processes auto" in config,
-                "worker_connections_1024": "worker_connections 1024" in config,
-                "gzip_enabled": "gzip on" in config,
-                "http2_enabled": "http2" in config,
-                "keepalive_timeout": "keepalive_timeout" in config,
-            }
+                    "worker_connections_1024": "worker_connections 1024" in config,
+                    "gzip_enabled": "gzip on" in config,
+                    "http2_enabled": "http2" in config,
+                    "keepalive_timeout": "keepalive_timeout" in config,
+                    }
 
             return {
                 "nginx_config_found": True,
-                "optimizations": checks,
-                "score": sum(checks.values()) / len(checks) * 100,
-            }
+                    "optimizations": checks,
+                    "score": sum(checks.values()) / len(checks) * 100,
+                    }
         except Exception as e:
             return {"error": f"Failed to read nginx config: {str(e)}"}
+
 
     def get_performance_targets(self) -> Dict[str, Any]:
         """MacBook Air M1 performance targets"""
         return {
             "simple_endpoints_rps": {"min": 2000, "target": 5000},
-            "p95_latency_ms": {"max": 50, "target": 20},
-            "frontend_assets_ms": {"max": 10, "target": 5},
-            "concurrent_clients": {"max": 200, "recommended": 100},
-            "memory_usage_gb": {"max": 2, "recommended": 1},
-        }
+                "p95_latency_ms": {"max": 50, "target": 20},
+                "frontend_assets_ms": {"max": 10, "target": 5},
+                "concurrent_clients": {"max": 200, "recommended": 100},
+                "memory_usage_gb": {"max": 2, "recommended": 1},
+                }
+
 
     def print_results(self, results: Dict[str, Any]):
         """Pretty print benchmark results"""
@@ -269,7 +279,7 @@ class MacBookAirM1Benchmark:
         )
         print(f"Failed:             {results.get('failed_requests', 0):,}")
         print(f"Success rate:       {results.get('success_rate', 0):.1f}%")
-        print(f"Requests/sec:       {results.get('requests_per_sec', 0):,.1f}")
+        print(f"Requests / sec:       {results.get('requests_per_sec', 0):,.1f}")
 
         print(f"\n⏱️  LATENCY")
         print("-" * 20)
@@ -286,6 +296,7 @@ class MacBookAirM1Benchmark:
         if "slowest_ms" in results:
             print(f"Slowest:            {results['slowest_ms']:.2f}ms")
 
+
     def print_system_info(self):
         """Print MacBook Air M1 system information"""
         print("🖥️  SYSTEM INFO - MacBook Air M1")
@@ -297,6 +308,7 @@ class MacBookAirM1Benchmark:
         print(f"Available Memory:   {self.system_info['memory_available_gb']} GB")
         print(f"Platform:           {self.system_info['platform']}")
         print()
+
 
     def print_nginx_analysis(self, nginx_results: Dict[str, Any]):
         """Print Nginx configuration analysis"""
@@ -326,8 +338,9 @@ class MacBookAirM1Benchmark:
                 if not optimizations.get("gzip_enabled"):
                     print("  - Enable gzip compression")
                 if not optimizations.get("http2_enabled"):
-                    print("  - Enable HTTP/2 support")
+                    print("  - Enable HTTP / 2 support")
         print()
+
 
     def print_performance_analysis(self, results: List[Dict[str, Any]]):
         """Analyze results against MacBook Air M1 targets"""
@@ -375,11 +388,11 @@ class MacBookAirM1Benchmark:
                 )
 
         print(f"\n📋 MacBook Air M1 Optimization Summary:")
-        print(f"  • Target: 2k-5k req/sec for simple endpoints")
+        print(f"  • Target: 2k - 5k req / sec for simple endpoints")
         print(f"  • Target: <50ms p95 latency up to 200 concurrent clients")
         print(f"  • Memory: Keep under 2GB total")
         print(f"  • Nginx: 2 workers, 1024 connections each")
-        print(f"  • FastAPI: 2-4 Uvicorn workers recommended")
+        print(f"  • FastAPI: 2 - 4 Uvicorn workers recommended")
 
 
 async def main():
@@ -398,11 +411,11 @@ async def main():
     # Test scenarios for MacBook Air M1
     scenarios = [
         # (endpoint, test_type, params)
-        ("/api/status", "hey", {"duration": "30s", "concurrency": 50}),
-        ("/api/status", "async", {"concurrent_users": 50, "duration_seconds": 20}),
-        ("/places/health", "hey", {"duration": "20s", "concurrency": 25}),
-        ("/", "async", {"concurrent_users": 30, "duration_seconds": 15}),
-    ]
+        ("/api / status", "hey", {"duration": "30s", "concurrency": 50}),
+            ("/api / status", "async", {"concurrent_users": 50, "duration_seconds": 20}),
+            ("/places / health", "hey", {"duration": "20s", "concurrency": 25}),
+            ("/", "async", {"concurrent_users": 30, "duration_seconds": 15}),
+            ]
 
     all_results = []
 
@@ -429,14 +442,13 @@ async def main():
     print("  1. If RPS < 2k: Scale Uvicorn workers (--workers 4)")
     print("  2. If latency > 50ms: Check database queries, add caching")
     print("  3. For production: Consider Gunicorn + Uvicorn workers")
-    print("  4. Monitor CPU/memory usage with htop during tests")
+    print("  4. Monitor CPU / memory usage with htop during tests")
     print("\n💡 Production Optimization Checklist:")
     print("  • Gunicorn with multiple Uvicorn workers")
     print("  • Redis caching for frequent queries")
     print("  • Database connection pooling")
     print("  • CDN for static assets")
     print("  • Load balancer for multiple instances")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

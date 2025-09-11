@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Compliance Validator - Ensures TRAE.AI system meets security and operational standards
 Validates configuration, dependencies, and deployment readiness
@@ -15,11 +15,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class ComplianceCheck:
     """Represents a compliance check result"""
 
@@ -33,12 +34,14 @@ class ComplianceCheck:
     remediation: str = ""
     evidence: List[str] = None
 
+
     def __post_init__(self):
         if self.evidence is None:
             self.evidence = []
 
-
 @dataclass
+
+
 class ComplianceReport:
     """Complete compliance validation report"""
 
@@ -48,13 +51,14 @@ class ComplianceReport:
     checks: List[ComplianceCheck]
     summary: Dict[str, int]
     overall_status: str  # compliant, non_compliant, partial
-    compliance_score: float  # 0-100
+    compliance_score: float  # 0 - 100
     duration_seconds: float
     metadata: Dict[str, Any]
 
 
 class ComplianceValidator:
     """Validates TRAE.AI system compliance with security and operational standards"""
+
 
     def __init__(self, base_dir: str = "."):
         self.base_dir = Path(base_dir)
@@ -63,25 +67,26 @@ class ComplianceValidator:
         self.required_structure = {
             "files": [
                 "README.md",
-                "requirements.txt",
-                ".gitignore",
-                "app/dashboard.py",
-                "backend/core/secret_store_bridge.py",
-                "scripts/phoenix_protocol.sh",
-            ],
-            "directories": [
+                    "requirements.txt",
+                    ".gitignore",
+                    "app / dashboard.py",
+                    "backend / core / secret_store_bridge.py",
+                    "scripts / phoenix_protocol.sh",
+                    ],
+                "directories": [
                 "app",
-                "backend/core",
-                "backend/runner",
-                "backend/security",
-                "scripts",
-                "assets/incoming",
-                "assets/releases",
-                "assets/temp",
-                "assets/archive",
-                "tests",
-            ],
-        }
+                    "backend / core",
+                    "backend / runner",
+                    "backend / security",
+                    "scripts",
+                    "assets / incoming",
+                    "assets / releases",
+                    "assets / temp",
+                    "assets / archive",
+                    "tests",
+                    ],
+                }
+
 
     def validate_project_structure(self, project_path: str) -> Dict[str, Any]:
         """
@@ -102,9 +107,9 @@ class ComplianceValidator:
             checks.append(
                 {
                     "check": f"Directory {dir_name} exists",
-                    "status": "pass" if dir_path.exists() else "fail",
-                    "path": str(dir_path),
-                }
+                        "status": "pass" if dir_path.exists() else "fail",
+                        "path": str(dir_path),
+                        }
             )
 
         # Check for configuration files
@@ -114,9 +119,9 @@ class ComplianceValidator:
             checks.append(
                 {
                     "check": f"Config file {file_name}",
-                    "status": "pass" if file_path.exists() else "info",
-                    "path": str(file_path),
-                }
+                        "status": "pass" if file_path.exists() else "info",
+                        "path": str(file_path),
+                        }
             )
 
         passed = sum(1 for check in checks if check["status"] == "pass")
@@ -124,49 +129,50 @@ class ComplianceValidator:
 
         return {
             "status": "ok",
-            "checks": checks,
-            "summary": f"{passed}/{total} essential checks passed",
-        }
+                "checks": checks,
+                "summary": f"{passed}/{total} essential checks passed",
+                }
 
         # Security configuration requirements
         self.security_requirements = {
             "env_files": [".env.example", ".env.local"],
-            "secret_patterns": [
+                "secret_patterns": [
                 r'(?i)(password|secret|key|token)\s*=\s*["\'][^"\'>\s]+["\']',
-                r'(?i)api[_-]?key\s*=\s*["\'][^"\'>\s]+["\']',
-            ],
-            "required_gitignore_entries": [
+                    r'(?i)api[_-]?key\s*=\s*["\'][^"\'>\s]+["\']',
+                    ],
+                "required_gitignore_entries": [
                 ".env",
-                ".env.local",
-                "__pycache__",
-                "node_modules",
-                "*.log",
-                ".DS_Store",
-            ],
-        }
+                    ".env.local",
+                    "__pycache__",
+                    "node_modules",
+                    "*.log",
+                    ".DS_Store",
+                    ],
+                }
 
         # Dependency security requirements
         self.dependency_requirements = {
             "python": {
                 "file": "requirements.txt",
-                "vulnerable_packages": [
-                    "django<3.2",
-                    "flask<2.0",
-                    "requests<2.20",
-                    "urllib3<1.24",
-                ],
-            },
-            "javascript": {
+                    "vulnerable_packages": [
+                    "django < 3.2",
+                        "flask < 2.0",
+                        "requests < 2.20",
+                        "urllib3 < 1.24",
+                        ],
+                    },
+                "javascript": {
                 "file": "package.json",
-                "vulnerable_packages": [
-                    "lodash<4.17.21",
-                    "axios<0.21.1",
-                    "express<4.17.1",
-                ],
-            },
-        }
+                    "vulnerable_packages": [
+                    "lodash < 4.17.21",
+                        "axios < 0.21.1",
+                        "express < 4.17.1",
+                        ],
+                    },
+                }
 
         logger.info(f"Compliance validator initialized for {self.base_dir}")
+
 
     def validate_compliance(self) -> ComplianceReport:
         """Run complete compliance validation"""
@@ -194,22 +200,23 @@ class ComplianceValidator:
         duration = (datetime.now() - start_time).total_seconds()
 
         report = ComplianceReport(
-            report_id=report_id,
-            timestamp=start_time.isoformat(),
-            target_path=str(self.base_dir),
-            checks=checks,
-            summary=summary,
-            overall_status=overall_status,
-            compliance_score=compliance_score,
-            duration_seconds=duration,
-            metadata={"total_checks": len(checks), "validator_version": "1.0.0"},
-        )
+            report_id = report_id,
+                timestamp = start_time.isoformat(),
+                target_path = str(self.base_dir),
+                checks = checks,
+                summary = summary,
+                overall_status = overall_status,
+                compliance_score = compliance_score,
+                duration_seconds = duration,
+                metadata={"total_checks": len(checks), "validator_version": "1.0.0"},
+                )
 
         logger.info(
             f"Compliance validation completed: {overall_status} ({compliance_score:.1f}%)"
         )
 
         return report
+
 
     def _check_project_structure(self) -> List[ComplianceCheck]:
         """Validate required project structure"""
@@ -222,26 +229,26 @@ class ComplianceValidator:
             if file_path.exists():
                 checks.append(
                     ComplianceCheck(
-                        check_id=f"structure_file_{required_file.replace('/', '_').replace('.', '_')}",
-                        category="structure",
-                        title=f"Required file: {required_file}",
-                        description=f"File {required_file} exists",
-                        status="passed",
-                        severity="medium",
-                        evidence=[str(file_path)],
-                    )
+                        check_id = f"structure_file_{required_file.replace('/', '_').replace('.', '_')}",
+                            category="structure",
+                            title = f"Required file: {required_file}",
+                            description = f"File {required_file} exists",
+                            status="passed",
+                            severity="medium",
+                            evidence=[str(file_path)],
+                            )
                 )
             else:
                 checks.append(
                     ComplianceCheck(
-                        check_id=f"structure_file_{required_file.replace('/', '_').replace('.', '_')}",
-                        category="structure",
-                        title=f"Missing required file: {required_file}",
-                        description=f"Required file {required_file} is missing",
-                        status="failed",
-                        severity="high",
-                        remediation=f"Create the required file: {required_file}",
-                    )
+                        check_id = f"structure_file_{required_file.replace('/', '_').replace('.', '_')}",
+                            category="structure",
+                            title = f"Missing required file: {required_file}",
+                            description = f"Required file {required_file} is missing",
+                            status="failed",
+                            severity="high",
+                            remediation = f"Create the required file: {required_file}",
+                            )
                 )
 
         # Check required directories
@@ -251,29 +258,30 @@ class ComplianceValidator:
             if dir_path.exists() and dir_path.is_dir():
                 checks.append(
                     ComplianceCheck(
-                        check_id=f"structure_dir_{required_dir.replace('/', '_')}",
-                        category="structure",
-                        title=f"Required directory: {required_dir}",
-                        description=f"Directory {required_dir} exists",
-                        status="passed",
-                        severity="medium",
-                        evidence=[str(dir_path)],
-                    )
+                        check_id = f"structure_dir_{required_dir.replace('/', '_')}",
+                            category="structure",
+                            title = f"Required directory: {required_dir}",
+                            description = f"Directory {required_dir} exists",
+                            status="passed",
+                            severity="medium",
+                            evidence=[str(dir_path)],
+                            )
                 )
             else:
                 checks.append(
                     ComplianceCheck(
-                        check_id=f"structure_dir_{required_dir.replace('/', '_')}",
-                        category="structure",
-                        title=f"Missing required directory: {required_dir}",
-                        description=f"Required directory {required_dir} is missing",
-                        status="failed",
-                        severity="high",
-                        remediation=f"Create the required directory: mkdir -p {required_dir}",
-                    )
+                        check_id = f"structure_dir_{required_dir.replace('/', '_')}",
+                            category="structure",
+                            title = f"Missing required directory: {required_dir}",
+                            description = f"Required directory {required_dir} is missing",
+                            status="failed",
+                            severity="high",
+                            remediation = f"Create the required directory: mkdir -p {required_dir}",
+                            )
                 )
 
         return checks
+
 
     def _check_security_configuration(self) -> List[ComplianceCheck]:
         """Validate security configuration"""
@@ -285,32 +293,32 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="security_env_example",
-                    category="security",
-                    title="Environment template exists",
-                    description=".env.example file provides template for environment variables",
-                    status="passed",
-                    severity="medium",
-                    evidence=[str(env_example)],
-                )
+                        category="security",
+                        title="Environment template exists",
+                        description=".env.example file provides template for environment variables",
+                        status="passed",
+                        severity="medium",
+                        evidence=[str(env_example)],
+                        )
             )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="security_env_example",
-                    category="security",
-                    title="Missing environment template",
-                    description="No .env.example file found",
-                    status="failed",
-                    severity="medium",
-                    remediation="Create .env.example with required environment variables",
-                )
+                        category="security",
+                        title="Missing environment template",
+                        description="No .env.example file found",
+                        status="failed",
+                        severity="medium",
+                        remediation="Create .env.example with required environment variables",
+                        )
             )
 
         # Check .gitignore for sensitive files
         gitignore_path = self.base_dir / ".gitignore"
         if gitignore_path.exists():
             try:
-                with open(gitignore_path, "r", encoding="utf-8") as f:
+                with open(gitignore_path, "r", encoding="utf - 8") as f:
                     gitignore_content = f.read()
 
                 missing_entries = []
@@ -324,48 +332,48 @@ class ComplianceValidator:
                     checks.append(
                         ComplianceCheck(
                             check_id="security_gitignore",
-                            category="security",
-                            title="Gitignore properly configured",
-                            description="All required entries present in .gitignore",
-                            status="passed",
-                            severity="high",
-                            evidence=[str(gitignore_path)],
-                        )
+                                category="security",
+                                title="Gitignore properly configured",
+                                description="All required entries present in .gitignore",
+                                status="passed",
+                                severity="high",
+                                evidence=[str(gitignore_path)],
+                                )
                     )
                 else:
                     checks.append(
                         ComplianceCheck(
                             check_id="security_gitignore",
-                            category="security",
-                            title="Incomplete gitignore configuration",
-                            description=f"Missing entries in .gitignore: {', '.join(missing_entries)}",
-                            status="failed",
-                            severity="high",
-                            remediation=f"Add missing entries to .gitignore: {', '.join(missing_entries)}",
-                        )
+                                category="security",
+                                title="Incomplete gitignore configuration",
+                                description = f"Missing entries in .gitignore: {', '.join(missing_entries)}",
+                                status="failed",
+                                severity="high",
+                                remediation = f"Add missing entries to .gitignore: {', '.join(missing_entries)}",
+                                )
                     )
 
             except Exception as e:
                 checks.append(
                     ComplianceCheck(
                         check_id="security_gitignore",
-                        category="security",
-                        title="Gitignore read error",
-                        description=f"Failed to read .gitignore: {e}",
-                        status="failed",
-                        severity="medium",
-                    )
+                            category="security",
+                            title="Gitignore read error",
+                            description = f"Failed to read .gitignore: {e}",
+                            status="failed",
+                            severity="medium",
+                            )
                 )
 
         # Check for hardcoded secrets in main files
         secret_violations = []
-        main_files = ["app/dashboard.py", "backend/core/secret_store_bridge.py"]
+        main_files = ["app / dashboard.py", "backend / core / secret_store_bridge.py"]
 
         for file_path in main_files:
             full_path = self.base_dir / file_path
             if full_path.exists():
                 try:
-                    with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+                    with open(full_path, "r", encoding="utf - 8", errors="ignore") as f:
                         content = f.read()
 
                     for pattern in self.security_requirements["secret_patterns"]:
@@ -382,27 +390,28 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="security_no_hardcoded_secrets",
-                    category="security",
-                    title="No hardcoded secrets detected",
-                    description="Main application files do not contain hardcoded secrets",
-                    status="passed",
-                    severity="critical",
-                )
+                        category="security",
+                        title="No hardcoded secrets detected",
+                        description="Main application files do not contain hardcoded secrets",
+                        status="passed",
+                        severity="critical",
+                        )
             )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="security_no_hardcoded_secrets",
-                    category="security",
-                    title="Potential hardcoded secrets detected",
-                    description=f"Found potential secrets: {'; '.join(secret_violations)}",
-                    status="failed",
-                    severity="critical",
-                    remediation="Remove hardcoded secrets and use environment variables or secret store",
-                )
+                        category="security",
+                        title="Potential hardcoded secrets detected",
+                        description = f"Found potential secrets: {'; '.join(secret_violations)}",
+                        status="failed",
+                        severity="critical",
+                        remediation="Remove hardcoded secrets and use environment variables or secret store",
+                        )
             )
 
         return checks
+
 
     def _check_dependency_security(self) -> List[ComplianceCheck]:
         """Validate dependency security"""
@@ -412,7 +421,7 @@ class ComplianceValidator:
         requirements_file = self.base_dir / "requirements.txt"
         if requirements_file.exists():
             try:
-                with open(requirements_file, "r", encoding="utf-8") as f:
+                with open(requirements_file, "r", encoding="utf - 8") as f:
                     requirements_content = f.read()
 
                 vulnerable_found = []
@@ -427,46 +436,46 @@ class ComplianceValidator:
                     checks.append(
                         ComplianceCheck(
                             check_id="security_python_dependencies",
-                            category="security",
-                            title="Python dependencies secure",
-                            description="No known vulnerable Python packages detected",
-                            status="passed",
-                            severity="high",
-                            evidence=[str(requirements_file)],
-                        )
+                                category="security",
+                                title="Python dependencies secure",
+                                description="No known vulnerable Python packages detected",
+                                status="passed",
+                                severity="high",
+                                evidence=[str(requirements_file)],
+                                )
                     )
                 else:
                     checks.append(
                         ComplianceCheck(
                             check_id="security_python_dependencies",
-                            category="security",
-                            title="Vulnerable Python dependencies",
-                            description=f"Potentially vulnerable packages: {', '.join(vulnerable_found)}",
-                            status="failed",
-                            severity="high",
-                            remediation="Update vulnerable packages to secure versions",
-                        )
+                                category="security",
+                                title="Vulnerable Python dependencies",
+                                description = f"Potentially vulnerable packages: {', '.join(vulnerable_found)}",
+                                status="failed",
+                                severity="high",
+                                remediation="Update vulnerable packages to secure versions",
+                                )
                     )
 
             except Exception as e:
                 checks.append(
                     ComplianceCheck(
                         check_id="security_python_dependencies",
-                        category="security",
-                        title="Failed to check Python dependencies",
-                        description=f"Error reading requirements.txt: {e}",
-                        status="failed",
-                        severity="medium",
-                    )
+                            category="security",
+                            title="Failed to check Python dependencies",
+                            description = f"Error reading requirements.txt: {e}",
+                            status="failed",
+                            severity="medium",
+                            )
                 )
 
-        # Check for package-lock.json or yarn.lock for JavaScript projects
+        # Check for package - lock.json or yarn.lock for JavaScript projects
         package_json = self.base_dir / "package.json"
         if package_json.exists():
             lock_files = [
-                self.base_dir / "package-lock.json",
-                self.base_dir / "yarn.lock",
-            ]
+                self.base_dir / "package - lock.json",
+                    self.base_dir / "yarn.lock",
+                    ]
 
             has_lock_file = any(lock_file.exists() for lock_file in lock_files)
 
@@ -474,27 +483,28 @@ class ComplianceValidator:
                 checks.append(
                     ComplianceCheck(
                         check_id="security_js_lock_file",
-                        category="security",
-                        title="JavaScript dependencies locked",
-                        description="Lock file ensures reproducible builds",
-                        status="passed",
-                        severity="medium",
-                    )
+                            category="security",
+                            title="JavaScript dependencies locked",
+                            description="Lock file ensures reproducible builds",
+                            status="passed",
+                            severity="medium",
+                            )
                 )
             else:
                 checks.append(
                     ComplianceCheck(
                         check_id="security_js_lock_file",
-                        category="security",
-                        title="Missing JavaScript lock file",
-                        description="No package-lock.json or yarn.lock found",
-                        status="warning",
-                        severity="medium",
-                        remediation="Run 'npm install' or 'yarn install' to generate lock file",
-                    )
+                            category="security",
+                            title="Missing JavaScript lock file",
+                            description="No package - lock.json or yarn.lock found",
+                            status="warning",
+                            severity="medium",
+                            remediation="Run 'npm install' or 'yarn install' to generate lock file",
+                            )
                 )
 
         return checks
+
 
     def _check_file_permissions(self) -> List[ComplianceCheck]:
         """Validate file permissions"""
@@ -517,27 +527,27 @@ class ComplianceValidator:
                 checks.append(
                     ComplianceCheck(
                         check_id="permissions_scripts_executable",
-                        category="permissions",
-                        title="Script files properly executable",
-                        description=f"All {len(script_files)} script files have execute permissions",
-                        status="passed",
-                        severity="medium",
-                    )
+                            category="permissions",
+                            title="Script files properly executable",
+                            description = f"All {len(script_files)} script files have execute permissions",
+                            status="passed",
+                            severity="medium",
+                            )
                 )
             else:
                 checks.append(
                     ComplianceCheck(
                         check_id="permissions_scripts_executable",
-                        category="permissions",
-                        title="Non-executable script files",
-                        description=f"Scripts without execute permissions: {', '.join(non_executable_scripts)}",
-                        status="failed",
-                        severity="medium",
-                        remediation="Make scripts executable: chmod +x scripts/*.sh",
-                    )
+                            category="permissions",
+                            title="Non - executable script files",
+                            description = f"Scripts without execute permissions: {', '.join(non_executable_scripts)}",
+                            status="failed",
+                            severity="medium",
+                            remediation="Make scripts executable: chmod +x scripts/*.sh",
+                            )
                 )
 
-        # Check for world-writable files
+        # Check for world - writable files
         world_writable_files = []
 
         for file_path in self.base_dir.rglob("*"):
@@ -555,27 +565,28 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="permissions_no_world_writable",
-                    category="permissions",
-                    title="No world-writable files",
-                    description="No files are writable by all users",
-                    status="passed",
-                    severity="high",
-                )
+                        category="permissions",
+                        title="No world - writable files",
+                        description="No files are writable by all users",
+                        status="passed",
+                        severity="high",
+                        )
             )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="permissions_no_world_writable",
-                    category="permissions",
-                    title="World-writable files detected",
-                    description=f"Files writable by all users: {', '.join(world_writable_files[:5])}",
-                    status="failed",
-                    severity="high",
-                    remediation="Remove world-write permissions: chmod o-w <files>",
-                )
+                        category="permissions",
+                        title="World - writable files detected",
+                        description = f"Files writable by all users: {', '.join(world_writable_files[:5])}",
+                        status="failed",
+                        severity="high",
+                        remediation="Remove world - write permissions: chmod o - w <files>",
+                        )
             )
 
         return checks
+
 
     def _check_git_configuration(self) -> List[ComplianceCheck]:
         """Validate Git configuration"""
@@ -587,12 +598,12 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="git_repository_initialized",
-                    category="git",
-                    title="Git repository initialized",
-                    description="Project is under version control",
-                    status="passed",
-                    severity="medium",
-                )
+                        category="git",
+                        title="Git repository initialized",
+                        description="Project is under version control",
+                        status="passed",
+                        severity="medium",
+                        )
             )
 
             # Check for .gitignore
@@ -601,39 +612,40 @@ class ComplianceValidator:
                 checks.append(
                     ComplianceCheck(
                         check_id="git_gitignore_exists",
-                        category="git",
-                        title="Gitignore file exists",
-                        description="Repository has .gitignore file",
-                        status="passed",
-                        severity="medium",
-                    )
+                            category="git",
+                            title="Gitignore file exists",
+                            description="Repository has .gitignore file",
+                            status="passed",
+                            severity="medium",
+                            )
                 )
             else:
                 checks.append(
                     ComplianceCheck(
                         check_id="git_gitignore_exists",
-                        category="git",
-                        title="Missing gitignore file",
-                        description="No .gitignore file found",
-                        status="failed",
-                        severity="medium",
-                        remediation="Create .gitignore file to exclude sensitive files",
-                    )
+                            category="git",
+                            title="Missing gitignore file",
+                            description="No .gitignore file found",
+                            status="failed",
+                            severity="medium",
+                            remediation="Create .gitignore file to exclude sensitive files",
+                            )
                 )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="git_repository_initialized",
-                    category="git",
-                    title="Git repository not initialized",
-                    description="Project is not under version control",
-                    status="warning",
-                    severity="low",
-                    remediation="Initialize Git repository: git init",
-                )
+                        category="git",
+                        title="Git repository not initialized",
+                        description="Project is not under version control",
+                        status="warning",
+                        severity="low",
+                        remediation="Initialize Git repository: git init",
+                        )
             )
 
         return checks
+
 
     def _check_deployment_readiness(self) -> List[ComplianceCheck]:
         """Validate deployment readiness"""
@@ -641,11 +653,11 @@ class ComplianceValidator:
 
         # Check for deployment scripts
         deployment_files = [
-            "scripts/phoenix_protocol.sh",
-            "Dockerfile",
-            "docker-compose.yml",
-            ".github/workflows/deploy.yml",
-        ]
+            "scripts / phoenix_protocol.sh",
+                "Dockerfile",
+                "docker - compose.yml",
+                ".github / workflows / deploy.yml",
+                ]
 
         deployment_methods = 0
         for deploy_file in deployment_files:
@@ -656,24 +668,24 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="deployment_method_available",
-                    category="deployment",
-                    title="Deployment method configured",
-                    description=f"Found {deployment_methods} deployment configuration(s)",
-                    status="passed",
-                    severity="medium",
-                )
+                        category="deployment",
+                        title="Deployment method configured",
+                        description = f"Found {deployment_methods} deployment configuration(s)",
+                        status="passed",
+                        severity="medium",
+                        )
             )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="deployment_method_available",
-                    category="deployment",
-                    title="No deployment method configured",
-                    description="No deployment scripts or configurations found",
-                    status="warning",
-                    severity="medium",
-                    remediation="Create deployment scripts or Docker configuration",
-                )
+                        category="deployment",
+                        title="No deployment method configured",
+                        description="No deployment scripts or configurations found",
+                        status="warning",
+                        severity="medium",
+                        remediation="Create deployment scripts or Docker configuration",
+                        )
             )
 
         # Check for environment configuration
@@ -686,27 +698,28 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="deployment_env_template",
-                    category="deployment",
-                    title="Environment template available",
-                    description="Environment variable template exists for deployment",
-                    status="passed",
-                    severity="medium",
-                )
+                        category="deployment",
+                        title="Environment template available",
+                        description="Environment variable template exists for deployment",
+                        status="passed",
+                        severity="medium",
+                        )
             )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="deployment_env_template",
-                    category="deployment",
-                    title="Missing environment template",
-                    description="No environment variable template for deployment",
-                    status="failed",
-                    severity="medium",
-                    remediation="Create .env.example with required environment variables",
-                )
+                        category="deployment",
+                        title="Missing environment template",
+                        description="No environment variable template for deployment",
+                        status="failed",
+                        severity="medium",
+                        remediation="Create .env.example with required environment variables",
+                        )
             )
 
         return checks
+
 
     def _check_documentation(self) -> List[ComplianceCheck]:
         """Validate documentation"""
@@ -716,7 +729,7 @@ class ComplianceValidator:
         readme_path = self.base_dir / "README.md"
         if readme_path.exists():
             try:
-                with open(readme_path, "r", encoding="utf-8") as f:
+                with open(readme_path, "r", encoding="utf - 8") as f:
                     readme_content = f.read()
 
                 required_sections = ["installation", "usage", "configuration"]
@@ -730,51 +743,52 @@ class ComplianceValidator:
                     checks.append(
                         ComplianceCheck(
                             check_id="documentation_readme_complete",
-                            category="documentation",
-                            title="README documentation complete",
-                            description="README contains all required sections",
-                            status="passed",
-                            severity="low",
-                        )
+                                category="documentation",
+                                title="README documentation complete",
+                                description="README contains all required sections",
+                                status="passed",
+                                severity="low",
+                                )
                     )
                 else:
                     checks.append(
                         ComplianceCheck(
                             check_id="documentation_readme_complete",
-                            category="documentation",
-                            title="Incomplete README documentation",
-                            description=f"Missing sections: {', '.join(missing_sections)}",
-                            status="warning",
-                            severity="low",
-                            remediation=f"Add missing sections to README: {', '.join(missing_sections)}",
-                        )
+                                category="documentation",
+                                title="Incomplete README documentation",
+                                description = f"Missing sections: {', '.join(missing_sections)}",
+                                status="warning",
+                                severity="low",
+                                remediation = f"Add missing sections to README: {', '.join(missing_sections)}",
+                                )
                     )
 
             except Exception as e:
                 checks.append(
                     ComplianceCheck(
                         check_id="documentation_readme_complete",
-                        category="documentation",
-                        title="README read error",
-                        description=f"Failed to read README: {e}",
-                        status="failed",
-                        severity="low",
-                    )
+                            category="documentation",
+                            title="README read error",
+                            description = f"Failed to read README: {e}",
+                            status="failed",
+                            severity="low",
+                            )
                 )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="documentation_readme_exists",
-                    category="documentation",
-                    title="Missing README file",
-                    description="No README.md file found",
-                    status="failed",
-                    severity="medium",
-                    remediation="Create README.md with project documentation",
-                )
+                        category="documentation",
+                        title="Missing README file",
+                        description="No README.md file found",
+                        status="failed",
+                        severity="medium",
+                        remediation="Create README.md with project documentation",
+                        )
             )
 
         return checks
+
 
     def _check_testing_framework(self) -> List[ComplianceCheck]:
         """Validate testing framework"""
@@ -790,12 +804,12 @@ class ComplianceValidator:
             checks.append(
                 ComplianceCheck(
                     check_id="testing_directory_exists",
-                    category="testing",
-                    title="Test directory exists",
-                    description="Project has dedicated test directory",
-                    status="passed",
-                    severity="medium",
-                )
+                        category="testing",
+                        title="Test directory exists",
+                        description="Project has dedicated test directory",
+                        status="passed",
+                        severity="medium",
+                        )
             )
 
             # Check for test files
@@ -810,59 +824,61 @@ class ComplianceValidator:
                 checks.append(
                     ComplianceCheck(
                         check_id="testing_files_exist",
-                        category="testing",
-                        title="Test files exist",
-                        description=f"Found {len(test_files)} test files",
-                        status="passed",
-                        severity="medium",
-                    )
+                            category="testing",
+                            title="Test files exist",
+                            description = f"Found {len(test_files)} test files",
+                            status="passed",
+                            severity="medium",
+                            )
                 )
             else:
                 checks.append(
                     ComplianceCheck(
                         check_id="testing_files_exist",
-                        category="testing",
-                        title="No test files found",
-                        description="Test directory exists but no test files found",
-                        status="warning",
-                        severity="medium",
-                        remediation="Create test files in the test directory",
-                    )
+                            category="testing",
+                            title="No test files found",
+                            description="Test directory exists but no test files found",
+                            status="warning",
+                            severity="medium",
+                            remediation="Create test files in the test directory",
+                            )
                 )
         else:
             checks.append(
                 ComplianceCheck(
                     check_id="testing_directory_exists",
-                    category="testing",
-                    title="No test directory",
-                    description="No test directory found",
-                    status="failed",
-                    severity="medium",
-                    remediation="Create tests directory and add test files",
-                )
+                        category="testing",
+                        title="No test directory",
+                        description="No test directory found",
+                        status="failed",
+                        severity="medium",
+                        remediation="Create tests directory and add test files",
+                        )
             )
 
         return checks
+
 
     def _calculate_summary(self, checks: List[ComplianceCheck]) -> Dict[str, int]:
         """Calculate summary statistics"""
         summary = {
             "total": len(checks),
-            "passed": 0,
-            "failed": 0,
-            "warning": 0,
-            "skipped": 0,
-            "critical": 0,
-            "high": 0,
-            "medium": 0,
-            "low": 0,
-        }
+                "passed": 0,
+                "failed": 0,
+                "warning": 0,
+                "skipped": 0,
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0,
+                }
 
         for check in checks:
             summary[check.status] += 1
             summary[check.severity] += 1
 
         return summary
+
 
     def _calculate_compliance_score(
         self, checks: List[ComplianceCheck]
@@ -914,24 +930,25 @@ class ComplianceValidator:
 
         return status, score
 
+
     def export_report(self, report: ComplianceReport, output_path: str) -> bool:
         """Export compliance report to file"""
         try:
             export_data = {
                 "report_id": report.report_id,
-                "timestamp": report.timestamp,
-                "target_path": report.target_path,
-                "summary": report.summary,
-                "overall_status": report.overall_status,
-                "compliance_score": report.compliance_score,
-                "duration_seconds": report.duration_seconds,
-                "metadata": report.metadata,
-                "checks": [asdict(check) for check in report.checks],
-            }
+                    "timestamp": report.timestamp,
+                    "target_path": report.target_path,
+                    "summary": report.summary,
+                    "overall_status": report.overall_status,
+                    "compliance_score": report.compliance_score,
+                    "duration_seconds": report.duration_seconds,
+                    "metadata": report.metadata,
+                    "checks": [asdict(check) for check in report.checks],
+                    }
 
             output_file = Path(output_path)
-            with open(output_file, "w", encoding="utf-8") as f:
-                json.dump(export_data, f, indent=2, ensure_ascii=False)
+            with open(output_file, "w", encoding="utf - 8") as f:
+                json.dump(export_data, f, indent = 2, ensure_ascii = False)
 
             logger.info(f"Compliance report exported to {output_file}")
             return True
@@ -942,22 +959,22 @@ class ComplianceValidator:
 
 
 def main():
-    """Command-line interface for compliance validator"""
+    """Command - line interface for compliance validator"""
     import argparse
 
     parser = argparse.ArgumentParser(
         description="Compliance Validator - TRAE.AI system compliance validation"
     )
     parser.add_argument(
-        "--base-dir", default=".", help="Base directory to validate (default: current)"
+        "--base - dir", default=".", help="Base directory to validate (default: current)"
     )
     parser.add_argument("--output", help="Output file for report (JSON format)")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument(
-        "--fail-on-non-compliant",
-        action="store_true",
-        help="Exit with error code if not compliant",
-    )
+        "--fail - on - non - compliant",
+            action="store_true",
+            help="Exit with error code if not compliant",
+            )
 
     args = parser.parse_args()
 
@@ -1009,7 +1026,6 @@ def main():
         exit(1)
     else:
         exit(0)
-
 
 if __name__ == "__main__":
     main()

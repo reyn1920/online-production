@@ -1,4 +1,4 @@
-# app/routers/oauth.py
+# app / routers / oauth.py
 import logging
 import os
 import secrets
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/oauth", tags=["oauth"])
 
-# In-memory storage for OAuth states (use Redis in production)
+# In - memory storage for OAuth states (use Redis in production)
 OAUTH_STATES = {}
 
 
@@ -34,14 +34,15 @@ def _cleanup_expired_states():
     for key in expired_keys:
         del OAUTH_STATES[key]
 
+@router.get("/tiktok / start")
 
-@router.get("/tiktok/start")
+
 async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = None):
     """Start TikTok OAuth flow."""
     # Check if TikTok OAuth is enabled
     client_id = os.getenv("TIKTOK_CLIENT_ID")
     if not client_id:
-        raise HTTPException(status_code=503, detail="TikTok OAuth not configured")
+        raise HTTPException(status_code = 503, detail="TikTok OAuth not configured")
 
     # Generate state for CSRF protection
     state = secrets.token_urlsafe(32)
@@ -50,49 +51,50 @@ async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = Non
     _cleanup_expired_states()
     OAUTH_STATES[state] = {
         "provider": "tiktok",
-        "created_at": time.time(),
-        "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth/success",
-    }
+            "created_at": time.time(),
+            "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth / success",
+            }
 
     # Build TikTok OAuth URL
     base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/tiktok/callback"
+    callback_url = f"{base_url}/oauth / tiktok / callback"
 
     params = {
         "client_key": client_id,
-        "scope": "user.info.basic,video.list",  # Basic scopes
+            "scope": "user.info.basic,video.list",  # Basic scopes
         "response_type": "code",
-        "redirect_uri": callback_url,
-        "state": state,
-    }
+            "redirect_uri": callback_url,
+            "state": state,
+            }
 
-    auth_url = "https://www.tiktok.com/auth/authorize/?" + urllib.parse.urlencode(
+    auth_url = "https://www.tiktok.com / auth / authorize/?" + urllib.parse.urlencode(
         params
     )
 
     logger.info(f"Starting TikTok OAuth flow with state: {state}")
-    return RedirectResponse(url=auth_url)
+    return RedirectResponse(url = auth_url)
+
+@router.get("/tiktok / callback")
 
 
-@router.get("/tiktok/callback")
 async def tiktok_oauth_callback(
     request: Request,
-    code: Optional[str] = Query(None),
-    state: Optional[str] = Query(None),
-    error: Optional[str] = Query(None),
-    error_description: Optional[str] = Query(None),
+        code: Optional[str] = Query(None),
+        state: Optional[str] = Query(None),
+        error: Optional[str] = Query(None),
+        error_description: Optional[str] = Query(None),
 ):
     """Handle TikTok OAuth callback."""
     if error:
         logger.error(f"TikTok OAuth error: {error} - {error_description}")
-        raise HTTPException(status_code=400, detail=f"OAuth error: {error}")
+        raise HTTPException(status_code = 400, detail = f"OAuth error: {error}")
 
     if not code or not state:
-        raise HTTPException(status_code=400, detail="Missing code or state parameter")
+        raise HTTPException(status_code = 400, detail="Missing code or state parameter")
 
     # Verify state
     if state not in OAUTH_STATES:
-        raise HTTPException(status_code=400, detail="Invalid or expired state")
+        raise HTTPException(status_code = 400, detail="Invalid or expired state")
 
     state_data = OAUTH_STATES.pop(state)  # Remove used state
 
@@ -102,26 +104,26 @@ async def tiktok_oauth_callback(
 
     if not client_id or not client_secret:
         raise HTTPException(
-            status_code=503, detail="TikTok OAuth credentials not configured"
+            status_code = 503, detail="TikTok OAuth credentials not configured"
         )
 
     base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/tiktok/callback"
+    callback_url = f"{base_url}/oauth / tiktok / callback"
 
     token_data = {
         "client_key": client_id,
-        "client_secret": client_secret,
-        "code": code,
-        "grant_type": "authorization_code",
-        "redirect_uri": callback_url,
-    }
+            "client_secret": client_secret,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": callback_url,
+            }
 
     try:
         token_response = requests.post(
-            "https://open-api.tiktok.com/oauth/access_token/",
-            json=token_data,
-            timeout=30,
-        )
+            "https://open - api.tiktok.com / oauth / access_token/",
+                json = token_data,
+                timeout = 30,
+                )
 
         if token_response.status_code == 200:
             token_info = token_response.json()
@@ -140,48 +142,49 @@ async def tiktok_oauth_callback(
                 # Report success to integrations registry
                 try:
                     requests.post(
-                        "http://localhost:8000/integrations/report",
-                        json={
+                        "http://localhost:8000 / integrations / report",
+                            json={
                             "key": "tiktok",
-                            "success": True,
-                            "took_ms": 0,
-                            "quota_remaining": None,
-                        },
-                        timeout=10,
-                    )
+                                "success": True,
+                                "took_ms": 0,
+                                "quota_remaining": None,
+                                },
+                            timeout = 10,
+                            )
                 except Exception as e:
                     logger.warning(f"Failed to report TikTok OAuth success: {e}")
 
                 # Redirect to success page or original redirect URI
                 redirect_uri = state_data.get(
-                    "redirect_uri", f"{base_url}/oauth/success"
+                    "redirect_uri", f"{base_url}/oauth / success"
                 )
                 return RedirectResponse(
-                    url=f"{redirect_uri}?provider=tiktok&status=success"
+                    url = f"{redirect_uri}?provider = tiktok&status = success"
                 )
             else:
                 logger.error(f"TikTok token response missing data: {token_info}")
-                raise HTTPException(status_code=400, detail="Invalid token response")
+                raise HTTPException(status_code = 400, detail="Invalid token response")
         else:
             logger.error(
                 f"TikTok token request failed: {token_response.status_code} - {token_response.text}"
             )
             raise HTTPException(
-                status_code=400, detail="Failed to exchange code for token"
+                status_code = 400, detail="Failed to exchange code for token"
             )
 
     except requests.RequestException as e:
         logger.error(f"TikTok token request error: {e}")
-        raise HTTPException(status_code=500, detail="OAuth token exchange failed")
+        raise HTTPException(status_code = 500, detail="OAuth token exchange failed")
+
+@router.get("/instagram / start")
 
 
-@router.get("/instagram/start")
 async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = None):
     """Start Instagram OAuth flow."""
     # Check if Instagram OAuth is enabled
     client_id = os.getenv("INSTAGRAM_CLIENT_ID")
     if not client_id:
-        raise HTTPException(status_code=503, detail="Instagram OAuth not configured")
+        raise HTTPException(status_code = 503, detail="Instagram OAuth not configured")
 
     # Generate state for CSRF protection
     state = secrets.token_urlsafe(32)
@@ -190,49 +193,50 @@ async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = 
     _cleanup_expired_states()
     OAUTH_STATES[state] = {
         "provider": "instagram",
-        "created_at": time.time(),
-        "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth/success",
-    }
+            "created_at": time.time(),
+            "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth / success",
+            }
 
     # Build Instagram OAuth URL
     base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/instagram/callback"
+    callback_url = f"{base_url}/oauth / instagram / callback"
 
     params = {
         "client_id": client_id,
-        "redirect_uri": callback_url,
-        "scope": "user_profile,user_media",  # Basic scopes
+            "redirect_uri": callback_url,
+            "scope": "user_profile,user_media",  # Basic scopes
         "response_type": "code",
-        "state": state,
-    }
+            "state": state,
+            }
 
-    auth_url = "https://api.instagram.com/oauth/authorize?" + urllib.parse.urlencode(
+    auth_url = "https://api.instagram.com / oauth / authorize?" + urllib.parse.urlencode(
         params
     )
 
     logger.info(f"Starting Instagram OAuth flow with state: {state}")
-    return RedirectResponse(url=auth_url)
+    return RedirectResponse(url = auth_url)
+
+@router.get("/instagram / callback")
 
 
-@router.get("/instagram/callback")
 async def instagram_oauth_callback(
     request: Request,
-    code: Optional[str] = Query(None),
-    state: Optional[str] = Query(None),
-    error: Optional[str] = Query(None),
-    error_description: Optional[str] = Query(None),
+        code: Optional[str] = Query(None),
+        state: Optional[str] = Query(None),
+        error: Optional[str] = Query(None),
+        error_description: Optional[str] = Query(None),
 ):
     """Handle Instagram OAuth callback."""
     if error:
         logger.error(f"Instagram OAuth error: {error} - {error_description}")
-        raise HTTPException(status_code=400, detail=f"OAuth error: {error}")
+        raise HTTPException(status_code = 400, detail = f"OAuth error: {error}")
 
     if not code or not state:
-        raise HTTPException(status_code=400, detail="Missing code or state parameter")
+        raise HTTPException(status_code = 400, detail="Missing code or state parameter")
 
     # Verify state
     if state not in OAUTH_STATES:
-        raise HTTPException(status_code=400, detail="Invalid or expired state")
+        raise HTTPException(status_code = 400, detail="Invalid or expired state")
 
     state_data = OAUTH_STATES.pop(state)  # Remove used state
 
@@ -242,23 +246,23 @@ async def instagram_oauth_callback(
 
     if not client_id or not client_secret:
         raise HTTPException(
-            status_code=503, detail="Instagram OAuth credentials not configured"
+            status_code = 503, detail="Instagram OAuth credentials not configured"
         )
 
     base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/instagram/callback"
+    callback_url = f"{base_url}/oauth / instagram / callback"
 
     token_data = {
         "client_id": client_id,
-        "client_secret": client_secret,
-        "grant_type": "authorization_code",
-        "redirect_uri": callback_url,
-        "code": code,
-    }
+            "client_secret": client_secret,
+            "grant_type": "authorization_code",
+            "redirect_uri": callback_url,
+            "code": code,
+            }
 
     try:
         token_response = requests.post(
-            "https://api.instagram.com/oauth/access_token", data=token_data, timeout=30
+            "https://api.instagram.com / oauth / access_token", data = token_data, timeout = 30
         )
 
         if token_response.status_code == 200:
@@ -274,57 +278,59 @@ async def instagram_oauth_callback(
                 # Report success to integrations registry
                 try:
                     requests.post(
-                        "http://localhost:8000/integrations/report",
-                        json={
+                        "http://localhost:8000 / integrations / report",
+                            json={
                             "key": "instagram",
-                            "success": True,
-                            "took_ms": 0,
-                            "quota_remaining": None,
-                        },
-                        timeout=10,
-                    )
+                                "success": True,
+                                "took_ms": 0,
+                                "quota_remaining": None,
+                                },
+                            timeout = 10,
+                            )
                 except Exception as e:
                     logger.warning(f"Failed to report Instagram OAuth success: {e}")
 
                 # Redirect to success page or original redirect URI
                 redirect_uri = state_data.get(
-                    "redirect_uri", f"{base_url}/oauth/success"
+                    "redirect_uri", f"{base_url}/oauth / success"
                 )
                 return RedirectResponse(
-                    url=f"{redirect_uri}?provider=instagram&status=success"
+                    url = f"{redirect_uri}?provider = instagram&status = success"
                 )
             else:
                 logger.error(
                     f"Instagram token response missing required fields: {token_info}"
                 )
-                raise HTTPException(status_code=400, detail="Invalid token response")
+                raise HTTPException(status_code = 400, detail="Invalid token response")
         else:
             logger.error(
                 f"Instagram token request failed: {token_response.status_code} - {token_response.text}"
             )
             raise HTTPException(
-                status_code=400, detail="Failed to exchange code for token"
+                status_code = 400, detail="Failed to exchange code for token"
             )
 
     except requests.RequestException as e:
         logger.error(f"Instagram token request error: {e}")
-        raise HTTPException(status_code=500, detail="OAuth token exchange failed")
-
+        raise HTTPException(status_code = 500, detail="OAuth token exchange failed")
 
 @router.get("/success")
+
+
 async def oauth_success(
     provider: Optional[str] = Query(None), status: Optional[str] = Query(None)
 ):
     """OAuth success page."""
     return {
         "message": "OAuth flow completed",
-        "provider": provider,
-        "status": status,
-        "timestamp": time.time(),
-    }
-
+            "provider": provider,
+            "status": status,
+            "timestamp": time.time(),
+            }
 
 @router.get("/status")
+
+
 async def oauth_status():
     """Get OAuth configuration status."""
     status = {
@@ -332,18 +338,18 @@ async def oauth_status():
             "configured": bool(
                 os.getenv("TIKTOK_CLIENT_ID") and os.getenv("TIKTOK_CLIENT_SECRET")
             ),
-            "client_id_set": bool(os.getenv("TIKTOK_CLIENT_ID")),
-            "client_secret_set": bool(os.getenv("TIKTOK_CLIENT_SECRET")),
-        },
-        "instagram": {
+                "client_id_set": bool(os.getenv("TIKTOK_CLIENT_ID")),
+                "client_secret_set": bool(os.getenv("TIKTOK_CLIENT_SECRET")),
+                },
+            "instagram": {
             "configured": bool(
                 os.getenv("INSTAGRAM_CLIENT_ID")
                 and os.getenv("INSTAGRAM_CLIENT_SECRET")
             ),
-            "client_id_set": bool(os.getenv("INSTAGRAM_CLIENT_ID")),
-            "client_secret_set": bool(os.getenv("INSTAGRAM_CLIENT_SECRET")),
-        },
-        "active_states": len(OAUTH_STATES),
-    }
+                "client_id_set": bool(os.getenv("INSTAGRAM_CLIENT_ID")),
+                "client_secret_set": bool(os.getenv("INSTAGRAM_CLIENT_SECRET")),
+                },
+            "active_states": len(OAUTH_STATES),
+            }
 
     return status

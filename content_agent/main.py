@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-TRAE.AI Content Agent - Hollywood-Level Creative Pipeline
+TRAE.AI Content Agent - Hollywood - Level Creative Pipeline
 Handles video creation, TTS, avatar generation, and content automation
 """
 
@@ -28,7 +28,7 @@ from TTS.api import TTS
 
 try:
     from moviepy.editor import (AudioFileClip, CompositeVideoClip, TextClip,
-                                VideoFileClip)
+        VideoFileClip)
 except ImportError:
     logger.warning("MoviePy not available - video editing features disabled")
     VideoFileClip = AudioFileClip = CompositeVideoClip = TextClip = None
@@ -39,6 +39,7 @@ load_dotenv()
 
 class ContentConfig:
     """Configuration for the content agent"""
+
 
     def __init__(self):
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -52,8 +53,8 @@ class ContentConfig:
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
 
         # Ensure directories exist
-        self.output_dir.mkdir(exist_ok=True)
-        self.data_dir.mkdir(exist_ok=True)
+        self.output_dir.mkdir(exist_ok = True)
+        self.data_dir.mkdir(exist_ok = True)
 
 
 class ContentRequest(BaseModel):
@@ -85,16 +86,18 @@ class ContentResponse(BaseModel):
 class NewsWatcher:
     """Watches RSS feeds for breaking news and trending topics"""
 
+
     def __init__(self, config: ContentConfig):
         self.config = config
         self.rss_feeds = [
-            "https://feeds.bbci.co.uk/news/rss.xml",
-            "https://rss.cnn.com/rss/edition.rss",
-            "https://feeds.reuters.com/reuters/topNews",
-            "https://feeds.npr.org/1001/rss.xml",
-            "https://techcrunch.com/feed/",
-            "https://feeds.ycombinator.com/hackernews",
-        ]
+            "https://feeds.bbci.co.uk / news / rss.xml",
+                "https://rss.cnn.com / rss / edition.rss",
+                "https://feeds.reuters.com / reuters / topNews",
+                "https://feeds.npr.org / 1001 / rss.xml",
+                "https://techcrunch.com / feed/",
+                "https://feeds.ycombinator.com / hackernews",
+                ]
+
 
     def get_trending_topics(self, limit: int = 10) -> List[Dict[str, str]]:
         """Get trending topics from RSS feeds"""
@@ -107,11 +110,11 @@ class NewsWatcher:
                     topics.append(
                         {
                             "title": entry.title,
-                            "summary": entry.get("summary", ""),
-                            "link": entry.link,
-                            "published": entry.get("published", ""),
-                            "source": feed.feed.get("title", "Unknown"),
-                        }
+                                "summary": entry.get("summary", ""),
+                                "link": entry.link,
+                                "published": entry.get("published", ""),
+                                "source": feed.feed.get("title", "Unknown"),
+                                }
                     )
             except Exception as e:
                 logger.warning(f"Failed to fetch from {feed_url}: {e}")
@@ -123,10 +126,12 @@ class NewsWatcher:
 class ScriptGenerator:
     """Generates video scripts using OpenAI"""
 
+
     def __init__(self, config: ContentConfig):
         self.config = config
         if config.openai_api_key:
             openai.api_key = config.openai_api_key
+
 
     async def generate_script(
         self, topic: str, duration: int, style: str = "educational"
@@ -144,7 +149,7 @@ Requirements:
 - Hook viewers in the first 5 seconds
 - Present information clearly and concisely
 - Include surprising facts or insights
-- End with a thought-provoking question or call-to-action
+- End with a thought - provoking question or call - to - action
 - Write in a conversational, accessible tone
 - Include natural pauses for emphasis
 
@@ -153,21 +158,21 @@ Return JSON with:
 - description: Brief description for social media
 - script: Full narration script with timing cues
 - key_points: List of main points covered
-- tags: Relevant hashtags/keywords
+- tags: Relevant hashtags / keywords
 """
 
             response = await openai.ChatCompletion.acreate(
-                model="gpt-4",
-                messages=[
+                model="gpt - 4",
+                    messages=[
                     {
                         "role": "system",
-                        "content": "You are a professional video script writer specializing in educational content that goes viral.",
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                max_tokens=2000,
-                temperature=0.7,
-            )
+                            "content": "You are a professional video script writer specializing in educational content that goes viral.",
+                            },
+                        {"role": "user", "content": prompt},
+                        ],
+                    max_tokens = 2000,
+                    temperature = 0.7,
+                    )
 
             content = response.choices[0].message.content
 
@@ -179,41 +184,44 @@ Return JSON with:
                 # Fallback if not valid JSON
                 return {
                     "title": f"Breaking: {topic}",
-                    "description": f"Latest insights on {topic}",
-                    "script": content,
-                    "key_points": [topic],
-                    "tags": ["#news", "#trending", "#education"],
-                }
+                        "description": f"Latest insights on {topic}",
+                        "script": content,
+                        "key_points": [topic],
+                        "tags": ["#news", "#trending", "#education"],
+                        }
 
         except Exception as e:
             logger.error(f"Script generation failed: {e}")
             # Return a basic fallback script structure
             return {
                 "title": f"Analysis: {topic}",
-                "description": f"Insights on {topic}",
-                "script": f"Today we're exploring {topic}. This topic is important because it affects many aspects of our daily lives. Let's dive into the key details and understand what this means for the future.",
-                "key_points": [topic],
-                "tags": ["#analysis", "#education"],
-            }
+                    "description": f"Insights on {topic}",
+                    "script": f"Today we're exploring {topic}. This topic is important because it affects many aspects of our daily lives. Let's dive into the key details and understand what this means for the future.",
+                    "key_points": [topic],
+                    "tags": ["#analysis", "#education"],
+                    }
 
 
 class TTSEngine:
-    """Text-to-Speech engine using Coqui TTS"""
+    """Text - to - Speech engine using Coqui TTS"""
+
 
     def __init__(self, config: ContentConfig):
         self.config = config
         self.tts = None
         self._initialize_tts()
 
+
     def _initialize_tts(self):
         """Initialize the TTS engine"""
         try:
-            # Use Coqui TTS with a high-quality model
-            self.tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC")
+            # Use Coqui TTS with a high - quality model
+            self.tts = TTS(model_name="tts_models / en / ljspeech / tacotron2 - DDC")
             logger.info("✅ TTS engine initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize TTS: {e}")
             self.tts = None
+
 
     async def generate_audio(
         self, text: str, output_path: str, voice: str = "default"
@@ -225,7 +233,7 @@ class TTSEngine:
 
         try:
             # Generate audio using Coqui TTS
-            self.tts.tts_to_file(text=text, file_path=output_path)
+            self.tts.tts_to_file(text = text, file_path = output_path)
             logger.info(f"✅ Audio generated: {output_path}")
             return output_path
 
@@ -237,8 +245,10 @@ class TTSEngine:
 class AvatarGenerator:
     """Generates 3D avatars and visual content"""
 
+
     def __init__(self, config: ContentConfig):
         self.config = config
+
 
     def create_avatar_video(
         self, script_data: Dict, audio_path: str, output_path: str
@@ -246,12 +256,13 @@ class AvatarGenerator:
         """Create avatar video with synchronized audio"""
         try:
             # For now, create a simple video with text overlay
-            # In production, this would integrate with MakeHuman/Daz3D/Blender
+            # In production, this would integrate with MakeHuman / Daz3D / Blender
             return self._create_text_video(script_data, audio_path, output_path)
 
         except Exception as e:
             logger.error(f"Avatar video creation failed: {e}")
             return self._create_text_video(script_data, audio_path, output_path)
+
 
     def _create_text_video(
         self, script_data: Dict, audio_path: str, output_path: str
@@ -269,10 +280,10 @@ class AvatarGenerator:
             title_clip = (
                 TextClip(
                     script_data.get("title", "TRAE.AI Content"),
-                    fontsize=72,
-                    color="white",
-                    font="Arial-Bold",
-                )
+                        fontsize = 72,
+                        color="white",
+                        font="Arial - Bold",
+                        )
                 .set_position("center")
                 .set_duration(duration)
             )
@@ -280,11 +291,11 @@ class AvatarGenerator:
             # Create subtitle text (key points)
             key_points = script_data.get("key_points", [])
             subtitle_text = (
-                " • ".join(key_points[:3]) if key_points else "AI-Generated Content"
+                " • ".join(key_points[:3]) if key_points else "AI - Generated Content"
             )
 
             subtitle_clip = (
-                TextClip(subtitle_text, fontsize=36, color="lightblue", font="Arial")
+                TextClip(subtitle_text, fontsize = 36, color="lightblue", font="Arial")
                 .set_position(("center", "bottom"))
                 .set_duration(duration)
             )
@@ -297,12 +308,12 @@ class AvatarGenerator:
             # Write video file
             final_video.write_videofile(
                 output_path,
-                fps=30,
-                codec="libx264",
-                audio_codec="aac",
-                temp_audiofile="temp-audio.m4a",
-                remove_temp=True,
-            )
+                    fps = 30,
+                    codec="libx264",
+                    audio_codec="aac",
+                    temp_audiofile="temp - audio.m4a",
+                    remove_temp = True,
+                    )
 
             # Clean up
             audio_clip.close()
@@ -316,12 +327,15 @@ class AvatarGenerator:
             # Create minimal video file
             return self._create_minimal_video(output_path, 10)
 
+
     def _create_background(
         self, width: int, height: int, duration: float
     ) -> VideoFileClip:
         """Create animated background"""
 
         # Create a gradient background
+
+
         def make_frame(t):
             # Animated gradient
             color1 = np.array([20, 30, 60])  # Dark blue
@@ -329,7 +343,7 @@ class AvatarGenerator:
 
             # Create gradient that shifts over time
             shift = int(t * 10) % height
-            frame = np.zeros((height, width, 3), dtype=np.uint8)
+            frame = np.zeros((height, width, 3), dtype = np.uint8)
 
             for y in range(height):
                 ratio = (y + shift) % height / height
@@ -344,18 +358,19 @@ class AvatarGenerator:
             logger.warning("MoviePy VideoClip not available")
             VideoClip = None
             return None
-        return VideoClip(make_frame, duration=duration)
+        return VideoClip(make_frame, duration = duration)
+
 
     def _create_minimal_video(self, output_path: str, duration: int) -> str:
         """Create minimal video file for testing"""
         try:
             (
                 ffmpeg.input(
-                    "color=c=blue:size=1920x1080:duration=" + str(duration), f="lavfi"
+                    "color = c=blue:size = 1920x1080:duration=" + str(duration), f="lavfi"
                 )
                 .output(output_path, vcodec="libx264", pix_fmt="yuv420p")
                 .overwrite_output()
-                .run(quiet=True)
+                .run(quiet = True)
             )
             return output_path
         except Exception as e:
@@ -365,6 +380,7 @@ class AvatarGenerator:
 
 class ContentAgent:
     """Main content agent that orchestrates content creation"""
+
 
     def __init__(self, config: ContentConfig):
         self.config = config
@@ -376,40 +392,48 @@ class ContentAgent:
         self.setup_logging()
         self.setup_routes()
 
+
     def setup_logging(self):
         """Configure logging"""
         logger.remove()
         logger.add(
             sys.stdout,
-            level=self.config.log_level,
-            format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        )
+                level = self.config.log_level,
+                format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+                )
         logger.add(
-            "/app/logs/content_agent.log",
-            rotation="1 day",
-            retention="30 days",
-            level=self.config.log_level,
-        )
+            "/app / logs / content_agent.log",
+                rotation="1 day",
+                retention="30 days",
+                level = self.config.log_level,
+                )
+
 
     def setup_routes(self):
         """Setup FastAPI routes"""
 
         @self.app.get("/health")
+
+
         async def health_check():
             return {
                 "status": "healthy",
-                "timestamp": datetime.now().isoformat(),
-                "tts_available": self.tts_engine.tts is not None,
-                "openai_configured": bool(self.config.openai_api_key),
-            }
+                    "timestamp": datetime.now().isoformat(),
+                    "tts_available": self.tts_engine.tts is not None,
+                    "openai_configured": bool(self.config.openai_api_key),
+                    }
 
         @self.app.get("/trending")
+
+
         async def get_trending_topics():
             """Get trending topics from news feeds"""
             topics = self.news_watcher.get_trending_topics()
             return {"topics": topics, "count": len(topics)}
 
-        @self.app.post("/create", response_model=ContentResponse)
+        @self.app.post("/create", response_model = ContentResponse)
+
+
         async def create_content(
             request: ContentRequest, background_tasks: BackgroundTasks
         ):
@@ -440,48 +464,51 @@ class ContentAgent:
                     video_clip = VideoFileClip(video_path)
                     actual_duration = video_clip.duration
                     video_clip.close()
-                except:
+                except Exception:
                     actual_duration = request.duration
 
                 response = ContentResponse(
-                    content_id=content_id,
-                    type=request.type,
-                    title=script_data["title"],
-                    description=script_data["description"],
-                    transcript=script_data["script"],
-                    file_path=video_path,
-                    duration=actual_duration,
-                    created_at=datetime.now(),
-                    metadata={
+                    content_id = content_id,
+                        type = request.type,
+                        title = script_data["title"],
+                        description = script_data["description"],
+                        transcript = script_data["script"],
+                        file_path = video_path,
+                        duration = actual_duration,
+                        created_at = datetime.now(),
+                        metadata={
                         "audio_path": audio_path,
-                        "key_points": script_data.get("key_points", []),
-                        "tags": script_data.get("tags", []),
-                        "style": request.style,
-                        "voice": request.voice,
-                        "resolution": request.resolution,
-                    },
-                )
+                            "key_points": script_data.get("key_points", []),
+                            "tags": script_data.get("tags", []),
+                            "style": request.style,
+                            "voice": request.voice,
+                            "resolution": request.resolution,
+                            },
+                        )
 
                 logger.info(f"✅ Content created successfully: {content_id}")
                 return response
 
             except Exception as e:
                 logger.error(f"❌ Content creation failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
         @self.app.get("/content/{content_id}")
+
+
         async def get_content(content_id: str):
             """Get content by ID"""
             video_path = self.config.output_dir / f"{content_id}_video.mp4"
             if video_path.exists():
                 return {
                     "content_id": content_id,
-                    "file_path": str(video_path),
-                    "exists": True,
-                    "size_mb": video_path.stat().st_size / (1024 * 1024),
-                }
+                        "file_path": str(video_path),
+                        "exists": True,
+                        "size_mb": video_path.stat().st_size / (1024 * 1024),
+                        }
             else:
-                raise HTTPException(status_code=404, detail="Content not found")
+                raise HTTPException(status_code = 404, detail="Content not found")
+
 
     async def start_server(self):
         """Start the content agent server"""
@@ -492,11 +519,11 @@ class ContentAgent:
         logger.info(f"🎤 TTS available: {self.tts_engine.tts is not None}")
 
         config = uvicorn.Config(
-            app=self.app,
-            host="0.0.0.0",
-            port=8001,
-            log_level=self.config.log_level.lower(),
-        )
+            app = self.app,
+                host="0.0.0.0",
+                port = 8001,
+                log_level = self.config.log_level.lower(),
+                )
         server = uvicorn.Server(config)
         await server.serve()
 
@@ -506,7 +533,6 @@ async def main():
     config = ContentConfig()
     agent = ContentAgent(config)
     await agent.start_server()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

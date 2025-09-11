@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Check All System Integrations Status
 Verifies that all folders and components are properly integrated
@@ -16,7 +16,7 @@ def check_software_integrations():
     """Check system software integrations"""
     try:
         print("🔍 Checking Software Integrations...")
-        response = requests.get("http://localhost:8000/system-software/status")
+        response = requests.get("http://localhost:8000 / system - software / status")
 
         if response.status_code == 200:
             data = response.json()
@@ -26,7 +26,7 @@ def check_software_integrations():
             print(f"  Total Software: {total}")
             print(f"  Available: {available}")
             print(
-                f"  Integration Rate: {(available/total*100):.1f}%"
+                f"  Integration Rate: {(available / total * 100):.1f}%"
                 if total > 0
                 else "  Integration Rate: 0%"
             )
@@ -96,20 +96,20 @@ def check_folder_structure():
 
     key_folders = [
         "backend",
-        "app",
-        "frontend",
-        "assets",
-        "content",
-        "output",
-        "agents",
-        "marketing_agent",
-        "content_agent",
-        "orchestrator",
-        "tools",
-        "scripts",
-        "config",
-        "data",
-    ]
+            "app",
+            "frontend",
+            "assets",
+            "content",
+            "output",
+            "agents",
+            "marketing_agent",
+            "content_agent",
+            "orchestrator",
+            "tools",
+            "scripts",
+            "config",
+            "data",
+            ]
 
     existing_folders = []
     missing_folders = []
@@ -136,18 +136,18 @@ def check_api_endpoints():
 
     endpoints = [
         "/health",
-        "/dashboard",
-        "/dashboard/api/system-info",
-        "/system-software/status",
-        "/integrations/status",
-    ]
+            "/dashboard",
+            "/dashboard / api / system - info",
+            "/system - software / status",
+            "/integrations / status",
+            ]
 
     working_endpoints = []
     failed_endpoints = []
 
     for endpoint in endpoints:
         try:
-            response = requests.get(f"http://localhost:8000{endpoint}", timeout=5)
+            response = requests.get(f"http://localhost:8000{endpoint}", timeout = 5)
             if response.status_code == 200:
                 working_endpoints.append(endpoint)
             else:
@@ -190,7 +190,6 @@ def main():
         print("   Review the details above for specific issues.")
 
     return all_integrated
-
 
 if __name__ == "__main__":
     success = main()

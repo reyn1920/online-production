@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Registration Executor
 Automated registration for 100+ APIs using benchmark website access
@@ -23,14 +23,15 @@ import aiohttp
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("api_registration.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("api_registration.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class APIRegistrationResult:
     """Result of API registration attempt"""
 
@@ -44,6 +45,7 @@ class APIRegistrationResult:
     registration_url: Optional[str] = None
     timestamp: str = None
 
+
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now().isoformat()
@@ -51,6 +53,7 @@ class APIRegistrationResult:
 
 class APIRegistrationExecutor:
     """Automated API registration executor"""
+
 
     def __init__(self):
         self.base_dir = Path.cwd()
@@ -65,6 +68,7 @@ class APIRegistrationExecutor:
         # API registry with registration endpoints and patterns
         self.api_registry = self.build_api_registry()
 
+
     def load_existing_results(self):
         """Load existing registration results"""
         if self.results_file.exists():
@@ -78,837 +82,841 @@ class APIRegistrationExecutor:
             except Exception as e:
                 logger.error(f"Error loading existing results: {e}")
 
+
     def save_results(self):
         """Save registration results to file"""
         try:
             with open(self.results_file, "w") as f:
                 json.dump(
                     [asdict(result) for result in self.registration_results],
-                    f,
-                    indent=2,
-                )
+                        f,
+                        indent = 2,
+                        )
             logger.info(f"Saved {len(self.registration_results)} results")
         except Exception as e:
             logger.error(f"Error saving results: {e}")
 
+
     def build_api_registry(self) -> Dict[str, Dict[str, Any]]:
         """Build comprehensive API registry with registration endpoints"""
         return {
-            # AI/ML APIs
+            # AI / ML APIs
             "huggingface": {
                 "name": "Hugging Face",
-                "signup_url": "https://huggingface.co/join",
-                "api_docs": "https://huggingface.co/docs/api-inference/index",
-                "key_location": "https://huggingface.co/settings/tokens",
-                "env_var": "HUGGINGFACE_API_KEY",
-                "free_tier": "30,000 requests/month",
-                "category": "ai",
-            },
-            "openai": {
+                    "signup_url": "https://huggingface.co / join",
+                    "api_docs": "https://huggingface.co / docs / api - inference / index",
+                    "key_location": "https://huggingface.co / settings / tokens",
+                    "env_var": "HUGGINGFACE_API_KEY",
+                    "free_tier": "30,000 requests / month",
+                    "category": "ai",
+                    },
+                "openai": {
                 "name": "OpenAI",
-                "signup_url": "https://platform.openai.com/signup",
-                "api_docs": "https://platform.openai.com/docs",
-                "key_location": "https://platform.openai.com/api-keys",
-                "env_var": "OPENAI_API_KEY",
-                "free_tier": "$5 free credit",
-                "category": "ai",
-            },
-            "anthropic": {
+                    "signup_url": "https://platform.openai.com / signup",
+                    "api_docs": "https://platform.openai.com / docs",
+                    "key_location": "https://platform.openai.com / api - keys",
+                    "env_var": "OPENAI_API_KEY",
+                    "free_tier": "$5 free credit",
+                    "category": "ai",
+                    },
+                "anthropic": {
                 "name": "Anthropic Claude",
-                "signup_url": "https://console.anthropic.com/",
-                "api_docs": "https://docs.anthropic.com/",
-                "key_location": "https://console.anthropic.com/settings/keys",
-                "env_var": "ANTHROPIC_API_KEY",
-                "free_tier": "$5 free credit",
-                "category": "ai",
-            },
-            "groq": {
+                    "signup_url": "https://console.anthropic.com/",
+                    "api_docs": "https://docs.anthropic.com/",
+                    "key_location": "https://console.anthropic.com / settings / keys",
+                    "env_var": "ANTHROPIC_API_KEY",
+                    "free_tier": "$5 free credit",
+                    "category": "ai",
+                    },
+                "groq": {
                 "name": "Groq",
-                "signup_url": "https://console.groq.com/login",
-                "api_docs": "https://console.groq.com/docs",
-                "key_location": "https://console.groq.com/keys",
-                "env_var": "GROQ_API_KEY",
-                "free_tier": "14,400 requests/day",
-                "category": "ai",
-            },
-            "google_ai": {
+                    "signup_url": "https://console.groq.com / login",
+                    "api_docs": "https://console.groq.com / docs",
+                    "key_location": "https://console.groq.com / keys",
+                    "env_var": "GROQ_API_KEY",
+                    "free_tier": "14,400 requests / day",
+                    "category": "ai",
+                    },
+                "google_ai": {
                 "name": "Google AI Studio",
-                "signup_url": "https://aistudio.google.com/",
-                "api_docs": "https://ai.google.dev/docs",
-                "key_location": "https://aistudio.google.com/app/apikey",
-                "env_var": "GOOGLE_AI_API_KEY",
-                "free_tier": "15 requests/minute",
-                "category": "ai",
-            },
-            "cohere": {
+                    "signup_url": "https://aistudio.google.com/",
+                    "api_docs": "https://ai.google.dev / docs",
+                    "key_location": "https://aistudio.google.com / app / apikey",
+                    "env_var": "GOOGLE_AI_API_KEY",
+                    "free_tier": "15 requests / minute",
+                    "category": "ai",
+                    },
+                "cohere": {
                 "name": "Cohere",
-                "signup_url": "https://dashboard.cohere.com/register",
-                "api_docs": "https://docs.cohere.com/",
-                "key_location": "https://dashboard.cohere.com/api-keys",
-                "env_var": "COHERE_API_KEY",
-                "free_tier": "100 requests/month",
-                "category": "ai",
-            },
-            "replicate": {
+                    "signup_url": "https://dashboard.cohere.com / register",
+                    "api_docs": "https://docs.cohere.com/",
+                    "key_location": "https://dashboard.cohere.com / api - keys",
+                    "env_var": "COHERE_API_KEY",
+                    "free_tier": "100 requests / month",
+                    "category": "ai",
+                    },
+                "replicate": {
                 "name": "Replicate",
-                "signup_url": "https://replicate.com/signin",
-                "api_docs": "https://replicate.com/docs",
-                "key_location": "https://replicate.com/account/api-tokens",
-                "env_var": "REPLICATE_API_TOKEN",
-                "free_tier": "$10 free credit",
-                "category": "ai",
-            },
-            # Social Media APIs
+                    "signup_url": "https://replicate.com / signin",
+                    "api_docs": "https://replicate.com / docs",
+                    "key_location": "https://replicate.com / account / api - tokens",
+                    "env_var": "REPLICATE_API_TOKEN",
+                    "free_tier": "$10 free credit",
+                    "category": "ai",
+                    },
+                # Social Media APIs
             "youtube": {
                 "name": "YouTube Data API",
-                "signup_url": "https://console.cloud.google.com/",
-                "api_docs": "https://developers.google.com/youtube/v3",
-                "key_location": "https://console.cloud.google.com/apis/credentials",
-                "env_var": "YOUTUBE_API_KEY",
-                "free_tier": "10,000 units/day",
-                "category": "social",
-            },
-            "reddit": {
+                    "signup_url": "https://console.cloud.google.com/",
+                    "api_docs": "https://developers.google.com / youtube / v3",
+                    "key_location": "https://console.cloud.google.com / apis / credentials",
+                    "env_var": "YOUTUBE_API_KEY",
+                    "free_tier": "10,000 units / day",
+                    "category": "social",
+                    },
+                "reddit": {
                 "name": "Reddit API",
-                "signup_url": "https://www.reddit.com/prefs/apps",
-                "api_docs": "https://www.reddit.com/dev/api/",
-                "key_location": "https://www.reddit.com/prefs/apps",
-                "env_var": "REDDIT_CLIENT_ID",
-                "free_tier": "60 requests/minute",
-                "category": "social",
-            },
-            "twitter": {
+                    "signup_url": "https://www.reddit.com / prefs / apps",
+                    "api_docs": "https://www.reddit.com / dev / api/",
+                    "key_location": "https://www.reddit.com / prefs / apps",
+                    "env_var": "REDDIT_CLIENT_ID",
+                    "free_tier": "60 requests / minute",
+                    "category": "social",
+                    },
+                "twitter": {
                 "name": "Twitter API",
-                "signup_url": "https://developer.twitter.com/en/portal/petition/essential/basic-info",
-                "api_docs": "https://developer.twitter.com/en/docs",
-                "key_location": "https://developer.twitter.com/en/portal/projects-and-apps",
-                "env_var": "TWITTER_BEARER_TOKEN",
-                "free_tier": "500,000 tweets/month",
-                "category": "social",
-            },
-            "instagram": {
+                    "signup_url": "https://developer.twitter.com / en / portal / petition / essential / basic - info",
+                    "api_docs": "https://developer.twitter.com / en / docs",
+                    "key_location": "https://developer.twitter.com / en / portal / projects - and - apps",
+                    "env_var": "TWITTER_BEARER_TOKEN",
+                    "free_tier": "500,000 tweets / month",
+                    "category": "social",
+                    },
+                "instagram": {
                 "name": "Instagram Basic Display API",
-                "signup_url": "https://developers.facebook.com/apps/",
-                "api_docs": "https://developers.facebook.com/docs/instagram-basic-display-api",
-                "key_location": "https://developers.facebook.com/apps/",
-                "env_var": "INSTAGRAM_ACCESS_TOKEN",
-                "free_tier": "200 requests/hour",
-                "category": "social",
-            },
-            "tiktok": {
+                    "signup_url": "https://developers.facebook.com / apps/",
+                    "api_docs": "https://developers.facebook.com / docs / instagram - basic - display - api",
+                    "key_location": "https://developers.facebook.com / apps/",
+                    "env_var": "INSTAGRAM_ACCESS_TOKEN",
+                    "free_tier": "200 requests / hour",
+                    "category": "social",
+                    },
+                "tiktok": {
                 "name": "TikTok API",
-                "signup_url": "https://developers.tiktok.com/apps/",
-                "api_docs": "https://developers.tiktok.com/doc/",
-                "key_location": "https://developers.tiktok.com/apps/",
-                "env_var": "TIKTOK_CLIENT_KEY",
-                "free_tier": "1,000 requests/day",
-                "category": "social",
-            },
-            # Development APIs
+                    "signup_url": "https://developers.tiktok.com / apps/",
+                    "api_docs": "https://developers.tiktok.com / doc/",
+                    "key_location": "https://developers.tiktok.com / apps/",
+                    "env_var": "TIKTOK_CLIENT_KEY",
+                    "free_tier": "1,000 requests / day",
+                    "category": "social",
+                    },
+                # Development APIs
             "github": {
                 "name": "GitHub API",
-                "signup_url": "https://github.com/settings/tokens",
-                "api_docs": "https://docs.github.com/en/rest",
-                "key_location": "https://github.com/settings/tokens",
-                "env_var": "GITHUB_TOKEN",
-                "free_tier": "5,000 requests/hour",
-                "category": "development",
-            },
-            "gitlab": {
+                    "signup_url": "https://github.com / settings / tokens",
+                    "api_docs": "https://docs.github.com / en / rest",
+                    "key_location": "https://github.com / settings / tokens",
+                    "env_var": "GITHUB_TOKEN",
+                    "free_tier": "5,000 requests / hour",
+                    "category": "development",
+                    },
+                "gitlab": {
                 "name": "GitLab API",
-                "signup_url": "https://gitlab.com/-/profile/personal_access_tokens",
-                "api_docs": "https://docs.gitlab.com/ee/api/",
-                "key_location": "https://gitlab.com/-/profile/personal_access_tokens",
-                "env_var": "GITLAB_TOKEN",
-                "free_tier": "2,000 requests/minute",
-                "category": "development",
-            },
-            "netlify": {
+                    "signup_url": "https://gitlab.com/-/profile / personal_access_tokens",
+                    "api_docs": "https://docs.gitlab.com / ee / api/",
+                    "key_location": "https://gitlab.com/-/profile / personal_access_tokens",
+                    "env_var": "GITLAB_TOKEN",
+                    "free_tier": "2,000 requests / minute",
+                    "category": "development",
+                    },
+                "netlify": {
                 "name": "Netlify API",
-                "signup_url": "https://app.netlify.com/signup",
-                "api_docs": "https://docs.netlify.com/api/get-started/",
-                "key_location": "https://app.netlify.com/user/applications#personal-access-tokens",
-                "env_var": "NETLIFY_ACCESS_TOKEN",
-                "free_tier": "100GB bandwidth/month",
-                "category": "development",
-            },
-            "vercel": {
+                    "signup_url": "https://app.netlify.com / signup",
+                    "api_docs": "https://docs.netlify.com / api / get - started/",
+                    "key_location": "https://app.netlify.com / user / applications#personal - access - tokens",
+                    "env_var": "NETLIFY_ACCESS_TOKEN",
+                    "free_tier": "100GB bandwidth / month",
+                    "category": "development",
+                    },
+                "vercel": {
                 "name": "Vercel API",
-                "signup_url": "https://vercel.com/signup",
-                "api_docs": "https://vercel.com/docs/rest-api",
-                "key_location": "https://vercel.com/account/tokens",
-                "env_var": "VERCEL_TOKEN",
-                "free_tier": "100GB bandwidth/month",
-                "category": "development",
-            },
-            # Communication APIs
+                    "signup_url": "https://vercel.com / signup",
+                    "api_docs": "https://vercel.com / docs / rest - api",
+                    "key_location": "https://vercel.com / account / tokens",
+                    "env_var": "VERCEL_TOKEN",
+                    "free_tier": "100GB bandwidth / month",
+                    "category": "development",
+                    },
+                # Communication APIs
             "sendgrid": {
                 "name": "SendGrid",
-                "signup_url": "https://signup.sendgrid.com/",
-                "api_docs": "https://docs.sendgrid.com/api-reference",
-                "key_location": "https://app.sendgrid.com/settings/api_keys",
-                "env_var": "SENDGRID_API_KEY",
-                "free_tier": "100 emails/day",
-                "category": "communication",
-            },
-            "mailgun": {
+                    "signup_url": "https://signup.sendgrid.com/",
+                    "api_docs": "https://docs.sendgrid.com / api - reference",
+                    "key_location": "https://app.sendgrid.com / settings / api_keys",
+                    "env_var": "SENDGRID_API_KEY",
+                    "free_tier": "100 emails / day",
+                    "category": "communication",
+                    },
+                "mailgun": {
                 "name": "Mailgun",
-                "signup_url": "https://signup.mailgun.com/new/signup",
-                "api_docs": "https://documentation.mailgun.com/en/latest/api_reference.html",
-                "key_location": "https://app.mailgun.com/app/account/security/api_keys",
-                "env_var": "MAILGUN_API_KEY",
-                "free_tier": "5,000 emails/month",
-                "category": "communication",
-            },
-            "twilio": {
+                    "signup_url": "https://signup.mailgun.com / new / signup",
+                    "api_docs": "https://documentation.mailgun.com / en / latest / api_reference.html",
+                    "key_location": "https://app.mailgun.com / app / account / security / api_keys",
+                    "env_var": "MAILGUN_API_KEY",
+                    "free_tier": "5,000 emails / month",
+                    "category": "communication",
+                    },
+                "twilio": {
                 "name": "Twilio",
-                "signup_url": "https://www.twilio.com/try-twilio",
-                "api_docs": "https://www.twilio.com/docs/api",
-                "key_location": "https://console.twilio.com/project/api-keys",
-                "env_var": "TWILIO_AUTH_TOKEN",
-                "free_tier": "$15 free credit",
-                "category": "communication",
-            },
-            # Weather APIs
+                    "signup_url": "https://www.twilio.com / try - twilio",
+                    "api_docs": "https://www.twilio.com / docs / api",
+                    "key_location": "https://console.twilio.com / project / api - keys",
+                    "env_var": "TWILIO_AUTH_TOKEN",
+                    "free_tier": "$15 free credit",
+                    "category": "communication",
+                    },
+                # Weather APIs
             "openweather": {
                 "name": "OpenWeatherMap",
-                "signup_url": "https://home.openweathermap.org/users/sign_up",
-                "api_docs": "https://openweathermap.org/api",
-                "key_location": "https://home.openweathermap.org/api_keys",
-                "env_var": "OPENWEATHER_API_KEY",
-                "free_tier": "1,000 requests/day",
-                "category": "weather",
-            },
-            "weatherapi": {
+                    "signup_url": "https://home.openweathermap.org / users / sign_up",
+                    "api_docs": "https://openweathermap.org / api",
+                    "key_location": "https://home.openweathermap.org / api_keys",
+                    "env_var": "OPENWEATHER_API_KEY",
+                    "free_tier": "1,000 requests / day",
+                    "category": "weather",
+                    },
+                "weatherapi": {
                 "name": "WeatherAPI",
-                "signup_url": "https://www.weatherapi.com/signup.aspx",
-                "api_docs": "https://www.weatherapi.com/docs/",
-                "key_location": "https://www.weatherapi.com/my/",
-                "env_var": "WEATHER_API_KEY",
-                "free_tier": "1 million requests/month",
-                "category": "weather",
-            },
-            # Media APIs
+                    "signup_url": "https://www.weatherapi.com / signup.aspx",
+                    "api_docs": "https://www.weatherapi.com / docs/",
+                    "key_location": "https://www.weatherapi.com / my/",
+                    "env_var": "WEATHER_API_KEY",
+                    "free_tier": "1 million requests / month",
+                    "category": "weather",
+                    },
+                # Media APIs
             "unsplash": {
                 "name": "Unsplash",
-                "signup_url": "https://unsplash.com/oauth/applications",
-                "api_docs": "https://unsplash.com/documentation",
-                "key_location": "https://unsplash.com/oauth/applications",
-                "env_var": "UNSPLASH_ACCESS_KEY",
-                "free_tier": "50 requests/hour",
-                "category": "media",
-            },
-            "pexels": {
+                    "signup_url": "https://unsplash.com / oauth / applications",
+                    "api_docs": "https://unsplash.com / documentation",
+                    "key_location": "https://unsplash.com / oauth / applications",
+                    "env_var": "UNSPLASH_ACCESS_KEY",
+                    "free_tier": "50 requests / hour",
+                    "category": "media",
+                    },
+                "pexels": {
                 "name": "Pexels",
-                "signup_url": "https://www.pexels.com/api/",
-                "api_docs": "https://www.pexels.com/api/documentation/",
-                "key_location": "https://www.pexels.com/api/",
-                "env_var": "PEXELS_API_KEY",
-                "free_tier": "200 requests/hour",
-                "category": "media",
-            },
-            "pixabay": {
+                    "signup_url": "https://www.pexels.com / api/",
+                    "api_docs": "https://www.pexels.com / api / documentation/",
+                    "key_location": "https://www.pexels.com / api/",
+                    "env_var": "PEXELS_API_KEY",
+                    "free_tier": "200 requests / hour",
+                    "category": "media",
+                    },
+                "pixabay": {
                 "name": "Pixabay",
-                "signup_url": "https://pixabay.com/api/docs/",
-                "api_docs": "https://pixabay.com/api/docs/",
-                "key_location": "https://pixabay.com/api/docs/",
-                "env_var": "PIXABAY_API_KEY",
-                "free_tier": "5,000 requests/hour",
-                "category": "media",
-            },
-            # Fun APIs
+                    "signup_url": "https://pixabay.com / api / docs/",
+                    "api_docs": "https://pixabay.com / api / docs/",
+                    "key_location": "https://pixabay.com / api / docs/",
+                    "env_var": "PIXABAY_API_KEY",
+                    "free_tier": "5,000 requests / hour",
+                    "category": "media",
+                    },
+                # Fun APIs
             "dog_api": {
                 "name": "Dog API",
-                "signup_url": "https://thedogapi.com/signup",
-                "api_docs": "https://docs.thedogapi.com/",
-                "key_location": "https://thedogapi.com/account",
-                "env_var": "DOG_API_KEY",
-                "free_tier": "1,000 requests/month",
-                "category": "fun",
-            },
-            "cat_api": {
+                    "signup_url": "https://thedogapi.com / signup",
+                    "api_docs": "https://docs.thedogapi.com/",
+                    "key_location": "https://thedogapi.com / account",
+                    "env_var": "DOG_API_KEY",
+                    "free_tier": "1,000 requests / month",
+                    "category": "fun",
+                    },
+                "cat_api": {
                 "name": "Cat API",
-                "signup_url": "https://thecatapi.com/signup",
-                "api_docs": "https://docs.thecatapi.com/",
-                "key_location": "https://thecatapi.com/account",
-                "env_var": "CAT_API_KEY",
-                "free_tier": "1,000 requests/month",
-                "category": "fun",
-            },
-            # Database APIs
+                    "signup_url": "https://thecatapi.com / signup",
+                    "api_docs": "https://docs.thecatapi.com/",
+                    "key_location": "https://thecatapi.com / account",
+                    "env_var": "CAT_API_KEY",
+                    "free_tier": "1,000 requests / month",
+                    "category": "fun",
+                    },
+                # Database APIs
             "supabase": {
                 "name": "Supabase",
-                "signup_url": "https://supabase.com/dashboard/sign-up",
-                "api_docs": "https://supabase.com/docs/reference/api",
-                "key_location": "https://supabase.com/dashboard/project/_/settings/api",
-                "env_var": "SUPABASE_ANON_KEY",
-                "free_tier": "500MB database",
-                "category": "database",
-            },
-            "firebase": {
+                    "signup_url": "https://supabase.com / dashboard / sign - up",
+                    "api_docs": "https://supabase.com / docs / reference / api",
+                    "key_location": "https://supabase.com / dashboard / project / _/settings / api",
+                    "env_var": "SUPABASE_ANON_KEY",
+                    "free_tier": "500MB database",
+                    "category": "database",
+                    },
+                "firebase": {
                 "name": "Firebase",
-                "signup_url": "https://console.firebase.google.com/",
-                "api_docs": "https://firebase.google.com/docs/reference/rest",
-                "key_location": "https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk",
-                "env_var": "FIREBASE_API_KEY",
-                "free_tier": "1GB storage",
-                "category": "database",
-            },
-            # Analytics APIs
+                    "signup_url": "https://console.firebase.google.com/",
+                    "api_docs": "https://firebase.google.com / docs / reference / rest",
+                    "key_location": "https://console.firebase.google.com / project / _/settings / serviceaccounts / adminsdk",
+                    "env_var": "FIREBASE_API_KEY",
+                    "free_tier": "1GB storage",
+                    "category": "database",
+                    },
+                # Analytics APIs
             "google_analytics": {
                 "name": "Google Analytics",
-                "signup_url": "https://analytics.google.com/",
-                "api_docs": "https://developers.google.com/analytics/devguides/reporting/core/v4",
-                "key_location": "https://console.cloud.google.com/apis/credentials",
-                "env_var": "GOOGLE_ANALYTICS_KEY",
-                "free_tier": "10 million hits/month",
-                "category": "analytics",
-            },
-            "mixpanel": {
+                    "signup_url": "https://analytics.google.com/",
+                    "api_docs": "https://developers.google.com / analytics / devguides / reporting / core / v4",
+                    "key_location": "https://console.cloud.google.com / apis / credentials",
+                    "env_var": "GOOGLE_ANALYTICS_KEY",
+                    "free_tier": "10 million hits / month",
+                    "category": "analytics",
+                    },
+                "mixpanel": {
                 "name": "Mixpanel",
-                "signup_url": "https://mixpanel.com/register/",
-                "api_docs": "https://developer.mixpanel.com/reference/overview",
-                "key_location": "https://mixpanel.com/settings/project",
-                "env_var": "MIXPANEL_TOKEN",
-                "free_tier": "100,000 events/month",
-                "category": "analytics",
-            },
-            # Payment APIs
+                    "signup_url": "https://mixpanel.com / register/",
+                    "api_docs": "https://developer.mixpanel.com / reference / overview",
+                    "key_location": "https://mixpanel.com / settings / project",
+                    "env_var": "MIXPANEL_TOKEN",
+                    "free_tier": "100,000 events / month",
+                    "category": "analytics",
+                    },
+                # Payment APIs
             "stripe": {
                 "name": "Stripe",
-                "signup_url": "https://dashboard.stripe.com/register",
-                "api_docs": "https://stripe.com/docs/api",
-                "key_location": "https://dashboard.stripe.com/apikeys",
-                "env_var": "STRIPE_SECRET_KEY",
-                "free_tier": "No monthly fee",
-                "category": "payment",
-            },
-            "paypal": {
+                    "signup_url": "https://dashboard.stripe.com / register",
+                    "api_docs": "https://stripe.com / docs / api",
+                    "key_location": "https://dashboard.stripe.com / apikeys",
+                    "env_var": "STRIPE_SECRET_KEY",
+                    "free_tier": "No monthly fee",
+                    "category": "payment",
+                    },
+                "paypal": {
                 "name": "PayPal",
-                "signup_url": "https://developer.paypal.com/developer/applications/",
-                "api_docs": "https://developer.paypal.com/docs/api/overview/",
-                "key_location": "https://developer.paypal.com/developer/applications/",
-                "env_var": "PAYPAL_CLIENT_ID",
-                "free_tier": "No monthly fee",
-                "category": "payment",
-            },
-            # Location APIs
+                    "signup_url": "https://developer.paypal.com / developer / applications/",
+                    "api_docs": "https://developer.paypal.com / docs / api / overview/",
+                    "key_location": "https://developer.paypal.com / developer / applications/",
+                    "env_var": "PAYPAL_CLIENT_ID",
+                    "free_tier": "No monthly fee",
+                    "category": "payment",
+                    },
+                # Location APIs
             "mapbox": {
                 "name": "Mapbox",
-                "signup_url": "https://account.mapbox.com/auth/signup/",
-                "api_docs": "https://docs.mapbox.com/api/",
-                "key_location": "https://account.mapbox.com/access-tokens/",
-                "env_var": "MAPBOX_ACCESS_TOKEN",
-                "free_tier": "50,000 requests/month",
-                "category": "location",
-            },
-            "google_maps": {
+                    "signup_url": "https://account.mapbox.com / auth / signup/",
+                    "api_docs": "https://docs.mapbox.com / api/",
+                    "key_location": "https://account.mapbox.com / access - tokens/",
+                    "env_var": "MAPBOX_ACCESS_TOKEN",
+                    "free_tier": "50,000 requests / month",
+                    "category": "location",
+                    },
+                "google_maps": {
                 "name": "Google Maps",
-                "signup_url": "https://console.cloud.google.com/",
-                "api_docs": "https://developers.google.com/maps/documentation",
-                "key_location": "https://console.cloud.google.com/apis/credentials",
-                "env_var": "GOOGLE_MAPS_API_KEY",
-                "free_tier": "$200 free credit/month",
-                "category": "location",
-            },
-            # News APIs
+                    "signup_url": "https://console.cloud.google.com/",
+                    "api_docs": "https://developers.google.com / maps / documentation",
+                    "key_location": "https://console.cloud.google.com / apis / credentials",
+                    "env_var": "GOOGLE_MAPS_API_KEY",
+                    "free_tier": "$200 free credit / month",
+                    "category": "location",
+                    },
+                # News APIs
             "newsapi": {
                 "name": "NewsAPI",
-                "signup_url": "https://newsapi.org/register",
-                "api_docs": "https://newsapi.org/docs",
-                "key_location": "https://newsapi.org/account",
-                "env_var": "NEWS_API_KEY",
-                "free_tier": "1,000 requests/day",
-                "category": "news",
-            },
-            "guardian": {
+                    "signup_url": "https://newsapi.org / register",
+                    "api_docs": "https://newsapi.org / docs",
+                    "key_location": "https://newsapi.org / account",
+                    "env_var": "NEWS_API_KEY",
+                    "free_tier": "1,000 requests / day",
+                    "category": "news",
+                    },
+                "guardian": {
                 "name": "Guardian API",
-                "signup_url": "https://open-platform.theguardian.com/access/",
-                "api_docs": "https://open-platform.theguardian.com/documentation/",
-                "key_location": "https://open-platform.theguardian.com/access/",
-                "env_var": "GUARDIAN_API_KEY",
-                "free_tier": "12,000 requests/day",
-                "category": "news",
-            },
-            # Translation APIs
+                    "signup_url": "https://open - platform.theguardian.com / access/",
+                    "api_docs": "https://open - platform.theguardian.com / documentation/",
+                    "key_location": "https://open - platform.theguardian.com / access/",
+                    "env_var": "GUARDIAN_API_KEY",
+                    "free_tier": "12,000 requests / day",
+                    "category": "news",
+                    },
+                # Translation APIs
             "google_translate": {
                 "name": "Google Translate",
-                "signup_url": "https://console.cloud.google.com/",
-                "api_docs": "https://cloud.google.com/translate/docs",
-                "key_location": "https://console.cloud.google.com/apis/credentials",
-                "env_var": "GOOGLE_TRANSLATE_API_KEY",
-                "free_tier": "500,000 characters/month",
-                "category": "translation",
-            },
-            "deepl": {
+                    "signup_url": "https://console.cloud.google.com/",
+                    "api_docs": "https://cloud.google.com / translate / docs",
+                    "key_location": "https://console.cloud.google.com / apis / credentials",
+                    "env_var": "GOOGLE_TRANSLATE_API_KEY",
+                    "free_tier": "500,000 characters / month",
+                    "category": "translation",
+                    },
+                "deepl": {
                 "name": "DeepL",
-                "signup_url": "https://www.deepl.com/pro-api",
-                "api_docs": "https://www.deepl.com/docs-api",
-                "key_location": "https://www.deepl.com/account/summary",
-                "env_var": "DEEPL_API_KEY",
-                "free_tier": "500,000 characters/month",
-                "category": "translation",
-            },
-            # Search APIs
+                    "signup_url": "https://www.deepl.com / pro - api",
+                    "api_docs": "https://www.deepl.com / docs - api",
+                    "key_location": "https://www.deepl.com / account / summary",
+                    "env_var": "DEEPL_API_KEY",
+                    "free_tier": "500,000 characters / month",
+                    "category": "translation",
+                    },
+                # Search APIs
             "algolia": {
                 "name": "Algolia",
-                "signup_url": "https://www.algolia.com/users/sign_up",
-                "api_docs": "https://www.algolia.com/doc/api-reference/",
-                "key_location": "https://www.algolia.com/account/api-keys",
-                "env_var": "ALGOLIA_API_KEY",
-                "free_tier": "10,000 records",
-                "category": "search",
-            },
-            "elasticsearch": {
+                    "signup_url": "https://www.algolia.com / users / sign_up",
+                    "api_docs": "https://www.algolia.com / doc / api - reference/",
+                    "key_location": "https://www.algolia.com / account / api - keys",
+                    "env_var": "ALGOLIA_API_KEY",
+                    "free_tier": "10,000 records",
+                    "category": "search",
+                    },
+                "elasticsearch": {
                 "name": "Elasticsearch Service",
-                "signup_url": "https://cloud.elastic.co/registration",
-                "api_docs": "https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html",
-                "key_location": "https://cloud.elastic.co/deployments",
-                "env_var": "ELASTICSEARCH_API_KEY",
-                "free_tier": "14-day free trial",
-                "category": "search",
-            },
-            # Monitoring APIs
+                    "signup_url": "https://cloud.elastic.co / registration",
+                    "api_docs": "https://www.elastic.co / guide / en / elasticsearch / reference / current / rest - apis.html",
+                    "key_location": "https://cloud.elastic.co / deployments",
+                    "env_var": "ELASTICSEARCH_API_KEY",
+                    "free_tier": "14 - day free trial",
+                    "category": "search",
+                    },
+                # Monitoring APIs
             "datadog": {
                 "name": "Datadog",
-                "signup_url": "https://app.datadoghq.com/signup",
-                "api_docs": "https://docs.datadoghq.com/api/latest/",
-                "key_location": "https://app.datadoghq.com/organization-settings/api-keys",
-                "env_var": "DATADOG_API_KEY",
-                "free_tier": "5 hosts free",
-                "category": "monitoring",
-            },
-            "sentry": {
+                    "signup_url": "https://app.datadoghq.com / signup",
+                    "api_docs": "https://docs.datadoghq.com / api / latest/",
+                    "key_location": "https://app.datadoghq.com / organization - settings / api - keys",
+                    "env_var": "DATADOG_API_KEY",
+                    "free_tier": "5 hosts free",
+                    "category": "monitoring",
+                    },
+                "sentry": {
                 "name": "Sentry",
-                "signup_url": "https://sentry.io/signup/",
-                "api_docs": "https://docs.sentry.io/api/",
-                "key_location": "https://sentry.io/settings/account/api/auth-tokens/",
-                "env_var": "SENTRY_DSN",
-                "free_tier": "5,000 errors/month",
-                "category": "monitoring",
-            },
-            # Additional APIs to reach 100+
-            "airtable": {
+                    "signup_url": "https://sentry.io / signup/",
+                    "api_docs": "https://docs.sentry.io / api/",
+                    "key_location": "https://sentry.io / settings / account / api / auth - tokens/",
+                    "env_var": "SENTRY_DSN",
+                    "free_tier": "5,000 errors / month",
+                    "category": "monitoring",
+                    },
+                # Additional APIs to reach 100+
+                "airtable": {
                 "name": "Airtable",
-                "signup_url": "https://airtable.com/signup",
-                "api_docs": "https://airtable.com/developers/web/api/introduction",
-                "key_location": "https://airtable.com/create/tokens",
-                "env_var": "AIRTABLE_API_KEY",
-                "free_tier": "1,200 records/base",
-                "category": "database",
-            },
-            "notion": {
+                    "signup_url": "https://airtable.com / signup",
+                    "api_docs": "https://airtable.com / developers / web / api / introduction",
+                    "key_location": "https://airtable.com / create / tokens",
+                    "env_var": "AIRTABLE_API_KEY",
+                    "free_tier": "1,200 records / base",
+                    "category": "database",
+                    },
+                "notion": {
                 "name": "Notion",
-                "signup_url": "https://www.notion.so/signup",
-                "api_docs": "https://developers.notion.com/",
-                "key_location": "https://www.notion.so/my-integrations",
-                "env_var": "NOTION_API_KEY",
-                "free_tier": "Personal use free",
-                "category": "productivity",
-            },
-            "slack": {
+                    "signup_url": "https://www.notion.so / signup",
+                    "api_docs": "https://developers.notion.com/",
+                    "key_location": "https://www.notion.so / my - integrations",
+                    "env_var": "NOTION_API_KEY",
+                    "free_tier": "Personal use free",
+                    "category": "productivity",
+                    },
+                "slack": {
                 "name": "Slack",
-                "signup_url": "https://api.slack.com/apps",
-                "api_docs": "https://api.slack.com/",
-                "key_location": "https://api.slack.com/apps",
-                "env_var": "SLACK_BOT_TOKEN",
-                "free_tier": "10,000 messages",
-                "category": "communication",
-            },
-            "discord": {
+                    "signup_url": "https://api.slack.com / apps",
+                    "api_docs": "https://api.slack.com/",
+                    "key_location": "https://api.slack.com / apps",
+                    "env_var": "SLACK_BOT_TOKEN",
+                    "free_tier": "10,000 messages",
+                    "category": "communication",
+                    },
+                "discord": {
                 "name": "Discord",
-                "signup_url": "https://discord.com/developers/applications",
-                "api_docs": "https://discord.com/developers/docs/intro",
-                "key_location": "https://discord.com/developers/applications",
-                "env_var": "DISCORD_BOT_TOKEN",
-                "free_tier": "Free for bots",
-                "category": "communication",
-            },
-            "zoom": {
+                    "signup_url": "https://discord.com / developers / applications",
+                    "api_docs": "https://discord.com / developers / docs / intro",
+                    "key_location": "https://discord.com / developers / applications",
+                    "env_var": "DISCORD_BOT_TOKEN",
+                    "free_tier": "Free for bots",
+                    "category": "communication",
+                    },
+                "zoom": {
                 "name": "Zoom",
-                "signup_url": "https://marketplace.zoom.us/",
-                "api_docs": "https://developers.zoom.us/docs/api/",
-                "key_location": "https://marketplace.zoom.us/develop/create",
-                "env_var": "ZOOM_API_KEY",
-                "free_tier": "Basic plan free",
-                "category": "communication",
-            },
-            "calendly": {
+                    "signup_url": "https://marketplace.zoom.us/",
+                    "api_docs": "https://developers.zoom.us / docs / api/",
+                    "key_location": "https://marketplace.zoom.us / develop / create",
+                    "env_var": "ZOOM_API_KEY",
+                    "free_tier": "Basic plan free",
+                    "category": "communication",
+                    },
+                "calendly": {
                 "name": "Calendly",
-                "signup_url": "https://calendly.com/integrations/api_webhooks",
-                "api_docs": "https://developer.calendly.com/",
-                "key_location": "https://calendly.com/integrations/api_webhooks",
-                "env_var": "CALENDLY_API_KEY",
-                "free_tier": "Basic plan free",
-                "category": "scheduling",
-            },
-            "shopify": {
+                    "signup_url": "https://calendly.com / integrations / api_webhooks",
+                    "api_docs": "https://developer.calendly.com/",
+                    "key_location": "https://calendly.com / integrations / api_webhooks",
+                    "env_var": "CALENDLY_API_KEY",
+                    "free_tier": "Basic plan free",
+                    "category": "scheduling",
+                    },
+                "shopify": {
                 "name": "Shopify",
-                "signup_url": "https://partners.shopify.com/signup",
-                "api_docs": "https://shopify.dev/docs/api",
-                "key_location": "https://partners.shopify.com/",
-                "env_var": "SHOPIFY_API_KEY",
-                "free_tier": "Development stores free",
-                "category": "ecommerce",
-            },
-            "woocommerce": {
+                    "signup_url": "https://partners.shopify.com / signup",
+                    "api_docs": "https://shopify.dev / docs / api",
+                    "key_location": "https://partners.shopify.com/",
+                    "env_var": "SHOPIFY_API_KEY",
+                    "free_tier": "Development stores free",
+                    "category": "ecommerce",
+                    },
+                "woocommerce": {
                 "name": "WooCommerce",
-                "signup_url": "https://woocommerce.com/my-account/",
-                "api_docs": "https://woocommerce.github.io/woocommerce-rest-api-docs/",
-                "key_location": "WordPress Admin > WooCommerce > Settings > Advanced > REST API",
-                "env_var": "WOOCOMMERCE_API_KEY",
-                "free_tier": "Plugin free",
-                "category": "ecommerce",
-            },
-            "square": {
+                    "signup_url": "https://woocommerce.com / my - account/",
+                    "api_docs": "https://woocommerce.github.io / woocommerce - rest - api - docs/",
+                    "key_location": "WordPress Admin > WooCommerce > Settings > Advanced > REST API",
+                    "env_var": "WOOCOMMERCE_API_KEY",
+                    "free_tier": "Plugin free",
+                    "category": "ecommerce",
+                    },
+                "square": {
                 "name": "Square",
-                "signup_url": "https://developer.squareup.com/signup",
-                "api_docs": "https://developer.squareup.com/docs",
-                "key_location": "https://developer.squareup.com/apps",
-                "env_var": "SQUARE_ACCESS_TOKEN",
-                "free_tier": "Sandbox free",
-                "category": "payment",
-            },
-            "coinbase": {
+                    "signup_url": "https://developer.squareup.com / signup",
+                    "api_docs": "https://developer.squareup.com / docs",
+                    "key_location": "https://developer.squareup.com / apps",
+                    "env_var": "SQUARE_ACCESS_TOKEN",
+                    "free_tier": "Sandbox free",
+                    "category": "payment",
+                    },
+                "coinbase": {
                 "name": "Coinbase",
-                "signup_url": "https://developers.coinbase.com/",
-                "api_docs": "https://docs.cloud.coinbase.com/",
-                "key_location": "https://www.coinbase.com/settings/api",
-                "env_var": "COINBASE_API_KEY",
-                "free_tier": "Basic tier free",
-                "category": "crypto",
-            },
-            "binance": {
+                    "signup_url": "https://developers.coinbase.com/",
+                    "api_docs": "https://docs.cloud.coinbase.com/",
+                    "key_location": "https://www.coinbase.com / settings / api",
+                    "env_var": "COINBASE_API_KEY",
+                    "free_tier": "Basic tier free",
+                    "category": "crypto",
+                    },
+                "binance": {
                 "name": "Binance",
-                "signup_url": "https://www.binance.com/en/support/faq/how-to-create-api-keys-on-binance-360002502072",
-                "api_docs": "https://binance-docs.github.io/apidocs/",
-                "key_location": "https://www.binance.com/en/my/settings/api-management",
-                "env_var": "BINANCE_API_KEY",
-                "free_tier": "Basic tier free",
-                "category": "crypto",
-            },
-            "alpha_vantage": {
+                    "signup_url": "https://www.binance.com / en / support / faq / how - to - create - api - keys - on - binance - 360002502072",
+                    "api_docs": "https://binance - docs.github.io / apidocs/",
+                    "key_location": "https://www.binance.com / en / my / settings / api - management",
+                    "env_var": "BINANCE_API_KEY",
+                    "free_tier": "Basic tier free",
+                    "category": "crypto",
+                    },
+                "alpha_vantage": {
                 "name": "Alpha Vantage",
-                "signup_url": "https://www.alphavantage.co/support/#api-key",
-                "api_docs": "https://www.alphavantage.co/documentation/",
-                "key_location": "https://www.alphavantage.co/support/#api-key",
-                "env_var": "ALPHA_VANTAGE_API_KEY",
-                "free_tier": "25 requests/day",
-                "category": "finance",
-            },
-            "finnhub": {
+                    "signup_url": "https://www.alphavantage.co / support/#api - key",
+                    "api_docs": "https://www.alphavantage.co / documentation/",
+                    "key_location": "https://www.alphavantage.co / support/#api - key",
+                    "env_var": "ALPHA_VANTAGE_API_KEY",
+                    "free_tier": "25 requests / day",
+                    "category": "finance",
+                    },
+                "finnhub": {
                 "name": "Finnhub",
-                "signup_url": "https://finnhub.io/register",
-                "api_docs": "https://finnhub.io/docs/api",
-                "key_location": "https://finnhub.io/dashboard",
-                "env_var": "FINNHUB_API_KEY",
-                "free_tier": "60 requests/minute",
-                "category": "finance",
-            },
-            "polygon": {
+                    "signup_url": "https://finnhub.io / register",
+                    "api_docs": "https://finnhub.io / docs / api",
+                    "key_location": "https://finnhub.io / dashboard",
+                    "env_var": "FINNHUB_API_KEY",
+                    "free_tier": "60 requests / minute",
+                    "category": "finance",
+                    },
+                "polygon": {
                 "name": "Polygon.io",
-                "signup_url": "https://polygon.io/signup",
-                "api_docs": "https://polygon.io/docs",
-                "key_location": "https://polygon.io/dashboard/api-keys",
-                "env_var": "POLYGON_API_KEY",
-                "free_tier": "5 requests/minute",
-                "category": "finance",
-            },
-            "spoonacular": {
+                    "signup_url": "https://polygon.io / signup",
+                    "api_docs": "https://polygon.io / docs",
+                    "key_location": "https://polygon.io / dashboard / api - keys",
+                    "env_var": "POLYGON_API_KEY",
+                    "free_tier": "5 requests / minute",
+                    "category": "finance",
+                    },
+                "spoonacular": {
                 "name": "Spoonacular",
-                "signup_url": "https://spoonacular.com/food-api/console#Dashboard",
-                "api_docs": "https://spoonacular.com/food-api/docs",
-                "key_location": "https://spoonacular.com/food-api/console#Dashboard",
-                "env_var": "SPOONACULAR_API_KEY",
-                "free_tier": "150 requests/day",
-                "category": "food",
-            },
-            "edamam": {
+                    "signup_url": "https://spoonacular.com / food - api / console#Dashboard",
+                    "api_docs": "https://spoonacular.com / food - api / docs",
+                    "key_location": "https://spoonacular.com / food - api / console#Dashboard",
+                    "env_var": "SPOONACULAR_API_KEY",
+                    "free_tier": "150 requests / day",
+                    "category": "food",
+                    },
+                "edamam": {
                 "name": "Edamam",
-                "signup_url": "https://developer.edamam.com/edamam-recipe-api",
-                "api_docs": "https://developer.edamam.com/edamam-docs-recipe-api",
-                "key_location": "https://developer.edamam.com/admin/applications",
-                "env_var": "EDAMAM_API_KEY",
-                "free_tier": "5,000 requests/month",
-                "category": "food",
-            },
-            "themoviedb": {
+                    "signup_url": "https://developer.edamam.com / edamam - recipe - api",
+                    "api_docs": "https://developer.edamam.com / edamam - docs - recipe - api",
+                    "key_location": "https://developer.edamam.com / admin / applications",
+                    "env_var": "EDAMAM_API_KEY",
+                    "free_tier": "5,000 requests / month",
+                    "category": "food",
+                    },
+                "themoviedb": {
                 "name": "The Movie Database",
-                "signup_url": "https://www.themoviedb.org/signup",
-                "api_docs": "https://developers.themoviedb.org/3",
-                "key_location": "https://www.themoviedb.org/settings/api",
-                "env_var": "TMDB_API_KEY",
-                "free_tier": "40 requests/10 seconds",
-                "category": "entertainment",
-            },
-            "omdb": {
+                    "signup_url": "https://www.themoviedb.org / signup",
+                    "api_docs": "https://developers.themoviedb.org / 3",
+                    "key_location": "https://www.themoviedb.org / settings / api",
+                    "env_var": "TMDB_API_KEY",
+                    "free_tier": "40 requests / 10 seconds",
+                    "category": "entertainment",
+                    },
+                "omdb": {
                 "name": "OMDb API",
-                "signup_url": "http://www.omdbapi.com/apikey.aspx",
-                "api_docs": "http://www.omdbapi.com/",
-                "key_location": "http://www.omdbapi.com/apikey.aspx",
-                "env_var": "OMDB_API_KEY",
-                "free_tier": "1,000 requests/day",
-                "category": "entertainment",
-            },
-            "spotify": {
+                    "signup_url": "http://www.omdbapi.com / apikey.aspx",
+                    "api_docs": "http://www.omdbapi.com/",
+                    "key_location": "http://www.omdbapi.com / apikey.aspx",
+                    "env_var": "OMDB_API_KEY",
+                    "free_tier": "1,000 requests / day",
+                    "category": "entertainment",
+                    },
+                "spotify": {
                 "name": "Spotify",
-                "signup_url": "https://developer.spotify.com/dashboard/create",
-                "api_docs": "https://developer.spotify.com/documentation/web-api",
-                "key_location": "https://developer.spotify.com/dashboard",
-                "env_var": "SPOTIFY_CLIENT_ID",
-                "free_tier": "Rate limited",
-                "category": "music",
-            },
-            "lastfm": {
+                    "signup_url": "https://developer.spotify.com / dashboard / create",
+                    "api_docs": "https://developer.spotify.com / documentation / web - api",
+                    "key_location": "https://developer.spotify.com / dashboard",
+                    "env_var": "SPOTIFY_CLIENT_ID",
+                    "free_tier": "Rate limited",
+                    "category": "music",
+                    },
+                "lastfm": {
                 "name": "Last.fm",
-                "signup_url": "https://www.last.fm/api/account/create",
-                "api_docs": "https://www.last.fm/api",
-                "key_location": "https://www.last.fm/api/account/create",
-                "env_var": "LASTFM_API_KEY",
-                "free_tier": "Rate limited",
-                "category": "music",
-            },
-            "musixmatch": {
+                    "signup_url": "https://www.last.fm / api / account / create",
+                    "api_docs": "https://www.last.fm / api",
+                    "key_location": "https://www.last.fm / api / account / create",
+                    "env_var": "LASTFM_API_KEY",
+                    "free_tier": "Rate limited",
+                    "category": "music",
+                    },
+                "musixmatch": {
                 "name": "Musixmatch",
-                "signup_url": "https://developer.musixmatch.com/",
-                "api_docs": "https://developer.musixmatch.com/documentation",
-                "key_location": "https://developer.musixmatch.com/admin/applications",
-                "env_var": "MUSIXMATCH_API_KEY",
-                "free_tier": "2,000 requests/day",
-                "category": "music",
-            },
-            "nasa": {
+                    "signup_url": "https://developer.musixmatch.com/",
+                    "api_docs": "https://developer.musixmatch.com / documentation",
+                    "key_location": "https://developer.musixmatch.com / admin / applications",
+                    "env_var": "MUSIXMATCH_API_KEY",
+                    "free_tier": "2,000 requests / day",
+                    "category": "music",
+                    },
+                "nasa": {
                 "name": "NASA API",
-                "signup_url": "https://api.nasa.gov/",
-                "api_docs": "https://api.nasa.gov/",
-                "key_location": "https://api.nasa.gov/",
-                "env_var": "NASA_API_KEY",
-                "free_tier": "1,000 requests/hour",
-                "category": "science",
-            },
-            "spacex": {
+                    "signup_url": "https://api.nasa.gov/",
+                    "api_docs": "https://api.nasa.gov/",
+                    "key_location": "https://api.nasa.gov/",
+                    "env_var": "NASA_API_KEY",
+                    "free_tier": "1,000 requests / hour",
+                    "category": "science",
+                    },
+                "spacex": {
                 "name": "SpaceX API",
-                "signup_url": "https://github.com/r-spacex/SpaceX-API",
-                "api_docs": "https://docs.spacexdata.com/",
-                "key_location": "No key required",
-                "env_var": "SPACEX_API_URL",
-                "free_tier": "Completely free",
-                "category": "science",
-            },
-            "ipgeolocation": {
+                    "signup_url": "https://github.com / r - spacex / SpaceX - API",
+                    "api_docs": "https://docs.spacexdata.com/",
+                    "key_location": "No key required",
+                    "env_var": "SPACEX_API_URL",
+                    "free_tier": "Completely free",
+                    "category": "science",
+                    },
+                "ipgeolocation": {
                 "name": "IP Geolocation",
-                "signup_url": "https://ipgeolocation.io/signup",
-                "api_docs": "https://ipgeolocation.io/documentation",
-                "key_location": "https://ipgeolocation.io/account",
-                "env_var": "IPGEOLOCATION_API_KEY",
-                "free_tier": "1,000 requests/month",
-                "category": "location",
-            },
-            "ipstack": {
+                    "signup_url": "https://ipgeolocation.io / signup",
+                    "api_docs": "https://ipgeolocation.io / documentation",
+                    "key_location": "https://ipgeolocation.io / account",
+                    "env_var": "IPGEOLOCATION_API_KEY",
+                    "free_tier": "1,000 requests / month",
+                    "category": "location",
+                    },
+                "ipstack": {
                 "name": "IPStack",
-                "signup_url": "https://ipstack.com/signup/free",
-                "api_docs": "https://ipstack.com/documentation",
-                "key_location": "https://ipstack.com/dashboard",
-                "env_var": "IPSTACK_API_KEY",
-                "free_tier": "10,000 requests/month",
-                "category": "location",
-            },
-            "clearbit": {
+                    "signup_url": "https://ipstack.com / signup / free",
+                    "api_docs": "https://ipstack.com / documentation",
+                    "key_location": "https://ipstack.com / dashboard",
+                    "env_var": "IPSTACK_API_KEY",
+                    "free_tier": "10,000 requests / month",
+                    "category": "location",
+                    },
+                "clearbit": {
                 "name": "Clearbit",
-                "signup_url": "https://clearbit.com/signup",
-                "api_docs": "https://clearbit.com/docs",
-                "key_location": "https://dashboard.clearbit.com/api",
-                "env_var": "CLEARBIT_API_KEY",
-                "free_tier": "50 requests/month",
-                "category": "business",
-            },
-            "hunter": {
+                    "signup_url": "https://clearbit.com / signup",
+                    "api_docs": "https://clearbit.com / docs",
+                    "key_location": "https://dashboard.clearbit.com / api",
+                    "env_var": "CLEARBIT_API_KEY",
+                    "free_tier": "50 requests / month",
+                    "category": "business",
+                    },
+                "hunter": {
                 "name": "Hunter.io",
-                "signup_url": "https://hunter.io/users/sign_up",
-                "api_docs": "https://hunter.io/api-documentation",
-                "key_location": "https://hunter.io/api_keys",
-                "env_var": "HUNTER_API_KEY",
-                "free_tier": "25 requests/month",
-                "category": "business",
-            },
-            "fullcontact": {
+                    "signup_url": "https://hunter.io / users / sign_up",
+                    "api_docs": "https://hunter.io / api - documentation",
+                    "key_location": "https://hunter.io / api_keys",
+                    "env_var": "HUNTER_API_KEY",
+                    "free_tier": "25 requests / month",
+                    "category": "business",
+                    },
+                "fullcontact": {
                 "name": "FullContact",
-                "signup_url": "https://www.fullcontact.com/developer-portal/",
-                "api_docs": "https://docs.fullcontact.com/",
-                "key_location": "https://www.fullcontact.com/developer-portal/",
-                "env_var": "FULLCONTACT_API_KEY",
-                "free_tier": "1,000 requests/month",
-                "category": "business",
-            },
-            "abstract": {
+                    "signup_url": "https://www.fullcontact.com / developer - portal/",
+                    "api_docs": "https://docs.fullcontact.com/",
+                    "key_location": "https://www.fullcontact.com / developer - portal/",
+                    "env_var": "FULLCONTACT_API_KEY",
+                    "free_tier": "1,000 requests / month",
+                    "category": "business",
+                    },
+                "abstract": {
                 "name": "Abstract API",
-                "signup_url": "https://app.abstractapi.com/users/signup",
-                "api_docs": "https://docs.abstractapi.com/",
-                "key_location": "https://app.abstractapi.com/api",
-                "env_var": "ABSTRACT_API_KEY",
-                "free_tier": "1,000 requests/month",
-                "category": "utility",
-            },
-            "rapidapi": {
+                    "signup_url": "https://app.abstractapi.com / users / signup",
+                    "api_docs": "https://docs.abstractapi.com/",
+                    "key_location": "https://app.abstractapi.com / api",
+                    "env_var": "ABSTRACT_API_KEY",
+                    "free_tier": "1,000 requests / month",
+                    "category": "utility",
+                    },
+                "rapidapi": {
                 "name": "RapidAPI",
-                "signup_url": "https://rapidapi.com/auth/sign-up",
-                "api_docs": "https://docs.rapidapi.com/",
-                "key_location": "https://rapidapi.com/developer/security",
-                "env_var": "RAPIDAPI_KEY",
-                "free_tier": "Varies by API",
-                "category": "marketplace",
-            },
-            "postman": {
+                    "signup_url": "https://rapidapi.com / auth / sign - up",
+                    "api_docs": "https://docs.rapidapi.com/",
+                    "key_location": "https://rapidapi.com / developer / security",
+                    "env_var": "RAPIDAPI_KEY",
+                    "free_tier": "Varies by API",
+                    "category": "marketplace",
+                    },
+                "postman": {
                 "name": "Postman API",
-                "signup_url": "https://identity.getpostman.com/signup",
-                "api_docs": "https://learning.postman.com/docs/developer/intro-api/",
-                "key_location": "https://web.postman.co/settings/me/api-keys",
-                "env_var": "POSTMAN_API_KEY",
-                "free_tier": "Personal use free",
-                "category": "development",
-            },
-            "insomnia": {
+                    "signup_url": "https://identity.getpostman.com / signup",
+                    "api_docs": "https://learning.postman.com / docs / developer / intro - api/",
+                    "key_location": "https://web.postman.co / settings / me / api - keys",
+                    "env_var": "POSTMAN_API_KEY",
+                    "free_tier": "Personal use free",
+                    "category": "development",
+                    },
+                "insomnia": {
                 "name": "Insomnia API",
-                "signup_url": "https://insomnia.rest/pricing",
-                "api_docs": "https://docs.insomnia.rest/",
-                "key_location": "https://app.insomnia.rest/app/account/api-keys",
-                "env_var": "INSOMNIA_API_KEY",
-                "free_tier": "Core features free",
-                "category": "development",
-            },
-            "heroku": {
+                    "signup_url": "https://insomnia.rest / pricing",
+                    "api_docs": "https://docs.insomnia.rest/",
+                    "key_location": "https://app.insomnia.rest / app / account / api - keys",
+                    "env_var": "INSOMNIA_API_KEY",
+                    "free_tier": "Core features free",
+                    "category": "development",
+                    },
+                "heroku": {
                 "name": "Heroku",
-                "signup_url": "https://signup.heroku.com/",
-                "api_docs": "https://devcenter.heroku.com/articles/platform-api-reference",
-                "key_location": "https://dashboard.heroku.com/account",
-                "env_var": "HEROKU_API_KEY",
-                "free_tier": "550-1000 dyno hours/month",
-                "category": "deployment",
-            },
-            "railway": {
+                    "signup_url": "https://signup.heroku.com/",
+                    "api_docs": "https://devcenter.heroku.com / articles / platform - api - reference",
+                    "key_location": "https://dashboard.heroku.com / account",
+                    "env_var": "HEROKU_API_KEY",
+                    "free_tier": "550 - 1000 dyno hours / month",
+                    "category": "deployment",
+                    },
+                "railway": {
                 "name": "Railway",
-                "signup_url": "https://railway.app/",
-                "api_docs": "https://docs.railway.app/reference/public-api",
-                "key_location": "https://railway.app/account/tokens",
-                "env_var": "RAILWAY_TOKEN",
-                "free_tier": "$5 free credit/month",
-                "category": "deployment",
-            },
-            "render": {
+                    "signup_url": "https://railway.app/",
+                    "api_docs": "https://docs.railway.app / reference / public - api",
+                    "key_location": "https://railway.app / account / tokens",
+                    "env_var": "RAILWAY_TOKEN",
+                    "free_tier": "$5 free credit / month",
+                    "category": "deployment",
+                    },
+                "render": {
                 "name": "Render",
-                "signup_url": "https://render.com/register",
-                "api_docs": "https://api-docs.render.com/",
-                "key_location": "https://dashboard.render.com/account/api-keys",
-                "env_var": "RENDER_API_KEY",
-                "free_tier": "750 hours/month",
-                "category": "deployment",
-            },
-            "digitalocean": {
+                    "signup_url": "https://render.com / register",
+                    "api_docs": "https://api - docs.render.com/",
+                    "key_location": "https://dashboard.render.com / account / api - keys",
+                    "env_var": "RENDER_API_KEY",
+                    "free_tier": "750 hours / month",
+                    "category": "deployment",
+                    },
+                "digitalocean": {
                 "name": "DigitalOcean",
-                "signup_url": "https://cloud.digitalocean.com/registrations/new",
-                "api_docs": "https://docs.digitalocean.com/reference/api/",
-                "key_location": "https://cloud.digitalocean.com/account/api/tokens",
-                "env_var": "DIGITALOCEAN_TOKEN",
-                "free_tier": "$200 credit for 60 days",
-                "category": "cloud",
-            },
-            "linode": {
+                    "signup_url": "https://cloud.digitalocean.com / registrations / new",
+                    "api_docs": "https://docs.digitalocean.com / reference / api/",
+                    "key_location": "https://cloud.digitalocean.com / account / api / tokens",
+                    "env_var": "DIGITALOCEAN_TOKEN",
+                    "free_tier": "$200 credit for 60 days",
+                    "category": "cloud",
+                    },
+                "linode": {
                 "name": "Linode",
-                "signup_url": "https://login.linode.com/signup",
-                "api_docs": "https://www.linode.com/api/docs/v4",
-                "key_location": "https://cloud.linode.com/profile/tokens",
-                "env_var": "LINODE_TOKEN",
-                "free_tier": "$100 credit for 60 days",
-                "category": "cloud",
-            },
-            "vultr": {
+                    "signup_url": "https://login.linode.com / signup",
+                    "api_docs": "https://www.linode.com / api / docs / v4",
+                    "key_location": "https://cloud.linode.com / profile / tokens",
+                    "env_var": "LINODE_TOKEN",
+                    "free_tier": "$100 credit for 60 days",
+                    "category": "cloud",
+                    },
+                "vultr": {
                 "name": "Vultr",
-                "signup_url": "https://www.vultr.com/register/",
-                "api_docs": "https://www.vultr.com/api/",
-                "key_location": "https://my.vultr.com/settings/#settingsapi",
-                "env_var": "VULTR_API_KEY",
-                "free_tier": "$100 credit for new users",
-                "category": "cloud",
-            },
-            "cloudflare": {
+                    "signup_url": "https://www.vultr.com / register/",
+                    "api_docs": "https://www.vultr.com / api/",
+                    "key_location": "https://my.vultr.com / settings/#settingsapi",
+                    "env_var": "VULTR_API_KEY",
+                    "free_tier": "$100 credit for new users",
+                    "category": "cloud",
+                    },
+                "cloudflare": {
                 "name": "Cloudflare",
-                "signup_url": "https://dash.cloudflare.com/sign-up",
-                "api_docs": "https://developers.cloudflare.com/api/",
-                "key_location": "https://dash.cloudflare.com/profile/api-tokens",
-                "env_var": "CLOUDFLARE_API_TOKEN",
-                "free_tier": "Free tier available",
-                "category": "cdn",
-            },
-            "fastly": {
+                    "signup_url": "https://dash.cloudflare.com / sign - up",
+                    "api_docs": "https://developers.cloudflare.com / api/",
+                    "key_location": "https://dash.cloudflare.com / profile / api - tokens",
+                    "env_var": "CLOUDFLARE_API_TOKEN",
+                    "free_tier": "Free tier available",
+                    "category": "cdn",
+                    },
+                "fastly": {
                 "name": "Fastly",
-                "signup_url": "https://www.fastly.com/signup/",
-                "api_docs": "https://docs.fastly.com/en/guides/api",
-                "key_location": "https://manage.fastly.com/account/personal/tokens",
-                "env_var": "FASTLY_API_TOKEN",
-                "free_tier": "$50 credit/month",
-                "category": "cdn",
-            },
-            "pusher": {
+                    "signup_url": "https://www.fastly.com / signup/",
+                    "api_docs": "https://docs.fastly.com / en / guides / api",
+                    "key_location": "https://manage.fastly.com / account / personal / tokens",
+                    "env_var": "FASTLY_API_TOKEN",
+                    "free_tier": "$50 credit / month",
+                    "category": "cdn",
+                    },
+                "pusher": {
                 "name": "Pusher",
-                "signup_url": "https://pusher.com/signup",
-                "api_docs": "https://pusher.com/docs/channels/library_auth_reference/rest-api",
-                "key_location": "https://dashboard.pusher.com/",
-                "env_var": "PUSHER_APP_KEY",
-                "free_tier": "200,000 messages/day",
-                "category": "realtime",
-            },
-            "ably": {
+                    "signup_url": "https://pusher.com / signup",
+                    "api_docs": "https://pusher.com / docs / channels / library_auth_reference / rest - api",
+                    "key_location": "https://dashboard.pusher.com/",
+                    "env_var": "PUSHER_APP_KEY",
+                    "free_tier": "200,000 messages / day",
+                    "category": "realtime",
+                    },
+                "ably": {
                 "name": "Ably",
-                "signup_url": "https://ably.com/signup",
-                "api_docs": "https://ably.com/docs/api",
-                "key_location": "https://ably.com/accounts/any/apps/any/app_keys",
-                "env_var": "ABLY_API_KEY",
-                "free_tier": "3 million messages/month",
-                "category": "realtime",
-            },
-            "socket_io": {
+                    "signup_url": "https://ably.com / signup",
+                    "api_docs": "https://ably.com / docs / api",
+                    "key_location": "https://ably.com / accounts / any / apps / any / app_keys",
+                    "env_var": "ABLY_API_KEY",
+                    "free_tier": "3 million messages / month",
+                    "category": "realtime",
+                    },
+                "socket_io": {
                 "name": "Socket.IO",
-                "signup_url": "https://socket.io/",
-                "api_docs": "https://socket.io/docs/v4/",
-                "key_location": "Self-hosted",
-                "env_var": "SOCKET_IO_URL",
-                "free_tier": "Open source",
-                "category": "realtime",
-            },
-            "auth0": {
+                    "signup_url": "https://socket.io/",
+                    "api_docs": "https://socket.io / docs / v4/",
+                    "key_location": "Self - hosted",
+                    "env_var": "SOCKET_IO_URL",
+                    "free_tier": "Open source",
+                    "category": "realtime",
+                    },
+                "auth0": {
                 "name": "Auth0",
-                "signup_url": "https://auth0.com/signup",
-                "api_docs": "https://auth0.com/docs/api",
-                "key_location": "https://manage.auth0.com/dashboard",
-                "env_var": "AUTH0_CLIENT_ID",
-                "free_tier": "7,000 active users",
-                "category": "authentication",
-            },
-            "okta": {
+                    "signup_url": "https://auth0.com / signup",
+                    "api_docs": "https://auth0.com / docs / api",
+                    "key_location": "https://manage.auth0.com / dashboard",
+                    "env_var": "AUTH0_CLIENT_ID",
+                    "free_tier": "7,000 active users",
+                    "category": "authentication",
+                    },
+                "okta": {
                 "name": "Okta",
-                "signup_url": "https://developer.okta.com/signup/",
-                "api_docs": "https://developer.okta.com/docs/reference/",
-                "key_location": "https://dev-{yourOktaDomain}.okta.com/admin/access/api/tokens",
-                "env_var": "OKTA_API_TOKEN",
-                "free_tier": "15,000 monthly active users",
-                "category": "authentication",
-            },
-            "firebase_auth": {
+                    "signup_url": "https://developer.okta.com / signup/",
+                    "api_docs": "https://developer.okta.com / docs / reference/",
+                    "key_location": "https://dev-{yourOktaDomain}.okta.com / admin / access / api / tokens",
+                    "env_var": "OKTA_API_TOKEN",
+                    "free_tier": "15,000 monthly active users",
+                    "category": "authentication",
+                    },
+                "firebase_auth": {
                 "name": "Firebase Authentication",
-                "signup_url": "https://console.firebase.google.com/",
-                "api_docs": "https://firebase.google.com/docs/auth/web/start",
-                "key_location": "https://console.firebase.google.com/project/_/settings/general",
-                "env_var": "FIREBASE_AUTH_DOMAIN",
-                "free_tier": "50,000 MAU",
-                "category": "authentication",
-            },
-        }
+                    "signup_url": "https://console.firebase.google.com/",
+                    "api_docs": "https://firebase.google.com / docs / auth / web / start",
+                    "key_location": "https://console.firebase.google.com / project / _/settings / general",
+                    "env_var": "FIREBASE_AUTH_DOMAIN",
+                    "free_tier": "50,000 MAU",
+                    "category": "authentication",
+                    },
+                }
+
 
     async def create_session(self):
         """Create HTTP session for API calls"""
         if not self.session:
-            timeout = aiohttp.ClientTimeout(total=30)
-            self.session = aiohttp.ClientSession(timeout=timeout)
+            timeout = aiohttp.ClientTimeout(total = 30)
+            self.session = aiohttp.ClientSession(timeout = timeout)
+
 
     async def close_session(self):
         """Close HTTP session"""
@@ -916,14 +924,15 @@ class APIRegistrationExecutor:
             await self.session.close()
             self.session = None
 
+
     async def register_single_api(self, api_key: str) -> APIRegistrationResult:
         """Register for a single API"""
         if api_key not in self.api_registry:
             return APIRegistrationResult(
-                api_name=api_key,
-                success=False,
-                error_message=f"API {api_key} not found in registry",
-            )
+                api_name = api_key,
+                    success = False,
+                    error_message = f"API {api_key} not found in registry",
+                    )
 
         api_info = self.api_registry[api_key]
         logger.info(f"Registering for {api_info['name']}...")
@@ -940,14 +949,14 @@ class APIRegistrationExecutor:
             # or direct API calls where possible
 
             result = APIRegistrationResult(
-                api_name=api_key,
-                success=True,
-                registration_url=api_info["signup_url"],
-                endpoint=api_info.get("api_docs"),
-                free_tier=api_info.get("free_tier"),
-                api_key=f"demo_{api_key}_key_{int(time.time())}",  # Demo key
-                timestamp=datetime.now().isoformat(),
-            )
+                api_name = api_key,
+                    success = True,
+                    registration_url = api_info["signup_url"],
+                    endpoint = api_info.get("api_docs"),
+                    free_tier = api_info.get("free_tier"),
+                    api_key = f"demo_{api_key}_key_{int(time.time())}",  # Demo key
+                timestamp = datetime.now().isoformat(),
+                    )
 
             # Add to results
             self.registration_results.append(result)
@@ -963,14 +972,15 @@ class APIRegistrationExecutor:
             logger.error(error_msg)
 
             result = APIRegistrationResult(
-                api_name=api_key,
-                success=False,
-                error_message=error_msg,
-                registration_url=api_info["signup_url"],
-            )
+                api_name = api_key,
+                    success = False,
+                    error_message = error_msg,
+                    registration_url = api_info["signup_url"],
+                    )
 
             self.registration_results.append(result)
             return result
+
 
     def find_existing_result(self, api_key: str) -> Optional[APIRegistrationResult]:
         """Find existing registration result"""
@@ -978,6 +988,7 @@ class APIRegistrationExecutor:
             if result.api_name == api_key:
                 return result
         return None
+
 
     def update_env_file(self, env_var: str, api_key: str):
         """Update .env file with new API key"""
@@ -1015,6 +1026,7 @@ class APIRegistrationExecutor:
         except Exception as e:
             logger.error(f"Error updating .env file: {e}")
 
+
     async def register_all_apis(
         self, batch_size: int = 10, delay: float = 1.0
     ) -> List[APIRegistrationResult]:
@@ -1035,7 +1047,7 @@ class APIRegistrationExecutor:
                 # Process batch concurrently
                 batch_tasks = [self.register_single_api(api_key) for api_key in batch]
                 batch_results = await asyncio.gather(
-                    *batch_tasks, return_exceptions=True
+                    *batch_tasks, return_exceptions = True
                 )
 
                 # Handle results and exceptions
@@ -1066,6 +1078,7 @@ class APIRegistrationExecutor:
         finally:
             await self.close_session()
 
+
     async def register_by_category(self, category: str) -> List[APIRegistrationResult]:
         """Register for APIs in a specific category"""
         category_apis = {
@@ -1088,7 +1101,7 @@ class APIRegistrationExecutor:
             tasks = [
                 self.register_single_api(api_key) for api_key in category_apis.keys()
             ]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions = True)
 
             # Filter out exceptions
             valid_results = [r for r in results if isinstance(r, APIRegistrationResult)]
@@ -1098,6 +1111,7 @@ class APIRegistrationExecutor:
 
         finally:
             await self.close_session()
+
 
     def generate_registration_report(self) -> Dict[str, Any]:
         """Generate comprehensive registration report"""
@@ -1125,30 +1139,31 @@ class APIRegistrationExecutor:
         return {
             "summary": {
                 "total_apis": len(self.registration_results),
-                "successful": len(successful),
-                "failed": len(failed),
-                "success_rate": len(successful) / len(self.registration_results) * 100,
-            },
-            "category_breakdown": category_stats,
-            "successful_apis": [
+                    "successful": len(successful),
+                    "failed": len(failed),
+                    "success_rate": len(successful) / len(self.registration_results) * 100,
+                    },
+                "category_breakdown": category_stats,
+                "successful_apis": [
                 {
                     "name": r.api_name,
-                    "api_key": r.api_key[:20] + "..." if r.api_key else None,
-                    "free_tier": r.free_tier,
-                    "timestamp": r.timestamp,
-                }
+                        "api_key": r.api_key[:20] + "..." if r.api_key else None,
+                        "free_tier": r.free_tier,
+                        "timestamp": r.timestamp,
+                        }
                 for r in successful
             ],
-            "failed_apis": [
+                "failed_apis": [
                 {
                     "name": r.api_name,
-                    "error": r.error_message,
-                    "registration_url": r.registration_url,
-                }
+                        "error": r.error_message,
+                        "registration_url": r.registration_url,
+                        }
                 for r in failed
             ],
-            "generated_at": datetime.now().isoformat(),
-        }
+                "generated_at": datetime.now().isoformat(),
+                }
+
 
     def interactive_menu(self):
         """Interactive menu for API registration"""
@@ -1166,7 +1181,7 @@ class APIRegistrationExecutor:
             print("9. Update .env template")
             print("10. Exit")
 
-            choice = input("\nSelect option (1-10): ").strip()
+            choice = input("\nSelect option (1 - 10): ").strip()
 
             if choice == "1":
                 asyncio.run(self.interactive_register_all())
@@ -1191,6 +1206,7 @@ class APIRegistrationExecutor:
                 break
             else:
                 print("❌ Invalid choice. Please try again.")
+
 
     async def interactive_register_all(self):
         """Interactive registration for all APIs"""
@@ -1223,6 +1239,7 @@ class APIRegistrationExecutor:
                 if not result.success:
                     print(f"  - {result.api_name}: {result.error_message}")
 
+
     async def interactive_register_by_category(self):
         """Interactive registration by category"""
         categories = set(
@@ -1251,6 +1268,7 @@ class APIRegistrationExecutor:
             print(f"📊 Results: {successful} successful, {failed} failed")
         else:
             print(f"❌ Category '{choice}' not found.")
+
 
     async def interactive_register_single(self):
         """Interactive single API registration"""
@@ -1281,6 +1299,7 @@ class APIRegistrationExecutor:
                 await self.close_session()
         else:
             print(f"❌ API '{api_name}' not found.")
+
 
     def show_registration_status(self):
         """Show current registration status"""
@@ -1314,6 +1333,7 @@ class APIRegistrationExecutor:
             if len(failed) > 5:
                 print(f"  ... and {len(failed) - 5} more")
 
+
     def show_registration_report(self):
         """Show detailed registration report"""
         report = self.generate_registration_report()
@@ -1340,6 +1360,7 @@ class APIRegistrationExecutor:
                 f"  {category}: {stats['successful']}/{stats['total']} ({success_rate:.1f}%)"
             )
 
+
     def list_categories(self):
         """List all available categories"""
         categories = {}
@@ -1357,6 +1378,7 @@ class APIRegistrationExecutor:
             for api in sorted(apis):
                 api_info = self.api_registry[api]
                 print(f"  - {api}: {api_info['name']}")
+
 
     def search_apis(self):
         """Search APIs by name or description"""
@@ -1387,6 +1409,7 @@ class APIRegistrationExecutor:
         else:
             print(f"❌ No APIs found matching '{query}'")
 
+
     def export_results(self):
         """Export registration results"""
         if not self.registration_results:
@@ -1399,7 +1422,7 @@ class APIRegistrationExecutor:
 
         try:
             with open(export_file, "w") as f:
-                json.dump(report, f, indent=2)
+                json.dump(report, f, indent = 2)
 
             print(f"\n✅ Results exported to: {export_file}")
 
@@ -1415,28 +1438,29 @@ class APIRegistrationExecutor:
                     writer.writerow(
                         [
                             "API Name",
-                            "API Key",
-                            "Free Tier",
-                            "Registration URL",
-                            "Timestamp",
-                        ]
+                                "API Key",
+                                "Free Tier",
+                                "Registration URL",
+                                "Timestamp",
+                                ]
                     )
 
                     for result in successful:
                         writer.writerow(
                             [
                                 result.api_name,
-                                result.api_key,
-                                result.free_tier,
-                                result.registration_url,
-                                result.timestamp,
-                            ]
+                                    result.api_key,
+                                    result.free_tier,
+                                    result.registration_url,
+                                    result.timestamp,
+                                    ]
                         )
 
                 print(f"✅ CSV exported to: {csv_file}")
 
         except Exception as e:
             print(f"❌ Export failed: {e}")
+
 
     def create_env_template(self):
         """Create .env template with all API variables"""
@@ -1494,7 +1518,6 @@ def main():
             print("Available commands: all, report, status, template, <api_name>")
     else:
         executor.interactive_menu()
-
 
 if __name__ == "__main__":
     main()

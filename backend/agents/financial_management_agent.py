@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Autonomous Financial Management Agent
 
@@ -52,9 +52,9 @@ class RevenueStream(Enum):
 
 
 class AllocationStrategy(Enum):
-    AGGRESSIVE_GROWTH = "aggressive_growth"  # High-risk, high-reward
-    BALANCED_GROWTH = "balanced_growth"  # Moderate risk/reward
-    CONSERVATIVE_GROWTH = "conservative_growth"  # Low-risk, steady growth
+    AGGRESSIVE_GROWTH = "aggressive_growth"  # High - risk, high - reward
+    BALANCED_GROWTH = "balanced_growth"  # Moderate risk / reward
+    CONSERVATIVE_GROWTH = "conservative_growth"  # Low - risk, steady growth
     DEFENSIVE = "defensive"  # Protect existing revenue
     EXPERIMENTAL = "experimental"  # Test new opportunities
 
@@ -67,8 +67,9 @@ class FinancialAlert(Enum):
     CASH_FLOW_WARNING = "cash_flow_warning"
     PROFITABILITY_THRESHOLD = "profitability_threshold"
 
-
 @dataclass
+
+
 class ChannelFinancials:
     channel_id: str
     channel_name: str
@@ -83,8 +84,9 @@ class ChannelFinancials:
     risk_score: float
     opportunity_score: float
 
-
 @dataclass
+
+
 class ResourceAllocation:
     resource_type: ResourceType
     current_allocation: float
@@ -96,8 +98,9 @@ class ResourceAllocation:
     priority: int
     implementation_timeline: str
 
-
 @dataclass
+
+
 class FinancialForecast:
     period: str  # "monthly", "quarterly", "yearly"
     revenue_projection: Dict[RevenueStream, float]
@@ -111,6 +114,7 @@ class FinancialForecast:
 
 class AutonomousFinancialAgent(BaseAgent):
     """Autonomous financial management and resource allocation agent."""
+
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()
@@ -146,10 +150,11 @@ class AutonomousFinancialAgent(BaseAgent):
         )  # Min 5 channels
         self.risk_tolerance = config.get(
             "risk_tolerance", "balanced"
-        )  # conservative/balanced/aggressive
+        )  # conservative / balanced / aggressive
 
         self.logger = logging.getLogger(__name__)
         self._init_database()
+
 
     def _init_database(self):
         """Initialize financial management tracking tables."""
@@ -162,20 +167,20 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS channel_financials (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        channel_id TEXT NOT NULL,
-                        channel_name TEXT NOT NULL,
-                        revenue_streams TEXT,
-                        expenses TEXT,
-                        total_revenue REAL DEFAULT 0,
-                        total_expenses REAL DEFAULT 0,
-                        net_profit REAL DEFAULT 0,
-                        roi REAL DEFAULT 0,
-                        profit_margin REAL DEFAULT 0,
-                        growth_rate REAL DEFAULT 0,
-                        risk_score REAL DEFAULT 0,
-                        opportunity_score REAL DEFAULT 0,
-                        analysis_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        status TEXT DEFAULT 'active'
+                            channel_id TEXT NOT NULL,
+                            channel_name TEXT NOT NULL,
+                            revenue_streams TEXT,
+                            expenses TEXT,
+                            total_revenue REAL DEFAULT 0,
+                            total_expenses REAL DEFAULT 0,
+                            net_profit REAL DEFAULT 0,
+                            roi REAL DEFAULT 0,
+                            profit_margin REAL DEFAULT 0,
+                            growth_rate REAL DEFAULT 0,
+                            risk_score REAL DEFAULT 0,
+                            opportunity_score REAL DEFAULT 0,
+                            analysis_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            status TEXT DEFAULT 'active'
                     )
                 """
                 )
@@ -185,19 +190,19 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS resource_allocations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        resource_type TEXT NOT NULL,
-                        channel_id TEXT,
-                        current_allocation REAL DEFAULT 0,
-                        recommended_allocation REAL DEFAULT 0,
-                        allocation_change REAL DEFAULT 0,
-                        expected_roi_impact REAL DEFAULT 0,
-                        risk_assessment REAL DEFAULT 0,
-                        justification TEXT,
-                        priority INTEGER DEFAULT 5,
-                        implementation_timeline TEXT,
-                        status TEXT DEFAULT 'pending',
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        implemented_at TIMESTAMP
+                            resource_type TEXT NOT NULL,
+                            channel_id TEXT,
+                            current_allocation REAL DEFAULT 0,
+                            recommended_allocation REAL DEFAULT 0,
+                            allocation_change REAL DEFAULT 0,
+                            expected_roi_impact REAL DEFAULT 0,
+                            risk_assessment REAL DEFAULT 0,
+                            justification TEXT,
+                            priority INTEGER DEFAULT 5,
+                            implementation_timeline TEXT,
+                            status TEXT DEFAULT 'pending',
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            implemented_at TIMESTAMP
                     )
                 """
                 )
@@ -207,17 +212,17 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS financial_forecasts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        period TEXT NOT NULL,
-                        revenue_projection TEXT,
-                        expense_projection TEXT,
-                        net_profit_projection REAL,
-                        roi_projection REAL,
-                        confidence_lower REAL,
-                        confidence_upper REAL,
-                        key_assumptions TEXT,
-                        risk_factors TEXT,
-                        forecast_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        accuracy_score REAL
+                            period TEXT NOT NULL,
+                            revenue_projection TEXT,
+                            expense_projection TEXT,
+                            net_profit_projection REAL,
+                            roi_projection REAL,
+                            confidence_lower REAL,
+                            confidence_upper REAL,
+                            key_assumptions TEXT,
+                            risk_factors TEXT,
+                            forecast_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            accuracy_score REAL
                     )
                 """
                 )
@@ -227,15 +232,15 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS financial_alerts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        alert_type TEXT NOT NULL,
-                        channel_id TEXT,
-                        severity TEXT DEFAULT 'medium',
-                        message TEXT NOT NULL,
-                        data TEXT,
-                        action_required TEXT,
-                        status TEXT DEFAULT 'active',
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        resolved_at TIMESTAMP
+                            alert_type TEXT NOT NULL,
+                            channel_id TEXT,
+                            severity TEXT DEFAULT 'medium',
+                            message TEXT NOT NULL,
+                            data TEXT,
+                            action_required TEXT,
+                            status TEXT DEFAULT 'active',
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            resolved_at TIMESTAMP
                     )
                 """
                 )
@@ -245,14 +250,14 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS budget_tracking (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        period TEXT NOT NULL,
-                        category TEXT NOT NULL,
-                        budgeted_amount REAL NOT NULL,
-                        actual_amount REAL DEFAULT 0,
-                        variance REAL DEFAULT 0,
-                        variance_percentage REAL DEFAULT 0,
-                        notes TEXT,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            period TEXT NOT NULL,
+                            category TEXT NOT NULL,
+                            budgeted_amount REAL NOT NULL,
+                            actual_amount REAL DEFAULT 0,
+                            variance REAL DEFAULT 0,
+                            variance_percentage REAL DEFAULT 0,
+                            notes TEXT,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -262,12 +267,12 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS performance_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        metric_name TEXT NOT NULL,
-                        metric_value REAL NOT NULL,
-                        target_value REAL,
-                        channel_id TEXT,
-                        category TEXT,
-                        measurement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            metric_name TEXT NOT NULL,
+                            metric_value REAL NOT NULL,
+                            target_value REAL,
+                            channel_id TEXT,
+                            category TEXT,
+                            measurement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -277,13 +282,13 @@ class AutonomousFinancialAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS allocation_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        allocation_id TEXT NOT NULL,
-                        resource_type TEXT NOT NULL,
-                        old_amount REAL,
-                        new_amount REAL,
-                        change_reason TEXT,
-                        changed_by TEXT,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            allocation_id TEXT NOT NULL,
+                            resource_type TEXT NOT NULL,
+                            old_amount REAL,
+                            new_amount REAL,
+                            change_reason TEXT,
+                            changed_by TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -306,6 +311,7 @@ class AutonomousFinancialAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Database initialization failed: {e}")
             raise
+
 
     def analyze_channel_profitability(self) -> List[ChannelFinancials]:
         """Analyze profitability across all channels."""
@@ -345,21 +351,21 @@ class AutonomousFinancialAgent(BaseAgent):
 
                     # Create channel financial object
                     channel_financial = ChannelFinancials(
-                        channel_id=channel["id"],
-                        channel_name=channel["name"],
-                        revenue_streams={
+                        channel_id = channel["id"],
+                            channel_name = channel["name"],
+                            revenue_streams={
                             RevenueStream(k): v for k, v in revenue_data.items()
                         },
-                        expenses={ResourceType(k): v for k, v in expense_data.items()},
-                        total_revenue=total_revenue,
-                        total_expenses=total_expenses,
-                        net_profit=net_profit,
-                        roi=roi,
-                        profit_margin=profit_margin,
-                        growth_rate=growth_rate,
-                        risk_score=risk_score,
-                        opportunity_score=opportunity_score,
-                    )
+                            expenses={ResourceType(k): v for k, v in expense_data.items()},
+                            total_revenue = total_revenue,
+                            total_expenses = total_expenses,
+                            net_profit = net_profit,
+                            roi = roi,
+                            profit_margin = profit_margin,
+                            growth_rate = growth_rate,
+                            risk_score = risk_score,
+                            opportunity_score = opportunity_score,
+                            )
 
                     channel_financials.append(channel_financial)
 
@@ -379,6 +385,7 @@ class AutonomousFinancialAgent(BaseAgent):
             self.logger.error(f"Channel profitability analysis failed: {e}")
             return []
 
+
     def optimize_resource_allocation(
         self, channel_financials: List[ChannelFinancials]
     ) -> List[ResourceAllocation]:
@@ -391,7 +398,7 @@ class AutonomousFinancialAgent(BaseAgent):
             # Get current resource allocations
             current_allocations = self._get_current_allocations()
 
-            # Calculate optimal allocations using AI-powered analysis
+            # Calculate optimal allocations using AI - powered analysis
             optimal_allocations = self._calculate_optimal_allocations(
                 channel_financials, current_allocations
             )
@@ -409,22 +416,22 @@ class AutonomousFinancialAgent(BaseAgent):
                     else abs(change) > 100
                 ):
                     allocation = ResourceAllocation(
-                        resource_type=ResourceType(resource_type),
-                        current_allocation=current,
-                        recommended_allocation=recommended,
-                        allocation_change=change,
-                        expected_roi_impact=allocation_data["roi_impact"],
-                        risk_assessment=allocation_data["risk"],
-                        justification=allocation_data["justification"],
-                        priority=allocation_data["priority"],
-                        implementation_timeline=allocation_data["timeline"],
-                    )
+                        resource_type = ResourceType(resource_type),
+                            current_allocation = current,
+                            recommended_allocation = recommended,
+                            allocation_change = change,
+                            expected_roi_impact = allocation_data["roi_impact"],
+                            risk_assessment = allocation_data["risk"],
+                            justification = allocation_data["justification"],
+                            priority = allocation_data["priority"],
+                            implementation_timeline = allocation_data["timeline"],
+                            )
 
                     allocations.append(allocation)
                     self._store_resource_allocation(allocation)
 
             # Sort by priority and expected impact
-            allocations.sort(key=lambda x: (x.priority, -x.expected_roi_impact))
+            allocations.sort(key = lambda x: (x.priority, -x.expected_roi_impact))
 
             self.logger.info(
                 f"Generated {len(allocations)} resource allocation recommendations"
@@ -435,6 +442,7 @@ class AutonomousFinancialAgent(BaseAgent):
             self.logger.error(f"Resource allocation optimization failed: {e}")
             return []
 
+
     def implement_allocations(
         self, allocations: List[ResourceAllocation]
     ) -> Dict[str, Any]:
@@ -443,11 +451,11 @@ class AutonomousFinancialAgent(BaseAgent):
 
         implementation_results = {
             "successful": 0,
-            "failed": 0,
-            "total_reallocation": 0,
-            "expected_roi_improvement": 0,
-            "details": [],
-        }
+                "failed": 0,
+                "total_reallocation": 0,
+                "expected_roi_improvement": 0,
+                "details": [],
+                }
 
         for allocation in allocations:
             try:
@@ -472,10 +480,10 @@ class AutonomousFinancialAgent(BaseAgent):
                 implementation_results["details"].append(
                     {
                         "resource_type": allocation.resource_type.value,
-                        "change": allocation.allocation_change,
-                        "success": success,
-                        "expected_impact": allocation.expected_roi_impact,
-                    }
+                            "change": allocation.allocation_change,
+                            "success": success,
+                            "expected_impact": allocation.expected_roi_impact,
+                            }
                 )
 
             except Exception as e:
@@ -485,6 +493,7 @@ class AutonomousFinancialAgent(BaseAgent):
                 implementation_results["failed"] += 1
 
         return implementation_results
+
 
     def generate_financial_forecast(
         self, period: str = "quarterly"
@@ -496,7 +505,7 @@ class AutonomousFinancialAgent(BaseAgent):
             # Collect historical data
             historical_data = self._collect_historical_financial_data(period)
 
-            # Generate AI-powered forecast
+            # Generate AI - powered forecast
             forecast_prompt = self._generate_forecast_prompt(historical_data, period)
             ai_response = self.ollama_client.generate_completion(forecast_prompt)
 
@@ -505,22 +514,22 @@ class AutonomousFinancialAgent(BaseAgent):
 
                 # Create forecast object
                 forecast = FinancialForecast(
-                    period=period,
-                    revenue_projection={
+                    period = period,
+                        revenue_projection={
                         RevenueStream(k): v for k, v in forecast_data["revenue"].items()
                     },
-                    expense_projection={
+                        expense_projection={
                         ResourceType(k): v for k, v in forecast_data["expenses"].items()
                     },
-                    net_profit_projection=forecast_data["net_profit"],
-                    roi_projection=forecast_data["roi"],
-                    confidence_interval=(
+                        net_profit_projection = forecast_data["net_profit"],
+                        roi_projection = forecast_data["roi"],
+                        confidence_interval=(
                         forecast_data["confidence_lower"],
-                        forecast_data["confidence_upper"],
-                    ),
-                    key_assumptions=forecast_data["assumptions"],
-                    risk_factors=forecast_data["risks"],
-                )
+                            forecast_data["confidence_upper"],
+                            ),
+                        key_assumptions = forecast_data["assumptions"],
+                        risk_factors = forecast_data["risks"],
+                        )
 
                 # Store forecast
                 self._store_financial_forecast(forecast)
@@ -532,6 +541,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
         # Return default forecast if AI fails
         return self._generate_default_forecast(period)
+
 
     def _generate_default_forecast(self, period: str) -> FinancialForecast:
         """Generate a default financial forecast when AI analysis fails."""
@@ -562,43 +572,44 @@ class AutonomousFinancialAgent(BaseAgent):
             1.05 if period == "monthly" else 1.15 if period == "quarterly" else 1.25
         )
         projected_revenue = avg_revenue * growth_factor
-        projected_expenses = avg_expenses * 1.03  # Assume 3% expense growth
+            projected_expenses = avg_expenses * 1.03  # Assume 3% expense growth
         net_profit = projected_revenue - projected_expenses
         roi = (net_profit / projected_expenses) if projected_expenses > 0 else 0
 
         # Create default revenue and expense projections
         revenue_projection = {
             RevenueStream.AFFILIATE_COMMISSIONS: projected_revenue * 0.4,
-            RevenueStream.SPONSORED_CONTENT: projected_revenue * 0.3,
-            RevenueStream.ADVERTISING_REVENUE: projected_revenue * 0.2,
-            RevenueStream.PRODUCT_SALES: projected_revenue * 0.1,
-        }
+                RevenueStream.SPONSORED_CONTENT: projected_revenue * 0.3,
+                RevenueStream.ADVERTISING_REVENUE: projected_revenue * 0.2,
+                RevenueStream.PRODUCT_SALES: projected_revenue * 0.1,
+                }
 
         expense_projection = {
             ResourceType.CONTENT_CREATION: projected_expenses * 0.4,
-            ResourceType.ADVERTISING_SPEND: projected_expenses * 0.3,
-            ResourceType.TOOL_SUBSCRIPTIONS: projected_expenses * 0.2,
-            ResourceType.INFRASTRUCTURE: projected_expenses * 0.1,
-        }
+                ResourceType.ADVERTISING_SPEND: projected_expenses * 0.3,
+                ResourceType.TOOL_SUBSCRIPTIONS: projected_expenses * 0.2,
+                ResourceType.INFRASTRUCTURE: projected_expenses * 0.1,
+                }
 
         return FinancialForecast(
-            period=period,
-            revenue_projection=revenue_projection,
-            expense_projection=expense_projection,
-            net_profit_projection=net_profit,
-            roi_projection=roi,
-            confidence_interval=(net_profit * 0.8, net_profit * 1.2),
-            key_assumptions=[
+            period = period,
+                revenue_projection = revenue_projection,
+                expense_projection = expense_projection,
+                net_profit_projection = net_profit,
+                roi_projection = roi,
+                confidence_interval=(net_profit * 0.8, net_profit * 1.2),
+                key_assumptions=[
                 "Conservative growth estimates based on historical averages",
-                "Stable market conditions assumed",
-                "No major platform algorithm changes",
-            ],
-            risk_factors=[
+                    "Stable market conditions assumed",
+                    "No major platform algorithm changes",
+                    ],
+                risk_factors=[
                 "Platform dependency risk",
-                "Market volatility",
-                "Competition increase",
-            ],
-        )
+                    "Market volatility",
+                    "Competition increase",
+                    ],
+                )
+
 
     def monitor_financial_health(self) -> Dict[str, Any]:
         """Monitor overall financial health and generate alerts."""
@@ -606,13 +617,13 @@ class AutonomousFinancialAgent(BaseAgent):
 
         health_report = {
             "overall_score": 0,
-            "cash_flow_status": "unknown",
-            "profitability_trend": "unknown",
-            "risk_level": "unknown",
-            "active_alerts": [],
-            "recommendations": [],
-            "key_metrics": {},
-        }
+                "cash_flow_status": "unknown",
+                "profitability_trend": "unknown",
+                "risk_level": "unknown",
+                "active_alerts": [],
+                "recommendations": [],
+                "key_metrics": {},
+                }
 
         try:
             # Calculate overall financial health score
@@ -652,6 +663,7 @@ class AutonomousFinancialAgent(BaseAgent):
             health_report["error"] = str(e)
             return health_report
 
+
     def _get_active_channels(self) -> List[Dict]:
         """Get list of active channels."""
         try:
@@ -672,11 +684,12 @@ class AutonomousFinancialAgent(BaseAgent):
             # Return mock data for demonstration
             return [
                 {"id": "youtube_main", "name": "YouTube Main Channel"},
-                {"id": "tiktok_primary", "name": "TikTok Primary"},
-                {"id": "instagram_business", "name": "Instagram Business"},
-                {"id": "linkedin_professional", "name": "LinkedIn Professional"},
-                {"id": "twitter_brand", "name": "Twitter Brand"},
-            ]
+                    {"id": "tiktok_primary", "name": "TikTok Primary"},
+                    {"id": "instagram_business", "name": "Instagram Business"},
+                    {"id": "linkedin_professional", "name": "LinkedIn Professional"},
+                    {"id": "twitter_brand", "name": "Twitter Brand"},
+                    ]
+
 
     def _collect_channel_revenue(self, channel_id: str) -> Dict[str, float]:
         """Collect real revenue data for a specific channel from various sources."""
@@ -734,6 +747,7 @@ class AutonomousFinancialAgent(BaseAgent):
             # Return empty dict on error - no fallback to mock data
             return {}
 
+
     def _collect_channel_expenses(self, channel_id: str) -> Dict[str, float]:
         """Collect real expense data for a specific channel from various sources."""
         expenses = {}
@@ -784,6 +798,7 @@ class AutonomousFinancialAgent(BaseAgent):
             # Return empty dict on error - no fallback to mock data
             return {}
 
+
     def _calculate_growth_rate(self, channel_id: str) -> float:
         """Calculate growth rate for a channel."""
         try:
@@ -796,18 +811,18 @@ class AutonomousFinancialAgent(BaseAgent):
                     WHERE channel_id = ? AND created_at > datetime('now', '-30 days')
                 """,
                     (channel_id,),
-                )
+                        )
                 current = cursor.fetchone()[0] or 0
 
                 cursor.execute(
                     """
                     SELECT AVG(revenue_generated) as previous_revenue
                     FROM content_performance
-                    WHERE channel_id = ? 
+                    WHERE channel_id = ?
                     AND created_at BETWEEN datetime('now', '-60 days') AND datetime('now', '-30 days')
                 """,
                     (channel_id,),
-                )
+                        )
                 previous = cursor.fetchone()[0] or 0
 
                 if previous > 0:
@@ -817,6 +832,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
         # Return neutral growth rate when data is unavailable
         return 0.0  # No growth assumption when data is missing
+
 
     def _assess_channel_risk(
         self, channel: Dict, revenue_data: Dict, expense_data: Dict
@@ -849,7 +865,7 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Instagram has moderate stability
                 platform_risk = 0.45
             elif "twitter" in channel["id"].lower() or "x.com" in channel["id"].lower():
-                # Twitter/X has policy and ownership volatility
+                # Twitter / X has policy and ownership volatility
                 platform_risk = 0.55
             else:
                 # Default for unknown platforms
@@ -866,6 +882,7 @@ class AutonomousFinancialAgent(BaseAgent):
             risk_factors.append(0.5)  # Neutral risk fallback
 
         return statistics.mean(risk_factors) if risk_factors else 0.5
+
 
     def _assess_channel_opportunity(
         self, channel: Dict, revenue_data: Dict, expense_data: Dict
@@ -884,9 +901,9 @@ class AutonomousFinancialAgent(BaseAgent):
 
         # Market size opportunity - analyze platform metrics
         try:
-            # Get platform-specific market data
+            # Get platform - specific market data
             if "youtube" in channel["id"].lower():
-                # YouTube has largest market share for long-form content
+                # YouTube has largest market share for long - form content
                 market_opportunity = 0.85
             elif "tiktok" in channel["id"].lower():
                 # TikTok has high engagement but smaller monetization
@@ -895,13 +912,13 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Instagram has good monetization opportunities
                 market_opportunity = 0.80
             elif "twitter" in channel["id"].lower() or "x.com" in channel["id"].lower():
-                # Twitter/X has moderate monetization potential
+                # Twitter / X has moderate monetization potential
                 market_opportunity = 0.65
             else:
                 # Default for other platforms
                 market_opportunity = 0.60
 
-            # Adjust based on subscriber/follower count if available
+            # Adjust based on subscriber / follower count if available
             if "subscribers" in channel and channel["subscribers"] > 100000:
                 market_opportunity += 0.1
             elif "subscribers" in channel and channel["subscribers"] > 10000:
@@ -922,6 +939,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
         return statistics.mean(opportunity_factors) if opportunity_factors else 0.5
 
+
     def _get_current_allocations(self) -> Dict[str, float]:
         """Get current resource allocations."""
         try:
@@ -941,11 +959,12 @@ class AutonomousFinancialAgent(BaseAgent):
             # Return empty allocations - let the system handle initialization
             return {}
 
+
     def _calculate_optimal_allocations(
         self,
-        channel_financials: List[ChannelFinancials],
-        current_allocations: Dict[str, float],
-    ) -> Dict[str, Dict]:
+            channel_financials: List[ChannelFinancials],
+            current_allocations: Dict[str, float],
+            ) -> Dict[str, Dict]:
         """Calculate optimal resource allocations using AI analysis."""
         try:
             # Prepare data for AI analysis
@@ -953,24 +972,24 @@ class AutonomousFinancialAgent(BaseAgent):
                 "channels": [
                     {
                         "id": cf.channel_id,
-                        "name": cf.channel_name,
-                        "roi": cf.roi,
-                        "profit_margin": cf.profit_margin,
-                        "growth_rate": cf.growth_rate,
-                        "risk_score": cf.risk_score,
-                        "opportunity_score": cf.opportunity_score,
-                        "revenue": cf.total_revenue,
-                        "expenses": cf.total_expenses,
-                    }
+                            "name": cf.channel_name,
+                            "roi": cf.roi,
+                            "profit_margin": cf.profit_margin,
+                            "growth_rate": cf.growth_rate,
+                            "risk_score": cf.risk_score,
+                            "opportunity_score": cf.opportunity_score,
+                            "revenue": cf.total_revenue,
+                            "expenses": cf.total_expenses,
+                            }
                     for cf in channel_financials
                 ],
-                "current_allocations": current_allocations,
-                "constraints": {
+                    "current_allocations": current_allocations,
+                    "constraints": {
                     "min_roi_threshold": self.min_roi_threshold,
-                    "max_single_channel": self.max_single_channel_allocation,
-                    "risk_tolerance": self.risk_tolerance,
-                },
-            }
+                        "max_single_channel": self.max_single_channel_allocation,
+                        "risk_tolerance": self.risk_tolerance,
+                        },
+                    }
 
             # Generate optimization prompt
             optimization_prompt = self._generate_optimization_prompt(analysis_data)
@@ -982,22 +1001,23 @@ class AutonomousFinancialAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"AI optimization failed: {e}")
 
-        # Fallback to rule-based optimization
+        # Fallback to rule - based optimization
         return self._rule_based_optimization(channel_financials, current_allocations)
+
 
     def _rule_based_optimization(
         self,
-        channel_financials: List[ChannelFinancials],
-        current_allocations: Dict[str, float],
-    ) -> Dict[str, Dict]:
-        """Fallback rule-based optimization."""
+            channel_financials: List[ChannelFinancials],
+            current_allocations: Dict[str, float],
+            ) -> Dict[str, Dict]:
+        """Fallback rule - based optimization."""
         optimal_allocations = {}
 
         # Sort channels by ROI
-        sorted_channels = sorted(channel_financials, key=lambda x: x.roi, reverse=True)
+        sorted_channels = sorted(channel_financials, key = lambda x: x.roi, reverse = True)
 
         for resource_type, current_amount in current_allocations.items():
-            # Allocate more to high-ROI, low-risk channels
+            # Allocate more to high - ROI, low - risk channels
             top_channels = [
                 ch for ch in sorted_channels if ch.roi > self.min_roi_threshold
             ]
@@ -1012,18 +1032,19 @@ class AutonomousFinancialAgent(BaseAgent):
 
                     optimal_allocations[resource_type] = {
                         "recommended": recommended,
-                        "roi_impact": 0.15,  # Estimated 15% ROI improvement
+                            "roi_impact": 0.15,  # Estimated 15% ROI improvement
                         "risk": 0.3,
-                        "justification": f"Reallocate to high-ROI channels (avg ROI: {statistics.mean([ch.roi for ch in top_channels]):.2%})",
-                        "priority": (
+                            "justification": f"Reallocate to high - ROI channels (avg ROI: {statistics.mean([ch.roi for ch in top_channels]):.2%})",
+                            "priority": (
                             1
                             if resource_type == ResourceType.CONTENT_CREATION.value
                             else 2
                         ),
-                        "timeline": "immediate",
-                    }
+                            "timeline": "immediate",
+                            }
 
         return optimal_allocations
+
 
     def _implement_resource_allocation(self, allocation: ResourceAllocation) -> bool:
         """Implement a specific resource allocation."""
@@ -1042,6 +1063,7 @@ class AutonomousFinancialAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Resource allocation implementation failed: {e}")
             return False
+
 
     def _adjust_advertising_budget(self, allocation: ResourceAllocation) -> bool:
         """Adjust advertising budget allocation across ad platforms."""
@@ -1087,6 +1109,7 @@ class AutonomousFinancialAgent(BaseAgent):
             self.logger.error(f"Error adjusting advertising budget: {e}")
             return False
 
+
     def _adjust_content_budget(self, allocation: ResourceAllocation) -> bool:
         """Adjust content creation budget allocation."""
         try:
@@ -1130,6 +1153,7 @@ class AutonomousFinancialAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Error adjusting content budget: {e}")
             return False
+
 
     def _adjust_tool_subscriptions(self, allocation: ResourceAllocation) -> bool:
         """Adjust tool subscription allocations."""
@@ -1175,6 +1199,7 @@ class AutonomousFinancialAgent(BaseAgent):
             self.logger.error(f"Error adjusting tool subscriptions: {e}")
             return False
 
+
     def _generic_allocation_implementation(
         self, allocation: ResourceAllocation
     ) -> bool:
@@ -1192,26 +1217,26 @@ class AutonomousFinancialAgent(BaseAgent):
                 cursor.execute(
                     """
                     INSERT OR REPLACE INTO resource_allocations (
-                        resource_type, channel_id, current_allocation, 
-                        recommended_allocation, allocation_change, 
-                        expected_roi_impact, risk_assessment, justification,
-                        priority, implementation_timeline, status, created_at
+                        resource_type, channel_id, current_allocation,
+                            recommended_allocation, allocation_change,
+                            expected_roi_impact, risk_assessment, justification,
+                            priority, implementation_timeline, status, created_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
                 """,
                     (
                         allocation.resource_type.value,
-                        "global",  # Generic allocations are global
+                            "global",  # Generic allocations are global
                         allocation.current_allocation,
-                        allocation.recommended_allocation,
-                        allocation.allocation_change,
-                        allocation.expected_roi_impact,
-                        allocation.risk_assessment,
-                        allocation.justification,
-                        allocation.priority,
-                        allocation.implementation_timeline,
-                        datetime.now().isoformat(),
-                    ),
-                )
+                            allocation.recommended_allocation,
+                            allocation.allocation_change,
+                            allocation.expected_roi_impact,
+                            allocation.risk_assessment,
+                            allocation.justification,
+                            allocation.priority,
+                            allocation.implementation_timeline,
+                            datetime.now().isoformat(),
+                            ),
+                        )
 
                 # Log allocation change for audit trail
                 cursor.execute(
@@ -1222,32 +1247,32 @@ class AutonomousFinancialAgent(BaseAgent):
                 """,
                     (
                         allocation.resource_type.value,
-                        allocation.allocation_change,
-                        allocation.justification,
-                        datetime.now().isoformat(),
-                    ),
-                )
+                            allocation.allocation_change,
+                            allocation.justification,
+                            datetime.now().isoformat(),
+                            ),
+                        )
 
                 conn.commit()
 
             # Create financial alert for significant changes
             if abs(allocation.allocation_change) > 1000:  # Alert for changes > $1000
                 self._create_financial_alert(
-                    alert_type=FinancialAlert.OPPORTUNITY_DETECTED.value,
-                    channel_id="global",
-                    severity=(
+                    alert_type = FinancialAlert.OPPORTUNITY_DETECTED.value,
+                        channel_id="global",
+                        severity=(
                         "medium" if abs(allocation.allocation_change) < 5000 else "high"
                     ),
-                    message=f"Significant {allocation.resource_type.value} allocation change: ${allocation.allocation_change:.2f}",
-                    data=json.dumps(
+                        message = f"Significant {allocation.resource_type.value} allocation change: ${allocation.allocation_change:.2f}",
+                        data = json.dumps(
                         {
                             "resource_type": allocation.resource_type.value,
-                            "change_amount": allocation.allocation_change,
-                            "expected_roi_impact": allocation.expected_roi_impact,
-                        }
+                                "change_amount": allocation.allocation_change,
+                                "expected_roi_impact": allocation.expected_roi_impact,
+                                }
                     ),
-                    action_required=f"Monitor {allocation.resource_type.value} performance after implementation",
-                )
+                        action_required = f"Monitor {allocation.resource_type.value} performance after implementation",
+                        )
 
             return True
 
@@ -1257,16 +1282,17 @@ class AutonomousFinancialAgent(BaseAgent):
             )
             return False
 
+
     def _generate_optimization_prompt(self, analysis_data: Dict) -> str:
-        """Generate prompt for AI-powered resource optimization."""
+        """Generate prompt for AI - powered resource optimization."""
         return f"""
 Optimize resource allocation for maximum ROI based on the following financial analysis:
 
 Channels Performance:
-{json.dumps(analysis_data['channels'], indent=2)}
+{json.dumps(analysis_data['channels'], indent = 2)}
 
 Current Allocations:
-{json.dumps(analysis_data['current_allocations'], indent=2)}
+{json.dumps(analysis_data['current_allocations'], indent = 2)}
 
 Constraints:
 - Minimum ROI threshold: {analysis_data['constraints']['min_roi_threshold']:.1%}
@@ -1278,11 +1304,12 @@ Provide optimal resource allocation recommendations including:
 2. Expected ROI impact
 3. Risk assessment
 4. Justification for changes
-5. Implementation priority (1-5)
+5. Implementation priority (1 - 5)
 6. Implementation timeline
 
 Format as JSON with resource types as keys.
 """
+
 
     def _parse_optimization_response(self, ai_response: str) -> Dict[str, Dict]:
         """Parse AI optimization response."""
@@ -1296,6 +1323,7 @@ Format as JSON with resource types as keys.
             self.logger.error(f"Failed to parse optimization response: {e}")
         return {}
 
+
     def _store_channel_financials(self, channel_financial: ChannelFinancials):
         """Store channel financial analysis in database."""
         try:
@@ -1305,35 +1333,36 @@ Format as JSON with resource types as keys.
                     """
                     INSERT INTO channel_financials (
                         channel_id, channel_name, revenue_streams, expenses,
-                        total_revenue, total_expenses, net_profit, roi,
-                        profit_margin, growth_rate, risk_score, opportunity_score
+                            total_revenue, total_expenses, net_profit, roi,
+                            profit_margin, growth_rate, risk_score, opportunity_score
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         channel_financial.channel_id,
-                        channel_financial.channel_name,
-                        json.dumps(
+                            channel_financial.channel_name,
+                            json.dumps(
                             {
                                 k.value: v
                                 for k, v in channel_financial.revenue_streams.items()
                             }
                         ),
-                        json.dumps(
+                            json.dumps(
                             {k.value: v for k, v in channel_financial.expenses.items()}
                         ),
-                        channel_financial.total_revenue,
-                        channel_financial.total_expenses,
-                        channel_financial.net_profit,
-                        channel_financial.roi,
-                        channel_financial.profit_margin,
-                        channel_financial.growth_rate,
-                        channel_financial.risk_score,
-                        channel_financial.opportunity_score,
-                    ),
-                )
+                            channel_financial.total_revenue,
+                            channel_financial.total_expenses,
+                            channel_financial.net_profit,
+                            channel_financial.roi,
+                            channel_financial.profit_margin,
+                            channel_financial.growth_rate,
+                            channel_financial.risk_score,
+                            channel_financial.opportunity_score,
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store channel financials: {e}")
+
 
     def _check_financial_alerts(self, channel_financial: ChannelFinancials):
         """Check for financial alerts and create them if needed."""
@@ -1344,10 +1373,10 @@ Format as JSON with resource types as keys.
             alerts.append(
                 {
                     "type": FinancialAlert.LOW_ROI_CHANNEL,
-                    "severity": "high",
-                    "message": f"Channel {channel_financial.channel_name} ROI ({channel_financial.roi:.1%}) below threshold ({self.min_roi_threshold:.1%})",
-                    "channel_id": channel_financial.channel_id,
-                }
+                        "severity": "high",
+                        "message": f"Channel {channel_financial.channel_name} ROI ({channel_financial.roi:.1%}) below threshold ({self.min_roi_threshold:.1%})",
+                        "channel_id": channel_financial.channel_id,
+                        }
             )
 
         # Revenue decline alert
@@ -1355,10 +1384,10 @@ Format as JSON with resource types as keys.
             alerts.append(
                 {
                     "type": FinancialAlert.REVENUE_DECLINE,
-                    "severity": "medium",
-                    "message": f"Channel {channel_financial.channel_name} revenue declining at {channel_financial.growth_rate:.1%}",
-                    "channel_id": channel_financial.channel_id,
-                }
+                        "severity": "medium",
+                        "message": f"Channel {channel_financial.channel_name} revenue declining at {channel_financial.growth_rate:.1%}",
+                        "channel_id": channel_financial.channel_id,
+                        }
             )
 
         # Opportunity detected alert
@@ -1369,15 +1398,16 @@ Format as JSON with resource types as keys.
             alerts.append(
                 {
                     "type": FinancialAlert.OPPORTUNITY_DETECTED,
-                    "severity": "low",
-                    "message": f"High opportunity detected for {channel_financial.channel_name} (score: {channel_financial.opportunity_score:.2f})",
-                    "channel_id": channel_financial.channel_id,
-                }
+                        "severity": "low",
+                        "message": f"High opportunity detected for {channel_financial.channel_name} (score: {channel_financial.opportunity_score:.2f})",
+                        "channel_id": channel_financial.channel_id,
+                        }
             )
 
         # Store alerts
         for alert in alerts:
             self._create_financial_alert(alert)
+
 
     def _create_financial_alert(self, alert_data: Dict):
         """Create a financial alert in the database."""
@@ -1392,15 +1422,16 @@ Format as JSON with resource types as keys.
                 """,
                     (
                         alert_data["type"].value,
-                        alert_data.get("channel_id"),
-                        alert_data["severity"],
-                        alert_data["message"],
-                        "Review and adjust resource allocation",
-                    ),
-                )
+                            alert_data.get("channel_id"),
+                            alert_data["severity"],
+                            alert_data["message"],
+                            "Review and adjust resource allocation",
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to create financial alert: {e}")
+
 
     def get_financial_dashboard(self) -> Dict[str, Any]:
         """Generate comprehensive financial dashboard data."""
@@ -1423,7 +1454,7 @@ Format as JSON with resource types as keys.
                 cursor.execute(
                     """
                     SELECT resource_type, SUM(recommended_allocation) as total_allocation,
-                           AVG(expected_roi_impact) as avg_roi_impact
+                        AVG(expected_roi_impact) as avg_roi_impact
                     FROM resource_allocations
                     WHERE status = 'implemented'
                     GROUP BY resource_type
@@ -1457,24 +1488,25 @@ Format as JSON with resource types as keys.
 
                 return {
                     "timestamp": datetime.now().isoformat(),
-                    "summary": {
+                        "summary": {
                         "total_revenue": total_revenue,
-                        "total_expenses": total_expenses,
-                        "net_profit": total_revenue - total_expenses,
-                        "overall_roi": overall_roi,
-                        "active_channels": len(channel_performance),
-                        "active_alerts": len(recent_alerts),
-                    },
-                    "channel_performance": channel_performance,
-                    "resource_allocations": resource_allocations,
-                    "recent_alerts": recent_alerts,
-                    "status": "active",
-                }
+                            "total_expenses": total_expenses,
+                            "net_profit": total_revenue - total_expenses,
+                            "overall_roi": overall_roi,
+                            "active_channels": len(channel_performance),
+                            "active_alerts": len(recent_alerts),
+                            },
+                        "channel_performance": channel_performance,
+                        "resource_allocations": resource_allocations,
+                        "recent_alerts": recent_alerts,
+                        "status": "active",
+                        }
         except Exception as e:
             self.logger.error(f"Failed to generate financial dashboard: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
 
     # Helper methods for real API integrations
+
 
     def _fetch_affiliate_commissions(self, store) -> Dict[str, float]:
         """Fetch real affiliate commission data from various networks."""
@@ -1487,19 +1519,19 @@ Format as JSON with resource types as keys.
                     # Amazon Associates Product Advertising API 5.0
                     headers = {
                         "Authorization": f"Bearer {amazon_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get commission data for last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
-                        f"https://webservices.amazon.com/paapi5/getreports?startDate={start_date}&endDate={end_date}&reportType=earnings",
-                        headers=headers,
-                    )
+                        f"https://webservices.amazon.com / paapi5 / getreports?startDate={start_date}&endDate={end_date}&reportType = earnings",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1531,20 +1563,20 @@ Format as JSON with resource types as keys.
                     ).hexdigest()
 
                     headers = {
-                        "x-ShareASale-Date": timestamp,
-                        "x-ShareASale-Authentication": signature,
-                    }
+                        "x - ShareASale - Date": timestamp,
+                            "x - ShareASale - Authentication": signature,
+                            }
 
                     # Get commission data
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%m/%d/%Y"
                     )
                     end_date = datetime.now().strftime("%m/%d/%Y")
 
                     response = requests.get(
-                        f"https://api.shareasale.com/w.cfm?XMLFormat=1&affiliateId={affiliate_id}&token={shareasale_key}&requestType=commissionDetail&dateStart={start_date}&dateEnd={end_date}",
-                        headers=headers,
-                    )
+                        f"https://api.shareasale.com / w.cfm?XMLFormat = 1&affiliateId={affiliate_id}&token={shareasale_key}&requestType = commissionDetail&dateStart={start_date}&dateEnd={end_date}",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         # Parse XML response and extract commission total
@@ -1569,19 +1601,19 @@ Format as JSON with resource types as keys.
                 try:
                     headers = {
                         "Authorization": f"Bearer {cj_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get commission data for last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
-                        f"https://commission-detail.api.cj.com/v3/commissions?date-type=event&start-date={start_date}&end-date={end_date}",
-                        headers=headers,
-                    )
+                        f"https://commission - detail.api.cj.com / v3 / commissions?date - type = event&start - date={start_date}&end - date={end_date}",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1602,6 +1634,7 @@ Format as JSON with resource types as keys.
 
         return commissions
 
+
     def _fetch_advertising_revenue(self, store) -> Dict[str, float]:
         """Fetch real advertising revenue from ad platforms."""
         revenue = {}
@@ -1612,22 +1645,22 @@ Format as JSON with resource types as keys.
                 try:
                     headers = {
                         "Authorization": f"Bearer {adsense_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get AdSense account ID
                     account_id = store.get_secret("GOOGLE_ADSENSE_ACCOUNT_ID")
 
                     # Get earnings for last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
-                        f"https://adsense.googleapis.com/v2/accounts/{account_id}/reports:generate?dateRange.startDate={start_date}&dateRange.endDate={end_date}&metrics=ESTIMATED_EARNINGS",
-                        headers=headers,
-                    )
+                        f"https://adsense.googleapis.com / v2 / accounts/{account_id}/reports:generate?dateRange.startDate={start_date}&dateRange.endDate={end_date}&metrics = ESTIMATED_EARNINGS",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1650,22 +1683,22 @@ Format as JSON with resource types as keys.
                 try:
                     headers = {
                         "Authorization": f"Bearer {youtube_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get channel ID
                     channel_id = store.get_secret("YOUTUBE_CHANNEL_ID")
 
                     # Get analytics data for revenue
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
-                        f"https://youtubeanalytics.googleapis.com/v2/reports?ids=channel=={channel_id}&startDate={start_date}&endDate={end_date}&metrics=estimatedRevenue&dimensions=day",
-                        headers=headers,
-                    )
+                        f"https://youtubeanalytics.googleapis.com / v2 / reports?ids = channel=={channel_id}&startDate={start_date}&endDate={end_date}&metrics = estimatedRevenue&dimensions = day",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1685,6 +1718,7 @@ Format as JSON with resource types as keys.
 
         return revenue
 
+
     def _fetch_sponsored_content_revenue(self, store) -> Dict[str, float]:
         """Fetch sponsored content revenue from brand partnerships."""
         revenue = {}
@@ -1695,19 +1729,19 @@ Format as JSON with resource types as keys.
                 try:
                     headers = {
                         "Authorization": f"Bearer {aspire_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get campaign earnings for last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
-                        f"https://api.aspireiq.com/v1/campaigns/earnings?start_date={start_date}&end_date={end_date}",
-                        headers=headers,
-                    )
+                        f"https://api.aspireiq.com / v1 / campaigns / earnings?start_date={start_date}&end_date={end_date}",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1728,7 +1762,7 @@ Format as JSON with resource types as keys.
             cursor = self.db_connection.cursor()
             cursor.execute(
                 """
-                SELECT SUM(amount) FROM sponsored_content_payments 
+                SELECT SUM(amount) FROM sponsored_content_payments
                 WHERE payment_date >= date('now', '-30 days')
             """
             )
@@ -1740,8 +1774,9 @@ Format as JSON with resource types as keys.
 
         return revenue
 
+
     def _fetch_product_sales_revenue(self, store) -> Dict[str, float]:
-        """Fetch product sales revenue from e-commerce platforms."""
+        """Fetch product sales revenue from e - commerce platforms."""
         revenue = {}
         try:
             # Shopify API
@@ -1750,19 +1785,19 @@ Format as JSON with resource types as keys.
                 try:
                     shop_domain = store.get_secret("SHOPIFY_SHOP_DOMAIN")
                     headers = {
-                        "X-Shopify-Access-Token": shopify_key,
-                        "Content-Type": "application/json",
-                    }
+                        "X - Shopify - Access - Token": shopify_key,
+                            "Content - Type": "application / json",
+                            }
 
                     # Get orders from last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
                     )
 
                     response = requests.get(
-                        f"https://{shop_domain}.myshopify.com/admin/api/2023-10/orders.json?status=any&created_at_min={start_date}T00:00:00Z&financial_status=paid",
-                        headers=headers,
-                    )
+                        f"https://{shop_domain}.myshopify.com / admin / api / 2023 - 10 / orders.json?status = any&created_at_min={start_date}T00:00:00Z&financial_status = paid",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1793,18 +1828,18 @@ Format as JSON with resource types as keys.
                     ).decode()
                     headers = {
                         "Authorization": f"Basic {credentials}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get orders from last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%dT%H:%M:%S"
                     )
 
                     response = requests.get(
-                        f"{site_url}/wp-json/wc/v3/orders?status=completed&after={start_date}&per_page=100",
-                        headers=headers,
-                    )
+                        f"{site_url}/wp - json / wc / v3 / orders?status = completed&after={start_date}&per_page = 100",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1824,6 +1859,7 @@ Format as JSON with resource types as keys.
 
         return revenue
 
+
     def _fetch_subscription_revenue(self, store) -> Dict[str, float]:
         """Fetch subscription revenue from payment processors."""
         revenue = {}
@@ -1834,18 +1870,18 @@ Format as JSON with resource types as keys.
                 try:
                     headers = {
                         "Authorization": f"Bearer {stripe_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get subscription invoices from last 30 days
                     start_timestamp = int(
-                        (datetime.now() - timedelta(days=30)).timestamp()
+                        (datetime.now() - timedelta(days = 30)).timestamp()
                     )
 
                     response = requests.get(
-                        f"https://api.stripe.com/v1/invoices?status=paid&created[gte]={start_timestamp}&limit=100",
-                        headers=headers,
-                    )
+                        f"https://api.stripe.com / v1 / invoices?status = paid&created[gte]={start_timestamp}&limit = 100",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1869,19 +1905,19 @@ Format as JSON with resource types as keys.
                 try:
                     headers = {
                         "Authorization": f"Bearer {paypal_key}",
-                        "Content-Type": "application/json",
-                    }
+                            "Content - Type": "application / json",
+                            }
 
                     # Get subscription transactions from last 30 days
-                    start_date = (datetime.now() - timedelta(days=30)).strftime(
+                    start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%dT%H:%M:%S.000Z"
                     )
                     end_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
                     response = requests.get(
-                        f"https://api.paypal.com/v1/billing/subscriptions/transactions?start_time={start_date}&end_time={end_date}",
-                        headers=headers,
-                    )
+                        f"https://api.paypal.com / v1 / billing / subscriptions / transactions?start_time={start_date}&end_time={end_date}",
+                            headers = headers,
+                            )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1907,6 +1943,7 @@ Format as JSON with resource types as keys.
 
         return revenue
 
+
     def _store_allocation_change(self, allocation: ResourceAllocation):
         """Store allocation change in database for tracking."""
         try:
@@ -1914,30 +1951,31 @@ Format as JSON with resource types as keys.
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO resource_allocations 
-                    (resource_type, current_allocation, recommended_allocation, 
-                     allocation_change, expected_roi_impact, risk_assessment, 
-                     justification, priority, implementation_timeline, status, created_at)
+                    INSERT INTO resource_allocations
+                    (resource_type, current_allocation, recommended_allocation,
+                        allocation_change, expected_roi_impact, risk_assessment,
+                         justification, priority, implementation_timeline, status, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'implemented', ?)
                 """,
                     (
                         allocation.resource_type.value,
-                        allocation.current_allocation,
-                        allocation.recommended_allocation,
-                        allocation.allocation_change,
-                        allocation.expected_roi_impact,
-                        allocation.risk_assessment,
-                        allocation.justification,
-                        allocation.priority,
-                        allocation.implementation_timeline,
-                        datetime.now().isoformat(),
-                    ),
-                )
+                            allocation.current_allocation,
+                            allocation.recommended_allocation,
+                            allocation.allocation_change,
+                            allocation.expected_roi_impact,
+                            allocation.risk_assessment,
+                            allocation.justification,
+                            allocation.priority,
+                            allocation.implementation_timeline,
+                            datetime.now().isoformat(),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing allocation change: {e}")
 
     # Advertising budget adjustment methods
+
 
     def _adjust_google_ads_budget(self, allocation: ResourceAllocation, store) -> bool:
         """Adjust Google Ads budget via Google Ads API."""
@@ -1950,6 +1988,7 @@ Format as JSON with resource types as keys.
         except Exception as e:
             self.logger.error(f"Error adjusting Google Ads budget: {e}")
             return False
+
 
     def _adjust_facebook_ads_budget(
         self, allocation: ResourceAllocation, store
@@ -1965,6 +2004,7 @@ Format as JSON with resource types as keys.
             self.logger.error(f"Error adjusting Facebook Ads budget: {e}")
             return False
 
+
     def _adjust_tiktok_ads_budget(self, allocation: ResourceAllocation, store) -> bool:
         """Adjust TikTok Ads budget via TikTok Marketing API."""
         try:
@@ -1976,6 +2016,7 @@ Format as JSON with resource types as keys.
         except Exception as e:
             self.logger.error(f"Error adjusting TikTok Ads budget: {e}")
             return False
+
 
     def _adjust_linkedin_ads_budget(
         self, allocation: ResourceAllocation, store
@@ -1992,6 +2033,7 @@ Format as JSON with resource types as keys.
             return False
 
     # Content budget adjustment methods
+
 
     def _update_freelancer_budgets(self, allocation: ResourceAllocation, store) -> bool:
         """Update freelancer budgets via payment platforms."""
@@ -2012,6 +2054,7 @@ Format as JSON with resource types as keys.
         except Exception as e:
             self.logger.error(f"Error updating freelancer budgets: {e}")
             return False
+
 
     def _adjust_content_tool_budgets(
         self, allocation: ResourceAllocation, store
@@ -2035,6 +2078,7 @@ Format as JSON with resource types as keys.
             self.logger.error(f"Error adjusting content tool budgets: {e}")
             return False
 
+
     def _update_content_scheduling_budget(
         self, allocation: ResourceAllocation, store
     ) -> bool:
@@ -2057,6 +2101,7 @@ Format as JSON with resource types as keys.
             self.logger.error(f"Error updating content scheduling budget: {e}")
             return False
 
+
     def _adjust_content_software_budgets(
         self, allocation: ResourceAllocation, store
     ) -> bool:
@@ -2069,6 +2114,7 @@ Format as JSON with resource types as keys.
             return False
 
     # Subscription management methods
+
 
     def _adjust_subscription_billing_limits(
         self, allocation: ResourceAllocation, store
@@ -2085,6 +2131,7 @@ Format as JSON with resource types as keys.
             self.logger.error(f"Error adjusting subscription billing limits: {e}")
             return False
 
+
     def _update_service_tier_allocations(
         self, allocation: ResourceAllocation, store
     ) -> bool:
@@ -2096,6 +2143,7 @@ Format as JSON with resource types as keys.
             self.logger.error(f"Error updating service tier allocations: {e}")
             return False
 
+
     def _modify_usage_quotas(self, allocation: ResourceAllocation, store) -> bool:
         """Modify usage quotas and limits for subscriptions."""
         try:
@@ -2104,6 +2152,7 @@ Format as JSON with resource types as keys.
         except Exception as e:
             self.logger.error(f"Error modifying usage quotas: {e}")
             return False
+
 
     def _update_subscription_management(
         self, allocation: ResourceAllocation, store

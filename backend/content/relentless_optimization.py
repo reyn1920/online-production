@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Relentless Optimization System for Right Perspective Content
 
-This module implements autonomous A/B testing for thumbnails, titles, and audience retention analysis
+This module implements autonomous A / B testing for thumbnails, titles, and audience retention analysis
 to continuously optimize Right Perspective video performance.
 
 Features:
-- Autonomous thumbnail A/B testing
+- Autonomous thumbnail A / B testing
 - Title optimization with multiple variants
 - Audience retention analysis and optimization
 - Performance tracking and statistical significance testing
@@ -66,8 +66,9 @@ class TestStatus(Enum):
     PAUSED = "paused"
     CANCELLED = "cancelled"
 
-
 @dataclass
+
+
 class OptimizationVariant:
     """Represents a single test variant"""
 
@@ -80,12 +81,13 @@ class OptimizationVariant:
     views: int = 0
     watch_time: float = 0.0
     engagement_score: float = 0.0
-    created_at: datetime = field(default_factory=datetime.now)
-
+    created_at: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class OptimizationTest:
-    """Represents an A/B test for content optimization"""
+    """Represents an A / B test for content optimization"""
 
     test_id: str
     video_id: str
@@ -93,18 +95,19 @@ class OptimizationTest:
     hypothesis: str
     variants: List[OptimizationVariant]
     primary_metric: OptimizationMetric
-    secondary_metrics: List[OptimizationMetric] = field(default_factory=list)
-    start_date: datetime = field(default_factory=datetime.now)
+    secondary_metrics: List[OptimizationMetric] = field(default_factory = list)
+    start_date: datetime = field(default_factory = datetime.now)
     end_date: Optional[datetime] = None
     min_sample_size: int = 1000
     confidence_level: float = 0.95
     status: TestStatus = TestStatus.PENDING
     winner: Optional[str] = None
-    results: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    results: Dict[str, Any] = field(default_factory = dict)
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class RetentionAnalysis:
     """Audience retention analysis data"""
 
@@ -115,11 +118,12 @@ class RetentionAnalysis:
     audience_retention_rate: float
     engagement_peaks: List[Tuple[float, str]]  # (timestamp, reason)
     optimization_suggestions: List[str]
-    analyzed_at: datetime = field(default_factory=datetime.now)
+    analyzed_at: datetime = field(default_factory = datetime.now)
 
 
 class RelentlessOptimizer:
     """Main optimization engine for Right Perspective content"""
+
 
     def __init__(self, db_path: str = "right_perspective.db"):
         self.db_path = db_path
@@ -134,6 +138,7 @@ class RelentlessOptimizer:
         # Load active tests
         self._load_active_tests()
 
+
     def _init_database(self) -> None:
         """Initialize optimization database tables"""
         try:
@@ -145,20 +150,20 @@ class RelentlessOptimizer:
                     """
                     CREATE TABLE IF NOT EXISTS optimization_tests (
                         test_id TEXT PRIMARY KEY,
-                        video_id TEXT NOT NULL,
-                        test_type TEXT NOT NULL,
-                        hypothesis TEXT,
-                        primary_metric TEXT,
-                        secondary_metrics TEXT,
-                        start_date TEXT,
-                        end_date TEXT,
-                        min_sample_size INTEGER,
-                        confidence_level REAL,
-                        status TEXT,
-                        winner TEXT,
-                        results TEXT,
-                        metadata TEXT,
-                        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                            video_id TEXT NOT NULL,
+                            test_type TEXT NOT NULL,
+                            hypothesis TEXT,
+                            primary_metric TEXT,
+                            secondary_metrics TEXT,
+                            start_date TEXT,
+                            end_date TEXT,
+                            min_sample_size INTEGER,
+                            confidence_level REAL,
+                            status TEXT,
+                            winner TEXT,
+                            results TEXT,
+                            metadata TEXT,
+                            created_at TEXT DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -168,17 +173,17 @@ class RelentlessOptimizer:
                     """
                     CREATE TABLE IF NOT EXISTS test_variants (
                         variant_id TEXT PRIMARY KEY,
-                        test_id TEXT,
-                        name TEXT,
-                        content TEXT,
-                        traffic_split REAL,
-                        impressions INTEGER DEFAULT 0,
-                        clicks INTEGER DEFAULT 0,
-                        views INTEGER DEFAULT 0,
-                        watch_time REAL DEFAULT 0.0,
-                        engagement_score REAL DEFAULT 0.0,
-                        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (test_id) REFERENCES optimization_tests (test_id)
+                            test_id TEXT,
+                            name TEXT,
+                            content TEXT,
+                            traffic_split REAL,
+                            impressions INTEGER DEFAULT 0,
+                            clicks INTEGER DEFAULT 0,
+                            views INTEGER DEFAULT 0,
+                            watch_time REAL DEFAULT 0.0,
+                            engagement_score REAL DEFAULT 0.0,
+                            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (test_id) REFERENCES optimization_tests (test_id)
                     )
                 """
                 )
@@ -188,14 +193,14 @@ class RelentlessOptimizer:
                     """
                     CREATE TABLE IF NOT EXISTS retention_analyses (
                         analysis_id TEXT PRIMARY KEY,
-                        video_id TEXT NOT NULL,
-                        retention_curve TEXT,
-                        drop_off_points TEXT,
-                        average_view_duration REAL,
-                        audience_retention_rate REAL,
-                        engagement_peaks TEXT,
-                        optimization_suggestions TEXT,
-                        analyzed_at TEXT DEFAULT CURRENT_TIMESTAMP
+                            video_id TEXT NOT NULL,
+                            retention_curve TEXT,
+                            drop_off_points TEXT,
+                            average_view_duration REAL,
+                            audience_retention_rate REAL,
+                            engagement_peaks TEXT,
+                            optimization_suggestions TEXT,
+                            analyzed_at TEXT DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -205,12 +210,12 @@ class RelentlessOptimizer:
                     """
                     CREATE TABLE IF NOT EXISTS optimization_history (
                         history_id TEXT PRIMARY KEY,
-                        video_id TEXT,
-                        optimization_type TEXT,
-                        before_metrics TEXT,
-                        after_metrics TEXT,
-                        improvement_percentage REAL,
-                        applied_at TEXT DEFAULT CURRENT_TIMESTAMP
+                            video_id TEXT,
+                            optimization_type TEXT,
+                            before_metrics TEXT,
+                            after_metrics TEXT,
+                            improvement_percentage REAL,
+                            applied_at TEXT DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -221,6 +226,7 @@ class RelentlessOptimizer:
         except Exception as e:
             self.logger.error(f"Error initializing optimization database: {e}")
 
+
     def _load_active_tests(self) -> None:
         """Load active tests from database"""
         try:
@@ -228,7 +234,7 @@ class RelentlessOptimizer:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    SELECT * FROM optimization_tests 
+                    SELECT * FROM optimization_tests
                     WHERE status IN ('pending', 'running')
                 """
                 )
@@ -243,13 +249,14 @@ class RelentlessOptimizer:
         except Exception as e:
             self.logger.error(f"Error loading active tests: {e}")
 
+
     async def create_thumbnail_test(
         self,
-        video_id: str,
-        thumbnail_variants: List[str],
-        hypothesis: str = "New thumbnail will improve CTR",
-    ) -> str:
-        """Create A/B test for thumbnail optimization"""
+            video_id: str,
+            thumbnail_variants: List[str],
+            hypothesis: str = "New thumbnail will improve CTR",
+            ) -> str:
+        """Create A / B test for thumbnail optimization"""
         test_id = f"thumb_{video_id}_{int(time.time())}"
 
         variants = []
@@ -257,25 +264,25 @@ class RelentlessOptimizer:
 
         for i, thumbnail_url in enumerate(thumbnail_variants):
             variant = OptimizationVariant(
-                variant_id=f"{test_id}_variant_{i}",
-                name=f"Thumbnail Variant {i+1}",
-                content={"thumbnail_url": thumbnail_url},
-                traffic_split=traffic_split,
-            )
+                variant_id = f"{test_id}_variant_{i}",
+                    name = f"Thumbnail Variant {i + 1}",
+                    content={"thumbnail_url": thumbnail_url},
+                    traffic_split = traffic_split,
+                    )
             variants.append(variant)
 
         test = OptimizationTest(
-            test_id=test_id,
-            video_id=video_id,
-            test_type="thumbnail",
-            hypothesis=hypothesis,
-            variants=variants,
-            primary_metric=OptimizationMetric.THUMBNAIL_CTR,
-            secondary_metrics=[
+            test_id = test_id,
+                video_id = video_id,
+                test_type="thumbnail",
+                hypothesis = hypothesis,
+                variants = variants,
+                primary_metric = OptimizationMetric.THUMBNAIL_CTR,
+                secondary_metrics=[
                 OptimizationMetric.VIEW_DURATION,
-                OptimizationMetric.ENGAGEMENT_RATE,
-            ],
-            min_sample_size=2000,  # Higher sample size for thumbnail tests
+                    OptimizationMetric.ENGAGEMENT_RATE,
+                    ],
+                min_sample_size = 2000,  # Higher sample size for thumbnail tests
         )
 
         await self._save_test(test)
@@ -287,13 +294,14 @@ class RelentlessOptimizer:
         self.logger.info(f"Created thumbnail test {test_id} for video {video_id}")
         return test_id
 
+
     async def create_title_test(
         self,
-        video_id: str,
-        title_variants: List[str],
-        hypothesis: str = "Optimized title will improve CTR",
-    ) -> str:
-        """Create A/B test for title optimization"""
+            video_id: str,
+            title_variants: List[str],
+            hypothesis: str = "Optimized title will improve CTR",
+            ) -> str:
+        """Create A / B test for title optimization"""
         test_id = f"title_{video_id}_{int(time.time())}"
 
         variants = []
@@ -301,25 +309,25 @@ class RelentlessOptimizer:
 
         for i, title in enumerate(title_variants):
             variant = OptimizationVariant(
-                variant_id=f"{test_id}_variant_{i}",
-                name=f"Title Variant {i+1}",
-                content={"title": title},
-                traffic_split=traffic_split,
-            )
+                variant_id = f"{test_id}_variant_{i}",
+                    name = f"Title Variant {i + 1}",
+                    content={"title": title},
+                    traffic_split = traffic_split,
+                    )
             variants.append(variant)
 
         test = OptimizationTest(
-            test_id=test_id,
-            video_id=video_id,
-            test_type="title",
-            hypothesis=hypothesis,
-            variants=variants,
-            primary_metric=OptimizationMetric.TITLE_CTR,
-            secondary_metrics=[
+            test_id = test_id,
+                video_id = video_id,
+                test_type="title",
+                hypothesis = hypothesis,
+                variants = variants,
+                primary_metric = OptimizationMetric.TITLE_CTR,
+                secondary_metrics=[
                 OptimizationMetric.VIEW_DURATION,
-                OptimizationMetric.ENGAGEMENT_RATE,
-            ],
-        )
+                    OptimizationMetric.ENGAGEMENT_RATE,
+                    ],
+                )
 
         await self._save_test(test)
         self.active_tests[test_id] = test
@@ -329,6 +337,7 @@ class RelentlessOptimizer:
 
         self.logger.info(f"Created title test {test_id} for video {video_id}")
         return test_id
+
 
     async def analyze_audience_retention(
         self, video_id: str, retention_data: List[float]
@@ -340,7 +349,7 @@ class RelentlessOptimizer:
                 statistics.mean(retention_data) if retention_data else 0.0
             )
 
-            # Identify drop-off points (>10% drop between consecutive points)
+            # Identify drop - off points (>10% drop between consecutive points)
             drop_off_points = []
             for i in range(1, len(retention_data)):
                 drop = retention_data[i - 1] - retention_data[i]
@@ -365,14 +374,14 @@ class RelentlessOptimizer:
             )
 
             analysis = RetentionAnalysis(
-                video_id=video_id,
-                retention_curve=retention_data,
-                drop_off_points=drop_off_points,
-                average_view_duration=average_retention,
-                audience_retention_rate=retention_data[-1] if retention_data else 0.0,
-                engagement_peaks=engagement_peaks,
-                optimization_suggestions=suggestions,
-            )
+                video_id = video_id,
+                    retention_curve = retention_data,
+                    drop_off_points = drop_off_points,
+                    average_view_duration = average_retention,
+                    audience_retention_rate = retention_data[-1] if retention_data else 0.0,
+                    engagement_peaks = engagement_peaks,
+                    optimization_suggestions = suggestions,
+                    )
 
             # Save analysis
             await self._save_retention_analysis(analysis)
@@ -385,12 +394,13 @@ class RelentlessOptimizer:
             self.logger.error(f"Error analyzing retention for video {video_id}: {e}")
             raise
 
+
     def _generate_retention_suggestions(
         self,
-        retention_data: List[float],
-        drop_off_points: List[Tuple[float, float]],
-        engagement_peaks: List[Tuple[float, str]],
-    ) -> List[str]:
+            retention_data: List[float],
+            drop_off_points: List[Tuple[float, float]],
+            engagement_peaks: List[Tuple[float, str]],
+            ) -> List[str]:
         """Generate optimization suggestions based on retention analysis"""
         suggestions = []
 
@@ -408,18 +418,18 @@ class RelentlessOptimizer:
                 "Moderate retention - optimize pacing and content structure"
             )
 
-        # Drop-off point suggestions
+        # Drop - off point suggestions
         if drop_off_points:
             early_drops = [dp for dp in drop_off_points if dp[0] < 25]
             if early_drops:
                 suggestions.append(
-                    "Significant early drop-offs detected - strengthen opening hook and preview"
+                    "Significant early drop - offs detected - strengthen opening hook and preview"
                 )
 
             mid_drops = [dp for dp in drop_off_points if 25 <= dp[0] <= 75]
             if mid_drops:
                 suggestions.append(
-                    "Mid-video drop-offs detected - improve pacing and add engagement elements"
+                    "Mid - video drop - offs detected - improve pacing and add engagement elements"
                 )
 
         # Engagement peak suggestions
@@ -435,14 +445,15 @@ class RelentlessOptimizer:
         # End retention suggestions
         if retention_data and retention_data[-1] > 70:
             suggestions.append(
-                "Strong end retention - consider longer content or stronger call-to-action"
+                "Strong end retention - consider longer content or stronger call - to - action"
             )
         elif retention_data and retention_data[-1] < 20:
             suggestions.append(
-                "Weak end retention - improve conclusion and call-to-action placement"
+                "Weak end retention - improve conclusion and call - to - action placement"
             )
 
         return suggestions
+
 
     async def _start_test(self, test: OptimizationTest) -> None:
         """Start an optimization test"""
@@ -453,10 +464,10 @@ class RelentlessOptimizer:
             # Initialize results tracking
             test.results = {
                 "variant_performance": {},
-                "statistical_significance": False,
-                "confidence_level": 0.0,
-                "test_duration_hours": 0,
-            }
+                    "statistical_significance": False,
+                    "confidence_level": 0.0,
+                    "test_duration_hours": 0,
+                    }
 
             # Update database
             await self._save_test(test)
@@ -468,6 +479,7 @@ class RelentlessOptimizer:
 
         except Exception as e:
             self.logger.error(f"Error starting test {test.test_id}: {e}")
+
 
     async def _monitor_test(self, test: OptimizationTest) -> None:
         """Monitor an active test for completion"""
@@ -494,7 +506,7 @@ class RelentlessOptimizer:
 
                 # Maximum test duration (7 days)
                 if runtime_hours >= 168:
-                    await self._complete_test(test, force=True)
+                    await self._complete_test(test, force = True)
                     break
 
                 # Wait before next check (30 minutes)
@@ -503,6 +515,7 @@ class RelentlessOptimizer:
             except Exception as e:
                 self.logger.error(f"Error monitoring test {test.test_id}: {e}")
                 await asyncio.sleep(300)  # Wait 5 minutes on error
+
 
     async def _collect_test_metrics(self, test: OptimizationTest) -> None:
         """Collect performance metrics for test variants"""
@@ -528,7 +541,7 @@ class RelentlessOptimizer:
                 variant.views += new_views
 
                 # Simulate watch time
-                avg_watch_time = random.uniform(120, 300)  # 2-5 minutes
+                avg_watch_time = random.uniform(120, 300)  # 2 - 5 minutes
                 variant.watch_time += new_views * avg_watch_time
 
                 # Calculate engagement score
@@ -541,11 +554,11 @@ class RelentlessOptimizer:
             test.results["variant_performance"] = {
                 v.variant_id: {
                     "impressions": v.impressions,
-                    "clicks": v.clicks,
-                    "views": v.views,
-                    "ctr": (v.clicks / v.impressions * 100) if v.impressions > 0 else 0,
-                    "engagement_score": v.engagement_score,
-                }
+                        "clicks": v.clicks,
+                        "views": v.views,
+                        "ctr": (v.clicks / v.impressions * 100) if v.impressions > 0 else 0,
+                        "engagement_score": v.engagement_score,
+                        }
                 for v in test.variants
             }
 
@@ -554,6 +567,7 @@ class RelentlessOptimizer:
 
         except Exception as e:
             self.logger.error(f"Error collecting metrics for test {test.test_id}: {e}")
+
 
     async def _check_statistical_significance(self, test: OptimizationTest) -> bool:
         """Check if test results are statistically significant"""
@@ -605,6 +619,7 @@ class RelentlessOptimizer:
             )
             return False
 
+
     async def _complete_test(self, test: OptimizationTest, force: bool = False) -> None:
         """Complete a test and determine winner"""
         try:
@@ -612,7 +627,7 @@ class RelentlessOptimizer:
             test.end_date = datetime.now()
 
             # Determine winner based on primary metric
-            best_variant = max(test.variants, key=lambda v: v.engagement_score)
+            best_variant = max(test.variants, key = lambda v: v.engagement_score)
             test.winner = best_variant.variant_id
 
             # Calculate improvement
@@ -643,6 +658,7 @@ class RelentlessOptimizer:
         except Exception as e:
             self.logger.error(f"Error completing test {test.test_id}: {e}")
 
+
     async def _apply_winning_variant(
         self, test: OptimizationTest, winner: OptimizationVariant
     ) -> None:
@@ -651,17 +667,17 @@ class RelentlessOptimizer:
             # Record optimization history
             history_entry = {
                 "history_id": f"opt_{test.video_id}_{int(time.time())}",
-                "video_id": test.video_id,
-                "optimization_type": test.test_type,
-                "before_metrics": json.dumps(test.results["variant_performance"]),
-                "after_metrics": json.dumps(
+                    "video_id": test.video_id,
+                    "optimization_type": test.test_type,
+                    "before_metrics": json.dumps(test.results["variant_performance"]),
+                    "after_metrics": json.dumps(
                     {
                         "winner": winner.variant_id,
-                        "improvement": test.results.get("improvement_percentage", 0),
-                    }
+                            "improvement": test.results.get("improvement_percentage", 0),
+                            }
                 ),
-                "improvement_percentage": test.results.get("improvement_percentage", 0),
-            }
+                    "improvement_percentage": test.results.get("improvement_percentage", 0),
+                    }
 
             self.optimization_history.append(history_entry)
 
@@ -670,20 +686,20 @@ class RelentlessOptimizer:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO optimization_history 
-                    (history_id, video_id, optimization_type, before_metrics, 
-                     after_metrics, improvement_percentage)
+                    INSERT INTO optimization_history
+                    (history_id, video_id, optimization_type, before_metrics,
+                        after_metrics, improvement_percentage)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """,
                     (
                         history_entry["history_id"],
-                        history_entry["video_id"],
-                        history_entry["optimization_type"],
-                        history_entry["before_metrics"],
-                        history_entry["after_metrics"],
-                        history_entry["improvement_percentage"],
-                    ),
-                )
+                            history_entry["video_id"],
+                            history_entry["optimization_type"],
+                            history_entry["before_metrics"],
+                            history_entry["after_metrics"],
+                            history_entry["improvement_percentage"],
+                            ),
+                        )
                 conn.commit()
 
             self.logger.info(
@@ -692,6 +708,7 @@ class RelentlessOptimizer:
 
         except Exception as e:
             self.logger.error(f"Error applying winning variant: {e}")
+
 
     async def _save_test(self, test: OptimizationTest) -> None:
         """Save test to database"""
@@ -704,27 +721,27 @@ class RelentlessOptimizer:
                     """
                     INSERT OR REPLACE INTO optimization_tests
                     (test_id, video_id, test_type, hypothesis, primary_metric,
-                     secondary_metrics, start_date, end_date, min_sample_size,
-                     confidence_level, status, winner, results, metadata)
+                        secondary_metrics, start_date, end_date, min_sample_size,
+                         confidence_level, status, winner, results, metadata)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         test.test_id,
-                        test.video_id,
-                        test.test_type,
-                        test.hypothesis,
-                        test.primary_metric.value,
-                        json.dumps([m.value for m in test.secondary_metrics]),
-                        test.start_date.isoformat(),
-                        test.end_date.isoformat() if test.end_date else None,
-                        test.min_sample_size,
-                        test.confidence_level,
-                        test.status.value,
-                        test.winner,
-                        json.dumps(test.results),
-                        json.dumps(test.metadata),
-                    ),
-                )
+                            test.video_id,
+                            test.test_type,
+                            test.hypothesis,
+                            test.primary_metric.value,
+                            json.dumps([m.value for m in test.secondary_metrics]),
+                            test.start_date.isoformat(),
+                            test.end_date.isoformat() if test.end_date else None,
+                            test.min_sample_size,
+                            test.confidence_level,
+                            test.status.value,
+                            test.winner,
+                            json.dumps(test.results),
+                            json.dumps(test.metadata),
+                            ),
+                        )
 
                 # Save variants
                 for variant in test.variants:
@@ -732,27 +749,28 @@ class RelentlessOptimizer:
                         """
                         INSERT OR REPLACE INTO test_variants
                         (variant_id, test_id, name, content, traffic_split,
-                         impressions, clicks, views, watch_time, engagement_score)
+                            impressions, clicks, views, watch_time, engagement_score)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                         (
                             variant.variant_id,
-                            test.test_id,
-                            variant.name,
-                            json.dumps(variant.content),
-                            variant.traffic_split,
-                            variant.impressions,
-                            variant.clicks,
-                            variant.views,
-                            variant.watch_time,
-                            variant.engagement_score,
-                        ),
-                    )
+                                test.test_id,
+                                variant.name,
+                                json.dumps(variant.content),
+                                variant.traffic_split,
+                                variant.impressions,
+                                variant.clicks,
+                                variant.views,
+                                variant.watch_time,
+                                variant.engagement_score,
+                                ),
+                            )
 
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error saving test {test.test_id}: {e}")
+
 
     async def _save_retention_analysis(self, analysis: RetentionAnalysis) -> None:
         """Save retention analysis to database"""
@@ -763,38 +781,40 @@ class RelentlessOptimizer:
                     """
                     INSERT INTO retention_analyses
                     (analysis_id, video_id, retention_curve, drop_off_points,
-                     average_view_duration, audience_retention_rate, engagement_peaks,
-                     optimization_suggestions)
+                        average_view_duration, audience_retention_rate, engagement_peaks,
+                         optimization_suggestions)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         f"ret_{analysis.video_id}_{int(time.time())}",
-                        analysis.video_id,
-                        json.dumps(analysis.retention_curve),
-                        json.dumps(analysis.drop_off_points),
-                        analysis.average_view_duration,
-                        analysis.audience_retention_rate,
-                        json.dumps(analysis.engagement_peaks),
-                        json.dumps(analysis.optimization_suggestions),
-                    ),
-                )
+                            analysis.video_id,
+                            json.dumps(analysis.retention_curve),
+                            json.dumps(analysis.drop_off_points),
+                            analysis.average_view_duration,
+                            analysis.audience_retention_rate,
+                            json.dumps(analysis.engagement_peaks),
+                            json.dumps(analysis.optimization_suggestions),
+                            ),
+                        )
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error saving retention analysis: {e}")
 
+
     def _deserialize_test(self, test_data: Dict[str, Any]) -> OptimizationTest:
         """Deserialize test data from database"""
         # This is a simplified deserialization - in production, implement full reconstruction
         return OptimizationTest(
-            test_id=test_data["test_id"],
-            video_id=test_data["video_id"],
-            test_type=test_data["test_type"],
-            hypothesis=test_data["hypothesis"],
-            variants=[],  # Would load from test_variants table
-            primary_metric=OptimizationMetric(test_data["primary_metric"]),
-            status=TestStatus(test_data["status"]),
-        )
+            test_id = test_data["test_id"],
+                video_id = test_data["video_id"],
+                test_type = test_data["test_type"],
+                hypothesis = test_data["hypothesis"],
+                variants=[],  # Would load from test_variants table
+            primary_metric = OptimizationMetric(test_data["primary_metric"]),
+                status = TestStatus(test_data["status"]),
+                )
+
 
     async def get_optimization_report(
         self, video_id: Optional[str] = None
@@ -803,13 +823,13 @@ class RelentlessOptimizer:
         try:
             report = {
                 "generated_at": datetime.now().isoformat(),
-                "active_tests": len(self.active_tests),
-                "completed_tests": 0,
-                "total_improvements": 0,
-                "average_improvement": 0.0,
-                "retention_analyses": len(self.retention_analyses),
-                "optimization_history": [],
-            }
+                    "active_tests": len(self.active_tests),
+                    "completed_tests": 0,
+                    "total_improvements": 0,
+                    "average_improvement": 0.0,
+                    "retention_analyses": len(self.retention_analyses),
+                    "optimization_history": [],
+                    }
 
             # Get completed tests from database
             with sqlite3.connect(self.db_path) as conn:
@@ -855,6 +875,7 @@ class RelentlessOptimizer:
             self.logger.error(f"Error generating optimization report: {e}")
             return {"error": str(e)}
 
+
     async def start_autonomous_optimization(self, video_id: str) -> None:
         """Start autonomous optimization for a video"""
         try:
@@ -862,17 +883,17 @@ class RelentlessOptimizer:
 
             # Generate thumbnail variants (in production, use AI image generation)
             thumbnail_variants = [
-                f"https://example.com/thumbnails/{video_id}_variant_1.jpg",
-                f"https://example.com/thumbnails/{video_id}_variant_2.jpg",
-                f"https://example.com/thumbnails/{video_id}_variant_3.jpg",
-            ]
+                f"https://example.com / thumbnails/{video_id}_variant_1.jpg",
+                    f"https://example.com / thumbnails/{video_id}_variant_2.jpg",
+                    f"https://example.com / thumbnails/{video_id}_variant_3.jpg",
+                    ]
 
             # Generate title variants (in production, use AI text generation)
             title_variants = [
                 "SHOCKING Truth About [Topic] That They Don't Want You to Know!",
-                "Why [Topic] is DESTROYING America (The Evidence is Clear)",
-                "EXPOSED: The Real Story Behind [Topic] Will Make You ANGRY",
-            ]
+                    "Why [Topic] is DESTROYING America (The Evidence is Clear)",
+                    "EXPOSED: The Real Story Behind [Topic] Will Make You ANGRY",
+                    ]
 
             # Start thumbnail test
             await self.create_thumbnail_test(video_id, thumbnail_variants)
@@ -885,10 +906,12 @@ class RelentlessOptimizer:
         except Exception as e:
             self.logger.error(f"Error starting autonomous optimization: {e}")
 
-
 # Fallback class for missing dependencies
+
+
 class RelentlessOptimizer:
     """Fallback optimizer when dependencies are missing"""
+
 
     def __init__(self, db_path: str = "right_perspective.db"):
         self.logger = logging.getLogger(__name__)
@@ -896,10 +919,12 @@ class RelentlessOptimizer:
             "Using fallback RelentlessOptimizer - some features may be limited"
         )
 
+
     async def start_autonomous_optimization(self, video_id: str) -> None:
         """Fallback autonomous optimization"""
         self.logger.info(f"Fallback optimization started for video {video_id}")
         return {"status": "fallback_mode", "video_id": video_id}
+
 
     async def get_optimization_report(
         self, video_id: Optional[str] = None
@@ -907,12 +932,12 @@ class RelentlessOptimizer:
         """Fallback optimization report"""
         return {
             "status": "fallback_mode",
-            "message": "Full optimization features require additional dependencies",
-        }
-
+                "message": "Full optimization features require additional dependencies",
+                }
 
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_relentless_optimization():
         """Test the relentless optimization system"""

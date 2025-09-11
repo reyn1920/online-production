@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 
 from backend.marketing_monetization_engine import get_marketing_engine
 
@@ -33,9 +33,8 @@ def main():
         print("\n=== FALLBACK: SYSTEM ARCHITECTURE ===")
         print("✅ 11 Automated Revenue Streams Configured")
         print("✅ Autonomous Financial Agent Running")
-        print("✅ Real-time Revenue Optimization Active")
-        print("✅ Multi-platform Monetization Engine Operational")
-
+        print("✅ Real - time Revenue Optimization Active")
+        print("✅ Multi - platform Monetization Engine Operational")
 
 if __name__ == "__main__":
     main()

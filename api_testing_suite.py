@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Testing Suite
 Comprehensive testing for all registered APIs
 
 Usage:
-    python api_testing_suite.py --test-all
+    python api_testing_suite.py --test - all
     python api_testing_suite.py --test huggingface
-    python api_testing_suite.py --health-check
+    python api_testing_suite.py --health - check
 """
 
 import argparse
@@ -27,8 +27,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 @dataclass
+
+
 class APITestResult:
     api_name: str
     status: str  # 'success', 'failed', 'no_key', 'error'
@@ -38,17 +39,22 @@ class APITestResult:
 
 
 class APITester:
+
+
     def __init__(self):
         self.results = []
         self.session = None
+
 
     async def __aenter__(self):
         self.session = aiohttp.ClientSession()
         return self
 
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.session:
             await self.session.close()
+
 
     def test_huggingface_api(self) -> APITestResult:
         """Test Hugging Face API"""
@@ -60,27 +66,28 @@ class APITester:
             start_time = time.time()
             headers = {"Authorization": f"Bearer {api_key}"}
             response = requests.get(
-                "https://huggingface.co/api/whoami", headers=headers, timeout=10
+                "https://huggingface.co / api / whoami", headers = headers, timeout = 10
             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "Hugging Face",
-                    "success",
-                    response_time,
-                    response_data=response.json(),
-                )
+                        "success",
+                        response_time,
+                        response_data = response.json(),
+                        )
             else:
                 return APITestResult(
                     "Hugging Face",
-                    "failed",
-                    response_time,
-                    f"HTTP {response.status_code}",
-                )
+                        "failed",
+                        response_time,
+                        f"HTTP {response.status_code}",
+                        )
 
         except Exception as e:
             return APITestResult("Hugging Face", "error", 0, str(e))
+
 
     def test_groq_api(self) -> APITestResult:
         """Test Groq API"""
@@ -92,24 +99,24 @@ class APITester:
             start_time = time.time()
             headers = {
                 "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            }
+                    "Content - Type": "application / json",
+                    }
             data = {
                 "messages": [{"role": "user", "content": "Hello"}],
-                "model": "mixtral-8x7b-32768",
-                "max_tokens": 10,
-            }
+                    "model": "mixtral - 8x7b - 32768",
+                    "max_tokens": 10,
+                    }
             response = requests.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers=headers,
-                json=data,
-                timeout=30,
-            )
+                "https://api.groq.com / openai / v1 / chat / completions",
+                    headers = headers,
+                    json = data,
+                    timeout = 30,
+                    )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "Groq", "success", response_time, response_data=response.json()
+                    "Groq", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -118,6 +125,7 @@ class APITester:
 
         except Exception as e:
             return APITestResult("Groq", "error", 0, str(e))
+
 
     def test_google_ai_api(self) -> APITestResult:
         """Test Google AI (Gemini) API"""
@@ -128,14 +136,14 @@ class APITester:
         try:
             start_time = time.time()
             url = (
-                f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+                f"https://generativelanguage.googleapis.com / v1beta / models?key={api_key}"
             )
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, timeout = 10)
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "Google AI", "success", response_time, response_data=response.json()
+                    "Google AI", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -145,6 +153,7 @@ class APITester:
         except Exception as e:
             return APITestResult("Google AI", "error", 0, str(e))
 
+
     def test_youtube_api(self) -> APITestResult:
         """Test YouTube Data API"""
         api_key = os.getenv("YOUTUBE_API_KEY")
@@ -153,13 +162,13 @@ class APITester:
 
         try:
             start_time = time.time()
-            url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q=test&key={api_key}&maxResults=1"
-            response = requests.get(url, timeout=10)
+            url = f"https://www.googleapis.com / youtube / v3 / search?part = snippet&q = test&key={api_key}&maxResults = 1"
+            response = requests.get(url, timeout = 10)
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "YouTube", "success", response_time, response_data=response.json()
+                    "YouTube", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -168,6 +177,7 @@ class APITester:
 
         except Exception as e:
             return APITestResult("YouTube", "error", 0, str(e))
+
 
     def test_reddit_api(self) -> APITestResult:
         """Test Reddit API"""
@@ -182,15 +192,15 @@ class APITester:
             # Get access token
             auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
             data = {"grant_type": "client_credentials"}
-            headers = {"User-Agent": "APITester/1.0"}
+            headers = {"User - Agent": "APITester / 1.0"}
 
             token_response = requests.post(
-                "https://www.reddit.com/api/v1/access_token",
-                auth=auth,
-                data=data,
-                headers=headers,
-                timeout=10,
-            )
+                "https://www.reddit.com / api / v1 / access_token",
+                    auth = auth,
+                    data = data,
+                    headers = headers,
+                    timeout = 10,
+                    )
 
             if token_response.status_code == 200:
                 token_data = token_response.json()
@@ -199,31 +209,32 @@ class APITester:
                 # Test API call
                 headers["Authorization"] = f"Bearer {access_token}"
                 response = requests.get(
-                    "https://oauth.reddit.com/r/test/hot?limit=1",
-                    headers=headers,
-                    timeout=10,
-                )
+                    "https://oauth.reddit.com / r/test / hot?limit = 1",
+                        headers = headers,
+                        timeout = 10,
+                        )
                 response_time = time.time() - start_time
 
                 if response.status_code == 200:
                     return APITestResult(
                         "Reddit",
-                        "success",
-                        response_time,
-                        response_data=response.json(),
-                    )
+                            "success",
+                            response_time,
+                            response_data = response.json(),
+                            )
                 else:
                     return APITestResult(
                         "Reddit",
-                        "failed",
-                        response_time,
-                        f"HTTP {response.status_code}",
-                    )
+                            "failed",
+                            response_time,
+                            f"HTTP {response.status_code}",
+                            )
             else:
                 return APITestResult("Reddit", "failed", 0, "Token request failed")
 
         except Exception as e:
             return APITestResult("Reddit", "error", 0, str(e))
+
 
     def test_github_api(self) -> APITestResult:
         """Test GitHub API"""
@@ -235,16 +246,16 @@ class APITester:
             start_time = time.time()
             headers = {
                 "Authorization": f"token {token}",
-                "Accept": "application/vnd.github.v3+json",
-            }
+                    "Accept": "application / vnd.github.v3 + json",
+                    }
             response = requests.get(
-                "https://api.github.com/user", headers=headers, timeout=10
+                "https://api.github.com / user", headers = headers, timeout = 10
             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "GitHub", "success", response_time, response_data=response.json()
+                    "GitHub", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -253,6 +264,7 @@ class APITester:
 
         except Exception as e:
             return APITestResult("GitHub", "error", 0, str(e))
+
 
     def test_netlify_api(self) -> APITestResult:
         """Test Netlify API"""
@@ -264,13 +276,13 @@ class APITester:
             start_time = time.time()
             headers = {"Authorization": f"Bearer {token}"}
             response = requests.get(
-                "https://api.netlify.com/api/v1/user", headers=headers, timeout=10
+                "https://api.netlify.com / api / v1 / user", headers = headers, timeout = 10
             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "Netlify", "success", response_time, response_data=response.json()
+                    "Netlify", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -279,6 +291,7 @@ class APITester:
 
         except Exception as e:
             return APITestResult("Netlify", "error", 0, str(e))
+
 
     def test_sendgrid_api(self) -> APITestResult:
         """Test SendGrid API"""
@@ -290,16 +303,16 @@ class APITester:
             start_time = time.time()
             headers = {
                 "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            }
+                    "Content - Type": "application / json",
+                    }
             response = requests.get(
-                "https://api.sendgrid.com/v3/user/profile", headers=headers, timeout=10
+                "https://api.sendgrid.com / v3 / user / profile", headers = headers, timeout = 10
             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "SendGrid", "success", response_time, response_data=response.json()
+                    "SendGrid", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -309,6 +322,7 @@ class APITester:
         except Exception as e:
             return APITestResult("SendGrid", "error", 0, str(e))
 
+
     def test_openweather_api(self) -> APITestResult:
         """Test OpenWeatherMap API"""
         api_key = os.getenv("OPENWEATHER_API_KEY")
@@ -317,27 +331,28 @@ class APITester:
 
         try:
             start_time = time.time()
-            url = f"https://api.openweathermap.org/data/2.5/weather?q=London&appid={api_key}"
-            response = requests.get(url, timeout=10)
+            url = f"https://api.openweathermap.org / data / 2.5 / weather?q = London&appid={api_key}"
+            response = requests.get(url, timeout = 10)
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "OpenWeather",
-                    "success",
-                    response_time,
-                    response_data=response.json(),
-                )
+                        "success",
+                        response_time,
+                        response_data = response.json(),
+                        )
             else:
                 return APITestResult(
                     "OpenWeather",
-                    "failed",
-                    response_time,
-                    f"HTTP {response.status_code}",
-                )
+                        "failed",
+                        response_time,
+                        f"HTTP {response.status_code}",
+                        )
 
         except Exception as e:
             return APITestResult("OpenWeather", "error", 0, str(e))
+
 
     def test_unsplash_api(self) -> APITestResult:
         """Test Unsplash API"""
@@ -347,17 +362,17 @@ class APITester:
 
         try:
             start_time = time.time()
-            headers = {"Authorization": f"Client-ID {access_key}"}
+            headers = {"Authorization": f"Client - ID {access_key}"}
             response = requests.get(
-                "https://api.unsplash.com/photos/random?count=1",
-                headers=headers,
-                timeout=10,
-            )
+                "https://api.unsplash.com / photos / random?count = 1",
+                    headers = headers,
+                    timeout = 10,
+                    )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
-                    "Unsplash", "success", response_time, response_data=response.json()
+                    "Unsplash", "success", response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -367,6 +382,7 @@ class APITester:
         except Exception as e:
             return APITestResult("Unsplash", "error", 0, str(e))
 
+
     def test_dog_api(self) -> APITestResult:
         """Test Dog API"""
         api_key = os.getenv("DOG_API_KEY")
@@ -375,19 +391,19 @@ class APITester:
             start_time = time.time()
             headers = {}
             if api_key:
-                headers["x-api-key"] = api_key
+                headers["x - api - key"] = api_key
 
             response = requests.get(
-                "https://api.thedogapi.com/v1/breeds?limit=1",
-                headers=headers,
-                timeout=10,
-            )
+                "https://api.thedogapi.com / v1 / breeds?limit = 1",
+                    headers = headers,
+                    timeout = 10,
+                    )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 status = "success" if api_key else "no_key"
                 return APITestResult(
-                    "Dog API", status, response_time, response_data=response.json()
+                    "Dog API", status, response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -397,6 +413,7 @@ class APITester:
         except Exception as e:
             return APITestResult("Dog API", "error", 0, str(e))
 
+
     def test_cat_api(self) -> APITestResult:
         """Test Cat API"""
         api_key = os.getenv("CAT_API_KEY")
@@ -405,19 +422,19 @@ class APITester:
             start_time = time.time()
             headers = {}
             if api_key:
-                headers["x-api-key"] = api_key
+                headers["x - api - key"] = api_key
 
             response = requests.get(
-                "https://api.thecatapi.com/v1/breeds?limit=1",
-                headers=headers,
-                timeout=10,
-            )
+                "https://api.thecatapi.com / v1 / breeds?limit = 1",
+                    headers = headers,
+                    timeout = 10,
+                    )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 status = "success" if api_key else "no_key"
                 return APITestResult(
-                    "Cat API", status, response_time, response_data=response.json()
+                    "Cat API", status, response_time, response_data = response.json()
                 )
             else:
                 return APITestResult(
@@ -427,29 +444,30 @@ class APITester:
         except Exception as e:
             return APITestResult("Cat API", "error", 0, str(e))
 
+
     def run_all_tests(self) -> List[APITestResult]:
         """Run all available API tests"""
         test_methods = [
             self.test_huggingface_api,
-            self.test_groq_api,
-            self.test_google_ai_api,
-            self.test_youtube_api,
-            self.test_reddit_api,
-            self.test_github_api,
-            self.test_netlify_api,
-            self.test_sendgrid_api,
-            self.test_openweather_api,
-            self.test_unsplash_api,
-            self.test_dog_api,
-            self.test_cat_api,
-        ]
+                self.test_groq_api,
+                self.test_google_ai_api,
+                self.test_youtube_api,
+                self.test_reddit_api,
+                self.test_github_api,
+                self.test_netlify_api,
+                self.test_sendgrid_api,
+                self.test_openweather_api,
+                self.test_unsplash_api,
+                self.test_dog_api,
+                self.test_cat_api,
+                ]
 
         results = []
 
         print("🧪 Running API tests...")
 
         # Run tests in parallel
-        with ThreadPoolExecutor(max_workers=5) as executor:
+        with ThreadPoolExecutor(max_workers = 5) as executor:
             future_to_test = {
                 executor.submit(test): test.__name__ for test in test_methods
             }
@@ -463,10 +481,10 @@ class APITester:
                     # Print progress
                     status_emoji = {
                         "success": "✅",
-                        "failed": "❌",
-                        "no_key": "🔑",
-                        "error": "💥",
-                    }
+                            "failed": "❌",
+                            "no_key": "🔑",
+                            "error": "💥",
+                            }
                     print(
                         f"{status_emoji.get(result.status, '❓')} {result.api_name}: {result.status}"
                     )
@@ -476,22 +494,23 @@ class APITester:
 
         return results
 
+
     def run_specific_test(self, api_name: str) -> Optional[APITestResult]:
         """Run test for a specific API"""
         test_mapping = {
             "huggingface": self.test_huggingface_api,
-            "groq": self.test_groq_api,
-            "google_ai": self.test_google_ai_api,
-            "youtube": self.test_youtube_api,
-            "reddit": self.test_reddit_api,
-            "github": self.test_github_api,
-            "netlify": self.test_netlify_api,
-            "sendgrid": self.test_sendgrid_api,
-            "openweather": self.test_openweather_api,
-            "unsplash": self.test_unsplash_api,
-            "dog_api": self.test_dog_api,
-            "cat_api": self.test_cat_api,
-        }
+                "groq": self.test_groq_api,
+                "google_ai": self.test_google_ai_api,
+                "youtube": self.test_youtube_api,
+                "reddit": self.test_reddit_api,
+                "github": self.test_github_api,
+                "netlify": self.test_netlify_api,
+                "sendgrid": self.test_sendgrid_api,
+                "openweather": self.test_openweather_api,
+                "unsplash": self.test_unsplash_api,
+                "dog_api": self.test_dog_api,
+                "cat_api": self.test_cat_api,
+                }
 
         test_method = test_mapping.get(api_name.lower())
         if not test_method:
@@ -510,6 +529,7 @@ class APITester:
             print(f"   Error: {result.error_message}")
 
         return result
+
 
     def generate_report(self, results: List[APITestResult]) -> str:
         """Generate a comprehensive test report"""
@@ -539,7 +559,7 @@ class APITester:
 
         report.append("\n## Detailed Results")
 
-        for result in sorted(results, key=lambda x: x.api_name):
+        for result in sorted(results, key = lambda x: x.api_name):
             report.append(f"\n### {result.api_name}")
             report.append(f"- Status: {result.status.upper()}")
             report.append(f"- Response time: {result.response_time:.3f}s")
@@ -563,23 +583,24 @@ class APITester:
 
         return "\n".join(report)
 
+
     def health_check(self) -> Dict[str, any]:
         """Quick health check for critical APIs"""
         critical_apis = ["huggingface", "groq", "github", "netlify"]
 
         health_status = {
             "timestamp": datetime.now().isoformat(),
-            "overall_status": "healthy",
-            "apis": {},
-        }
+                "overall_status": "healthy",
+                "apis": {},
+                }
 
         for api in critical_apis:
             result = self.run_specific_test(api)
             if result:
                 health_status["apis"][api] = {
                     "status": result.status,
-                    "response_time": result.response_time,
-                }
+                        "response_time": result.response_time,
+                        }
 
                 if result.status not in ["success", "no_key"]:
                     health_status["overall_status"] = "degraded"
@@ -589,12 +610,12 @@ class APITester:
 
 def main():
     parser = argparse.ArgumentParser(description="API Testing Suite")
-    parser.add_argument("--test-all", action="store_true", help="Run all API tests")
-    parser.add_argument("--test", type=str, help="Test a specific API")
+    parser.add_argument("--test - all", action="store_true", help="Run all API tests")
+    parser.add_argument("--test", type = str, help="Test a specific API")
     parser.add_argument(
-        "--health-check", action="store_true", help="Quick health check"
+        "--health - check", action="store_true", help="Quick health check"
     )
-    parser.add_argument("--report", type=str, help="Generate report file")
+    parser.add_argument("--report", type = str, help="Generate report file")
 
     args = parser.parse_args()
 
@@ -602,7 +623,7 @@ def main():
 
     if args.health_check:
         health = tester.health_check()
-        print(json.dumps(health, indent=2))
+        print(json.dumps(health, indent = 2))
     elif args.test:
         result = tester.run_specific_test(args.test)
     elif args.test_all:
@@ -623,11 +644,10 @@ def main():
         print("Use --help for options")
 
         # Quick interactive test
-        choice = input("\nRun quick health check? (y/n): ").lower()
+        choice = input("\nRun quick health check? (y / n): ").lower()
         if choice == "y":
             health = tester.health_check()
-            print(json.dumps(health, indent=2))
-
+            print(json.dumps(health, indent = 2))
 
 if __name__ == "__main__":
     main()

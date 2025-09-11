@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 RouteLL Integration Setup Script
 Initializes and tests the complete RouteLL integration
@@ -82,15 +82,15 @@ def verify_file_structure():
     print("\n📁 Verifying file structure...")
 
     required_files = [
-        "config/routellm_config.json",
-        "integrations/routellm_client.py",
-        "utils/rate_limiter.py",
-        "routing/model_router.py",
-        "monitoring/routellm_monitor.py",
-        "dashboard/routellm_dashboard.py",
-        "examples/routellm_integration_example.py",
-        "docs/RouteLL_Integration_Guide.md",
-    ]
+        "config / routellm_config.json",
+            "integrations / routellm_client.py",
+            "utils / rate_limiter.py",
+            "routing / model_router.py",
+            "monitoring / routellm_monitor.py",
+            "dashboard / routellm_dashboard.py",
+            "examples / routellm_integration_example.py",
+            "docs / RouteLL_Integration_Guide.md",
+            ]
 
     missing_files = []
 
@@ -118,7 +118,7 @@ def create_directories():
     for directory in directories:
         dir_path = Path(directory)
         if not dir_path.exists():
-            dir_path.mkdir(parents=True, exist_ok=True)
+            dir_path.mkdir(parents = True, exist_ok = True)
             print(f"   ✅ Created {directory}/")
         else:
             print(f"   ✅ {directory}/ already exists")
@@ -232,13 +232,13 @@ def print_next_steps():
     print("\n🎉 Setup completed successfully!")
     print("\n📋 Next Steps:")
     print("\n1. 📖 Read the documentation:")
-    print("   open docs/RouteLL_Integration_Guide.md")
+    print("   open docs / RouteLL_Integration_Guide.md")
 
     print("\n2. 🧪 Run the example:")
-    print("   python examples/routellm_integration_example.py")
+    print("   python examples / routellm_integration_example.py")
 
     print("\n3. 📊 Start the dashboard:")
-    print("   python dashboard/routellm_dashboard.py")
+    print("   python dashboard / routellm_dashboard.py")
     print("   Then open: http://localhost:5000")
 
     print("\n4. 🔗 Integrate into your code:")
@@ -249,14 +249,14 @@ def print_next_steps():
     print("   response = await client.chat_completion(messages)")
 
     print("\n5. 📈 Monitor usage:")
-    print("   - Check dashboard for real-time metrics")
+    print("   - Check dashboard for real - time metrics")
     print("   - Review logs/ directory for detailed logs")
     print("   - Use analytics methods for programmatic monitoring")
 
     print("\n💡 Key Features Available:")
     print("   ✅ Intelligent model routing based on task type")
     print("   ✅ Automatic cost optimization")
-    print("   ✅ Real-time credit monitoring")
+    print("   ✅ Real - time credit monitoring")
     print("   ✅ Rate limiting and usage analytics")
     print("   ✅ Web dashboard for monitoring")
     print("   ✅ Comprehensive error handling")
@@ -265,9 +265,9 @@ def print_next_steps():
     print("   (Already configured in environment)")
 
     print("\n📚 Resources:")
-    print("   - Integration Guide: docs/RouteLL_Integration_Guide.md")
-    print("   - RouteLL API Docs: https://routellm.abacus.ai/docs")
-    print("   - Example Code: examples/routellm_integration_example.py")
+    print("   - Integration Guide: docs / RouteLL_Integration_Guide.md")
+    print("   - RouteLL API Docs: https://routellm.abacus.ai / docs")
+    print("   - Example Code: examples / routellm_integration_example.py")
 
 
 def main():
@@ -303,7 +303,6 @@ def main():
     print_next_steps()
 
     return True
-
 
 if __name__ == "__main__":
     try:

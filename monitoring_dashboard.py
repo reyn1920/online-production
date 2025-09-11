@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Monitoring Dashboard - Real-time AI CEO Operations Control Center
+Monitoring Dashboard - Real - time AI CEO Operations Control Center
 
 Provides:
-1. Real-time pipeline status and metrics visualization
+1. Real - time pipeline status and metrics visualization
 2. Agent performance monitoring and control
 3. Business intelligence dashboard
 4. System health monitoring and alerts
@@ -42,16 +42,17 @@ try:
     from ai_ceo_master_controller import AICEOMasterController
     from autonomous_decision_engine import AutonomousDecisionEngine
     from full_automation_pipeline import (FullAutomationPipeline, PipelineStatus,
-                                          TaskPriority)
+        TaskPriority)
 except ImportError as e:
     logging.warning(f"Some components not available: {e}")
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class DashboardMetrics:
-    """Dashboard-specific metrics."""
+    """Dashboard - specific metrics."""
 
     active_users: int = 0
     page_views: int = 0
@@ -64,8 +65,9 @@ class DashboardMetrics:
     network_io: Dict[str, float] = None
     last_updated: datetime = None
 
-
 @dataclass
+
+
 class AlertConfig:
     """Alert configuration."""
 
@@ -79,7 +81,8 @@ class AlertConfig:
 
 
 class MonitoringDashboard:
-    """Real-time monitoring dashboard for AI CEO operations."""
+    """Real - time monitoring dashboard for AI CEO operations."""
+
 
     def __init__(
         self, pipeline: Optional[FullAutomationPipeline] = None, port: int = 5000
@@ -89,19 +92,19 @@ class MonitoringDashboard:
 
         # Flask app setup
         self.app = Flask(__name__, template_folder="templates", static_folder="static")
-        self.app.config["SECRET_KEY"] = "ai-ceo-dashboard-secret-key"
+        self.app.config["SECRET_KEY"] = "ai - ceo - dashboard - secret - key"
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
 
         # Dashboard state
-        self.metrics = DashboardMetrics(last_updated=datetime.now())
+        self.metrics = DashboardMetrics(last_updated = datetime.now())
         self.connected_clients = set()
         self.real_time_data = {
-            "pipeline_status": deque(maxlen=100),
-            "task_metrics": deque(maxlen=100),
-            "business_metrics": deque(maxlen=100),
-            "system_metrics": deque(maxlen=100),
-            "agent_performance": deque(maxlen=100),
-        }
+            "pipeline_status": deque(maxlen = 100),
+                "task_metrics": deque(maxlen = 100),
+                "business_metrics": deque(maxlen = 100),
+                "system_metrics": deque(maxlen = 100),
+                "agent_performance": deque(maxlen = 100),
+                }
 
         # Alert system
         self.alerts = self._setup_default_alerts()
@@ -111,12 +114,12 @@ class MonitoringDashboard:
         self.performance_history = []
         self.business_kpis = {
             "daily_revenue": 0.0,
-            "monthly_revenue": 0.0,
-            "conversion_rate": 0.0,
-            "customer_acquisition_cost": 0.0,
-            "lifetime_value": 0.0,
-            "churn_rate": 0.0,
-        }
+                "monthly_revenue": 0.0,
+                "conversion_rate": 0.0,
+                "customer_acquisition_cost": 0.0,
+                "lifetime_value": 0.0,
+                "churn_rate": 0.0,
+                }
 
         # Database connection
         self.db_path = "dashboard.db"
@@ -132,22 +135,24 @@ class MonitoringDashboard:
 
         logger.info("📊 Monitoring Dashboard initialized")
 
+
     def _setup_default_alerts(self) -> List[AlertConfig]:
         """Setup default alert configurations."""
         return [
             AlertConfig("High Error Rate", "error_rate > 0.1", 0.1, "high"),
-            AlertConfig("High CPU Usage", "cpu_usage > 0.8", 0.8, "medium"),
-            AlertConfig("High Memory Usage", "memory_usage > 0.8", 0.8, "medium"),
-            AlertConfig(
+                AlertConfig("High CPU Usage", "cpu_usage > 0.8", 0.8, "medium"),
+                AlertConfig("High Memory Usage", "memory_usage > 0.8", 0.8, "medium"),
+                AlertConfig(
                 "Low Automation Efficiency", "automation_efficiency < 0.7", 0.7, "high"
             ),
-            AlertConfig(
+                AlertConfig(
                 "Pipeline Stopped", "pipeline_status == 'stopped'", 0, "critical"
             ),
-            AlertConfig("Agent Failure", "agent_success_rate < 0.5", 0.5, "high"),
-            AlertConfig("High Response Time", "response_time > 5.0", 5.0, "medium"),
-            AlertConfig("Revenue Drop", "daily_revenue_change < -0.2", -0.2, "high"),
-        ]
+                AlertConfig("Agent Failure", "agent_success_rate < 0.5", 0.5, "high"),
+                AlertConfig("High Response Time", "response_time > 5.0", 5.0, "medium"),
+                AlertConfig("Revenue Drop", "daily_revenue_change < -0.2", -0.2, "high"),
+                ]
+
 
     def _init_dashboard_database(self):
         """Initialize dashboard database."""
@@ -159,15 +164,15 @@ class MonitoringDashboard:
             """
             CREATE TABLE IF NOT EXISTS dashboard_metrics (
                 timestamp TEXT PRIMARY KEY,
-                active_users INTEGER,
-                page_views INTEGER,
-                api_calls INTEGER,
-                error_rate REAL,
-                response_time REAL,
-                cpu_usage REAL,
-                memory_usage REAL,
-                disk_usage REAL,
-                network_io TEXT
+                    active_users INTEGER,
+                    page_views INTEGER,
+                    api_calls INTEGER,
+                    error_rate REAL,
+                    response_time REAL,
+                    cpu_usage REAL,
+                    memory_usage REAL,
+                    disk_usage REAL,
+                    network_io TEXT
             )
         """
         )
@@ -177,14 +182,14 @@ class MonitoringDashboard:
             """
             CREATE TABLE IF NOT EXISTS alerts (
                 id TEXT PRIMARY KEY,
-                name TEXT,
-                condition_text TEXT,
-                threshold_value REAL,
-                severity TEXT,
-                triggered_at TEXT,
-                resolved_at TEXT,
-                message TEXT,
-                acknowledged BOOLEAN DEFAULT FALSE
+                    name TEXT,
+                    condition_text TEXT,
+                    threshold_value REAL,
+                    severity TEXT,
+                    triggered_at TEXT,
+                    resolved_at TEXT,
+                    message TEXT,
+                    acknowledged BOOLEAN DEFAULT FALSE
             )
         """
         )
@@ -194,12 +199,12 @@ class MonitoringDashboard:
             """
             CREATE TABLE IF NOT EXISTS business_kpis (
                 date TEXT PRIMARY KEY,
-                daily_revenue REAL,
-                monthly_revenue REAL,
-                conversion_rate REAL,
-                customer_acquisition_cost REAL,
-                lifetime_value REAL,
-                churn_rate REAL
+                    daily_revenue REAL,
+                    monthly_revenue REAL,
+                    conversion_rate REAL,
+                    customer_acquisition_cost REAL,
+                    lifetime_value REAL,
+                    churn_rate REAL
             )
         """
         )
@@ -209,11 +214,11 @@ class MonitoringDashboard:
             """
             CREATE TABLE IF NOT EXISTS user_sessions (
                 session_id TEXT PRIMARY KEY,
-                user_id TEXT,
-                start_time TEXT,
-                end_time TEXT,
-                actions_performed INTEGER,
-                ip_address TEXT
+                    user_id TEXT,
+                    start_time TEXT,
+                    end_time TEXT,
+                    actions_performed INTEGER,
+                    ip_address TEXT
             )
         """
         )
@@ -222,15 +227,20 @@ class MonitoringDashboard:
         conn.close()
         logger.info("📊 Dashboard database initialized")
 
+
     def _setup_routes(self):
         """Setup Flask routes."""
 
         @self.app.route("/")
+
+
         def dashboard():
             """Main dashboard page."""
             return render_template("dashboard.html")
 
-        @self.app.route("/api/status")
+        @self.app.route("/api / status")
+
+
         def get_status():
             """Get current system status."""
             try:
@@ -240,18 +250,20 @@ class MonitoringDashboard:
                         if self.pipeline
                         else {"status": "disconnected"}
                     ),
-                    "dashboard": asdict(self.metrics),
-                    "system": self._get_system_metrics(),
-                    "business": self.business_kpis,
-                    "alerts": [alert for alert in self.active_alerts],
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "dashboard": asdict(self.metrics),
+                        "system": self._get_system_metrics(),
+                        "business": self.business_kpis,
+                        "alerts": [alert for alert in self.active_alerts],
+                        "timestamp": datetime.now().isoformat(),
+                        }
                 return jsonify(status_data)
             except Exception as e:
                 logger.error(f"Error getting status: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/metrics")
+        @self.app.route("/api / metrics")
+
+
         def get_metrics():
             """Get detailed metrics."""
             try:
@@ -260,21 +272,23 @@ class MonitoringDashboard:
                         "pipeline_metrics": list(
                             self.real_time_data["pipeline_status"]
                         ),
-                        "task_metrics": list(self.real_time_data["task_metrics"]),
-                        "business_metrics": list(
+                            "task_metrics": list(self.real_time_data["task_metrics"]),
+                            "business_metrics": list(
                             self.real_time_data["business_metrics"]
                         ),
-                        "system_metrics": list(self.real_time_data["system_metrics"]),
-                        "agent_performance": list(
+                            "system_metrics": list(self.real_time_data["system_metrics"]),
+                            "agent_performance": list(
                             self.real_time_data["agent_performance"]
                         ),
-                    }
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error getting metrics: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/performance-report")
+        @self.app.route("/api / performance - report")
+
+
         def get_performance_report():
             """Get comprehensive performance report."""
             try:
@@ -283,7 +297,7 @@ class MonitoringDashboard:
                 else:
                     report = {"error": "Pipeline not connected"}
 
-                # Add dashboard-specific metrics
+                # Add dashboard - specific metrics
                 report["dashboard_metrics"] = asdict(self.metrics)
                 report["business_kpis"] = self.business_kpis
                 report["system_health"] = self._get_system_health()
@@ -293,7 +307,9 @@ class MonitoringDashboard:
                 logger.error(f"Error getting performance report: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/agents")
+        @self.app.route("/api / agents")
+
+
         def get_agents():
             """Get agent status and controls."""
             try:
@@ -302,12 +318,12 @@ class MonitoringDashboard:
                     return jsonify(
                         {
                             "agents": agent_status,
-                            "controls": {
-                                "restart_agent": "/api/agents/<agent_name>/restart",
-                                "pause_agent": "/api/agents/<agent_name>/pause",
-                                "resume_agent": "/api/agents/<agent_name>/resume",
-                            },
-                        }
+                                "controls": {
+                                "restart_agent": "/api / agents/<agent_name>/restart",
+                                    "pause_agent": "/api / agents/<agent_name>/pause",
+                                    "resume_agent": "/api / agents/<agent_name>/resume",
+                                    },
+                                }
                     )
                 else:
                     return jsonify({"error": "Pipeline not connected"}), 503
@@ -315,7 +331,9 @@ class MonitoringDashboard:
                 logger.error(f"Error getting agents: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/agents/<agent_name>/restart", methods=["POST"])
+        @self.app.route("/api / agents/<agent_name>/restart", methods=["POST"])
+
+
         def restart_agent(agent_name):
             """Restart a specific agent."""
             try:
@@ -329,7 +347,9 @@ class MonitoringDashboard:
                 logger.error(f"Error restarting agent: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/pipeline/pause", methods=["POST"])
+        @self.app.route("/api / pipeline / pause", methods=["POST"])
+
+
         def pause_pipeline():
             """Pause the pipeline."""
             try:
@@ -342,7 +362,9 @@ class MonitoringDashboard:
                 logger.error(f"Error pausing pipeline: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/pipeline/resume", methods=["POST"])
+        @self.app.route("/api / pipeline / resume", methods=["POST"])
+
+
         def resume_pipeline():
             """Resume the pipeline."""
             try:
@@ -355,21 +377,25 @@ class MonitoringDashboard:
                 logger.error(f"Error resuming pipeline: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/alerts")
+        @self.app.route("/api / alerts")
+
+
         def get_alerts():
             """Get current alerts."""
             try:
                 return jsonify(
                     {
                         "active_alerts": self.active_alerts,
-                        "alert_configs": [asdict(alert) for alert in self.alerts],
-                    }
+                            "alert_configs": [asdict(alert) for alert in self.alerts],
+                            }
                 )
             except Exception as e:
                 logger.error(f"Error getting alerts: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/alerts/<alert_id>/acknowledge", methods=["POST"])
+        @self.app.route("/api / alerts/<alert_id>/acknowledge", methods=["POST"])
+
+
         def acknowledge_alert(alert_id):
             """Acknowledge an alert."""
             try:
@@ -384,7 +410,9 @@ class MonitoringDashboard:
                 logger.error(f"Error acknowledging alert: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/charts/pipeline-performance")
+        @self.app.route("/api / charts / pipeline - performance")
+
+
         def get_pipeline_performance_chart():
             """Get pipeline performance chart data."""
             try:
@@ -395,7 +423,9 @@ class MonitoringDashboard:
                 logger.error(f"Error generating chart: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/charts/business-metrics")
+        @self.app.route("/api / charts / business - metrics")
+
+
         def get_business_metrics_chart():
             """Get business metrics chart data."""
             try:
@@ -405,7 +435,9 @@ class MonitoringDashboard:
                 logger.error(f"Error generating chart: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @self.app.route("/api/charts/system-health")
+        @self.app.route("/api / charts / system - health")
+
+
         def get_system_health_chart():
             """Get system health chart data."""
             try:
@@ -415,10 +447,13 @@ class MonitoringDashboard:
                 logger.error(f"Error generating chart: {e}")
                 return jsonify({"error": str(e)}), 500
 
+
     def _setup_socketio_events(self):
-        """Setup SocketIO events for real-time updates."""
+        """Setup SocketIO events for real - time updates."""
 
         @self.socketio.on("connect")
+
+
         def handle_connect():
             """Handle client connection."""
             client_id = request.sid
@@ -429,6 +464,8 @@ class MonitoringDashboard:
             emit("status_update", self._get_current_status())
 
         @self.socketio.on("disconnect")
+
+
         def handle_disconnect():
             """Handle client disconnection."""
             client_id = request.sid
@@ -436,11 +473,15 @@ class MonitoringDashboard:
             logger.info(f"📱 Client disconnected: {client_id}")
 
         @self.socketio.on("request_update")
+
+
         def handle_update_request():
             """Handle client update request."""
             emit("status_update", self._get_current_status())
 
         @self.socketio.on("execute_command")
+
+
         def handle_command(data):
             """Handle command execution from client."""
             try:
@@ -450,21 +491,22 @@ class MonitoringDashboard:
                 result = self._execute_dashboard_command(command, params)
                 emit(
                     "command_result",
-                    {
+                        {
                         "command": command,
-                        "result": result,
-                        "timestamp": datetime.now().isoformat(),
-                    },
-                )
+                            "result": result,
+                            "timestamp": datetime.now().isoformat(),
+                            },
+                        )
             except Exception as e:
                 emit(
                     "command_error",
-                    {
+                        {
                         "command": command,
-                        "error": str(e),
-                        "timestamp": datetime.now().isoformat(),
-                    },
-                )
+                            "error": str(e),
+                            "timestamp": datetime.now().isoformat(),
+                            },
+                        )
+
 
     def _get_current_status(self) -> Dict[str, Any]:
         """Get current comprehensive status."""
@@ -474,19 +516,20 @@ class MonitoringDashboard:
                 if self.pipeline
                 else {"status": "disconnected"}
             ),
-            "dashboard": asdict(self.metrics),
-            "system": self._get_system_metrics(),
-            "business": self.business_kpis,
-            "alerts": self.active_alerts,
-            "connected_clients": len(self.connected_clients),
-            "timestamp": datetime.now().isoformat(),
-        }
+                "dashboard": asdict(self.metrics),
+                "system": self._get_system_metrics(),
+                "business": self.business_kpis,
+                "alerts": self.active_alerts,
+                "connected_clients": len(self.connected_clients),
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     def _get_system_metrics(self) -> Dict[str, Any]:
         """Get current system metrics."""
         try:
             # CPU usage
-            cpu_percent = psutil.cpu_percent(interval=1)
+            cpu_percent = psutil.cpu_percent(interval = 1)
 
             # Memory usage
             memory = psutil.virtual_memory()
@@ -496,24 +539,25 @@ class MonitoringDashboard:
             disk = psutil.disk_usage("/")
             disk_percent = (disk.used / disk.total) * 100
 
-            # Network I/O
+            # Network I / O
             network = psutil.net_io_counters()
 
             return {
                 "cpu_usage": cpu_percent / 100.0,
-                "memory_usage": memory_percent / 100.0,
-                "disk_usage": disk_percent / 100.0,
-                "memory_total": memory.total,
-                "memory_used": memory.used,
-                "disk_total": disk.total,
-                "disk_used": disk.used,
-                "network_bytes_sent": network.bytes_sent,
-                "network_bytes_recv": network.bytes_recv,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "memory_usage": memory_percent / 100.0,
+                    "disk_usage": disk_percent / 100.0,
+                    "memory_total": memory.total,
+                    "memory_used": memory.used,
+                    "disk_total": disk.total,
+                    "disk_used": disk.used,
+                    "network_bytes_sent": network.bytes_sent,
+                    "network_bytes_recv": network.bytes_recv,
+                    "timestamp": datetime.now().isoformat(),
+                    }
         except Exception as e:
             logger.error(f"Error getting system metrics: {e}")
             return {}
+
 
     def _get_system_health(self) -> Dict[str, Any]:
         """Get comprehensive system health status."""
@@ -549,14 +593,15 @@ class MonitoringDashboard:
 
         return {
             "health_score": max(0, health_score),
-            "status": (
+                "status": (
                 "healthy"
                 if health_score > 80
                 else "warning" if health_score > 50 else "critical"
             ),
-            "issues": issues,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "issues": issues,
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     def _execute_dashboard_command(
         self, command: str, params: Dict[str, Any]
@@ -590,13 +635,13 @@ class MonitoringDashboard:
                     # This would restart the specific agent
                     return {
                         "success": True,
-                        "message": f"Agent {agent_name} restart initiated",
-                    }
+                            "message": f"Agent {agent_name} restart initiated",
+                            }
                 else:
                     return {
                         "success": False,
-                        "message": "Invalid agent name or pipeline not connected",
-                    }
+                            "message": "Invalid agent name or pipeline not connected",
+                            }
 
             elif command == "clear_alerts":
                 self.active_alerts.clear()
@@ -607,15 +652,16 @@ class MonitoringDashboard:
                 export_data = self._export_metrics_data()
                 return {
                     "success": True,
-                    "message": "Metrics exported",
-                    "data": export_data,
-                }
+                        "message": "Metrics exported",
+                        "data": export_data,
+                        }
 
             else:
                 return {"success": False, "message": f"Unknown command: {command}"}
 
         except Exception as e:
             return {"success": False, "message": f"Command execution failed: {str(e)}"}
+
 
     def _generate_pipeline_performance_chart(self) -> Dict[str, Any]:
         """Generate pipeline performance chart data."""
@@ -636,38 +682,39 @@ class MonitoringDashboard:
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=success_rates,
-                    mode="lines+markers",
-                    name="Success Rate",
-                    line=dict(color="green"),
-                )
+                    x = timestamps,
+                        y = success_rates,
+                        mode="lines + markers",
+                        name="Success Rate",
+                        line = dict(color="green"),
+                        )
             )
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=task_counts,
-                    mode="lines+markers",
-                    name="Active Tasks",
-                    yaxis="y2",
-                    line=dict(color="blue"),
-                )
+                    x = timestamps,
+                        y = task_counts,
+                        mode="lines + markers",
+                        name="Active Tasks",
+                        yaxis="y2",
+                        line = dict(color="blue"),
+                        )
             )
 
             fig.update_layout(
                 title="Pipeline Performance Over Time",
-                xaxis_title="Time",
-                yaxis_title="Success Rate",
-                yaxis2=dict(title="Active Tasks", overlaying="y", side="right"),
-                hovermode="x unified",
-            )
+                    xaxis_title="Time",
+                    yaxis_title="Success Rate",
+                    yaxis2 = dict(title="Active Tasks", overlaying="y", side="right"),
+                    hovermode="x unified",
+                    )
 
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
 
         except Exception as e:
             logger.error(f"Error generating pipeline performance chart: {e}")
             return {"error": str(e)}
+
 
     def _generate_business_metrics_chart(self) -> Dict[str, Any]:
         """Generate business metrics chart data."""
@@ -688,38 +735,39 @@ class MonitoringDashboard:
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=revenue,
-                    mode="lines+markers",
-                    name="Daily Revenue",
-                    line=dict(color="green"),
-                )
+                    x = timestamps,
+                        y = revenue,
+                        mode="lines + markers",
+                        name="Daily Revenue",
+                        line = dict(color="green"),
+                        )
             )
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=conversion_rate,
-                    mode="lines+markers",
-                    name="Conversion Rate",
-                    yaxis="y2",
-                    line=dict(color="orange"),
-                )
+                    x = timestamps,
+                        y = conversion_rate,
+                        mode="lines + markers",
+                        name="Conversion Rate",
+                        yaxis="y2",
+                        line = dict(color="orange"),
+                        )
             )
 
             fig.update_layout(
                 title="Business Metrics Over Time",
-                xaxis_title="Time",
-                yaxis_title="Revenue ($)",
-                yaxis2=dict(title="Conversion Rate (%)", overlaying="y", side="right"),
-                hovermode="x unified",
-            )
+                    xaxis_title="Time",
+                    yaxis_title="Revenue ($)",
+                    yaxis2 = dict(title="Conversion Rate (%)", overlaying="y", side="right"),
+                    hovermode="x unified",
+                    )
 
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
 
         except Exception as e:
             logger.error(f"Error generating business metrics chart: {e}")
             return {"error": str(e)}
+
 
     def _generate_system_health_chart(self) -> Dict[str, Any]:
         """Generate system health chart data."""
@@ -741,40 +789,40 @@ class MonitoringDashboard:
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=cpu_usage,
-                    mode="lines+markers",
-                    name="CPU Usage (%)",
-                    line=dict(color="red"),
-                )
+                    x = timestamps,
+                        y = cpu_usage,
+                        mode="lines + markers",
+                        name="CPU Usage (%)",
+                        line = dict(color="red"),
+                        )
             )
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=memory_usage,
-                    mode="lines+markers",
-                    name="Memory Usage (%)",
-                    line=dict(color="blue"),
-                )
+                    x = timestamps,
+                        y = memory_usage,
+                        mode="lines + markers",
+                        name="Memory Usage (%)",
+                        line = dict(color="blue"),
+                        )
             )
 
             fig.add_trace(
                 go.Scatter(
-                    x=timestamps,
-                    y=disk_usage,
-                    mode="lines+markers",
-                    name="Disk Usage (%)",
-                    line=dict(color="green"),
-                )
+                    x = timestamps,
+                        y = disk_usage,
+                        mode="lines + markers",
+                        name="Disk Usage (%)",
+                        line = dict(color="green"),
+                        )
             )
 
             fig.update_layout(
                 title="System Health Over Time",
-                xaxis_title="Time",
-                yaxis_title="Usage (%)",
-                hovermode="x unified",
-            )
+                    xaxis_title="Time",
+                    yaxis_title="Usage (%)",
+                    hovermode="x unified",
+                    )
 
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
 
@@ -782,33 +830,35 @@ class MonitoringDashboard:
             logger.error(f"Error generating system health chart: {e}")
             return {"error": str(e)}
 
+
     def _export_metrics_data(self) -> Dict[str, Any]:
         """Export metrics data for analysis."""
         try:
             export_data = {
                 "pipeline_metrics": list(self.real_time_data["pipeline_status"]),
-                "business_metrics": list(self.real_time_data["business_metrics"]),
-                "system_metrics": list(self.real_time_data["system_metrics"]),
-                "agent_performance": list(self.real_time_data["agent_performance"]),
-                "business_kpis": self.business_kpis,
-                "dashboard_metrics": asdict(self.metrics),
-                "export_timestamp": datetime.now().isoformat(),
-            }
+                    "business_metrics": list(self.real_time_data["business_metrics"]),
+                    "system_metrics": list(self.real_time_data["system_metrics"]),
+                    "agent_performance": list(self.real_time_data["agent_performance"]),
+                    "business_kpis": self.business_kpis,
+                    "dashboard_metrics": asdict(self.metrics),
+                    "export_timestamp": datetime.now().isoformat(),
+                    }
 
             # Save to file
             filename = f"metrics_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             with open(filename, "w") as f:
-                json.dump(export_data, f, indent=2, default=str)
+                json.dump(export_data, f, indent = 2, default = str)
 
             return {
                 "filename": filename,
-                "record_count": sum(len(data) for data in self.real_time_data.values()),
-                "file_size": os.path.getsize(filename),
-            }
+                    "record_count": sum(len(data) for data in self.real_time_data.values()),
+                    "file_size": os.path.getsize(filename),
+                    }
 
         except Exception as e:
             logger.error(f"Error exporting metrics: {e}")
             return {"error": str(e)}
+
 
     def start_monitoring(self):
         """Start the monitoring dashboard."""
@@ -818,18 +868,19 @@ class MonitoringDashboard:
 
         # Start background monitoring thread
         self.monitoring_thread = threading.Thread(
-            target=self._monitoring_loop, daemon=True
+            target = self._monitoring_loop, daemon = True
         )
         self.monitoring_thread.start()
 
         # Start Flask app
         try:
             logger.info(f"🌐 Dashboard available at http://localhost:{self.port}")
-            self.socketio.run(self.app, host="0.0.0.0", port=self.port, debug=False)
+            self.socketio.run(self.app, host="0.0.0.0", port = self.port, debug = False)
         except Exception as e:
             logger.error(f"❌ Failed to start dashboard: {e}")
             self.running = False
             raise
+
 
     def _monitoring_loop(self):
         """Background monitoring loop."""
@@ -856,6 +907,7 @@ class MonitoringDashboard:
 
         logger.info("🛑 Monitoring loop stopped")
 
+
     def _update_dashboard_metrics(self):
         """Update dashboard metrics."""
         try:
@@ -867,7 +919,7 @@ class MonitoringDashboard:
             self.metrics.disk_usage = system_metrics.get("disk_usage", 0)
             self.metrics.last_updated = datetime.now()
 
-            # Add to real-time data
+            # Add to real - time data
             self.real_time_data["system_metrics"].append(
                 {"timestamp": datetime.now().isoformat(), **system_metrics}
             )
@@ -886,6 +938,7 @@ class MonitoringDashboard:
 
         except Exception as e:
             logger.error(f"Error updating dashboard metrics: {e}")
+
 
     def _check_alerts(self):
         """Check for alert conditions."""
@@ -911,14 +964,14 @@ class MonitoringDashboard:
                     # Create alert
                     alert = {
                         "id": str(uuid.uuid4()),
-                        "name": alert_config.name,
-                        "severity": alert_config.severity,
-                        "message": f"Alert triggered: {alert_config.name}",
-                        "condition": alert_config.condition,
-                        "threshold": alert_config.threshold,
-                        "triggered_at": current_time.isoformat(),
-                        "acknowledged": False,
-                    }
+                            "name": alert_config.name,
+                            "severity": alert_config.severity,
+                            "message": f"Alert triggered: {alert_config.name}",
+                            "condition": alert_config.condition,
+                            "threshold": alert_config.threshold,
+                            "triggered_at": current_time.isoformat(),
+                            "acknowledged": False,
+                            }
 
                     self.active_alerts.append(alert)
                     alert_config.last_triggered = current_time
@@ -932,6 +985,7 @@ class MonitoringDashboard:
 
         except Exception as e:
             logger.error(f"Error checking alerts: {e}")
+
 
     def _evaluate_alert_condition(self, alert_config: AlertConfig) -> bool:
         """Evaluate if an alert condition is met."""
@@ -970,6 +1024,7 @@ class MonitoringDashboard:
             logger.error(f"Error evaluating alert condition: {e}")
             return False
 
+
     def stop_monitoring(self):
         """Stop the monitoring dashboard."""
         logger.info("🛑 Stopping Monitoring Dashboard...")
@@ -978,14 +1033,16 @@ class MonitoringDashboard:
 
         # Wait for monitoring thread to finish
         if self.monitoring_thread and self.monitoring_thread.is_alive():
-            self.monitoring_thread.join(timeout=5)
+            self.monitoring_thread.join(timeout = 5)
 
         logger.info("✅ Monitoring Dashboard stopped")
+
 
     def connect_pipeline(self, pipeline: FullAutomationPipeline):
         """Connect to a pipeline instance."""
         self.pipeline = pipeline
         logger.info("🔗 Pipeline connected to dashboard")
+
 
     def disconnect_pipeline(self):
         """Disconnect from pipeline."""
@@ -996,154 +1053,154 @@ class MonitoringDashboard:
 def create_dashboard_templates():
     """Create basic HTML templates for the dashboard."""
     templates_dir = Path("templates")
-    templates_dir.mkdir(exist_ok=True)
+    templates_dir.mkdir(exist_ok = True)
 
     # Main dashboard template
     dashboard_html = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI CEO Monitoring Dashboard</title>
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF - 8">
+    <meta name="viewport" content="width = device - width, initial - scale = 1.0">
+    <title > AI CEO Monitoring Dashboard</title>
+    <script src="https://cdn.socket.io / 4.0.0 / socket.io.min.js"></script>
+    <script src="https://cdn.plot.ly / plotly - latest.min.js"></script>
+    <link href="https://cdn.jsdelivr.net / npm / bootstrap@5.1.3 / dist / css / bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com / ajax / libs / font - awesome / 6.0.0 / css / all.min.css" rel="stylesheet">
     <style>
-        .metric-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .metric - card {
+            background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-radius: 10px;
+            border - radius: 10px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin - bottom: 20px;
         }
-        .alert-card {
-            border-left: 4px solid #dc3545;
-            margin-bottom: 10px;
+        .alert - card {
+            border - left: 4px solid #dc3545;
+            margin - bottom: 10px;
         }
-        .status-indicator {
+        .status - indicator {
             width: 12px;
             height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
+            border - radius: 50%;
+            display: inline - block;
+            margin - right: 8px;
         }
-        .status-running { background-color: #28a745; }
-        .status-stopped { background-color: #dc3545; }
-        .status-paused { background-color: #ffc107; }
-        .chart-container {
+        .status - running { background - color: #28a745; }
+        .status - stopped { background - color: #dc3545; }
+        .status - paused { background - color: #ffc107; }
+        .chart - container {
             height: 400px;
-            margin-bottom: 30px;
+            margin - bottom: 30px;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">
-                <i class="fas fa-robot"></i> AI CEO Monitoring Dashboard
+    <nav class="navbar navbar - dark bg - dark">
+        <div class="container - fluid">
+            <span class="navbar - brand mb - 0 h1">
+                <i class="fas fa - robot"></i> AI CEO Monitoring Dashboard
             </span>
-            <span class="navbar-text">
-                <span class="status-indicator status-running" id="connection-status"></span>
-                <span id="connection-text">Connected</span>
+            <span class="navbar - text">
+                <span class="status - indicator status - running" id="connection - status"></span>
+                <span id="connection - text">Connected</span>
             </span>
         </div>
     </nav>
 
-    <div class="container-fluid mt-4">
+    <div class="container - fluid mt - 4">
         <!-- Status Cards -->
         <div class="row">
-            <div class="col-md-3">
-                <div class="metric-card">
-                    <h5><i class="fas fa-cogs"></i> Pipeline Status</h5>
-                    <h3 id="pipeline-status">Loading...</h3>
-                    <small id="pipeline-uptime">Uptime: --</small>
+            <div class="col - md - 3">
+                <div class="metric - card">
+                    <h5><i class="fas fa - cogs"></i> Pipeline Status</h5>
+                    <h3 id="pipeline - status">Loading...</h3>
+                    <small id="pipeline - uptime">Uptime: --</small>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="metric-card">
-                    <h5><i class="fas fa-tasks"></i> Active Tasks</h5>
-                    <h3 id="active-tasks">--</h3>
-                    <small id="queue-size">Queue: --</small>
+            <div class="col - md - 3">
+                <div class="metric - card">
+                    <h5><i class="fas fa - tasks"></i> Active Tasks</h5>
+                    <h3 id="active - tasks">--</h3>
+                    <small id="queue - size">Queue: --</small>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="metric-card">
-                    <h5><i class="fas fa-chart-line"></i> Success Rate</h5>
-                    <h3 id="success-rate">--%</h3>
-                    <small id="total-tasks">Total: --</small>
+            <div class="col - md - 3">
+                <div class="metric - card">
+                    <h5><i class="fas fa - chart - line"></i> Success Rate</h5>
+                    <h3 id="success - rate">--%</h3>
+                    <small id="total - tasks">Total: --</small>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="metric-card">
-                    <h5><i class="fas fa-dollar-sign"></i> Revenue</h5>
-                    <h3 id="daily-revenue">$--</h3>
-                    <small id="monthly-revenue">Monthly: $--</small>
+            <div class="col - md - 3">
+                <div class="metric - card">
+                    <h5><i class="fas fa - dollar - sign"></i> Revenue</h5>
+                    <h3 id="daily - revenue">$--</h3>
+                    <small id="monthly - revenue">Monthly: $--</small>
                 </div>
             </div>
         </div>
 
         <!-- Alerts Section -->
-        <div class="row mt-4">
-            <div class="col-12">
+        <div class="row mt - 4">
+            <div class="col - 12">
                 <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-exclamation-triangle"></i> Active Alerts</h5>
+                    <div class="card - header">
+                        <h5><i class="fas fa - exclamation - triangle"></i> Active Alerts</h5>
                     </div>
-                    <div class="card-body" id="alerts-container">
-                        <p class="text-muted">No active alerts</p>
+                    <div class="card - body" id="alerts - container">
+                        <p class="text - muted">No active alerts</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Charts Section -->
-        <div class="row mt-4">
-            <div class="col-md-6">
+        <div class="row mt - 4">
+            <div class="col - md - 6">
                 <div class="card">
-                    <div class="card-header">
-                        <h5>Pipeline Performance</h5>
+                    <div class="card - header">
+                        <h5 > Pipeline Performance</h5>
                     </div>
-                    <div class="card-body">
-                        <div id="pipeline-chart" class="chart-container"></div>
+                    <div class="card - body">
+                        <div id="pipeline - chart" class="chart - container"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col - md - 6">
                 <div class="card">
-                    <div class="card-header">
-                        <h5>System Health</h5>
+                    <div class="card - header">
+                        <h5 > System Health</h5>
                     </div>
-                    <div class="card-body">
-                        <div id="system-chart" class="chart-container"></div>
+                    <div class="card - body">
+                        <div id="system - chart" class="chart - container"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Controls Section -->
-        <div class="row mt-4">
-            <div class="col-12">
+        <div class="row mt - 4">
+            <div class="col - 12">
                 <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-sliders-h"></i> Pipeline Controls</h5>
+                    <div class="card - header">
+                        <h5><i class="fas fa - sliders - h"></i> Pipeline Controls</h5>
                     </div>
-                    <div class="card-body">
-                        <button class="btn btn-success me-2" onclick="executeCommand('resume_pipeline')">
-                            <i class="fas fa-play"></i> Resume
+                    <div class="card - body">
+                        <button class="btn btn - success me - 2" onclick="executeCommand('resume_pipeline')">
+                            <i class="fas fa - play"></i> Resume
                         </button>
-                        <button class="btn btn-warning me-2" onclick="executeCommand('pause_pipeline')">
-                            <i class="fas fa-pause"></i> Pause
+                        <button class="btn btn - warning me - 2" onclick="executeCommand('pause_pipeline')">
+                            <i class="fas fa - pause"></i> Pause
                         </button>
-                        <button class="btn btn-info me-2" onclick="executeCommand('restart_pipeline')">
-                            <i class="fas fa-redo"></i> Restart
+                        <button class="btn btn - info me - 2" onclick="executeCommand('restart_pipeline')">
+                            <i class="fas fa - redo"></i> Restart
                         </button>
-                        <button class="btn btn-secondary me-2" onclick="executeCommand('export_metrics')">
-                            <i class="fas fa-download"></i> Export Metrics
+                        <button class="btn btn - secondary me - 2" onclick="executeCommand('export_metrics')">
+                            <i class="fas fa - download"></i> Export Metrics
                         </button>
-                        <button class="btn btn-outline-danger" onclick="executeCommand('clear_alerts')">
-                            <i class="fas fa-times"></i> Clear Alerts
+                        <button class="btn btn - outline - danger" onclick="executeCommand('clear_alerts')">
+                            <i class="fas fa - times"></i> Clear Alerts
                         </button>
                     </div>
                 </div>
@@ -1154,101 +1211,101 @@ def create_dashboard_templates():
     <script>
         // Initialize Socket.IO connection
         const socket = io();
-        
+
         // Connection status
         socket.on('connect', function() {
-            document.getElementById('connection-status').className = 'status-indicator status-running';
-            document.getElementById('connection-text').textContent = 'Connected';
+            document.getElementById('connection - status').className = 'status - indicator status - running';
+            document.getElementById('connection - text').textContent = 'Connected';
         });
-        
+
         socket.on('disconnect', function() {
-            document.getElementById('connection-status').className = 'status-indicator status-stopped';
-            document.getElementById('connection-text').textContent = 'Disconnected';
+            document.getElementById('connection - status').className = 'status - indicator status - stopped';
+            document.getElementById('connection - text').textContent = 'Disconnected';
         });
-        
+
         // Status updates
         socket.on('status_update', function(data) {
             updateDashboard(data);
         });
-        
+
         // New alerts
         socket.on('new_alert', function(alert) {
             addAlert(alert);
         });
-        
+
         // Command results
         socket.on('command_result', function(result) {
             console.log('Command result:', result);
             alert('Command executed: ' + result.result.message);
         });
-        
+
         socket.on('command_error', function(error) {
             console.error('Command error:', error);
             alert('Command failed: ' + error.error);
         });
-        
+
         // Update dashboard with new data
         function updateDashboard(data) {
             // Pipeline status
             const pipeline = data.pipeline || {};
-            document.getElementById('pipeline-status').textContent = pipeline.status || 'Unknown';
-            document.getElementById('pipeline-uptime').textContent = 'Uptime: ' + formatUptime(pipeline.uptime || 0);
-            document.getElementById('active-tasks').textContent = pipeline.active_tasks || 0;
-            document.getElementById('queue-size').textContent = 'Queue: ' + (pipeline.queue_size || 0);
-            
+            document.getElementById('pipeline - status').textContent = pipeline.status || 'Unknown';
+            document.getElementById('pipeline - uptime').textContent = 'Uptime: ' + formatUptime(pipeline.uptime || 0);
+            document.getElementById('active - tasks').textContent = pipeline.active_tasks || 0;
+            document.getElementById('queue - size').textContent = 'Queue: ' + (pipeline.queue_size || 0);
+
             // Metrics
             const metrics = pipeline.metrics || {};
-            const successRate = metrics.total_tasks_executed > 0 ? 
+            const successRate = metrics.total_tasks_executed > 0 ?
                 ((metrics.successful_tasks / metrics.total_tasks_executed) * 100).toFixed(1) : 0;
-            document.getElementById('success-rate').textContent = successRate + '%';
-            document.getElementById('total-tasks').textContent = 'Total: ' + (metrics.total_tasks_executed || 0);
-            
+            document.getElementById('success - rate').textContent = successRate + '%';
+            document.getElementById('total - tasks').textContent = 'Total: ' + (metrics.total_tasks_executed || 0);
+
             // Business metrics
             const business = data.business || {};
-            document.getElementById('daily-revenue').textContent = '$' + (business.daily_revenue || 0).toFixed(2);
-            document.getElementById('monthly-revenue').textContent = 'Monthly: $' + (business.monthly_revenue || 0).toFixed(2);
-            
+            document.getElementById('daily - revenue').textContent = '$' + (business.daily_revenue || 0).toFixed(2);
+            document.getElementById('monthly - revenue').textContent = 'Monthly: $' + (business.monthly_revenue || 0).toFixed(2);
+
             // Update charts
             updateCharts();
         }
-        
+
         // Add new alert
         function addAlert(alert) {
-            const container = document.getElementById('alerts-container');
-            
+            const container = document.getElementById('alerts - container');
+
             // Clear "no alerts" message
             if (container.children.length === 1 && container.children[0].textContent === 'No active alerts') {
                 container.innerHTML = '';
             }
-            
+
             const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-' + getSeverityClass(alert.severity) + ' alert-card';
+            alertDiv.className = 'alert alert-' + getSeverityClass(alert.severity) + ' alert - card';
             alertDiv.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d - flex justify - content - between align - items - center">
                     <div>
                         <strong>${alert.name}</strong><br>
                         <small>${alert.message}</small>
                     </div>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="acknowledgeAlert('${alert.id}')">
+                    <button class="btn btn - sm btn - outline - secondary" onclick="acknowledgeAlert('${alert.id}')">
                         Acknowledge
                     </button>
                 </div>
             `;
-            
+
             container.appendChild(alertDiv);
         }
-        
+
         // Execute command
-        function executeCommand(command, params = {}) {
+            function executeCommand(command, params = {}) {
             socket.emit('execute_command', {
                 command: command,
-                params: params
+                    params: params
             });
         }
-        
+
         // Acknowledge alert
         function acknowledgeAlert(alertId) {
-            fetch(`/api/alerts/${alertId}/acknowledge`, {
+            fetch(`/api / alerts/${alertId}/acknowledge`, {
                 method: 'POST'
             }).then(response => {
                 if (response.ok) {
@@ -1257,49 +1314,49 @@ def create_dashboard_templates():
                 }
             });
         }
-        
+
         // Update charts
         function updateCharts() {
             // Pipeline performance chart
-            fetch('/api/charts/pipeline-performance')
+            fetch('/api / charts / pipeline - performance')
                 .then(response => response.json())
                 .then(data => {
                     if (!data.error) {
-                        Plotly.newPlot('pipeline-chart', data.data, data.layout);
+                        Plotly.newPlot('pipeline - chart', data.data, data.layout);
                     }
                 });
-            
+
             // System health chart
-            fetch('/api/charts/system-health')
+            fetch('/api / charts / system - health')
                 .then(response => response.json())
                 .then(data => {
                     if (!data.error) {
-                        Plotly.newPlot('system-chart', data.data, data.layout);
+                        Plotly.newPlot('system - chart', data.data, data.layout);
                     }
                 });
         }
-        
+
         // Utility functions
         function formatUptime(seconds) {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
             return `${hours}h ${minutes}m`;
         }
-        
+
         function getSeverityClass(severity) {
             const classes = {
                 'low': 'info',
-                'medium': 'warning',
-                'high': 'danger',
-                'critical': 'danger'
+                    'medium': 'warning',
+                    'high': 'danger',
+                    'critical': 'danger'
             };
             return classes[severity] || 'info';
         }
-        
+
         // Initialize dashboard
         socket.emit('request_update');
-        
-        // Auto-refresh every 30 seconds
+
+        // Auto - refresh every 30 seconds
         setInterval(() => {
             socket.emit('request_update');
         }, 30000);
@@ -1319,29 +1376,29 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="AI CEO Monitoring Dashboard")
-    parser.add_argument("--port", type=int, default=5000, help="Dashboard port")
+    parser.add_argument("--port", type = int, default = 5000, help="Dashboard port")
     parser.add_argument(
-        "--create-templates", action="store_true", help="Create dashboard templates"
+        "--create - templates", action="store_true", help="Create dashboard templates"
     )
     args = parser.parse_args()
 
     # Setup logging
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.FileHandler("dashboard.log"), logging.StreamHandler()],
-    )
+        level = logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[logging.FileHandler("dashboard.log"), logging.StreamHandler()],
+            )
 
     if args.create_templates:
         create_dashboard_templates()
         return
 
     # Create and start dashboard
-    dashboard = MonitoringDashboard(port=args.port)
+    dashboard = MonitoringDashboard(port = args.port)
 
     try:
         # Create templates if they don't exist
-        if not Path("templates/dashboard.html").exists():
+        if not Path("templates / dashboard.html").exists():
             create_dashboard_templates()
 
         # Start dashboard
@@ -1353,7 +1410,6 @@ def main():
         logger.error(f"❌ Dashboard error: {e}")
     finally:
         dashboard.stop_monitoring()
-
 
 if __name__ == "__main__":
     main()

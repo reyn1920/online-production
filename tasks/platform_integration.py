@@ -1,4 +1,4 @@
-# tasks/platform_integration.py - Platform API integrations and synchronization
+# tasks / platform_integration.py - Platform API integrations and synchronization
 import base64
 import hashlib
 import hmac
@@ -25,8 +25,9 @@ class PlatformIntegrationTask(Task):
     retry_backoff = True
     retry_jitter = False
 
+@celery_app.task(base = PlatformIntegrationTask, bind = True)
 
-@celery_app.task(base=PlatformIntegrationTask, bind=True)
+
 def sync_inventory_across_platforms(
     self, business_id: str, product_mappings: Dict[str, Dict[str, str]]
 ) -> Dict[str, Any]:
@@ -79,24 +80,25 @@ def sync_inventory_across_platforms(
 
             sync_results[product_id] = {
                 "master_level": master_level,
-                "platform_levels": inventory_levels,
-                "update_results": update_results,
-            }
+                    "platform_levels": inventory_levels,
+                    "update_results": update_results,
+                    }
 
         logger.info(f"Inventory sync completed for business {business_id}")
         return {
             "status": "success",
-            "business_id": business_id,
-            "sync_results": sync_results,
-            "synced_at": datetime.utcnow().isoformat(),
-        }
+                "business_id": business_id,
+                "sync_results": sync_results,
+                "synced_at": datetime.utcnow().isoformat(),
+                }
 
     except Exception as e:
         logger.error(f"Inventory sync failed: {str(e)}")
-        raise self.retry(exc=e)
+        raise self.retry(exc = e)
+
+@celery_app.task(base = PlatformIntegrationTask, bind = True)
 
 
-@celery_app.task(base=PlatformIntegrationTask, bind=True)
 def process_webhook_notifications(
     self, platform: str, webhook_data: Dict[str, Any]
 ) -> Dict[str, Any]:
@@ -122,14 +124,14 @@ def process_webhook_notifications(
 
         handlers = {
             "order_created": handle_order_created,
-            "order_updated": handle_order_updated,
-            "order_cancelled": handle_order_cancelled,
-            "payment_completed": handle_payment_completed,
-            "payment_failed": handle_payment_failed,
-            "refund_issued": handle_refund_issued,
-            "inventory_updated": handle_inventory_updated,
-            "product_updated": handle_product_updated,
-        }
+                "order_updated": handle_order_updated,
+                "order_cancelled": handle_order_cancelled,
+                "payment_completed": handle_payment_completed,
+                "payment_failed": handle_payment_failed,
+                "refund_issued": handle_refund_issued,
+                "inventory_updated": handle_inventory_updated,
+                "product_updated": handle_product_updated,
+                }
 
         handler_func = handlers.get(event_type)
         if not handler_func:
@@ -141,18 +143,19 @@ def process_webhook_notifications(
         logger.info(f"Webhook processed successfully: {event_type}")
         return {
             "status": "success",
-            "platform": platform,
-            "event_type": event_type,
-            "result": result,
-            "processed_at": datetime.utcnow().isoformat(),
-        }
+                "platform": platform,
+                "event_type": event_type,
+                "result": result,
+                "processed_at": datetime.utcnow().isoformat(),
+                }
 
     except Exception as e:
         logger.error(f"Webhook processing failed: {str(e)}")
-        raise self.retry(exc=e)
+        raise self.retry(exc = e)
+
+@celery_app.task(base = PlatformIntegrationTask, bind = True)
 
 
-@celery_app.task(base=PlatformIntegrationTask, bind=True)
 def sync_customer_data(
     self, business_id: str, time_period: str = "24h"
 ) -> Dict[str, Any]:
@@ -193,23 +196,24 @@ def sync_customer_data(
         logger.info(f"Customer data sync completed")
         return {
             "status": "success",
-            "business_id": business_id,
-            "platforms_synced": len(
+                "business_id": business_id,
+                "platforms_synced": len(
                 [p for p in platforms if "error" not in customer_data.get(p, {})]
             ),
-            "total_customers": len(merged_customers),
-            "new_customers": update_result.get("new_customers", 0),
-            "updated_customers": update_result.get("updated_customers", 0),
-            "insights": insights,
-            "synced_at": datetime.utcnow().isoformat(),
-        }
+                "total_customers": len(merged_customers),
+                "new_customers": update_result.get("new_customers", 0),
+                "updated_customers": update_result.get("updated_customers", 0),
+                "insights": insights,
+                "synced_at": datetime.utcnow().isoformat(),
+                }
 
     except Exception as e:
         logger.error(f"Customer data sync failed: {str(e)}")
-        raise self.retry(exc=e)
+        raise self.retry(exc = e)
+
+@celery_app.task(base = PlatformIntegrationTask, bind = True)
 
 
-@celery_app.task(base=PlatformIntegrationTask, bind=True)
 def update_product_metadata(
     self, product_mappings: Dict[str, Dict[str, str]], metadata_updates: Dict[str, Any]
 ) -> Dict[str, Any]:
@@ -233,7 +237,7 @@ def update_product_metadata(
 
             for platform, platform_product_id in platform_mappings.items():
                 try:
-                    # Transform metadata for platform-specific format
+                    # Transform metadata for platform - specific format
                     platform_metadata = transform_metadata_for_platform(
                         platform, metadata_updates
                     )
@@ -253,16 +257,17 @@ def update_product_metadata(
         logger.info(f"Product metadata update completed")
         return {
             "status": "success",
-            "update_results": update_results,
-            "updated_at": datetime.utcnow().isoformat(),
-        }
+                "update_results": update_results,
+                "updated_at": datetime.utcnow().isoformat(),
+                }
 
     except Exception as e:
         logger.error(f"Product metadata update failed: {str(e)}")
-        raise self.retry(exc=e)
+        raise self.retry(exc = e)
+
+@celery_app.task(base = PlatformIntegrationTask, bind = True)
 
 
-@celery_app.task(base=PlatformIntegrationTask, bind=True)
 def generate_cross_platform_analytics(
     self, business_id: str, date_range: Dict[str, str]
 ) -> Dict[str, Any]:
@@ -274,10 +279,10 @@ def generate_cross_platform_analytics(
         date_range: Date range for analytics (start_date, end_date)
 
     Returns:
-        Dict containing cross-platform analytics
+        Dict containing cross - platform analytics
     """
     try:
-        logger.info(f"Generating cross-platform analytics for business {business_id}")
+        logger.info(f"Generating cross - platform analytics for business {business_id}")
 
         platforms = ["etsy", "gumroad", "paddle", "sendowl"]
         analytics_data = {}
@@ -291,7 +296,7 @@ def generate_cross_platform_analytics(
                 logger.error(f"Failed to get analytics from {platform}: {str(e)}")
                 analytics_data[platform] = {"error": str(e)}
 
-        # Aggregate cross-platform metrics
+        # Aggregate cross - platform metrics
         aggregated_metrics = aggregate_platform_metrics(analytics_data)
 
         # Generate insights and recommendations
@@ -301,27 +306,26 @@ def generate_cross_platform_analytics(
         # Create visualizations data
         visualizations = create_analytics_visualizations(aggregated_metrics)
 
-        logger.info(f"Cross-platform analytics generation completed")
+        logger.info(f"Cross - platform analytics generation completed")
         return {
             "status": "success",
-            "business_id": business_id,
-            "date_range": date_range,
-            "platforms_included": [
+                "business_id": business_id,
+                "date_range": date_range,
+                "platforms_included": [
                 p for p in platforms if "error" not in analytics_data.get(p, {})
             ],
-            "metrics": aggregated_metrics,
-            "insights": insights,
-            "recommendations": recommendations,
-            "visualizations": visualizations,
-            "generated_at": datetime.utcnow().isoformat(),
-        }
+                "metrics": aggregated_metrics,
+                "insights": insights,
+                "recommendations": recommendations,
+                "visualizations": visualizations,
+                "generated_at": datetime.utcnow().isoformat(),
+                }
 
     except Exception as e:
-        logger.error(f"Cross-platform analytics generation failed: {str(e)}")
-        raise self.retry(exc=e)
+        logger.error(f"Cross - platform analytics generation failed: {str(e)}")
+        raise self.retry(exc = e)
 
-
-# Platform-specific inventory functions
+# Platform - specific inventory functions
 
 
 def get_platform_inventory(platform: str, product_id: str) -> Dict[str, Any]:
@@ -329,10 +333,10 @@ def get_platform_inventory(platform: str, product_id: str) -> Dict[str, Any]:
 
     inventory_getters = {
         "etsy": get_etsy_inventory,
-        "gumroad": get_gumroad_inventory,
-        "paddle": get_paddle_inventory,
-        "sendowl": get_sendowl_inventory,
-    }
+            "gumroad": get_gumroad_inventory,
+            "paddle": get_paddle_inventory,
+            "sendowl": get_sendowl_inventory,
+            }
 
     getter_func = inventory_getters.get(platform)
     if not getter_func:
@@ -348,17 +352,16 @@ def update_platform_inventory(
 
     inventory_updaters = {
         "etsy": update_etsy_inventory,
-        "gumroad": update_gumroad_inventory,
-        "paddle": update_paddle_inventory,
-        "sendowl": update_sendowl_inventory,
-    }
+            "gumroad": update_gumroad_inventory,
+            "paddle": update_paddle_inventory,
+            "sendowl": update_sendowl_inventory,
+            }
 
     updater_func = inventory_updaters.get(platform)
     if not updater_func:
         raise ValueError(f"Inventory update not supported for platform: {platform}")
 
     return updater_func(product_id, quantity)
-
 
 # Webhook processing functions
 
@@ -368,10 +371,10 @@ def verify_webhook_signature(platform: str, webhook_data: Dict[str, Any]) -> boo
 
     verifiers = {
         "etsy": verify_etsy_webhook,
-        "gumroad": verify_gumroad_webhook,
-        "paddle": verify_paddle_webhook,
-        "sendowl": verify_sendowl_webhook,
-    }
+            "gumroad": verify_gumroad_webhook,
+            "paddle": verify_paddle_webhook,
+            "sendowl": verify_sendowl_webhook,
+            }
 
     verifier_func = verifiers.get(platform)
     if not verifier_func:
@@ -386,14 +389,13 @@ def extract_event_type(platform: str, webhook_data: Dict[str, Any]) -> str:
 
     event_extractors = {
         "etsy": lambda data: data.get("event_type", "unknown"),
-        "gumroad": lambda data: data.get("type", "unknown"),
-        "paddle": lambda data: data.get("alert_name", "unknown"),
-        "sendowl": lambda data: data.get("event", "unknown"),
-    }
+            "gumroad": lambda data: data.get("type", "unknown"),
+            "paddle": lambda data: data.get("alert_name", "unknown"),
+            "sendowl": lambda data: data.get("event", "unknown"),
+            }
 
     extractor_func = event_extractors.get(platform, lambda data: "unknown")
     return extractor_func(webhook_data)
-
 
 # Webhook event handlers
 
@@ -413,10 +415,10 @@ def handle_order_created(platform: str, webhook_data: Dict[str, Any]) -> Dict[st
 
     return {
         "action": "order_created",
-        "order_id": order_id,
-        "platform": platform,
-        "amount": order_data.get("total_amount"),
-    }
+            "order_id": order_id,
+            "platform": platform,
+            "amount": order_data.get("total_amount"),
+            }
 
 
 def handle_order_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -428,9 +430,9 @@ def handle_order_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[st
 
     return {
         "action": "order_updated",
-        "order_id": order_data.get("id"),
-        "platform": platform,
-    }
+            "order_id": order_data.get("id"),
+            "platform": platform,
+            }
 
 
 def handle_order_cancelled(
@@ -447,9 +449,9 @@ def handle_order_cancelled(
 
     return {
         "action": "order_cancelled",
-        "order_id": order_data.get("id"),
-        "platform": platform,
-    }
+            "order_id": order_data.get("id"),
+            "platform": platform,
+            }
 
 
 def handle_payment_completed(
@@ -466,10 +468,10 @@ def handle_payment_completed(
 
     return {
         "action": "payment_completed",
-        "order_id": payment_data.get("order_id"),
-        "amount": payment_data.get("amount"),
-        "platform": platform,
-    }
+            "order_id": payment_data.get("order_id"),
+            "amount": payment_data.get("amount"),
+            "platform": platform,
+            }
 
 
 def handle_payment_failed(
@@ -486,9 +488,9 @@ def handle_payment_failed(
 
     return {
         "action": "payment_failed",
-        "order_id": payment_data.get("order_id"),
-        "platform": platform,
-    }
+            "order_id": payment_data.get("order_id"),
+            "platform": platform,
+            }
 
 
 def handle_refund_issued(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -503,10 +505,10 @@ def handle_refund_issued(platform: str, webhook_data: Dict[str, Any]) -> Dict[st
 
     return {
         "action": "refund_issued",
-        "order_id": refund_data.get("order_id"),
-        "amount": refund_data.get("amount"),
-        "platform": platform,
-    }
+            "order_id": refund_data.get("order_id"),
+            "amount": refund_data.get("amount"),
+            "platform": platform,
+            }
 
 
 def handle_inventory_updated(
@@ -520,10 +522,10 @@ def handle_inventory_updated(
 
     return {
         "action": "inventory_updated",
-        "product_id": inventory_data.get("product_id"),
-        "new_quantity": inventory_data.get("quantity"),
-        "platform": platform,
-    }
+            "product_id": inventory_data.get("product_id"),
+            "new_quantity": inventory_data.get("quantity"),
+            "platform": platform,
+            }
 
 
 def handle_product_updated(
@@ -537,10 +539,9 @@ def handle_product_updated(
 
     return {
         "action": "product_updated",
-        "product_id": product_data.get("id"),
-        "platform": platform,
-    }
-
+            "product_id": product_data.get("id"),
+            "platform": platform,
+            }
 
 # Customer data functions
 
@@ -550,10 +551,10 @@ def get_platform_customers(platform: str, time_period: str) -> Dict[str, Any]:
 
     customer_getters = {
         "etsy": get_etsy_customers,
-        "gumroad": get_gumroad_customers,
-        "paddle": get_paddle_customers,
-        "sendowl": get_sendowl_customers,
-    }
+            "gumroad": get_gumroad_customers,
+            "paddle": get_paddle_customers,
+            "sendowl": get_sendowl_customers,
+            }
 
     getter_func = customer_getters.get(platform)
     if not getter_func:
@@ -597,15 +598,15 @@ def merge_customer_records(customer_data: Dict[str, Any]) -> List[Dict[str, Any]
                 # Add new customer record
                 merged_customer = {
                     "email": email,
-                    "name": customer.get("name", ""),
-                    "platforms": [platform],
-                    "total_orders": customer.get("total_orders", 0),
-                    "total_spent": customer.get("total_spent", 0),
-                    "first_order_date": customer.get("first_order_date", ""),
-                    "last_order_date": customer.get("last_order_date", ""),
-                    "country": customer.get("country", ""),
-                    "city": customer.get("city", ""),
-                }
+                        "name": customer.get("name", ""),
+                        "platforms": [platform],
+                        "total_orders": customer.get("total_orders", 0),
+                        "total_spent": customer.get("total_spent", 0),
+                        "first_order_date": customer.get("first_order_date", ""),
+                        "last_order_date": customer.get("last_order_date", ""),
+                        "country": customer.get("country", ""),
+                        "city": customer.get("city", ""),
+                        }
 
                 merged_customers.append(merged_customer)
                 email_map[email] = merged_customer
@@ -628,9 +629,9 @@ def update_customer_database(
 
     return {
         "new_customers": new_customers,
-        "updated_customers": updated_customers,
-        "total_customers": len(customers),
-    }
+            "updated_customers": updated_customers,
+            "total_customers": len(customers),
+            }
 
 
 def generate_customer_insights(customers: List[Dict[str, Any]]) -> List[str]:
@@ -648,13 +649,12 @@ def generate_customer_insights(customers: List[Dict[str, Any]]) -> List[str]:
 
     insights = [
         f"Total customers: {total_customers}",
-        f"Multi-platform customers: {multi_platform_customers} ({multi_platform_customers/total_customers*100:.1f}%)",
-        f"Average orders per customer: {avg_orders:.1f}",
-        f"Average customer lifetime value: ${avg_spent:.2f}",
-    ]
+            f"Multi - platform customers: {multi_platform_customers} ({multi_platform_customers / total_customers * 100:.1f}%)",
+            f"Average orders per customer: {avg_orders:.1f}",
+            f"Average customer lifetime value: ${avg_spent:.2f}",
+            ]
 
     return insights
-
 
 # Analytics functions
 
@@ -664,10 +664,10 @@ def get_platform_analytics(platform: str, date_range: Dict[str, str]) -> Dict[st
 
     analytics_getters = {
         "etsy": get_etsy_analytics,
-        "gumroad": get_gumroad_analytics,
-        "paddle": get_paddle_analytics,
-        "sendowl": get_sendowl_analytics,
-    }
+            "gumroad": get_gumroad_analytics,
+            "paddle": get_paddle_analytics,
+            "sendowl": get_sendowl_analytics,
+            }
 
     getter_func = analytics_getters.get(platform)
     if not getter_func:
@@ -681,13 +681,13 @@ def aggregate_platform_metrics(analytics_data: Dict[str, Any]) -> Dict[str, Any]
 
     aggregated = {
         "total_revenue": 0,
-        "total_orders": 0,
-        "total_customers": 0,
-        "total_views": 0,
-        "conversion_rate": 0,
-        "average_order_value": 0,
-        "platform_breakdown": {},
-    }
+            "total_orders": 0,
+            "total_customers": 0,
+            "total_views": 0,
+            "conversion_rate": 0,
+            "average_order_value": 0,
+            "platform_breakdown": {},
+            }
 
     valid_platforms = 0
 
@@ -706,11 +706,11 @@ def aggregate_platform_metrics(analytics_data: Dict[str, Any]) -> Dict[str, Any]
         # Store platform breakdown
         aggregated["platform_breakdown"][platform] = {
             "revenue": data.get("revenue", 0),
-            "orders": data.get("orders", 0),
-            "customers": data.get("customers", 0),
-            "views": data.get("views", 0),
-            "conversion_rate": data.get("conversion_rate", 0),
-        }
+                "orders": data.get("orders", 0),
+                "customers": data.get("customers", 0),
+                "views": data.get("views", 0),
+                "conversion_rate": data.get("conversion_rate", 0),
+                }
 
     # Calculate derived metrics
     if aggregated["total_orders"] > 0:
@@ -742,7 +742,7 @@ def generate_analytics_insights(metrics: Dict[str, Any]) -> List[str]:
             for p, data in metrics.get("platform_breakdown", {}).items()
         }
         top_platform = (
-            max(platform_revenues, key=platform_revenues.get)
+            max(platform_revenues, key = platform_revenues.get)
             if platform_revenues
             else None
         )
@@ -757,7 +757,7 @@ def generate_analytics_insights(metrics: Dict[str, Any]) -> List[str]:
     # Conversion insights
     conversion_rate = metrics.get("conversion_rate", 0)
     if conversion_rate > 0:
-        insights.append(f"Overall conversion rate: {conversion_rate*100:.2f}%")
+        insights.append(f"Overall conversion rate: {conversion_rate * 100:.2f}%")
 
     # Order insights
     total_orders = metrics.get("total_orders", 0)
@@ -776,26 +776,26 @@ def generate_analytics_recommendations(insights: List[str]) -> List[Dict[str, An
     recommendations = [
         {
             "category": "platform_optimization",
-            "title": "Focus on top-performing platform",
-            "description": "Allocate more resources to your highest-revenue platform",
-            "priority": "high",
-            "expected_impact": "revenue increase of 10-15%",
-        },
-        {
+                "title": "Focus on top - performing platform",
+                "description": "Allocate more resources to your highest - revenue platform",
+                "priority": "high",
+                "expected_impact": "revenue increase of 10 - 15%",
+                },
+            {
             "category": "conversion_optimization",
-            "title": "Improve product listings",
-            "description": "Optimize product titles, descriptions, and images to increase conversion rates",
-            "priority": "medium",
-            "expected_impact": "conversion rate increase of 5-10%",
-        },
-        {
+                "title": "Improve product listings",
+                "description": "Optimize product titles, descriptions, and images to increase conversion rates",
+                "priority": "medium",
+                "expected_impact": "conversion rate increase of 5 - 10%",
+                },
+            {
             "category": "pricing_strategy",
-            "title": "Test price optimization",
-            "description": "A/B test different price points to maximize revenue",
-            "priority": "medium",
-            "expected_impact": "revenue increase of 5-20%",
-        },
-    ]
+                "title": "Test price optimization",
+                "description": "A / B test different price points to maximize revenue",
+                "priority": "medium",
+                "expected_impact": "revenue increase of 5 - 20%",
+                },
+            ]
 
     return recommendations
 
@@ -806,31 +806,30 @@ def create_analytics_visualizations(metrics: Dict[str, Any]) -> Dict[str, Any]:
     visualizations = {
         "revenue_by_platform": {
             "type": "pie_chart",
-            "data": {
+                "data": {
                 platform: data.get("revenue", 0)
                 for platform, data in metrics.get("platform_breakdown", {}).items()
             },
-        },
-        "orders_by_platform": {
+                },
+            "orders_by_platform": {
             "type": "bar_chart",
-            "data": {
+                "data": {
                 platform: data.get("orders", 0)
                 for platform, data in metrics.get("platform_breakdown", {}).items()
             },
-        },
-        "conversion_rates": {
+                },
+            "conversion_rates": {
             "type": "line_chart",
-            "data": {
+                "data": {
                 platform: data.get("conversion_rate", 0) * 100
                 for platform, data in metrics.get("platform_breakdown", {}).items()
             },
-        },
-    }
+                },
+            }
 
     return visualizations
 
-
-# Platform-specific helper functions (stubs for implementation)
+# Platform - specific helper functions (stubs for implementation)
 
 
 def get_etsy_inventory(product_id: str) -> Dict[str, Any]:
@@ -847,8 +846,8 @@ def get_gumroad_inventory(product_id: str) -> Dict[str, Any]:
     """Get Gumroad product inventory"""
     return {
         "quantity": 999,
-        "status": "unlimited",
-    }  # Digital products typically unlimited
+            "status": "unlimited",
+            }  # Digital products typically unlimited
 
 
 def update_gumroad_inventory(product_id: str, quantity: int) -> Dict[str, Any]:
@@ -875,7 +874,6 @@ def update_sendowl_inventory(product_id: str, quantity: int) -> Dict[str, Any]:
     """Update SendOwl product inventory"""
     return {"status": "updated", "new_quantity": quantity}
 
-
 # Webhook verification functions (stubs)
 
 
@@ -898,7 +896,6 @@ def verify_sendowl_webhook(webhook_data: Dict[str, Any]) -> bool:
     """Verify SendOwl webhook signature"""
     return True  # Implement actual verification
 
-
 # Data extraction functions (stubs)
 
 
@@ -906,9 +903,9 @@ def extract_order_data(platform: str, webhook_data: Dict[str, Any]) -> Dict[str,
     """Extract order data from webhook"""
     return {
         "id": "order_123",
-        "total_amount": 29.99,
-        "customer_email": "customer@example.com",
-    }
+            "total_amount": 29.99,
+            "customer_email": "customer@example.com",
+            }
 
 
 def extract_payment_data(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -931,7 +928,6 @@ def extract_inventory_data(
 def extract_product_data(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
     """Extract product data from webhook"""
     return {"id": "product_123", "title": "Updated Product", "price": 34.99}
-
 
 # Database operation stubs
 
@@ -964,7 +960,6 @@ def process_refund(refund_data: Dict[str, Any]):
 def update_product_data(product_data: Dict[str, Any]):
     """Update product data in database"""
     pass
-
 
 # Business logic stubs
 
@@ -1003,8 +998,7 @@ def update_refund_analytics(refund_data: Dict[str, Any]):
     """Update analytics with refund data"""
     pass
 
-
-# Platform-specific customer and analytics getters (stubs)
+# Platform - specific customer and analytics getters (stubs)
 
 
 def get_etsy_customers(time_period: str) -> Dict[str, Any]:
@@ -1031,45 +1025,44 @@ def get_etsy_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
     """Get Etsy analytics data"""
     return {
         "revenue": 5000,
-        "orders": 45,
-        "customers": 38,
-        "views": 1200,
-        "conversion_rate": 0.0375,
-    }
+            "orders": 45,
+            "customers": 38,
+            "views": 1200,
+            "conversion_rate": 0.0375,
+            }
 
 
 def get_gumroad_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
     """Get Gumroad analytics data"""
     return {
         "revenue": 3200,
-        "orders": 28,
-        "customers": 25,
-        "views": 800,
-        "conversion_rate": 0.035,
-    }
+            "orders": 28,
+            "customers": 25,
+            "views": 800,
+            "conversion_rate": 0.035,
+            }
 
 
 def get_paddle_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
     """Get Paddle analytics data"""
     return {
         "revenue": 4100,
-        "orders": 32,
-        "customers": 29,
-        "views": 950,
-        "conversion_rate": 0.0337,
-    }
+            "orders": 32,
+            "customers": 29,
+            "views": 950,
+            "conversion_rate": 0.0337,
+            }
 
 
 def get_sendowl_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
     """Get SendOwl analytics data"""
     return {
         "revenue": 1800,
-        "orders": 18,
-        "customers": 16,
-        "views": 600,
-        "conversion_rate": 0.03,
-    }
-
+            "orders": 18,
+            "customers": 16,
+            "views": 600,
+            "conversion_rate": 0.03,
+            }
 
 # Metadata transformation functions
 
@@ -1077,14 +1070,14 @@ def get_sendowl_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
 def transform_metadata_for_platform(
     platform: str, metadata: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """Transform metadata to platform-specific format"""
+    """Transform metadata to platform - specific format"""
 
     transformers = {
         "etsy": transform_etsy_metadata,
-        "gumroad": transform_gumroad_metadata,
-        "paddle": transform_paddle_metadata,
-        "sendowl": transform_sendowl_metadata,
-    }
+            "gumroad": transform_gumroad_metadata,
+            "paddle": transform_paddle_metadata,
+            "sendowl": transform_sendowl_metadata,
+            }
 
     transformer_func = transformers.get(platform, lambda x: x)
     return transformer_func(metadata)
@@ -1095,29 +1088,29 @@ def transform_etsy_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "title": metadata.get("title", "")[:140],  # Etsy title limit
         "description": metadata.get("description", ""),
-        "tags": metadata.get("tags", [])[:13],  # Etsy tag limit
+            "tags": metadata.get("tags", [])[:13],  # Etsy tag limit
         "materials": metadata.get("materials", []),
-        "price": metadata.get("price"),
-    }
+            "price": metadata.get("price"),
+            }
 
 
 def transform_gumroad_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     """Transform metadata for Gumroad format"""
     return {
         "name": metadata.get("title", ""),
-        "description": metadata.get("description", ""),
-        "price": metadata.get("price"),
-        "tags": ",".join(metadata.get("tags", [])),
-    }
+            "description": metadata.get("description", ""),
+            "price": metadata.get("price"),
+            "tags": ",".join(metadata.get("tags", [])),
+            }
 
 
 def transform_paddle_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     """Transform metadata for Paddle format"""
     return {
         "title": metadata.get("title", ""),
-        "custom_message": metadata.get("description", ""),
-        "prices": [f"USD:{metadata.get('price', 0)}"],
-    }
+            "custom_message": metadata.get("description", ""),
+            "prices": [f"USD:{metadata.get('price', 0)}"],
+            }
 
 
 def transform_sendowl_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
@@ -1125,10 +1118,10 @@ def transform_sendowl_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "product": {
             "name": metadata.get("title", ""),
-            "description": metadata.get("description", ""),
-            "price": metadata.get("price"),
-            "tags": metadata.get("tags", []),
-        }
+                "description": metadata.get("description", ""),
+                "price": metadata.get("price"),
+                "tags": metadata.get("tags", []),
+                }
     }
 
 
@@ -1139,10 +1132,10 @@ def update_platform_product(
 
     updaters = {
         "etsy": update_etsy_product,
-        "gumroad": update_gumroad_product,
-        "paddle": update_paddle_product,
-        "sendowl": update_sendowl_product,
-    }
+            "gumroad": update_gumroad_product,
+            "paddle": update_paddle_product,
+            "sendowl": update_sendowl_product,
+            }
 
     updater_func = updaters.get(platform)
     if not updater_func:
@@ -1150,8 +1143,7 @@ def update_platform_product(
 
     return updater_func(product_id, metadata)
 
-
-# Platform-specific product update functions (stubs)
+# Platform - specific product update functions (stubs)
 
 
 def update_etsy_product(product_id: str, metadata: Dict[str, Any]) -> Dict[str, Any]:

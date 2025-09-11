@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Discovery Engine
 
@@ -35,8 +35,8 @@ except ImportError:
 
 try:
     from enhanced_web_scraping_tools import (DataFormat, EnhancedWebScraper,
-                                             ExtractionRule, ScrapingConfig,
-                                             ScrapingMethod, ScrapingResult)
+        ExtractionRule, ScrapingConfig,
+                                                 ScrapingMethod, ScrapingResult)
 except ImportError:
     logging.warning("Enhanced web scraping tools not available")
     EnhancedWebScraper = None
@@ -89,21 +89,23 @@ class APIStatus(Enum):
     FAILED = "failed"
     DEPRECATED = "deprecated"
 
-
 @dataclass
+
+
 class APIEndpoint:
     """Individual API endpoint information"""
 
     path: str
     method: str = "GET"
     description: Optional[str] = None
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: Dict[str, Any] = field(default_factory = dict)
     response_format: str = "json"
     rate_limit: Optional[str] = None
     example_response: Optional[Dict] = None
 
-
 @dataclass
+
+
 class APICredentials:
     """API authentication credentials"""
 
@@ -114,10 +116,11 @@ class APICredentials:
     token: Optional[str] = None
     header_name: Optional[str] = None
     param_name: Optional[str] = None
-    additional_headers: Dict[str, str] = field(default_factory=dict)
-
+    additional_headers: Dict[str, str] = field(default_factory = dict)
 
 @dataclass
+
+
 class APIInfo:
     """Comprehensive API information"""
 
@@ -129,18 +132,19 @@ class APIInfo:
     is_free: bool = True
     rate_limit: Optional[str] = None
     documentation_url: Optional[str] = None
-    endpoints: List[APIEndpoint] = field(default_factory=list)
+    endpoints: List[APIEndpoint] = field(default_factory = list)
     credentials: Optional[APICredentials] = None
     status: APIStatus = APIStatus.DISCOVERED
     last_validated: Optional[datetime] = None
     validation_score: float = 0.0
     usage_count: int = 0
     error_count: int = 0
-    tags: Set[str] = field(default_factory=set)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    tags: Set[str] = field(default_factory = set)
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class APIDiscoveryConfig:
     """Configuration for API discovery"""
 
@@ -159,21 +163,22 @@ class APIDiscoveryConfig:
 class APIDiscoveryEngine:
     """Main API discovery and integration engine"""
 
+
     def __init__(self, config: Optional[APIDiscoveryConfig] = None):
         self.config = config or APIDiscoveryConfig()
         self.logger = logging.getLogger(__name__)
         self.discovered_apis: Dict[str, APIInfo] = {}
         self.cache_dir = Path("api_discovery_cache")
-        self.cache_dir.mkdir(exist_ok=True)
+        self.cache_dir.mkdir(exist_ok = True)
 
         # Initialize web scraper
         scraping_config = ScrapingConfig(
-            method=ScrapingMethod.REQUESTS,
-            max_retries=self.config.retry_attempts,
-            timeout=self.config.timeout,
-            cache_responses=True,
-            rate_limit=1.0,
-        )
+            method = ScrapingMethod.REQUESTS,
+                max_retries = self.config.retry_attempts,
+                timeout = self.config.timeout,
+                cache_responses = True,
+                rate_limit = 1.0,
+                )
 
         if EnhancedWebScraper:
             self.scraper = EnhancedWebScraper(scraping_config)
@@ -184,22 +189,23 @@ class APIDiscoveryEngine:
         # API source configurations
         self.api_sources = {
             "publicapis": {
-                "url": "https://api.publicapis.org/entries",
-                "method": "api_endpoint",
-            },
-            "rapidapi_hub": {
-                "url": "https://rapidapi.com/hub",
-                "method": "web_scraping",
-            },
-            "github_awesome_apis": {
-                "url": "https://raw.githubusercontent.com/public-apis/public-apis/master/README.md",
-                "method": "markdown_parsing",
-            },
-            "programmableweb": {
-                "url": "https://www.programmableweb.com/apis/directory",
-                "method": "web_scraping",
-            },
-        }
+                "url": "https://api.publicapis.org / entries",
+                    "method": "api_endpoint",
+                    },
+                "rapidapi_hub": {
+                "url": "https://rapidapi.com / hub",
+                    "method": "web_scraping",
+                    },
+                "github_awesome_apis": {
+                "url": "https://raw.githubusercontent.com / public - apis / public - apis / master / README.md",
+                    "method": "markdown_parsing",
+                    },
+                "programmableweb": {
+                "url": "https://www.programmableweb.com / apis / directory",
+                    "method": "web_scraping",
+                    },
+                }
+
 
     async def discover_apis_from_all_sources(self) -> Dict[str, List[APIInfo]]:
         """Discover APIs from all configured sources"""
@@ -216,6 +222,7 @@ class APIDiscoveryEngine:
                 results[source_name] = []
 
         return results
+
 
     async def _discover_from_source(
         self, source_name: str, source_config: Dict
@@ -235,13 +242,14 @@ class APIDiscoveryEngine:
             self.logger.warning(f"Unknown discovery method: {method}")
             return []
 
+
     async def _discover_from_api_endpoint(self, url: str) -> List[APIInfo]:
         """Discover APIs from PublicAPIs.org API endpoint"""
         if not requests:
             return []
 
         try:
-            response = requests.get(url, timeout=self.config.timeout)
+            response = requests.get(url, timeout = self.config.timeout)
             response.raise_for_status()
             data = response.json()
 
@@ -276,15 +284,15 @@ class APIDiscoveryEngine:
                         continue
 
                     api_info = APIInfo(
-                        name=entry.get("API", "Unknown API"),
-                        base_url=entry.get("Link", ""),
-                        category=category,
-                        description=entry.get("Description", ""),
-                        auth_type=auth_type,
-                        is_free=is_free,
-                        documentation_url=entry.get("Link", ""),
-                        tags={category_str, "publicapis"},
-                    )
+                        name = entry.get("API", "Unknown API"),
+                            base_url = entry.get("Link", ""),
+                            category = category,
+                            description = entry.get("Description", ""),
+                            auth_type = auth_type,
+                            is_free = is_free,
+                            documentation_url = entry.get("Link", ""),
+                            tags={category_str, "publicapis"},
+                            )
 
                     apis.append(api_info)
 
@@ -297,6 +305,7 @@ class APIDiscoveryEngine:
         except Exception as e:
             self.logger.error(f"Failed to discover APIs from endpoint {url}: {e}")
             return []
+
 
     async def _discover_from_web_scraping(
         self, source_name: str, url: str
@@ -311,28 +320,28 @@ class APIDiscoveryEngine:
                 extraction_rules = [
                     ExtractionRule(
                         name="api_cards",
-                        selector=".api-card, [data-testid='api-card']",
-                        is_list=True,
-                        required=False,
-                    )
+                            selector=".api - card, [data - testid='api - card']",
+                            is_list = True,
+                            required = False,
+                            )
                 ]
             elif source_name == "programmableweb":
                 extraction_rules = [
                     ExtractionRule(
                         name="api_listings",
-                        selector=".api-listing, .directory-listing",
-                        is_list=True,
-                        required=False,
-                    )
+                            selector=".api - listing, .directory - listing",
+                            is_list = True,
+                            required = False,
+                            )
                 ]
             else:
                 extraction_rules = [
                     ExtractionRule(
                         name="api_links",
-                        selector="a[href*='api'], a[href*='API']",
-                        is_list=True,
-                        required=False,
-                    )
+                            selector="a[href*='api'], a[href*='API']",
+                            is_list = True,
+                            required = False,
+                            )
                 ]
 
             result = await self.scraper.scrape_url(url, extraction_rules)
@@ -349,13 +358,14 @@ class APIDiscoveryEngine:
             self.logger.error(f"Failed to scrape APIs from {url}: {e}")
             return []
 
+
     async def _discover_from_markdown(self, url: str) -> List[APIInfo]:
         """Discover APIs from GitHub awesome lists (markdown format)"""
         if not requests:
             return []
 
         try:
-            response = requests.get(url, timeout=self.config.timeout)
+            response = requests.get(url, timeout = self.config.timeout)
             response.raise_for_status()
             markdown_content = response.text
 
@@ -366,43 +376,45 @@ class APIDiscoveryEngine:
             self.logger.error(f"Failed to discover APIs from markdown {url}: {e}")
             return []
 
+
     def _parse_category(self, category_str: str) -> APICategory:
         """Parse category string to APICategory enum"""
         category_mapping = {
             "weather": APICategory.WEATHER,
-            "news": APICategory.NEWS,
-            "finance": APICategory.FINANCE,
-            "financial": APICategory.FINANCE,
-            "social": APICategory.SOCIAL_MEDIA,
-            "entertainment": APICategory.ENTERTAINMENT,
-            "productivity": APICategory.PRODUCTIVITY,
-            "development": APICategory.DEVELOPER_TOOLS,
-            "developer": APICategory.DEVELOPER_TOOLS,
-            "data": APICategory.DATA_SCIENCE,
-            "machine_learning": APICategory.MACHINE_LEARNING,
-            "ml": APICategory.MACHINE_LEARNING,
-            "ai": APICategory.MACHINE_LEARNING,
-            "blockchain": APICategory.BLOCKCHAIN,
-            "crypto": APICategory.BLOCKCHAIN,
-            "iot": APICategory.IOT,
-            "health": APICategory.HEALTH,
-            "medical": APICategory.HEALTH,
-            "education": APICategory.EDUCATION,
-            "travel": APICategory.TRAVEL,
-            "food": APICategory.FOOD,
-            "sports": APICategory.SPORTS,
-            "gaming": APICategory.GAMING,
-            "games": APICategory.GAMING,
-            "business": APICategory.BUSINESS,
-            "government": APICategory.GOVERNMENT,
-            "utilities": APICategory.UTILITIES,
-        }
+                "news": APICategory.NEWS,
+                "finance": APICategory.FINANCE,
+                "financial": APICategory.FINANCE,
+                "social": APICategory.SOCIAL_MEDIA,
+                "entertainment": APICategory.ENTERTAINMENT,
+                "productivity": APICategory.PRODUCTIVITY,
+                "development": APICategory.DEVELOPER_TOOLS,
+                "developer": APICategory.DEVELOPER_TOOLS,
+                "data": APICategory.DATA_SCIENCE,
+                "machine_learning": APICategory.MACHINE_LEARNING,
+                "ml": APICategory.MACHINE_LEARNING,
+                "ai": APICategory.MACHINE_LEARNING,
+                "blockchain": APICategory.BLOCKCHAIN,
+                "crypto": APICategory.BLOCKCHAIN,
+                "iot": APICategory.IOT,
+                "health": APICategory.HEALTH,
+                "medical": APICategory.HEALTH,
+                "education": APICategory.EDUCATION,
+                "travel": APICategory.TRAVEL,
+                "food": APICategory.FOOD,
+                "sports": APICategory.SPORTS,
+                "gaming": APICategory.GAMING,
+                "games": APICategory.GAMING,
+                "business": APICategory.BUSINESS,
+                "government": APICategory.GOVERNMENT,
+                "utilities": APICategory.UTILITIES,
+                }
 
         for key, category in category_mapping.items():
             if key in category_str.lower():
                 return category
 
         return APICategory.OTHER
+
 
     def _parse_auth_type(self, auth_str: str) -> AuthType:
         """Parse authentication string to AuthType enum"""
@@ -420,6 +432,7 @@ class APIDiscoveryEngine:
             return AuthType.OAUTH2
         else:
             return AuthType.API_KEY  # Default assumption
+
 
     def _parse_scraped_apis(
         self, scraped_data: Dict, source_name: str
@@ -445,6 +458,7 @@ class APIDiscoveryEngine:
 
         return apis
 
+
     def _parse_markdown_apis(self, markdown_content: str) -> List[APIInfo]:
         """Parse APIs from markdown content (GitHub awesome lists)"""
         apis = []
@@ -469,19 +483,20 @@ class APIDiscoveryEngine:
                 continue
 
             api_info = APIInfo(
-                name=name.strip(),
-                base_url=url.strip(),
-                category=category,
-                description=description.strip(),
-                auth_type=AuthType.NONE,  # Default, will be validated later
-                is_free=True,  # Assume free for awesome lists
-                documentation_url=url.strip(),
-                tags={"github", "awesome-list"},
-            )
+                name = name.strip(),
+                    base_url = url.strip(),
+                    category = category,
+                    description = description.strip(),
+                    auth_type = AuthType.NONE,  # Default, will be validated later
+                is_free = True,  # Assume free for awesome lists
+                documentation_url = url.strip(),
+                    tags={"github", "awesome - list"},
+                    )
 
             apis.append(api_info)
 
         return apis
+
 
     def _infer_category_from_description(self, description: str) -> APICategory:
         """Infer API category from description text"""
@@ -489,22 +504,23 @@ class APIDiscoveryEngine:
 
         category_keywords = {
             APICategory.WEATHER: ["weather", "climate", "forecast", "temperature"],
-            APICategory.NEWS: ["news", "article", "journalism", "media"],
-            APICategory.FINANCE: ["finance", "stock", "currency", "exchange", "bank"],
-            APICategory.SOCIAL_MEDIA: ["social", "twitter", "facebook", "instagram"],
-            APICategory.ENTERTAINMENT: ["movie", "music", "video", "entertainment"],
-            APICategory.DEVELOPER_TOOLS: ["developer", "code", "github", "programming"],
-            APICategory.MACHINE_LEARNING: ["ai", "ml", "machine learning", "neural"],
-            APICategory.HEALTH: ["health", "medical", "drug", "disease"],
-            APICategory.TRAVEL: ["travel", "flight", "hotel", "booking"],
-            APICategory.FOOD: ["food", "recipe", "restaurant", "nutrition"],
-        }
+                APICategory.NEWS: ["news", "article", "journalism", "media"],
+                APICategory.FINANCE: ["finance", "stock", "currency", "exchange", "bank"],
+                APICategory.SOCIAL_MEDIA: ["social", "twitter", "facebook", "instagram"],
+                APICategory.ENTERTAINMENT: ["movie", "music", "video", "entertainment"],
+                APICategory.DEVELOPER_TOOLS: ["developer", "code", "github", "programming"],
+                APICategory.MACHINE_LEARNING: ["ai", "ml", "machine learning", "neural"],
+                APICategory.HEALTH: ["health", "medical", "drug", "disease"],
+                APICategory.TRAVEL: ["travel", "flight", "hotel", "booking"],
+                APICategory.FOOD: ["food", "recipe", "restaurant", "nutrition"],
+                }
 
         for category, keywords in category_keywords.items():
             if any(keyword in description_lower for keyword in keywords):
                 return category
 
         return APICategory.OTHER
+
 
     async def validate_apis(self, apis: List[APIInfo]) -> List[APIInfo]:
         """Validate discovered APIs by testing their endpoints"""
@@ -513,12 +529,13 @@ class APIDiscoveryEngine:
 
         semaphore = asyncio.Semaphore(self.config.concurrent_validations)
 
+
         async def validate_single_api(api: APIInfo) -> APIInfo:
             async with semaphore:
                 return await self._validate_api(api)
 
         tasks = [validate_single_api(api) for api in apis]
-        validated_apis = await asyncio.gather(*tasks, return_exceptions=True)
+        validated_apis = await asyncio.gather(*tasks, return_exceptions = True)
 
         # Filter out exceptions and failed validations
         successful_apis = []
@@ -531,6 +548,7 @@ class APIDiscoveryEngine:
 
         return successful_apis
 
+
     async def _validate_api(self, api: APIInfo) -> APIInfo:
         """Validate a single API"""
         try:
@@ -540,7 +558,7 @@ class APIDiscoveryEngine:
 
             # Test basic connectivity
             response = requests.get(
-                api.base_url, timeout=self.config.timeout, allow_redirects=True
+                api.base_url, timeout = self.config.timeout, allow_redirects = True
             )
 
             score = 0.0
@@ -553,13 +571,13 @@ class APIDiscoveryEngine:
             try:
                 response.json()
                 score += 0.2
-            except:
+            except Exception:
                 pass
 
-            # Check for API-like headers
+            # Check for API - like headers
             headers = response.headers
             if any(
-                header in headers for header in ["content-type", "x-ratelimit", "x-api"]
+                header in headers for header in ["content - type", "x - ratelimit", "x - api"]
             ):
                 score += 0.2
 
@@ -586,6 +604,7 @@ class APIDiscoveryEngine:
 
         return api
 
+
     def generate_integration_code(self, api: APIInfo) -> str:
         """Generate Python integration code for an API"""
         if not self.config.generate_integration_code:
@@ -593,18 +612,18 @@ class APIDiscoveryEngine:
 
         # Generate class name
         class_name = "".join(word.capitalize() for word in api.name.split())
-        class_name = re.sub(r"[^A-Za-z0-9]", "", class_name) + "Client"
+        class_name = re.sub(r"[^A - Za - z0 - 9]", "", class_name) + "Client"
 
         # Generate authentication setup
         auth_setup = self._generate_auth_setup(api.auth_type)
 
         # Generate basic client code
         code = f'''
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Auto-generated client for {api.name} API
+Auto - generated client for {api.name} API
 Generated on: {datetime.now().isoformat()}
-API Documentation: {api.documentation_url or 'N/A'}
+API Documentation: {api.documentation_url or 'N / A'}
 """
 
 import requests
@@ -614,80 +633,85 @@ import json
 
 class {class_name}:
     """Client for {api.name} API
-    
+
     Description: {api.description}
     Category: {api.category.value}
     Authentication: {api.auth_type.value}
     """
-    
+
+
     def __init__(self{auth_setup['init_params']}):
         self.base_url = "{api.base_url}"
         self.session = requests.Session()
         {auth_setup['init_code']}
-    
+
+
     def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict[str, Any]:
         """Make HTTP request to API endpoint"""
         url = f"{{self.base_url.rstrip('/')}}/{{endpoint.lstrip('/')}}"
-        
+
         try:
             response = self.session.request(method, url, **kwargs)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
             raise Exception(f"API request failed: {{e}}")
-    
+
+
     def get(self, endpoint: str, params: Optional[Dict] = None) -> Dict[str, Any]:
         """Make GET request to API endpoint"""
-        return self._make_request('GET', endpoint, params=params)
-    
+        return self._make_request('GET', endpoint, params = params)
+
+
     def post(self, endpoint: str, data: Optional[Dict] = None, json_data: Optional[Dict] = None) -> Dict[str, Any]:
         """Make POST request to API endpoint"""
-        return self._make_request('POST', endpoint, data=data, json=json_data)
-    
+        return self._make_request('POST', endpoint, data = data, json = json_data)
+
     # Add specific methods based on discovered endpoints
     {self._generate_endpoint_methods(api)}
-
 
 # Example usage
 if __name__ == "__main__":
     client = {class_name}({auth_setup['example_params']})
-    
+
     try:
         # Example API call
         result = client.get("/")
-        print(json.dumps(result, indent=2))
+        print(json.dumps(result, indent = 2))
     except Exception as e:
         print(f"Error: {{e}}")
 '''
 
         return code
 
+
     def _generate_auth_setup(self, auth_type: AuthType) -> Dict[str, str]:
         """Generate authentication setup code"""
         if auth_type == AuthType.API_KEY:
             return {
                 "init_params": ", api_key: str",
-                "init_code": '        self.session.headers["X-API-Key"] = api_key',
-                "example_params": '"your_api_key_here"',
-            }
+                    "init_code": '        self.session.headers["X - API - Key"] = api_key',
+                    "example_params": '"your_api_key_here"',
+                    }
         elif auth_type == AuthType.BEARER_TOKEN:
             return {
                 "init_params": ", token: str",
-                "init_code": '        self.session.headers["Authorization"] = f"Bearer {token}"',
-                "example_params": '"your_token_here"',
-            }
+                    "init_code": '        self.session.headers["Authorization"] = f"Bearer {token}"',
+                    "example_params": '"your_token_here"',
+                    }
         elif auth_type == AuthType.BASIC_AUTH:
             return {
                 "init_params": ", username: str, password: str",
-                "init_code": "        self.session.auth = (username, password)",
-                "example_params": '"username", "password"',
-            }
+                    "init_code": "        self.session.auth = (username, password)",
+                    "example_params": '"username", "password"',
+                    }
         else:
             return {
                 "init_params": "",
-                "init_code": "        # No authentication required",
-                "example_params": "",
-            }
+                    "init_code": "        # No authentication required",
+                    "example_params": "",
+                    }
+
 
     def _generate_endpoint_methods(self, api: APIInfo) -> str:
         """Generate methods for known endpoints"""
@@ -697,20 +721,23 @@ if __name__ == "__main__":
         methods = []
         for endpoint in api.endpoints:
             method_name = endpoint.path.strip("/").replace("/", "_").replace("-", "_")
-            method_name = re.sub(r"[^a-zA-Z0-9_]", "", method_name) or "root"
+            method_name = re.sub(r"[^a - zA - Z0 - 9_]", "", method_name) or "root"
 
             method_code = f'''
+
+
     def {method_name}(self, **params) -> Dict[str, Any]:
         """Call {endpoint.path} endpoint
-        
+
         Description: {endpoint.description or 'No description available'}
         Method: {endpoint.method}
         """
-        return self._make_request("{endpoint.method}", "{endpoint.path}", params=params)'''
+        return self._make_request("{endpoint.method}", "{endpoint.path}", params = params)'''
 
             methods.append(method_code)
 
         return "\n".join(methods)
+
 
     def save_discovered_apis(
         self, apis: List[APIInfo], filename: str = "discovered_apis.json"
@@ -720,52 +747,53 @@ if __name__ == "__main__":
         for api in apis:
             api_dict = {
                 "name": api.name,
-                "base_url": api.base_url,
-                "category": api.category.value,
-                "description": api.description,
-                "auth_type": api.auth_type.value,
-                "is_free": api.is_free,
-                "rate_limit": api.rate_limit,
-                "documentation_url": api.documentation_url,
-                "status": api.status.value,
-                "validation_score": api.validation_score,
-                "last_validated": (
+                    "base_url": api.base_url,
+                    "category": api.category.value,
+                    "description": api.description,
+                    "auth_type": api.auth_type.value,
+                    "is_free": api.is_free,
+                    "rate_limit": api.rate_limit,
+                    "documentation_url": api.documentation_url,
+                    "status": api.status.value,
+                    "validation_score": api.validation_score,
+                    "last_validated": (
                     api.last_validated.isoformat() if api.last_validated else None
                 ),
-                "tags": list(api.tags),
-                "metadata": api.metadata,
-            }
+                    "tags": list(api.tags),
+                    "metadata": api.metadata,
+                    }
             api_data.append(api_dict)
 
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(api_data, f, indent=2, ensure_ascii=False)
+        with open(filename, "w", encoding="utf - 8") as f:
+            json.dump(api_data, f, indent = 2, ensure_ascii = False)
 
         self.logger.info(f"Saved {len(apis)} APIs to {filename}")
+
 
     def load_discovered_apis(
         self, filename: str = "discovered_apis.json"
     ) -> List[APIInfo]:
         """Load discovered APIs from file"""
         try:
-            with open(filename, "r", encoding="utf-8") as f:
+            with open(filename, "r", encoding="utf - 8") as f:
                 api_data = json.load(f)
 
             apis = []
             for data in api_data:
                 api = APIInfo(
-                    name=data["name"],
-                    base_url=data["base_url"],
-                    category=APICategory(data["category"]),
-                    description=data["description"],
-                    auth_type=AuthType(data["auth_type"]),
-                    is_free=data["is_free"],
-                    rate_limit=data.get("rate_limit"),
-                    documentation_url=data.get("documentation_url"),
-                    status=APIStatus(data["status"]),
-                    validation_score=data.get("validation_score", 0.0),
-                    tags=set(data.get("tags", [])),
-                    metadata=data.get("metadata", {}),
-                )
+                    name = data["name"],
+                        base_url = data["base_url"],
+                        category = APICategory(data["category"]),
+                        description = data["description"],
+                        auth_type = AuthType(data["auth_type"]),
+                        is_free = data["is_free"],
+                        rate_limit = data.get("rate_limit"),
+                        documentation_url = data.get("documentation_url"),
+                        status = APIStatus(data["status"]),
+                        validation_score = data.get("validation_score", 0.0),
+                        tags = set(data.get("tags", [])),
+                        metadata = data.get("metadata", {}),
+                        )
 
                 if data.get("last_validated"):
                     api.last_validated = datetime.fromisoformat(data["last_validated"])
@@ -779,15 +807,18 @@ if __name__ == "__main__":
             self.logger.error(f"Failed to load APIs from {filename}: {e}")
             return []
 
+
     def get_apis_by_category(self, category: APICategory) -> List[APIInfo]:
         """Get APIs filtered by category"""
         return [
             api for api in self.discovered_apis.values() if api.category == category
         ]
 
+
     def get_free_apis(self) -> List[APIInfo]:
         """Get only free APIs"""
         return [api for api in self.discovered_apis.values() if api.is_free]
+
 
     def get_validated_apis(self) -> List[APIInfo]:
         """Get only validated APIs"""
@@ -796,6 +827,7 @@ if __name__ == "__main__":
             for api in self.discovered_apis.values()
             if api.status == APIStatus.VALIDATED
         ]
+
 
     def search_apis(self, query: str) -> List[APIInfo]:
         """Search APIs by name or description"""
@@ -811,6 +843,7 @@ if __name__ == "__main__":
                 results.append(api)
 
         return results
+
 
     async def run_full_discovery(self) -> Dict[str, Any]:
         """Run complete API discovery process"""
@@ -847,7 +880,7 @@ if __name__ == "__main__":
         integration_codes = {}
         if self.config.generate_integration_code:
             top_apis = sorted(
-                validated_apis, key=lambda x: x.validation_score, reverse=True
+                validated_apis, key = lambda x: x.validation_score, reverse = True
             )[:10]
             for api in top_apis:
                 integration_codes[api.name] = self.generate_integration_code(api)
@@ -859,18 +892,19 @@ if __name__ == "__main__":
 
         return {
             "total_discovered": len(all_apis),
-            "unique_apis": len(unique_apis_list),
-            "validated_apis": len(validated_apis),
-            "discovery_sources": discovery_results,
-            "integration_codes": integration_codes,
-            "execution_time": end_time - start_time,
-            "categories": {
+                "unique_apis": len(unique_apis_list),
+                "validated_apis": len(validated_apis),
+                "discovery_sources": discovery_results,
+                "integration_codes": integration_codes,
+                "execution_time": end_time - start_time,
+                "categories": {
                 category.value: len(self.get_apis_by_category(category))
                 for category in APICategory
             },
-            "free_apis": len(self.get_free_apis()),
-            "validated_count": len(self.get_validated_apis()),
-        }
+                "free_apis": len(self.get_free_apis()),
+                "validated_count": len(self.get_validated_apis()),
+                }
+
 
     def cleanup(self) -> None:
         """Clean up resources"""
@@ -879,23 +913,23 @@ if __name__ == "__main__":
 
         self.logger.info("API Discovery Engine cleanup completed")
 
-
 # Example usage
 if __name__ == "__main__":
+
 
     async def main():
         # Configure discovery
         config = APIDiscoveryConfig(
-            max_apis_per_source=50,
-            validate_endpoints=True,
-            generate_integration_code=True,
-            categories_filter=[
+            max_apis_per_source = 50,
+                validate_endpoints = True,
+                generate_integration_code = True,
+                categories_filter=[
                 APICategory.WEATHER,
-                APICategory.NEWS,
-                APICategory.FINANCE,
-            ],
-            free_only=True,
-        )
+                    APICategory.NEWS,
+                    APICategory.FINANCE,
+                    ],
+                free_only = True,
+                )
 
         # Initialize discovery engine
         engine = APIDiscoveryEngine(config)
@@ -918,7 +952,7 @@ if __name__ == "__main__":
             print("\n=== Top Validated APIs ===")
             validated_apis = engine.get_validated_apis()
             top_apis = sorted(
-                validated_apis, key=lambda x: x.validation_score, reverse=True
+                validated_apis, key = lambda x: x.validation_score, reverse = True
             )[:5]
 
             for api in top_apis:

@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Configuration Validator
 
 Validates environment configuration before application startup.
-Follows go-live security practices:
+Follows go - live security practices:
 - Validates required vs optional configurations
 - Checks API key formats
 - Ensures secure defaults
@@ -27,8 +27,9 @@ class ValidationLevel(Enum):
     WARNING = "warning"  # Will log but allow startup
     INFO = "info"  # Informational only
 
-
 @dataclass
+
+
 class ValidationResult:
     """Result of a configuration validation"""
 
@@ -40,7 +41,8 @@ class ValidationResult:
 
 
 class ConfigValidator:
-    """Validates environment configuration for go-live readiness"""
+    """Validates environment configuration for go - live readiness"""
+
 
     def __init__(self):
         self.results: List[ValidationResult] = []
@@ -50,106 +52,107 @@ class ConfigValidator:
             # Server Configuration
             "PORT": {
                 "required": False,
-                "default": "8000",
-                "validator": self._validate_port,
-                "description": "Server port number",
-            },
-            "HOST": {
+                    "default": "8000",
+                    "validator": self._validate_port,
+                    "description": "Server port number",
+                    },
+                "HOST": {
                 "required": False,
-                "default": "0.0.0.0",
-                "validator": self._validate_host,
-                "description": "Server host address",
-            },
-            "ENVIRONMENT": {
+                    "default": "0.0.0.0",
+                    "validator": self._validate_host,
+                    "description": "Server host address",
+                    },
+                "ENVIRONMENT": {
                 "required": False,
-                "default": "development",
-                "validator": self._validate_environment,
-                "description": "Application environment",
-            },
-            # Database Configuration
+                    "default": "development",
+                    "validator": self._validate_environment,
+                    "description": "Application environment",
+                    },
+                # Database Configuration
             "DATABASE_URL": {
                 "required": False,
-                "validator": self._validate_database_url,
-                "description": "Database connection string",
-            },
-            # Security Configuration
+                    "validator": self._validate_database_url,
+                    "description": "Database connection string",
+                    },
+                # Security Configuration
             "SECRET_KEY": {
                 "required": True,
-                "validator": self._validate_secret_key,
-                "description": "Application secret key for security",
-            },
-            "JWT_SECRET": {
+                    "validator": self._validate_secret_key,
+                    "description": "Application secret key for security",
+                    },
+                "JWT_SECRET": {
                 "required": False,
-                "validator": self._validate_jwt_secret,
-                "description": "JWT token signing secret",
-            },
-            # Pet Care APIs (Optional)
+                    "validator": self._validate_jwt_secret,
+                    "description": "JWT token signing secret",
+                    },
+                # Pet Care APIs (Optional)
             "EBIRD_API_TOKEN": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "eBird API token for bird observations",
-            },
-            "DOG_API_KEY": {
+                    "validator": self._validate_api_key,
+                    "description": "eBird API token for bird observations",
+                    },
+                "DOG_API_KEY": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Dog API key for breed information",
-            },
-            "CAT_API_KEY": {
+                    "validator": self._validate_api_key,
+                    "description": "Dog API key for breed information",
+                    },
+                "CAT_API_KEY": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Cat API key for breed information",
-            },
-            "PETFINDER_KEY": {
+                    "validator": self._validate_api_key,
+                    "description": "Cat API key for breed information",
+                    },
+                "PETFINDER_KEY": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Petfinder API key",
-            },
-            "PETFINDER_SECRET": {
+                    "validator": self._validate_api_key,
+                    "description": "Petfinder API key",
+                    },
+                "PETFINDER_SECRET": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Petfinder API secret",
-            },
-            # Veterinary Services (Optional)
+                    "validator": self._validate_api_key,
+                    "description": "Petfinder API secret",
+                    },
+                # Veterinary Services (Optional)
             "VETSTER_API_KEY": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Vetster API key for online consultations",
-            },
-            "PAWP_API_KEY": {
+                    "validator": self._validate_api_key,
+                    "description": "Vetster API key for online consultations",
+                    },
+                "PAWP_API_KEY": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Pawp API key for emergency vet chat",
-            },
-            "AIRVET_API_KEY": {
+                    "validator": self._validate_api_key,
+                    "description": "Pawp API key for emergency vet chat",
+                    },
+                "AIRVET_API_KEY": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "AirVet API key for virtual care",
-            },
-            "CALENDLY_TOKEN": {
+                    "validator": self._validate_api_key,
+                    "description": "AirVet API key for virtual care",
+                    },
+                "CALENDLY_TOKEN": {
                 "required": False,
-                "validator": self._validate_api_key,
-                "description": "Calendly token for appointment scheduling",
-            },
-            # Feature Flags
+                    "validator": self._validate_api_key,
+                    "description": "Calendly token for appointment scheduling",
+                    },
+                # Feature Flags
             "ENABLE_PET_CARE_APIS": {
                 "required": False,
-                "default": "false",
-                "validator": self._validate_boolean,
-                "description": "Enable pet care API endpoints",
-            },
-            "ENABLE_AFFILIATE_PROCESSING": {
+                    "default": "false",
+                    "validator": self._validate_boolean,
+                    "description": "Enable pet care API endpoints",
+                    },
+                "ENABLE_AFFILIATE_PROCESSING": {
                 "required": False,
-                "default": "true",
-                "validator": self._validate_boolean,
-                "description": "Enable affiliate data processing",
-            },
-            "ENABLE_DEBUG_MODE": {
+                    "default": "true",
+                    "validator": self._validate_boolean,
+                    "description": "Enable affiliate data processing",
+                    },
+                "ENABLE_DEBUG_MODE": {
                 "required": False,
-                "default": "false",
-                "validator": self._validate_boolean,
-                "description": "Enable debug mode (should be false in production)",
-            },
-        }
+                    "default": "false",
+                    "validator": self._validate_boolean,
+                    "description": "Enable debug mode (should be false in production)",
+                    },
+                }
+
 
     def _validate_port(self, value: str) -> Tuple[bool, str]:
         """Validate port number"""
@@ -162,6 +165,7 @@ class ConfigValidator:
         except ValueError:
             return False, "Port must be a valid integer"
 
+
     def _validate_host(self, value: str) -> Tuple[bool, str]:
         """Validate host address"""
         # Basic validation for common host patterns
@@ -172,6 +176,7 @@ class ConfigValidator:
             return True, "Valid host address"
         return False, "Invalid host address format"
 
+
     def _validate_environment(self, value: str) -> Tuple[bool, str]:
         """Validate environment setting"""
         valid_envs = ["development", "staging", "production", "test"]
@@ -181,15 +186,16 @@ class ConfigValidator:
             return True, f"Valid environment: {value}"
         return False, f"Environment must be one of: {', '.join(valid_envs)}"
 
+
     def _validate_database_url(self, value: str) -> Tuple[bool, str]:
         """Validate database URL format"""
         # Basic validation for common database URL patterns
         db_patterns = [
             r"^postgresql://.*",
-            r"^mysql://.*",
-            r"^sqlite:///.*",
-            r"^mongodb://.*",
-        ]
+                r"^mysql://.*",
+                r"^sqlite:///.*",
+                r"^mongodb://.*",
+                ]
 
         for pattern in db_patterns:
             if re.match(pattern, value, re.IGNORECASE):
@@ -197,13 +203,14 @@ class ConfigValidator:
 
         return False, "Invalid database URL format"
 
+
     def _validate_secret_key(self, value: str) -> Tuple[bool, str]:
         """Validate secret key strength"""
         if len(value) < 32:
             return False, "Secret key must be at least 32 characters long"
 
-        if value in ["your-secret-key", "change-me", "secret", "password"]:
-            return False, "Secret key appears to be a default/weak value"
+        if value in ["your - secret - key", "change - me", "secret", "password"]:
+            return False, "Secret key appears to be a default / weak value"
 
         # Check for reasonable entropy
         if len(set(value)) < 10:
@@ -211,9 +218,11 @@ class ConfigValidator:
 
         return True, "Secret key appears strong"
 
+
     def _validate_jwt_secret(self, value: str) -> Tuple[bool, str]:
         """Validate JWT secret"""
         return self._validate_secret_key(value)
+
 
     def _validate_api_key(self, value: str) -> Tuple[bool, str]:
         """Validate API key format"""
@@ -222,18 +231,19 @@ class ConfigValidator:
 
         # Check for obvious placeholder values
         placeholder_patterns = [
-            "your-api-key",
-            "api-key-here",
-            "change-me",
-            "placeholder",
-            "example",
-            "test-key",
-        ]
+            "your - api - key",
+                "api - key - here",
+                "change - me",
+                "placeholder",
+                "example",
+                "test - key",
+                ]
 
         if value.lower() in placeholder_patterns:
             return False, "API key appears to be a placeholder value"
 
         return True, "API key format appears valid"
+
 
     def _validate_boolean(self, value: str) -> Tuple[bool, str]:
         """Validate boolean value"""
@@ -245,8 +255,9 @@ class ConfigValidator:
 
         return (
             False,
-            "Boolean value must be true/false, 1/0, yes/no, on/off, or enabled/disabled",
-        )
+                "Boolean value must be true / false, 1 / 0, yes / no, on / off, or enabled / disabled",
+                )
+
 
     def validate_configuration(self) -> Dict[str, Any]:
         """Validate all configuration settings"""
@@ -264,11 +275,11 @@ class ConfigValidator:
             if value is None or value.strip() == "":
                 if rules["required"]:
                     result = ValidationResult(
-                        key=key,
-                        level=ValidationLevel.ERROR,
-                        message=f"Required configuration '{key}' is missing: {rules['description']}",
-                        value_present=False,
-                    )
+                        key = key,
+                            level = ValidationLevel.ERROR,
+                            message = f"Required configuration '{key}' is missing: {rules['description']}",
+                            value_present = False,
+                            )
                     errors.append(result.message)
                 else:
                     # Use default if available
@@ -276,19 +287,19 @@ class ConfigValidator:
                     if default_value:
                         os.environ[key] = default_value
                         result = ValidationResult(
-                            key=key,
-                            level=ValidationLevel.INFO,
-                            message=f"Using default value for '{key}': {default_value}",
-                            value_present=False,
-                        )
+                            key = key,
+                                level = ValidationLevel.INFO,
+                                message = f"Using default value for '{key}': {default_value}",
+                                value_present = False,
+                                )
                         info.append(result.message)
                     else:
                         result = ValidationResult(
-                            key=key,
-                            level=ValidationLevel.WARNING,
-                            message=f"Optional configuration '{key}' not set: {rules['description']}",
-                            value_present=False,
-                        )
+                            key = key,
+                                level = ValidationLevel.WARNING,
+                                message = f"Optional configuration '{key}' not set: {rules['description']}",
+                                value_present = False,
+                                )
                         warnings.append(result.message)
             else:
                 # Validate the value
@@ -298,12 +309,12 @@ class ConfigValidator:
 
                     if is_valid:
                         result = ValidationResult(
-                            key=key,
-                            level=ValidationLevel.INFO,
-                            message=f"'{key}': {validation_message}",
-                            value_present=True,
-                            value_valid=True,
-                        )
+                            key = key,
+                                level = ValidationLevel.INFO,
+                                message = f"'{key}': {validation_message}",
+                                value_present = True,
+                                value_valid = True,
+                                )
                         info.append(result.message)
                     else:
                         level = (
@@ -312,12 +323,12 @@ class ConfigValidator:
                             else ValidationLevel.WARNING
                         )
                         result = ValidationResult(
-                            key=key,
-                            level=level,
-                            message=f"'{key}' validation failed: {validation_message}",
-                            value_present=True,
-                            value_valid=False,
-                        )
+                            key = key,
+                                level = level,
+                                message = f"'{key}' validation failed: {validation_message}",
+                                value_present = True,
+                                value_valid = False,
+                                )
 
                         if level == ValidationLevel.ERROR:
                             errors.append(result.message)
@@ -325,11 +336,11 @@ class ConfigValidator:
                             warnings.append(result.message)
                 else:
                     result = ValidationResult(
-                        key=key,
-                        level=ValidationLevel.INFO,
-                        message=f"'{key}' is set (no validation rule defined)",
-                        value_present=True,
-                    )
+                        key = key,
+                            level = ValidationLevel.INFO,
+                            message = f"'{key}' is set (no validation rule defined)",
+                            value_present = True,
+                            )
                     info.append(result.message)
 
             self.results.append(result)
@@ -344,21 +355,21 @@ class ConfigValidator:
         for info_msg in info:
             logger.info(info_msg)
 
-        # Check for production-specific requirements
+        # Check for production - specific requirements
         env = os.getenv("ENVIRONMENT", "development").lower()
         if env == "production":
             self._validate_production_requirements(errors, warnings)
 
         validation_summary = {
             "valid": len(errors) == 0,
-            "errors": errors,
-            "warnings": warnings,
-            "info": info,
-            "environment": env,
-            "total_checks": len(self.results),
-            "errors_count": len(errors),
-            "warnings_count": len(warnings),
-        }
+                "errors": errors,
+                "warnings": warnings,
+                "info": info,
+                "environment": env,
+                "total_checks": len(self.results),
+                "errors_count": len(errors),
+                "warnings_count": len(warnings),
+                }
 
         if validation_summary["valid"]:
             logger.info(
@@ -370,6 +381,7 @@ class ConfigValidator:
             )
 
         return validation_summary
+
 
     def _validate_production_requirements(self, errors: List[str], warnings: List[str]):
         """Additional validation for production environment"""
@@ -400,11 +412,10 @@ def validate_startup_config() -> bool:
     result = validator.validate_configuration()
     return result["valid"]
 
-
 # Export functions
 __all__ = [
     "ConfigValidator",
-    "ValidationResult",
-    "ValidationLevel",
-    "validate_startup_config",
+        "ValidationResult",
+        "ValidationLevel",
+        "validate_startup_config",
 ]

@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Revenue Tracker - Comprehensive Revenue Analytics & Forecasting System
-Tracks all income streams, provides real-time analytics, forecasting, and alerts
+Tracks all income streams, provides real - time analytics, forecasting, and alerts
 """
 
 import asyncio
@@ -39,7 +39,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sqlalchemy import (Boolean, Column, DateTime, Float, Integer, Numeric, String,
-                        Text, create_engine)
+    Text, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -73,12 +73,13 @@ Base = declarative_base()
 class RevenueConfig:
     """Configuration for the revenue tracker"""
 
+
     def __init__(self):
         # YouTube Analytics
         self.youtube_api_key = os.getenv("YOUTUBE_API_KEY")
         self.youtube_channel_id = os.getenv("YOUTUBE_CHANNEL_ID")
 
-        # E-commerce APIs
+        # E - commerce APIs
         self.gumroad_access_token = os.getenv("GUMROAD_ACCESS_TOKEN")
         self.stripe_api_key = os.getenv("STRIPE_API_KEY")
         self.paypal_client_id = os.getenv("PAYPAL_CLIENT_ID")
@@ -113,67 +114,69 @@ class RevenueConfig:
         )  # 10%
 
         # Ensure directories exist
-        self.data_dir.mkdir(exist_ok=True)
-        self.reports_dir.mkdir(exist_ok=True)
-
+        self.data_dir.mkdir(exist_ok = True)
+        self.reports_dir.mkdir(exist_ok = True)
 
 # Database Models
+
+
 class RevenueStream(Base):
     __tablename__ = "revenue_streams"
 
-    id = Column(Integer, primary_key=True)
-    source = Column(String(100), nullable=False)  # youtube, gumroad, affiliate, etc.
-    platform = Column(String(100), nullable=False)
-    amount = Column(Numeric(10, 2), nullable=False)
+    id = Column(Integer, primary_key = True)
+    source = Column(String(100), nullable = False)  # youtube, gumroad, affiliate, etc.
+    platform = Column(String(100), nullable = False)
+    amount = Column(Numeric(10, 2), nullable = False)
     currency = Column(String(3), default="USD")
     transaction_id = Column(String(255))
     description = Column(Text)
     metadata = Column(Text)  # JSON string for additional data
-    recorded_at = Column(DateTime, default=datetime.utcnow)
-    transaction_date = Column(DateTime, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    recorded_at = Column(DateTime, default = datetime.utcnow)
+    transaction_date = Column(DateTime, nullable = False)
+    created_at = Column(DateTime, default = datetime.utcnow)
 
 
 class RevenueGoal(Base):
     __tablename__ = "revenue_goals"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
-    target_amount = Column(Numeric(10, 2), nullable=False)
-    current_amount = Column(Numeric(10, 2), default=0)
-    target_date = Column(DateTime, nullable=False)
+    id = Column(Integer, primary_key = True)
+    name = Column(String(255), nullable = False)
+    target_amount = Column(Numeric(10, 2), nullable = False)
+    current_amount = Column(Numeric(10, 2), default = 0)
+    target_date = Column(DateTime, nullable = False)
     source_filter = Column(String(255))  # Filter by specific sources
     status = Column(String(50), default="active")
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default = datetime.utcnow)
+    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
 
 
 class RevenueAlert(Base):
     __tablename__ = "revenue_alerts"
 
-    id = Column(Integer, primary_key=True)
-    alert_type = Column(String(100), nullable=False)  # threshold, goal, anomaly
-    message = Column(Text, nullable=False)
+    id = Column(Integer, primary_key = True)
+    alert_type = Column(String(100), nullable = False)  # threshold, goal, anomaly
+    message = Column(Text, nullable = False)
     severity = Column(String(50), default="info")  # info, warning, critical
-    triggered_at = Column(DateTime, default=datetime.utcnow)
-    acknowledged = Column(Boolean, default=False)
+    triggered_at = Column(DateTime, default = datetime.utcnow)
+    acknowledged = Column(Boolean, default = False)
     metadata = Column(Text)  # JSON string for additional data
 
 
 class RevenueForecast(Base):
     __tablename__ = "revenue_forecasts"
 
-    id = Column(Integer, primary_key=True)
-    forecast_date = Column(DateTime, nullable=False)
-    predicted_amount = Column(Numeric(10, 2), nullable=False)
+    id = Column(Integer, primary_key = True)
+    forecast_date = Column(DateTime, nullable = False)
+    predicted_amount = Column(Numeric(10, 2), nullable = False)
     confidence_lower = Column(Numeric(10, 2))
     confidence_upper = Column(Numeric(10, 2))
-    model_used = Column(String(100), nullable=False)
+    model_used = Column(String(100), nullable = False)
     source_filter = Column(String(255))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default = datetime.utcnow)
+
+# Request / Response Models
 
 
-# Request/Response Models
 class RevenueStreamRequest(BaseModel):
     source: str
     platform: str
@@ -208,21 +211,24 @@ class ForecastRequest(BaseModel):
 class YouTubeAnalytics:
     """YouTube revenue and analytics tracker"""
 
+
     def __init__(self, config: RevenueConfig):
         self.config = config
         self.service = None
         self._initialize_youtube_service()
+
 
     def _initialize_youtube_service(self):
         """Initialize YouTube Analytics API service"""
         if self.config.youtube_api_key:
             try:
                 self.service = build(
-                    "youtubeAnalytics", "v2", developerKey=self.config.youtube_api_key
+                    "youtubeAnalytics", "v2", developerKey = self.config.youtube_api_key
                 )
                 logger.info("✅ YouTube Analytics service initialized")
             except Exception as e:
                 logger.error(f"YouTube Analytics initialization failed: {e}")
+
 
     async def get_revenue_data(
         self, start_date: datetime, end_date: datetime
@@ -237,12 +243,12 @@ class YouTubeAnalytics:
             response = (
                 self.service.reports()
                 .query(
-                    ids=f"channel=={self.config.youtube_channel_id}",
-                    startDate=start_date.strftime("%Y-%m-%d"),
-                    endDate=end_date.strftime("%Y-%m-%d"),
-                    metrics="estimatedRevenue,monetizedPlaybacks,playbackBasedCpm",
-                    dimensions="day",
-                )
+                    ids = f"channel=={self.config.youtube_channel_id}",
+                        startDate = start_date.strftime("%Y-%m-%d"),
+                        endDate = end_date.strftime("%Y-%m-%d"),
+                        metrics="estimatedRevenue,monetizedPlaybacks,playbackBasedCpm",
+                        dimensions="day",
+                        )
                 .execute()
             )
 
@@ -252,10 +258,10 @@ class YouTubeAnalytics:
                     revenue_data.append(
                         {
                             "date": datetime.strptime(row[0], "%Y-%m-%d"),
-                            "revenue": float(row[1]) if row[1] else 0.0,
-                            "monetized_playbacks": int(row[2]) if row[2] else 0,
-                            "cpm": float(row[3]) if row[3] else 0.0,
-                        }
+                                "revenue": float(row[1]) if row[1] else 0.0,
+                                "monetized_playbacks": int(row[2]) if row[2] else 0,
+                                "cpm": float(row[3]) if row[3] else 0.0,
+                                }
                     )
 
             return revenue_data
@@ -268,9 +274,11 @@ class YouTubeAnalytics:
 class GumroadAnalytics:
     """Gumroad sales and revenue tracker"""
 
+
     def __init__(self, config: RevenueConfig):
         self.config = config
-        self.base_url = "https://api.gumroad.com/v2"
+        self.base_url = "https://api.gumroad.com / v2"
+
 
     async def get_sales_data(
         self, start_date: datetime, end_date: datetime
@@ -286,12 +294,12 @@ class GumroadAnalytics:
             # Get sales data
             response = requests.get(
                 f"{self.base_url}/sales",
-                headers=headers,
-                params={
+                    headers = headers,
+                    params={
                     "after": start_date.strftime("%Y-%m-%d"),
-                    "before": end_date.strftime("%Y-%m-%d"),
-                },
-            )
+                        "before": end_date.strftime("%Y-%m-%d"),
+                        },
+                    )
 
             if response.status_code == 200:
                 sales_data = response.json().get("sales", [])
@@ -303,12 +311,12 @@ class GumroadAnalytics:
                             "date": datetime.fromisoformat(
                                 sale["created_at"].replace("Z", "+00:00")
                             ),
-                            "amount": float(sale["price"])
+                                "amount": float(sale["price"])
                             / 100,  # Convert cents to dollars
                             "product_name": sale["product_name"],
-                            "transaction_id": sale["id"],
-                            "currency": sale["currency"],
-                        }
+                                "transaction_id": sale["id"],
+                                "currency": sale["currency"],
+                                }
                     )
 
                 return processed_data
@@ -324,8 +332,10 @@ class GumroadAnalytics:
 class AffiliateTracker:
     """Affiliate marketing revenue tracker"""
 
+
     def __init__(self, config: RevenueConfig):
         self.config = config
+
 
     async def get_affiliate_data(
         self, start_date: datetime, end_date: datetime
@@ -342,8 +352,10 @@ class AffiliateTracker:
 class RevenueForecaster:
     """Advanced revenue forecasting using multiple models"""
 
+
     def __init__(self, config: RevenueConfig):
         self.config = config
+
 
     async def generate_forecast(
         self, historical_data: pd.DataFrame, days_ahead: int = 30, model: str = "linear"
@@ -366,6 +378,7 @@ class RevenueForecaster:
         except Exception as e:
             logger.error(f"Forecasting failed: {e}")
             return self._generate_simple_forecast(historical_data, days_ahead)
+
 
     async def _linear_forecast(
         self, data: pd.DataFrame, days_ahead: int
@@ -393,7 +406,7 @@ class RevenueForecaster:
         std_error = np.sqrt(mse)
 
         forecast_dates = [
-            data["date"].max() + timedelta(days=i) for i in range(1, days_ahead + 1)
+            data["date"].max() + timedelta(days = i) for i in range(1, days_ahead + 1)
         ]
 
         forecast_data = []
@@ -401,10 +414,10 @@ class RevenueForecaster:
             forecast_data.append(
                 {
                     "date": date,
-                    "predicted_amount": max(0, pred),
-                    "confidence_lower": max(0, pred - 1.96 * std_error),
-                    "confidence_upper": pred + 1.96 * std_error,
-                }
+                        "predicted_amount": max(0, pred),
+                        "confidence_lower": max(0, pred - 1.96 * std_error),
+                        "confidence_upper": pred + 1.96 * std_error,
+                        }
             )
 
         # Calculate model metrics
@@ -414,10 +427,11 @@ class RevenueForecaster:
 
         return {
             "model": "linear_regression",
-            "forecast": forecast_data,
-            "metrics": {"mae": mae, "rmse": rmse, "r2_score": model.score(X, y)},
-            "total_predicted": sum(f["predicted_amount"] for f in forecast_data),
-        }
+                "forecast": forecast_data,
+                "metrics": {"mae": mae, "rmse": rmse, "r2_score": model.score(X, y)},
+                "total_predicted": sum(f["predicted_amount"] for f in forecast_data),
+                }
+
 
     async def _prophet_forecast(
         self, data: pd.DataFrame, days_ahead: int
@@ -429,14 +443,14 @@ class RevenueForecaster:
 
         # Train Prophet model
         model = Prophet(
-            daily_seasonality=True,
-            weekly_seasonality=True,
-            yearly_seasonality=False if len(data) < 365 else True,
-        )
+            daily_seasonality = True,
+                weekly_seasonality = True,
+                yearly_seasonality = False if len(data) < 365 else True,
+                )
         model.fit(prophet_data)
 
         # Generate future dates
-        future = model.make_future_dataframe(periods=days_ahead)
+        future = model.make_future_dataframe(periods = days_ahead)
         forecast = model.predict(future)
 
         # Extract forecast data
@@ -447,26 +461,27 @@ class RevenueForecaster:
             forecast_data.append(
                 {
                     "date": row["ds"],
-                    "predicted_amount": max(0, row["yhat"]),
-                    "confidence_lower": max(0, row["yhat_lower"]),
-                    "confidence_upper": row["yhat_upper"],
-                }
+                        "predicted_amount": max(0, row["yhat"]),
+                        "confidence_lower": max(0, row["yhat_lower"]),
+                        "confidence_upper": row["yhat_upper"],
+                        }
             )
 
         return {
             "model": "prophet",
-            "forecast": forecast_data,
-            "metrics": {
-                "mae": "N/A",  # Prophet doesn't provide simple MAE
-                "rmse": "N/A",
-                "trend": (
+                "forecast": forecast_data,
+                "metrics": {
+                "mae": "N / A",  # Prophet doesn't provide simple MAE
+                "rmse": "N / A",
+                    "trend": (
                     "increasing"
                     if forecast["trend"].iloc[-1] > forecast["trend"].iloc[0]
                     else "decreasing"
                 ),
-            },
-            "total_predicted": sum(f["predicted_amount"] for f in forecast_data),
-        }
+                    },
+                "total_predicted": sum(f["predicted_amount"] for f in forecast_data),
+                }
+
 
     async def _random_forest_forecast(
         self, data: pd.DataFrame, days_ahead: int
@@ -498,7 +513,7 @@ class RevenueForecaster:
         y = data["amount"].values
 
         # Train model
-        model = RandomForestRegressor(n_estimators=100, random_state=42)
+        model = RandomForestRegressor(n_estimators = 100, random_state = 42)
         model.fit(X, y)
 
         # Generate predictions (simplified approach)
@@ -506,15 +521,15 @@ class RevenueForecaster:
         predictions = []
 
         for i in range(days_ahead):
-            future_date = data["date"].max() + timedelta(days=i + 1)
+            future_date = data["date"].max() + timedelta(days = i + 1)
 
             # Create features for prediction
             features = [
                 future_date.weekday(),
-                future_date.day,
-                future_date.month,
-                last_row["days_since_start"] + i + 1,
-                last_row["amount"] if i == 0 else predictions[-1],  # lag_1
+                    future_date.day,
+                    future_date.month,
+                    last_row["days_since_start"] + i + 1,
+                    last_row["amount"] if i == 0 else predictions[-1],  # lag_1
                 (
                     data["amount"].iloc[-7] if len(data) >= 7 else last_row["amount"]
                 ),  # lag_7
@@ -532,7 +547,7 @@ class RevenueForecaster:
         std_error = np.std(residuals)
 
         forecast_dates = [
-            data["date"].max() + timedelta(days=i) for i in range(1, days_ahead + 1)
+            data["date"].max() + timedelta(days = i) for i in range(1, days_ahead + 1)
         ]
 
         forecast_data = []
@@ -540,10 +555,10 @@ class RevenueForecaster:
             forecast_data.append(
                 {
                     "date": date,
-                    "predicted_amount": pred,
-                    "confidence_lower": max(0, pred - 1.96 * std_error),
-                    "confidence_upper": pred + 1.96 * std_error,
-                }
+                        "predicted_amount": pred,
+                        "confidence_lower": max(0, pred - 1.96 * std_error),
+                        "confidence_upper": pred + 1.96 * std_error,
+                        }
             )
 
         # Calculate metrics
@@ -552,28 +567,29 @@ class RevenueForecaster:
 
         return {
             "model": "random_forest",
-            "forecast": forecast_data,
-            "metrics": {
+                "forecast": forecast_data,
+                "metrics": {
                 "mae": mae,
-                "rmse": rmse,
-                "feature_importance": dict(
+                    "rmse": rmse,
+                    "feature_importance": dict(
                     zip(feature_cols, model.feature_importances_)
                 ),
-            },
-            "total_predicted": sum(predictions),
-        }
+                    },
+                "total_predicted": sum(predictions),
+                }
+
 
     def _generate_simple_forecast(
         self, data: pd.DataFrame, days_ahead: int
     ) -> Dict[str, Any]:
-        """Simple average-based forecast for insufficient data"""
+        """Simple average - based forecast for insufficient data"""
         if len(data) == 0:
             avg_amount = 0
         else:
             avg_amount = data["amount"].mean()
 
         forecast_dates = [
-            datetime.now() + timedelta(days=i) for i in range(1, days_ahead + 1)
+            datetime.now() + timedelta(days = i) for i in range(1, days_ahead + 1)
         ]
 
         forecast_data = []
@@ -581,22 +597,23 @@ class RevenueForecaster:
             forecast_data.append(
                 {
                     "date": date,
-                    "predicted_amount": avg_amount,
-                    "confidence_lower": avg_amount * 0.8,
-                    "confidence_upper": avg_amount * 1.2,
-                }
+                        "predicted_amount": avg_amount,
+                        "confidence_lower": avg_amount * 0.8,
+                        "confidence_upper": avg_amount * 1.2,
+                        }
             )
 
         return {
             "model": "simple_average",
-            "forecast": forecast_data,
-            "metrics": {"note": "Insufficient data for advanced forecasting"},
-            "total_predicted": avg_amount * days_ahead,
-        }
+                "forecast": forecast_data,
+                "metrics": {"note": "Insufficient data for advanced forecasting"},
+                "total_predicted": avg_amount * days_ahead,
+                }
 
 
 class RevenueTracker:
     """Main revenue tracking system"""
+
 
     def __init__(self, config: RevenueConfig):
         self.config = config
@@ -605,7 +622,7 @@ class RevenueTracker:
         # Initialize database
         self.engine = create_engine(config.database_url)
         Base.metadata.create_all(self.engine)
-        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        SessionLocal = sessionmaker(autocommit = False, autoflush = False, bind = self.engine)
         self.db_session = SessionLocal()
 
         # Initialize components
@@ -622,58 +639,65 @@ class RevenueTracker:
         self.setup_routes()
         self.setup_scheduler()
 
+
     def setup_logging(self):
         """Configure logging"""
         logger.remove()
         logger.add(
             sys.stdout,
-            level=self.config.log_level,
-            format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        )
+                level = self.config.log_level,
+                format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+                )
         logger.add(
-            "/app/logs/revenue_tracker.log",
-            rotation="1 day",
-            retention="30 days",
-            level=self.config.log_level,
-        )
+            "/app / logs / revenue_tracker.log",
+                rotation="1 day",
+                retention="30 days",
+                level = self.config.log_level,
+                )
+
 
     def setup_scheduler(self):
         """Setup automated data collection"""
         # Collect revenue data every hour
         self.scheduler.add_job(
             self.collect_all_revenue_data,
-            CronTrigger(minute=0),  # Every hour
+                CronTrigger(minute = 0),  # Every hour
             id="collect_revenue_data",
-        )
+                )
 
         # Generate daily reports
         self.scheduler.add_job(
             self.generate_daily_report,
-            CronTrigger(hour=9, minute=0),  # 9 AM daily
+                CronTrigger(hour = 9, minute = 0),  # 9 AM daily
             id="daily_report",
-        )
+                )
 
         # Check revenue goals and alerts
         self.scheduler.add_job(
             self.check_goals_and_alerts,
-            CronTrigger(minute="*/30"),  # Every 30 minutes
+                CronTrigger(minute="*/30"),  # Every 30 minutes
             id="check_alerts",
-        )
+                )
+
 
     def setup_routes(self):
         """Setup FastAPI routes"""
 
         @self.app.get("/health")
+
+
         async def health_check():
             return {
                 "status": "healthy",
-                "timestamp": datetime.now().isoformat(),
-                "youtube_configured": bool(self.config.youtube_api_key),
-                "gumroad_configured": bool(self.config.gumroad_access_token),
-                "database_connected": True,
-            }
+                    "timestamp": datetime.now().isoformat(),
+                    "youtube_configured": bool(self.config.youtube_api_key),
+                    "gumroad_configured": bool(self.config.gumroad_access_token),
+                    "database_connected": True,
+                    }
 
-        @self.app.post("/revenue/record")
+        @self.app.post("/revenue / record")
+
+
         async def record_revenue(request: RevenueStreamRequest):
             """Record a revenue transaction"""
             try:
@@ -682,15 +706,15 @@ class RevenueTracker:
                 )
 
                 revenue_stream = RevenueStream(
-                    source=request.source,
-                    platform=request.platform,
-                    amount=Decimal(str(request.amount)),
-                    currency=request.currency,
-                    transaction_id=request.transaction_id,
-                    description=request.description,
-                    metadata=json.dumps(request.metadata) if request.metadata else None,
-                    transaction_date=request.transaction_date,
-                )
+                    source = request.source,
+                        platform = request.platform,
+                        amount = Decimal(str(request.amount)),
+                        currency = request.currency,
+                        transaction_id = request.transaction_id,
+                        description = request.description,
+                        metadata = json.dumps(request.metadata) if request.metadata else None,
+                        transaction_date = request.transaction_date,
+                        )
 
                 self.db_session.add(revenue_stream)
                 self.db_session.commit()
@@ -700,22 +724,24 @@ class RevenueTracker:
 
                 return {
                     "success": True,
-                    "revenue_id": revenue_stream.id,
-                    "amount": float(revenue_stream.amount),
-                    "source": revenue_stream.source,
-                }
+                        "revenue_id": revenue_stream.id,
+                        "amount": float(revenue_stream.amount),
+                        "source": revenue_stream.source,
+                        }
 
             except Exception as e:
                 logger.error(f"Revenue recording failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
-        @self.app.get("/revenue/analytics")
+        @self.app.get("/revenue / analytics")
+
+
         async def get_analytics(
             start_date: datetime = Query(...),
-            end_date: datetime = Query(...),
-            sources: Optional[str] = Query(None),
-            group_by: str = Query("day"),
-        ):
+                end_date: datetime = Query(...),
+                sources: Optional[str] = Query(None),
+                group_by: str = Query("day"),
+                ):
             """Get revenue analytics"""
             try:
                 logger.info(f"📊 Generating analytics from {start_date} to {end_date}")
@@ -723,8 +749,8 @@ class RevenueTracker:
                 # Build query
                 query = self.db_session.query(RevenueStream).filter(
                     RevenueStream.transaction_date >= start_date,
-                    RevenueStream.transaction_date <= end_date,
-                )
+                        RevenueStream.transaction_date <= end_date,
+                        )
 
                 if sources:
                     source_list = sources.split(",")
@@ -737,10 +763,10 @@ class RevenueTracker:
                     [
                         {
                             "date": r.transaction_date,
-                            "amount": float(r.amount),
-                            "source": r.source,
-                            "platform": r.platform,
-                        }
+                                "amount": float(r.amount),
+                                "source": r.source,
+                                "platform": r.platform,
+                                }
                         for r in revenue_data
                     ]
                 )
@@ -748,11 +774,11 @@ class RevenueTracker:
                 if df.empty:
                     return {
                         "total_revenue": 0,
-                        "transaction_count": 0,
-                        "average_transaction": 0,
-                        "daily_breakdown": [],
-                        "source_breakdown": {},
-                    }
+                            "transaction_count": 0,
+                            "average_transaction": 0,
+                            "daily_breakdown": [],
+                            "source_breakdown": {},
+                            }
 
                 # Group by specified period
                 if group_by == "day":
@@ -776,19 +802,21 @@ class RevenueTracker:
 
                 return {
                     "total_revenue": round(total_revenue, 2),
-                    "transaction_count": transaction_count,
-                    "average_transaction": round(average_transaction, 2),
-                    "daily_breakdown": daily_breakdown.to_dict("records"),
-                    "source_breakdown": {
+                        "transaction_count": transaction_count,
+                        "average_transaction": round(average_transaction, 2),
+                        "daily_breakdown": daily_breakdown.to_dict("records"),
+                        "source_breakdown": {
                         k: round(v, 2) for k, v in source_breakdown.items()
                     },
-                }
+                        }
 
             except Exception as e:
                 logger.error(f"Analytics generation failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
-        @self.app.post("/revenue/forecast")
+        @self.app.post("/revenue / forecast")
+
+
         async def generate_forecast(request: ForecastRequest):
             """Generate revenue forecast"""
             try:
@@ -798,12 +826,12 @@ class RevenueTracker:
 
                 # Get historical data
                 end_date = datetime.now()
-                start_date = end_date - timedelta(days=90)  # Use last 90 days
+                start_date = end_date - timedelta(days = 90)  # Use last 90 days
 
                 query = self.db_session.query(RevenueStream).filter(
                     RevenueStream.transaction_date >= start_date,
-                    RevenueStream.transaction_date <= end_date,
-                )
+                        RevenueStream.transaction_date <= end_date,
+                        )
 
                 if request.sources:
                     query = query.filter(RevenueStream.source.in_(request.sources))
@@ -821,8 +849,8 @@ class RevenueTracker:
                 if df.empty:
                     return {
                         "success": False,
-                        "message": "No historical data available for forecasting",
-                    }
+                            "message": "No historical data available for forecasting",
+                            }
 
                 # Group by day and sum amounts
                 daily_df = df.groupby("date")["amount"].sum().reset_index()
@@ -836,38 +864,40 @@ class RevenueTracker:
                 # Save forecast to database
                 for forecast_point in forecast_result["forecast"]:
                     forecast_record = RevenueForecast(
-                        forecast_date=forecast_point["date"],
-                        predicted_amount=Decimal(
+                        forecast_date = forecast_point["date"],
+                            predicted_amount = Decimal(
                             str(forecast_point["predicted_amount"])
                         ),
-                        confidence_lower=Decimal(
+                            confidence_lower = Decimal(
                             str(forecast_point.get("confidence_lower", 0))
                         ),
-                        confidence_upper=Decimal(
+                            confidence_upper = Decimal(
                             str(forecast_point.get("confidence_upper", 0))
                         ),
-                        model_used=forecast_result["model"],
-                        source_filter=(
+                            model_used = forecast_result["model"],
+                            source_filter=(
                             ",".join(request.sources) if request.sources else None
                         ),
-                    )
+                            )
                     self.db_session.add(forecast_record)
 
                 self.db_session.commit()
 
                 return {
                     "success": True,
-                    "model": forecast_result["model"],
-                    "forecast": forecast_result["forecast"],
-                    "metrics": forecast_result["metrics"],
-                    "total_predicted": round(forecast_result["total_predicted"], 2),
-                }
+                        "model": forecast_result["model"],
+                        "forecast": forecast_result["forecast"],
+                        "metrics": forecast_result["metrics"],
+                        "total_predicted": round(forecast_result["total_predicted"], 2),
+                        }
 
             except Exception as e:
                 logger.error(f"Forecast generation failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
-        @self.app.post("/goals/create")
+        @self.app.post("/goals / create")
+
+
         async def create_revenue_goal(request: RevenueGoalRequest):
             """Create a revenue goal"""
             try:
@@ -876,28 +906,30 @@ class RevenueTracker:
                 )
 
                 goal = RevenueGoal(
-                    name=request.name,
-                    target_amount=Decimal(str(request.target_amount)),
-                    target_date=request.target_date,
-                    source_filter=request.source_filter,
-                )
+                    name = request.name,
+                        target_amount = Decimal(str(request.target_amount)),
+                        target_date = request.target_date,
+                        source_filter = request.source_filter,
+                        )
 
                 self.db_session.add(goal)
                 self.db_session.commit()
 
                 return {
                     "success": True,
-                    "goal_id": goal.id,
-                    "name": goal.name,
-                    "target_amount": float(goal.target_amount),
-                    "target_date": goal.target_date.isoformat(),
-                }
+                        "goal_id": goal.id,
+                        "name": goal.name,
+                        "target_amount": float(goal.target_amount),
+                        "target_date": goal.target_date.isoformat(),
+                        }
 
             except Exception as e:
                 logger.error(f"Goal creation failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
-        @self.app.get("/goals/progress")
+        @self.app.get("/goals / progress")
+
+
         async def get_goal_progress():
             """Get progress on all revenue goals"""
             try:
@@ -913,8 +945,8 @@ class RevenueTracker:
                     # Calculate current progress
                     query = self.db_session.query(RevenueStream).filter(
                         RevenueStream.transaction_date >= goal.created_at,
-                        RevenueStream.transaction_date <= datetime.now(),
-                    )
+                            RevenueStream.transaction_date <= datetime.now(),
+                            )
 
                     if goal.source_filter:
                         sources = goal.source_filter.split(",")
@@ -931,39 +963,41 @@ class RevenueTracker:
                     goal_progress.append(
                         {
                             "goal_id": goal.id,
-                            "name": goal.name,
-                            "target_amount": float(goal.target_amount),
-                            "current_amount": current_amount,
-                            "progress_percentage": round(progress_percentage, 2),
-                            "target_date": goal.target_date.isoformat(),
-                            "days_remaining": (goal.target_date - datetime.now()).days,
-                            "status": (
+                                "name": goal.name,
+                                "target_amount": float(goal.target_amount),
+                                "current_amount": current_amount,
+                                "progress_percentage": round(progress_percentage, 2),
+                                "target_date": goal.target_date.isoformat(),
+                                "days_remaining": (goal.target_date - datetime.now()).days,
+                                "status": (
                                 "completed" if progress_percentage >= 100 else "active"
                             ),
-                        }
+                                }
                     )
 
                 self.db_session.commit()
 
                 return {
                     "goals": goal_progress,
-                    "total_goals": len(goals),
-                    "completed_goals": len(
+                        "total_goals": len(goals),
+                        "completed_goals": len(
                         [g for g in goal_progress if g["status"] == "completed"]
                     ),
-                }
+                        }
 
             except Exception as e:
                 logger.error(f"Goal progress calculation failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
         @self.app.get("/alerts")
+
+
         async def get_alerts():
             """Get recent revenue alerts"""
             try:
                 alerts = (
                     self.db_session.query(RevenueAlert)
-                    .filter(RevenueAlert.acknowledged == False)
+                    .filter(RevenueAlert.acknowledged is False)
                     .order_by(RevenueAlert.triggered_at.desc())
                     .limit(50)
                     .all()
@@ -973,25 +1007,28 @@ class RevenueTracker:
                     "alerts": [
                         {
                             "id": alert.id,
-                            "type": alert.alert_type,
-                            "message": alert.message,
-                            "severity": alert.severity,
-                            "triggered_at": alert.triggered_at.isoformat(),
-                        }
+                                "type": alert.alert_type,
+                                "message": alert.message,
+                                "severity": alert.severity,
+                                "triggered_at": alert.triggered_at.isoformat(),
+                                }
                         for alert in alerts
                     ],
-                    "total_unacknowledged": len(alerts),
-                }
+                        "total_unacknowledged": len(alerts),
+                        }
 
             except Exception as e:
                 logger.error(f"Alert retrieval failed: {e}")
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code = 500, detail = str(e))
 
-        @self.app.post("/data/collect")
+        @self.app.post("/data / collect")
+
+
         async def collect_revenue_data(background_tasks: BackgroundTasks):
             """Manually trigger revenue data collection"""
             background_tasks.add_task(self.collect_all_revenue_data)
             return {"message": "Revenue data collection started"}
+
 
     async def collect_all_revenue_data(self):
         """Collect revenue data from all sources"""
@@ -999,7 +1036,7 @@ class RevenueTracker:
             logger.info("🔄 Collecting revenue data from all sources")
 
             end_date = datetime.now()
-            start_date = end_date - timedelta(days=7)  # Last 7 days
+            start_date = end_date - timedelta(days = 7)  # Last 7 days
 
             # Collect YouTube data
             youtube_data = await self.youtube_analytics.get_revenue_data(
@@ -1009,28 +1046,28 @@ class RevenueTracker:
                 if data_point["revenue"] > 0:
                     revenue_stream = RevenueStream(
                         source="youtube",
-                        platform="youtube",
-                        amount=Decimal(str(data_point["revenue"])),
-                        currency="USD",
-                        description=f"YouTube ad revenue - {data_point['monetized_playbacks']} monetized playbacks",
-                        transaction_date=data_point["date"],
-                        metadata=json.dumps(
+                            platform="youtube",
+                            amount = Decimal(str(data_point["revenue"])),
+                            currency="USD",
+                            description = f"YouTube ad revenue - {data_point['monetized_playbacks']} monetized playbacks",
+                            transaction_date = data_point["date"],
+                            metadata = json.dumps(
                             {
                                 "monetized_playbacks": data_point[
                                     "monetized_playbacks"
                                 ],
-                                "cpm": data_point["cpm"],
-                            }
+                                    "cpm": data_point["cpm"],
+                                    }
                         ),
-                    )
+                            )
 
                     # Check if already exists
                     existing = (
                         self.db_session.query(RevenueStream)
                         .filter(
                             RevenueStream.source == "youtube",
-                            RevenueStream.transaction_date == data_point["date"],
-                        )
+                                RevenueStream.transaction_date == data_point["date"],
+                                )
                         .first()
                     )
 
@@ -1044,13 +1081,13 @@ class RevenueTracker:
             for sale in gumroad_data:
                 revenue_stream = RevenueStream(
                     source="gumroad",
-                    platform="gumroad",
-                    amount=Decimal(str(sale["amount"])),
-                    currency=sale["currency"],
-                    transaction_id=sale["transaction_id"],
-                    description=f"Product sale: {sale['product_name']}",
-                    transaction_date=sale["date"],
-                )
+                        platform="gumroad",
+                        amount = Decimal(str(sale["amount"])),
+                        currency = sale["currency"],
+                        transaction_id = sale["transaction_id"],
+                        description = f"Product sale: {sale['product_name']}",
+                        transaction_date = sale["date"],
+                        )
 
                 # Check if already exists
                 existing = (
@@ -1070,13 +1107,13 @@ class RevenueTracker:
                 for commission in affiliate_data:
                     revenue_stream = RevenueStream(
                         source="affiliate",
-                        platform=commission["network"],
-                        amount=Decimal(str(commission["amount"])),
-                        currency="USD",
-                        transaction_id=commission["transaction_id"],
-                        description=f"Affiliate commission - {commission['network']}",
-                        transaction_date=commission["date"],
-                    )
+                            platform = commission["network"],
+                            amount = Decimal(str(commission["amount"])),
+                            currency="USD",
+                            transaction_id = commission["transaction_id"],
+                            description = f"Affiliate commission - {commission['network']}",
+                            transaction_date = commission["date"],
+                            )
 
                     # Check if already exists
                     existing = (
@@ -1101,14 +1138,14 @@ class RevenueTracker:
                     for ai_revenue in ai_revenue_data:
                         revenue_stream = RevenueStream(
                             source="ai_platform",
-                            platform=ai_revenue["platform"],
-                            amount=Decimal(str(ai_revenue["amount"])),
-                            currency=ai_revenue.get("currency", "USD"),
-                            transaction_id=ai_revenue.get("transaction_id"),
-                            description=f"AI platform revenue - {ai_revenue['platform']}: {ai_revenue.get('description', '')}",
-                            transaction_date=ai_revenue["date"],
-                            metadata=json.dumps(ai_revenue.get("metadata", {})),
-                        )
+                                platform = ai_revenue["platform"],
+                                amount = Decimal(str(ai_revenue["amount"])),
+                                currency = ai_revenue.get("currency", "USD"),
+                                transaction_id = ai_revenue.get("transaction_id"),
+                                description = f"AI platform revenue - {ai_revenue['platform']}: {ai_revenue.get('description', '')}",
+                                transaction_date = ai_revenue["date"],
+                                metadata = json.dumps(ai_revenue.get("metadata", {})),
+                                )
 
                         # Check if already exists
                         existing = None
@@ -1126,9 +1163,9 @@ class RevenueTracker:
                                 self.db_session.query(RevenueStream)
                                 .filter(
                                     RevenueStream.source == "ai_platform",
-                                    RevenueStream.platform == ai_revenue["platform"],
-                                    RevenueStream.transaction_date == ai_revenue["date"],
-                                    RevenueStream.amount == Decimal(str(ai_revenue["amount"]))
+                                        RevenueStream.platform == ai_revenue["platform"],
+                                        RevenueStream.transaction_date == ai_revenue["date"],
+                                        RevenueStream.amount == Decimal(str(ai_revenue["amount"]))
                                 )
                                 .first()
                             )
@@ -1144,6 +1181,7 @@ class RevenueTracker:
         except Exception as e:
             logger.error(f"Revenue data collection failed: {e}")
 
+
     async def check_revenue_alerts(self, revenue_stream: RevenueStream):
         """Check if revenue triggers any alerts"""
         try:
@@ -1153,8 +1191,8 @@ class RevenueTracker:
                 self.db_session.query(RevenueStream)
                 .filter(
                     RevenueStream.transaction_date >= today,
-                    RevenueStream.transaction_date < today + timedelta(days=1),
-                )
+                        RevenueStream.transaction_date < today + timedelta(days = 1),
+                        )
                 .all()
             )
 
@@ -1163,31 +1201,32 @@ class RevenueTracker:
             if total_daily >= self.config.revenue_alert_threshold:
                 alert = RevenueAlert(
                     alert_type="threshold",
-                    message=f"Daily revenue threshold reached: ${total_daily:.2f}",
-                    severity="info",
-                )
+                        message = f"Daily revenue threshold reached: ${total_daily:.2f}",
+                        severity="info",
+                        )
                 self.db_session.add(alert)
 
             # Check for large single transactions
             if float(revenue_stream.amount) >= 100:  # $100+ transaction
                 alert = RevenueAlert(
                     alert_type="large_transaction",
-                    message=f"Large transaction: ${revenue_stream.amount} from {revenue_stream.source}",
-                    severity="info",
-                    metadata=json.dumps(
+                        message = f"Large transaction: ${revenue_stream.amount} from {revenue_stream.source}",
+                        severity="info",
+                        metadata = json.dumps(
                         {
                             "revenue_id": revenue_stream.id,
-                            "source": revenue_stream.source,
-                            "amount": float(revenue_stream.amount),
-                        }
+                                "source": revenue_stream.source,
+                                "amount": float(revenue_stream.amount),
+                                }
                     ),
-                )
+                        )
                 self.db_session.add(alert)
 
             self.db_session.commit()
 
         except Exception as e:
             logger.error(f"Alert checking failed: {e}")
+
 
     async def check_goals_and_alerts(self):
         """Check revenue goals and generate alerts"""
@@ -1203,8 +1242,8 @@ class RevenueTracker:
                 # Calculate current progress
                 query = self.db_session.query(RevenueStream).filter(
                     RevenueStream.transaction_date >= goal.created_at,
-                    RevenueStream.transaction_date <= datetime.now(),
-                )
+                        RevenueStream.transaction_date <= datetime.now(),
+                        )
 
                 if goal.source_filter:
                     sources = goal.source_filter.split(",")
@@ -1221,9 +1260,9 @@ class RevenueTracker:
                     goal.status = "completed"
                     alert = RevenueAlert(
                         alert_type="goal",
-                        message=f"Revenue goal '{goal.name}' completed! Target: ${goal.target_amount}, Achieved: ${current_amount:.2f}",
-                        severity="info",
-                    )
+                            message = f"Revenue goal '{goal.name}' completed! Target: ${goal.target_amount}, Achieved: ${current_amount:.2f}",
+                            severity="info",
+                            )
                     self.db_session.add(alert)
 
                 # Check for goal deadline approaching
@@ -1231,9 +1270,9 @@ class RevenueTracker:
                 if days_remaining <= 7 and progress_percentage < 80:
                     alert = RevenueAlert(
                         alert_type="goal",
-                        message=f"Revenue goal '{goal.name}' deadline approaching. {days_remaining} days left, {progress_percentage:.1f}% complete",
-                        severity="warning",
-                    )
+                            message = f"Revenue goal '{goal.name}' deadline approaching. {days_remaining} days left, {progress_percentage:.1f}% complete",
+                            severity="warning",
+                            )
                     self.db_session.add(alert)
 
             self.db_session.commit()
@@ -1241,20 +1280,21 @@ class RevenueTracker:
         except Exception as e:
             logger.error(f"Goal and alert checking failed: {e}")
 
+
     async def generate_daily_report(self):
         """Generate daily revenue report"""
         try:
             logger.info("📊 Generating daily revenue report")
 
-            yesterday = datetime.now().date() - timedelta(days=1)
+            yesterday = datetime.now().date() - timedelta(days = 1)
 
             # Get yesterday's revenue
             daily_revenue = (
                 self.db_session.query(RevenueStream)
                 .filter(
                     RevenueStream.transaction_date >= yesterday,
-                    RevenueStream.transaction_date < yesterday + timedelta(days=1),
-                )
+                        RevenueStream.transaction_date < yesterday + timedelta(days = 1),
+                        )
                 .all()
             )
 
@@ -1277,22 +1317,22 @@ class RevenueTracker:
             # Create report
             report = {
                 "date": yesterday.isoformat(),
-                "total_revenue": round(total_revenue, 2),
-                "transaction_count": transaction_count,
-                "average_transaction": round(
+                    "total_revenue": round(total_revenue, 2),
+                    "transaction_count": transaction_count,
+                    "average_transaction": round(
                     total_revenue / transaction_count if transaction_count > 0 else 0, 2
                 ),
-                "source_breakdown": {
+                    "source_breakdown": {
                     k: round(v, 2) for k, v in source_breakdown.items()
                 },
-            }
+                    }
 
             # Save report
             report_path = (
                 self.config.reports_dir / f"daily_report_{yesterday.isoformat()}.json"
             )
             with open(report_path, "w") as f:
-                json.dump(report, f, indent=2)
+                json.dump(report, f, indent = 2)
 
             logger.info(
                 f"✅ Daily report generated: ${total_revenue:.2f} from {transaction_count} transactions"
@@ -1300,6 +1340,7 @@ class RevenueTracker:
 
         except Exception as e:
             logger.error(f"Daily report generation failed: {e}")
+
 
     async def start_server(self):
         """Start the revenue tracker server"""
@@ -1315,11 +1356,11 @@ class RevenueTracker:
         logger.info("⏰ Scheduler started")
 
         config = uvicorn.Config(
-            app=self.app,
-            host="0.0.0.0",
-            port=8004,
-            log_level=self.config.log_level.lower(),
-        )
+            app = self.app,
+                host="0.0.0.0",
+                port = 8004,
+                log_level = self.config.log_level.lower(),
+                )
         server = uvicorn.Server(config)
         await server.serve()
 
@@ -1329,7 +1370,6 @@ async def main():
     config = RevenueConfig()
     tracker = RevenueTracker(config)
     await tracker.start_server()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

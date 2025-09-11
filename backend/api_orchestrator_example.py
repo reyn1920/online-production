@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Orchestrator Usage Example
 
@@ -16,34 +16,37 @@ from api_orchestrator import APIOrchestrator, APIRequest, FailoverStrategy
 class ExampleService:
     """Example service showing how to integrate API orchestrator"""
 
+
     def __init__(self, db_path: str = "right_perspective.db"):
         self.api_orchestrator = APIOrchestrator(
-            db_path=db_path,
-            health_check_interval=300,  # 5 minutes
-            failover_strategy=FailoverStrategy.PRIORITY_BASED,
-        )
+            db_path = db_path,
+                health_check_interval = 300,  # 5 minutes
+            failover_strategy = FailoverStrategy.PRIORITY_BASED,
+                )
+
 
     async def initialize(self):
         """Initialize the service and start health monitoring"""
         await self.api_orchestrator.start_health_monitoring()
         print("✅ API Orchestrator initialized and health monitoring started")
 
+
     async def make_llm_request(
-        self, prompt: str, model: str = "gpt-3.5-turbo"
+        self, prompt: str, model: str = "gpt - 3.5 - turbo"
     ) -> Dict[str, Any]:
         """Example: Make a request to an LLM API with automatic failover"""
         request = APIRequest(
             service_type="llm",
-            endpoint="/chat/completions",
-            method="POST",
-            data={
+                endpoint="/chat / completions",
+                method="POST",
+                data={
                 "model": model,
-                "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 150,
-            },
-            headers={"Content-Type": "application/json"},
-            timeout=30,
-        )
+                    "messages": [{"role": "user", "content": prompt}],
+                    "max_tokens": 150,
+                    },
+                headers={"Content - Type": "application / json"},
+                timeout = 30,
+                )
 
         try:
             response = await self.api_orchestrator.make_request(request)
@@ -57,15 +60,16 @@ class ExampleService:
             print(f"❌ LLM request exception: {e}")
             return {"error": str(e)}
 
+
     async def make_search_request(self, query: str) -> Dict[str, Any]:
         """Example: Make a search API request with failover"""
         request = APIRequest(
             service_type="search",
-            endpoint="/search",
-            method="GET",
-            params={"q": query, "limit": 10},
-            timeout=15,
-        )
+                endpoint="/search",
+                method="GET",
+                params={"q": query, "limit": 10},
+                timeout = 15,
+                )
 
         try:
             response = await self.api_orchestrator.make_request(request)
@@ -79,15 +83,16 @@ class ExampleService:
             print(f"❌ Search request exception: {e}")
             return {"error": str(e)}
 
+
     async def get_api_health_status(self) -> Dict[str, Any]:
         """Get current health status of all APIs"""
         endpoints = await self.api_orchestrator.get_healthy_endpoints()
 
         status = {
             "total_endpoints": len(self.api_orchestrator.endpoints),
-            "healthy_endpoints": len(endpoints),
-            "endpoints_by_service": {},
-        }
+                "healthy_endpoints": len(endpoints),
+                "endpoints_by_service": {},
+                }
 
         # Group by service type
         for endpoint in self.api_orchestrator.endpoints.values():
@@ -95,9 +100,9 @@ class ExampleService:
             if service not in status["endpoints_by_service"]:
                 status["endpoints_by_service"][service] = {
                     "total": 0,
-                    "healthy": 0,
-                    "endpoints": [],
-                }
+                        "healthy": 0,
+                        "endpoints": [],
+                        }
 
             status["endpoints_by_service"][service]["total"] += 1
 
@@ -107,13 +112,14 @@ class ExampleService:
             status["endpoints_by_service"][service]["endpoints"].append(
                 {
                     "name": endpoint.api_name,
-                    "url": endpoint.base_url,
-                    "status": endpoint.status.value,
-                    "priority": endpoint.failover_priority,
-                }
+                        "url": endpoint.base_url,
+                        "status": endpoint.status.value,
+                        "priority": endpoint.failover_priority,
+                        }
             )
 
         return status
+
 
     async def shutdown(self):
         """Shutdown the service gracefully"""
@@ -134,7 +140,7 @@ async def main():
         # Example 1: Check API health status
         print("\n📊 Checking API Health Status:")
         health_status = await service.get_api_health_status()
-        print(json.dumps(health_status, indent=2))
+        print(json.dumps(health_status, indent = 2))
 
         # Example 2: Make LLM request with failover
         print("\n🤖 Making LLM Request:")
@@ -157,7 +163,7 @@ async def main():
         # Check status again
         print("\n📊 Updated API Health Status:")
         updated_status = await service.get_api_health_status()
-        print(json.dumps(updated_status, indent=2))
+        print(json.dumps(updated_status, indent = 2))
 
     except KeyboardInterrupt:
         print("\n🛑 Received interrupt signal")
@@ -167,7 +173,6 @@ async def main():
         # Cleanup
         await service.shutdown()
         print("\n✅ Example completed")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

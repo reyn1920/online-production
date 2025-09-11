@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Quick TRAE.AI Component Test
 """
@@ -32,7 +32,7 @@ try:
     # Check if we can import the content agent without TTS issues
     import sys
 
-    sys.path.append("content-agent")
+    sys.path.append("content - agent")
     from main import app as content_app
 
     print("✅ Content Agent available")
@@ -62,7 +62,7 @@ try:
 
     import sys
 
-    sys.path.append("analytics-dashboard")
+    sys.path.append("analytics - dashboard")
     from main import app as analytics_app
 
     print("✅ Analytics Dashboard available")

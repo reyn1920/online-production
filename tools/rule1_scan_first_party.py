@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Rule-1 First-Party Scanner
+Rule - 1 First - Party Scanner
 
-Optimized scanner that only processes first-party code files,
-avoiding third-party dependencies and generated content.
+Optimized scanner that only processes first - party code files,
+avoiding third - party dependencies and generated content.
 
 Usage:
-    python3 tools/rule1_scan_first_party.py                    # Preview files
-    python3 tools/rule1_scan_first_party.py --print-files      # Print file paths
-    python3 tools/rule1_scan_first_party.py --scan             # Actually scan
+    python3 tools / rule1_scan_first_party.py                    # Preview files
+    python3 tools / rule1_scan_first_party.py --print - files      # Print file paths
+    python3 tools / rule1_scan_first_party.py --scan             # Actually scan
 """
 
 import json
@@ -59,7 +59,7 @@ def should_ignore_path(path: Path, ignore_patterns: Set[str]) -> bool:
 
 
 def get_first_party_files(root_dir: Path = None) -> List[Path]:
-    """Get list of first-party files to scan."""
+    """Get list of first - party files to scan."""
     if root_dir is None:
         root_dir = Path(".")
 
@@ -69,22 +69,22 @@ def get_first_party_files(root_dir: Path = None) -> List[Path]:
     # File extensions to include
     include_extensions = {
         ".py",
-        ".js",
-        ".ts",
-        ".jsx",
-        ".tsx",
-        ".html",
-        ".css",
-        ".scss",
-        ".json",
-        ".yaml",
-        ".yml",
-        ".md",
-        ".txt",
-        ".sql",
-        ".sh",
-        ".bash",
-    }
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx",
+            ".html",
+            ".css",
+            ".scss",
+            ".json",
+            ".yaml",
+            ".yml",
+            ".md",
+            ".txt",
+            ".sql",
+            ".sh",
+            ".bash",
+            }
 
     for file_path in root_dir.rglob("*"):
         if not file_path.is_file():
@@ -98,7 +98,7 @@ def get_first_party_files(root_dir: Path = None) -> List[Path]:
         if file_path.suffix.lower() not in include_extensions:
             continue
 
-        # Skip very large files (likely not first-party)
+        # Skip very large files (likely not first - party)
         try:
             if file_path.stat().st_size > 1024 * 1024:  # 1MB limit
                 continue
@@ -114,27 +114,27 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Rule-1 First-Party Scanner")
+    parser = argparse.ArgumentParser(description="Rule - 1 First - Party Scanner")
     parser.add_argument(
-        "--print-files",
-        action="store_true",
-        help="Print file paths only (for piping to scanner)",
-    )
+        "--print - files",
+            action="store_true",
+            help="Print file paths only (for piping to scanner)",
+            )
     parser.add_argument(
         "--scan",
-        action="store_true",
-        help="Actually run the scanner on first-party files",
-    )
+            action="store_true",
+            help="Actually run the scanner on first - party files",
+            )
     parser.add_argument(
         "--limit",
-        type=int,
-        default=50,
-        help="Limit number of files to show in preview (default: 50)",
-    )
+            type = int,
+            default = 50,
+            help="Limit number of files to show in preview (default: 50)",
+            )
 
     args = parser.parse_args()
 
-    # Get first-party files
+    # Get first - party files
     files = get_first_party_files()
 
     if args.print_files:
@@ -148,7 +148,7 @@ def main():
         try:
             from utils.rule1_scanner import Rule1DeepScanner
 
-            print(f"🔍 Scanning {len(files)} first-party files...")
+            print(f"🔍 Scanning {len(files)} first - party files...")
             scanner = Rule1DeepScanner()
 
             total_violations = 0
@@ -170,10 +170,10 @@ def main():
             print(f"   Total violations: {total_violations}")
 
             if total_violations > 0:
-                print(f"\n⚠️  Rule-1 violations found in first-party code.")
+                print(f"\n⚠️  Rule - 1 violations found in first - party code.")
                 sys.exit(1)
             else:
-                print(f"\n✅ No Rule-1 violations found in first-party code.")
+                print(f"\n✅ No Rule - 1 violations found in first - party code.")
                 sys.exit(0)
 
         except ImportError as e:
@@ -181,21 +181,20 @@ def main():
             sys.exit(1)
     else:
         # Preview mode (default)
-        print(f"📋 First-party files to scan ({len(files)} total):")
+        print(f"📋 First - party files to scan ({len(files)} total):")
         print("=" * 50)
 
         # Show first N files as JSON for easy parsing
         preview_files = files[: args.limit]
         file_list = [str(f) for f in preview_files]
 
-        print(json.dumps(file_list, indent=2))
+        print(json.dumps(file_list, indent = 2))
 
         if len(files) > args.limit:
             print(f"\n... and {len(files) - args.limit} more files")
 
         print(f"\n💡 Use --scan to actually run the scanner")
-        print(f"💡 Use --print-files to get paths for piping")
-
+        print(f"💡 Use --print - files to get paths for piping")
 
 if __name__ == "__main__":
     main()

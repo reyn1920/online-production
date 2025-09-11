@@ -1,16 +1,16 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Evolution Agent - Autonomous Content Format Evolution System
 
 This agent continuously monitors emerging content formats across platforms
 and automatically evolves the system's capabilities to stay ahead of trends.
-It implements self-improvement protocols to adapt to the changing media landscape.
+It implements self - improvement protocols to adapt to the changing media landscape.
 
 Features:
-- Real-time trend monitoring across YouTube, TikTok, Instagram, etc.
+- Real - time trend monitoring across YouTube, TikTok, Instagram, etc.
 - Emerging format detection and analysis
 - Automatic tool generation for new content types
-- Self-improvement capability integration
+- Self - improvement capability integration
 - Innovation curve positioning
 
 Author: TRAE.AI System
@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Set
 from .base_agents import BaseAgent
 from .research_tools import BreakingNewsWatcher
 from .web_automation_tools import (ActionType, AutomationAction, AutomationTarget,
-                                   StealthLevel, WebAutomationAgent)
+    StealthLevel, WebAutomationAgent)
 
 logger = logging.getLogger(__name__)
 
@@ -74,8 +74,9 @@ class Platform(Enum):
     DISCORD = "discord"
     CLUBHOUSE = "clubhouse"
 
-
 @dataclass
+
+
 class ContentTrend:
     """Emerging content trend data"""
 
@@ -90,16 +91,17 @@ class ContentTrend:
     technical_requirements: List[str]
     creator_tools_needed: List[str]
     monetization_potential: float
-    difficulty_score: float  # 0-1 scale
-    confidence_score: float  # 0-1 scale
-    first_detected: datetime = field(default_factory=datetime.now)
-    last_updated: datetime = field(default_factory=datetime.now)
+    difficulty_score: float  # 0 - 1 scale
+    confidence_score: float  # 0 - 1 scale
+    first_detected: datetime = field(default_factory = datetime.now)
+    last_updated: datetime = field(default_factory = datetime.now)
     status: TrendStatus = TrendStatus.EMERGING
-    examples: List[str] = field(default_factory=list)
-    keywords: List[str] = field(default_factory=list)
-
+    examples: List[str] = field(default_factory = list)
+    keywords: List[str] = field(default_factory = list)
 
 @dataclass
+
+
 class ToolGenerationPlan:
     """Plan for generating new content creation tools"""
 
@@ -109,15 +111,16 @@ class ToolGenerationPlan:
     tool_description: str
     required_capabilities: List[str]
     integration_points: List[str]
-    development_priority: int  # 1-10 scale
+    development_priority: int  # 1 - 10 scale
     estimated_dev_time: int  # hours
     resource_requirements: Dict[str, Any]
     success_criteria: Dict[str, float]
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory = datetime.now)
     status: str = "planned"
 
-
 @dataclass
+
+
 class EvolutionMetrics:
     """System evolution tracking metrics"""
 
@@ -138,12 +141,13 @@ class EvolutionAgent(BaseAgent):
     and automatically evolves the system's capabilities to stay competitive.
     """
 
+
     def __init__(
         self,
-        agent_id: str = "evolution_agent",
-        name: str = "Evolution Agent",
-        config: Dict[str, Any] = None,
-    ):
+            agent_id: str = "evolution_agent",
+            name: str = "Evolution Agent",
+            config: Dict[str, Any] = None,
+            ):
         super().__init__(agent_id, name)
         self.config = config or {}
         self.agent_type = "evolution"
@@ -175,16 +179,17 @@ class EvolutionAgent(BaseAgent):
         self._capabilities.update(
             {
                 "tool_generation": True,
-                "innovation_tracking": True,
-                "platform_analysis": True,
-                "capability_evolution": True,
-                "adaptation_automation": True,
-            }
+                    "innovation_tracking": True,
+                    "platform_analysis": True,
+                    "capability_evolution": True,
+                    "adaptation_automation": True,
+                    }
         )
 
         logger.info(
             f"EvolutionAgent initialized monitoring {len(self.monitoring_platforms)} platforms"
         )
+
 
     def _initialize_evolution_tools(self):
         """Initialize evolution monitoring and analysis tools"""
@@ -195,31 +200,32 @@ class EvolutionAgent(BaseAgent):
             # Web automation for platform monitoring
             self.web_engine = WebAutomationAgent()
 
-            # Initialize platform-specific monitoring keywords
+            # Initialize platform - specific monitoring keywords
             self.monitored_keywords.update(
                 [
                     "new format",
-                    "trending format",
-                    "viral style",
-                    "content innovation",
-                    "creator tools",
-                    "video style",
-                    "interactive content",
-                    "AI content",
-                    "short form",
-                    "long form",
-                    "live streaming",
-                    "virtual reality",
-                    "augmented reality",
-                    "voice content",
-                    "audio format",
-                    "podcast format",
-                ]
+                        "trending format",
+                        "viral style",
+                        "content innovation",
+                        "creator tools",
+                        "video style",
+                        "interactive content",
+                        "AI content",
+                        "short form",
+                        "long form",
+                        "live streaming",
+                        "virtual reality",
+                        "augmented reality",
+                        "voice content",
+                        "audio format",
+                        "podcast format",
+                        ]
             )
 
             logger.info("Evolution tools initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize evolution tools: {e}")
+
 
     def _setup_evolution_database(self):
         """Setup database tables for evolution tracking"""
@@ -234,23 +240,23 @@ class EvolutionAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS content_trends (
                         trend_id TEXT PRIMARY KEY,
-                        trend_name TEXT NOT NULL,
-                        platform TEXT NOT NULL,
-                        format_type TEXT NOT NULL,
-                        description TEXT,
-                        engagement_metrics TEXT,
-                        growth_rate REAL DEFAULT 0.0,
-                        adoption_rate REAL DEFAULT 0.0,
-                        technical_requirements TEXT,
-                        creator_tools_needed TEXT,
-                        monetization_potential REAL DEFAULT 0.0,
-                        difficulty_score REAL DEFAULT 0.0,
-                        confidence_score REAL DEFAULT 0.0,
-                        status TEXT DEFAULT 'emerging',
-                        examples TEXT,
-                        keywords TEXT,
-                        first_detected TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            trend_name TEXT NOT NULL,
+                            platform TEXT NOT NULL,
+                            format_type TEXT NOT NULL,
+                            description TEXT,
+                            engagement_metrics TEXT,
+                            growth_rate REAL DEFAULT 0.0,
+                            adoption_rate REAL DEFAULT 0.0,
+                            technical_requirements TEXT,
+                            creator_tools_needed TEXT,
+                            monetization_potential REAL DEFAULT 0.0,
+                            difficulty_score REAL DEFAULT 0.0,
+                            confidence_score REAL DEFAULT 0.0,
+                            status TEXT DEFAULT 'emerging',
+                            examples TEXT,
+                            keywords TEXT,
+                            first_detected TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -260,18 +266,18 @@ class EvolutionAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS tool_generation_plans (
                         plan_id TEXT PRIMARY KEY,
-                        target_trend_id TEXT,
-                        tool_name TEXT NOT NULL,
-                        tool_description TEXT,
-                        required_capabilities TEXT,
-                        integration_points TEXT,
-                        development_priority INTEGER DEFAULT 5,
-                        estimated_dev_time INTEGER DEFAULT 0,
-                        resource_requirements TEXT,
-                        success_criteria TEXT,
-                        status TEXT DEFAULT 'planned',
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (target_trend_id) REFERENCES content_trends (trend_id)
+                            target_trend_id TEXT,
+                            tool_name TEXT NOT NULL,
+                            tool_description TEXT,
+                            required_capabilities TEXT,
+                            integration_points TEXT,
+                            development_priority INTEGER DEFAULT 5,
+                            estimated_dev_time INTEGER DEFAULT 0,
+                            resource_requirements TEXT,
+                            success_criteria TEXT,
+                            status TEXT DEFAULT 'planned',
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (target_trend_id) REFERENCES content_trends (trend_id)
                     )
                 """
                 )
@@ -281,13 +287,13 @@ class EvolutionAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS evolution_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        total_trends_monitored INTEGER DEFAULT 0,
-                        trends_adopted INTEGER DEFAULT 0,
-                        tools_generated INTEGER DEFAULT 0,
-                        successful_integrations INTEGER DEFAULT 0,
-                        innovation_score REAL DEFAULT 0.0,
-                        adaptation_speed REAL DEFAULT 0.0,
-                        recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            total_trends_monitored INTEGER DEFAULT 0,
+                            trends_adopted INTEGER DEFAULT 0,
+                            tools_generated INTEGER DEFAULT 0,
+                            successful_integrations INTEGER DEFAULT 0,
+                            innovation_score REAL DEFAULT 0.0,
+                            adaptation_speed REAL DEFAULT 0.0,
+                            recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -297,11 +303,11 @@ class EvolutionAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS platform_monitoring_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        platform TEXT NOT NULL,
-                        content_analyzed INTEGER DEFAULT 0,
-                        trends_detected INTEGER DEFAULT 0,
-                        monitoring_duration REAL DEFAULT 0.0,
-                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            platform TEXT NOT NULL,
+                            content_analyzed INTEGER DEFAULT 0,
+                            trends_detected INTEGER DEFAULT 0,
+                            monitoring_duration REAL DEFAULT 0.0,
+                            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -312,14 +318,15 @@ class EvolutionAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to setup evolution database: {e}")
 
+
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Process evolution-related tasks"""
+        """Process evolution - related tasks"""
         # Check if evolution actions are enabled
         if not self.is_action_allowed("evolution"):
             return {
                 "status": "error",
-                "message": "Evolution actions are currently disabled in configuration",
-            }
+                    "message": "Evolution actions are currently disabled in configuration",
+                    }
 
         task_type = task.get("type", "")
 
@@ -341,17 +348,18 @@ class EvolutionAgent(BaseAgent):
             logger.error(f"Error processing evolution task {task_type}: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _monitor_content_trends(self) -> Dict[str, Any]:
         """Monitor platforms for emerging content trends"""
         logger.info("Starting content trend monitoring cycle")
 
         results = {
             "platforms_monitored": 0,
-            "trends_detected": 0,
-            "new_trends": [],
-            "updated_trends": [],
-            "timestamp": datetime.now().isoformat(),
-        }
+                "trends_detected": 0,
+                "new_trends": [],
+                "updated_trends": [],
+                "timestamp": datetime.now().isoformat(),
+                }
 
         try:
             for platform in self.monitoring_platforms:
@@ -379,6 +387,7 @@ class EvolutionAgent(BaseAgent):
             logger.error(f"Trend monitoring failed: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _monitor_platform_trends(self, platform: Platform) -> Dict[str, Any]:
         """Monitor a specific platform for content trends"""
         logger.info(f"Monitoring {platform.value} for content trends")
@@ -388,7 +397,7 @@ class EvolutionAgent(BaseAgent):
         try:
             # Use web automation to scrape trending content
             if hasattr(self, "web_engine"):
-                # Configure platform-specific monitoring
+                # Configure platform - specific monitoring
                 monitoring_config = self._get_platform_monitoring_config(platform)
 
                 # Collect trending content data
@@ -428,38 +437,40 @@ class EvolutionAgent(BaseAgent):
             logger.error(f"Platform monitoring failed for {platform.value}: {e}")
             return platform_results
 
+
     def _get_platform_monitoring_config(self, platform: Platform) -> Dict[str, Any]:
-        """Get platform-specific monitoring configuration"""
+        """Get platform - specific monitoring configuration"""
         configs = {
             Platform.YOUTUBE: {
-                "trending_url": "https://www.youtube.com/feed/trending",
-                "selectors": {
-                    "video_title": "a#video-title",
-                    "view_count": "#metadata-line span:first-child",
-                    "upload_time": "#metadata-line span:last-child",
-                },
-                "keywords": ["shorts", "live", "premiere", "360", "vr"],
-            },
-            Platform.TIKTOK: {
-                "trending_url": "https://www.tiktok.com/trending",
-                "selectors": {
-                    "video_desc": '[data-e2e="browse-video-desc"]',
-                    "like_count": '[data-e2e="browse-like-count"]',
-                    "hashtags": 'a[href*="/tag/"]',
-                },
-                "keywords": ["duet", "stitch", "effect", "filter", "challenge"],
-            },
-            Platform.INSTAGRAM: {
-                "trending_url": "https://www.instagram.com/explore/",
-                "selectors": {
+                "trending_url": "https://www.youtube.com / feed / trending",
+                    "selectors": {
+                    "video_title": "a#video - title",
+                        "view_count": "#metadata - line span:first - child",
+                        "upload_time": "#metadata - line span:last - child",
+                        },
+                    "keywords": ["shorts", "live", "premiere", "360", "vr"],
+                    },
+                Platform.TIKTOK: {
+                "trending_url": "https://www.tiktok.com / trending",
+                    "selectors": {
+                    "video_desc": '[data - e2e="browse - video - desc"]',
+                        "like_count": '[data - e2e="browse - like - count"]',
+                        "hashtags": 'a[href*="/tag/"]',
+                        },
+                    "keywords": ["duet", "stitch", "effect", "filter", "challenge"],
+                    },
+                Platform.INSTAGRAM: {
+                "trending_url": "https://www.instagram.com / explore/",
+                    "selectors": {
                     "post_link": 'a[href*="/p/"]',
-                    "reel_link": 'a[href*="/reel/"]',
-                },
-                "keywords": ["reels", "story", "igtv", "live", "guide"],
-            },
-        }
+                        "reel_link": 'a[href*="/reel/"]',
+                        },
+                    "keywords": ["reels", "story", "igtv", "live", "guide"],
+                    },
+                }
 
         return configs.get(platform, {})
+
 
     async def _collect_trending_data(
         self, platform: Platform, config: Dict[str, Any]
@@ -474,24 +485,24 @@ class EvolutionAgent(BaseAgent):
             # Simulate trending content detection
             sample_trends = [
                 {
-                    "title": "AI-Generated Interactive Stories",
-                    "engagement": 95000,
-                    "format_indicators": ["interactive", "ai", "story"],
-                    "technical_features": ["voice_response", "branching_narrative"],
-                },
-                {
-                    "title": "Real-time Collaborative Editing",
-                    "engagement": 78000,
-                    "format_indicators": ["collaborative", "live", "editing"],
-                    "technical_features": ["multi_user", "real_time_sync"],
-                },
-                {
+                    "title": "AI - Generated Interactive Stories",
+                        "engagement": 95000,
+                        "format_indicators": ["interactive", "ai", "story"],
+                        "technical_features": ["voice_response", "branching_narrative"],
+                        },
+                    {
+                    "title": "Real - time Collaborative Editing",
+                        "engagement": 78000,
+                        "format_indicators": ["collaborative", "live", "editing"],
+                        "technical_features": ["multi_user", "real_time_sync"],
+                        },
+                    {
                     "title": "AR Shopping Integration",
-                    "engagement": 112000,
-                    "format_indicators": ["ar", "shopping", "try_on"],
-                    "technical_features": ["ar_overlay", "product_tracking"],
-                },
-            ]
+                        "engagement": 112000,
+                        "format_indicators": ["ar", "shopping", "try_on"],
+                        "technical_features": ["ar_overlay", "product_tracking"],
+                        },
+                    ]
 
             trending_data.extend(sample_trends)
 
@@ -499,6 +510,7 @@ class EvolutionAgent(BaseAgent):
             logger.error(f"Failed to collect trending data from {platform.value}: {e}")
 
         return trending_data
+
 
     async def _analyze_format_patterns(
         self, platform: Platform, trending_data: List[Dict[str, Any]]
@@ -521,18 +533,19 @@ class EvolutionAgent(BaseAgent):
                 if self._is_significant_trend(engagement_score, growth_potential):
                     pattern = {
                         "name": item.get("title", "Unknown Trend"),
-                        "format_type": format_type,
-                        "engagement_score": engagement_score,
-                        "growth_potential": growth_potential,
-                        "technical_requirements": item.get("technical_features", []),
-                        "platform_specific": True,
-                    }
+                            "format_type": format_type,
+                            "engagement_score": engagement_score,
+                            "growth_potential": growth_potential,
+                            "technical_requirements": item.get("technical_features", []),
+                            "platform_specific": True,
+                            }
                     detected_patterns.append(pattern)
 
         except Exception as e:
             logger.error(f"Format pattern analysis failed: {e}")
 
         return detected_patterns
+
 
     def _classify_format_type(self, indicators: List[str]) -> FormatType:
         """Classify content format based on indicators"""
@@ -556,6 +569,7 @@ class EvolutionAgent(BaseAgent):
         else:
             return FormatType.MIXED_MEDIA
 
+
     def _create_content_trend(
         self, platform: Platform, trend_data: Dict[str, Any]
     ) -> ContentTrend:
@@ -565,20 +579,21 @@ class EvolutionAgent(BaseAgent):
         ).hexdigest()[:16]
 
         return ContentTrend(
-            trend_id=trend_id,
-            trend_name=trend_data["name"],
-            platform=platform,
-            format_type=trend_data["format_type"],
-            description=f"Emerging {trend_data['format_type'].value} format on {platform.value}",
-            engagement_metrics={"score": trend_data["engagement_score"]},
-            growth_rate=trend_data["growth_potential"],
-            adoption_rate=0.1,  # Initial adoption rate
-            technical_requirements=trend_data["technical_requirements"],
-            creator_tools_needed=self._identify_required_tools(trend_data),
-            monetization_potential=self._estimate_monetization_potential(trend_data),
-            difficulty_score=self._calculate_difficulty_score(trend_data),
-            confidence_score=min(trend_data["engagement_score"] / 100.0, 1.0),
-        )
+            trend_id = trend_id,
+                trend_name = trend_data["name"],
+                platform = platform,
+                format_type = trend_data["format_type"],
+                description = f"Emerging {trend_data['format_type'].value} format on {platform.value}",
+                engagement_metrics={"score": trend_data["engagement_score"]},
+                growth_rate = trend_data["growth_potential"],
+                adoption_rate = 0.1,  # Initial adoption rate
+            technical_requirements = trend_data["technical_requirements"],
+                creator_tools_needed = self._identify_required_tools(trend_data),
+                monetization_potential = self._estimate_monetization_potential(trend_data),
+                difficulty_score = self._calculate_difficulty_score(trend_data),
+                confidence_score = min(trend_data["engagement_score"] / 100.0, 1.0),
+                )
+
 
     def _identify_required_tools(self, trend_data: Dict[str, Any]) -> List[str]:
         """Identify tools needed to create content in this format"""
@@ -587,24 +602,24 @@ class EvolutionAgent(BaseAgent):
 
         tool_mapping = {
             FormatType.AR_VR: ["ar_renderer", "vr_compositor", "3d_model_generator"],
-            FormatType.INTERACTIVE: [
+                FormatType.INTERACTIVE: [
                 "interaction_engine",
-                "user_input_handler",
-                "state_manager",
-            ],
-            FormatType.AI_GENERATED: [
+                    "user_input_handler",
+                    "state_manager",
+                    ],
+                FormatType.AI_GENERATED: [
                 "ai_content_generator",
-                "prompt_optimizer",
-                "quality_filter",
-            ],
-            FormatType.LIVE_STREAM: [
+                    "prompt_optimizer",
+                    "quality_filter",
+                    ],
+                FormatType.LIVE_STREAM: [
                 "stream_encoder",
-                "real_time_effects",
-                "chat_integration",
-            ],
-            FormatType.VIDEO_SHORT: ["quick_editor", "auto_cropper", "trend_optimizer"],
-            FormatType.AUDIO: ["audio_processor", "voice_synthesizer", "sound_effects"],
-        }
+                    "real_time_effects",
+                    "chat_integration",
+                    ],
+                FormatType.VIDEO_SHORT: ["quick_editor", "auto_cropper", "trend_optimizer"],
+                FormatType.AUDIO: ["audio_processor", "voice_synthesizer", "sound_effects"],
+                }
 
         base_tools = tool_mapping.get(format_type, ["generic_content_creator"])
 
@@ -618,6 +633,7 @@ class EvolutionAgent(BaseAgent):
                 base_tools.append("collaboration_manager")
 
         return list(set(base_tools))
+
 
     async def _analyze_tool_generation_opportunities(self):
         """Analyze trends for tool generation opportunities"""
@@ -648,6 +664,7 @@ class EvolutionAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Tool generation analysis failed: {e}")
 
+
     async def _create_tool_generation_plan(
         self, trend: ContentTrend
     ) -> Optional[ToolGenerationPlan]:
@@ -673,32 +690,33 @@ class EvolutionAgent(BaseAgent):
             )
 
             plan = ToolGenerationPlan(
-                plan_id=plan_id,
-                target_trend=trend,
-                tool_name=f"{primary_tool.replace('_', ' ').title()}Tool",
-                tool_description=f"Automated tool for creating {trend.format_type.value} content in {trend.trend_name} format",
-                required_capabilities=trend.creator_tools_needed,
-                integration_points=["content_agent", "marketing_agent"],
-                development_priority=priority,
-                estimated_dev_time=self._estimate_development_time(trend),
-                resource_requirements={
+                plan_id = plan_id,
+                    target_trend = trend,
+                    tool_name = f"{primary_tool.replace('_', ' ').title()}Tool",
+                    tool_description = f"Automated tool for creating {trend.format_type.value} content in {trend.trend_name} format",
+                    required_capabilities = trend.creator_tools_needed,
+                    integration_points=["content_agent", "marketing_agent"],
+                    development_priority = priority,
+                    estimated_dev_time = self._estimate_development_time(trend),
+                    resource_requirements={
                     "compute_intensive": trend.format_type
                     in [FormatType.AR_VR, FormatType.AI_GENERATED],
-                    "real_time_processing": trend.format_type == FormatType.LIVE_STREAM,
-                    "external_apis": len(trend.technical_requirements) > 2,
-                },
-                success_criteria={
+                        "real_time_processing": trend.format_type == FormatType.LIVE_STREAM,
+                        "external_apis": len(trend.technical_requirements) > 2,
+                        },
+                    success_criteria={
                     "content_quality_score": 0.8,
-                    "generation_speed": 60.0,  # seconds
+                        "generation_speed": 60.0,  # seconds
                     "user_adoption_rate": 0.3,
-                },
-            )
+                        },
+                    )
 
             return plan
 
         except Exception as e:
             logger.error(f"Failed to create tool generation plan: {e}")
             return None
+
 
     async def _generate_content_tool(self, plan_id: str) -> Dict[str, Any]:
         """Generate a new content creation tool based on plan"""
@@ -728,14 +746,15 @@ class EvolutionAgent(BaseAgent):
 
             return {
                 "status": "success",
-                "tool_name": plan.tool_name,
-                "tool_file": tool_file_path,
-                "capabilities": plan.required_capabilities,
-            }
+                    "tool_name": plan.tool_name,
+                    "tool_file": tool_file_path,
+                    "capabilities": plan.required_capabilities,
+                    }
 
         except Exception as e:
             logger.error(f"Tool generation failed for plan {plan_id}: {e}")
             return {"status": "error", "message": str(e)}
+
 
     async def start_autonomous_evolution(self):
         """Start the autonomous evolution monitoring loop"""
@@ -749,7 +768,7 @@ class EvolutionAgent(BaseAgent):
                 # Evaluate trend adoption
                 await self._evaluate_trend_adoption()
 
-                # Generate tools for high-priority trends
+                # Generate tools for high - priority trends
                 await self._process_tool_generation_queue()
 
                 # Update system capabilities
@@ -763,19 +782,22 @@ class EvolutionAgent(BaseAgent):
                 await asyncio.sleep(300)  # Wait 5 minutes before retry
 
     @property
+
+
     def capabilities(self) -> Dict[str, bool]:
         """Return the capabilities of this agent"""
         # Update capabilities with the new ones
         self._capabilities.update(
             {
                 "tool_generation": True,
-                "innovation_tracking": True,
-                "platform_analysis": True,
-                "capability_evolution": True,
-                "adaptation_automation": True,
-            }
+                    "innovation_tracking": True,
+                    "platform_analysis": True,
+                    "capability_evolution": True,
+                    "adaptation_automation": True,
+                    }
         )
         return self._capabilities
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context
@@ -788,38 +810,39 @@ class EvolutionAgent(BaseAgent):
                 await self._monitor_content_trends()
                 return {
                     "success": True,
-                    "result": {"trends_monitored": len(self.active_trends)},
-                }
+                        "result": {"trends_monitored": len(self.active_trends)},
+                        }
             elif task_type == "evaluate_adoption":
                 await self._evaluate_trend_adoption()
                 return {
                     "success": True,
-                    "result": {"trends_evaluated": len(self.active_trends)},
-                }
+                        "result": {"trends_evaluated": len(self.active_trends)},
+                        }
             elif task_type == "generate_tools":
                 await self._process_tool_generation_queue()
                 return {
                     "success": True,
-                    "result": {
+                        "result": {
                         "tools_generated": self.evolution_metrics.tools_generated
                     },
-                }
+                        }
             else:
                 return {"success": False, "error": f"Unknown task type: {task_type}"}
         except Exception as e:
             logger.error(f"Error executing task with monitoring: {e}")
             return {"success": False, "error": str(e)}
 
+
     async def _rephrase_task(self, task: str) -> str:
         """Rephrase task for evolution context - required by BaseAgent"""
         # Simple rephrasing for evolution tasks
         evolution_keywords = {
             "monitor": "monitor emerging trends for",
-            "analyze": "analyze content evolution patterns for",
-            "detect": "detect new format opportunities in",
-            "generate": "generate adaptive tools for",
-            "evolve": "evolve system capabilities for",
-        }
+                "analyze": "analyze content evolution patterns for",
+                "detect": "detect new format opportunities in",
+                "generate": "generate adaptive tools for",
+                "evolve": "evolve system capabilities for",
+                }
 
         rephrased = task.lower()
         for keyword, replacement in evolution_keywords.items():
@@ -829,19 +852,20 @@ class EvolutionAgent(BaseAgent):
 
         return f"Evolution Agent: {rephrased}"
 
+
     async def _validate_rephrase_accuracy(self, original: str, rephrased: str) -> bool:
         """Validate rephrase accuracy - required by BaseAgent"""
         # Simple validation - check if key evolution terms are preserved
         evolution_terms = [
             "evolution",
-            "trend",
-            "format",
-            "content",
-            "innovation",
-            "adaptation",
-            "monitoring",
-            "generation",
-        ]
+                "trend",
+                "format",
+                "content",
+                "innovation",
+                "adaptation",
+                "monitoring",
+                "generation",
+                ]
 
         original_lower = original.lower()
         rephrased_lower = rephrased.lower()
@@ -854,20 +878,21 @@ class EvolutionAgent(BaseAgent):
         # If no specific evolution terms, check general similarity
         return len(set(original_lower.split()) & set(rephrased_lower.split())) > 0
 
+
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
         return {
             "agent_type": self.agent_type,
-            "active_trends": len(self.active_trends),
-            "tool_plans": len(self.tool_plans),
-            "platforms_monitored": len(self.monitoring_platforms),
-            "innovation_score": self.evolution_metrics.innovation_score,
-            "tools_generated": self.evolution_metrics.tools_generated,
-            "trend_threshold": self.trend_threshold,
-            "capabilities": self.capabilities,
-            "last_evolution": (
+                "active_trends": len(self.active_trends),
+                "tool_plans": len(self.tool_plans),
+                "platforms_monitored": len(self.monitoring_platforms),
+                "innovation_score": self.evolution_metrics.innovation_score,
+                "tools_generated": self.evolution_metrics.tools_generated,
+                "trend_threshold": self.trend_threshold,
+                "capabilities": self.capabilities,
+                "last_evolution": (
                 self.evolution_metrics.last_evolution.isoformat()
                 if self.evolution_metrics.last_evolution
                 else None
             ),
-        }
+                }

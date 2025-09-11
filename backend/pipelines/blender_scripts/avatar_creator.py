@@ -9,7 +9,7 @@ from mathutils import Euler, Vector
 def clear_scene():
     """Clear all objects from the scene."""
     bpy.ops.object.select_all(action="SELECT")
-    bpy.ops.object.delete(use_global=False)
+    bpy.ops.object.delete(use_global = False)
 
     # Clear orphaned data
     for block in bpy.data.meshes:
@@ -25,7 +25,7 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
     """Create a basic humanoid figure."""
     # Create body (torso)
     bpy.ops.mesh.primitive_cube_add(
-        size=1, location=(location[0], location[1], location[2] + 1)
+        size = 1, location=(location[0], location[1], location[2] + 1)
     )
     body = bpy.context.active_object
     body.name = f"{name}_Body"
@@ -33,21 +33,21 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
 
     # Create head
     bpy.ops.mesh.primitive_uv_sphere_add(
-        radius=0.35, location=(location[0], location[1], location[2] + 2.2)
+        radius = 0.35, location=(location[0], location[1], location[2] + 2.2)
     )
     head = bpy.context.active_object
     head.name = f"{name}_Head"
 
     # Create arms
     bpy.ops.mesh.primitive_cube_add(
-        size=0.3, location=(location[0] + 1, location[1], location[2] + 1.5)
+        size = 0.3, location=(location[0] + 1, location[1], location[2] + 1.5)
     )
     arm_right = bpy.context.active_object
     arm_right.name = f"{name}_Arm_Right"
     arm_right.scale = (1, 0.5, 2)
 
     bpy.ops.mesh.primitive_cube_add(
-        size=0.3, location=(location[0] - 1, location[1], location[2] + 1.5)
+        size = 0.3, location=(location[0] - 1, location[1], location[2] + 1.5)
     )
     arm_left = bpy.context.active_object
     arm_left.name = f"{name}_Arm_Left"
@@ -55,14 +55,14 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
 
     # Create legs
     bpy.ops.mesh.primitive_cube_add(
-        size=0.4, location=(location[0] + 0.3, location[1], location[2] - 0.5)
+        size = 0.4, location=(location[0] + 0.3, location[1], location[2] - 0.5)
     )
     leg_right = bpy.context.active_object
     leg_right.name = f"{name}_Leg_Right"
     leg_right.scale = (0.8, 0.8, 2)
 
     bpy.ops.mesh.primitive_cube_add(
-        size=0.4, location=(location[0] - 0.3, location[1], location[2] - 0.5)
+        size = 0.4, location=(location[0] - 0.3, location[1], location[2] - 0.5)
     )
     leg_left = bpy.context.active_object
     leg_left.name = f"{name}_Leg_Left"
@@ -78,7 +78,7 @@ def create_materials(avatar_parts, skin_color=(0.9, 0.8, 0.7, 1.0)):
     skin_material.use_nodes = True
     bsdf = skin_material.node_tree.nodes["Principled BSDF"]
     bsdf.inputs[0].default_value = skin_color  # Base Color
-    bsdf.inputs[7].default_value = 0.3  # Roughness
+        bsdf.inputs[7].default_value = 0.3  # Roughness
     bsdf.inputs[12].default_value = 1.4  # IOR for skin
 
     # Apply skin material to head and body
@@ -250,26 +250,25 @@ def create_avatar_from_config(config_dict, output_path):
     scene.eevee.use_gtao = True
 
     # Save the file
-    bpy.ops.wm.save_as_mainfile(filepath=output_path)
+    bpy.ops.wm.save_as_mainfile(filepath = output_path)
     print(f"Avatar created and saved to: {output_path}")
 
     return {
         "success": True,
-        "avatar_parts": [part.name for part in avatar_parts],
-        "armature": armature.name,
-        "output_path": output_path,
-    }
-
+            "avatar_parts": [part.name for part in avatar_parts],
+            "armature": armature.name,
+            "output_path": output_path,
+            }
 
 if __name__ == "__main__":
     # Example usage
     config = {
         "name": "TestAvatar",
-        "gender": "female",
-        "skin_color": [0.9, 0.8, 0.7, 1.0],
-        "lighting": "studio",
-    }
+            "gender": "female",
+            "skin_color": [0.9, 0.8, 0.7, 1.0],
+            "lighting": "studio",
+            }
 
-    output_file = "/tmp/test_avatar.blend"
+    output_file = "/tmp / test_avatar.blend"
     result = create_avatar_from_config(config, output_file)
-    print(json.dumps(result, indent=2))
+    print(json.dumps(result, indent = 2))

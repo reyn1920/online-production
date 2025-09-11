@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Integration Monitor - Provider Health Monitoring
 
@@ -21,22 +21,24 @@ logger = logging.getLogger(__name__)
 class IntegrationMonitor:
     """Monitor integration provider health and status"""
 
+
     def __init__(self, registry: Optional[IntegrationRegistry] = None):
         self.registry = registry or get_registry()
-        self.client = httpx.AsyncClient(timeout=10.0)
+        self.client = httpx.AsyncClient(timeout = 10.0)
         self.check_interval = 300  # 5 minutes
         self.last_check_time = 0
         self.check_results: Dict[str, Dict[str, Any]] = {}
+
 
     async def check_provider_health(self, provider: Provider) -> Dict[str, Any]:
         """Check health of a single provider"""
         result = {
             "provider_id": provider.id,
-            "status": "purple",
-            "response_time": None,
-            "error": None,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "status": "purple",
+                "response_time": None,
+                "error": None,
+                "timestamp": datetime.now().isoformat(),
+                }
 
         if not provider.enabled:
             result["status"] = "purple"
@@ -84,19 +86,21 @@ class IntegrationMonitor:
 
         return result
 
+
     def _get_test_url(self, provider: Provider) -> Optional[str]:
         """Get test URL for provider health check"""
         test_urls = {
             "nominatim_osm": f"{
-                provider.base_url}/search?q=London&format=json&limit=1",
-            "overpass_main": f'{
+                provider.base_url}/search?q = London&format = json&limit = 1",
+                    "overpass_main": f'{
                 provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
-            "overpass_kumi": f'{
+                    "overpass_kumi": f'{
                 provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
-            "overpass_fr": f'{
+                    "overpass_fr": f'{
                 provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
-        }
+                    }
         return test_urls.get(provider.id)
+
 
     async def check_all(self) -> Dict[str, Dict[str, Any]]:
         """Check health of all providers"""
@@ -127,16 +131,17 @@ class IntegrationMonitor:
                 logger.error(f"Error checking provider {provider.id}: {e}")
                 results[provider.id] = {
                     "provider_id": provider.id,
-                    "status": "red",
-                    "error": str(e),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "status": "red",
+                        "error": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
         self.check_results = results
         self.last_check_time = current_time
 
         logger.info(f"Completed health checks for {len(results)} providers")
         return results
+
 
     async def check_specific_providers(
         self, provider_ids: List[str]
@@ -160,19 +165,20 @@ class IntegrationMonitor:
                     logger.error(f"Error checking provider {provider_id}: {e}")
                     results[provider_id] = {
                         "provider_id": provider_id,
-                        "status": "red",
-                        "error": str(e),
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "status": "red",
+                            "error": str(e),
+                            "timestamp": datetime.now().isoformat(),
+                            }
             else:
                 results[provider_id] = {
                     "provider_id": provider_id,
-                    "status": "red",
-                    "error": "Provider not found",
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "status": "red",
+                        "error": "Provider not found",
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
         return results
+
 
     def get_status_summary(self) -> Dict[str, Any]:
         """Get summary of provider statuses"""
@@ -180,23 +186,23 @@ class IntegrationMonitor:
 
         summary = {
             "total": len(providers),
-            "enabled": len([p for p in providers if p.enabled]),
-            "healthy": len([p for p in providers if p.status == "green"]),
-            "unhealthy": len([p for p in providers if p.status == "red"]),
-            "unknown": len([p for p in providers if p.status == "purple"]),
-            "last_check": (
+                "enabled": len([p for p in providers if p.enabled]),
+                "healthy": len([p for p in providers if p.status == "green"]),
+                "unhealthy": len([p for p in providers if p.status == "red"]),
+                "unknown": len([p for p in providers if p.status == "purple"]),
+                "last_check": (
                 datetime.fromtimestamp(self.last_check_time).isoformat()
                 if self.last_check_time
                 else None
             ),
-        }
+                }
 
         return summary
+
 
     async def close(self):
         """Close HTTP client"""
         await self.client.aclose()
-
 
 # Global monitor instance
 _monitor = None
@@ -205,6 +211,6 @@ _monitor = None
 def get_monitor() -> IntegrationMonitor:
     """Get or create global monitor instance"""
     global _monitor
-    if _monitor is None:
+        if _monitor is None:
         _monitor = IntegrationMonitor()
     return _monitor

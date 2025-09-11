@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 RSS Watcher Service
 
@@ -24,8 +24,9 @@ from breaking_news_watcher import NewsArticle, RSSIntelligenceEngine, TrendData
 
 logger = get_logger(__name__)
 
-
 @dataclass
+
+
 class RSSVideoTrigger:
     """Represents a video creation trigger based on RSS feed items."""
 
@@ -42,18 +43,19 @@ class RSSVideoTrigger:
 
 
 class RSSWatcherService:
-    """Service that monitors RSS feeds and auto-triggers video creation."""
+    """Service that monitors RSS feeds and auto - triggers video creation."""
+
 
     def __init__(
         self,
-        api_base_url: str = "http://localhost:8080",
-        config_path: str = "rss_feeds_example.json",
-        db_path: str = "rss_watcher.db",
-    ):
+            api_base_url: str = "http://localhost:8080",
+            config_path: str = "rss_feeds_example.json",
+            db_path: str = "rss_watcher.db",
+            ):
         self.api_base_url = api_base_url
         self.config_path = config_path
         self.db_path = db_path
-        self.rss_engine = RSSIntelligenceEngine(config_path=config_path)
+        self.rss_engine = RSSIntelligenceEngine(config_path = config_path)
         self.running = False
         self.monitoring_interval = 300  # Check every 5 minutes
         self.min_urgency_threshold = 0.5  # Minimum urgency to trigger video
@@ -61,9 +63,9 @@ class RSSWatcherService:
         # Video creation settings
         self.video_settings = {
             "style": "news_analysis",
-            "duration": 60,  # 1 minute videos
+                "duration": 60,  # 1 minute videos
             "include_affiliates": True,
-        }
+                }
 
         # Initialize database
         self._init_database()
@@ -72,6 +74,7 @@ class RSSWatcherService:
         self._monitoring_task = None
 
         logger.info("RSS Watcher Service initialized")
+
 
     def _init_database(self):
         """Initialize RSS watcher database tables."""
@@ -83,17 +86,17 @@ class RSSWatcherService:
             """
             CREATE TABLE IF NOT EXISTS rss_video_triggers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                trigger_id TEXT UNIQUE NOT NULL,
-                title TEXT NOT NULL,
-                description TEXT,
-                source_url TEXT NOT NULL,
-                feed_name TEXT NOT NULL,
-                keywords TEXT,
-                urgency_score REAL NOT NULL,
-                status TEXT DEFAULT 'pending',
-                video_task_id TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                processed_at TIMESTAMP
+                    trigger_id TEXT UNIQUE NOT NULL,
+                    title TEXT NOT NULL,
+                    description TEXT,
+                    source_url TEXT NOT NULL,
+                    feed_name TEXT NOT NULL,
+                    keywords TEXT,
+                    urgency_score REAL NOT NULL,
+                    status TEXT DEFAULT 'pending',
+                    video_task_id TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    processed_at TIMESTAMP
             )
         """
         )
@@ -103,12 +106,12 @@ class RSSWatcherService:
             """
             CREATE TABLE IF NOT EXISTS rss_feed_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                feed_name TEXT NOT NULL,
-                item_url TEXT NOT NULL,
-                item_title TEXT NOT NULL,
-                item_hash TEXT NOT NULL,
-                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(feed_name, item_hash)
+                    feed_name TEXT NOT NULL,
+                    item_url TEXT NOT NULL,
+                    item_title TEXT NOT NULL,
+                    item_hash TEXT NOT NULL,
+                    first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(feed_name, item_hash)
             )
         """
         )
@@ -118,9 +121,9 @@ class RSSWatcherService:
             """
             CREATE TABLE IF NOT EXISTS rss_watcher_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                action TEXT NOT NULL,
-                details TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    action TEXT NOT NULL,
+                    details TEXT,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -130,16 +133,17 @@ class RSSWatcherService:
 
         logger.info("RSS Watcher database initialized")
 
+
     def _calculate_urgency_score(
         self, article: NewsArticle, feed_config: Dict
     ) -> float:
         """Calculate urgency score for an RSS item."""
         urgency_factors = {
             "recency": 0.0,
-            "keyword_relevance": 0.0,
-            "feed_priority": 0.0,
-            "sentiment": 0.0,
-        }
+                "keyword_relevance": 0.0,
+                "feed_priority": 0.0,
+                "sentiment": 0.0,
+                }
 
         # Recency factor (newer = higher urgency)
         now = datetime.now()
@@ -149,16 +153,16 @@ class RSSWatcherService:
         # Keyword relevance
         high_priority_keywords = [
             "breaking",
-            "urgent",
-            "alert",
-            "developing",
-            "exclusive",
-            "scandal",
-            "crisis",
-            "emergency",
-            "investigation",
-            "leaked",
-        ]
+                "urgent",
+                "alert",
+                "developing",
+                "exclusive",
+                "scandal",
+                "crisis",
+                "emergency",
+                "investigation",
+                "leaked",
+                ]
 
         content_text = f"{article.title} {article.content}".lower()
         keyword_matches = sum(
@@ -176,10 +180,10 @@ class RSSWatcherService:
         # Weighted calculation
         weights = {
             "recency": 0.4,
-            "keyword_relevance": 0.3,
-            "feed_priority": 0.2,
-            "sentiment": 0.1,
-        }
+                "keyword_relevance": 0.3,
+                "feed_priority": 0.2,
+                "sentiment": 0.1,
+                }
 
         urgency_score = sum(
             urgency_factors[factor] * weights[factor] for factor in urgency_factors
@@ -189,6 +193,7 @@ class RSSWatcherService:
             f"Urgency calculation for '{article.title[:50]}...': {urgency_factors} -> {urgency_score:.3f}"
         )
         return urgency_score
+
 
     def _is_duplicate_item(self, feed_name: str, article: NewsArticle) -> bool:
         """Check if RSS item has already been processed."""
@@ -201,11 +206,11 @@ class RSSWatcherService:
 
             cursor.execute(
                 """
-                SELECT COUNT(*) FROM rss_feed_items 
+                SELECT COUNT(*) FROM rss_feed_items
                 WHERE feed_name = ? AND item_hash = ?
             """,
                 (feed_name, item_hash),
-            )
+                    )
 
             count = cursor.fetchone()[0]
 
@@ -217,7 +222,7 @@ class RSSWatcherService:
                     VALUES (?, ?, ?, ?)
                 """,
                     (feed_name, article.url, article.title, item_hash),
-                )
+                        )
                 conn.commit()
 
             conn.close()
@@ -226,6 +231,7 @@ class RSSWatcherService:
         except Exception as e:
             logger.error(f"Error checking duplicate item: {e}")
             return False
+
 
     async def _create_video_via_api(self, trigger: RSSVideoTrigger) -> Optional[str]:
         """Create video through the API endpoint."""
@@ -248,15 +254,15 @@ Style: Professional news analysis with Right Perspective approach
             # API payload
             payload = {
                 "prompt": prompt,
-                "style": self.video_settings["style"],
-                "duration": self.video_settings["duration"],
-                "include_affiliates": self.video_settings["include_affiliates"],
-            }
+                    "style": self.video_settings["style"],
+                    "duration": self.video_settings["duration"],
+                    "include_affiliates": self.video_settings["include_affiliates"],
+                    }
 
             # Make API call
-            async with httpx.AsyncClient(timeout=30.0) as client:
+            async with httpx.AsyncClient(timeout = 30.0) as client:
                 response = await client.post(
-                    f"{self.api_base_url}/api/create_video", json=payload
+                    f"{self.api_base_url}/api / create_video", json = payload
                 )
 
                 if response.status_code == 200:
@@ -277,6 +283,7 @@ Style: Professional news analysis with Right Perspective approach
             logger.error(f"Error creating video via API: {e}")
             return None
 
+
     def _store_trigger(self, trigger: RSSVideoTrigger) -> bool:
         """Store video trigger in database."""
         try:
@@ -285,23 +292,23 @@ Style: Professional news analysis with Right Perspective approach
 
             cursor.execute(
                 """
-                INSERT INTO rss_video_triggers 
-                (trigger_id, title, description, source_url, feed_name, 
-                 keywords, urgency_score, status, video_task_id)
+                INSERT INTO rss_video_triggers
+                (trigger_id, title, description, source_url, feed_name,
+                    keywords, urgency_score, status, video_task_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     trigger.trigger_id,
-                    trigger.title,
-                    trigger.description,
-                    trigger.source_url,
-                    trigger.feed_name,
-                    json.dumps(trigger.keywords),
-                    trigger.urgency_score,
-                    trigger.status,
-                    trigger.video_task_id,
-                ),
-            )
+                        trigger.title,
+                        trigger.description,
+                        trigger.source_url,
+                        trigger.feed_name,
+                        json.dumps(trigger.keywords),
+                        trigger.urgency_score,
+                        trigger.status,
+                        trigger.video_task_id,
+                        ),
+                    )
 
             # Log the action
             cursor.execute(
@@ -311,9 +318,9 @@ Style: Professional news analysis with Right Perspective approach
             """,
                 (
                     "trigger_created",
-                    f"Trigger {trigger.trigger_id}: {trigger.title[:50]}... (urgency: {trigger.urgency_score:.3f})",
-                ),
-            )
+                        f"Trigger {trigger.trigger_id}: {trigger.title[:50]}... (urgency: {trigger.urgency_score:.3f})",
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -324,6 +331,7 @@ Style: Professional news analysis with Right Perspective approach
         except Exception as e:
             logger.error(f"Error storing trigger: {e}")
             return False
+
 
     async def _process_rss_feeds(self):
         """Process all RSS feeds and create video triggers."""
@@ -362,19 +370,19 @@ Style: Professional news analysis with Right Perspective approach
                             )
 
                             trigger = RSSVideoTrigger(
-                                trigger_id=trigger_id,
-                                title=article.title,
-                                description=(
+                                trigger_id = trigger_id,
+                                    title = article.title,
+                                    description=(
                                     article.content[:500] + "..."
                                     if len(article.content) > 500
                                     else article.content
                                 ),
-                                source_url=article.url,
-                                feed_name=feed_name,
-                                keywords=article.keywords[:10],  # Limit keywords
-                                urgency_score=urgency_score,
-                                created_at=datetime.now(),
-                            )
+                                    source_url = article.url,
+                                    feed_name = feed_name,
+                                    keywords = article.keywords[:10],  # Limit keywords
+                                urgency_score = urgency_score,
+                                    created_at = datetime.now(),
+                                    )
 
                             # Create video via API
                             task_id = await self._create_video_via_api(trigger)
@@ -404,6 +412,7 @@ Style: Professional news analysis with Right Perspective approach
         except Exception as e:
             logger.error(f"Error processing RSS feeds: {e}")
 
+
     async def run_continuous_monitoring(self):
         """Run continuous RSS monitoring and video triggering."""
         self.running = True
@@ -422,6 +431,7 @@ Style: Professional news analysis with Right Perspective approach
                 logger.error(f"Error in RSS monitoring cycle: {e}")
                 await asyncio.sleep(60)  # Wait 1 minute before retrying
 
+
     def stop_monitoring(self):
         """Stop RSS monitoring."""
         self.running = False
@@ -431,13 +441,14 @@ Style: Professional news analysis with Right Perspective approach
         logger.info("RSS watcher stopped")
         return {"status": "stopped", "message": "RSS monitoring stopped"}
 
+
     def start_monitoring(
         self,
-        monitoring_interval: int = None,
-        min_urgency_threshold: float = None,
-        include_affiliates: bool = None,
-        video_duration: int = None,
-    ):
+            monitoring_interval: int = None,
+            min_urgency_threshold: float = None,
+            include_affiliates: bool = None,
+            video_duration: int = None,
+            ):
         """Start RSS monitoring with optional configuration updates."""
         # Update configuration if provided
         if monitoring_interval is not None:
@@ -464,27 +475,29 @@ Style: Professional news analysis with Right Perspective approach
         )
         return {
             "status": "started",
-            "message": "RSS monitoring started",
-            "config": {
+                "message": "RSS monitoring started",
+                "config": {
                 "monitoring_interval": self.monitoring_interval,
-                "min_urgency_threshold": self.min_urgency_threshold,
-                "include_affiliates": self.video_settings["include_affiliates"],
-                "video_duration": self.video_settings["duration"],
-            },
-        }
+                    "min_urgency_threshold": self.min_urgency_threshold,
+                    "include_affiliates": self.video_settings["include_affiliates"],
+                    "video_duration": self.video_settings["duration"],
+                    },
+                }
+
 
     def get_status(self):
         """Get current RSS watcher status."""
-        recent_triggers = self.get_recent_triggers(limit=5)
+        recent_triggers = self.get_recent_triggers(limit = 5)
 
         return {
             "running": self.running,
-            "monitoring_interval": self.monitoring_interval,
-            "min_urgency_threshold": self.min_urgency_threshold,
-            "recent_triggers_count": len(recent_triggers),
-            "last_check": recent_triggers[0]["created_at"] if recent_triggers else None,
-            "video_settings": self.video_settings,
-        }
+                "monitoring_interval": self.monitoring_interval,
+                "min_urgency_threshold": self.min_urgency_threshold,
+                "recent_triggers_count": len(recent_triggers),
+                "last_check": recent_triggers[0]["created_at"] if recent_triggers else None,
+                "video_settings": self.video_settings,
+                }
+
 
     def get_recent_triggers(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Get recent video triggers."""
@@ -494,14 +507,14 @@ Style: Professional news analysis with Right Perspective approach
 
             cursor.execute(
                 """
-                SELECT trigger_id, title, feed_name, urgency_score, 
-                       status, video_task_id, created_at
+                SELECT trigger_id, title, feed_name, urgency_score,
+                    status, video_task_id, created_at
                 FROM rss_video_triggers
                 ORDER BY created_at DESC
                 LIMIT ?
             """,
                 (limit,),
-            )
+                    )
 
             results = cursor.fetchall()
             conn.close()
@@ -511,13 +524,13 @@ Style: Professional news analysis with Right Perspective approach
                 triggers.append(
                     {
                         "trigger_id": result[0],
-                        "title": result[1],
-                        "feed_name": result[2],
-                        "urgency_score": result[3],
-                        "status": result[4],
-                        "video_task_id": result[5],
-                        "created_at": result[6],
-                    }
+                            "title": result[1],
+                            "feed_name": result[2],
+                            "urgency_score": result[3],
+                            "status": result[4],
+                            "video_task_id": result[5],
+                            "created_at": result[6],
+                            }
                 )
 
             return triggers
@@ -526,9 +539,10 @@ Style: Professional news analysis with Right Perspective approach
             logger.error(f"Error getting recent triggers: {e}")
             return []
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         watcher = RSSWatcherService()
 

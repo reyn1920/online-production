@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Rule-1 Content Scanner and Enforcer
+Rule - 1 Content Scanner and Enforcer
 
 This module provides comprehensive content scanning and enforcement capabilities
-for the TRAE.AI system. It implements Rule-1 compliance by detecting and
+for the TRAE.AI system. It implements Rule - 1 compliance by detecting and
 replacing forbidden terms, ensuring content meets platform guidelines.
 
 Features:
@@ -12,7 +12,7 @@ Features:
 - Automatic content replacement and enforcement
 - Backup and rollback capabilities
 - Detailed reporting and logging
-- Multi-format file support (text, markdown, code, etc.)
+- Multi - format file support (text, markdown, code, etc.)
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -32,8 +32,9 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from utils.logger import get_logger
 
-
 @dataclass
+
+
 class ScanResult:
     """Result of a content scan operation."""
 
@@ -44,12 +45,14 @@ class ScanResult:
     scan_timestamp: str
     file_hash: str
 
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return asdict(self)
 
-
 @dataclass
+
+
 class EnforcementResult:
     """Result of a content enforcement operation."""
 
@@ -61,6 +64,7 @@ class EnforcementResult:
     new_hash: str
     enforcement_timestamp: str
 
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return asdict(self)
@@ -68,20 +72,21 @@ class EnforcementResult:
 
 class Rule1DeepScanner:
     """
-    Deep content scanner for Rule-1 compliance.
+    Deep content scanner for Rule - 1 compliance.
 
     Scans directories and files for forbidden terms and content patterns
     that violate platform guidelines or content policies.
     """
 
+
     def __init__(
         self,
-        forbidden_terms_db: str = "data/forbidden_terms.json",
-        scan_results_db: str = "data/scan_results.sqlite",
-        backup_dir: str = "data/backups",
-    ):
+            forbidden_terms_db: str = "data / forbidden_terms.json",
+            scan_results_db: str = "data / scan_results.sqlite",
+            backup_dir: str = "data / backups",
+            ):
         """
-        Initialize the Rule-1 Deep Scanner.
+        Initialize the Rule - 1 Deep Scanner.
 
         Args:
             forbidden_terms_db: Path to forbidden terms database
@@ -94,9 +99,9 @@ class Rule1DeepScanner:
         self.backup_dir = Path(backup_dir)
 
         # Ensure directories exist
-        self.forbidden_terms_db.parent.mkdir(parents=True, exist_ok=True)
-        self.scan_results_db.parent.mkdir(parents=True, exist_ok=True)
-        self.backup_dir.mkdir(parents=True, exist_ok=True)
+        self.forbidden_terms_db.parent.mkdir(parents = True, exist_ok = True)
+        self.scan_results_db.parent.mkdir(parents = True, exist_ok = True)
+        self.backup_dir.mkdir(parents = True, exist_ok = True)
 
         # Load forbidden terms
         self.forbidden_terms = self._load_forbidden_terms()
@@ -107,30 +112,31 @@ class Rule1DeepScanner:
         # Supported file extensions
         self.supported_extensions = {
             ".txt",
-            ".md",
-            ".py",
-            ".js",
-            ".html",
-            ".css",
-            ".json",
-            ".xml",
-            ".yml",
-            ".yaml",
-            ".ini",
-            ".cfg",
-            ".conf",
-            ".log",
-            ".rst",
-            ".tex",
-            ".csv",
-            ".sql",
-            ".sh",
-            ".bat",
-        }
+                ".md",
+                ".py",
+                ".js",
+                ".html",
+                ".css",
+                ".json",
+                ".xml",
+                ".yml",
+                ".yaml",
+                ".ini",
+                ".cfg",
+                ".conf",
+                ".log",
+                ".rst",
+                ".tex",
+                ".csv",
+                ".sql",
+                ".sh",
+                ".bat",
+                }
 
         self.logger.info(
             f"Rule1DeepScanner initialized with {len(self.forbidden_terms)} forbidden terms"
         )
+
 
     def _load_forbidden_terms(self) -> Dict[str, Dict[str, Any]]:
         """Load forbidden terms from database file."""
@@ -139,64 +145,64 @@ class Rule1DeepScanner:
             default_terms = {
                 "hate_speech": {
                     "category": "hate_speech",
-                    "severity": "high",
-                    "patterns": [
+                        "severity": "high",
+                        "patterns": [
                         r"\b(hate|hatred)\s+(speech|content)\b",
-                        r"\b(racist|racism)\b",
-                        r"\b(sexist|sexism)\b",
-                        r"\b(homophobic|homophobia)\b",
-                    ],
-                    "replacement": "[CONTENT_REMOVED]",
-                    "description": "Hate speech and discriminatory content",
-                },
-                "violence": {
+                            r"\b(racist|racism)\b",
+                            r"\b(sexist|sexism)\b",
+                            r"\b(homophobic|homophobia)\b",
+                            ],
+                        "replacement": "[CONTENT_REMOVED]",
+                        "description": "Hate speech and discriminatory content",
+                        },
+                    "violence": {
                     "category": "violence",
-                    "severity": "high",
-                    "patterns": [
+                        "severity": "high",
+                        "patterns": [
                         r"\b(kill|murder|assassinate)\s+(someone|people|person)\b",
-                        r"\b(bomb|explosion|terrorist)\s+(attack|threat)\b",
-                        r"\b(violence|violent)\s+(content|imagery)\b",
-                    ],
-                    "replacement": "[VIOLENT_CONTENT_REMOVED]",
-                    "description": "Violent content and threats",
-                },
-                "misinformation": {
+                            r"\b(bomb|explosion|terrorist)\s+(attack|threat)\b",
+                            r"\b(violence|violent)\s+(content|imagery)\b",
+                            ],
+                        "replacement": "[VIOLENT_CONTENT_REMOVED]",
+                        "description": "Violent content and threats",
+                        },
+                    "misinformation": {
                     "category": "misinformation",
-                    "severity": "medium",
-                    "patterns": [
+                        "severity": "medium",
+                        "patterns": [
                         r"\b(fake|false)\s+(news|information)\b",
-                        r"\b(conspiracy|hoax)\s+(theory|theories)\b",
-                        r"\b(misinformation|disinformation)\b",
-                    ],
-                    "replacement": "[UNVERIFIED_CLAIM]",
-                    "description": "Misinformation and false claims",
-                },
-                "spam": {
+                            r"\b(conspiracy|hoax)\s+(theory|theories)\b",
+                            r"\b(misinformation|disinformation)\b",
+                            ],
+                        "replacement": "[UNVERIFIED_CLAIM]",
+                        "description": "Misinformation and false claims",
+                        },
+                    "spam": {
                     "category": "spam",
-                    "severity": "low",
-                    "patterns": [
-                        r"\b(click\s+here|buy\s+now)\b",
-                        r"\b(limited\s+time|act\s+now)\b",
-                        r"\b(free\s+money|get\s+rich)\b",
-                    ],
-                    "replacement": "[PROMOTIONAL_CONTENT]",
-                    "description": "Spam and promotional content",
-                },
-                "personal_info": {
+                        "severity": "low",
+                        "patterns": [
+                        r"\b(click\s + here|buy\s + now)\b",
+                            r"\b(limited\s + time|act\s + now)\b",
+                            r"\b(free\s + money|get\s + rich)\b",
+                            ],
+                        "replacement": "[PROMOTIONAL_CONTENT]",
+                        "description": "Spam and promotional content",
+                        },
+                    "personal_info": {
                     "category": "privacy",
-                    "severity": "high",
-                    "patterns": [
+                        "severity": "high",
+                        "patterns": [
                         r"\b\d{3}-\d{2}-\d{4}\b",  # SSN pattern
                         r"\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b",  # Credit card pattern
-                        r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",  # Email pattern
+                        r"\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\.[A - Z|a - z]{2,}\b",  # Email pattern
                     ],
-                    "replacement": "[PERSONAL_INFO_REDACTED]",
-                    "description": "Personal information and sensitive data",
-                },
-            }
+                        "replacement": "[PERSONAL_INFO_REDACTED]",
+                        "description": "Personal information and sensitive data",
+                        },
+                    }
 
             with open(self.forbidden_terms_db, "w") as f:
-                json.dump(default_terms, f, indent=2)
+                json.dump(default_terms, f, indent = 2)
 
             self.logger.info(
                 f"Created default forbidden terms database: {self.forbidden_terms_db}"
@@ -210,6 +216,7 @@ class Rule1DeepScanner:
             self.logger.error(f"Error loading forbidden terms: {e}")
             return {}
 
+
     def _init_database(self):
         """Initialize the scan results database."""
         with sqlite3.connect(self.scan_results_db) as conn:
@@ -217,13 +224,13 @@ class Rule1DeepScanner:
                 """
                 CREATE TABLE IF NOT EXISTS scan_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    file_path TEXT NOT NULL,
-                    scan_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    total_violations INTEGER DEFAULT 0,
-                    file_size INTEGER DEFAULT 0,
-                    file_hash TEXT,
-                    violations_json TEXT,
-                    scan_duration_ms INTEGER DEFAULT 0
+                        file_path TEXT NOT NULL,
+                        scan_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        total_violations INTEGER DEFAULT 0,
+                        file_size INTEGER DEFAULT 0,
+                        file_hash TEXT,
+                        violations_json TEXT,
+                        scan_duration_ms INTEGER DEFAULT 0
                 )
             """
             )
@@ -232,13 +239,13 @@ class Rule1DeepScanner:
                 """
                 CREATE TABLE IF NOT EXISTS enforcement_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    file_path TEXT NOT NULL,
-                    enforcement_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    replacements_made INTEGER DEFAULT 0,
-                    backup_path TEXT,
-                    original_hash TEXT,
-                    new_hash TEXT,
-                    enforcer_version TEXT
+                        file_path TEXT NOT NULL,
+                        enforcement_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        replacements_made INTEGER DEFAULT 0,
+                        backup_path TEXT,
+                        original_hash TEXT,
+                        new_hash TEXT,
+                        enforcer_version TEXT
                 )
             """
             )
@@ -252,14 +259,16 @@ class Rule1DeepScanner:
             )
             conn.commit()
 
+
     def _calculate_file_hash(self, file_path: Path) -> str:
-        """Calculate SHA-256 hash of file content."""
+        """Calculate SHA - 256 hash of file content."""
         try:
             with open(file_path, "rb") as f:
                 return hashlib.sha256(f.read()).hexdigest()
         except Exception as e:
             self.logger.error(f"Error calculating hash for {file_path}: {e}")
             return ""
+
 
     def _is_text_file(self, file_path: Path) -> bool:
         """Check if file is a text file that can be scanned."""
@@ -284,6 +293,7 @@ class Rule1DeepScanner:
         except Exception:
             return False
 
+
     def scan_file(self, file_path: Path) -> ScanResult:
         """Scan a single file for forbidden content."""
         start_time = datetime.now()
@@ -293,27 +303,27 @@ class Rule1DeepScanner:
             if not file_path.exists() or not file_path.is_file():
                 self.logger.warning(f"File not found or not a file: {file_path}")
                 return ScanResult(
-                    file_path=str(file_path),
-                    violations=[],
-                    total_violations=0,
-                    file_size=0,
-                    scan_timestamp=start_time.isoformat(),
-                    file_hash="",
-                )
+                    file_path = str(file_path),
+                        violations=[],
+                        total_violations = 0,
+                        file_size = 0,
+                        scan_timestamp = start_time.isoformat(),
+                        file_hash="",
+                        )
 
             if not self._is_text_file(file_path):
-                self.logger.debug(f"Skipping non-text file: {file_path}")
+                self.logger.debug(f"Skipping non - text file: {file_path}")
                 return ScanResult(
-                    file_path=str(file_path),
-                    violations=[],
-                    total_violations=0,
-                    file_size=file_path.stat().st_size,
-                    scan_timestamp=start_time.isoformat(),
-                    file_hash=self._calculate_file_hash(file_path),
-                )
+                    file_path = str(file_path),
+                        violations=[],
+                        total_violations = 0,
+                        file_size = file_path.stat().st_size,
+                        scan_timestamp = start_time.isoformat(),
+                        file_hash = self._calculate_file_hash(file_path),
+                        )
 
             # Read file content
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                 content = f.read()
 
             # Scan for forbidden terms
@@ -332,30 +342,30 @@ class Rule1DeepScanner:
                             violations.append(
                                 {
                                     "term_id": term_id,
-                                    "category": category,
-                                    "severity": severity,
-                                    "pattern": pattern,
-                                    "match": match.group(),
-                                    "line_number": line_num,
-                                    "start_pos": match.start(),
-                                    "end_pos": match.end(),
-                                    "context": self._get_context(
+                                        "category": category,
+                                        "severity": severity,
+                                        "pattern": pattern,
+                                        "match": match.group(),
+                                        "line_number": line_num,
+                                        "start_pos": match.start(),
+                                        "end_pos": match.end(),
+                                        "context": self._get_context(
                                         content, match.start(), match.end()
                                     ),
-                                }
+                                        }
                             )
                     except re.error as e:
                         self.logger.error(f"Invalid regex pattern '{pattern}': {e}")
 
             # Create scan result
             result = ScanResult(
-                file_path=str(file_path),
-                violations=violations,
-                total_violations=len(violations),
-                file_size=file_path.stat().st_size,
-                scan_timestamp=start_time.isoformat(),
-                file_hash=self._calculate_file_hash(file_path),
-            )
+                file_path = str(file_path),
+                    violations = violations,
+                    total_violations = len(violations),
+                    file_size = file_path.stat().st_size,
+                    scan_timestamp = start_time.isoformat(),
+                    file_hash = self._calculate_file_hash(file_path),
+                    )
 
             # Store result in database
             self._store_scan_result(
@@ -374,13 +384,14 @@ class Rule1DeepScanner:
         except Exception as e:
             self.logger.error(f"Error scanning file {file_path}: {e}")
             return ScanResult(
-                file_path=str(file_path),
-                violations=[],
-                total_violations=0,
-                file_size=0,
-                scan_timestamp=start_time.isoformat(),
-                file_hash="",
-            )
+                file_path = str(file_path),
+                    violations=[],
+                    total_violations = 0,
+                    file_size = 0,
+                    scan_timestamp = start_time.isoformat(),
+                    file_hash="",
+                    )
+
 
     def _get_context(
         self, content: str, start: int, end: int, context_size: int = 50
@@ -395,35 +406,37 @@ class Rule1DeepScanner:
 
         return context
 
+
     def _store_scan_result(self, result: ScanResult, duration_ms: float):
         """Store scan result in database."""
         try:
             with sqlite3.connect(self.scan_results_db) as conn:
                 conn.execute(
                     """
-                    INSERT INTO scan_results 
+                    INSERT INTO scan_results
                     (file_path, total_violations, file_size, file_hash, violations_json, scan_duration_ms)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """,
                     (
                         result.file_path,
-                        result.total_violations,
-                        result.file_size,
-                        result.file_hash,
-                        json.dumps(result.violations),
-                        int(duration_ms),
-                    ),
-                )
+                            result.total_violations,
+                            result.file_size,
+                            result.file_hash,
+                            json.dumps(result.violations),
+                            int(duration_ms),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing scan result: {e}")
 
+
     def scan_directory(
         self,
-        directory: Path,
-        recursive: bool = True,
-        file_patterns: Optional[List[str]] = None,
-    ) -> List[ScanResult]:
+            directory: Path,
+            recursive: bool = True,
+            file_patterns: Optional[List[str]] = None,
+            ) -> List[ScanResult]:
         """Scan a directory for forbidden content."""
         results = []
 
@@ -463,6 +476,7 @@ class Rule1DeepScanner:
 
         return results
 
+
     def get_scan_history(
         self, file_path: Optional[str] = None, limit: int = 100
     ) -> List[Dict[str, Any]]:
@@ -474,22 +488,22 @@ class Rule1DeepScanner:
                 if file_path:
                     cursor = conn.execute(
                         """
-                        SELECT * FROM scan_results 
-                        WHERE file_path = ? 
-                        ORDER BY scan_timestamp DESC 
+                        SELECT * FROM scan_results
+                        WHERE file_path = ?
+                        ORDER BY scan_timestamp DESC
                         LIMIT ?
                     """,
                         (file_path, limit),
-                    )
+                            )
                 else:
                     cursor = conn.execute(
                         """
-                        SELECT * FROM scan_results 
-                        ORDER BY scan_timestamp DESC 
+                        SELECT * FROM scan_results
+                        ORDER BY scan_timestamp DESC
                         LIMIT ?
                     """,
                         (limit,),
-                    )
+                            )
 
                 return [dict(row) for row in cursor.fetchall()]
 
@@ -497,28 +511,29 @@ class Rule1DeepScanner:
             self.logger.error(f"Error retrieving scan history: {e}")
             return []
 
+
     def add_forbidden_term(
         self,
-        term_id: str,
-        category: str,
-        patterns: List[str],
-        severity: str = "medium",
-        replacement: str = "[CONTENT_REMOVED]",
-        description: str = "",
-    ) -> bool:
+            term_id: str,
+            category: str,
+            patterns: List[str],
+            severity: str = "medium",
+            replacement: str = "[CONTENT_REMOVED]",
+            description: str = "",
+            ) -> bool:
         """Add a new forbidden term to the database."""
         try:
             self.forbidden_terms[term_id] = {
                 "category": category,
-                "severity": severity,
-                "patterns": patterns,
-                "replacement": replacement,
-                "description": description,
-            }
+                    "severity": severity,
+                    "patterns": patterns,
+                    "replacement": replacement,
+                    "description": description,
+                    }
 
             # Save to file
             with open(self.forbidden_terms_db, "w") as f:
-                json.dump(self.forbidden_terms, f, indent=2)
+                json.dump(self.forbidden_terms, f, indent = 2)
 
             self.logger.info(f"Added forbidden term: {term_id}")
             return True
@@ -526,6 +541,7 @@ class Rule1DeepScanner:
         except Exception as e:
             self.logger.error(f"Error adding forbidden term: {e}")
             return False
+
 
     def remove_forbidden_term(self, term_id: str) -> bool:
         """Remove a forbidden term from the database."""
@@ -535,7 +551,7 @@ class Rule1DeepScanner:
 
                 # Save to file
                 with open(self.forbidden_terms_db, "w") as f:
-                    json.dump(self.forbidden_terms, f, indent=2)
+                    json.dump(self.forbidden_terms, f, indent = 2)
 
                 self.logger.info(f"Removed forbidden term: {term_id}")
                 return True
@@ -550,15 +566,16 @@ class Rule1DeepScanner:
 
 class Rule1Enforcer:
     """
-    Content enforcer for Rule-1 compliance.
+    Content enforcer for Rule - 1 compliance.
 
     Automatically replaces forbidden content with approved alternatives,
-    maintaining content integrity while ensuring compliance.
+        maintaining content integrity while ensuring compliance.
     """
+
 
     def __init__(self, scanner: Rule1DeepScanner):
         """
-        Initialize the Rule-1 Enforcer.
+        Initialize the Rule - 1 Enforcer.
 
         Args:
             scanner: Rule1DeepScanner instance for content analysis
@@ -567,6 +584,7 @@ class Rule1Enforcer:
         self.logger = get_logger(__name__)
 
         self.logger.info("Rule1Enforcer initialized")
+
 
     def create_backup(self, file_path: Path) -> Optional[Path]:
         """Create a backup of the original file."""
@@ -583,10 +601,11 @@ class Rule1Enforcer:
             self.logger.error(f"Error creating backup for {file_path}: {e}")
             return None
 
+
     def enforce_file(
         self, file_path: Path, create_backup: bool = True
     ) -> EnforcementResult:
-        """Enforce Rule-1 compliance on a single file."""
+        """Enforce Rule - 1 compliance on a single file."""
         start_time = datetime.now()
 
         # Get original file hash
@@ -606,17 +625,17 @@ class Rule1Enforcer:
             if scan_result.total_violations == 0:
                 self.logger.debug(f"No violations found in {file_path}")
                 return EnforcementResult(
-                    file_path=str(file_path),
-                    replacements_made=0,
-                    backup_created=backup_created,
-                    backup_path=str(backup_path) if backup_path else None,
-                    original_hash=original_hash,
-                    new_hash=original_hash,
-                    enforcement_timestamp=start_time.isoformat(),
-                )
+                    file_path = str(file_path),
+                        replacements_made = 0,
+                        backup_created = backup_created,
+                        backup_path = str(backup_path) if backup_path else None,
+                        original_hash = original_hash,
+                        new_hash = original_hash,
+                        enforcement_timestamp = start_time.isoformat(),
+                        )
 
             # Read file content
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                 content = f.read()
 
             original_content = content
@@ -635,10 +654,10 @@ class Rule1Enforcer:
                     # Apply replacement
                     new_content, count = re.subn(
                         pattern,
-                        replacement,
-                        content,
-                        flags=re.IGNORECASE | re.MULTILINE,
-                    )
+                            replacement,
+                            content,
+                            flags = re.IGNORECASE | re.MULTILINE,
+                            )
                     if count > 0:
                         content = new_content
                         replacements_made += count
@@ -648,7 +667,7 @@ class Rule1Enforcer:
 
             # Write modified content back to file
             if replacements_made > 0:
-                with open(file_path, "w", encoding="utf-8") as f:
+                with open(file_path, "w", encoding="utf - 8") as f:
                     f.write(content)
 
                 self.logger.info(
@@ -660,14 +679,14 @@ class Rule1Enforcer:
 
             # Create enforcement result
             result = EnforcementResult(
-                file_path=str(file_path),
-                replacements_made=replacements_made,
-                backup_created=backup_created,
-                backup_path=str(backup_path) if backup_path else None,
-                original_hash=original_hash,
-                new_hash=new_hash,
-                enforcement_timestamp=start_time.isoformat(),
-            )
+                file_path = str(file_path),
+                    replacements_made = replacements_made,
+                    backup_created = backup_created,
+                    backup_path = str(backup_path) if backup_path else None,
+                    original_hash = original_hash,
+                    new_hash = new_hash,
+                    enforcement_timestamp = start_time.isoformat(),
+                    )
 
             # Store enforcement history
             self._store_enforcement_result(result)
@@ -688,14 +707,15 @@ class Rule1Enforcer:
                     self.logger.error(f"Error restoring from backup: {restore_error}")
 
             return EnforcementResult(
-                file_path=str(file_path),
-                replacements_made=0,
-                backup_created=backup_created,
-                backup_path=str(backup_path) if backup_path else None,
-                original_hash=original_hash,
-                new_hash=original_hash,
-                enforcement_timestamp=start_time.isoformat(),
-            )
+                file_path = str(file_path),
+                    replacements_made = 0,
+                    backup_created = backup_created,
+                    backup_path = str(backup_path) if backup_path else None,
+                    original_hash = original_hash,
+                    new_hash = original_hash,
+                    enforcement_timestamp = start_time.isoformat(),
+                    )
+
 
     def _store_enforcement_result(self, result: EnforcementResult):
         """Store enforcement result in database."""
@@ -703,31 +723,32 @@ class Rule1Enforcer:
             with sqlite3.connect(self.scanner.scan_results_db) as conn:
                 conn.execute(
                     """
-                    INSERT INTO enforcement_history 
+                    INSERT INTO enforcement_history
                     (file_path, replacements_made, backup_path, original_hash, new_hash, enforcer_version)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """,
                     (
                         result.file_path,
-                        result.replacements_made,
-                        result.backup_path,
-                        result.original_hash,
-                        result.new_hash,
-                        "1.0.0",
-                    ),
-                )
+                            result.replacements_made,
+                            result.backup_path,
+                            result.original_hash,
+                            result.new_hash,
+                            "1.0.0",
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing enforcement result: {e}")
 
+
     def enforce_directory(
         self,
-        directory: Path,
-        recursive: bool = True,
-        file_patterns: Optional[List[str]] = None,
-        create_backups: bool = True,
-    ) -> List[EnforcementResult]:
-        """Enforce Rule-1 compliance on a directory."""
+            directory: Path,
+            recursive: bool = True,
+            file_patterns: Optional[List[str]] = None,
+            create_backups: bool = True,
+            ) -> List[EnforcementResult]:
+        """Enforce Rule - 1 compliance on a directory."""
         results = []
 
         if not directory.exists() or not directory.is_dir():
@@ -753,7 +774,7 @@ class Rule1Enforcer:
                         ):
                             continue
 
-                    result = self.enforce_file(file_path, create_backup=create_backups)
+                    result = self.enforce_file(file_path, create_backup = create_backups)
                     results.append(result)
 
         except Exception as e:
@@ -765,6 +786,7 @@ class Rule1Enforcer:
         )
 
         return results
+
 
     def rollback_file(
         self, file_path: Path, backup_path: Optional[Path] = None
@@ -783,7 +805,7 @@ class Rule1Enforcer:
                     return False
 
                 # Sort by modification time and get the most recent
-                backup_path = max(backups, key=lambda p: p.stat().st_mtime)
+                backup_path = max(backups, key = lambda p: p.stat().st_mtime)
 
             if not backup_path.exists():
                 self.logger.error(f"Backup file not found: {backup_path}")
@@ -798,6 +820,7 @@ class Rule1Enforcer:
             self.logger.error(f"Error rolling back {file_path}: {e}")
             return False
 
+
     def get_enforcement_history(
         self, file_path: Optional[str] = None, limit: int = 100
     ) -> List[Dict[str, Any]]:
@@ -809,22 +832,22 @@ class Rule1Enforcer:
                 if file_path:
                     cursor = conn.execute(
                         """
-                        SELECT * FROM enforcement_history 
-                        WHERE file_path = ? 
-                        ORDER BY enforcement_timestamp DESC 
+                        SELECT * FROM enforcement_history
+                        WHERE file_path = ?
+                        ORDER BY enforcement_timestamp DESC
                         LIMIT ?
                     """,
                         (file_path, limit),
-                    )
+                            )
                 else:
                     cursor = conn.execute(
                         """
-                        SELECT * FROM enforcement_history 
-                        ORDER BY enforcement_timestamp DESC 
+                        SELECT * FROM enforcement_history
+                        ORDER BY enforcement_timestamp DESC
                         LIMIT ?
                     """,
                         (limit,),
-                    )
+                            )
 
                 return [dict(row) for row in cursor.fetchall()]
 
@@ -832,21 +855,20 @@ class Rule1Enforcer:
             self.logger.error(f"Error retrieving enforcement history: {e}")
             return []
 
-
 if __name__ == "__main__":
-    # Test the Rule-1 scanner and enforcer
+    # Test the Rule - 1 scanner and enforcer
     import tempfile
 
     # Create test content with violations
     test_content = """
     This is a test file with some problematic content.
-    
+
     Here's some hate speech that should be detected.
     This contains fake news and misinformation.
-    
-    Contact us at test@example.com or call 123-45-6789.
+
+    Contact us at test@example.com or call 123 - 45 - 6789.
     Credit card: 1234 5678 9012 3456
-    
+
     Click here to buy now! Limited time offer!
     """
 
@@ -860,10 +882,10 @@ if __name__ == "__main__":
 
         # Initialize scanner and enforcer
         scanner = Rule1DeepScanner(
-            forbidden_terms_db=str(temp_path / "forbidden_terms.json"),
-            scan_results_db=str(temp_path / "scan_results.sqlite"),
-            backup_dir=str(temp_path / "backups"),
-        )
+            forbidden_terms_db = str(temp_path / "forbidden_terms.json"),
+                scan_results_db = str(temp_path / "scan_results.sqlite"),
+                backup_dir = str(temp_path / "backups"),
+                )
 
         enforcer = Rule1Enforcer(scanner)
 
@@ -898,4 +920,4 @@ if __name__ == "__main__":
                 restored_content = f.read()
             print("Content restored to original")
 
-    print("\nRule-1 scanner and enforcer test completed.")
+    print("\nRule - 1 scanner and enforcer test completed.")

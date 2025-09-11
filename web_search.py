@@ -1,7 +1,7 @@
 import requests
 
 
-def web_search(query: str, num_results=5):
+def web_search(query: str, num_results = 5):
     """Search the web using DuckDuckGo API
 
     Args:
@@ -11,12 +11,11 @@ def web_search(query: str, num_results=5):
     Returns:
         list: List of search results with snippet and link
     """
-    url = f"https://ddg-api.herokuapp.com/search?query={query}&limit={num_results}"
+    url = f"https://ddg - api.herokuapp.com / search?query={query}&limit={num_results}"
     resp = requests.get(url)
     if resp.status_code == 200:
         return [r["snippet"] + " - " + r["link"] for r in resp.json()["results"]]
     return []
-
 
 if __name__ == "__main__":
     # Test the function

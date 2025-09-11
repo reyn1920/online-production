@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Base Agentic Framework
 
@@ -75,13 +75,14 @@ class BaseAgent(abc.ABC):
     that all agents in the TRAE.AI system must implement.
     """
 
+
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         """
         Initialize the base agent.
 
         Args:
             agent_id: Unique identifier for the agent
-            name: Human-readable name for the agent
+            name: Human - readable name for the agent
         """
         self.agent_id = agent_id or str(uuid.uuid4())
         self.name = name or self.__class__.__name__
@@ -91,10 +92,10 @@ class BaseAgent(abc.ABC):
         self.task_history: List[Dict[str, Any]] = []
         self.performance_metrics: Dict[str, Any] = {
             "tasks_completed": 0,
-            "tasks_failed": 0,
-            "average_execution_time": 0.0,
-            "success_rate": 0.0,
-        }
+                "tasks_failed": 0,
+                "average_execution_time": 0.0,
+                "success_rate": 0.0,
+                }
 
         # Initialize logger and secret store
         self.logger = get_logger(f"agent.{self.name.lower()}")
@@ -104,6 +105,8 @@ class BaseAgent(abc.ABC):
 
     @property
     @abc.abstractmethod
+
+
     def capabilities(self) -> List[AgentCapability]:
         """
         Return the list of capabilities this agent possesses.
@@ -114,18 +117,23 @@ class BaseAgent(abc.ABC):
         pass
 
     @property
+
+
     def is_busy(self) -> bool:
         """Check if the agent is currently busy."""
         return self.status not in [
             AgentStatus.IDLE,
-            AgentStatus.COMPLETED,
-            AgentStatus.FAILED,
-        ]
+                AgentStatus.COMPLETED,
+                AgentStatus.FAILED,
+                ]
 
     @property
+
+
     def uptime(self) -> float:
         """Get the agent's uptime in seconds."""
         return (datetime.now() - self.created_at).total_seconds()
+
 
     def update_status(self, status: AgentStatus, message: Optional[str] = None):
         """
@@ -147,13 +155,14 @@ class BaseAgent(abc.ABC):
 
         self.logger.info(log_message)
 
+
     def record_task_completion(
         self,
-        task_id: str,
-        success: bool,
-        execution_time: float,
-        details: Optional[Dict] = None,
-    ):
+            task_id: str,
+            success: bool,
+            execution_time: float,
+            details: Optional[Dict] = None,
+            ):
         """
         Record the completion of a task for performance tracking.
 
@@ -165,11 +174,11 @@ class BaseAgent(abc.ABC):
         """
         task_record = {
             "task_id": task_id,
-            "success": success,
-            "execution_time": execution_time,
-            "timestamp": datetime.now().isoformat(),
-            "details": details or {},
-        }
+                "success": success,
+                "execution_time": execution_time,
+                "timestamp": datetime.now().isoformat(),
+                "details": details or {},
+                }
 
         self.task_history.append(task_record)
 
@@ -200,6 +209,7 @@ class BaseAgent(abc.ABC):
             f"Task {task_id} recorded: success={success}, time={execution_time:.2f}s"
         )
 
+
     def get_performance_summary(self) -> Dict[str, Any]:
         """
         Get a summary of the agent's performance metrics.
@@ -209,15 +219,17 @@ class BaseAgent(abc.ABC):
         """
         return {
             "agent_id": self.agent_id,
-            "agent_name": self.name,
-            "status": self.status.value,
-            "uptime_seconds": self.uptime,
-            "capabilities": [cap.value for cap in self.capabilities],
-            "performance_metrics": self.performance_metrics.copy(),
-            "recent_tasks": self.task_history[-10:] if self.task_history else [],
-        }
+                "agent_name": self.name,
+                "status": self.status.value,
+                "uptime_seconds": self.uptime,
+                "capabilities": [cap.value for cap in self.capabilities],
+                "performance_metrics": self.performance_metrics.copy(),
+                "recent_tasks": self.task_history[-10:] if self.task_history else [],
+                }
 
     @abc.abstractmethod
+
+
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         Process a task assigned to this agent.
@@ -230,8 +242,10 @@ class BaseAgent(abc.ABC):
         """
         pass
 
+
     def __str__(self) -> str:
         return f"{self.name} ({self.agent_id[:8]}...)"
+
 
     def __repr__(self) -> str:
         return (
@@ -241,11 +255,12 @@ class BaseAgent(abc.ABC):
 
 class PlannerAgent(BaseAgent):
     """
-    Agent responsible for task planning and strategic decision-making.
+    Agent responsible for task planning and strategic decision - making.
 
     The PlannerAgent implements the OODA (Observe, Orient, Decide, Act) loop
     for continuous strategic planning and adaptation.
     """
+
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "PlannerAgent")
@@ -253,34 +268,37 @@ class PlannerAgent(BaseAgent):
         # OODA Loop state tracking
         self.ooda_state = {
             "last_observation": None,
-            "last_orientation": None,
-            "last_decision": None,
-            "last_action": None,
-            "cycle_count": 0,
-            "observation_history": [],
-            "decision_history": [],
-        }
+                "last_orientation": None,
+                "last_decision": None,
+                "last_action": None,
+                "cycle_count": 0,
+                "observation_history": [],
+                "decision_history": [],
+                }
 
         # Planning templates and strategies
         self.planning_templates = {
             "content_calendar": self._create_content_calendar_template(),
-            "marketing_campaign": self._create_marketing_campaign_template(),
-            "research_agenda": self._create_research_agenda_template(),
-            "quality_assurance": self._create_qa_template(),
-        }
+                "marketing_campaign": self._create_marketing_campaign_template(),
+                "research_agenda": self._create_research_agenda_template(),
+                "quality_assurance": self._create_qa_template(),
+                }
 
         # Strategic context and constraints
         self.strategic_context = {
             "current_objectives": [],
-            "resource_constraints": [],
-            "market_conditions": {},
-            "competitive_landscape": {},
-            "performance_targets": {},
-        }
+                "resource_constraints": [],
+                "market_conditions": {},
+                "competitive_landscape": {},
+                "performance_targets": {},
+                }
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [AgentCapability.PLANNING, AgentCapability.SYSTEM_MANAGEMENT]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -319,12 +337,12 @@ class PlannerAgent(BaseAgent):
 
             return {
                 "success": True,
-                "task_id": task_id,
-                "plan": plan,
-                "validation": validation_result,
-                "execution_time": execution_time,
-                "agent_id": self.agent_id,
-            }
+                    "task_id": task_id,
+                    "plan": plan,
+                    "validation": validation_result,
+                    "execution_time": execution_time,
+                    "agent_id": self.agent_id,
+                    }
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -335,11 +353,12 @@ class PlannerAgent(BaseAgent):
 
             return {
                 "success": False,
-                "task_id": task_id,
-                "error": str(e),
-                "execution_time": execution_time,
-                "agent_id": self.agent_id,
-            }
+                    "task_id": task_id,
+                    "error": str(e),
+                    "execution_time": execution_time,
+                    "agent_id": self.agent_id,
+                    }
+
 
     async def _create_execution_plan(
         self, requirements: Dict[str, Any], priority: TaskPriority
@@ -366,22 +385,23 @@ class PlannerAgent(BaseAgent):
         # OODA Loop: Act (create the plan)
         plan = {
             "plan_id": str(uuid.uuid4()),
-            "created_at": datetime.now().isoformat(),
-            "priority": priority.value,
-            "requirements": requirements,
-            "observations": observations,
-            "orientation": orientation,
-            "decisions": decisions,
-            "tasks": decisions.get("tasks", []),
-            "dependencies": decisions.get("dependencies", []),
-            "estimated_duration": decisions.get("duration", 0),
-            "execution_strategy": decisions.get("execution_strategy", "sequential"),
-            "resource_requirements": orientation.get("resource_requirements", {}),
-            "risk_assessment": orientation.get("risks", []),
-            "success_criteria": self._define_success_criteria(requirements),
-        }
+                "created_at": datetime.now().isoformat(),
+                "priority": priority.value,
+                "requirements": requirements,
+                "observations": observations,
+                "orientation": orientation,
+                "decisions": decisions,
+                "tasks": decisions.get("tasks", []),
+                "dependencies": decisions.get("dependencies", []),
+                "estimated_duration": decisions.get("duration", 0),
+                "execution_strategy": decisions.get("execution_strategy", "sequential"),
+                "resource_requirements": orientation.get("resource_requirements", {}),
+                "risk_assessment": orientation.get("risks", []),
+                "success_criteria": self._define_success_criteria(requirements),
+                }
 
         return plan
+
 
     def _observe_for_planning(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -389,10 +409,11 @@ class PlannerAgent(BaseAgent):
         """
         return {
             "system_state": self._get_system_state(),
-            "resource_availability": self._assess_resource_availability(),
-            "task_complexity": self._assess_task_complexity(requirements),
-            "timestamp": datetime.now().isoformat(),
-        }
+                "resource_availability": self._assess_resource_availability(),
+                "task_complexity": self._assess_task_complexity(requirements),
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     def _orient_planning_context(
         self, observations: Dict[str, Any], requirements: Dict[str, Any]
@@ -402,10 +423,11 @@ class PlannerAgent(BaseAgent):
         """
         return {
             "constraints": self._identify_constraints(observations),
-            "strategic_alignment": self._check_strategic_alignment(requirements),
-            "risks": self._identify_risks(requirements, observations),
-            "opportunities": self._identify_opportunities(requirements, observations),
-        }
+                "strategic_alignment": self._check_strategic_alignment(requirements),
+                "risks": self._identify_risks(requirements, observations),
+                "opportunities": self._identify_opportunities(requirements, observations),
+                }
+
 
     def _decide_plan_structure(
         self, orientation: Dict[str, Any], requirements: Dict[str, Any]
@@ -418,76 +440,77 @@ class PlannerAgent(BaseAgent):
             tasks = [
                 {
                     "id": 1,
-                    "action": "research_topic",
-                    "agent": "ResearchAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "research_topic",
+                        "agent": "ResearchAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 2,
-                    "action": "create_content",
-                    "agent": "ContentAgent",
-                    "duration": 600,
-                },
-                {
+                        "action": "create_content",
+                        "agent": "ContentAgent",
+                        "duration": 600,
+                        },
+                    {
                     "id": 3,
-                    "action": "quality_check",
-                    "agent": "QAAgent",
-                    "duration": 180,
-                },
-            ]
+                        "action": "quality_check",
+                        "agent": "QAAgent",
+                        "duration": 180,
+                        },
+                    ]
             duration = 1080
         elif task_type == "system_maintenance":
             tasks = [
                 {
                     "id": 1,
-                    "action": "system_check",
-                    "agent": "SystemAgent",
-                    "duration": 120,
-                },
-                {
+                        "action": "system_check",
+                        "agent": "SystemAgent",
+                        "duration": 120,
+                        },
+                    {
                     "id": 2,
-                    "action": "perform_maintenance",
-                    "agent": "SystemAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "perform_maintenance",
+                        "agent": "SystemAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 3,
-                    "action": "verify_system",
-                    "agent": "SystemAgent",
-                    "duration": 60,
-                },
-            ]
+                        "action": "verify_system",
+                        "agent": "SystemAgent",
+                        "duration": 60,
+                        },
+                    ]
             duration = 480
         else:
             tasks = [
                 {
                     "id": 1,
-                    "action": "analyze_task",
-                    "agent": "SystemAgent",
-                    "duration": 60,
-                },
-                {
+                        "action": "analyze_task",
+                        "agent": "SystemAgent",
+                        "duration": 60,
+                        },
+                    {
                     "id": 2,
-                    "action": "execute_task",
-                    "agent": "ExecutorAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "execute_task",
+                        "agent": "ExecutorAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 3,
-                    "action": "audit_result",
-                    "agent": "AuditorAgent",
-                    "duration": 120,
-                },
-            ]
+                        "action": "audit_result",
+                        "agent": "AuditorAgent",
+                        "duration": 120,
+                        },
+                    ]
             duration = 480
 
         decisions = {
             "tasks": tasks,
-            "dependencies": self._calculate_dependencies(tasks),
-            "duration": duration,
-            "execution_strategy": "sequential" if complexity == "high" else "parallel",
-        }
+                "dependencies": self._calculate_dependencies(tasks),
+                "duration": duration,
+                "execution_strategy": "sequential" if complexity == "high" else "parallel",
+                }
         return decisions
+
 
     def _get_system_state(self) -> Dict[str, Any]:
         """Get current system state for observation."""
@@ -497,13 +520,15 @@ class PlannerAgent(BaseAgent):
             "available_resources": "high",  # Placeholder
         }
 
+
     def _assess_resource_availability(self) -> Dict[str, Any]:
         """Assess available resources for planning."""
         return {
             "compute_resources": "available",
-            "agent_capacity": "medium",
-            "storage": "sufficient",
-        }
+                "agent_capacity": "medium",
+                "storage": "sufficient",
+                }
+
 
     def _assess_task_complexity(self, requirements: Dict[str, Any]) -> str:
         """Assess the complexity of the task based on requirements."""
@@ -515,6 +540,7 @@ class PlannerAgent(BaseAgent):
             return "medium"
         return "low"
 
+
     def _identify_constraints(self, observations: Dict[str, Any]) -> List[str]:
         """Identify constraints that may affect planning."""
         constraints = []
@@ -522,11 +548,13 @@ class PlannerAgent(BaseAgent):
             constraints.append("high_system_load")
         return constraints
 
+
     def _check_strategic_alignment(
         self, requirements: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Check if requirements align with strategic objectives."""
         return {"aligned": True, "alignment_score": 0.8, "strategic_impact": "medium"}
+
 
     def _identify_risks(
         self, requirements: Dict[str, Any], observations: Dict[str, Any]
@@ -537,11 +565,12 @@ class PlannerAgent(BaseAgent):
             risks.append(
                 {
                     "type": "performance_risk",
-                    "description": "High system load may affect execution",
-                    "severity": "medium",
-                }
+                        "description": "High system load may affect execution",
+                        "severity": "medium",
+                        }
             )
         return risks
+
 
     def _identify_opportunities(
         self, requirements: Dict[str, Any], observations: Dict[str, Any]
@@ -555,11 +584,12 @@ class PlannerAgent(BaseAgent):
             opportunities.append(
                 {
                     "type": "parallel_execution",
-                    "description": "Available resources allow for parallel task execution",
-                    "benefit": "reduced_execution_time",
-                }
+                        "description": "Available resources allow for parallel task execution",
+                        "benefit": "reduced_execution_time",
+                        }
             )
         return opportunities
+
 
     def _calculate_dependencies(
         self, tasks: List[Dict[str, Any]]
@@ -572,56 +602,61 @@ class PlannerAgent(BaseAgent):
             )
         return dependencies
 
+
     def _create_content_calendar_template(self) -> Dict[str, Any]:
         """Create content calendar planning template."""
         return {
             "type": "content_calendar",
-            "phases": ["research", "creation", "review", "publication"],
-            "default_duration": 2400,  # 40 minutes
+                "phases": ["research", "creation", "review", "publication"],
+                "default_duration": 2400,  # 40 minutes
             "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
-        }
+                }
+
 
     def _create_marketing_campaign_template(self) -> Dict[str, Any]:
         """Create marketing campaign planning template."""
         return {
             "type": "marketing_campaign",
-            "phases": ["strategy", "content_creation", "execution", "analysis"],
-            "default_duration": 7200,  # 2 hours
+                "phases": ["strategy", "content_creation", "execution", "analysis"],
+                "default_duration": 7200,  # 2 hours
             "required_agents": [
                 "PlannerAgent",
-                "ContentAgent",
-                "MarketingAgent",
-                "AnalyticsAgent",
-            ],
-        }
+                    "ContentAgent",
+                    "MarketingAgent",
+                    "AnalyticsAgent",
+                    ],
+                }
+
 
     def _create_research_agenda_template(self) -> Dict[str, Any]:
         """Create research agenda planning template."""
         return {
             "type": "research_agenda",
-            "phases": [
+                "phases": [
                 "topic_identification",
-                "data_collection",
-                "analysis",
-                "reporting",
-            ],
-            "default_duration": 3600,  # 1 hour
+                    "data_collection",
+                    "analysis",
+                    "reporting",
+                    ],
+                "default_duration": 3600,  # 1 hour
             "required_agents": ["ResearchAgent", "AnalyticsAgent"],
-        }
+                }
+
 
     def _create_qa_template(self) -> Dict[str, Any]:
         """Create quality assurance planning template."""
         return {
             "type": "quality_assurance",
-            "phases": [
+                "phases": [
                 "test_planning",
-                "test_execution",
-                "result_analysis",
-                "reporting",
-            ],
-            "default_duration": 1800,  # 30 minutes
+                    "test_execution",
+                    "result_analysis",
+                    "reporting",
+                    ],
+                "default_duration": 1800,  # 30 minutes
             "required_agents": ["AuditorAgent", "QAAgent"],
-        }
+                }
+
 
     def create_plan(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
         """Create a plan synchronously (wrapper for async method)."""
@@ -630,13 +665,14 @@ class PlannerAgent(BaseAgent):
         try:
             task = {
                 "id": str(uuid.uuid4()),
-                "requirements": requirements,
-                "priority": TaskPriority.MEDIUM.value,
-            }
+                    "requirements": requirements,
+                    "priority": TaskPriority.MEDIUM.value,
+                    }
             result = loop.run_until_complete(self.process_task(task))
             return result
         finally:
             loop.close()
+
 
     def execute_ooda_cycle(self, task_queue_manager) -> Dict[str, Any]:
         """
@@ -675,24 +711,25 @@ class PlannerAgent(BaseAgent):
 
             return {
                 "success": True,
-                "cycle_id": cycle_id,
-                "cycle_count": self.ooda_state["cycle_count"],
-                "cycle_time": cycle_time,
-                "observations": observations,
-                "orientation": orientation,
-                "decisions": decisions,
-                "actions_taken": actions_taken,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "cycle_id": cycle_id,
+                    "cycle_count": self.ooda_state["cycle_count"],
+                    "cycle_time": cycle_time,
+                    "observations": observations,
+                    "orientation": orientation,
+                    "decisions": decisions,
+                    "actions_taken": actions_taken,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"OODA cycle {cycle_id} failed: {str(e)}")
             return {
                 "success": False,
-                "cycle_id": cycle_id,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "cycle_id": cycle_id,
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     def _observe_system_state(self, task_queue_manager) -> Dict[str, Any]:
         """
@@ -700,14 +737,14 @@ class PlannerAgent(BaseAgent):
         """
         observations = {
             "timestamp": datetime.now().isoformat(),
-            "observation_id": str(uuid.uuid4()),
-            "task_queue_status": self._observe_task_queue(task_queue_manager),
-            "agent_performance": self._observe_agent_performance(),
-            "system_metrics": self._observe_system_metrics(),
-            "market_conditions": self._observe_market_conditions(),
-            "content_performance": self._observe_content_performance(),
-            "resource_utilization": self._observe_resource_utilization(),
-        }
+                "observation_id": str(uuid.uuid4()),
+                "task_queue_status": self._observe_task_queue(task_queue_manager),
+                "agent_performance": self._observe_agent_performance(),
+                "system_metrics": self._observe_system_metrics(),
+                "market_conditions": self._observe_market_conditions(),
+                "content_performance": self._observe_content_performance(),
+                "resource_utilization": self._observe_resource_utilization(),
+                }
 
         # Update OODA state with observations
         self.ooda_state["last_observation"] = observations
@@ -721,23 +758,25 @@ class PlannerAgent(BaseAgent):
 
         return observations
 
+
     def _orient_strategic_context(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """
         OODA Loop - Orient: Analyze and contextualize observations.
         """
         orientation = {
             "timestamp": datetime.now().isoformat(),
-            "situation_assessment": self._assess_current_situation(observations),
-            "trend_analysis": self._analyze_trends(observations),
-            "strategic_opportunities": self._identify_strategic_opportunities(
+                "situation_assessment": self._assess_current_situation(observations),
+                "trend_analysis": self._analyze_trends(observations),
+                "strategic_opportunities": self._identify_strategic_opportunities(
                 observations
             ),
-            "threat_assessment": self._assess_threats(observations),
-            "resource_optimization": self._optimize_resource_allocation(observations),
-            "performance_gaps": self._identify_performance_gaps(observations),
-        }
+                "threat_assessment": self._assess_threats(observations),
+                "resource_optimization": self._optimize_resource_allocation(observations),
+                "performance_gaps": self._identify_performance_gaps(observations),
+                }
 
         return orientation
+
 
     def _decide_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -773,6 +812,7 @@ class PlannerAgent(BaseAgent):
 
         return decisions
 
+
     def _act_on_decisions(
         self, decisions: List[Dict[str, Any]], task_queue_manager
     ) -> List[Dict[str, Any]]:
@@ -785,10 +825,10 @@ class PlannerAgent(BaseAgent):
             try:
                 action_result = {
                     "decision_id": decision.get("id"),
-                    "action_type": decision.get("type"),
-                    "status": "executed",
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "action_type": decision.get("type"),
+                        "status": "executed",
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
                 # Execute the action based on its type
                 if decision.get("type") == "create_task":
@@ -813,62 +853,69 @@ class PlannerAgent(BaseAgent):
                 actions_taken.append(
                     {
                         "decision_id": decision.get("id"),
-                        "status": "failed",
-                        "error": str(e),
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "status": "failed",
+                            "error": str(e),
+                            "timestamp": datetime.now().isoformat(),
+                            }
                 )
 
         return actions_taken
+
 
     def _observe_task_queue(self, task_queue_manager) -> Dict[str, Any]:
         """Observe the current state of the task queue."""
         try:
             return {
                 "total_tasks": task_queue_manager.get_queue_size(),
-                "pending_tasks": task_queue_manager.get_pending_count(),
-                "active_tasks": task_queue_manager.get_active_count(),
-                "completed_tasks": task_queue_manager.get_completed_count(),
-                "failed_tasks": task_queue_manager.get_failed_count(),
-            }
+                    "pending_tasks": task_queue_manager.get_pending_count(),
+                    "active_tasks": task_queue_manager.get_active_count(),
+                    "completed_tasks": task_queue_manager.get_completed_count(),
+                    "failed_tasks": task_queue_manager.get_failed_count(),
+                    }
         except Exception as e:
             self.logger.error(f"Error observing task queue: {str(e)}")
             return {"error": str(e)}
+
 
     def _observe_agent_performance(self) -> Dict[str, Any]:
         """Observe agent performance metrics."""
         return {
             "success_rate": self.performance_metrics.get("success_rate", 0.0),
-            "average_execution_time": self.performance_metrics.get(
+                "average_execution_time": self.performance_metrics.get(
                 "average_execution_time", 0.0
             ),
-            "tasks_completed": self.performance_metrics.get("tasks_completed", 0),
-        }
+                "tasks_completed": self.performance_metrics.get("tasks_completed", 0),
+                }
+
 
     def _observe_system_metrics(self) -> Dict[str, Any]:
         """Observe system performance metrics."""
         return {
             "cpu_usage": 0.6,
-            "memory_usage": 0.4,
-            "disk_usage": 0.3,
-            "network_latency": 50,  # ms
+                "memory_usage": 0.4,
+                "disk_usage": 0.3,
+                "network_latency": 50,  # ms
         }
+
 
     def _observe_market_conditions(self) -> Dict[str, Any]:
         """Observe market and competitive conditions."""
         return {
             "trending_topics": ["AI", "automation", "productivity"],
-            "competitor_activity": "moderate",
-            "market_sentiment": "positive",
-        }
+                "competitor_activity": "moderate",
+                "market_sentiment": "positive",
+                }
+
 
     def _observe_content_performance(self) -> Dict[str, Any]:
         """Observe content performance metrics."""
         return {"engagement_rate": 0.05, "conversion_rate": 0.02, "reach": 10000}
 
+
     def _observe_resource_utilization(self) -> Dict[str, Any]:
         """Observe resource utilization metrics."""
         return {"agent_utilization": 0.7, "storage_usage": 0.4, "bandwidth_usage": 0.3}
+
 
     def _assess_current_situation(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """Assess the current operational situation."""
@@ -883,23 +930,25 @@ class PlannerAgent(BaseAgent):
 
         return {
             "overall_status": situation,
-            "load_level": (
+                "load_level": (
                 "high" if task_queue.get("pending_tasks", 0) > 50 else "normal"
             ),
-            "resource_status": (
+                "resource_status": (
                 "constrained"
                 if system_metrics.get("cpu_usage", 0) > 0.7
                 else "available"
             ),
-        }
+                }
+
 
     def _analyze_trends(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze trends from historical observations."""
         return {
             "task_completion_trend": "stable",
-            "performance_trend": "improving",
-            "resource_usage_trend": "stable",
-        }
+                "performance_trend": "improving",
+                "resource_usage_trend": "stable",
+                }
+
 
     def _identify_strategic_opportunities(
         self, observations: Dict[str, Any]
@@ -912,12 +961,13 @@ class PlannerAgent(BaseAgent):
             opportunities.append(
                 {
                     "type": "capacity_expansion",
-                    "description": "Low CPU usage indicates capacity for additional tasks",
-                    "priority": "medium",
-                }
+                        "description": "Low CPU usage indicates capacity for additional tasks",
+                        "priority": "medium",
+                        }
             )
 
         return opportunities
+
 
     def _assess_threats(self, observations: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Assess potential threats to system performance."""
@@ -928,12 +978,13 @@ class PlannerAgent(BaseAgent):
             threats.append(
                 {
                     "type": "performance_degradation",
-                    "description": "High CPU usage may lead to performance issues",
-                    "severity": "high",
-                }
+                        "description": "High CPU usage may lead to performance issues",
+                        "severity": "high",
+                        }
             )
 
         return threats
+
 
     def _optimize_resource_allocation(
         self, observations: Dict[str, Any]
@@ -941,9 +992,10 @@ class PlannerAgent(BaseAgent):
         """Optimize resource allocation based on observations."""
         return {
             "recommended_adjustments": [],
-            "priority_reallocation": "content_creation",
-            "efficiency_improvements": ["parallel_processing"],
-        }
+                "priority_reallocation": "content_creation",
+                "efficiency_improvements": ["parallel_processing"],
+                }
+
 
     def _identify_performance_gaps(
         self, observations: Dict[str, Any]
@@ -956,13 +1008,14 @@ class PlannerAgent(BaseAgent):
             gaps.append(
                 {
                     "type": "success_rate",
-                    "current_value": agent_performance.get("success_rate", 0),
-                    "target_value": 0.95,
-                    "improvement_needed": True,
-                }
+                        "current_value": agent_performance.get("success_rate", 0),
+                        "target_value": 0.95,
+                        "improvement_needed": True,
+                        }
             )
 
         return gaps
+
 
     def _decide_research_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -976,14 +1029,14 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "high",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "high",
+                        "task_data": {
                         "type": "market_research",
-                        "description": "Conduct market trend analysis",
-                        "agent_type": "ResearchAgent",
-                    },
-                }
+                            "description": "Conduct market trend analysis",
+                            "agent_type": "ResearchAgent",
+                            },
+                        }
             )
 
         # Check for competitive intelligence needs
@@ -991,17 +1044,18 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "medium",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "medium",
+                        "task_data": {
                         "type": "competitive_analysis",
-                        "description": "Analyze competitor activities",
-                        "agent_type": "ResearchAgent",
-                    },
-                }
+                            "description": "Analyze competitor activities",
+                            "agent_type": "ResearchAgent",
+                            },
+                        }
             )
 
         return actions
+
 
     def _decide_automation_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1015,10 +1069,10 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "resource_reallocation",
-                    "priority": "high",
-                    "description": "Increase automation agent capacity",
-                }
+                        "type": "resource_reallocation",
+                        "priority": "high",
+                        "description": "Increase automation agent capacity",
+                        }
             )
 
         # Check for process optimization
@@ -1027,17 +1081,18 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "medium",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "medium",
+                        "task_data": {
                         "type": "process_optimization",
-                        "description": "Optimize underperforming processes",
-                        "agent_type": "SystemAgent",
-                    },
-                }
+                            "description": "Optimize underperforming processes",
+                            "agent_type": "SystemAgent",
+                            },
+                        }
             )
 
         return actions
+
 
     def _decide_content_strategy(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1051,17 +1106,18 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "high",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "high",
+                        "task_data": {
                         "type": "content_optimization",
-                        "description": "Improve content engagement strategies",
-                        "agent_type": "ContentAgent",
-                    },
-                }
+                            "description": "Improve content engagement strategies",
+                            "agent_type": "ContentAgent",
+                            },
+                        }
             )
 
         return actions
+
 
     def _decide_marketing_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1077,15 +1133,15 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "medium",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "medium",
+                        "task_data": {
                         "type": "trend_marketing",
-                        "description": "Create AI-focused marketing content",
-                        "agent_type": "MarketingAgent",
-                        "target_topic": "AI",
-                    },
-                }
+                            "description": "Create AI - focused marketing content",
+                            "agent_type": "MarketingAgent",
+                            "target_topic": "AI",
+                            },
+                        }
             )
 
         # Check conversion rates
@@ -1094,14 +1150,14 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "high",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "high",
+                        "task_data": {
                         "type": "conversion_optimization",
-                        "description": "Optimize conversion funnels",
-                        "agent_type": "MarketingAgent",
-                    },
-                }
+                            "description": "Optimize conversion funnels",
+                            "agent_type": "MarketingAgent",
+                            },
+                        }
             )
 
         # Check for affiliate opportunities
@@ -1109,17 +1165,18 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "medium",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "medium",
+                        "task_data": {
                         "type": "affiliate_expansion",
-                        "description": "Explore new affiliate partnerships",
-                        "agent_type": "AffiliateAgent",
-                    },
-                }
+                            "description": "Explore new affiliate partnerships",
+                            "agent_type": "AffiliateAgent",
+                            },
+                        }
             )
 
         return actions
+
 
     def _decide_system_optimizations(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1133,10 +1190,10 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "resource_reallocation",
-                    "priority": "critical",
-                    "description": "Optimize CPU usage and load balancing",
-                }
+                        "type": "resource_reallocation",
+                        "priority": "critical",
+                        "description": "Optimize CPU usage and load balancing",
+                        }
             )
 
         # Check memory usage
@@ -1144,17 +1201,18 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "high",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "high",
+                        "task_data": {
                         "type": "memory_optimization",
-                        "description": "Optimize memory usage patterns",
-                        "agent_type": "SystemAgent",
-                    },
-                }
+                            "description": "Optimize memory usage patterns",
+                            "agent_type": "SystemAgent",
+                            },
+                        }
             )
 
         return actions
+
 
     def _decide_qa_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1168,14 +1226,14 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "high",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "high",
+                        "task_data": {
                         "type": "quality_audit",
-                        "description": "Conduct comprehensive quality audit",
-                        "agent_type": "AuditorAgent",
-                    },
-                }
+                            "description": "Conduct comprehensive quality audit",
+                            "agent_type": "AuditorAgent",
+                            },
+                        }
             )
 
         # Schedule regular quality checks
@@ -1183,17 +1241,18 @@ class PlannerAgent(BaseAgent):
             actions.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "type": "create_task",
-                    "priority": "medium",
-                    "task_data": {
+                        "type": "create_task",
+                        "priority": "medium",
+                        "task_data": {
                         "type": "routine_qa_check",
-                        "description": "Perform routine quality assurance check",
-                        "agent_type": "AuditorAgent",
-                    },
-                }
+                            "description": "Perform routine quality assurance check",
+                            "agent_type": "AuditorAgent",
+                            },
+                        }
             )
 
         return actions
+
 
     def _is_today(self, timestamp_str: Optional[str]) -> bool:
         """Check if a timestamp is from today."""
@@ -1202,8 +1261,9 @@ class PlannerAgent(BaseAgent):
         try:
             timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
             return timestamp.date() == datetime.now().date()
-        except:
+        except Exception:
             return False
+
 
     async def _validate_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -1217,10 +1277,10 @@ class PlannerAgent(BaseAgent):
         """
         validation_results = {
             "is_valid": True,
-            "issues": [],
-            "warnings": [],
-            "recommendations": [],
-        }
+                "issues": [],
+                "warnings": [],
+                "recommendations": [],
+                }
 
         # Check required fields
         required_fields = ["plan_id", "tasks", "dependencies", "estimated_duration"]
@@ -1252,7 +1312,7 @@ class PlannerAgent(BaseAgent):
         for dep in dependencies:
             if dep.get("task_id") not in task_ids:
                 validation_results["issues"].append(
-                    f"Dependency references non-existent task: {dep.get('task_id')}"
+                    f"Dependency references non - existent task: {dep.get('task_id')}"
                 )
                 validation_results["is_valid"] = False
 
@@ -1260,7 +1320,7 @@ class PlannerAgent(BaseAgent):
         if plan.get("estimated_duration", 0) > 3600:  # 1 hour
             validation_results["warnings"].append("Plan has long estimated duration")
             validation_results["recommendations"].append(
-                "Consider breaking into smaller sub-plans"
+                "Consider breaking into smaller sub - plans"
             )
 
         return validation_results
@@ -1271,13 +1331,15 @@ class ExecutorAgent(BaseAgent):
     Agent responsible for executing tasks and implementing plans.
 
     The ExecutorAgent takes execution plans from the PlannerAgent and
-    coordinates with various tools and systems to complete tasks.
+        coordinates with various tools and systems to complete tasks.
     """
+
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "ExecutorAgent")
         self.tools = {}
         self._initialize_tools()
+
 
     def _initialize_tools(self):
         """Initialize all integrated tools for task execution."""
@@ -1285,53 +1347,53 @@ class ExecutorAgent(BaseAgent):
             # Content Creation Tools
             # Marketing Tools
             from backend.agents.marketing_tools import (AffiliateManager,
-                                                        CrossPromotionManager,
-                                                        DayOneBlitzStrategy,
-                                                        RelentlessOptimizationLoop)
+                CrossPromotionManager,
+                                                            DayOneBlitzStrategy,
+                                                            RelentlessOptimizationLoop)
             # Research Tools
             from backend.agents.research_tools import (BreakingNewsWatcher,
-                                                       CompetitorAnalyzer,
-                                                       MarketValidator)
+                CompetitorAnalyzer,
+                                                           MarketValidator)
             # Web Automation Tools
             from backend.agents.web_automation_tools import (AffiliateSignupAutomator,
-                                                             SpecheloPro,
-                                                             StealthOperations,
-                                                             ThumbnailBlaster,
-                                                             WebAutomationAgent)
+                SpecheloPro,
+                                                                 StealthOperations,
+                                                                 ThumbnailBlaster,
+                                                                 WebAutomationAgent)
             from backend.content.ai_inpainting import AIInpainting
             from backend.content.ai_video_editor import AIVideoEditor
-            from backend.content.animate_avatar import AnimateAvatar
+                from backend.content.animate_avatar import AnimateAvatar
             from backend.content.audio_postprod import AudioPostProduction
             from backend.content.automated_author import AutomatedAuthor
-            from backend.content.blender_compositor import BlenderCompositor
-            from backend.content.vidscript_pro import VidScriptPro
+                from backend.content.blender_compositor import BlenderCompositor
+                from backend.content.vidscript_pro import VidScriptPro
 
             # Initialize tool instances
             self.tools = {
                 # Content Creation
                 "vidscript_pro": VidScriptPro(),
-                "automated_author": AutomatedAuthor(),
-                "animate_avatar": AnimateAvatar(),
-                "ai_inpainting": AIInpainting(),
-                "blender_compositor": BlenderCompositor(),
-                "audio_postprod": AudioPostProduction(),
-                "ai_video_editor": AIVideoEditor(),
-                # Research
+                    "automated_author": AutomatedAuthor(),
+                    "animate_avatar": AnimateAvatar(),
+                    "ai_inpainting": AIInpainting(),
+                    "blender_compositor": BlenderCompositor(),
+                    "audio_postprod": AudioPostProduction(),
+                    "ai_video_editor": AIVideoEditor(),
+                    # Research
                 "breaking_news_watcher": BreakingNewsWatcher(),
-                "competitor_analyzer": CompetitorAnalyzer(),
-                "market_validator": MarketValidator(),
-                # Marketing
+                    "competitor_analyzer": CompetitorAnalyzer(),
+                    "market_validator": MarketValidator(),
+                    # Marketing
                 "day_one_blitz": DayOneBlitzStrategy(),
-                "optimization_loop": RelentlessOptimizationLoop(),
-                "affiliate_manager": AffiliateManager(),
-                "cross_promotion": CrossPromotionManager(),
-                # Web Automation
+                    "optimization_loop": RelentlessOptimizationLoop(),
+                    "affiliate_manager": AffiliateManager(),
+                    "cross_promotion": CrossPromotionManager(),
+                    # Web Automation
                 "stealth_operations": StealthOperations(),
-                "spechelo_pro": SpecheloPro(StealthOperations()),
-                "thumbnail_blaster": ThumbnailBlaster(StealthOperations()),
-                "affiliate_signup": AffiliateSignupAutomator(StealthOperations()),
-                "web_automation": WebAutomationAgent(),
-            }
+                    "spechelo_pro": SpecheloPro(StealthOperations()),
+                    "thumbnail_blaster": ThumbnailBlaster(StealthOperations()),
+                    "affiliate_signup": AffiliateSignupAutomator(StealthOperations()),
+                    "web_automation": WebAutomationAgent(),
+                    }
 
             self.logger.info(f"Initialized {len(self.tools)} tools for ExecutorAgent")
 
@@ -1340,13 +1402,16 @@ class ExecutorAgent(BaseAgent):
             self.tools = {}
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [
             AgentCapability.EXECUTION,
-            AgentCapability.CONTENT_CREATION,
-            AgentCapability.MARKETING,
-            AgentCapability.SYSTEM_MANAGEMENT,
-        ]
+                AgentCapability.CONTENT_CREATION,
+                AgentCapability.MARKETING,
+                AgentCapability.SYSTEM_MANAGEMENT,
+                ]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -1383,11 +1448,11 @@ class ExecutorAgent(BaseAgent):
 
             return {
                 "success": True,
-                "task_id": task_id,
-                "result": result,
-                "execution_time": execution_time,
-                "agent_id": self.agent_id,
-            }
+                    "task_id": task_id,
+                    "result": result,
+                    "execution_time": execution_time,
+                    "agent_id": self.agent_id,
+                    }
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -1398,11 +1463,12 @@ class ExecutorAgent(BaseAgent):
 
             return {
                 "success": False,
-                "task_id": task_id,
-                "error": str(e),
-                "execution_time": execution_time,
-                "agent_id": self.agent_id,
-            }
+                    "task_id": task_id,
+                    "error": str(e),
+                    "execution_time": execution_time,
+                    "agent_id": self.agent_id,
+                    }
+
 
     async def _execute_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -1465,19 +1531,20 @@ class ExecutorAgent(BaseAgent):
 
         return {
             "plan_id": plan_id,
-            "execution_strategy": execution_strategy,
-            "total_tasks": len(tasks),
-            "completed_tasks": sum(1 for r in results if r.get("success")),
-            "failed_tasks": sum(1 for r in results if not r.get("success")),
-            "results": results,
-        }
+                "execution_strategy": execution_strategy,
+                "total_tasks": len(tasks),
+                "completed_tasks": sum(1 for r in results if r.get("success")),
+                "failed_tasks": sum(1 for r in results if not r.get("success")),
+                "results": results,
+                }
+
 
     async def _execute_step(self, step: Dict[str, Any]) -> Dict[str, Any]:
         """
         Execute a single step or task.
 
         Args:
-            step: Step/task to execute
+            step: Step / task to execute
 
         Returns:
             Dictionary containing step execution results
@@ -1500,6 +1567,7 @@ class ExecutorAgent(BaseAgent):
         else:
             return await self._execute_generic_action(action, parameters)
 
+
     async def _execute_content_action(
         self, action: str, parameters: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -1512,6 +1580,7 @@ class ExecutorAgent(BaseAgent):
             return await self._execute_tool_action(tool, "create_video", parameters)
         else:
             return await self._execute_generic_action(action, parameters)
+
 
     async def _execute_research_action(
         self, action: str, parameters: Dict[str, Any]
@@ -1526,6 +1595,7 @@ class ExecutorAgent(BaseAgent):
         else:
             return await self._execute_generic_action(action, parameters)
 
+
     async def _execute_marketing_action(
         self, action: str, parameters: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -1539,6 +1609,7 @@ class ExecutorAgent(BaseAgent):
         else:
             return await self._execute_generic_action(action, parameters)
 
+
     async def _execute_automation_action(
         self, action: str, parameters: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -1551,6 +1622,7 @@ class ExecutorAgent(BaseAgent):
             return await self._execute_tool_action(tool, "execute", parameters)
         else:
             return await self._execute_generic_action(action, parameters)
+
 
     async def _execute_tool_action(
         self, tool, action: str, parameters: Dict[str, Any]
@@ -1577,25 +1649,26 @@ class ExecutorAgent(BaseAgent):
 
                 return {
                     "success": True,
-                    "tool": tool.__class__.__name__,
-                    "action": action,
-                    "result": result,
-                }
+                        "tool": tool.__class__.__name__,
+                        "action": action,
+                        "result": result,
+                        }
             else:
                 return {
                     "success": False,
-                    "error": f"Tool {tool.__class__.__name__} does not have action '{action}'",
-                    "tool": tool.__class__.__name__,
-                    "action": action,
-                }
+                        "error": f"Tool {tool.__class__.__name__} does not have action '{action}'",
+                        "tool": tool.__class__.__name__,
+                        "action": action,
+                        }
 
         except Exception as e:
             return {
                 "success": False,
-                "error": str(e),
-                "tool": tool.__class__.__name__,
-                "action": action,
-            }
+                    "error": str(e),
+                    "tool": tool.__class__.__name__,
+                    "action": action,
+                    }
+
 
     async def _execute_generic_action(
         self, action: str, parameters: Dict[str, Any]
@@ -1608,6 +1681,6 @@ class ExecutorAgent(BaseAgent):
 
         return {
             "success": True,
-            "action": action,
-            "message": f"Generic execution of {action} completed",
-        }
+                "action": action,
+                "message": f"Generic execution of {action} completed",
+                }

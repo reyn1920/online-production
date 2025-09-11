@@ -5,8 +5,8 @@ from pathlib import Path
 from time import time
 from typing import Any, Dict, Optional
 
-DB_PATH = Path("data/trae.db")
-DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+DB_PATH = Path("data / trae.db")
+DB_PATH.parent.mkdir(parents = True, exist_ok = True)
 
 
 def _cx():
@@ -21,8 +21,8 @@ def ensure_settings_schema() -> None:
             """
         CREATE TABLE IF NOT EXISTS settings(
             k TEXT PRIMARY KEY,
-            v TEXT NOT NULL,
-            mtime REAL NOT NULL
+                v TEXT NOT NULL,
+                mtime REAL NOT NULL
         );
         """
         )
@@ -42,6 +42,6 @@ def set_setting(key: str, value: str) -> None:
     with _cx() as cx:
         cx.execute(
             "INSERT OR REPLACE INTO settings(k,v,mtime) VALUES(?,?,?)",
-            (key, value, time()),
-        )
+                (key, value, time()),
+                )
         cx.commit()

@@ -16,8 +16,9 @@ from backend.integrations.tiktok_integration import TikTokClient
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
-
 # Pydantic models
+
+
 class DateRange(BaseModel):
     start_date: str  # ISO format
     end_date: str  # ISO format
@@ -43,18 +44,17 @@ class UnifiedMetrics(BaseModel):
     platforms_configured: int
     last_updated: str
 
-
 # Platform clients
 clients = {
     "instagram": InstagramClient.from_env(),
-    "tiktok": TikTokClient.from_env(),
-    "facebook": FacebookClient.from_env(),
-    "linkedin": LinkedInClient.from_env(),
-    "pinterest": PinterestClient.from_env(),
-    "reddit": RedditClient.from_env(),
+        "tiktok": TikTokClient.from_env(),
+        "facebook": FacebookClient.from_env(),
+        "linkedin": LinkedInClient.from_env(),
+        "pinterest": PinterestClient.from_env(),
+        "reddit": RedditClient.from_env(),
 }
 
-# Simple file-based cache for analytics data
+# Simple file - based cache for analytics data
 ANALYTICS_CACHE_FILE = "analytics_cache.json"
 CACHE_DURATION = 300  # 5 minutes
 
@@ -71,19 +71,20 @@ def save_analytics_cache(data: Dict[str, Any]):
     """Save analytics data to cache"""
     data["cached_at"] = datetime.now().isoformat()
     with open(ANALYTICS_CACHE_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump(data, f, indent = 2)
 
 
 def is_cache_valid(cached_at: str) -> bool:
     """Check if cache is still valid"""
     try:
         cache_time = datetime.fromisoformat(cached_at)
-        return datetime.now() - cache_time < timedelta(seconds=CACHE_DURATION)
-    except:
+        return datetime.now() - cache_time < timedelta(seconds = CACHE_DURATION)
+    except Exception:
         return False
 
-
 @router.get("/overview")
+
+
 async def get_analytics_overview():
     """Get unified analytics overview from all platforms"""
     # Check cache first
@@ -128,50 +129,50 @@ async def get_analytics_overview():
 
                     platform_metrics.append(
                         PlatformMetrics(
-                            platform=platform,
-                            followers=followers,
-                            impressions=impressions,
-                            engagement=engagement,
-                            reach=reach,
-                            posts=posts,
-                            last_updated=datetime.now().isoformat(),
-                        ).dict()
+                            platform = platform,
+                                followers = followers,
+                                impressions = impressions,
+                                engagement = engagement,
+                                reach = reach,
+                                posts = posts,
+                                last_updated = datetime.now().isoformat(),
+                                ).dict()
                     )
                 else:
                     platform_metrics.append(
                         {
                             "platform": platform,
-                            "error": insights.get("error", "Unknown error"),
-                            "last_updated": datetime.now().isoformat(),
-                        }
+                                "error": insights.get("error", "Unknown error"),
+                                "last_updated": datetime.now().isoformat(),
+                                }
                     )
             except Exception as e:
                 platform_metrics.append(
                     {
                         "platform": platform,
-                        "error": str(e),
-                        "last_updated": datetime.now().isoformat(),
-                    }
+                            "error": str(e),
+                            "last_updated": datetime.now().isoformat(),
+                            }
                 )
 
     # Create unified metrics
     unified = UnifiedMetrics(
-        total_followers=total_followers,
-        total_impressions=total_impressions,
-        total_engagement=total_engagement,
-        total_reach=total_reach,
-        total_posts=total_posts,
-        platforms_active=platforms_active,
-        platforms_configured=platforms_configured,
-        last_updated=datetime.now().isoformat(),
-    )
+        total_followers = total_followers,
+            total_impressions = total_impressions,
+            total_engagement = total_engagement,
+            total_reach = total_reach,
+            total_posts = total_posts,
+            platforms_active = platforms_active,
+            platforms_configured = platforms_configured,
+            last_updated = datetime.now().isoformat(),
+            )
 
     overview = {
         "unified_metrics": unified.dict(),
-        "platform_metrics": platform_metrics,
-        "engagement_rate": round((total_engagement / max(total_followers, 1)) * 100, 2),
-        "reach_rate": round((total_reach / max(total_impressions, 1)) * 100, 2),
-    }
+            "platform_metrics": platform_metrics,
+            "engagement_rate": round((total_engagement / max(total_followers, 1)) * 100, 2),
+            "reach_rate": round((total_reach / max(total_impressions, 1)) * 100, 2),
+            }
 
     # Cache the results
     cache_data = {"overview": overview}
@@ -179,37 +180,38 @@ async def get_analytics_overview():
 
     return overview
 
-
 @router.get("/platform/{platform}")
+
+
 async def get_platform_analytics(platform: str):
     """Get detailed analytics for a specific platform"""
     platform = platform.lower()
 
     if platform not in clients:
-        raise HTTPException(status_code=400, detail=f"Unsupported platform: {platform}")
+        raise HTTPException(status_code = 400, detail = f"Unsupported platform: {platform}")
 
     client = clients[platform]
     if not client.ready():
-        raise HTTPException(status_code=400, detail=f"{platform} not configured")
+        raise HTTPException(status_code = 400, detail = f"{platform} not configured")
 
     try:
         insights = client.insights()
 
-        # Add platform-specific calculations
+        # Add platform - specific calculations
         if platform == "instagram":
-            # Instagram-specific metrics
+            # Instagram - specific metrics
             insights["engagement_rate"] = round(
                 (insights.get("engagement", 0) / max(insights.get("followers", 1), 1))
                 * 100,
-                2,
-            )
+                    2,
+                    )
             insights["story_views"] = insights.get("story_views", 0)
         elif platform == "tiktok":
-            # TikTok-specific metrics
+            # TikTok - specific metrics
             insights["video_views"] = insights.get("video_views", 0)
             insights["shares"] = insights.get("shares", 0)
         elif platform == "facebook":
-            # Facebook-specific metrics
+            # Facebook - specific metrics
             insights["page_likes"] = insights.get(
                 "page_likes", insights.get("followers", 0)
             )
@@ -217,13 +219,13 @@ async def get_platform_analytics(platform: str):
                 "post_reach", insights.get("reach", 0)
             )
         elif platform == "linkedin":
-            # LinkedIn-specific metrics
+            # LinkedIn - specific metrics
             insights["connections"] = insights.get(
                 "connections", insights.get("followers", 0)
             )
             insights["profile_views"] = insights.get("profile_views", 0)
         elif platform == "pinterest":
-            # Pinterest-specific metrics
+            # Pinterest - specific metrics
             insights["monthly_views"] = insights.get(
                 "monthly_views", insights.get("impressions", 0)
             )
@@ -231,7 +233,7 @@ async def get_platform_analytics(platform: str):
                 "pin_clicks", insights.get("engagement", 0)
             )
         elif platform == "reddit":
-            # Reddit-specific metrics
+            # Reddit - specific metrics
             insights["comment_karma"] = insights.get("comment_karma", 0)
             insights["post_karma"] = insights.get(
                 "post_karma", insights.get("karma", 0)
@@ -239,17 +241,18 @@ async def get_platform_analytics(platform: str):
 
         return {
             "platform": platform,
-            "insights": insights,
-            "last_updated": datetime.now().isoformat(),
-        }
+                "insights": insights,
+                "last_updated": datetime.now().isoformat(),
+                }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
+        raise HTTPException(status_code = 500, detail = str(e))
 
 @router.get("/comparison")
+
+
 async def get_platform_comparison():
-    """Get side-by-side comparison of all platforms"""
+    """Get side - by - side comparison of all platforms"""
     comparison = {}
 
     for platform, client in clients.items():
@@ -259,26 +262,26 @@ async def get_platform_comparison():
                 if insights.get("ok", True):
                     comparison[platform] = {
                         "followers": insights.get("followers", 0),
-                        "impressions": insights.get("impressions", 0),
-                        "engagement": insights.get(
+                            "impressions": insights.get("impressions", 0),
+                            "engagement": insights.get(
                             "engagement",
-                            insights.get("saves", insights.get("karma", 0)),
-                        ),
-                        "engagement_rate": round(
+                                insights.get("saves", insights.get("karma", 0)),
+                                ),
+                            "engagement_rate": round(
                             (
                                 insights.get("engagement", 0)
                                 / max(insights.get("followers", 1), 1)
                             )
                             * 100,
-                            2,
-                        ),
-                        "status": "active",
-                    }
+                                2,
+                                ),
+                            "status": "active",
+                            }
                 else:
                     comparison[platform] = {
                         "status": "error",
-                        "error": insights.get("error", "Unknown error"),
-                    }
+                            "error": insights.get("error", "Unknown error"),
+                            }
             except Exception as e:
                 comparison[platform] = {"status": "error", "error": str(e)}
         else:
@@ -286,8 +289,9 @@ async def get_platform_comparison():
 
     return {"comparison": comparison, "last_updated": datetime.now().isoformat()}
 
-
 @router.get("/trends")
+
+
 async def get_trends_analysis():
     """Get trends analysis (mock data for now)"""
     # TODO: Implement actual trends analysis with historical data
@@ -295,34 +299,35 @@ async def get_trends_analysis():
         "trends": {
             "follower_growth": {
                 "instagram": {"7d": "+5.2%", "30d": "+18.7%"},
-                "tiktok": {"7d": "+12.1%", "30d": "+45.3%"},
-                "facebook": {"7d": "+2.1%", "30d": "+8.9%"},
-                "linkedin": {"7d": "+3.4%", "30d": "+12.6%"},
-                "pinterest": {"7d": "+1.8%", "30d": "+7.2%"},
-                "reddit": {"7d": "+0.9%", "30d": "+4.1%"},
-            },
-            "engagement_trends": {
+                    "tiktok": {"7d": "+12.1%", "30d": "+45.3%"},
+                    "facebook": {"7d": "+2.1%", "30d": "+8.9%"},
+                    "linkedin": {"7d": "+3.4%", "30d": "+12.6%"},
+                    "pinterest": {"7d": "+1.8%", "30d": "+7.2%"},
+                    "reddit": {"7d": "+0.9%", "30d": "+4.1%"},
+                    },
+                "engagement_trends": {
                 "best_performing_platform": "tiktok",
-                "highest_engagement_rate": "instagram",
-                "fastest_growing": "tiktok",
-            },
-            "content_performance": {
+                    "highest_engagement_rate": "instagram",
+                    "fastest_growing": "tiktok",
+                    },
+                "content_performance": {
                 "top_content_type": "video",
-                "best_posting_time": "18:00-20:00",
-                "optimal_frequency": "2-3 posts/day",
-            },
-        },
-        "recommendations": [
+                    "best_posting_time": "18:00 - 20:00",
+                    "optimal_frequency": "2 - 3 posts / day",
+                    },
+                },
+            "recommendations": [
             "Focus more content on TikTok for growth",
-            "Maintain Instagram engagement with stories",
-            "Cross-post successful content to Facebook",
-            "Use LinkedIn for professional content",
-        ],
-        "last_updated": datetime.now().isoformat(),
-    }
-
+                "Maintain Instagram engagement with stories",
+                "Cross - post successful content to Facebook",
+                "Use LinkedIn for professional content",
+                ],
+            "last_updated": datetime.now().isoformat(),
+            }
 
 @router.post("/refresh")
+
+
 async def refresh_analytics_cache():
     """Force refresh of analytics cache"""
     # Clear cache
@@ -334,18 +339,19 @@ async def refresh_analytics_cache():
 
     return {
         "message": "Analytics cache refreshed",
-        "timestamp": datetime.now().isoformat(),
-        "overview": overview,
-    }
-
+            "timestamp": datetime.now().isoformat(),
+            "overview": overview,
+            }
 
 @router.get("/health")
+
+
 async def analytics_health():
     """Health check for analytics service"""
     return {
         "status": "healthy",
-        "platforms_available": len(clients),
-        "platforms_configured": sum(1 for client in clients.values() if client.ready()),
-        "cache_exists": os.path.exists(ANALYTICS_CACHE_FILE),
-        "timestamp": datetime.now().isoformat(),
-    }
+            "platforms_available": len(clients),
+            "platforms_configured": sum(1 for client in clients.values() if client.ready()),
+            "cache_exists": os.path.exists(ANALYTICS_CACHE_FILE),
+            "timestamp": datetime.now().isoformat(),
+            }

@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Channel Intelligence Feeds System
 
 Automatically monitors and processes RSS feeds for each channel,
-extracting relevant content and storing it in channel-specific knowledge bases.
+extracting relevant content and storing it in channel - specific knowledge bases.
 """
 
 import asyncio
@@ -34,8 +34,9 @@ except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     from universal_channel_protocol import ChannelType, get_protocol
 
-
 @dataclass
+
+
 class FeedItem:
     """Represents a single item from an RSS feed"""
 
@@ -49,6 +50,7 @@ class FeedItem:
     relevance_score: float = 0.0
     credibility_score: float = 0.5
 
+
     def __post_init__(self):
         if self.tags is None:
             self.tags = []
@@ -59,7 +61,8 @@ class ChannelIntelligenceFeeds:
     Manages RSS feed monitoring and content extraction for all channels
     """
 
-    def __init__(self, db_path: str = "data/right_perspective.db"):
+
+    def __init__(self, db_path: str = "data / right_perspective.db"):
         self.db_path = db_path
         self.logger = logging.getLogger(__name__)
         self.protocol = get_protocol()
@@ -69,9 +72,10 @@ class ChannelIntelligenceFeeds:
 
         # Download NLTK data if needed
         try:
-            nltk.data.find("tokenizers/punkt")
+            nltk.data.find("tokenizers / punkt")
         except LookupError:
             nltk.download("punkt")
+
 
     def _initialize_extractors(self) -> Dict[ChannelType, Dict[str, Any]]:
         """Initialize content extractors for different channel types"""
@@ -79,177 +83,180 @@ class ChannelIntelligenceFeeds:
             ChannelType.TECH: {
                 "keywords": [
                     "technology",
-                    "software",
-                    "hardware",
-                    "AI",
-                    "machine learning",
-                    "programming",
-                    "coding",
-                    "development",
-                    "innovation",
-                    "startup",
-                ],
-                "relevance_boost": [
+                        "software",
+                        "hardware",
+                        "AI",
+                        "machine learning",
+                        "programming",
+                        "coding",
+                        "development",
+                        "innovation",
+                        "startup",
+                        ],
+                    "relevance_boost": [
                     "breakthrough",
-                    "revolutionary",
-                    "cutting-edge",
-                    "beta",
-                    "launch",
-                ],
-                "credibility_sources": [
+                        "revolutionary",
+                        "cutting - edge",
+                        "beta",
+                        "launch",
+                        ],
+                    "credibility_sources": [
                     "techcrunch.com",
-                    "arstechnica.com",
-                    "wired.com",
-                    "theverge.com",
-                ],
-            },
-            ChannelType.WELLNESS: {
+                        "arstechnica.com",
+                        "wired.com",
+                        "theverge.com",
+                        ],
+                    },
+                ChannelType.WELLNESS: {
                 "keywords": [
                     "health",
-                    "wellness",
-                    "nutrition",
-                    "fitness",
-                    "mental health",
-                    "exercise",
-                    "diet",
-                    "meditation",
-                    "yoga",
-                    "supplements",
-                ],
-                "relevance_boost": [
+                        "wellness",
+                        "nutrition",
+                        "fitness",
+                        "mental health",
+                        "exercise",
+                        "diet",
+                        "meditation",
+                        "yoga",
+                        "supplements",
+                        ],
+                    "relevance_boost": [
                     "study shows",
-                    "research",
-                    "clinical trial",
-                    "proven",
-                    "effective",
-                ],
-                "credibility_sources": [
+                        "research",
+                        "clinical trial",
+                        "proven",
+                        "effective",
+                        ],
+                    "credibility_sources": [
                     "healthline.com",
-                    "webmd.com",
-                    "mayoclinic.org",
-                    "nih.gov",
-                ],
-            },
-            ChannelType.FINANCE: {
+                        "webmd.com",
+                        "mayoclinic.org",
+                        "nih.gov",
+                        ],
+                    },
+                ChannelType.FINANCE: {
                 "keywords": [
                     "finance",
-                    "investment",
-                    "stock",
-                    "market",
-                    "economy",
-                    "trading",
-                    "cryptocurrency",
-                    "bitcoin",
-                    "portfolio",
-                    "retirement",
-                ],
-                "relevance_boost": [
+                        "investment",
+                        "stock",
+                        "market",
+                        "economy",
+                        "trading",
+                        "cryptocurrency",
+                        "bitcoin",
+                        "portfolio",
+                        "retirement",
+                        ],
+                    "relevance_boost": [
                     "earnings",
-                    "profit",
-                    "loss",
-                    "bull market",
-                    "bear market",
-                ],
-                "credibility_sources": [
+                        "profit",
+                        "loss",
+                        "bull market",
+                        "bear market",
+                        ],
+                    "credibility_sources": [
                     "bloomberg.com",
-                    "reuters.com",
-                    "wsj.com",
-                    "marketwatch.com",
-                ],
-            },
-            ChannelType.POLITICAL: {
+                        "reuters.com",
+                        "wsj.com",
+                        "marketwatch.com",
+                        ],
+                    },
+                ChannelType.POLITICAL: {
                 "keywords": [
                     "politics",
-                    "government",
-                    "election",
-                    "policy",
-                    "congress",
-                    "senate",
-                    "president",
-                    "conservative",
-                    "liberal",
-                    "democrat",
-                    "republican",
-                ],
-                "relevance_boost": [
+                        "government",
+                        "election",
+                        "policy",
+                        "congress",
+                        "senate",
+                        "president",
+                        "conservative",
+                        "liberal",
+                        "democrat",
+                        "republican",
+                        ],
+                    "relevance_boost": [
                     "breaking",
-                    "scandal",
-                    "investigation",
-                    "vote",
-                    "bill passed",
-                ],
-                "credibility_sources": [
+                        "scandal",
+                        "investigation",
+                        "vote",
+                        "bill passed",
+                        ],
+                    "credibility_sources": [
                     "breitbart.com",
-                    "dailywire.com",
-                    "townhall.com",
-                    "foxnews.com",
-                ],
-            },
-            ChannelType.BUSINESS: {
+                        "dailywire.com",
+                        "townhall.com",
+                        "foxnews.com",
+                        ],
+                    },
+                ChannelType.BUSINESS: {
                 "keywords": [
                     "business",
-                    "entrepreneur",
-                    "startup",
-                    "company",
-                    "CEO",
-                    "revenue",
-                    "growth",
-                    "strategy",
-                    "marketing",
-                    "sales",
-                ],
-                "relevance_boost": [
+                        "entrepreneur",
+                        "startup",
+                        "company",
+                        "CEO",
+                        "revenue",
+                        "growth",
+                        "strategy",
+                        "marketing",
+                        "sales",
+                        ],
+                    "relevance_boost": [
                     "acquisition",
-                    "merger",
-                    "IPO",
-                    "funding",
-                    "expansion",
-                ],
-                "credibility_sources": [
+                        "merger",
+                        "IPO",
+                        "funding",
+                        "expansion",
+                        ],
+                    "credibility_sources": [
                     "forbes.com",
-                    "businessinsider.com",
-                    "entrepreneur.com",
-                ],
-            },
-            ChannelType.SCIENCE: {
+                        "businessinsider.com",
+                        "entrepreneur.com",
+                        ],
+                    },
+                ChannelType.SCIENCE: {
                 "keywords": [
                     "science",
-                    "research",
-                    "discovery",
-                    "experiment",
-                    "study",
-                    "theory",
-                    "physics",
-                    "chemistry",
-                    "biology",
-                    "space",
-                ],
-                "relevance_boost": [
+                        "research",
+                        "discovery",
+                        "experiment",
+                        "study",
+                        "theory",
+                        "physics",
+                        "chemistry",
+                        "biology",
+                        "space",
+                        ],
+                    "relevance_boost": [
                     "breakthrough",
-                    "discovery",
-                    "published",
-                    "peer-reviewed",
-                ],
-                "credibility_sources": [
+                        "discovery",
+                        "published",
+                        "peer - reviewed",
+                        ],
+                    "credibility_sources": [
                     "nature.com",
-                    "sciencemag.org",
-                    "newscientist.com",
-                ],
-            },
-        }
+                        "sciencemag.org",
+                        "newscientist.com",
+                        ],
+                    },
+                }
+
 
     async def __aenter__(self):
         """Async context manager entry"""
         self.session = aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(total=30),
-            headers={"User-Agent": "TRAE.AI Channel Intelligence Bot 1.0"},
-        )
+            timeout = aiohttp.ClientTimeout(total = 30),
+                headers={"User - Agent": "TRAE.AI Channel Intelligence Bot 1.0"},
+                )
         return self
+
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit"""
         if self.session:
             await self.session.close()
+
 
     async def monitor_all_channels(self):
         """Monitor RSS feeds for all channels"""
@@ -262,7 +269,8 @@ class ChannelIntelligenceFeeds:
                 tasks.append(task)
 
         if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
+            await asyncio.gather(*tasks, return_exceptions = True)
+
 
     async def monitor_channel_feeds(self, channel_id: str):
         """Monitor RSS feeds for a specific channel"""
@@ -280,6 +288,7 @@ class ChannelIntelligenceFeeds:
                     f"Error processing feed {feed_url} for {channel_id}: {e}"
                 )
                 self._log_feed_error(channel_id, feed_url, str(e))
+
 
     async def process_feed(self, channel_id: str, feed_url: str):
         """Process a single RSS feed"""
@@ -316,6 +325,7 @@ class ChannelIntelligenceFeeds:
             self.logger.error(f"Error processing feed {feed_url}: {e}")
             self._log_feed_error(channel_id, feed_url, str(e))
 
+
     async def _fetch_feed(self, feed_url: str) -> Optional[str]:
         """Fetch RSS feed content"""
         try:
@@ -329,26 +339,28 @@ class ChannelIntelligenceFeeds:
             self.logger.error(f"Error fetching feed {feed_url}: {e}")
             return None
 
+
     def _should_skip_feed(self, channel_id: str, feed_url: str) -> bool:
         """Check if feed should be skipped based on last check time"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                SELECT last_checked FROM channel_rss_feeds 
+                SELECT last_checked FROM channel_rss_feeds
                 WHERE channel_id = ? AND feed_url = ?
             """,
                 (channel_id, feed_url),
-            )
+                    )
 
             row = cursor.fetchone()
             if row and row[0]:
                 last_checked = datetime.fromisoformat(row[0])
                 # Skip if checked within last hour
-                if datetime.now() - last_checked < timedelta(hours=1):
+                if datetime.now() - last_checked < timedelta(hours = 1):
                     return True
 
         return False
+
 
     def _update_feed_metadata(self, channel_id: str, feed_url: str, feed):
         """Update feed metadata in database"""
@@ -356,21 +368,22 @@ class ChannelIntelligenceFeeds:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                UPDATE channel_rss_feeds 
-                SET feed_title = ?, feed_description = ?, last_checked = ?, 
+                UPDATE channel_rss_feeds
+                SET feed_title = ?, feed_description = ?, last_checked = ?,
                     last_updated = ?, status = 'active', error_count = 0
                 WHERE channel_id = ? AND feed_url = ?
             """,
                 (
                     getattr(feed.feed, "title", ""),
-                    getattr(feed.feed, "description", ""),
-                    datetime.now().isoformat(),
-                    datetime.now().isoformat(),
-                    channel_id,
-                    feed_url,
-                ),
-            )
+                        getattr(feed.feed, "description", ""),
+                        datetime.now().isoformat(),
+                        datetime.now().isoformat(),
+                        channel_id,
+                        feed_url,
+                        ),
+                    )
             conn.commit()
+
 
     async def _process_feed_entry(self, channel_id: str, feed_url: str, entry) -> bool:
         """Process a single feed entry"""
@@ -399,13 +412,13 @@ class ChannelIntelligenceFeeds:
 
             # Create feed item
             feed_item = FeedItem(
-                title=title,
-                content=content_text,
-                url=link,
-                published=published or datetime.now(),
-                author=getattr(entry, "author", ""),
-                summary=summary,
-            )
+                title = title,
+                    content = content_text,
+                    url = link,
+                    published = published or datetime.now(),
+                    author = getattr(entry, "author", ""),
+                    summary = summary,
+                    )
 
             # Calculate relevance and credibility scores
             config = self.protocol.get_channel_config(channel_id)
@@ -428,23 +441,25 @@ class ChannelIntelligenceFeeds:
             self.logger.error(f"Error processing entry from {feed_url}: {e}")
             return False
 
+
     def _parse_date(self, date_str: str) -> Optional[datetime]:
         """Parse publication date from various formats"""
         if not date_str:
             return None
 
         try:
-            # Try parsing with feedparser's built-in parser
+            # Try parsing with feedparser's built - in parser
             import email.utils
 
             timestamp = email.utils.parsedate_tz(date_str)
             if timestamp:
                 return datetime.fromtimestamp(email.utils.mktime_tz(timestamp))
-        except:
+        except Exception:
             pass
 
         # Fallback to current time
         return datetime.now()
+
 
     def _is_entry_processed(self, channel_id: str, url: str) -> bool:
         """Check if entry has already been processed"""
@@ -454,13 +469,14 @@ class ChannelIntelligenceFeeds:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                SELECT id FROM channel_knowledge_base 
+                SELECT id FROM channel_knowledge_base
                 WHERE channel_id = ? AND source_url = ?
             """,
                 (channel_id, url),
-            )
+                    )
 
             return cursor.fetchone() is not None
+
 
     def _calculate_relevance_score(
         self, item: FeedItem, channel_type: ChannelType
@@ -488,6 +504,7 @@ class ChannelIntelligenceFeeds:
         total_score = min(1.0, keyword_score + boost_score)
 
         return total_score
+
 
     def _calculate_credibility_score(
         self, item: FeedItem, feed_url: str, channel_type: ChannelType
@@ -519,10 +536,11 @@ class ChannelIntelligenceFeeds:
                 readability = flesch_reading_ease(text)
                 if 30 <= readability <= 70:  # Good readability range
                     base_score += 0.1
-            except:
+            except Exception:
                 pass
 
         return min(1.0, base_score)
+
 
     async def _store_feed_item(self, channel_id: str, item: FeedItem):
         """Store feed item in channel knowledge base"""
@@ -543,8 +561,8 @@ class ChannelIntelligenceFeeds:
                     for t in config.knowledge_base_tables
                     if "research" in t or "study" in t
                 ),
-                table_name,
-            )
+                    table_name,
+                    )
         elif entry_type == "news" and "news" in str(config.knowledge_base_tables):
             table_name = next(
                 (t for t in config.knowledge_base_tables if "news" in t), table_name
@@ -555,21 +573,22 @@ class ChannelIntelligenceFeeds:
 
         # Store in database
         success = self.protocol.add_knowledge_entry(
-            channel_id=channel_id,
-            table_name=table_name,
-            entry_type=entry_type,
-            title=item.title,
-            content=item.content or item.summary,
-            source_url=item.url,
-            credibility=item.credibility_score,
-            relevance=item.relevance_score,
-            tags=tags,
-        )
+            channel_id = channel_id,
+                table_name = table_name,
+                entry_type = entry_type,
+                title = item.title,
+                content = item.content or item.summary,
+                source_url = item.url,
+                credibility = item.credibility_score,
+                relevance = item.relevance_score,
+                tags = tags,
+                )
 
         if success:
             self.logger.debug(
                 f"Stored feed item: {item.title[:50]}... for {channel_id}"
             )
+
 
     def _classify_entry_type(self, item: FeedItem) -> str:
         """Classify the type of content entry"""
@@ -585,6 +604,7 @@ class ChannelIntelligenceFeeds:
             return "fact"
         else:
             return "news"
+
 
     def _extract_tags(self, item: FeedItem, channel_type: ChannelType) -> List[str]:
         """Extract relevant tags from feed item"""
@@ -611,26 +631,29 @@ class ChannelIntelligenceFeeds:
 
         return list(set(tags))  # Remove duplicates
 
+
     def _log_feed_error(self, channel_id: str, feed_url: str, error_msg: str):
         """Log feed processing error"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                UPDATE channel_rss_feeds 
-                SET error_count = error_count + 1, last_error = ?, 
+                UPDATE channel_rss_feeds
+                SET error_count = error_count + 1, last_error = ?,
                     status = CASE WHEN error_count >= 5 THEN 'error' ELSE 'active' END
                 WHERE channel_id = ? AND feed_url = ?
             """,
                 (error_msg, channel_id, feed_url),
-            )
+                    )
             conn.commit()
+
 
     async def get_latest_intelligence(
         self, channel_id: str, limit: int = 10
     ) -> List[Dict[str, Any]]:
         """Get latest intelligence for a channel"""
         return self.protocol.get_channel_knowledge_base(channel_id)[:limit]
+
 
     async def search_intelligence(
         self, channel_id: str, query: str, limit: int = 10
@@ -640,7 +663,7 @@ class ChannelIntelligenceFeeds:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                SELECT * FROM channel_knowledge_base 
+                SELECT * FROM channel_knowledge_base
                 WHERE channel_id = ? AND (
                     title LIKE ? OR content LIKE ? OR tags LIKE ?
                 )
@@ -648,31 +671,32 @@ class ChannelIntelligenceFeeds:
                 LIMIT ?
             """,
                 (channel_id, f"%{query}%", f"%{query}%", f"%{query}%", limit),
-            )
+                    )
 
             results = []
             for row in cursor.fetchall():
                 results.append(
                     {
                         "id": row[0],
-                        "channel_id": row[1],
-                        "table_name": row[2],
-                        "entry_type": row[3],
-                        "title": row[4],
-                        "content": row[5],
-                        "source_url": row[6],
-                        "source_credibility": row[7],
-                        "relevance_score": row[8],
-                        "tags": json.loads(row[9]) if row[9] else [],
-                        "created_at": row[10],
-                        "updated_at": row[11],
-                    }
+                            "channel_id": row[1],
+                            "table_name": row[2],
+                            "entry_type": row[3],
+                            "title": row[4],
+                            "content": row[5],
+                            "source_url": row[6],
+                            "source_credibility": row[7],
+                            "relevance_score": row[8],
+                            "tags": json.loads(row[9]) if row[9] else [],
+                            "created_at": row[10],
+                            "updated_at": row[11],
+                            }
                 )
 
             return results
 
-
 # Background task runner
+
+
 async def run_intelligence_monitoring():
     """Run continuous intelligence monitoring for all channels"""
     logger = logging.getLogger(__name__)
@@ -688,7 +712,6 @@ async def run_intelligence_monitoring():
         except Exception as e:
             logger.error(f"Error in intelligence monitoring: {e}")
             await asyncio.sleep(300)  # Wait 5 minutes on error
-
 
 if __name__ == "__main__":
     # Run intelligence monitoring

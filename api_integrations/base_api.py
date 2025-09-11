@@ -20,12 +20,14 @@ class APIError(Exception):
 class RateLimitError(APIError):
     """Exception raised when rate limit is exceeded"""
 
+
     def __init__(self, message: str, retry_after: Optional[int] = None):
         super().__init__(message)
         self.retry_after = retry_after
 
-
 @dataclass
+
+
 class RateLimitConfig:
     """Configuration for rate limiting"""
 
@@ -38,16 +40,18 @@ class RateLimitConfig:
 class RateLimiter:
     """Token bucket rate limiter for API calls"""
 
+
     def __init__(self, config: RateLimitConfig):
         self.config = config
         self.tokens = config.burst_limit
         self.last_refill = time.time()
         self.hourly_count = 0
         self.daily_count = 0
-        self.hour_start = datetime.now().replace(minute=0, second=0, microsecond=0)
+        self.hour_start = datetime.now().replace(minute = 0, second = 0, microsecond = 0)
         self.day_start = datetime.now().replace(
-            hour=0, minute=0, second=0, microsecond=0
+            hour = 0, minute = 0, second = 0, microsecond = 0
         )
+
 
     async def acquire(self) -> bool:
         """Acquire a token for API call"""
@@ -55,23 +59,23 @@ class RateLimiter:
         current_time = datetime.now()
 
         # Reset hourly counter
-        if current_time >= self.hour_start + timedelta(hours=1):
+        if current_time >= self.hour_start + timedelta(hours = 1):
             self.hourly_count = 0
-            self.hour_start = current_time.replace(minute=0, second=0, microsecond=0)
+            self.hour_start = current_time.replace(minute = 0, second = 0, microsecond = 0)
 
         # Reset daily counter
-        if current_time >= self.day_start + timedelta(days=1):
+        if current_time >= self.day_start + timedelta(days = 1):
             self.daily_count = 0
             self.day_start = current_time.replace(
-                hour=0, minute=0, second=0, microsecond=0
+                hour = 0, minute = 0, second = 0, microsecond = 0
             )
 
         # Check daily and hourly limits
         if self.daily_count >= self.config.requests_per_day:
-            raise RateLimitError("Daily rate limit exceeded", retry_after=86400)
+            raise RateLimitError("Daily rate limit exceeded", retry_after = 86400)
 
         if self.hourly_count >= self.config.requests_per_hour:
-            raise RateLimitError("Hourly rate limit exceeded", retry_after=3600)
+            raise RateLimitError("Hourly rate limit exceeded", retry_after = 3600)
 
         # Refill tokens based on time passed
         time_passed = now - self.last_refill
@@ -89,37 +93,41 @@ class RateLimiter:
         wait_time = (1 - self.tokens) * (60.0 / self.config.requests_per_minute)
         raise RateLimitError(
             f"Rate limit exceeded, wait {wait_time:.2f} seconds",
-            retry_after=int(wait_time),
-        )
+                retry_after = int(wait_time),
+                )
 
 
 class BaseAPI(ABC):
     """Base class for all API integrations"""
 
+
     def __init__(self, rate_limit_config: Optional[RateLimitConfig] = None):
         self.rate_limiter = RateLimiter(rate_limit_config or RateLimitConfig())
         self.session: Optional[aiohttp.ClientSession] = None
         self.base_headers = {
-            "User-Agent": "NicheDiscoveryEngine/1.0 (Educational Research)"
+            "User - Agent": "NicheDiscoveryEngine / 1.0 (Educational Research)"
         }
 
+
     async def __aenter__(self):
-        self.session = aiohttp.ClientSession(headers=self.base_headers)
+        self.session = aiohttp.ClientSession(headers = self.base_headers)
         return self
+
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.session:
             await self.session.close()
 
+
     async def _make_request(
         self,
-        method: str,
-        url: str,
-        params: Optional[Dict[str, Any]] = None,
-        data: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        max_retries: int = 3,
-    ) -> Dict[str, Any]:
+            method: str,
+            url: str,
+            params: Optional[Dict[str, Any]] = None,
+            data: Optional[Dict[str, Any]] = None,
+            headers: Optional[Dict[str, str]] = None,
+            max_retries: int = 3,
+            ) -> Dict[str, Any]:
         """Make HTTP request with rate limiting and retry logic"""
 
         if not self.session:
@@ -135,16 +143,16 @@ class BaseAPI(ABC):
         for attempt in range(max_retries + 1):
             try:
                 async with self.session.request(
-                    method=method,
-                    url=url,
-                    params=params,
-                    json=data,
-                    headers=request_headers,
-                ) as response:
+                    method = method,
+                        url = url,
+                        params = params,
+                        json = data,
+                        headers = request_headers,
+                        ) as response:
 
                     # Handle rate limiting from server
                     if response.status == 429:
-                        retry_after = int(response.headers.get("Retry-After", 60))
+                        retry_after = int(response.headers.get("Retry - After", 60))
                         if attempt < max_retries:
                             logger.warning(
                                 f"Rate limited by server, waiting {retry_after}s"
@@ -177,27 +185,34 @@ class BaseAPI(ABC):
         raise APIError("Unexpected error in request handling")
 
     @abstractmethod
+
+
     async def health_check(self) -> bool:
         """Check if the API is accessible"""
         pass
 
     @abstractmethod
+
+
     async def get_quota_status(self) -> Dict[str, Any]:
-        """Get current quota/rate limit status"""
+        """Get current quota / rate limit status"""
         pass
 
 
 class APIManager:
     """Manager for coordinating multiple API integrations"""
 
+
     def __init__(self):
         self.apis: Dict[str, BaseAPI] = {}
         self.health_status: Dict[str, bool] = {}
+
 
     def register_api(self, name: str, api: BaseAPI):
         """Register an API integration"""
         self.apis[name] = api
         self.health_status[name] = False
+
 
     async def health_check_all(self) -> Dict[str, bool]:
         """Check health of all registered APIs"""
@@ -214,6 +229,7 @@ class APIManager:
         self.health_status = results
         return results
 
+
     async def get_all_quota_status(self) -> Dict[str, Dict[str, Any]]:
         """Get quota status for all APIs"""
         results = {}
@@ -228,9 +244,11 @@ class APIManager:
 
         return results
 
+
     def get_healthy_apis(self) -> List[str]:
         """Get list of currently healthy APIs"""
         return [name for name, status in self.health_status.items() if status]
+
 
     def get_api(self, name: str) -> Optional[BaseAPI]:
         """Get API instance by name"""

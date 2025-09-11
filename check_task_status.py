@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Check the status of the strategic project task in the task queue.
 """
@@ -21,48 +21,48 @@ def main():
 
         # Get all pending tasks
         print("\n📋 Pending Tasks:")
-        pending_tasks = task_manager.get_tasks(status="pending", limit=10)
+        pending_tasks = task_manager.get_tasks(status="pending", limit = 10)
         if pending_tasks:
             for task in pending_tasks:
-                print(f"  • Task ID: {task.get('id', 'N/A')}")
-                print(f"    Type: {task.get('task_type', 'N/A')}")
-                print(f"    Priority: {task.get('priority', 'N/A')}")
-                print(f"    Target Agent: {task.get('target_agent', 'N/A')}")
-                print(f"    Created: {task.get('created_at', 'N/A')}")
+                print(f"  • Task ID: {task.get('id', 'N / A')}")
+                print(f"    Type: {task.get('task_type', 'N / A')}")
+                print(f"    Priority: {task.get('priority', 'N / A')}")
+                print(f"    Target Agent: {task.get('target_agent', 'N / A')}")
+                print(f"    Created: {task.get('created_at', 'N / A')}")
                 if "payload" in task and "goal" in task["payload"]:
                     print(f"    Goal: {task['payload']['goal']}")
                 print()
         else:
             print("  No pending tasks found.")
 
-        # Get in-progress tasks
-        print("\n⚡ In-Progress Tasks:")
-        in_progress_tasks = task_manager.get_tasks(status="in_progress", limit=10)
+        # Get in - progress tasks
+        print("\n⚡ In - Progress Tasks:")
+        in_progress_tasks = task_manager.get_tasks(status="in_progress", limit = 10)
         if in_progress_tasks:
             for task in in_progress_tasks:
-                print(f"  • Task ID: {task.get('id', 'N/A')}")
-                print(f"    Type: {task.get('task_type', 'N/A')}")
-                print(f"    Target Agent: {task.get('target_agent', 'N/A')}")
-                print(f"    Started: {task.get('started_at', 'N/A')}")
+                print(f"  • Task ID: {task.get('id', 'N / A')}")
+                print(f"    Type: {task.get('task_type', 'N / A')}")
+                print(f"    Target Agent: {task.get('target_agent', 'N / A')}")
+                print(f"    Started: {task.get('started_at', 'N / A')}")
                 print()
         else:
-            print("  No in-progress tasks found.")
+            print("  No in - progress tasks found.")
 
         # Get completed tasks (last 5)
         print("\n✅ Recent Completed Tasks:")
-        completed_tasks = task_manager.get_tasks(status="completed", limit=5)
+        completed_tasks = task_manager.get_tasks(status="completed", limit = 5)
         if completed_tasks:
             for task in completed_tasks:
-                print(f"  • Task ID: {task.get('id', 'N/A')}")
-                print(f"    Type: {task.get('task_type', 'N/A')}")
-                print(f"    Completed: {task.get('completed_at', 'N/A')}")
+                print(f"  • Task ID: {task.get('id', 'N / A')}")
+                print(f"    Type: {task.get('task_type', 'N / A')}")
+                print(f"    Completed: {task.get('completed_at', 'N / A')}")
                 print()
         else:
             print("  No completed tasks found.")
 
         # Check for our specific strategic project task
         print("\n🎯 Looking for Strategic Project Task:")
-        all_tasks = task_manager.get_tasks(limit=50)
+        all_tasks = task_manager.get_tasks(limit = 50)
         strategic_task = None
         for task in all_tasks:
             if task.get("task_type") == "STRATEGIC_PROJECT_EXECUTION" or (
@@ -108,7 +108,6 @@ def main():
         return 1
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

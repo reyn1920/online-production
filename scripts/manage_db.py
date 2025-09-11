@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE AI Database Management Script
 
@@ -6,13 +6,13 @@ This script serves as the single source of truth for all database operations.
 It ensures the application and database schema are always perfectly aligned.
 
 Usage:
-    python scripts/manage_db.py init          # Initialize all databases
-    python scripts/manage_db.py migrate       # Apply schema migrations
-    python scripts/manage_db.py verify        # Verify schema integrity
-    python scripts/manage_db.py backup        # Create database backup
-    python scripts/manage_db.py restore FILE  # Restore from backup
-    python scripts/manage_db.py reset         # Reset all databases (DANGER)
-    python scripts/manage_db.py status        # Show database status
+    python scripts / manage_db.py init          # Initialize all databases
+    python scripts / manage_db.py migrate       # Apply schema migrations
+    python scripts / manage_db.py verify        # Verify schema integrity
+    python scripts / manage_db.py backup        # Create database backup
+    python scripts / manage_db.py restore FILE  # Restore from backup
+    python scripts / manage_db.py reset         # Reset all databases (DANGER)
+    python scripts / manage_db.py status        # Show database status
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -36,6 +36,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 class DatabaseManager:
     """Professional database management for TRAE AI system."""
 
+
     def __init__(self):
         self.project_root = PROJECT_ROOT
         self.data_dir = self.project_root / "data"
@@ -46,29 +47,30 @@ class DatabaseManager:
         self.databases = {
             "main": {
                 "path": self.data_dir / "trae_ai.db",
-                "schema_file": self.project_root / "master_schema.sql",
-                "description": "Main application database",
-            },
-            "intelligence": {
+                    "schema_file": self.project_root / "master_schema.sql",
+                    "description": "Main application database",
+                    },
+                "intelligence": {
                 "path": self.data_dir / "right_perspective.db",
-                "schema_file": self.project_root / "right_perspective_schema.sql",
-                "description": "Intelligence and research database",
-            },
-            "app_main": {
+                    "schema_file": self.project_root / "right_perspective_schema.sql",
+                    "description": "Intelligence and research database",
+                    },
+                "app_main": {
                 "path": self.app_dir / "trae_ai.db",
-                "schema_file": self.project_root / "master_schema.sql",
-                "description": "App directory main database",
-            },
-            "app_intelligence": {
+                    "schema_file": self.project_root / "master_schema.sql",
+                    "description": "App directory main database",
+                    },
+                "app_intelligence": {
                 "path": self.app_dir / "right_perspective.db",
-                "schema_file": self.project_root / "right_perspective_schema.sql",
-                "description": "App directory intelligence database",
-            },
-        }
+                    "schema_file": self.project_root / "right_perspective_schema.sql",
+                    "description": "App directory intelligence database",
+                    },
+                }
 
         # Ensure directories exist
-        self.data_dir.mkdir(exist_ok=True)
-        self.backup_dir.mkdir(parents=True, exist_ok=True)
+        self.data_dir.mkdir(exist_ok = True)
+        self.backup_dir.mkdir(parents = True, exist_ok = True)
+
 
     def get_schema_sql(self, schema_file: Path) -> str:
         """Load schema SQL from file."""
@@ -78,6 +80,7 @@ class DatabaseManager:
 
         with open(schema_file, "r") as f:
             return f.read()
+
 
     def execute_sql(self, db_path: Path, sql: str, description: str = "") -> bool:
         """Execute SQL against database with error handling."""
@@ -96,6 +99,7 @@ class DatabaseManager:
         except Exception as e:
             print(f"❌ Unexpected error with {db_path}: {e}")
             return False
+
 
     def get_table_info(self, db_path: Path) -> List[Dict]:
         """Get information about tables in database."""
@@ -120,6 +124,7 @@ class DatabaseManager:
         except sqlite3.Error:
             return []
 
+
     def init_database(self, db_name: str) -> bool:
         """Initialize a specific database."""
         if db_name not in self.databases:
@@ -135,7 +140,7 @@ class DatabaseManager:
         print(f"   Schema: {schema_file}")
 
         # Ensure parent directory exists
-        db_path.parent.mkdir(parents=True, exist_ok=True)
+        db_path.parent.mkdir(parents = True, exist_ok = True)
 
         # Load and execute schema
         schema_sql = self.get_schema_sql(schema_file)
@@ -151,6 +156,7 @@ class DatabaseManager:
             print(f"   Created {len(tables)} tables")
 
         return success
+
 
     def init_all_databases(self) -> bool:
         """Initialize all databases."""
@@ -169,6 +175,7 @@ class DatabaseManager:
             f"📊 Database initialization complete: {success_count}/{total_count} successful"
         )
         return success_count == total_count
+
 
     def verify_schema_integrity(self) -> bool:
         """Verify all databases have correct schema."""
@@ -196,11 +203,12 @@ class DatabaseManager:
 
         return all_valid
 
+
     def backup_databases(self) -> bool:
         """Create backup of all databases."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_subdir = self.backup_dir / f"backup_{timestamp}"
-        backup_subdir.mkdir(parents=True, exist_ok=True)
+        backup_subdir.mkdir(parents = True, exist_ok = True)
 
         print(f"💾 Creating database backup: {backup_subdir}")
         print("=" * 50)
@@ -226,19 +234,20 @@ class DatabaseManager:
         # Create backup manifest
         manifest = {
             "timestamp": timestamp,
-            "databases_backed_up": success_count,
-            "backup_directory": str(backup_subdir),
-            "created_by": "TRAE AI Database Manager",
-        }
+                "databases_backed_up": success_count,
+                "backup_directory": str(backup_subdir),
+                "created_by": "TRAE AI Database Manager",
+                }
 
         manifest_path = backup_subdir / "manifest.json"
         with open(manifest_path, "w") as f:
-            json.dump(manifest, f, indent=2)
+            json.dump(manifest, f, indent = 2)
 
         print(f"\n📋 Backup manifest created: {manifest_path}")
         print(f"📊 Backup complete: {success_count} databases backed up")
 
         return success_count > 0
+
 
     def show_status(self) -> None:
         """Show status of all databases."""
@@ -267,6 +276,7 @@ class DatabaseManager:
                         print(f"     - {table['name']}: {table['rows']:,} rows")
             else:
                 print(f"   Status: ❌ MISSING")
+
 
     def reset_databases(self, confirm: bool = False) -> bool:
         """Reset all databases (DANGEROUS OPERATION)."""
@@ -313,21 +323,21 @@ class DatabaseManager:
 def main():
     parser = argparse.ArgumentParser(
         description="TRAE AI Database Management System",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+            formatter_class = argparse.RawDescriptionHelpFormatter,
+            epilog="""
 Examples:
-  python scripts/manage_db.py init          # Initialize all databases
-  python scripts/manage_db.py verify        # Check database integrity
-  python scripts/manage_db.py backup        # Create backup
-  python scripts/manage_db.py status        # Show database status
+  python scripts / manage_db.py init          # Initialize all databases
+  python scripts / manage_db.py verify        # Check database integrity
+  python scripts / manage_db.py backup        # Create backup
+  python scripts / manage_db.py status        # Show database status
         """,
-    )
+            )
 
     parser.add_argument(
         "command",
-        choices=["init", "migrate", "verify", "backup", "restore", "reset", "status"],
-        help="Database management command",
-    )
+            choices=["init", "migrate", "verify", "backup", "restore", "reset", "status"],
+            help="Database management command",
+            )
 
     parser.add_argument("file", nargs="?", help="File for restore command")
     parser.add_argument(
@@ -350,7 +360,7 @@ Examples:
             db_manager.show_status()
             success = True
         elif args.command == "reset":
-            success = db_manager.reset_databases(confirm=args.force)
+            success = db_manager.reset_databases(confirm = args.force)
         elif args.command == "migrate":
             print("🔄 Migration functionality coming soon...")
             success = True
@@ -369,7 +379,6 @@ Examples:
         return 1
 
     return 0 if success else 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

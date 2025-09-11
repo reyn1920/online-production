@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 RouteLL API Client for Trae AI Integration
 Provides comprehensive API wrapper with credit monitoring and optimization
@@ -24,8 +24,9 @@ class RouteLL_Status(Enum):
     API_ERROR = "api_error"
     OFFLINE = "offline"
 
-
 @dataclass
+
+
 class CreditUsage:
     """Credit usage tracking data structure"""
 
@@ -37,8 +38,9 @@ class CreditUsage:
     last_updated: datetime
     warning_level: str = "normal"  # normal, warning, critical
 
-
 @dataclass
+
+
 class APIResponse:
     """Standardized API response structure"""
 
@@ -56,6 +58,7 @@ class APIResponse:
 class RouteLL_Client:
     """RouteLL API Client with advanced monitoring and optimization"""
 
+
     def __init__(self, config_path: str = None):
         """Initialize RouteLL client with configuration"""
         self.config = self._load_config(config_path)
@@ -63,21 +66,22 @@ class RouteLL_Client:
         self.base_url = self.config["api_settings"]["base_url"]
         self.session = requests.Session()
         self.credit_usage = CreditUsage(
-            total_credits=self.config["credit_system"]["monthly_credits"],
-            used_credits=0,
-            remaining_credits=self.config["credit_system"]["monthly_credits"],
-            daily_usage=0,
-            hourly_usage=0,
-            last_updated=datetime.now(),
-        )
+            total_credits = self.config["credit_system"]["monthly_credits"],
+                used_credits = 0,
+                remaining_credits = self.config["credit_system"]["monthly_credits"],
+                daily_usage = 0,
+                hourly_usage = 0,
+                last_updated = datetime.now(),
+                )
         self.status = RouteLL_Status.ACTIVE
         self.logger = self._setup_logging()
         self._setup_session()
 
+
     def _load_config(self, config_path: str) -> Dict:
         """Load configuration from JSON file"""
         if config_path is None:
-            config_path = "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
+            config_path = "/Users / thomasbrianreynolds / online production / config / routellm_config.json"
 
         try:
             with open(config_path, "r") as f:
@@ -87,6 +91,7 @@ class RouteLL_Client:
         except json.JSONDecodeError:
             raise Exception(f"Invalid JSON in configuration file: {config_path}")
 
+
     def _setup_logging(self) -> logging.Logger:
         """Setup logging configuration"""
         logger = logging.getLogger("routellm_client")
@@ -94,7 +99,7 @@ class RouteLL_Client:
 
         # Create file handler
         log_file = self.config["logging"]["log_file"]
-        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+        os.makedirs(os.path.dirname(log_file), exist_ok = True)
 
         handler = logging.FileHandler(log_file)
         formatter = logging.Formatter(
@@ -104,6 +109,7 @@ class RouteLL_Client:
         logger.addHandler(handler)
 
         return logger
+
 
     def _setup_session(self):
         """Configure requests session with headers and timeouts"""
@@ -115,12 +121,13 @@ class RouteLL_Client:
         self.session.headers.update(
             {
                 "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": "Trae-AI-RouteLL-Client/1.0.0",
-            }
+                    "Content - Type": "application / json",
+                    "User - Agent": "Trae - AI - RouteLL - Client / 1.0.0",
+                    }
         )
 
         self.session.timeout = self.config["api_settings"]["timeout_seconds"]
+
 
     def check_credits(self) -> CreditUsage:
         """Check current credit usage and update internal tracking"""
@@ -144,8 +151,8 @@ class RouteLL_Client:
                 self.credit_usage.warning_level = "normal"
                 if self.status in [
                     RouteLL_Status.CREDITS_LOW,
-                    RouteLL_Status.CREDITS_EXHAUSTED,
-                ]:
+                        RouteLL_Status.CREDITS_EXHAUSTED,
+                        ]:
                     self.status = RouteLL_Status.ACTIVE
 
             self.logger.info(
@@ -156,6 +163,7 @@ class RouteLL_Client:
         except Exception as e:
             self.logger.error(f"Failed to check credits: {str(e)}")
             return self.credit_usage
+
 
     def _estimate_credit_cost(self, messages: List[Dict], model: str = None) -> int:
         """Estimate credit cost for a request"""
@@ -173,7 +181,7 @@ class RouteLL_Client:
         total_chars = sum(len(msg.get("content", "")) for msg in messages)
         estimated_tokens = total_chars // 4  # Rough token estimation
 
-        # High-cost models use more credits
+        # High - cost models use more credits
         high_cost_models = self.config["credit_system"]["high_cost_models"]
         if any(
             high_cost_model.lower() in model.lower()
@@ -182,6 +190,7 @@ class RouteLL_Client:
             return max(10, estimated_tokens // 100)  # Higher cost for premium models
 
         return max(1, estimated_tokens // 200)  # Standard cost estimation
+
 
     def _can_make_request(self, estimated_cost: int) -> bool:
         """Check if we can make a request based on credits and rate limits"""
@@ -212,6 +221,7 @@ class RouteLL_Client:
 
         return True
 
+
     def _update_credit_usage(self, credits_used: int):
         """Update internal credit usage tracking"""
         self.credit_usage.used_credits += credits_used
@@ -219,6 +229,7 @@ class RouteLL_Client:
         self.credit_usage.daily_usage += credits_used
         self.credit_usage.hourly_usage += credits_used
         self.credit_usage.last_updated = datetime.now()
+
 
     def chat_completion(
         self, messages: List[Dict], model: str = None, stream: bool = False, **kwargs
@@ -233,14 +244,14 @@ class RouteLL_Client:
             error_msg = f"Cannot make request: {self.status.value}"
             self.logger.error(error_msg)
             return APIResponse(
-                success=False,
-                data=None,
-                error=error_msg,
-                credits_used=0,
-                response_time_ms=0,
-                model_used=model,
-                timestamp=datetime.now(),
-            )
+                success = False,
+                    data = None,
+                    error = error_msg,
+                    credits_used = 0,
+                    response_time_ms = 0,
+                    model_used = model,
+                    timestamp = datetime.now(),
+                    )
 
         # Prepare request payload
         payload = {"model": model, "messages": messages, "stream": stream, **kwargs}
@@ -268,20 +279,21 @@ class RouteLL_Client:
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Request failed: {str(e)}")
             return APIResponse(
-                success=False,
-                data=None,
-                error=str(e),
-                credits_used=0,
-                response_time_ms=int((time.time() - start_time) * 1000),
-                model_used=model,
-                timestamp=datetime.now(),
-            )
+                success = False,
+                    data = None,
+                    error = str(e),
+                    credits_used = 0,
+                    response_time_ms = int((time.time() - start_time) * 1000),
+                    model_used = model,
+                    timestamp = datetime.now(),
+                    )
+
 
     def _handle_regular_response(
         self, url: str, payload: Dict, estimated_cost: int, start_time: float
     ) -> APIResponse:
-        """Handle non-streaming API response"""
-        response = self.session.post(url, json=payload)
+        """Handle non - streaming API response"""
+        response = self.session.post(url, json = payload)
         response_time_ms = int((time.time() - start_time) * 1000)
 
         if response.status_code == 200:
@@ -291,47 +303,48 @@ class RouteLL_Client:
             )
 
             return APIResponse(
-                success=True,
-                data=response.json(),
-                error=None,
-                credits_used=estimated_cost,
-                response_time_ms=response_time_ms,
-                model_used=payload["model"],
-                timestamp=datetime.now(),
-            )
+                success = True,
+                    data = response.json(),
+                    error = None,
+                    credits_used = estimated_cost,
+                    response_time_ms = response_time_ms,
+                    model_used = payload["model"],
+                    timestamp = datetime.now(),
+                    )
         else:
             error_msg = f"API error {response.status_code}: {response.text}"
             self.logger.error(error_msg)
 
             return APIResponse(
-                success=False,
-                data=None,
-                error=error_msg,
-                credits_used=0,
-                response_time_ms=response_time_ms,
-                model_used=payload["model"],
-                timestamp=datetime.now(),
-            )
+                success = False,
+                    data = None,
+                    error = error_msg,
+                    credits_used = 0,
+                    response_time_ms = response_time_ms,
+                    model_used = payload["model"],
+                    timestamp = datetime.now(),
+                    )
+
 
     def _handle_streaming_response(
         self, url: str, payload: Dict, estimated_cost: int, start_time: float
     ) -> Iterator[APIResponse]:
         """Handle streaming API response"""
         try:
-            response = self.session.post(url, json=payload, stream=True)
+            response = self.session.post(url, json = payload, stream = True)
 
             if response.status_code != 200:
                 error_msg = f"API error {response.status_code}: {response.text}"
                 self.logger.error(error_msg)
                 yield APIResponse(
-                    success=False,
-                    data=None,
-                    error=error_msg,
-                    credits_used=0,
-                    response_time_ms=int((time.time() - start_time) * 1000),
-                    model_used=payload["model"],
-                    timestamp=datetime.now(),
-                )
+                    success = False,
+                        data = None,
+                        error = error_msg,
+                        credits_used = 0,
+                        response_time_ms = int((time.time() - start_time) * 1000),
+                        model_used = payload["model"],
+                        timestamp = datetime.now(),
+                        )
                 return
 
             # Update credits once for streaming request
@@ -340,7 +353,7 @@ class RouteLL_Client:
 
             for line in response.iter_lines():
                 if line:
-                    line = line.decode("utf-8")
+                    line = line.decode("utf - 8")
                     if line.startswith("data: "):
                         line = line[6:]
                         if line == "[DONE]":
@@ -349,16 +362,16 @@ class RouteLL_Client:
                         try:
                             chunk_data = json.loads(line)
                             yield APIResponse(
-                                success=True,
-                                data=chunk_data,
-                                error=None,
-                                credits_used=(
+                                success = True,
+                                    data = chunk_data,
+                                    error = None,
+                                    credits_used=(
                                     estimated_cost if not credits_reported else 0
                                 ),
-                                response_time_ms=int((time.time() - start_time) * 1000),
-                                model_used=payload["model"],
-                                timestamp=datetime.now(),
-                            )
+                                    response_time_ms = int((time.time() - start_time) * 1000),
+                                    model_used = payload["model"],
+                                    timestamp = datetime.now(),
+                                    )
                             credits_reported = True
                         except json.JSONDecodeError:
                             continue
@@ -366,35 +379,37 @@ class RouteLL_Client:
         except Exception as e:
             self.logger.error(f"Streaming request failed: {str(e)}")
             yield APIResponse(
-                success=False,
-                data=None,
-                error=str(e),
-                credits_used=0,
-                response_time_ms=int((time.time() - start_time) * 1000),
-                model_used=payload["model"],
-                timestamp=datetime.now(),
-            )
+                success = False,
+                    data = None,
+                    error = str(e),
+                    credits_used = 0,
+                    response_time_ms = int((time.time() - start_time) * 1000),
+                    model_used = payload["model"],
+                    timestamp = datetime.now(),
+                    )
+
 
     def get_status(self) -> Dict:
         """Get current client status and metrics"""
         return {
             "status": self.status.value,
-            "credit_usage": {
+                "credit_usage": {
                 "total_credits": self.credit_usage.total_credits,
-                "used_credits": self.credit_usage.used_credits,
-                "remaining_credits": self.credit_usage.remaining_credits,
-                "daily_usage": self.credit_usage.daily_usage,
-                "hourly_usage": self.credit_usage.hourly_usage,
-                "warning_level": self.credit_usage.warning_level,
-                "last_updated": self.credit_usage.last_updated.isoformat(),
-            },
-            "api_health": self._check_api_health(),
-            "configuration": {
+                    "used_credits": self.credit_usage.used_credits,
+                    "remaining_credits": self.credit_usage.remaining_credits,
+                    "daily_usage": self.credit_usage.daily_usage,
+                    "hourly_usage": self.credit_usage.hourly_usage,
+                    "warning_level": self.credit_usage.warning_level,
+                    "last_updated": self.credit_usage.last_updated.isoformat(),
+                    },
+                "api_health": self._check_api_health(),
+                "configuration": {
                 "model": self.config["api_settings"]["default_model"],
-                "base_url": self.base_url,
-                "monitoring_enabled": self.config["monitoring"]["enabled"],
-            },
-        }
+                    "base_url": self.base_url,
+                    "monitoring_enabled": self.config["monitoring"]["enabled"],
+                    },
+                }
+
 
     def _check_api_health(self) -> Dict:
         """Check API health status"""
@@ -411,6 +426,7 @@ class RouteLL_Client:
 
         except Exception as e:
             return {"status": "unhealthy", "error": str(e)}
+
 
     def optimize_for_credits(self) -> Dict:
         """Get optimization recommendations for credit usage"""
@@ -433,10 +449,11 @@ class RouteLL_Client:
                 self.credit_usage.used_credits / self.credit_usage.total_credits
             )
             * 100,
-            "recommendations": recommendations,
-            "unlimited_models": unlimited_models,
-            "estimated_days_remaining": self._estimate_days_remaining(),
-        }
+                "recommendations": recommendations,
+                "unlimited_models": unlimited_models,
+                "estimated_days_remaining": self._estimate_days_remaining(),
+                }
+
 
     def _estimate_days_remaining(self) -> float:
         """Estimate days remaining based on current usage pattern"""
@@ -445,7 +462,6 @@ class RouteLL_Client:
 
         return self.credit_usage.remaining_credits / self.credit_usage.daily_usage
 
-
 # Example usage and testing
 if __name__ == "__main__":
     # Initialize client
@@ -453,7 +469,7 @@ if __name__ == "__main__":
 
     # Check status
     status = client.get_status()
-    print(f"Client Status: {json.dumps(status, indent=2)}")
+    print(f"Client Status: {json.dumps(status, indent = 2)}")
 
     # Test chat completion
     messages = [{"role": "user", "content": "What is the meaning of life?"}]
@@ -463,4 +479,4 @@ if __name__ == "__main__":
 
     # Get optimization recommendations
     optimization = client.optimize_for_credits()
-    print(f"Optimization: {json.dumps(optimization, indent=2)}")
+    print(f"Optimization: {json.dumps(optimization, indent = 2)}")

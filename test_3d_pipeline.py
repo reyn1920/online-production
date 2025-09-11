@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 3D Visual Effects Pipeline Test
 Tests the complete TRAE.AI 3D content creation workflow
@@ -15,14 +15,14 @@ def test_blender_api():
     print("Testing Blender Python API...")
     try:
         cmd = [
-            "/Applications/Blender.app/Contents/MacOS/Blender",
-            "--background",
-            "--python-expr",
-            "import bpy; print('Blender API Version:', bpy.app.version); bpy.ops.mesh.primitive_cube_add(); print('Cube created successfully')",
-            "--python-exit-code",
-            "1",
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            "/Applications / Blender.app / Contents / MacOS / Blender",
+                "--background",
+                "--python - expr",
+                "import bpy; print('Blender API Version:', bpy.app.version); bpy.ops.mesh.primitive_cube_add(); print('Cube created successfully')",
+                "--python - exit - code",
+                "1",
+                ]
+        result = subprocess.run(cmd, capture_output = True, text = True, timeout = 30)
         if result.returncode == 0:
             print("✅ Blender Python API: WORKING")
             return True
@@ -39,10 +39,10 @@ def test_gimp_availability():
     """Test GIMP availability"""
     print("Testing GIMP availability...")
     gimp_paths = [
-        "/Applications/GIMP.app/Contents/MacOS/gimp",
-        "/usr/local/bin/gimp",
-        "/opt/homebrew/bin/gimp",
-    ]
+        "/Applications / GIMP.app / Contents / MacOS / gimp",
+            "/usr / local / bin / gimp",
+            "/opt / homebrew / bin / gimp",
+            ]
 
     for path in gimp_paths:
         if os.path.exists(path):
@@ -57,10 +57,10 @@ def test_inkscape_availability():
     """Test Inkscape availability"""
     print("Testing Inkscape availability...")
     inkscape_paths = [
-        "/Applications/Inkscape.app/Contents/MacOS/inkscape",
-        "/usr/local/bin/inkscape",
-        "/opt/homebrew/bin/inkscape",
-    ]
+        "/Applications / Inkscape.app / Contents / MacOS / inkscape",
+            "/usr / local / bin / inkscape",
+            "/opt / homebrew / bin / inkscape",
+            ]
 
     for path in inkscape_paths:
         if os.path.exists(path):
@@ -75,7 +75,7 @@ def test_davinci_resolve():
     """Test DaVinci Resolve availability"""
     print("Testing DaVinci Resolve availability...")
     resolve_path = (
-        "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/MacOS/Resolve"
+        "/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / MacOS / Resolve"
     )
 
     if os.path.exists(resolve_path):
@@ -111,9 +111,9 @@ import bmesh
 
 # Clear existing mesh objects
 bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False)
+bpy.ops.object.delete(use_global = False)
 
-# Create a simple character-like scene
+# Create a simple character - like scene
 # Add a cube for the body
 bpy.ops.mesh.primitive_cube_add(location=(0, 0, 1))
 body = bpy.context.active_object
@@ -143,25 +143,25 @@ print("Sample 3D scene created successfully")
 print(f"Objects in scene: {len(bpy.context.scene.objects)}")
 
 # Save the scene
-bpy.ops.wm.save_as_mainfile(filepath="/tmp/trae_test_scene.blend")
-print("Scene saved to /tmp/trae_test_scene.blend")
+bpy.ops.wm.save_as_mainfile(filepath="/tmp / trae_test_scene.blend")
+print("Scene saved to /tmp / trae_test_scene.blend")
 """
 
     try:
         # Write the script to a temporary file
-        script_path = "/tmp/blender_test_script.py"
+        script_path = "/tmp / blender_test_script.py"
         with open(script_path, "w") as f:
             f.write(blender_script)
 
         # Execute the script in Blender
         cmd = [
-            "/Applications/Blender.app/Contents/MacOS/Blender",
-            "--background",
-            "--python",
-            script_path,
-        ]
+            "/Applications / Blender.app / Contents / MacOS / Blender",
+                "--background",
+                "--python",
+                script_path,
+                ]
 
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        result = subprocess.run(cmd, capture_output = True, text = True, timeout = 60)
 
         if result.returncode == 0 and "Scene saved" in result.stdout:
             print("✅ Sample 3D scene created successfully")
@@ -183,12 +183,12 @@ def main():
 
     tests = [
         ("Blender Python API", test_blender_api),
-        ("GIMP Availability", test_gimp_availability),
-        ("Inkscape Availability", test_inkscape_availability),
-        ("DaVinci Resolve", test_davinci_resolve),
-        ("Mixamo Integration", test_mixamo_integration),
-        ("3D Scene Creation", create_sample_3d_scene),
-    ]
+            ("GIMP Availability", test_gimp_availability),
+            ("Inkscape Availability", test_inkscape_availability),
+            ("DaVinci Resolve", test_davinci_resolve),
+            ("Mixamo Integration", test_mixamo_integration),
+            ("3D Scene Creation", create_sample_3d_scene),
+            ]
 
     results = []
 
@@ -223,7 +223,6 @@ def main():
     else:
         print("⚠️  3D Visual Effects Pipeline: PARTIALLY OPERATIONAL")
         return False
-
 
 if __name__ == "__main__":
     success = main()

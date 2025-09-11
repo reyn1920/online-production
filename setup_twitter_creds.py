@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Script to set up Twitter credentials for the current system
 """
@@ -31,15 +31,15 @@ def setup_twitter_credentials():
         # Check existing credentials
         existing_creds = [
             store.secret_exists("TWITTER_API_KEY"),
-            store.secret_exists("TWITTER_API_SECRET"),
-            store.secret_exists("TWITTER_ACCESS_TOKEN"),
-            store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
-        ]
+                store.secret_exists("TWITTER_API_SECRET"),
+                store.secret_exists("TWITTER_ACCESS_TOKEN"),
+                store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
+                ]
 
         if all(existing_creds):
             print("✓ Twitter credentials already configured")
             update = (
-                input("Update existing credentials? (y/N): ").lower().startswith("y")
+                input("Update existing credentials? (y / N): ").lower().startswith("y")
             )
             if not update:
                 return test_credentials(store)
@@ -96,10 +96,10 @@ def check_current_status():
 
         credentials = [
             "TWITTER_API_KEY",
-            "TWITTER_API_SECRET",
-            "TWITTER_ACCESS_TOKEN",
-            "TWITTER_ACCESS_TOKEN_SECRET",
-        ]
+                "TWITTER_API_SECRET",
+                "TWITTER_ACCESS_TOKEN",
+                "TWITTER_ACCESS_TOKEN_SECRET",
+                ]
 
         print("=== Current Twitter Credential Status ===")
         for cred in credentials:
@@ -117,7 +117,6 @@ def check_current_status():
         print(f"❌ Error checking credential status: {e}")
         return False
 
-
 if __name__ == "__main__":
     print("Twitter Credential Setup Tool")
     print("============================\n")
@@ -125,7 +124,7 @@ if __name__ == "__main__":
     # Check current status first
     if check_current_status():
         print("\nTwitter credentials are already configured.")
-        setup_new = input("Do you want to update them? (y/N): ").lower().startswith("y")
+        setup_new = input("Do you want to update them? (y / N): ").lower().startswith("y")
         if not setup_new:
             print("Exiting...")
             sys.exit(0)

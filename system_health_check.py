@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Comprehensive System Health Check
 Verifies all components are working correctly
@@ -15,7 +15,7 @@ import requests
 def check_web_interface():
     """Check if the web interface is accessible"""
     try:
-        response = requests.get("http://localhost:7860", timeout=5)
+        response = requests.get("http://localhost:7860", timeout = 5)
         if response.status_code == 200:
             print("✅ Web interface is accessible at http://localhost:7860")
             return True
@@ -63,7 +63,7 @@ def check_backend_services():
     """Check backend services status"""
     try:
         # Check if avatar engines are available
-        sys.path.append("backend/services")
+        sys.path.append("backend / services")
         from backend.services.avatar_engines import engine_manager
 
         print("🔧 Checking backend services...")
@@ -81,10 +81,10 @@ def check_backend_services():
 def check_file_structure():
     """Check critical file structure"""
     critical_files = [
-        "models/linly_talker/demo_app.py",
-        "services/avatar_generation_service.py",
-        "backend/services/avatar_engines.py",
-    ]
+        "models / linly_talker / demo_app.py",
+            "services / avatar_generation_service.py",
+            "backend / services / avatar_engines.py",
+            ]
 
     print("📁 Checking file structure...")
     all_good = True
@@ -109,10 +109,10 @@ def main():
 
     checks = [
         ("File Structure", check_file_structure),
-        ("Web Interface", check_web_interface),
-        ("Avatar Generation", check_avatar_generation),
-        ("Backend Services", check_backend_services),
-    ]
+            ("Web Interface", check_web_interface),
+            ("Avatar Generation", check_avatar_generation),
+            ("Backend Services", check_backend_services),
+            ]
 
     results = []
 
@@ -148,7 +148,6 @@ def main():
             f"\n⚠️  {total - passed} issues detected. Please review the failed checks."
         )
         return False
-
 
 if __name__ == "__main__":
     success = main()

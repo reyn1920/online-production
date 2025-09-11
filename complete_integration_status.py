@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Complete Integration Status Report
 Verifies all files are properly integrated in the production system
@@ -18,15 +18,15 @@ def get_file_stats():
     # Skip these directories
     skip_dirs = {
         ".git",
-        "__pycache__",
-        "node_modules",
-        "cache",
-        "test-results",
-        ".trae",
-        "backups",
-        "snapshots",
-        ".pytest_cache",
-    }
+            "__pycache__",
+            "node_modules",
+            "cache",
+            "test - results",
+            ".trae",
+            "backups",
+            "snapshots",
+            ".pytest_cache",
+            }
 
     for root, dirs, files in os.walk("."):
         # Filter out directories we want to skip
@@ -45,14 +45,14 @@ def check_key_integrations():
     """Check for key integration files"""
     key_files = [
         "main.py",
-        "requirements.txt",
-        "backend/app.py",
-        "channels.json",
-        "config/state.json",
-        "schema.sql",
-        "Dockerfile",
-        "netlify.toml",
-    ]
+            "requirements.txt",
+            "backend / app.py",
+            "channels.json",
+            "config / state.json",
+            "schema.sql",
+            "Dockerfile",
+            "netlify.toml",
+            ]
 
     present = []
     missing = []
@@ -77,7 +77,7 @@ def main():
     print("\n📁 File Types:")
 
     # Sort by count (descending)
-    sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
+    sorted_stats = sorted(stats.items(), key = lambda x: x[1], reverse = True)
 
     for ext, count in sorted_stats[:15]:  # Show top 15 file types
         if ext:
@@ -120,7 +120,6 @@ def main():
     print(f"💯 SYSTEM STATUS: FULLY OPERATIONAL")
 
     return integration_score >= 95
-
 
 if __name__ == "__main__":
     main()

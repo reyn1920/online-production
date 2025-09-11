@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Distributed Processing System Startup Script
 
@@ -26,17 +26,17 @@ from integrations.worker_manager import WorkerManager
 # Add backend to path
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
-
 # Configure logging
 logging.basicConfig(
-    level=getattr(logging, config.monitoring.log_level),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level = getattr(logging, config.monitoring.log_level),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
 
 class DistributedSystemOrchestrator:
     """Orchestrates the distributed processing system startup"""
+
 
     def __init__(self):
         self.worker_manager = WorkerManager()
@@ -48,11 +48,13 @@ class DistributedSystemOrchestrator:
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
+
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals"""
         logger.info(f"Received signal {signum}, initiating shutdown...")
         self.shutdown_requested = True
         self.shutdown()
+
 
     def start_broker(self) -> bool:
         """Start message broker if needed"""
@@ -66,12 +68,13 @@ class DistributedSystemOrchestrator:
             logger.warning(f"Unsupported broker type: {config.broker.type}")
             return False
 
+
     def _start_redis(self) -> bool:
         """Start Redis server if not running"""
         try:
             # Check if Redis is already running
             result = subprocess.run(
-                ["redis-cli", "ping"], capture_output=True, text=True, timeout=5
+                ["redis - cli", "ping"], capture_output = True, text = True, timeout = 5
             )
 
             if result.returncode == 0 and "PONG" in result.stdout:
@@ -88,17 +91,17 @@ class DistributedSystemOrchestrator:
 
         if system == "darwin":
             # macOS - try Homebrew first
-            redis_cmd = ["redis-server"]
+            redis_cmd = ["redis - server"]
             try:
                 process = subprocess.Popen(
-                    redis_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    redis_cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE
                 )
                 self.running_processes.append(process)
                 time.sleep(2)  # Give Redis time to start
 
                 # Verify it started
                 result = subprocess.run(
-                    ["redis-cli", "ping"], capture_output=True, text=True, timeout=5
+                    ["redis - cli", "ping"], capture_output = True, text = True, timeout = 5
                 )
 
                 if result.returncode == 0:
@@ -117,8 +120,8 @@ class DistributedSystemOrchestrator:
 
         elif system == "linux":
             # Linux - try systemctl or direct command
-            try:
-                subprocess.run(["sudo", "systemctl", "start", "redis"], check=True)
+                try:
+                subprocess.run(["sudo", "systemctl", "start", "redis"], check = True)
                 logger.info("Redis started via systemctl")
                 return True
             except subprocess.CalledProcessError:
@@ -126,10 +129,12 @@ class DistributedSystemOrchestrator:
 
         return False
 
+
     def _start_rabbitmq(self) -> bool:
         """Start RabbitMQ server if not running"""
         logger.info("RabbitMQ support not implemented yet")
         return False
+
 
     def start_monitoring(self):
         """Start monitoring services"""
@@ -142,21 +147,22 @@ class DistributedSystemOrchestrator:
         try:
             flower_cmd = [
                 "celery",
-                "flower",
-                "--broker",
-                config.broker.get_url(),
-                "--port",
-                "5555",
-            ]
+                    "flower",
+                    "--broker",
+                    config.broker.get_url(),
+                    "--port",
+                    "5555",
+                    ]
 
             process = subprocess.Popen(
-                flower_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                flower_cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE
             )
             self.running_processes.append(process)
             logger.info("Flower monitoring started on port 5555")
 
         except FileNotFoundError:
             logger.warning("Flower not found. Install with: pip install flower")
+
 
     def start_workers(self, worker_count: Optional[int] = None) -> bool:
         """Start Celery workers"""
@@ -167,10 +173,10 @@ class DistributedSystemOrchestrator:
         try:
             # Start workers using WorkerManager
             success = self.worker_manager.start_workers(
-                count=worker_count,
-                queues=config.worker.queues,
-                capabilities=config.worker.capabilities,
-            )
+                count = worker_count,
+                    queues = config.worker.queues,
+                    capabilities = config.worker.capabilities,
+                    )
 
             if success:
                 logger.info(f"Started {worker_count} workers successfully")
@@ -183,13 +189,15 @@ class DistributedSystemOrchestrator:
             logger.error(f"Error starting workers: {e}")
             return False
 
+
     def start_web_interface(self):
         """Start web interface for system management"""
         logger.info("Starting web interface...")
 
-        # This would start a Flask/FastAPI web interface
+        # This would start a Flask / FastAPI web interface
         # For now, just log the intention
         logger.info("Web interface would be available at http://localhost:8080")
+
 
     def health_check(self) -> Dict[str, bool]:
         """Perform system health check"""
@@ -199,7 +207,7 @@ class DistributedSystemOrchestrator:
         try:
             if config.broker.type == "redis":
                 result = subprocess.run(
-                    ["redis-cli", "ping"], capture_output=True, text=True, timeout=5
+                    ["redis - cli", "ping"], capture_output = True, text = True, timeout = 5
                 )
                 health["broker"] = result.returncode == 0
         except BaseException:
@@ -213,6 +221,7 @@ class DistributedSystemOrchestrator:
         health["monitoring"] = config.monitoring.enable_prometheus
 
         return health
+
 
     def display_status(self):
         """Display system status"""
@@ -248,6 +257,7 @@ class DistributedSystemOrchestrator:
 
         print("=" * 60)
 
+
     def shutdown(self):
         """Shutdown the distributed system"""
         logger.info("Shutting down distributed processing system...")
@@ -259,13 +269,14 @@ class DistributedSystemOrchestrator:
         for process in self.running_processes:
             try:
                 process.terminate()
-                process.wait(timeout=10)
+                process.wait(timeout = 10)
             except subprocess.TimeoutExpired:
                 process.kill()
             except BaseException:
                 pass
 
         logger.info("Shutdown complete")
+
 
     def run(self, args):
         """Main run method"""
@@ -296,7 +307,7 @@ class DistributedSystemOrchestrator:
         self.display_status()
 
         if args.daemon:
-            logger.info("Running in daemon mode. Press Ctrl+C to stop.")
+            logger.info("Running in daemon mode. Press Ctrl + C to stop.")
             try:
                 while not self.shutdown_requested:
                     time.sleep(10)
@@ -319,24 +330,24 @@ def main():
 
     parser.add_argument(
         "--workers",
-        "-w",
-        type=int,
-        help="Number of workers to start (default: auto-detect)",
-    )
+            "-w",
+            type = int,
+            help="Number of workers to start (default: auto - detect)",
+            )
 
     parser.add_argument(
-        "--start-broker",
-        "-b",
-        action="store_true",
-        help="Start message broker if not running",
-    )
+        "--start - broker",
+            "-b",
+            action="store_true",
+            help="Start message broker if not running",
+            )
 
     parser.add_argument(
         "--monitoring", "-m", action="store_true", help="Start monitoring services"
     )
 
     parser.add_argument(
-        "--web-interface", "-ui", action="store_true", help="Start web interface"
+        "--web - interface", "-ui", action="store_true", help="Start web interface"
     )
 
     parser.add_argument(
@@ -345,10 +356,10 @@ def main():
 
     parser.add_argument(
         "--force",
-        "-f",
-        action="store_true",
-        help="Continue even if some components fail to start",
-    )
+            "-f",
+            action="store_true",
+            help="Continue even if some components fail to start",
+            )
 
     parser.add_argument("--config", "-c", help="Path to configuration file")
 
@@ -382,7 +393,6 @@ def main():
         sys.exit(1)
     finally:
         orchestrator.shutdown()
-
 
 if __name__ == "__main__":
     main()

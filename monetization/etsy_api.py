@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from .base_monetization import (BaseMonetizationAPI, Product, ProductCreationError,
-                                ProductResponse)
+    ProductResponse)
 
 logger = logging.getLogger(__name__)
 
@@ -13,23 +13,26 @@ logger = logging.getLogger(__name__)
 class EtsyAPI(BaseMonetizationAPI):
     """Etsy API client for automated product management."""
 
+
     def __init__(self, api_key: str, shop_id: str, access_token: str = None):
         super().__init__(
-            api_key=api_key,
-            base_url="https://openapi.etsy.com/v3",
-            rate_limit=10,  # Etsy allows 10 requests per second
+            api_key = api_key,
+                base_url="https://openapi.etsy.com / v3",
+                rate_limit = 10,  # Etsy allows 10 requests per second
         )
         self.shop_id = shop_id
         self.access_token = access_token
 
+
     def _get_auth_headers(self) -> Dict[str, str]:
         """Get Etsy API authentication headers."""
-        headers = {"x-api-key": self.api_key, "Content-Type": "application/json"}
+        headers = {"x - api - key": self.api_key, "Content - Type": "application / json"}
 
         if self.access_token:
             headers["Authorization"] = f"Bearer {self.access_token}"
 
         return headers
+
 
     def create_product(self, product: Product) -> ProductResponse:
         """Create a new listing on Etsy."""
@@ -38,28 +41,28 @@ class EtsyAPI(BaseMonetizationAPI):
             listing_data = {
                 "title": product.title[:140],  # Etsy title limit
                 "description": product.description,
-                "price": product.price,
-                "quantity": 999,  # Digital products can have high quantity
+                    "price": product.price,
+                    "quantity": 999,  # Digital products can have high quantity
                 "who_made": "i_did",
-                "when_made": "2020_2024",
-                "is_supply": False,
-                "state": "draft",  # Start as draft
+                    "when_made": "2020_2024",
+                    "is_supply": False,
+                    "state": "draft",  # Start as draft
                 "processing_min": 1,
-                "processing_max": 3,
-                "tags": (
+                    "processing_max": 3,
+                    "tags": (
                     product.tags[:13] if product.tags else []
                 ),  # Etsy allows max 13 tags
                 "materials": ["digital"],
-                "shipping_template_id": None,  # Digital products don't need shipping
+                    "shipping_template_id": None,  # Digital products don't need shipping
                 "is_digital": True,
-            }
+                    }
 
             # Add category if provided
             if product.category:
                 listing_data["taxonomy_id"] = self._get_taxonomy_id(product.category)
 
             response = self._make_request(
-                "POST", f"/application/shops/{self.shop_id}/listings", data=listing_data
+                "POST", f"/application / shops/{self.shop_id}/listings", data = listing_data
             )
 
             listing = response.json()
@@ -75,64 +78,68 @@ class EtsyAPI(BaseMonetizationAPI):
                 )
 
             return ProductResponse(
-                success=True,
-                product_id=str(listing["listing_id"]),
-                product_url=listing.get("url"),
-                platform_data=listing,
-            )
+                success = True,
+                    product_id = str(listing["listing_id"]),
+                    product_url = listing.get("url"),
+                    platform_data = listing,
+                    )
 
         except Exception as e:
             logger.error(f"Failed to create Etsy listing: {e}")
-            return ProductResponse(success=False, error_message=str(e))
+            return ProductResponse(success = False, error_message = str(e))
+
 
     def update_product(self, product_id: str, product: Product) -> ProductResponse:
         """Update an existing Etsy listing."""
         try:
             listing_data = {
                 "title": product.title[:140],
-                "description": product.description,
-                "price": product.price,
-                "tags": product.tags[:13] if product.tags else [],
-            }
+                    "description": product.description,
+                    "price": product.price,
+                    "tags": product.tags[:13] if product.tags else [],
+                    }
 
             response = self._make_request(
                 "PUT",
-                f"/application/shops/{self.shop_id}/listings/{product_id}",
-                data=listing_data,
-            )
+                    f"/application / shops/{self.shop_id}/listings/{product_id}",
+                    data = listing_data,
+                    )
 
             listing = response.json()
 
             return ProductResponse(
-                success=True,
-                product_id=product_id,
-                product_url=listing.get("url"),
-                platform_data=listing,
-            )
+                success = True,
+                    product_id = product_id,
+                    product_url = listing.get("url"),
+                    platform_data = listing,
+                    )
 
         except Exception as e:
             logger.error(f"Failed to update Etsy listing {product_id}: {e}")
-            return ProductResponse(success=False, error_message=str(e))
+            return ProductResponse(success = False, error_message = str(e))
+
 
     def delete_product(self, product_id: str) -> bool:
         """Delete an Etsy listing."""
         try:
             self._make_request(
-                "DELETE", f"/application/shops/{self.shop_id}/listings/{product_id}"
+                "DELETE", f"/application / shops/{self.shop_id}/listings/{product_id}"
             )
             return True
         except Exception as e:
             logger.error(f"Failed to delete Etsy listing {product_id}: {e}")
             return False
 
+
     def get_product(self, product_id: str) -> Optional[Dict[str, Any]]:
         """Get Etsy listing details."""
         try:
-            response = self._make_request("GET", f"/application/listings/{product_id}")
+            response = self._make_request("GET", f"/application / listings/{product_id}")
             return response.json()
         except Exception as e:
             logger.error(f"Failed to get Etsy listing {product_id}: {e}")
             return None
+
 
     def list_products(self, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
         """List shop listings from Etsy."""
@@ -140,17 +147,18 @@ class EtsyAPI(BaseMonetizationAPI):
             params = {
                 "limit": min(limit, 100),  # Etsy max limit is 100
                 "offset": offset,
-                "state": "active",
-            }
+                    "state": "active",
+                    }
 
             response = self._make_request(
-                "GET", f"/application/shops/{self.shop_id}/listings", params=params
+                "GET", f"/application / shops/{self.shop_id}/listings", params = params
             )
 
             return response.json().get("results", [])
         except Exception as e:
             logger.error(f"Failed to list Etsy products: {e}")
             return []
+
 
     def get_sales_data(
         self, start_date: datetime, end_date: datetime
@@ -159,12 +167,12 @@ class EtsyAPI(BaseMonetizationAPI):
         try:
             params = {
                 "min_created": int(start_date.timestamp()),
-                "max_created": int(end_date.timestamp()),
-                "limit": 100,
-            }
+                    "max_created": int(end_date.timestamp()),
+                    "limit": 100,
+                    }
 
             response = self._make_request(
-                "GET", f"/application/shops/{self.shop_id}/receipts", params=params
+                "GET", f"/application / shops/{self.shop_id}/receipts", params = params
             )
 
             receipts = response.json().get("results", [])
@@ -177,16 +185,17 @@ class EtsyAPI(BaseMonetizationAPI):
 
             return {
                 "platform": "Etsy",
-                "period": f"{start_date.date()} to {end_date.date()}",
-                "total_sales": total_sales,
-                "total_revenue": total_revenue,
-                "currency": "USD",
-                "receipts": receipts,
-            }
+                    "period": f"{start_date.date()} to {end_date.date()}",
+                    "total_sales": total_sales,
+                    "total_revenue": total_revenue,
+                    "currency": "USD",
+                    "receipts": receipts,
+                    }
 
         except Exception as e:
             logger.error(f"Failed to get Etsy sales data: {e}")
             return {"error": str(e)}
+
 
     def _get_taxonomy_id(self, category: str) -> Optional[int]:
         """Get Etsy taxonomy ID for a category."""
@@ -194,12 +203,13 @@ class EtsyAPI(BaseMonetizationAPI):
         # For now, return a default digital category ID
         category_mapping = {
             "digital_art": 69150467,
-            "templates": 69150467,
-            "printables": 69150467,
-            "ebooks": 69150467,
-            "courses": 69150467,
-        }
+                "templates": 69150467,
+                "printables": 69150467,
+                "ebooks": 69150467,
+                "courses": 69150467,
+                }
         return category_mapping.get(category.lower(), 69150467)
+
 
     def _upload_digital_files(self, listing_id: str, file_paths: List[str]):
         """Upload digital files to an Etsy listing."""
@@ -213,6 +223,7 @@ class EtsyAPI(BaseMonetizationAPI):
             except Exception as e:
                 logger.error(f"Failed to upload digital file {file_path}: {e}")
 
+
     def _upload_listing_images(self, listing_id: str, image_paths: List[str]):
         """Upload preview images to an Etsy listing."""
         for image_path in image_paths:
@@ -222,23 +233,25 @@ class EtsyAPI(BaseMonetizationAPI):
             except Exception as e:
                 logger.error(f"Failed to upload image {image_path}: {e}")
 
+
     def activate_listing(self, listing_id: str) -> bool:
         """Activate a draft listing to make it live."""
         try:
             response = self._make_request(
                 "PUT",
-                f"/application/shops/{self.shop_id}/listings/{listing_id}",
-                data={"state": "active"},
-            )
+                    f"/application / shops/{self.shop_id}/listings/{listing_id}",
+                    data={"state": "active"},
+                    )
             return response.status_code == 200
         except Exception as e:
             logger.error(f"Failed to activate Etsy listing {listing_id}: {e}")
             return False
 
+
     def get_shop_info(self) -> Optional[Dict[str, Any]]:
         """Get shop information and statistics."""
         try:
-            response = self._make_request("GET", f"/application/shops/{self.shop_id}")
+            response = self._make_request("GET", f"/application / shops/{self.shop_id}")
             return response.json()
         except Exception as e:
             logger.error(f"Failed to get Etsy shop info: {e}")

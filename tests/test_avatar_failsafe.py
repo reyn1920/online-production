@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Avatar Engine Failsafe Test Script
 
 This script tests the bulletproof failsafe mechanism for avatar generation,
-demonstrating automatic failover from Linly-Talker to Talking Heads.
+demonstrating automatic failover from Linly - Talker to Talking Heads.
 """
 
 import asyncio
@@ -19,9 +19,12 @@ from api_orchestrator_enhanced import EnhancedAPIOrchestrator, OrchestrationRequ
 
 
 class AvatarFailsafeTest:
+
+
     def __init__(self):
         self.orchestrator = EnhancedAPIOrchestrator()
         self.test_results = []
+
 
     async def test_normal_operation(self):
         """Test normal avatar generation with primary engine"""
@@ -30,18 +33,18 @@ class AvatarFailsafeTest:
 
         result = await self.orchestrator.request_avatar_generation(
             text="Hello! This is a test of the primary avatar engine.",
-            voice_settings={"voice_type": "professional", "speed": 1.0},
-            video_settings={"resolution": "1080p", "fps": 30},
-        )
+                voice_settings={"voice_type": "professional", "speed": 1.0},
+                video_settings={"resolution": "1080p", "fps": 30},
+                )
 
         self.test_results.append(
             {
                 "test": "normal_operation",
-                "success": result.status.value == "success",
-                "api_used": result.api_used.api_name if result.api_used else None,
-                "attempts": result.total_attempts,
-                "response_time": result.total_time_ms / 1000.0,
-            }
+                    "success": result.status.value == "success",
+                    "api_used": result.api_used.api_name if result.api_used else None,
+                    "attempts": result.total_attempts,
+                    "response_time": result.total_time_ms / 1000.0,
+                    }
         )
 
         if result.status.value == "success":
@@ -60,6 +63,7 @@ class AvatarFailsafeTest:
 
         return result.status.value == "success"
 
+
     async def test_primary_engine_failure(self):
         """Test failover when primary engine fails"""
         print("\n🧪 Test 2: Primary Engine Failure Simulation")
@@ -69,38 +73,38 @@ class AvatarFailsafeTest:
         import sqlite3
 
         with sqlite3.connect(self.orchestrator.db_path) as conn:
-            # Set Linly-Talker to inactive to simulate failure
+            # Set Linly - Talker to inactive to simulate failure
             conn.execute(
                 """
-                UPDATE api_registry 
-                SET status = 'inactive' 
-                WHERE api_name = 'linly-talker-enhanced'
+                UPDATE api_registry
+                SET status = 'inactive'
+                WHERE api_name = 'linly - talker - enhanced'
             """
             )
 
         result = await self.orchestrator.request_avatar_generation(
             text="This should use the fallback engine due to primary failure.",
-            voice_settings={"voice_type": "default", "speed": 1.1},
-        )
+                voice_settings={"voice_type": "default", "speed": 1.1},
+                )
 
         # Restore primary engine status
         with sqlite3.connect(self.orchestrator.db_path) as conn:
             conn.execute(
                 """
-                UPDATE api_registry 
-                SET status = 'active' 
-                WHERE api_name = 'linly-talker-enhanced'
+                UPDATE api_registry
+                SET status = 'active'
+                WHERE api_name = 'linly - talker - enhanced'
             """
             )
 
         self.test_results.append(
             {
                 "test": "primary_failure",
-                "success": result.status.value == "success",
-                "api_used": result.api_used.api_name if result.api_used else None,
-                "attempts": result.total_attempts,
-                "response_time": result.total_time_ms / 1000.0,
-            }
+                    "success": result.status.value == "success",
+                    "api_used": result.api_used.api_name if result.api_used else None,
+                    "attempts": result.total_attempts,
+                    "response_time": result.total_time_ms / 1000.0,
+                    }
         )
 
         if result.status.value == "success":
@@ -115,11 +119,11 @@ class AvatarFailsafeTest:
                 print(
                     f"   Failover Triggered: {orch_info.get('failover_triggered', False)}"
                 )
-                if result.api_used.api_name == "talking-heads-fallback":
+                if result.api_used.api_name == "talking - heads - fallback":
                     print("   ✅ Correctly used secondary engine")
                 else:
                     print(
-                        f"   ⚠️  Expected talking-heads-fallback, got {result.api_used.api_name}"
+                        f"   ⚠️  Expected talking - heads - fallback, got {result.api_used.api_name}"
                     )
         else:
             print(f"❌ FAILOVER FAILED: {result.error_message}")
@@ -127,16 +131,17 @@ class AvatarFailsafeTest:
         return (
             result.status.value == "success"
             and result.api_used
-            and result.api_used.api_name == "talking-heads-fallback"
+            and result.api_used.api_name == "talking - heads - fallback"
         )
 
+
     async def test_capability_query(self):
-        """Test capability-based API discovery"""
-        print("\n🧪 Test 3: Capability-Based API Discovery")
+        """Test capability - based API discovery"""
+        print("\n🧪 Test 3: Capability - Based API Discovery")
         print("=" * 50)
 
         # Get all avatar generation APIs
-        apis = self.orchestrator.get_apis_by_capability("avatar-generation")
+        apis = self.orchestrator.get_apis_by_capability("avatar - generation")
 
         print(f"Found {len(apis)} avatar generation engines:")
         for i, api in enumerate(apis, 1):
@@ -146,17 +151,17 @@ class AvatarFailsafeTest:
 
         # Verify we have both engines registered
         api_names = [api.api_name for api in apis]
-        has_primary = "linly-talker-enhanced" in api_names
-        has_fallback = "talking-heads-fallback" in api_names
+        has_primary = "linly - talker - enhanced" in api_names
+        has_fallback = "talking - heads - fallback" in api_names
 
         self.test_results.append(
             {
                 "test": "capability_query",
-                "success": has_primary and has_fallback,
-                "engines_found": len(apis),
-                "has_primary": has_primary,
-                "has_fallback": has_fallback,
-            }
+                    "success": has_primary and has_fallback,
+                    "engines_found": len(apis),
+                    "has_primary": has_primary,
+                    "has_fallback": has_fallback,
+                    }
         )
 
         if has_primary and has_fallback:
@@ -166,13 +171,14 @@ class AvatarFailsafeTest:
             print("❌ Missing engines in registry")
             return False
 
+
     async def test_priority_ordering(self):
         """Test that engines are selected in correct priority order"""
         print("\n🧪 Test 4: Priority Ordering Verification")
         print("=" * 50)
 
         # Get available APIs for avatar generation
-        available_apis = await self.orchestrator.get_available_apis("avatar-generation")
+        available_apis = await self.orchestrator.get_available_apis("avatar - generation")
 
         if not available_apis:
             print("❌ No available APIs found")
@@ -182,14 +188,14 @@ class AvatarFailsafeTest:
         for i, api in enumerate(available_apis, 1):
             print(f"   {i}. {api.api_name} (Priority: {api.priority})")
 
-        # Verify Linly-Talker has higher priority (lower number)
+        # Verify Linly - Talker has higher priority (lower number)
         primary_priority = None
         fallback_priority = None
 
         for api in available_apis:
-            if api.api_name == "linly-talker-enhanced":
+            if api.api_name == "linly - talker - enhanced":
                 primary_priority = api.priority
-            elif api.api_name == "talking-heads-fallback":
+            elif api.api_name == "talking - heads - fallback":
                 fallback_priority = api.priority
 
         priority_correct = (
@@ -201,10 +207,10 @@ class AvatarFailsafeTest:
         self.test_results.append(
             {
                 "test": "priority_ordering",
-                "success": priority_correct,
-                "primary_priority": primary_priority,
-                "fallback_priority": fallback_priority,
-            }
+                    "success": priority_correct,
+                    "primary_priority": primary_priority,
+                    "fallback_priority": fallback_priority,
+                    }
         )
 
         if priority_correct:
@@ -218,6 +224,7 @@ class AvatarFailsafeTest:
             )
             return False
 
+
     def print_test_summary(self):
         """Print comprehensive test results"""
         print("\n" + "=" * 60)
@@ -230,7 +237,7 @@ class AvatarFailsafeTest:
         print(f"Total Tests: {total_tests}")
         print(f"Passed: {passed_tests}")
         print(f"Failed: {total_tests - passed_tests}")
-        print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
+        print(f"Success Rate: {(passed_tests / total_tests)*100:.1f}%")
 
         print("\nDetailed Results:")
         for result in self.test_results:
@@ -240,7 +247,7 @@ class AvatarFailsafeTest:
         if passed_tests == total_tests:
             print("\n🎉 ALL TESTS PASSED - Bulletproof failsafe is working correctly!")
             print("\n✅ The avatar generation system will:")
-            print("   • Automatically use Linly-Talker as the primary engine")
+            print("   • Automatically use Linly - Talker as the primary engine")
             print("   • Seamlessly failover to Talking Heads if primary fails")
             print("   • Maintain service availability even during engine failures")
             print("   • Provide detailed orchestration metadata for monitoring")
@@ -258,10 +265,10 @@ async def main():
     # Run all tests
     test_functions = [
         tester.test_capability_query,
-        tester.test_priority_ordering,
-        tester.test_normal_operation,
-        tester.test_primary_engine_failure,
-    ]
+            tester.test_priority_ordering,
+            tester.test_normal_operation,
+            tester.test_primary_engine_failure,
+            ]
 
     for test_func in test_functions:
         try:
@@ -274,7 +281,6 @@ async def main():
 
     # Print final summary
     tester.print_test_summary()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

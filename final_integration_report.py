@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Final Integration Status Report
 Comprehensive check of all system integrations
@@ -13,23 +13,23 @@ from backend.content.universal_channel_protocol import get_protocol
 
 
 def check_integration_endpoints():
-    """Check integration-specific endpoints"""
+    """Check integration - specific endpoints"""
     print("🔗 Integration Endpoints Status:")
 
     integration_endpoints = [
         "/integrations/",
-        "/integrations/providers",
-        "/integrations/providers/active",
-        "/integrations/affiliates",
-        "/integrations/test-call",
-    ]
+            "/integrations / providers",
+            "/integrations / providers / active",
+            "/integrations / affiliates",
+            "/integrations / test - call",
+            ]
 
     working = 0
     total = len(integration_endpoints)
 
     for endpoint in integration_endpoints:
         try:
-            response = requests.get(f"http://localhost:8000{endpoint}", timeout=5)
+            response = requests.get(f"http://localhost:8000{endpoint}", timeout = 5)
             status = "✅" if response.status_code == 200 else "⚠️"
             print(f"  {status} {endpoint} - {response.status_code}")
             if response.status_code == 200:
@@ -37,7 +37,7 @@ def check_integration_endpoints():
         except Exception as e:
             print(f"  ❌ {endpoint} - Error")
 
-    print(f"  Integration Success Rate: {working}/{total} ({(working/total*100):.1f}%)")
+    print(f"  Integration Success Rate: {working}/{total} ({(working / total * 100):.1f}%)")
     return working, total
 
 
@@ -46,7 +46,7 @@ def check_provider_integrations():
     print("\n🔌 Provider Integration Status:")
 
     try:
-        response = requests.get("http://localhost:8000/integrations/providers")
+        response = requests.get("http://localhost:8000 / integrations / providers")
         if response.status_code == 200:
             providers = response.json()
             if isinstance(providers, list):
@@ -54,7 +54,7 @@ def check_provider_integrations():
 
                 # Check active providers
                 active_response = requests.get(
-                    "http://localhost:8000/integrations/providers/active"
+                    "http://localhost:8000 / integrations / providers / active"
                 )
                 if active_response.status_code == 200:
                     active_providers = active_response.json()
@@ -65,7 +65,7 @@ def check_provider_integrations():
                     )
                     print(f"  Active Providers: {active_count}")
                     print(
-                        f"  Activation Rate: {(active_count/len(providers)*100):.1f}%"
+                        f"  Activation Rate: {(active_count / len(providers)*100):.1f}%"
                         if len(providers) > 0
                         else "  Activation Rate: 0%"
                     )
@@ -86,7 +86,7 @@ def check_affiliate_integrations():
     print("\n💼 Affiliate Integration Status:")
 
     try:
-        response = requests.get("http://localhost:8000/integrations/affiliates")
+        response = requests.get("http://localhost:8000 / integrations / affiliates")
         if response.status_code == 200:
             affiliates = response.json()
             if isinstance(affiliates, list):
@@ -136,18 +136,18 @@ def check_dashboard_integrations():
     print("\n📊 Dashboard Integration Status:")
 
     dashboard_endpoints = [
-        "/dashboard/api/status",
-        "/dashboard/api/metrics",
-        "/dashboard/api/services",
-        "/dashboard/api/system-info",
-    ]
+        "/dashboard / api / status",
+            "/dashboard / api / metrics",
+            "/dashboard / api / services",
+            "/dashboard / api / system - info",
+            ]
 
     working = 0
     total = len(dashboard_endpoints)
 
     for endpoint in dashboard_endpoints:
         try:
-            response = requests.get(f"http://localhost:8000{endpoint}", timeout=5)
+            response = requests.get(f"http://localhost:8000{endpoint}", timeout = 5)
             status = "✅" if response.status_code == 200 else "⚠️"
             print(f"  {status} {endpoint} - {response.status_code}")
             if response.status_code == 200:
@@ -155,8 +155,8 @@ def check_dashboard_integrations():
         except Exception as e:
             print(f"  ❌ {endpoint} - Error")
 
-    print(f"  Dashboard Success Rate: {working}/{total} ({(working/total*100):.1f}%)")
-    return working >= 3  # At least 3/4 should work
+    print(f"  Dashboard Success Rate: {working}/{total} ({(working / total * 100):.1f}%)")
+    return working >= 3  # At least 3 / 4 should work
 
 
 def check_folder_structure():
@@ -165,20 +165,20 @@ def check_folder_structure():
 
     critical_folders = [
         "backend",
-        "app",
-        "frontend",
-        "assets",
-        "content",
-        "output",
-        "agents",
-        "marketing_agent",
-        "content_agent",
-        "orchestrator",
-        "tools",
-        "scripts",
-        "config",
-        "data",
-    ]
+            "app",
+            "frontend",
+            "assets",
+            "content",
+            "output",
+            "agents",
+            "marketing_agent",
+            "content_agent",
+            "orchestrator",
+            "tools",
+            "scripts",
+            "config",
+            "data",
+            ]
 
     existing = [f for f in critical_folders if Path(f).exists()]
     missing = [f for f in critical_folders if not Path(f).exists()]
@@ -241,7 +241,7 @@ def main():
 
     if overall_score >= 80:
         print("\n🎉 EXCELLENT! ALL MAJOR SYSTEMS ARE INTEGRATED!")
-        print("   ✅ System is production-ready")
+        print("   ✅ System is production - ready")
         print("   ✅ All folders and components are properly integrated")
         print("   ✅ APIs are operational and responding")
         print("   ✅ Integration infrastructure is robust")
@@ -253,7 +253,6 @@ def main():
 
     print("\n" + "=" * 50)
     return overall_score >= 80
-
 
 if __name__ == "__main__":
     success = main()

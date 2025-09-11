@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 News Monitoring Service Startup Script
 
-This script starts the news-driven content trigger service that continuously
+This script starts the news - driven content trigger service that continuously
 monitors political RSS feeds and automatically triggers Right Perspective video
 content creation.
 """
@@ -24,11 +24,13 @@ logger = get_logger(__name__)
 
 
 class NewsMonitoringService:
-    """Service wrapper for news-driven content triggering."""
+    """Service wrapper for news - driven content triggering."""
+
 
     def __init__(self):
         self.trigger_service = None
         self.running = False
+
 
     async def start(self):
         """Start the news monitoring service."""
@@ -49,10 +51,12 @@ class NewsMonitoringService:
             logger.error(f"Error starting News Monitoring Service: {e}")
             sys.exit(1)
 
+
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals gracefully."""
         logger.info(f"Received signal {signum}, shutting down gracefully...")
         self.stop()
+
 
     def stop(self):
         """Stop the news monitoring service."""
@@ -62,6 +66,7 @@ class NewsMonitoringService:
             if self.trigger_service:
                 self.trigger_service.stop_monitoring()
             logger.info("News Monitoring Service stopped")
+
 
     async def status(self):
         """Get service status and recent activity."""
@@ -73,11 +78,11 @@ class NewsMonitoringService:
 
             return {
                 "status": "running" if self.running else "stopped",
-                "pending_triggers": len(pending_triggers),
-                "recent_triggers": pending_triggers[:5],  # Show last 5 triggers
+                    "pending_triggers": len(pending_triggers),
+                    "recent_triggers": pending_triggers[:5],  # Show last 5 triggers
                 "monitoring_interval": self.trigger_service.monitoring_interval,
-                "urgency_threshold": self.trigger_service.urgency_threshold,
-            }
+                    "urgency_threshold": self.trigger_service.urgency_threshold,
+                    }
         except Exception as e:
             logger.error(f"Error getting service status: {e}")
             return {"status": "error", "message": str(e)}
@@ -95,20 +100,19 @@ async def main():
         service.stop()
         logger.info("News Monitoring Service shutdown complete")
 
-
 if __name__ == "__main__":
     # Configure logging
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.FileHandler("logs/news_monitoring.log"),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
+        level = logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[
+            logging.FileHandler("logs / news_monitoring.log"),
+                logging.StreamHandler(sys.stdout),
+                ],
+            )
 
     # Ensure logs directory exists
-    Path("logs").mkdir(exist_ok=True)
+    Path("logs").mkdir(exist_ok = True)
 
     logger.info("=" * 60)
     logger.info("NEWS MONITORING SERVICE - RIGHT PERSPECTIVE")

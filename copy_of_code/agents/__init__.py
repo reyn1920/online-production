@@ -8,17 +8,17 @@
 
 from .base_agents import AuditorAgent, ExecutorAgent, PlannerAgent
 from .specialized_agents import (ContentAgent, MarketingAgent, QAAgent, ResearchAgent,
-                                 SystemAgent)
+    SystemAgent)
 
 __all__ = [
     "PlannerAgent",
-    "ExecutorAgent",
-    "AuditorAgent",
-    "SystemAgent",
-    "ResearchAgent",
-    "ContentAgent",
-    "MarketingAgent",
-    "QAAgent",
+        "ExecutorAgent",
+        "AuditorAgent",
+        "SystemAgent",
+        "ResearchAgent",
+        "ContentAgent",
+        "MarketingAgent",
+        "QAAgent",
 ]
 
 __version__ = "1.0.0"

@@ -1,21 +1,21 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Secrets Management CLI
 
-Command-line interface for managing encrypted secrets in the TRAE.AI system.
+Command - line interface for managing encrypted secrets in the TRAE.AI system.
 Provides secure operations for adding, retrieving, listing, and deleting secrets.
 
 Usage:
-    python scripts/secrets_cli.py add <key_name> <secret_value>
-    python scripts/secrets_cli.py get <key_name>
-    python scripts/secrets_cli.py list
-    python scripts/secrets_cli.py delete <key_name>
-    python scripts/secrets_cli.py exists <key_name>
-    python scripts/secrets_cli.py backup <backup_path>
+    python scripts / secrets_cli.py add <key_name> <secret_value>
+    python scripts / secrets_cli.py get <key_name>
+    python scripts / secrets_cli.py list
+    python scripts / secrets_cli.py delete <key_name>
+    python scripts / secrets_cli.py exists <key_name>
+    python scripts / secrets_cli.py backup <backup_path>
 
 Environment Variables:
     TRAE_MASTER_KEY: Master password for encryption (required)
-    TRAE_SECRETS_DB: Path to secrets database (optional, defaults to data/secrets.sqlite)
+    TRAE_SECRETS_DB: Path to secrets database (optional, defaults to data / secrets.sqlite)
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -37,15 +37,17 @@ from backend.secret_store import SecretStore, SecretStoreError
 
 class SecretsCLI:
     """
-    Command-line interface for the SecretStore system.
+    Command - line interface for the SecretStore system.
 
-    Provides a user-friendly interface for all secret management operations
+    Provides a user - friendly interface for all secret management operations
     with proper error handling and security considerations.
     """
 
+
     def __init__(self):
-        self.db_path = os.getenv("TRAE_SECRETS_DB", "data/secrets.sqlite")
+        self.db_path = os.getenv("TRAE_SECRETS_DB", "data / secrets.sqlite")
         self.master_password = None
+
 
     def _get_master_password(self) -> str:
         """
@@ -79,6 +81,7 @@ class SecretsCLI:
         self.master_password = password
         return password
 
+
     def _get_secret_store(self) -> SecretStore:
         """
         Create and return a SecretStore instance.
@@ -91,6 +94,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error initializing secret store: {e}")
             sys.exit(1)
+
 
     def add_secret(self, key_name: str, secret_value: Optional[str] = None) -> None:
         """
@@ -122,6 +126,7 @@ class SecretsCLI:
         except KeyboardInterrupt:
             print("\nOperation cancelled.")
 
+
     def get_secret(self, key_name: str, show_value: bool = True) -> None:
         """
         Retrieve a secret from the store.
@@ -146,6 +151,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error retrieving secret: {e}")
 
+
     def list_secrets(self, output_format: str = "table") -> None:
         """
         List all secrets in the store.
@@ -162,7 +168,7 @@ class SecretsCLI:
                     return
 
                 if output_format == "json":
-                    print(json.dumps(secrets, indent=2))
+                    print(json.dumps(secrets, indent = 2))
                 else:
                     # Table format
                     print(f"\n{'Key Name':<30} {'Created':<20} {'Updated':<20}")
@@ -170,10 +176,10 @@ class SecretsCLI:
 
                     for secret in secrets:
                         created = (
-                            secret["created_at"][:19] if secret["created_at"] else "N/A"
+                            secret["created_at"][:19] if secret["created_at"] else "N / A"
                         )
                         updated = (
-                            secret["updated_at"][:19] if secret["updated_at"] else "N/A"
+                            secret["updated_at"][:19] if secret["updated_at"] else "N / A"
                         )
                         print(f"{secret['key_name']:<30} {created:<20} {updated:<20}")
 
@@ -181,6 +187,7 @@ class SecretsCLI:
 
         except SecretStoreError as e:
             print(f"Error listing secrets: {e}")
+
 
     def delete_secret(self, key_name: str, confirm: bool = False) -> None:
         """
@@ -193,7 +200,7 @@ class SecretsCLI:
         try:
             if not confirm:
                 response = input(
-                    f"Are you sure you want to delete secret '{key_name}'? (y/N): "
+                    f"Are you sure you want to delete secret '{key_name}'? (y / N): "
                 )
                 if response.lower() not in ["y", "yes"]:
                     print("Operation cancelled.")
@@ -211,6 +218,7 @@ class SecretsCLI:
             print(f"Error deleting secret: {e}")
         except KeyboardInterrupt:
             print("\nOperation cancelled.")
+
 
     def check_exists(self, key_name: str) -> None:
         """
@@ -231,6 +239,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error checking secret: {e}")
 
+
     def backup_secrets(self, backup_path: str) -> None:
         """
         Create a backup of the secrets database.
@@ -249,6 +258,7 @@ class SecretsCLI:
 
         except SecretStoreError as e:
             print(f"Error backing up secrets: {e}")
+
 
     def interactive_mode(self) -> None:
         """
@@ -323,6 +333,7 @@ class SecretsCLI:
                 print("\nGoodbye!")
                 break
 
+
     def _show_help(self) -> None:
         """
         Display help information.
@@ -351,62 +362,62 @@ def main():
     """
     parser = argparse.ArgumentParser(
         description="TRAE.AI Secrets Management CLI",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+            formatter_class = argparse.RawDescriptionHelpFormatter,
+            epilog="""
 Examples:
-  %(prog)s add api_key sk-1234567890abcdef
+  %(prog)s add api_key sk - 1234567890abcdef
   %(prog)s get api_key
   %(prog)s list
   %(prog)s delete api_key
   %(prog)s exists api_key
-  %(prog)s backup /path/to/backup.sqlite
+  %(prog)s backup /path / to / backup.sqlite
   %(prog)s interactive
 
 Environment Variables:
   TRAE_MASTER_KEY: Master password for encryption (required)
   TRAE_SECRETS_DB: Path to secrets database (optional)
         """,
-    )
+            )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # Add command
-    add_parser = subparsers.add_parser("add", help="Add a new secret")
+        add_parser = subparsers.add_parser("add", help="Add a new secret")
     add_parser.add_argument("key_name", help="Unique identifier for the secret")
     add_parser.add_argument(
         "secret_value", nargs="?", help="Secret value (will prompt if not provided)"
     )
 
     # Get command
-    get_parser = subparsers.add_parser("get", help="Retrieve a secret")
+        get_parser = subparsers.add_parser("get", help="Retrieve a secret")
     get_parser.add_argument("key_name", help="Unique identifier for the secret")
     get_parser.add_argument(
-        "--hide-value", action="store_true", help="Hide the secret value in output"
+        "--hide - value", action="store_true", help="Hide the secret value in output"
     )
 
     # List command
-    list_parser = subparsers.add_parser("list", help="List all secrets")
+        list_parser = subparsers.add_parser("list", help="List all secrets")
     list_parser.add_argument(
         "--format", choices=["table", "json"], default="table", help="Output format"
     )
 
     # Delete command
-    delete_parser = subparsers.add_parser("delete", help="Delete a secret")
+        delete_parser = subparsers.add_parser("delete", help="Delete a secret")
     delete_parser.add_argument("key_name", help="Unique identifier for the secret")
     delete_parser.add_argument(
         "--yes", action="store_true", help="Skip confirmation prompt"
     )
 
     # Exists command
-    exists_parser = subparsers.add_parser("exists", help="Check if a secret exists")
+        exists_parser = subparsers.add_parser("exists", help="Check if a secret exists")
     exists_parser.add_argument("key_name", help="Unique identifier for the secret")
 
     # Backup command
-    backup_parser = subparsers.add_parser("backup", help="Backup secrets database")
+        backup_parser = subparsers.add_parser("backup", help="Backup secrets database")
     backup_parser.add_argument("backup_path", help="Path for the backup file")
 
     # Interactive command
-    interactive_parser = subparsers.add_parser(
+        interactive_parser = subparsers.add_parser(
         "interactive", help="Start interactive mode"
     )
 
@@ -443,7 +454,6 @@ Environment Variables:
     except Exception as e:
         print(f"Unexpected error: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

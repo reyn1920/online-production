@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Optimized FastAPI Startup Script for MacBook Air M1 (16GB)
 Implements performance baseline recommendations
@@ -15,24 +15,27 @@ from pathlib import Path
 class FastAPIOptimizer:
     """FastAPI optimization for MacBook Air M1"""
 
+
     def __init__(self):
         self.process = None
         self.config = self.get_m1_config()
+
 
     def get_m1_config(self):
         """Optimized configuration for MacBook Air M1"""
         return {
             "host": "0.0.0.0",
-            "port": 8001,  # Using 8001 to avoid conflicts
+                "port": 8001,  # Using 8001 to avoid conflicts
             "workers": 2,  # Optimal for M1's 8 cores
             "worker_class": "uvicorn.workers.UvicornWorker",
-            "max_requests": 1000,  # Restart workers after 1k requests
+                "max_requests": 1000,  # Restart workers after 1k requests
             "max_requests_jitter": 100,
-            "preload_app": True,  # Faster startup
+                "preload_app": True,  # Faster startup
             "keepalive": 5,  # Connection keepalive
             "timeout": 30,
-            "graceful_timeout": 30,
-        }
+                "graceful_timeout": 30,
+                }
+
 
     def check_dependencies(self):
         """Check if required packages are installed"""
@@ -49,18 +52,19 @@ class FastAPIOptimizer:
                 subprocess.check_call(
                     [
                         sys.executable,
-                        "-m",
-                        "pip",
-                        "install",
-                        "uvicorn[standard]",
-                        "gunicorn",
-                    ]
+                            "-m",
+                            "pip",
+                            "install",
+                            "uvicorn[standard]",
+                            "gunicorn",
+                            ]
                 )
                 print("✅ Dependencies installed")
                 return True
             except subprocess.CalledProcessError:
                 print("❌ Failed to install dependencies")
                 return False
+
 
     def find_app_module(self):
         """Find the FastAPI app module"""
@@ -75,22 +79,23 @@ class FastAPIOptimizer:
         print("❌ Could not find FastAPI app module")
         return None
 
+
     def start_with_uvicorn(self, app_module):
         """Start with Uvicorn (simpler, good for development)"""
         config = self.config
 
         cmd = [
             "uvicorn",
-            app_module,
-            "--host",
-            config["host"],
-            "--port",
-            str(config["port"]),
-            "--workers",
-            str(config["workers"]),
-            "--access-log",
-            "--loop",
-            "auto",  # Let uvicorn choose best event loop for M1
+                app_module,
+                "--host",
+                config["host"],
+                "--port",
+                str(config["port"]),
+                "--workers",
+                str(config["workers"]),
+                "--access - log",
+                "--loop",
+                "auto",  # Let uvicorn choose best event loop for M1
         ]
 
         print(f"🚀 Starting FastAPI with Uvicorn (MacBook Air M1 optimized)")
@@ -101,37 +106,38 @@ class FastAPIOptimizer:
 
         return subprocess.Popen(cmd)
 
+
     def start_with_gunicorn(self, app_module):
-        """Start with Gunicorn + Uvicorn workers (production-ready)"""
+        """Start with Gunicorn + Uvicorn workers (production - ready)"""
         config = self.config
 
         cmd = [
             "gunicorn",
-            app_module,
-            "-w",
-            str(config["workers"]),
-            "-k",
-            config["worker_class"],
-            "-b",
-            f"{config['host']}:{config['port']}",
-            "--max-requests",
-            str(config["max_requests"]),
-            "--max-requests-jitter",
-            str(config["max_requests_jitter"]),
-            "--preload" if config["preload_app"] else "--no-preload",
-            "--keep-alive",
-            str(config["keepalive"]),
-            "--timeout",
-            str(config["timeout"]),
-            "--graceful-timeout",
-            str(config["graceful_timeout"]),
-            "--access-logfile",
-            "-",
-            "--error-logfile",
-            "-",
-        ]
+                app_module,
+                "-w",
+                str(config["workers"]),
+                "-k",
+                config["worker_class"],
+                "-b",
+                f"{config['host']}:{config['port']}",
+                "--max - requests",
+                str(config["max_requests"]),
+                "--max - requests - jitter",
+                str(config["max_requests_jitter"]),
+                "--preload" if config["preload_app"] else "--no - preload",
+                "--keep - alive",
+                str(config["keepalive"]),
+                "--timeout",
+                str(config["timeout"]),
+                "--graceful - timeout",
+                str(config["graceful_timeout"]),
+                "--access - logfile",
+                "-",
+                "--error - logfile",
+                "-",
+                ]
 
-        print(f"🚀 Starting FastAPI with Gunicorn + Uvicorn (Production-ready)")
+        print(f"🚀 Starting FastAPI with Gunicorn + Uvicorn (Production - ready)")
         print(f"   Workers: {config['workers']} (Uvicorn workers)")
         print(f"   Host: {config['host']}:{config['port']}")
         print(f"   Max requests per worker: {config['max_requests']}")
@@ -140,15 +146,17 @@ class FastAPIOptimizer:
 
         return subprocess.Popen(cmd)
 
+
     def setup_signal_handlers(self):
         """Setup graceful shutdown"""
+
 
         def signal_handler(signum, frame):
             print(f"\n🛑 Received signal {signum}, shutting down gracefully...")
             if self.process:
                 self.process.terminate()
                 try:
-                    self.process.wait(timeout=10)
+                    self.process.wait(timeout = 10)
                 except subprocess.TimeoutExpired:
                     print("⚠️  Force killing process...")
                     self.process.kill()
@@ -157,18 +165,19 @@ class FastAPIOptimizer:
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
+
     def wait_for_startup(self):
         """Wait for FastAPI to be ready"""
         import requests
 
         config = self.config
-        url = f"http://{config['host']}:{config['port']}/api/status"
+        url = f"http://{config['host']}:{config['port']}/api / status"
 
         print("⏳ Waiting for FastAPI to start...")
 
         for attempt in range(30):  # 30 second timeout
             try:
-                response = requests.get(url, timeout=2)
+                response = requests.get(url, timeout = 2)
                 if response.status_code == 200:
                     print(f"✅ FastAPI is ready! ({url})")
                     return True
@@ -181,6 +190,7 @@ class FastAPIOptimizer:
         print("❌ FastAPI failed to start within 30 seconds")
         return False
 
+
     def print_performance_tips(self):
         """Print MacBook Air M1 performance optimization tips"""
         print("\n💡 MacBook Air M1 Performance Tips:")
@@ -191,18 +201,19 @@ class FastAPIOptimizer:
         print("✅ Preloading app for faster startup")
         print()
         print("📊 Expected Performance:")
-        print("  • 2k-5k req/sec for simple endpoints")
+        print("  • 2k - 5k req / sec for simple endpoints")
         print("  • <50ms p95 latency")
         print("  • Memory usage: <2GB")
         print()
         print("🔧 Further Optimizations:")
         print("  • Add Redis caching")
         print("  • Use database connection pooling")
-        print("  • Enable Nginx compression (gzip/brotli)")
+        print("  • Enable Nginx compression (gzip / brotli)")
         print("  • Monitor with htop during load tests")
         print()
 
-    def start(self, use_gunicorn=False):
+
+    def start(self, use_gunicorn = False):
         """Start optimized FastAPI server"""
         print("🖥️  FastAPI Optimizer for MacBook Air M1 (16GB)")
         print("=" * 60)
@@ -233,7 +244,7 @@ class FastAPIOptimizer:
 
             print("🎯 Ready for performance testing!")
             print("   Run: python fastapi_performance_baseline.py")
-            print("\n⏹️  Press Ctrl+C to stop")
+            print("\n⏹️  Press Ctrl + C to stop")
 
             # Keep running
             self.process.wait()
@@ -256,14 +267,14 @@ def main():
     )
     parser.add_argument(
         "--gunicorn",
-        action="store_true",
-        help="Use Gunicorn + Uvicorn workers (production-ready)",
-    )
+            action="store_true",
+            help="Use Gunicorn + Uvicorn workers (production - ready)",
+            )
     parser.add_argument(
         "--benchmark",
-        action="store_true",
-        help="Run performance benchmark after startup",
-    )
+            action="store_true",
+            help="Run performance benchmark after startup",
+            )
 
     args = parser.parse_args()
 
@@ -277,9 +288,8 @@ def main():
         print("   python fastapi_performance_baseline.py")
         return
 
-    success = optimizer.start(use_gunicorn=args.gunicorn)
+    success = optimizer.start(use_gunicorn = args.gunicorn)
     sys.exit(0 if success else 1)
-
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI OBS Studio Automation Integration
 
@@ -11,10 +11,10 @@ Features:
 - Scene and source management
 - Automated streaming workflows
 - Recording session control
-- Real-time monitoring
-- Multi-platform streaming
+- Real - time monitoring
+- Multi - platform streaming
 - Automated scene switching
-- Audio/video source control
+- Audio / video source control
 - Stream health monitoring
 - Integration with content pipeline
 
@@ -95,8 +95,9 @@ class SourceType(Enum):
     BROWSER_SOURCE = "browser_source"
     GAME_CAPTURE = "game_capture"
 
-
 @dataclass
+
+
 class StreamConfig:
     """Stream configuration."""
 
@@ -115,8 +116,9 @@ class StreamConfig:
     max_duration: Optional[int] = None  # minutes
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class RecordingConfig:
     """Recording configuration."""
 
@@ -130,8 +132,9 @@ class RecordingConfig:
     split_file_time: Optional[int] = None  # minutes
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class SceneItem:
     """OBS scene item configuration."""
 
@@ -144,8 +147,9 @@ class SceneItem:
     group_name: Optional[str] = None
     filters: List[Dict[str, Any]] = None
 
-
 @dataclass
+
+
 class Scene:
     """OBS scene configuration."""
 
@@ -155,15 +159,16 @@ class Scene:
     hotkeys: Dict[str, str] = None
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class StreamSession:
     """Active streaming session."""
 
     id: str
     config: StreamConfig
     status: str = "idle"  # idle, starting, live, stopping, stopped, error
-    start_time: Optional[str] = None
+        start_time: Optional[str] = None
     end_time: Optional[str] = None
     duration: int = 0  # seconds
     viewers: int = 0
@@ -174,15 +179,16 @@ class StreamSession:
     error: Optional[str] = None
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class RecordingSession:
     """Active recording session."""
 
     id: str
     config: RecordingConfig
     status: str = "idle"  # idle, recording, paused, stopped, error
-    start_time: Optional[str] = None
+        start_time: Optional[str] = None
     end_time: Optional[str] = None
     duration: int = 0  # seconds
     file_size: int = 0  # bytes
@@ -197,13 +203,14 @@ class OBSAutomation:
     Integrates with TRAE.AI content pipeline for automated live content creation.
     """
 
+
     def __init__(
         self,
-        obs_host: str = "localhost",
-        obs_port: int = 4455,
-        obs_password: Optional[str] = None,
-        secrets_db_path: str = "data/secrets.sqlite",
-    ):
+            obs_host: str = "localhost",
+            obs_port: int = 4455,
+            obs_password: Optional[str] = None,
+            secrets_db_path: str = "data / secrets.sqlite",
+            ):
         self.logger = setup_logger("obs_automation")
         self.secret_store = SecretStore(secrets_db_path)
 
@@ -229,39 +236,40 @@ class OBSAutomation:
         self.quality_presets = {
             StreamQuality.LOW: {
                 "video": {"width": 854, "height": 480, "fps": 30, "bitrate": 1000},
-                "audio": {"bitrate": 128, "sample_rate": 44100},
-            },
-            StreamQuality.MEDIUM: {
+                    "audio": {"bitrate": 128, "sample_rate": 44100},
+                    },
+                StreamQuality.MEDIUM: {
                 "video": {"width": 1280, "height": 720, "fps": 30, "bitrate": 2500},
-                "audio": {"bitrate": 160, "sample_rate": 44100},
-            },
-            StreamQuality.HIGH: {
+                    "audio": {"bitrate": 160, "sample_rate": 44100},
+                    },
+                StreamQuality.HIGH: {
                 "video": {"width": 1920, "height": 1080, "fps": 30, "bitrate": 4500},
-                "audio": {"bitrate": 192, "sample_rate": 48000},
-            },
-            StreamQuality.ULTRA: {
+                    "audio": {"bitrate": 192, "sample_rate": 48000},
+                    },
+                StreamQuality.ULTRA: {
                 "video": {"width": 1920, "height": 1080, "fps": 60, "bitrate": 8000},
-                "audio": {"bitrate": 320, "sample_rate": 48000},
-            },
-        }
+                    "audio": {"bitrate": 320, "sample_rate": 48000},
+                    },
+                }
 
         # Platform configurations
         self.platform_configs = {
             StreamingPlatform.YOUTUBE: {
-                "server": "rtmp://a.rtmp.youtube.com/live2",
-                "service": "YouTube - RTMPS",
-            },
-            StreamingPlatform.TWITCH: {
-                "server": "rtmp://live.twitch.tv/app",
-                "service": "Twitch",
-            },
-            StreamingPlatform.FACEBOOK: {
-                "server": "rtmps://live-api-s.facebook.com:443/rtmp",
-                "service": "Facebook Live",
-            },
-        }
+                "server": "rtmp://a.rtmp.youtube.com / live2",
+                    "service": "YouTube - RTMPS",
+                    },
+                StreamingPlatform.TWITCH: {
+                "server": "rtmp://live.twitch.tv / app",
+                    "service": "Twitch",
+                    },
+                StreamingPlatform.FACEBOOK: {
+                "server": "rtmps://live - api - s.facebook.com:443 / rtmp",
+                    "service": "Facebook Live",
+                    },
+                }
 
         self.logger.info("OBS Automation initialized")
+
 
     async def initialize(self) -> bool:
         """Initialize OBS automation system."""
@@ -295,6 +303,7 @@ class OBSAutomation:
             self.logger.error(f"Failed to initialize OBS automation: {e}")
             return False
 
+
     async def _load_credentials(self):
         """Load OBS and streaming credentials."""
         try:
@@ -313,6 +322,7 @@ class OBSAutomation:
         except Exception as e:
             self.logger.warning(f"Could not load credentials: {e}")
 
+
     def _is_obs_running(self) -> bool:
         """Check if OBS Studio is running."""
         try:
@@ -322,6 +332,7 @@ class OBSAutomation:
             return False
         except Exception:
             return False
+
 
     async def _connect_to_obs(self) -> bool:
         """Connect to OBS WebSocket server."""
@@ -339,6 +350,7 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Failed to connect to OBS: {e}")
             return False
+
 
     async def _authenticate(self):
         """Authenticate with OBS WebSocket."""
@@ -370,7 +382,7 @@ class OBSAutomation:
                     identify_request = {
                         "op": 1,  # Identify
                         "d": {"rpcVersion": 1, "authentication": auth_response},
-                    }
+                            }
 
                     await self.obs_websocket.send(json.dumps(identify_request))
                     response = await self.obs_websocket.recv()
@@ -385,6 +397,7 @@ class OBSAutomation:
             self.logger.error(f"OBS authentication error: {e}")
             raise
 
+
     async def _send_request(self, request_type: str, request_data: Dict = None) -> Dict:
         """Send request to OBS WebSocket."""
         if not self.connected or not self.obs_websocket:
@@ -395,10 +408,10 @@ class OBSAutomation:
             "op": 6,  # Request
             "d": {
                 "requestType": request_type,
-                "requestId": request_id,
-                "requestData": request_data or {},
-            },
-        }
+                    "requestId": request_id,
+                    "requestData": request_data or {},
+                    },
+                }
 
         await self.obs_websocket.send(json.dumps(request))
 
@@ -409,6 +422,7 @@ class OBSAutomation:
 
             if data.get("op") == 7 and data.get("d", {}).get("requestId") == request_id:
                 return data.get("d", {})
+
 
     async def _load_scenes(self):
         """Load current scenes from OBS."""
@@ -434,20 +448,21 @@ class OBSAutomation:
                 scene_items = []
                 for item_data in items_data:
                     scene_item = SceneItem(
-                        name=item_data.get("sourceName", ""),
-                        source_type=SourceType.DISPLAY_CAPTURE,  # Default, would need to query actual type
+                        name = item_data.get("sourceName", ""),
+                            source_type = SourceType.DISPLAY_CAPTURE,  # Default, would need to query actual type
                         settings={},
-                        visible=item_data.get("sceneItemEnabled", True),
-                        locked=item_data.get("sceneItemLocked", False),
-                    )
+                            visible = item_data.get("sceneItemEnabled", True),
+                            locked = item_data.get("sceneItemLocked", False),
+                            )
                     scene_items.append(scene_item)
 
-                self.scenes[scene_name] = Scene(name=scene_name, items=scene_items)
+                self.scenes[scene_name] = Scene(name = scene_name, items = scene_items)
 
             self.logger.info(f"Loaded {len(self.scenes)} scenes from OBS")
 
         except Exception as e:
             self.logger.error(f"Failed to load scenes: {e}")
+
 
     async def _start_monitoring(self):
         """Start monitoring OBS events and stats."""
@@ -457,13 +472,14 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Failed to start monitoring: {e}")
 
+
     async def _monitor_events(self):
         """Monitor OBS events."""
         try:
             while self.connected:
                 try:
                     response = await asyncio.wait_for(
-                        self.obs_websocket.recv(), timeout=1.0
+                        self.obs_websocket.recv(), timeout = 1.0
                     )
 
                     data = json.loads(response)
@@ -482,6 +498,7 @@ class OBSAutomation:
 
         except Exception as e:
             self.logger.error(f"Monitoring task error: {e}")
+
 
     async def _handle_event(self, event_type: str, event_data: Dict):
         """Handle OBS events."""
@@ -508,6 +525,7 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Event handling error: {e}")
 
+
     async def _handle_stream_state_change(self, state: str):
         """Handle stream state changes."""
         for session in self.stream_sessions.values():
@@ -526,6 +544,7 @@ class OBSAutomation:
                         ).total_seconds()
                         session.duration = int(duration)
                     self.logger.info(f"Stream {session.id} stopped")
+
 
     async def _handle_record_state_change(self, state: str):
         """Handle recording state changes."""
@@ -546,6 +565,7 @@ class OBSAutomation:
                         session.duration = int(duration)
                     self.logger.info(f"Recording {session.id} stopped")
 
+
     async def create_scene(self, scene: Scene) -> bool:
         """Create a new scene in OBS."""
         try:
@@ -560,12 +580,12 @@ class OBSAutomation:
                 # Add source to scene
                 await self._send_request(
                     "CreateSceneItem",
-                    {
+                        {
                         "sceneName": scene.name,
-                        "sourceName": item.name,
-                        "sceneItemEnabled": item.visible,
-                    },
-                )
+                            "sourceName": item.name,
+                            "sceneItemEnabled": item.visible,
+                            },
+                        )
 
             self.scenes[scene.name] = scene
             self.logger.info(f"Created scene: {scene.name}")
@@ -575,6 +595,7 @@ class OBSAutomation:
             self.logger.error(f"Failed to create scene: {e}")
             return False
 
+
     async def _create_source(self, item: SceneItem):
         """Create a source in OBS."""
         try:
@@ -582,21 +603,22 @@ class OBSAutomation:
             try:
                 await self._send_request("GetSourceSettings", {"sourceName": item.name})
                 return  # Source already exists
-            except:
+            except Exception:
                 pass  # Source doesn't exist, create it
 
             # Create source
             await self._send_request(
                 "CreateSource",
-                {
+                    {
                     "sourceName": item.name,
-                    "sourceKind": item.source_type.value,
-                    "sourceSettings": item.settings,
-                },
-            )
+                        "sourceKind": item.source_type.value,
+                        "sourceSettings": item.settings,
+                        },
+                    )
 
         except Exception as e:
             self.logger.error(f"Failed to create source {item.name}: {e}")
+
 
     async def switch_scene(self, scene_name: str) -> bool:
         """Switch to a different scene."""
@@ -613,6 +635,7 @@ class OBSAutomation:
             self.logger.error(f"Failed to switch scene: {e}")
             return False
 
+
     async def start_streaming(self, config: StreamConfig) -> str:
         """Start streaming with specified configuration."""
         try:
@@ -625,7 +648,7 @@ class OBSAutomation:
             await self._send_request("StartStream")
 
             # Create session
-            session = StreamSession(id=session_id, config=config, status="starting")
+            session = StreamSession(id = session_id, config = config, status="starting")
 
             self.stream_sessions[session_id] = session
 
@@ -636,6 +659,7 @@ class OBSAutomation:
             self.logger.error(f"Failed to start streaming: {e}")
             raise
 
+
     async def _configure_streaming(self, config: StreamConfig):
         """Configure OBS streaming settings."""
         try:
@@ -645,9 +669,9 @@ class OBSAutomation:
             # Set stream service
             service_settings = {
                 "service": platform_config.get("service", "Custom"),
-                "server": config.server_url or platform_config.get("server"),
-                "key": config.stream_key,
-            }
+                    "server": config.server_url or platform_config.get("server"),
+                    "key": config.stream_key,
+                    }
 
             await self._send_request(
                 "SetStreamServiceSettings", {"streamServiceSettings": service_settings}
@@ -660,19 +684,20 @@ class OBSAutomation:
 
                 await self._send_request(
                     "SetVideoSettings",
-                    {
+                        {
                         "baseWidth": video_settings["width"],
-                        "baseHeight": video_settings["height"],
-                        "outputWidth": video_settings["width"],
-                        "outputHeight": video_settings["height"],
-                        "fpsNumerator": video_settings["fps"],
-                        "fpsDenominator": 1,
-                    },
-                )
+                            "baseHeight": video_settings["height"],
+                            "outputWidth": video_settings["width"],
+                            "outputHeight": video_settings["height"],
+                            "fpsNumerator": video_settings["fps"],
+                            "fpsDenominator": 1,
+                            },
+                        )
 
         except Exception as e:
             self.logger.error(f"Failed to configure streaming: {e}")
             raise
+
 
     async def stop_streaming(self, session_id: str) -> bool:
         """Stop streaming session."""
@@ -692,6 +717,7 @@ class OBSAutomation:
             self.logger.error(f"Failed to stop streaming: {e}")
             return False
 
+
     async def start_recording(self, config: RecordingConfig) -> str:
         """Start recording with specified configuration."""
         try:
@@ -704,7 +730,7 @@ class OBSAutomation:
             await self._send_request("StartRecord")
 
             # Create session
-            session = RecordingSession(id=session_id, config=config, status="recording")
+            session = RecordingSession(id = session_id, config = config, status="recording")
 
             self.recording_sessions[session_id] = session
 
@@ -715,14 +741,15 @@ class OBSAutomation:
             self.logger.error(f"Failed to start recording: {e}")
             raise
 
+
     async def _configure_recording(self, config: RecordingConfig):
         """Configure OBS recording settings."""
         try:
             # Set recording path and format
             record_settings = {
                 "rec_format": config.format.value,
-                "filename_formatting": config.filename_format,
-            }
+                    "filename_formatting": config.filename_format,
+                    }
 
             if config.output_path:
                 record_settings["rec_folder"] = config.output_path
@@ -734,6 +761,7 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Failed to configure recording: {e}")
             raise
+
 
     async def stop_recording(self, session_id: str) -> bool:
         """Stop recording session."""
@@ -752,6 +780,7 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Failed to stop recording: {e}")
             return False
+
 
     async def get_stream_stats(self, session_id: str) -> Optional[Dict[str, Any]]:
         """Get streaming statistics."""
@@ -778,21 +807,22 @@ class OBSAutomation:
 
             return {
                 "session_id": session_id,
-                "status": session.status,
-                "duration": session.duration,
-                "bitrate": session.bitrate,
-                "fps": stream_data.get("outputFPS", 0),
-                "total_frames": session.total_frames,
-                "dropped_frames": session.dropped_frames,
-                "drop_percentage": (
+                    "status": session.status,
+                    "duration": session.duration,
+                    "bitrate": session.bitrate,
+                    "fps": stream_data.get("outputFPS", 0),
+                    "total_frames": session.total_frames,
+                    "dropped_frames": session.dropped_frames,
+                    "drop_percentage": (
                     session.dropped_frames / max(session.total_frames, 1)
                 )
                 * 100,
-            }
+                    }
 
         except Exception as e:
             self.logger.error(f"Failed to get stream stats: {e}")
             return None
+
 
     async def get_recording_stats(self, session_id: str) -> Optional[Dict[str, Any]]:
         """Get recording statistics."""
@@ -816,21 +846,22 @@ class OBSAutomation:
 
             return {
                 "session_id": session_id,
-                "status": session.status,
-                "duration": session.duration,
-                "file_size": session.file_size,
-                "output_file": session.output_file,
-                "recording_active": record_data.get("outputActive", False),
-            }
+                    "status": session.status,
+                    "duration": session.duration,
+                    "file_size": session.file_size,
+                    "output_file": session.output_file,
+                    "recording_active": record_data.get("outputActive", False),
+                    }
 
         except Exception as e:
             self.logger.error(f"Failed to get recording stats: {e}")
             return None
 
+
     async def create_automated_workflow(
         self, workflow_name: str, scenes: List[Scene], schedule: List[Dict[str, Any]]
     ) -> str:
-        """Create an automated streaming/recording workflow."""
+        """Create an automated streaming / recording workflow."""
         try:
             workflow_id = str(uuid.uuid4())
 
@@ -841,11 +872,11 @@ class OBSAutomation:
             # Store workflow configuration
             workflow_config = {
                 "id": workflow_id,
-                "name": workflow_name,
-                "scenes": [scene.name for scene in scenes],
-                "schedule": schedule,
-                "created_at": datetime.now().isoformat(),
-            }
+                    "name": workflow_name,
+                    "scenes": [scene.name for scene in scenes],
+                    "schedule": schedule,
+                    "created_at": datetime.now().isoformat(),
+                    }
 
             # Schedule workflow execution
             asyncio.create_task(self._execute_workflow(workflow_config))
@@ -856,6 +887,7 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Failed to create workflow: {e}")
             raise
+
 
     async def _execute_workflow(self, workflow_config: Dict[str, Any]):
         """Execute automated workflow."""
@@ -900,25 +932,27 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Workflow execution error: {e}")
 
+
     def register_event_callback(self, event_type: str, callback: Callable):
         """Register callback for OBS events."""
         self.event_callbacks[event_type] = callback
         self.logger.info(f"Registered callback for event: {event_type}")
 
+
     async def health_check(self) -> Dict[str, Any]:
         """Perform health check of OBS automation system."""
         health = {
             "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "components": {},
-        }
+                "timestamp": datetime.now().isoformat(),
+                "components": {},
+                }
 
         # Check OBS connection
         health["components"]["obs_connection"] = {
             "connected": self.connected,
-            "host": self.obs_host,
-            "port": self.obs_port,
-        }
+                "host": self.obs_host,
+                "port": self.obs_port,
+                }
 
         # Check OBS process
         health["components"]["obs_process"] = {"running": self._is_obs_running()}
@@ -928,17 +962,18 @@ class OBSAutomation:
             "active_streams": len(
                 [s for s in self.stream_sessions.values() if s.status == "live"]
             ),
-            "active_recordings": len(
+                "active_recordings": len(
                 [s for s in self.recording_sessions.values() if s.status == "recording"]
             ),
-            "total_scenes": len(self.scenes),
-        }
+                "total_scenes": len(self.scenes),
+                }
 
         # Overall status
         if not self.connected or not self._is_obs_running():
             health["status"] = "unhealthy"
 
         return health
+
 
     async def cleanup(self):
         """Cleanup resources and connections."""
@@ -969,9 +1004,9 @@ class OBSAutomation:
         except Exception as e:
             self.logger.error(f"Cleanup error: {e}")
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_obs_automation():
         automation = OBSAutomation()
@@ -988,14 +1023,14 @@ if __name__ == "__main__":
             # Test scene creation
             test_scene = Scene(
                 name="Test Scene",
-                items=[
+                    items=[
                     SceneItem(
                         name="Display Capture",
-                        source_type=SourceType.DISPLAY_CAPTURE,
-                        settings={"monitor": 0},
-                    )
+                            source_type = SourceType.DISPLAY_CAPTURE,
+                            settings={"monitor": 0},
+                            )
                 ],
-            )
+                    )
 
             try:
                 await automation.create_scene(test_scene)

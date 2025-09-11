@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Lightweight logger tuner to reduce console noise from verbose frameworks.
-Enabled by env: TRAE_QUIET_LOGS=1 (default off).
+Enabled by env: TRAE_QUIET_LOGS = 1 (default off).
 """
 import logging
 import os
@@ -9,7 +9,7 @@ import os
 TARGETS = [
     "socketio.server",  # "emitting event ..." spam
     "engineio.server",
-    "werkzeug",  # request line spam
+        "werkzeug",  # request line spam
     "uvicorn.access",  # if applicable
 ]
 

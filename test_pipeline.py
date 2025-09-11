@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Pipeline Debug Test
-Simple test to verify CI/CD pipeline functionality
+Simple test to verify CI / CD pipeline functionality
 """
 
 import json
@@ -28,11 +28,11 @@ def test_environment():
     # Check if this is a git repository
     try:
         result = subprocess.run(
-            ["git", "rev-parse", "--git-dir"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+            ["git", "rev - parse", "--git - dir"],
+                capture_output = True,
+                text = True,
+                check = True,
+                )
         print(f"✅ Git repository: {result.stdout.strip()}")
     except subprocess.CalledProcessError:
         print("❌ Not a git repository")
@@ -47,10 +47,10 @@ def test_required_files():
 
     required_files = [
         "requirements.txt",
-        "main.py",
-        ".github/workflows/ci-cd.yml",
-        ".github/workflows/deploy.yml",
-    ]
+            "main.py",
+            ".github / workflows / ci - cd.yml",
+            ".github / workflows / deploy.yml",
+            ]
 
     all_exist = True
     for file_path in required_files:
@@ -68,10 +68,10 @@ def test_workflow_syntax():
     print("\n⚙️ Testing workflow syntax...")
 
     workflow_files = [
-        ".github/workflows/ci-cd.yml",
-        ".github/workflows/deploy.yml",
-        ".github/workflows/ci.yml",
-    ]
+        ".github / workflows / ci - cd.yml",
+            ".github / workflows / deploy.yml",
+            ".github / workflows / ci.yml",
+            ]
 
     for workflow in workflow_files:
         if Path(workflow).exists():
@@ -121,35 +121,35 @@ def generate_pipeline_report():
 
     report = {
         "timestamp": subprocess.run(
-            ["date"], capture_output=True, text=True
+            ["date"], capture_output = True, text = True
         ).stdout.strip(),
-        "environment": {
+            "environment": {
             "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
-            "working_directory": os.getcwd(),
-            "platform": sys.platform,
-        },
-        "git_status": {},
-        "files_check": {},
-        "dependencies": {},
-    }
+                "working_directory": os.getcwd(),
+                "platform": sys.platform,
+                },
+            "git_status": {},
+            "files_check": {},
+            "dependencies": {},
+            }
 
     # Git status
     try:
         branch = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+            ["git", "branch", "--show - current"],
+                capture_output = True,
+                text = True,
+                check = True,
+                )
         report["git_status"]["current_branch"] = branch.stdout.strip()
 
         commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+            ["git", "rev - parse", "HEAD"], capture_output = True, text = True, check = True
         )
         report["git_status"]["latest_commit"] = commit.stdout.strip()[:8]
 
         status = subprocess.run(
-            ["git", "status", "--porcelain"], capture_output=True, text=True, check=True
+            ["git", "status", "--porcelain"], capture_output = True, text = True, check = True
         )
         report["git_status"]["uncommitted_changes"] = (
             len(status.stdout.strip().split("\n")) if status.stdout.strip() else 0
@@ -160,7 +160,7 @@ def generate_pipeline_report():
 
     # Save report
     with open("pipeline_debug_report.json", "w") as f:
-        json.dump(report, f, indent=2)
+        json.dump(report, f, indent = 2)
 
     print(f"✅ Report saved to: pipeline_debug_report.json")
     return report
@@ -173,10 +173,10 @@ def main():
 
     tests = [
         ("Environment Setup", test_environment),
-        ("Required Files", test_required_files),
-        ("Workflow Syntax", test_workflow_syntax),
-        ("Dependencies", test_dependencies),
-    ]
+            ("Required Files", test_required_files),
+            ("Workflow Syntax", test_workflow_syntax),
+            ("Dependencies", test_dependencies),
+            ]
 
     results = []
     for test_name, test_func in tests:
@@ -205,12 +205,11 @@ def main():
     print(f"\n🎯 Overall: {passed}/{total} tests passed")
 
     if passed == total:
-        print("🎉 Pipeline is ready for CI/CD!")
+        print("🎉 Pipeline is ready for CI / CD!")
         return 0
     else:
-        print("🔧 Pipeline needs fixes before CI/CD can work properly")
+        print("🔧 Pipeline needs fixes before CI / CD can work properly")
         return 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

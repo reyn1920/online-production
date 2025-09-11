@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Comprehensive Stress Testing System for 100% Model Generation Reliability
 
@@ -41,13 +41,13 @@ import psutil
 
 # Import our components
 from .automated_model_generator import (AutomatedModelGenerator, ModelRequest,
-                                        ModelResponse)
+    ModelResponse)
 from .health_monitor import HealthMonitor, get_health_monitor
 from .redundancy_manager import RedundancyManager, get_redundancy_manager
 from .retry_manager import AdvancedRetryManager, get_retry_manager
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -90,8 +90,9 @@ class TestStatus(Enum):
     FAILED = "failed"
     CANCELLED = "cancelled"
 
-
 @dataclass
+
+
 class TestConfig:
     """Configuration for a stress test"""
 
@@ -102,16 +103,17 @@ class TestConfig:
     requests_per_second: int = 5
     ramp_up_seconds: int = 30
     ramp_down_seconds: int = 30
-    failure_injection: List[FailureType] = field(default_factory=list)
+    failure_injection: List[FailureType] = field(default_factory = list)
     failure_probability: float = 0.1
     target_success_rate: float = 100.0
     max_response_time_ms: int = 30000
     quality_threshold: float = 7.0
-    model_types: List[str] = field(default_factory=lambda: ["avatar", "tts", "image"])
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    model_types: List[str] = field(default_factory = lambda: ["avatar", "tts", "image"])
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class TestResult:
     """Results from a stress test"""
 
@@ -130,17 +132,18 @@ class TestResult:
     p95_response_time_ms: float = 0.0
     p99_response_time_ms: float = 0.0
     throughput_rps: float = 0.0
-    errors: List[str] = field(default_factory=list)
-    quality_scores: List[float] = field(default_factory=list)
+    errors: List[str] = field(default_factory = list)
+    quality_scores: List[float] = field(default_factory = list)
     avg_quality_score: float = 0.0
-    resource_usage: Dict[str, Any] = field(default_factory=dict)
+    resource_usage: Dict[str, Any] = field(default_factory = dict)
     failover_events: int = 0
     recovery_time_ms: float = 0.0
     reliability_score: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class RequestMetrics:
     """Metrics for individual requests"""
 
@@ -160,20 +163,22 @@ class RequestMetrics:
 class FailureInjector:
     """Injects various types of failures for chaos testing"""
 
+
     def __init__(self):
         self.active_failures = set()
         self.failure_handlers = {
             FailureType.NETWORK_TIMEOUT: self._inject_network_timeout,
-            FailureType.BACKEND_CRASH: self._inject_backend_crash,
-            FailureType.RESOURCE_EXHAUSTION: self._inject_resource_exhaustion,
-            FailureType.DATABASE_FAILURE: self._inject_database_failure,
-            FailureType.API_RATE_LIMIT: self._inject_api_rate_limit,
-            FailureType.DISK_FULL: self._inject_disk_full,
-            FailureType.MEMORY_LEAK: self._inject_memory_leak,
-            FailureType.CPU_SPIKE: self._inject_cpu_spike,
-            FailureType.NETWORK_PARTITION: self._inject_network_partition,
-            FailureType.CORRUPTED_DATA: self._inject_corrupted_data,
-        }
+                FailureType.BACKEND_CRASH: self._inject_backend_crash,
+                FailureType.RESOURCE_EXHAUSTION: self._inject_resource_exhaustion,
+                FailureType.DATABASE_FAILURE: self._inject_database_failure,
+                FailureType.API_RATE_LIMIT: self._inject_api_rate_limit,
+                FailureType.DISK_FULL: self._inject_disk_full,
+                FailureType.MEMORY_LEAK: self._inject_memory_leak,
+                FailureType.CPU_SPIKE: self._inject_cpu_spike,
+                FailureType.NETWORK_PARTITION: self._inject_network_partition,
+                FailureType.CORRUPTED_DATA: self._inject_corrupted_data,
+                }
+
 
     async def inject_failure(
         self, failure_type: FailureType, duration_seconds: int = 30
@@ -204,6 +209,7 @@ class FailureInjector:
             self.active_failures.discard(failure_type)
             logger.info(f"Failure {failure_type.value} cleanup complete")
 
+
     async def _inject_network_timeout(self) -> Optional[Callable]:
         """Simulate network timeouts"""
         # This would modify network settings or use traffic shaping
@@ -213,6 +219,7 @@ class FailureInjector:
         # or modify aiohttp timeout settings globally
 
         return None  # No cleanup needed for simulation
+
 
     async def _inject_backend_crash(self) -> Optional[Callable]:
         """Simulate backend crashes"""
@@ -231,6 +238,7 @@ class FailureInjector:
 
             logger.info(f"Crashed backend: {backend_name}")
 
+
             async def cleanup():
                 backend.status = original_status
                 logger.info(f"Restored backend: {backend_name}")
@@ -239,12 +247,14 @@ class FailureInjector:
 
         return None
 
+
     async def _inject_resource_exhaustion(self) -> Optional[Callable]:
         """Simulate resource exhaustion"""
         logger.info("Simulating resource exhaustion")
 
         # Create memory pressure
         memory_hog = []
+
 
         def consume_memory():
             # Consume 100MB of memory
@@ -253,11 +263,13 @@ class FailureInjector:
 
         consume_memory()
 
+
         async def cleanup():
             memory_hog.clear()
             logger.info("Released consumed memory")
 
         return cleanup
+
 
     async def _inject_database_failure(self) -> Optional[Callable]:
         """Simulate database failures"""
@@ -271,6 +283,7 @@ class FailureInjector:
 
         return None
 
+
     async def _inject_api_rate_limit(self) -> Optional[Callable]:
         """Simulate API rate limiting"""
         logger.info("Simulating API rate limits")
@@ -278,17 +291,19 @@ class FailureInjector:
         # This would modify API client behavior to simulate rate limits
         return None
 
+
     async def _inject_disk_full(self) -> Optional[Callable]:
         """Simulate disk full conditions"""
         logger.info("Simulating disk full")
 
         # Create a large temporary file
-        temp_file_path = "/tmp/stress_test_disk_fill.tmp"
+        temp_file_path = "/tmp / stress_test_disk_fill.tmp"
 
         try:
             # Create a 1GB file
             with open(temp_file_path, "wb") as f:
                 f.write(b"x" * 1024 * 1024 * 1024)
+
 
             async def cleanup():
                 if os.path.exists(temp_file_path):
@@ -301,12 +316,14 @@ class FailureInjector:
             logger.error(f"Failed to create disk fill file: {e}")
             return None
 
+
     async def _inject_memory_leak(self) -> Optional[Callable]:
         """Simulate memory leaks"""
         logger.info("Simulating memory leak")
 
         # Gradually consume memory
         leak_data = []
+
 
         async def leak_memory():
             for _ in range(50):
@@ -316,6 +333,7 @@ class FailureInjector:
         # Start leaking in background
         leak_task = asyncio.create_task(leak_memory())
 
+
         async def cleanup():
             leak_task.cancel()
             leak_data.clear()
@@ -323,12 +341,14 @@ class FailureInjector:
 
         return cleanup
 
+
     async def _inject_cpu_spike(self) -> Optional[Callable]:
         """Simulate CPU spikes"""
         logger.info("Simulating CPU spike")
 
-        # Create CPU-intensive tasks
+        # Create CPU - intensive tasks
         cpu_tasks = []
+
 
         def cpu_intensive_task():
             # Busy loop for CPU consumption
@@ -337,16 +357,18 @@ class FailureInjector:
                 _ = sum(i * i for i in range(1000))
 
         # Start multiple CPU tasks
-        executor = ThreadPoolExecutor(max_workers=psutil.cpu_count())
+        executor = ThreadPoolExecutor(max_workers = psutil.cpu_count())
         for _ in range(psutil.cpu_count()):
             future = executor.submit(cpu_intensive_task)
             cpu_tasks.append(future)
 
+
         async def cleanup():
-            executor.shutdown(wait=False)
+            executor.shutdown(wait = False)
             logger.info("Stopped CPU spike")
 
         return cleanup
+
 
     async def _inject_network_partition(self) -> Optional[Callable]:
         """Simulate network partitions"""
@@ -356,6 +378,7 @@ class FailureInjector:
         # For simulation purposes, we'll just log
 
         return None
+
 
     async def _inject_corrupted_data(self) -> Optional[Callable]:
         """Simulate data corruption"""
@@ -370,10 +393,12 @@ class FailureInjector:
 class ResourceMonitor:
     """Monitors system resources during stress tests"""
 
+
     def __init__(self):
         self.monitoring = False
         self.metrics = []
         self.monitor_task = None
+
 
     async def start_monitoring(self, interval_seconds: float = 1.0):
         """Start resource monitoring"""
@@ -384,6 +409,7 @@ class ResourceMonitor:
         self.metrics = []
         self.monitor_task = asyncio.create_task(self._monitor_loop(interval_seconds))
         logger.info("Resource monitoring started")
+
 
     async def stop_monitoring(self) -> Dict[str, Any]:
         """Stop monitoring and return aggregated metrics"""
@@ -403,52 +429,53 @@ class ResourceMonitor:
         aggregated = {
             "cpu": {
                 "avg": statistics.mean(cpu_values),
-                "max": max(cpu_values),
-                "min": min(cpu_values),
-                "p95": (
-                    statistics.quantiles(cpu_values, n=20)[18]
+                    "max": max(cpu_values),
+                    "min": min(cpu_values),
+                    "p95": (
+                    statistics.quantiles(cpu_values, n = 20)[18]
                     if len(cpu_values) > 20
                     else max(cpu_values)
                 ),
-            },
-            "memory": {
+                    },
+                "memory": {
                 "avg": statistics.mean(memory_values),
-                "max": max(memory_values),
-                "min": min(memory_values),
-                "p95": (
-                    statistics.quantiles(memory_values, n=20)[18]
+                    "max": max(memory_values),
+                    "min": min(memory_values),
+                    "p95": (
+                    statistics.quantiles(memory_values, n = 20)[18]
                     if len(memory_values) > 20
                     else max(memory_values)
                 ),
-            },
-            "disk": {
+                    },
+                "disk": {
                 "avg": statistics.mean(disk_values),
-                "max": max(disk_values),
-                "min": min(disk_values),
-            },
-            "samples": len(self.metrics),
-        }
+                    "max": max(disk_values),
+                    "min": min(disk_values),
+                    },
+                "samples": len(self.metrics),
+                }
 
         logger.info("Resource monitoring stopped")
         return aggregated
+
 
     async def _monitor_loop(self, interval_seconds: float):
         """Resource monitoring loop"""
         while self.monitoring:
             try:
                 # Collect system metrics
-                cpu_percent = psutil.cpu_percent(interval=None)
+                cpu_percent = psutil.cpu_percent(interval = None)
                 memory = psutil.virtual_memory()
                 disk = psutil.disk_usage("/")
 
                 metric = {
                     "timestamp": datetime.now(),
-                    "cpu_percent": cpu_percent,
-                    "memory_percent": memory.percent,
-                    "memory_used_gb": memory.used / (1024**3),
-                    "disk_percent": disk.percent,
-                    "disk_used_gb": disk.used / (1024**3),
-                }
+                        "cpu_percent": cpu_percent,
+                        "memory_percent": memory.percent,
+                        "memory_used_gb": memory.used / (1024**3),
+                        "disk_percent": disk.percent,
+                        "disk_used_gb": disk.used / (1024**3),
+                        }
 
                 self.metrics.append(metric)
 
@@ -464,7 +491,8 @@ class ResourceMonitor:
 class StressTester:
     """Comprehensive stress testing system for model generation reliability"""
 
-    def __init__(self, db_path: str = "data/stress_test_results.db"):
+
+    def __init__(self, db_path: str = "data / stress_test_results.db"):
         self.db_path = db_path
         self.model_generator = None
         self.redundancy_manager = None
@@ -479,9 +507,10 @@ class StressTester:
 
         logger.info("StressTester initialized")
 
+
     def _init_database(self):
         """Initialize stress test results database"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -491,26 +520,26 @@ class StressTester:
                 """
                 CREATE TABLE IF NOT EXISTS test_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    test_name TEXT NOT NULL,
-                    test_type TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    start_time TIMESTAMP,
-                    end_time TIMESTAMP,
-                    total_requests INTEGER,
-                    successful_requests INTEGER,
-                    failed_requests INTEGER,
-                    success_rate REAL,
-                    avg_response_time_ms REAL,
-                    p95_response_time_ms REAL,
-                    p99_response_time_ms REAL,
-                    throughput_rps REAL,
-                    avg_quality_score REAL,
-                    failover_events INTEGER,
-                    recovery_time_ms REAL,
-                    reliability_score REAL,
-                    resource_usage TEXT,
-                    errors TEXT,
-                    metadata TEXT
+                        test_name TEXT NOT NULL,
+                        test_type TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        start_time TIMESTAMP,
+                        end_time TIMESTAMP,
+                        total_requests INTEGER,
+                        successful_requests INTEGER,
+                        failed_requests INTEGER,
+                        success_rate REAL,
+                        avg_response_time_ms REAL,
+                        p95_response_time_ms REAL,
+                        p99_response_time_ms REAL,
+                        throughput_rps REAL,
+                        avg_quality_score REAL,
+                        failover_events INTEGER,
+                        recovery_time_ms REAL,
+                        reliability_score REAL,
+                        resource_usage TEXT,
+                        errors TEXT,
+                        metadata TEXT
                 )
             """
             )
@@ -520,31 +549,33 @@ class StressTester:
                 """
                 CREATE TABLE IF NOT EXISTS request_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    test_name TEXT NOT NULL,
-                    request_id TEXT NOT NULL,
-                    model_type TEXT,
-                    start_time TIMESTAMP,
-                    end_time TIMESTAMP,
-                    success BOOLEAN,
-                    response_time_ms INTEGER,
-                    backend_used TEXT,
-                    quality_score REAL,
-                    error TEXT,
-                    retry_count INTEGER,
-                    failover_count INTEGER
+                        test_name TEXT NOT NULL,
+                        request_id TEXT NOT NULL,
+                        model_type TEXT,
+                        start_time TIMESTAMP,
+                        end_time TIMESTAMP,
+                        success BOOLEAN,
+                        response_time_ms INTEGER,
+                        backend_used TEXT,
+                        quality_score REAL,
+                        error TEXT,
+                        retry_count INTEGER,
+                        failover_count INTEGER
                 )
             """
             )
 
             conn.commit()
 
+
     async def initialize(self, model_generator: AutomatedModelGenerator):
         """Initialize with model generator and related components"""
         self.model_generator = model_generator
-        self.redundancy_manager = get_redundancy_manager()
+            self.redundancy_manager = get_redundancy_manager()
         self.health_monitor = get_health_monitor()
 
         logger.info("StressTester initialization complete")
+
 
     async def run_test(self, config: TestConfig) -> TestResult:
         """Run a comprehensive stress test"""
@@ -554,11 +585,11 @@ class StressTester:
 
         # Create test result
         result = TestResult(
-            test_name=config.test_name,
-            test_type=config.test_type,
-            status=TestStatus.RUNNING,
-            start_time=datetime.now(),
-        )
+            test_name = config.test_name,
+                test_type = config.test_type,
+                status = TestStatus.RUNNING,
+                start_time = datetime.now(),
+                )
 
         self.active_tests[config.test_name] = result
 
@@ -613,8 +644,9 @@ class StressTester:
 
         return result
 
+
     async def _run_load_test(self, config: TestConfig, result: TestResult):
-        """Run load test with gradual ramp-up"""
+        """Run load test with gradual ramp - up"""
         logger.info(
             f"Running load test: {config.concurrent_users} users, {config.requests_per_second} RPS"
         )
@@ -640,7 +672,7 @@ class StressTester:
             tasks.append(task)
 
         # Wait for all requests to complete
-        completed_metrics = await asyncio.gather(*tasks, return_exceptions=True)
+        completed_metrics = await asyncio.gather(*tasks, return_exceptions = True)
 
         # Process results
         for metric in completed_metrics:
@@ -650,6 +682,7 @@ class StressTester:
 
         # Update result with metrics
         self._update_result_with_metrics(result, request_metrics)
+
 
     async def _run_chaos_test(self, config: TestConfig, result: TestResult):
         """Run chaos test with failure injection"""
@@ -677,7 +710,8 @@ class StressTester:
         load_task.cancel()
 
         # Wait for failure injections to complete
-        await asyncio.gather(*failure_tasks, return_exceptions=True)
+        await asyncio.gather(*failure_tasks, return_exceptions = True)
+
 
     async def _run_failover_test(self, config: TestConfig, result: TestResult):
         """Test failover mechanisms"""
@@ -720,23 +754,24 @@ class StressTester:
         # Stop requests
         request_task.cancel()
 
+
     async def _run_reliability_test(self, config: TestConfig, result: TestResult):
         """Test for 100% reliability guarantee"""
         logger.info("Running 100% reliability test")
 
         request_metrics = []
 
-        # Generate high-priority requests
+        # Generate high - priority requests
         for i in range(1000):  # 1000 requests for statistical significance
             request_id = f"reliability_test_{i:04d}"
             model_type = random.choice(config.model_types)
 
             request = ModelRequest(
-                request_id=request_id,
-                model_type=model_type,
-                parameters={"quality": "high", "priority": 10},
-                priority=10,  # Highest priority
-                timeout_ms=60000,  # Extended timeout
+                request_id = request_id,
+                    model_type = model_type,
+                    parameters={"quality": "high", "priority": 10},
+                    priority = 10,  # Highest priority
+                timeout_ms = 60000,  # Extended timeout
             )
 
             start_time = datetime.now()
@@ -752,16 +787,16 @@ class StressTester:
                 response_time = int((end_time - start_time).total_seconds() * 1000)
 
                 metric = RequestMetrics(
-                    request_id=request_id,
-                    model_type=model_type,
-                    start_time=start_time,
-                    end_time=end_time,
-                    success=response.success,
-                    response_time_ms=response_time,
-                    backend_used=response.backend_used,
-                    quality_score=response.quality_score,
-                    error=response.error,
-                )
+                    request_id = request_id,
+                        model_type = model_type,
+                        start_time = start_time,
+                        end_time = end_time,
+                        success = response.success,
+                        response_time_ms = response_time,
+                        backend_used = response.backend_used,
+                        quality_score = response.quality_score,
+                        error = response.error,
+                        )
 
                 request_metrics.append(metric)
                 await self._store_request_metric(config.test_name, metric)
@@ -777,13 +812,13 @@ class StressTester:
                 )
 
                 metric = RequestMetrics(
-                    request_id=request_id,
-                    model_type=model_type,
-                    start_time=start_time,
-                    end_time=datetime.now(),
-                    success=False,
-                    error=str(e),
-                )
+                    request_id = request_id,
+                        model_type = model_type,
+                        start_time = start_time,
+                        end_time = datetime.now(),
+                        success = False,
+                        error = str(e),
+                        )
 
                 request_metrics.append(metric)
                 await self._store_request_metric(config.test_name, metric)
@@ -806,25 +841,26 @@ class StressTester:
                 f"❌ RELIABILITY TEST FAILED: {result.success_rate:.2f}% success rate (target: {config.target_success_rate}%)"
             )
 
+
     def _generate_request_schedule(self, config: TestConfig) -> List[Tuple[float, str]]:
-        """Generate request schedule with ramp-up/ramp-down"""
+        """Generate request schedule with ramp - up / ramp - down"""
         schedule = []
         current_time = 0.0
 
         total_requests = config.requests_per_second * config.duration_seconds
 
         for i in range(total_requests):
-            # Calculate current RPS based on ramp-up/ramp-down
+            # Calculate current RPS based on ramp - up / ramp - down
             if current_time < config.ramp_up_seconds:
                 # Ramp up
                 ramp_factor = current_time / config.ramp_up_seconds
                 current_rps = config.requests_per_second * ramp_factor
-            elif current_time > config.duration_seconds - config.ramp_down_seconds:
+                    elif current_time > config.duration_seconds - config.ramp_down_seconds:
                 # Ramp down
                 remaining_time = config.duration_seconds - current_time
                 ramp_factor = remaining_time / config.ramp_down_seconds
                 current_rps = config.requests_per_second * ramp_factor
-            else:
+                    else:
                 # Steady state
                 current_rps = config.requests_per_second
 
@@ -842,13 +878,14 @@ class StressTester:
 
         return schedule
 
+
     async def _execute_scheduled_request(
         self,
-        scheduled_time: float,
-        model_type: str,
-        config: TestConfig,
-        result: TestResult,
-    ) -> RequestMetrics:
+            scheduled_time: float,
+            model_type: str,
+            config: TestConfig,
+            result: TestResult,
+            ) -> RequestMetrics:
         """Execute a request at the scheduled time"""
         # Wait for scheduled time
         await asyncio.sleep(scheduled_time)
@@ -858,12 +895,12 @@ class StressTester:
         )
 
         request = ModelRequest(
-            request_id=request_id,
-            model_type=model_type,
-            parameters={"quality": "standard"},
-            priority=5,
-            timeout_ms=config.max_response_time_ms,
-        )
+            request_id = request_id,
+                model_type = model_type,
+                parameters={"quality": "standard"},
+                priority = 5,
+                timeout_ms = config.max_response_time_ms,
+                )
 
         start_time = datetime.now()
 
@@ -876,26 +913,27 @@ class StressTester:
             response_time = int((end_time - start_time).total_seconds() * 1000)
 
             return RequestMetrics(
-                request_id=request_id,
-                model_type=model_type,
-                start_time=start_time,
-                end_time=end_time,
-                success=response.success,
-                response_time_ms=response_time,
-                backend_used=response.backend_used,
-                quality_score=response.quality_score,
-                error=response.error,
-            )
+                request_id = request_id,
+                    model_type = model_type,
+                    start_time = start_time,
+                    end_time = end_time,
+                    success = response.success,
+                    response_time_ms = response_time,
+                    backend_used = response.backend_used,
+                    quality_score = response.quality_score,
+                    error = response.error,
+                    )
 
         except Exception as e:
             return RequestMetrics(
-                request_id=request_id,
-                model_type=model_type,
-                start_time=start_time,
-                end_time=datetime.now(),
-                success=False,
-                error=str(e),
-            )
+                request_id = request_id,
+                    model_type = model_type,
+                    start_time = start_time,
+                    end_time = datetime.now(),
+                    success = False,
+                    error = str(e),
+                    )
+
 
     async def _inject_delayed_failure(
         self, failure_type: FailureType, delay_seconds: int, duration_seconds: int
@@ -903,6 +941,7 @@ class StressTester:
         """Inject failure after delay"""
         await asyncio.sleep(delay_seconds)
         await self.failure_injector.inject_failure(failure_type, duration_seconds)
+
 
     def _update_result_with_metrics(
         self, result: TestResult, metrics: List[RequestMetrics]
@@ -924,7 +963,7 @@ class StressTester:
             result.max_response_time_ms = max(response_times)
 
             if len(response_times) >= 20:
-                quantiles = statistics.quantiles(response_times, n=100)
+                quantiles = statistics.quantiles(response_times, n = 100)
                 result.p95_response_time_ms = quantiles[94]
                 result.p99_response_time_ms = quantiles[98]
             else:
@@ -947,6 +986,7 @@ class StressTester:
         result.errors = [
             m.error for m in metrics if m.error and m.error not in result.errors
         ]
+
 
     def _calculate_final_metrics(self, result: TestResult):
         """Calculate final test metrics"""
@@ -976,6 +1016,7 @@ class StressTester:
             * 100
         )
 
+
     async def _store_test_result(self, result: TestResult):
         """Store test result in database"""
         try:
@@ -985,39 +1026,40 @@ class StressTester:
                     """
                     INSERT INTO test_results (
                         test_name, test_type, status, start_time, end_time,
-                        total_requests, successful_requests, failed_requests, success_rate,
-                        avg_response_time_ms, p95_response_time_ms, p99_response_time_ms,
-                        throughput_rps, avg_quality_score, failover_events, recovery_time_ms,
-                        reliability_score, resource_usage, errors, metadata
+                            total_requests, successful_requests, failed_requests, success_rate,
+                            avg_response_time_ms, p95_response_time_ms, p99_response_time_ms,
+                            throughput_rps, avg_quality_score, failover_events, recovery_time_ms,
+                            reliability_score, resource_usage, errors, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         result.test_name,
-                        result.test_type.value,
-                        result.status.value,
-                        result.start_time,
-                        result.end_time,
-                        result.total_requests,
-                        result.successful_requests,
-                        result.failed_requests,
-                        result.success_rate,
-                        result.avg_response_time_ms,
-                        result.p95_response_time_ms,
-                        result.p99_response_time_ms,
-                        result.throughput_rps,
-                        result.avg_quality_score,
-                        result.failover_events,
-                        result.recovery_time_ms,
-                        result.reliability_score,
-                        json.dumps(result.resource_usage),
-                        json.dumps(result.errors),
-                        json.dumps(result.metadata),
-                    ),
-                )
+                            result.test_type.value,
+                            result.status.value,
+                            result.start_time,
+                            result.end_time,
+                            result.total_requests,
+                            result.successful_requests,
+                            result.failed_requests,
+                            result.success_rate,
+                            result.avg_response_time_ms,
+                            result.p95_response_time_ms,
+                            result.p99_response_time_ms,
+                            result.throughput_rps,
+                            result.avg_quality_score,
+                            result.failover_events,
+                            result.recovery_time_ms,
+                            result.reliability_score,
+                            json.dumps(result.resource_usage),
+                            json.dumps(result.errors),
+                            json.dumps(result.metadata),
+                            ),
+                        )
                 conn.commit()
 
         except Exception as e:
             logger.error(f"Failed to store test result: {e}")
+
 
     async def _store_request_metric(self, test_name: str, metric: RequestMetrics):
         """Store individual request metric"""
@@ -1028,29 +1070,30 @@ class StressTester:
                     """
                     INSERT INTO request_metrics (
                         test_name, request_id, model_type, start_time, end_time,
-                        success, response_time_ms, backend_used, quality_score,
-                        error, retry_count, failover_count
+                            success, response_time_ms, backend_used, quality_score,
+                            error, retry_count, failover_count
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         test_name,
-                        metric.request_id,
-                        metric.model_type,
-                        metric.start_time,
-                        metric.end_time,
-                        metric.success,
-                        metric.response_time_ms,
-                        metric.backend_used,
-                        metric.quality_score,
-                        metric.error,
-                        metric.retry_count,
-                        metric.failover_count,
-                    ),
-                )
+                            metric.request_id,
+                            metric.model_type,
+                            metric.start_time,
+                            metric.end_time,
+                            metric.success,
+                            metric.response_time_ms,
+                            metric.backend_used,
+                            metric.quality_score,
+                            metric.error,
+                            metric.retry_count,
+                            metric.failover_count,
+                            ),
+                        )
                 conn.commit()
 
         except Exception as e:
             logger.error(f"Failed to store request metric: {e}")
+
 
     def generate_report(self, test_names: Optional[List[str]] = None) -> Dict[str, Any]:
         """Generate comprehensive test report"""
@@ -1063,16 +1106,16 @@ class StressTester:
                     placeholders = ",".join("?" * len(test_names))
                     cursor.execute(
                         f"""
-                        SELECT * FROM test_results 
+                        SELECT * FROM test_results
                         WHERE test_name IN ({placeholders})
                         ORDER BY start_time DESC
                     """,
                         test_names,
-                    )
+                            )
                 else:
                     cursor.execute(
                         """
-                        SELECT * FROM test_results 
+                        SELECT * FROM test_results
                         ORDER BY start_time DESC
                         LIMIT 10
                     """
@@ -1095,31 +1138,31 @@ class StressTester:
                 report = {
                     "summary": {
                         "total_tests": total_tests,
-                        "passed_tests": passed_tests,
-                        "pass_rate": (
+                            "passed_tests": passed_tests,
+                            "pass_rate": (
                             (passed_tests / total_tests * 100) if total_tests > 0 else 0
                         ),
-                        "avg_success_rate": avg_success_rate,
-                        "avg_reliability_score": avg_reliability_score,
-                        "generated_at": datetime.now().isoformat(),
-                    },
-                    "test_results": [],
-                    "recommendations": [],
-                }
+                            "avg_success_rate": avg_success_rate,
+                            "avg_reliability_score": avg_reliability_score,
+                            "generated_at": datetime.now().isoformat(),
+                            },
+                        "test_results": [],
+                        "recommendations": [],
+                        }
 
                 # Add individual test results
                 for result in results:
                     report["test_results"].append(
                         {
                             "test_name": result[1],
-                            "test_type": result[2],
-                            "status": result[3],
-                            "success_rate": result[9],
-                            "avg_response_time_ms": result[10],
-                            "reliability_score": result[17],
-                            "start_time": result[4],
-                            "end_time": result[5],
-                        }
+                                "test_type": result[2],
+                                "status": result[3],
+                                "success_rate": result[9],
+                                "avg_response_time_ms": result[10],
+                                "reliability_score": result[17],
+                                "start_time": result[4],
+                                "end_time": result[5],
+                                }
                     )
 
                 # Generate recommendations
@@ -1139,7 +1182,6 @@ class StressTester:
             logger.error(f"Failed to generate report: {e}")
             return {"error": str(e)}
 
-
 # Global instance
 _global_stress_tester = None
 
@@ -1157,7 +1199,7 @@ async def run_comprehensive_reliability_test() -> Dict[str, Any]:
     stress_tester = get_stress_tester()
 
     # Initialize with model generator
-    from .automated_model_generator import get_model_generator
+        from .automated_model_generator import get_model_generator
 
     model_generator = get_model_generator()
     await stress_tester.initialize(model_generator)
@@ -1168,34 +1210,34 @@ async def run_comprehensive_reliability_test() -> Dict[str, Any]:
     test_configs = [
         TestConfig(
             test_name="reliability_baseline",
-            test_type=TestType.RELIABILITY_TEST,
-            duration_seconds=300,
-            target_success_rate=100.0,
-            model_types=["avatar", "tts", "image"],
-        ),
-        TestConfig(
+                test_type = TestType.RELIABILITY_TEST,
+                duration_seconds = 300,
+                target_success_rate = 100.0,
+                model_types=["avatar", "tts", "image"],
+                ),
+            TestConfig(
             test_name="load_test_100_users",
-            test_type=TestType.LOAD_TEST,
-            duration_seconds=600,
-            concurrent_users=100,
-            requests_per_second=20,
-            target_success_rate=100.0,
-        ),
-        TestConfig(
+                test_type = TestType.LOAD_TEST,
+                duration_seconds = 600,
+                concurrent_users = 100,
+                requests_per_second = 20,
+                target_success_rate = 100.0,
+                ),
+            TestConfig(
             test_name="chaos_test_with_failures",
-            test_type=TestType.CHAOS_TEST,
-            duration_seconds=300,
-            failure_injection=[FailureType.BACKEND_CRASH, FailureType.NETWORK_TIMEOUT],
-            failure_probability=0.3,
-            target_success_rate=100.0,
-        ),
-        TestConfig(
+                test_type = TestType.CHAOS_TEST,
+                duration_seconds = 300,
+                failure_injection=[FailureType.BACKEND_CRASH, FailureType.NETWORK_TIMEOUT],
+                failure_probability = 0.3,
+                target_success_rate = 100.0,
+                ),
+            TestConfig(
             test_name="failover_recovery_test",
-            test_type=TestType.FAILOVER_TEST,
-            duration_seconds=180,
-            target_success_rate=100.0,
-        ),
-    ]
+                test_type = TestType.FAILOVER_TEST,
+                duration_seconds = 180,
+                target_success_rate = 100.0,
+                ),
+            ]
 
     # Run all tests
     for config in test_configs:
@@ -1223,19 +1265,20 @@ async def run_comprehensive_reliability_test() -> Dict[str, Any]:
 
     report["overall_assessment"] = {
         "all_tests_passed": all_passed,
-        "system_reliability": "100% RELIABLE" if all_passed else "NEEDS IMPROVEMENT",
-        "recommendation": (
+            "system_reliability": "100% RELIABLE" if all_passed else "NEEDS IMPROVEMENT",
+            "recommendation": (
             "System ready for production"
             if all_passed
             else "Address failures before production deployment"
         ),
-    }
+            }
 
     return report
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         # Run comprehensive reliability test
         report = await run_comprehensive_reliability_test()

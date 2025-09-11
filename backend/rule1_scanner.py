@@ -1,16 +1,16 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-TRAE.AI Rule-1 Content Scanner and Enforcer
+TRAE.AI Rule - 1 Content Scanner and Enforcer
 
-Production-ready content scanning system that identifies and replaces
-forbidden terms, patterns, and content violations. Designed for high-performance
+Production - ready content scanning system that identifies and replaces
+forbidden terms, patterns, and content violations. Designed for high - performance
 content moderation with configurable rules and comprehensive reporting.
 
-Rule-1 Definition:
+Rule - 1 Definition:
 - No forbidden terms or patterns in content
 - Automatic detection and replacement
 - Comprehensive audit trail
-- Performance-optimized scanning
+- Performance - optimized scanning
 - Configurable rule sets
 
 Author: TRAE.AI System
@@ -37,11 +37,13 @@ except ImportError:
     # Fallback if logger not available
     import logging
 
-    def get_logger(name=None):
+
+    def get_logger(name = None):
         return logging.getLogger(name or __name__)
 
-
 @dataclass
+
+
 class ScanResult:
     """
     Result of a content scan operation.
@@ -64,12 +66,14 @@ class ScanResult:
     scan_timestamp: str
     rule_set_version: str
 
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization"""
         return asdict(self)
 
-
 @dataclass
+
+
 class EnforcementResult:
     """
     Result of content enforcement operation.
@@ -90,6 +94,7 @@ class EnforcementResult:
     backup_created: bool
     enforcement_timestamp: str
 
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization"""
         return asdict(self)
@@ -97,22 +102,23 @@ class EnforcementResult:
 
 class Rule1DeepScanner:
     """
-    Deep content scanner for Rule-1 violations.
+    Deep content scanner for Rule - 1 violations.
 
     Performs comprehensive scanning of files and directories to identify
     forbidden terms, patterns, and content violations with high performance
     and detailed reporting.
     """
 
+
     def __init__(
         self,
-        rules_file: str = "data/rule1_patterns.json",
-        db_path: str = "data/rule1_scans.sqlite",
-        max_workers: int = 4,
-        max_file_size: int = 100 * 1024 * 1024,
-    ):  # 100MB
+            rules_file: str = "data / rule1_patterns.json",
+            db_path: str = "data / rule1_scans.sqlite",
+            max_workers: int = 4,
+            max_file_size: int = 100 * 1024 * 1024,
+            ):  # 100MB
         """
-        Initialize the Rule-1 Deep Scanner.
+        Initialize the Rule - 1 Deep Scanner.
 
         Args:
             rules_file (str): Path to JSON file containing scan rules
@@ -138,26 +144,27 @@ class Rule1DeepScanner:
         # Performance tracking
         self.stats = {"files_scanned": 0, "violations_found": 0, "total_scan_time": 0.0}
 
+
     def _init_database(self) -> None:
         """
         Initialize SQLite database for storing scan results.
         """
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS scan_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    file_path TEXT NOT NULL,
-                    file_hash TEXT NOT NULL,
-                    violations_found INTEGER NOT NULL,
-                    violations_json TEXT NOT NULL,
-                    scan_duration REAL NOT NULL,
-                    file_size INTEGER NOT NULL,
-                    scan_timestamp TEXT NOT NULL,
-                    rule_set_version TEXT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        file_path TEXT NOT NULL,
+                        file_hash TEXT NOT NULL,
+                        violations_found INTEGER NOT NULL,
+                        violations_json TEXT NOT NULL,
+                        scan_duration REAL NOT NULL,
+                        file_size INTEGER NOT NULL,
+                        scan_timestamp TEXT NOT NULL,
+                        rule_set_version TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -176,13 +183,14 @@ class Rule1DeepScanner:
 
             conn.commit()
 
+
     def _load_rules(self) -> None:
         """
         Load scanning rules from configuration file.
         """
         if self.rules_file.exists():
             try:
-                with open(self.rules_file, "r", encoding="utf-8") as f:
+                with open(self.rules_file, "r", encoding="utf - 8") as f:
                     rules_data = json.load(f)
 
                 self.forbidden_terms = set(rules_data.get("forbidden_terms", []))
@@ -190,8 +198,8 @@ class Rule1DeepScanner:
                 self.file_extensions = set(
                     rules_data.get(
                         "file_extensions",
-                        [".py", ".js", ".html", ".css", ".txt", ".md"],
-                    )
+                            [".py", ".js", ".html", ".css", ".txt", ".md"],
+                            )
                 )
                 self.exclude_dirs = set(
                     rules_data.get(
@@ -219,64 +227,65 @@ class Rule1DeepScanner:
         else:
             self._create_default_rules()
 
+
     def _create_default_rules(self) -> None:
         """
         Create default scanning rules.
         """
         default_rules = {
             "version": "1.0.0",
-            "forbidden_terms": [
+                "forbidden_terms": [
                 "TODO",
-                "FIXME",
-                "HACK",
-                "XXX",
-                "BUG",
-                "password123",
-                "admin",
-                "root",
-                "secret",
-                "api_key",
-                "private_key",
-                "access_token",
-            ],
-            "forbidden_patterns": [
+                    "FIXME",
+                    "HACK",
+                    "XXX",
+                    "BUG",
+                    "password123",
+                    "admin",
+                    "root",
+                    "secret",
+                    "api_key",
+                    "private_key",
+                    "access_token",
+                    ],
+                "forbidden_patterns": [
                 r"\b(password|pwd)\s*=\s*['\"][^'\"]{1,}['\"]"  # Password assignments
                 r"\b(api[_-]?key|apikey)\s*[=:]\s*['\"][^'\"]{10,}['\"]"  # API keys
-                r"\b(secret|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]"  # Secrets/tokens
+                r"\b(secret|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]"  # Secrets / tokens
                 r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b"  # Credit card numbers
-                r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"  # Email addresses (if sensitive)
+                r"\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\.[A - Z|a - z]{2,}\b"  # Email addresses (if sensitive)
             ],
-            "file_extensions": [
+                "file_extensions": [
                 ".py",
-                ".js",
-                ".ts",
-                ".html",
-                ".css",
-                ".json",
-                ".txt",
-                ".md",
-                ".yml",
-                ".yaml",
-                ".xml",
-                ".sql",
-            ],
-            "exclude_dirs": [
+                    ".js",
+                    ".ts",
+                    ".html",
+                    ".css",
+                    ".json",
+                    ".txt",
+                    ".md",
+                    ".yml",
+                    ".yaml",
+                    ".xml",
+                    ".sql",
+                    ],
+                "exclude_dirs": [
                 ".git",
-                "__pycache__",
-                "node_modules",
-                ".venv",
-                "venv",
-                "env",
-                ".env",
-                "dist",
-                "build",
-            ],
-        }
+                    "__pycache__",
+                    "node_modules",
+                    ".venv",
+                    "venv",
+                    "env",
+                    ".env",
+                    "dist",
+                    "build",
+                    ],
+                }
 
         # Create rules file
-        self.rules_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.rules_file, "w", encoding="utf-8") as f:
-            json.dump(default_rules, f, indent=2)
+        self.rules_file.parent.mkdir(parents = True, exist_ok = True)
+        with open(self.rules_file, "w", encoding="utf - 8") as f:
+            json.dump(default_rules, f, indent = 2)
 
         # Load the default rules
         self.forbidden_terms = set(default_rules["forbidden_terms"])
@@ -298,9 +307,10 @@ class Rule1DeepScanner:
             f"Created default rules with {len(self.forbidden_terms)} terms and {len(self.compiled_patterns)} patterns"
         )
 
+
     def _calculate_file_hash(self, file_path: Path) -> str:
         """
-        Calculate SHA-256 hash of file content.
+        Calculate SHA - 256 hash of file content.
 
         Args:
             file_path (Path): Path to file
@@ -317,6 +327,7 @@ class Rule1DeepScanner:
         except Exception as e:
             self.logger.error(f"Failed to calculate hash for {file_path}: {e}")
             return ""
+
 
     def _should_scan_file(self, file_path: Path) -> bool:
         """
@@ -349,9 +360,10 @@ class Rule1DeepScanner:
 
         return True
 
+
     def scan_file(self, file_path: Union[str, Path]) -> ScanResult:
         """
-        Scan a single file for Rule-1 violations.
+        Scan a single file for Rule - 1 violations.
 
         Args:
             file_path (Union[str, Path]): Path to file to scan
@@ -367,10 +379,10 @@ class Rule1DeepScanner:
 
         try:
             # Read file content
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                 content = f.read()
 
-            file_size = len(content.encode("utf-8"))
+            file_size = len(content.encode("utf - 8"))
 
             # Scan for forbidden terms
             lines = content.split("\n")
@@ -383,11 +395,11 @@ class Rule1DeepScanner:
                         violations.append(
                             {
                                 "type": "forbidden_term",
-                                "term": term,
-                                "line_number": line_num,
-                                "line_content": line.strip(),
-                                "severity": "high",
-                            }
+                                    "term": term,
+                                    "line_number": line_num,
+                                    "line_content": line.strip(),
+                                    "severity": "high",
+                                    }
                         )
 
                 # Check regex patterns
@@ -397,28 +409,28 @@ class Rule1DeepScanner:
                         violations.append(
                             {
                                 "type": "forbidden_pattern",
-                                "pattern": pattern_name,
-                                "match": match.group(),
-                                "line_number": line_num,
-                                "line_content": line.strip(),
-                                "start_pos": match.start(),
-                                "end_pos": match.end(),
-                                "severity": "critical",
-                            }
+                                    "pattern": pattern_name,
+                                    "match": match.group(),
+                                    "line_number": line_num,
+                                    "line_content": line.strip(),
+                                    "start_pos": match.start(),
+                                    "end_pos": match.end(),
+                                    "severity": "critical",
+                                    }
                         )
 
             scan_duration = time.time() - start_time
 
             # Create scan result
             result = ScanResult(
-                file_path=str(file_path),
-                violations_found=len(violations),
-                violations=violations,
-                scan_duration=scan_duration,
-                file_size=file_size,
-                scan_timestamp=datetime.now().isoformat(),
-                rule_set_version=self.rule_set_version,
-            )
+                file_path = str(file_path),
+                    violations_found = len(violations),
+                    violations = violations,
+                    scan_duration = scan_duration,
+                    file_size = file_size,
+                    scan_timestamp = datetime.now().isoformat(),
+                    rule_set_version = self.rule_set_version,
+                    )
 
             # Store result in database
             self._store_scan_result(result)
@@ -441,20 +453,21 @@ class Rule1DeepScanner:
         except Exception as e:
             self.logger.error(f"Failed to scan file {file_path}: {e}")
             return ScanResult(
-                file_path=str(file_path),
-                violations_found=0,
-                violations=[],
-                scan_duration=time.time() - start_time,
-                file_size=0,
-                scan_timestamp=datetime.now().isoformat(),
-                rule_set_version=self.rule_set_version,
-            )
+                file_path = str(file_path),
+                    violations_found = 0,
+                    violations=[],
+                    scan_duration = time.time() - start_time,
+                    file_size = 0,
+                    scan_timestamp = datetime.now().isoformat(),
+                    rule_set_version = self.rule_set_version,
+                    )
+
 
     def scan_directory(
         self, directory_path: Union[str, Path], recursive: bool = True
     ) -> List[ScanResult]:
         """
-        Scan a directory for Rule-1 violations.
+        Scan a directory for Rule - 1 violations.
 
         Args:
             directory_path (Union[str, Path]): Path to directory to scan
@@ -485,7 +498,7 @@ class Rule1DeepScanner:
 
         # Scan files using thread pool
         results = []
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+        with ThreadPoolExecutor(max_workers = self.max_workers) as executor:
             future_to_file = {
                 executor.submit(self.scan_file, file_path): file_path
                 for file_path in files_to_scan
@@ -500,7 +513,7 @@ class Rule1DeepScanner:
                     self.logger.error(f"Failed to scan {file_path}: {e}")
 
         # Sort results by violations (most violations first)
-        results.sort(key=lambda x: x.violations_found, reverse=True)
+        results.sort(key = lambda x: x.violations_found, reverse = True)
 
         total_violations = sum(r.violations_found for r in results)
         self.logger.info(
@@ -508,6 +521,7 @@ class Rule1DeepScanner:
         )
 
         return results
+
 
     def _store_scan_result(self, result: ScanResult) -> None:
         """
@@ -522,26 +536,27 @@ class Rule1DeepScanner:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT INTO scan_results 
-                    (file_path, file_hash, violations_found, violations_json, 
-                     scan_duration, file_size, scan_timestamp, rule_set_version)
+                    INSERT INTO scan_results
+                    (file_path, file_hash, violations_found, violations_json,
+                        scan_duration, file_size, scan_timestamp, rule_set_version)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         result.file_path,
-                        file_hash,
-                        result.violations_found,
-                        json.dumps(result.violations),
-                        result.scan_duration,
-                        result.file_size,
-                        result.scan_timestamp,
-                        result.rule_set_version,
-                    ),
-                )
+                            file_hash,
+                            result.violations_found,
+                            json.dumps(result.violations),
+                            result.scan_duration,
+                            result.file_size,
+                            result.scan_timestamp,
+                            result.rule_set_version,
+                            ),
+                        )
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Failed to store scan result: {e}")
+
 
     def get_scan_history(
         self, file_path: str = None, limit: int = 100
@@ -563,28 +578,29 @@ class Rule1DeepScanner:
                 if file_path:
                     cursor = conn.execute(
                         """
-                        SELECT * FROM scan_results 
-                        WHERE file_path = ? 
-                        ORDER BY created_at DESC 
+                        SELECT * FROM scan_results
+                        WHERE file_path = ?
+                        ORDER BY created_at DESC
                         LIMIT ?
                     """,
                         (file_path, limit),
-                    )
+                            )
                 else:
                     cursor = conn.execute(
                         """
-                        SELECT * FROM scan_results 
-                        ORDER BY created_at DESC 
+                        SELECT * FROM scan_results
+                        ORDER BY created_at DESC
                         LIMIT ?
                     """,
                         (limit,),
-                    )
+                            )
 
                 return [dict(row) for row in cursor.fetchall()]
 
         except Exception as e:
             self.logger.error(f"Failed to get scan history: {e}")
             return []
+
 
     def get_statistics(self) -> Dict[str, Any]:
         """
@@ -613,21 +629,22 @@ class Rule1DeepScanner:
 
 class Rule1Enforcer:
     """
-    Content enforcer for Rule-1 violations.
+    Content enforcer for Rule - 1 violations.
 
     Automatically replaces forbidden terms and patterns with approved
     alternatives, maintaining content integrity while ensuring compliance.
     """
 
+
     def __init__(
         self,
-        scanner: Rule1DeepScanner,
-        replacements_file: str = "data/rule1_replacements.json",
-        create_backups: bool = True,
-        backup_dir: str = "data/backups",
-    ):
+            scanner: Rule1DeepScanner,
+            replacements_file: str = "data / rule1_replacements.json",
+            create_backups: bool = True,
+            backup_dir: str = "data / backups",
+            ):
         """
-        Initialize the Rule-1 Enforcer.
+        Initialize the Rule - 1 Enforcer.
 
         Args:
             scanner (Rule1DeepScanner): Scanner instance for violation detection
@@ -641,7 +658,7 @@ class Rule1Enforcer:
         self.backup_dir = Path(backup_dir)
 
         if self.create_backups:
-            self.backup_dir.mkdir(parents=True, exist_ok=True)
+            self.backup_dir.mkdir(parents = True, exist_ok = True)
 
         # Initialize logger
         self.logger = get_logger("rule1_enforcer")
@@ -649,13 +666,14 @@ class Rule1Enforcer:
         # Load replacement rules
         self._load_replacements()
 
+
     def _load_replacements(self) -> None:
         """
         Load replacement rules from configuration file.
         """
         if self.replacements_file.exists():
             try:
-                with open(self.replacements_file, "r", encoding="utf-8") as f:
+                with open(self.replacements_file, "r", encoding="utf - 8") as f:
                     replacements_data = json.load(f)
 
                 self.term_replacements = replacements_data.get("term_replacements", {})
@@ -675,6 +693,7 @@ class Rule1Enforcer:
         else:
             self._create_default_replacements()
 
+
     def _create_default_replacements(self) -> None:
         """
         Create default replacement rules.
@@ -682,32 +701,33 @@ class Rule1Enforcer:
         default_replacements = {
             "term_replacements": {
                 "TODO": "# Task: ",
-                "FIXME": "# Fix: ",
-                "HACK": "# Workaround: ",
-                "XXX": "# Note: ",
-                "BUG": "# Issue: ",
-                "password123": "[REDACTED_PASSWORD]",
-                "admin": "[REDACTED_USERNAME]",
-                "root": "[REDACTED_USERNAME]",
-                "secret": "[REDACTED_SECRET]",
-            },
-            "pattern_replacements": {
+                    "FIXME": "# Fix: ",
+                    "HACK": "# Workaround: ",
+                    "XXX": "# Note: ",
+                    "BUG": "# Issue: ",
+                    "password123": "[REDACTED_PASSWORD]",
+                    "admin": "[REDACTED_USERNAME]",
+                    "root": "[REDACTED_USERNAME]",
+                    "secret": "[REDACTED_SECRET]",
+                    },
+                "pattern_replacements": {
                 r"\b(password|pwd)\s*=\s*['\"][^'\"]{1,}['\"]" "$1='[REDACTED]'",
-                r"\b(api[_-]?key|apikey)\s*[=:]\s*['\"][^'\"]{10,}['\"]"
+                    r"\b(api[_-]?key|apikey)\s*[=:]\s*['\"][^'\"]{10,}['\"]"
                 "$1='[REDACTED]'",
-                r"\b(secret|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]" "$1='[REDACTED]'",
-            },
-        }
+                    r"\b(secret|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]" "$1='[REDACTED]'",
+                    },
+                }
 
         # Create replacements file
-        self.replacements_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.replacements_file, "w", encoding="utf-8") as f:
-            json.dump(default_replacements, f, indent=2)
+        self.replacements_file.parent.mkdir(parents = True, exist_ok = True)
+        with open(self.replacements_file, "w", encoding="utf - 8") as f:
+            json.dump(default_replacements, f, indent = 2)
 
         self.term_replacements = default_replacements["term_replacements"]
         self.pattern_replacements = default_replacements["pattern_replacements"]
 
         self.logger.info("Created default replacement rules")
+
 
     def _create_backup(self, file_path: Path) -> bool:
         """
@@ -737,9 +757,10 @@ class Rule1Enforcer:
             self.logger.error(f"Failed to create backup for {file_path}: {e}")
             return False
 
+
     def enforce_file(self, file_path: Union[str, Path]) -> EnforcementResult:
         """
-        Enforce Rule-1 compliance on a single file.
+        Enforce Rule - 1 compliance on a single file.
 
         Args:
             file_path (Union[str, Path]): Path to file to enforce
@@ -759,19 +780,19 @@ class Rule1Enforcer:
 
             if scan_result.violations_found == 0:
                 return EnforcementResult(
-                    file_path=str(file_path),
-                    replacements_made=0,
-                    replacements=[],
-                    enforcement_duration=time.time() - start_time,
-                    backup_created=False,
-                    enforcement_timestamp=datetime.now().isoformat(),
-                )
+                    file_path = str(file_path),
+                        replacements_made = 0,
+                        replacements=[],
+                        enforcement_duration = time.time() - start_time,
+                        backup_created = False,
+                        enforcement_timestamp = datetime.now().isoformat(),
+                        )
 
             # Create backup if enabled
             backup_created = self._create_backup(file_path)
 
             # Read file content
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, "r", encoding="utf - 8") as f:
                 content = f.read()
 
             original_content = content
@@ -789,10 +810,10 @@ class Rule1Enforcer:
                             replacements.append(
                                 {
                                     "type": "term_replacement",
-                                    "original": term,
-                                    "replacement": replacement,
-                                    "line_number": violation["line_number"],
-                                }
+                                        "original": term,
+                                        "replacement": replacement,
+                                        "line_number": violation["line_number"],
+                                        }
                             )
 
             # Apply pattern replacements
@@ -817,11 +838,11 @@ class Rule1Enforcer:
                             replacements.append(
                                 {
                                     "type": "pattern_replacement",
-                                    "original": original_text,
-                                    "replacement": new_text,
-                                    "pattern": pattern,
-                                    "position": match.start(),
-                                }
+                                        "original": original_text,
+                                        "replacement": new_text,
+                                        "pattern": pattern,
+                                        "position": match.start(),
+                                        }
                             )
 
                 except re.error as e:
@@ -829,7 +850,7 @@ class Rule1Enforcer:
 
             # Write the modified content back to file
             if content != original_content:
-                with open(file_path, "w", encoding="utf-8") as f:
+                with open(file_path, "w", encoding="utf - 8") as f:
                     f.write(content)
 
                 self.logger.info(
@@ -839,30 +860,31 @@ class Rule1Enforcer:
             enforcement_duration = time.time() - start_time
 
             return EnforcementResult(
-                file_path=str(file_path),
-                replacements_made=len(replacements),
-                replacements=replacements,
-                enforcement_duration=enforcement_duration,
-                backup_created=backup_created,
-                enforcement_timestamp=datetime.now().isoformat(),
-            )
+                file_path = str(file_path),
+                    replacements_made = len(replacements),
+                    replacements = replacements,
+                    enforcement_duration = enforcement_duration,
+                    backup_created = backup_created,
+                    enforcement_timestamp = datetime.now().isoformat(),
+                    )
 
         except Exception as e:
             self.logger.error(f"Failed to enforce file {file_path}: {e}")
             return EnforcementResult(
-                file_path=str(file_path),
-                replacements_made=0,
-                replacements=[],
-                enforcement_duration=time.time() - start_time,
-                backup_created=False,
-                enforcement_timestamp=datetime.now().isoformat(),
-            )
+                file_path = str(file_path),
+                    replacements_made = 0,
+                    replacements=[],
+                    enforcement_duration = time.time() - start_time,
+                    backup_created = False,
+                    enforcement_timestamp = datetime.now().isoformat(),
+                    )
+
 
     def enforce_directory(
         self, directory_path: Union[str, Path], recursive: bool = True
     ) -> List[EnforcementResult]:
         """
-        Enforce Rule-1 compliance on a directory.
+        Enforce Rule - 1 compliance on a directory.
 
         Args:
             directory_path (Union[str, Path]): Path to directory to enforce
@@ -898,7 +920,6 @@ class Rule1Enforcer:
 
         return enforcement_results
 
-
 if __name__ == "__main__":
     # Example usage and testing
     import os
@@ -914,7 +935,8 @@ if __name__ == "__main__":
             """
 # This is a test file with violations
 password = "secret123"  # TODO: Remove this
-api_key = "sk-1234567890abcdef"  # FIXME: Use environment variable
+api_key = "sk - 1234567890abcdef"  # FIXME: Use environment variable
+
 
 def main():
     # XXX: This is a hack
@@ -933,15 +955,15 @@ const token = 'secret_token_here';  // TODO: Load from config
 
         # Initialize scanner and enforcer
         scanner = Rule1DeepScanner(
-            rules_file=str(temp_path / "rules.json"),
-            db_path=str(temp_path / "scans.sqlite"),
-        )
+            rules_file = str(temp_path / "rules.json"),
+                db_path = str(temp_path / "scans.sqlite"),
+                )
 
         enforcer = Rule1Enforcer(
-            scanner=scanner,
-            replacements_file=str(temp_path / "replacements.json"),
-            backup_dir=str(temp_path / "backups"),
-        )
+            scanner = scanner,
+                replacements_file = str(temp_path / "replacements.json"),
+                backup_dir = str(temp_path / "backups"),
+                )
 
         # Test scanning
         print("\n=== Scanning Test Files ===")
@@ -952,11 +974,11 @@ const token = 'secret_token_here';  // TODO: Load from config
             print(f"Violations: {result.violations_found}")
             for violation in result.violations:
                 print(
-                    f"  - {violation['type']}: {violation.get('term', violation.get('pattern', 'N/A'))} at line {violation['line_number']}"
+                    f"  - {violation['type']}: {violation.get('term', violation.get('pattern', 'N / A'))} at line {violation['line_number']}"
                 )
 
         # Test enforcement
-        print("\n=== Enforcing Rule-1 Compliance ===")
+        print("\n=== Enforcing Rule - 1 Compliance ===")
         enforcement_results = enforcer.enforce_directory(temp_path)
 
         for result in enforcement_results:

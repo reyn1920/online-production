@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Cost Tracking Service
 
@@ -14,8 +14,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-
 @dataclass
+
+
 class APIUsage:
     """Represents API usage data."""
 
@@ -28,8 +29,9 @@ class APIUsage:
     last_used: datetime
     status: str  # 'active', 'disabled', 'limit_reached'
 
-
 @dataclass
+
+
 class BudgetAlert:
     """Represents budget alert configuration."""
 
@@ -45,6 +47,7 @@ class BudgetAlert:
 class CostTrackingService:
     """Service for tracking API costs and managing budgets."""
 
+
     def __init__(self, db_path: str = "cost_tracking.db"):
         self.db_path = db_path
         self.logger = logging.getLogger(__name__)
@@ -54,6 +57,7 @@ class CostTrackingService:
         self.monthly_budget = 100.0  # $100 default monthly budget
         self.free_tier_preferences = True  # Prefer free APIs when available
 
+
     def init_database(self):
         """Initialize the cost tracking database."""
         with sqlite3.connect(self.db_path) as conn:
@@ -61,44 +65,45 @@ class CostTrackingService:
                 """
                 CREATE TABLE IF NOT EXISTS api_usage (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    api_name TEXT NOT NULL,
-                    service_type TEXT NOT NULL,
-                    requests_made INTEGER DEFAULT 0,
-                    requests_limit INTEGER DEFAULT 0,
-                    cost_per_request REAL DEFAULT 0.0,
-                    monthly_cost REAL DEFAULT 0.0,
-                    last_used TIMESTAMP,
-                    status TEXT DEFAULT 'active',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        api_name TEXT NOT NULL,
+                        service_type TEXT NOT NULL,
+                        requests_made INTEGER DEFAULT 0,
+                        requests_limit INTEGER DEFAULT 0,
+                        cost_per_request REAL DEFAULT 0.0,
+                        monthly_cost REAL DEFAULT 0.0,
+                        last_used TIMESTAMP,
+                        status TEXT DEFAULT 'active',
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS budget_alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    alert_id TEXT UNIQUE NOT NULL,
-                    api_name TEXT NOT NULL,
-                    threshold_type TEXT NOT NULL,
-                    threshold_value REAL NOT NULL,
-                    current_value REAL DEFAULT 0.0,
-                    alert_triggered BOOLEAN DEFAULT FALSE,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        alert_id TEXT UNIQUE NOT NULL,
+                        api_name TEXT NOT NULL,
+                        threshold_type TEXT NOT NULL,
+                        threshold_value REAL NOT NULL,
+                        current_value REAL DEFAULT 0.0,
+                        alert_triggered BOOLEAN DEFAULT FALSE,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS cost_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    api_name TEXT NOT NULL,
-                    date DATE NOT NULL,
-                    requests_count INTEGER DEFAULT 0,
-                    cost_amount REAL DEFAULT 0.0,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        api_name TEXT NOT NULL,
+                        date DATE NOT NULL,
+                        requests_count INTEGER DEFAULT 0,
+                        cost_amount REAL DEFAULT 0.0,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
-                
+
                 CREATE INDEX IF NOT EXISTS idx_api_usage_name ON api_usage(api_name);
                 CREATE INDEX IF NOT EXISTS idx_budget_alerts_api ON budget_alerts(api_name);
                 CREATE INDEX IF NOT EXISTS idx_cost_history_date ON cost_history(date);
             """
             )
+
 
     def track_api_usage(
         self, api_name: str, requests_count: int = 1, cost: float = 0.0
@@ -109,51 +114,52 @@ class CostTrackingService:
                 # Update usage
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO api_usage 
+                    INSERT OR REPLACE INTO api_usage
                     (api_name, requests_made, monthly_cost, last_used, updated_at)
-                    VALUES (?, 
+                    VALUES (?,
                         COALESCE((SELECT requests_made FROM api_usage WHERE api_name = ?), 0) + ?,
-                        COALESCE((SELECT monthly_cost FROM api_usage WHERE api_name = ?), 0) + ?,
-                        ?, ?)
+                            COALESCE((SELECT monthly_cost FROM api_usage WHERE api_name = ?), 0) + ?,
+                            ?, ?)
                 """,
                     (
                         api_name,
-                        api_name,
-                        requests_count,
-                        api_name,
-                        cost,
-                        datetime.now(),
-                        datetime.now(),
-                    ),
-                )
+                            api_name,
+                            requests_count,
+                            api_name,
+                            cost,
+                            datetime.now(),
+                            datetime.now(),
+                            ),
+                        )
 
                 # Record daily history
                 today = datetime.now().date()
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO cost_history 
+                    INSERT OR REPLACE INTO cost_history
                     (api_name, date, requests_count, cost_amount)
-                    VALUES (?, ?, 
+                    VALUES (?, ?,
                         COALESCE((SELECT requests_count FROM cost_history WHERE api_name = ? AND date = ?), 0) + ?,
-                        COALESCE((SELECT cost_amount FROM cost_history WHERE api_name = ? AND date = ?), 0) + ?)
+                            COALESCE((SELECT cost_amount FROM cost_history WHERE api_name = ? AND date = ?), 0) + ?)
                 """,
                     (
                         api_name,
-                        today,
-                        api_name,
-                        today,
-                        requests_count,
-                        api_name,
-                        today,
-                        cost,
-                    ),
-                )
+                            today,
+                            api_name,
+                            today,
+                            requests_count,
+                            api_name,
+                            today,
+                            cost,
+                            ),
+                        )
 
                 # Check budget alerts
                 self._check_budget_alerts(api_name)
 
         except Exception as e:
             self.logger.error(f"Error tracking API usage for {api_name}: {e}")
+
 
     def get_monthly_costs(self) -> Dict[str, Any]:
         """Get current monthly costs breakdown."""
@@ -175,11 +181,11 @@ class CostTrackingService:
                 for row in cursor.fetchall():
                     api_data = {
                         "api_name": row[0],
-                        "service_type": row[1],
-                        "monthly_cost": row[2],
-                        "requests_made": row[3],
-                        "status": row[4],
-                    }
+                            "service_type": row[1],
+                            "monthly_cost": row[2],
+                            "requests_made": row[3],
+                            "status": row[4],
+                            }
                     apis.append(api_data)
                     total_cost += row[2]
 
@@ -190,18 +196,19 @@ class CostTrackingService:
 
                 return {
                     "total_monthly_cost": total_cost,
-                    "budget_remaining": max(0, self.monthly_budget - total_cost),
-                    "budget_utilization": min(
+                        "budget_remaining": max(0, self.monthly_budget - total_cost),
+                        "budget_utilization": min(
                         100, (total_cost / self.monthly_budget) * 100
                     ),
-                    "free_apis_count": free_apis,
-                    "paid_apis_count": paid_apis,
-                    "apis": apis,
-                }
+                        "free_apis_count": free_apis,
+                        "paid_apis_count": paid_apis,
+                        "apis": apis,
+                        }
 
         except Exception as e:
             self.logger.error(f"Error getting monthly costs: {e}")
             return {"total_monthly_cost": 0, "apis": []}
+
 
     def get_free_alternatives(self, service_category: str) -> List[Dict[str, Any]]:
         """Get free API alternatives for a service category."""
@@ -209,46 +216,47 @@ class CostTrackingService:
             "ai_language": [
                 {
                     "name": "Hugging Face Transformers",
-                    "type": "free",
-                    "limit": "1000 requests/month",
-                },
-                {"name": "Ollama Local", "type": "free", "limit": "unlimited (local)"},
-                {"name": "OpenAI Free Tier", "type": "freemium", "limit": "$5 credit"},
-            ],
-            "social_media": [
+                        "type": "free",
+                        "limit": "1000 requests / month",
+                        },
+                    {"name": "Ollama Local", "type": "free", "limit": "unlimited (local)"},
+                    {"name": "OpenAI Free Tier", "type": "freemium", "limit": "$5 credit"},
+                    ],
+                "social_media": [
                 {
                     "name": "YouTube Data API",
-                    "type": "free",
-                    "limit": "10000 units/day",
-                },
-                {"name": "Twitter Basic", "type": "free", "limit": "500k tweets/month"},
-                {
+                        "type": "free",
+                        "limit": "10000 units / day",
+                        },
+                    {"name": "Twitter Basic", "type": "free", "limit": "500k tweets / month"},
+                    {
                     "name": "Instagram Basic Display",
-                    "type": "free",
-                    "limit": "200 requests/hour",
-                },
-            ],
-            "email": [
-                {"name": "Mailgun Free", "type": "free", "limit": "5000 emails/month"},
-                {"name": "SendGrid Free", "type": "free", "limit": "100 emails/day"},
-                {"name": "SMTP.js", "type": "free", "limit": "unlimited (self-hosted)"},
-            ],
-            "analytics": [
-                {"name": "Google Analytics", "type": "free", "limit": "10M hits/month"},
-                {
+                        "type": "free",
+                        "limit": "200 requests / hour",
+                        },
+                    ],
+                "email": [
+                {"name": "Mailgun Free", "type": "free", "limit": "5000 emails / month"},
+                    {"name": "SendGrid Free", "type": "free", "limit": "100 emails / day"},
+                    {"name": "SMTP.js", "type": "free", "limit": "unlimited (self - hosted)"},
+                    ],
+                "analytics": [
+                {"name": "Google Analytics", "type": "free", "limit": "10M hits / month"},
+                    {
                     "name": "Plausible Community",
-                    "type": "free",
-                    "limit": "unlimited (self-hosted)",
-                },
-                {
+                        "type": "free",
+                        "limit": "unlimited (self - hosted)",
+                        },
+                    {
                     "name": "Matomo Cloud Free",
-                    "type": "free",
-                    "limit": "30k actions/month",
-                },
-            ],
-        }
+                        "type": "free",
+                        "limit": "30k actions / month",
+                        },
+                    ],
+                }
 
         return free_alternatives.get(service_category, [])
+
 
     def set_budget_alert(
         self, api_name: str, threshold_type: str, threshold_value: float
@@ -266,12 +274,12 @@ class CostTrackingService:
                 """,
                     (
                         alert_id,
-                        api_name,
-                        threshold_type,
-                        threshold_value,
-                        datetime.now(),
-                    ),
-                )
+                            api_name,
+                            threshold_type,
+                            threshold_value,
+                            datetime.now(),
+                            ),
+                        )
 
             self.logger.info(
                 f"Budget alert set for {api_name}: {threshold_type} >= {threshold_value}"
@@ -280,6 +288,7 @@ class CostTrackingService:
         except Exception as e:
             self.logger.error(f"Error setting budget alert: {e}")
 
+
     def _check_budget_alerts(self, api_name: str):
         """Check if any budget alerts should be triggered."""
         try:
@@ -287,8 +296,8 @@ class CostTrackingService:
                 # Get current usage
                 cursor = conn.execute(
                     "SELECT monthly_cost, requests_made FROM api_usage WHERE api_name = ?",
-                    (api_name,),
-                )
+                        (api_name,),
+                        )
                 usage_data = cursor.fetchone()
                 if not usage_data:
                     return
@@ -298,8 +307,8 @@ class CostTrackingService:
                 # Check alerts
                 cursor = conn.execute(
                     "SELECT alert_id, threshold_type, threshold_value FROM budget_alerts WHERE api_name = ? AND alert_triggered = FALSE",
-                    (api_name,),
-                )
+                        (api_name,),
+                        )
 
                 for alert_id, threshold_type, threshold_value in cursor.fetchall():
                     should_trigger = False
@@ -321,8 +330,8 @@ class CostTrackingService:
                         # Trigger alert
                         conn.execute(
                             "UPDATE budget_alerts SET alert_triggered = TRUE, current_value = ?, updated_at = ? WHERE alert_id = ?",
-                            (current_value, datetime.now(), alert_id),
-                        )
+                                (current_value, datetime.now(), alert_id),
+                                )
 
                         self.logger.warning(
                             f"Budget alert triggered for {api_name}: {threshold_type} reached {current_value} (threshold: {threshold_value})"
@@ -335,11 +344,12 @@ class CostTrackingService:
                         ):
                             self.disable_api(
                                 api_name,
-                                f"Cost threshold exceeded: ${current_value:.2f}",
-                            )
+                                    f"Cost threshold exceeded: ${current_value:.2f}",
+                                    )
 
         except Exception as e:
             self.logger.error(f"Error checking budget alerts: {e}")
+
 
     def disable_api(self, api_name: str, reason: str = "Budget exceeded"):
         """Disable an API due to budget constraints."""
@@ -347,27 +357,29 @@ class CostTrackingService:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     "UPDATE api_usage SET status = 'disabled', updated_at = ? WHERE api_name = ?",
-                    (datetime.now(), api_name),
-                )
+                        (datetime.now(), api_name),
+                        )
 
             self.logger.warning(f"API {api_name} disabled: {reason}")
 
         except Exception as e:
             self.logger.error(f"Error disabling API {api_name}: {e}")
 
+
     def enable_api(self, api_name: str):
-        """Re-enable a disabled API."""
+        """Re - enable a disabled API."""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     "UPDATE api_usage SET status = 'active', updated_at = ? WHERE api_name = ?",
-                    (datetime.now(), api_name),
-                )
+                        (datetime.now(), api_name),
+                        )
 
             self.logger.info(f"API {api_name} enabled")
 
         except Exception as e:
             self.logger.error(f"Error enabling API {api_name}: {e}")
+
 
     def get_cost_recommendations(self) -> List[Dict[str, Any]]:
         """Get cost optimization recommendations."""
@@ -382,10 +394,10 @@ class CostTrackingService:
                     recommendations.append(
                         {
                             "type": "cost_reduction",
-                            "api_name": api["api_name"],
-                            "message": f"Consider switching to free alternative for {api['api_name']} (current cost: ${api['monthly_cost']:.2f}/month)",
-                            "priority": "high",
-                        }
+                                "api_name": api["api_name"],
+                                "message": f"Consider switching to free alternative for {api['api_name']} (current cost: ${api['monthly_cost']:.2f}/month)",
+                                "priority": "high",
+                                }
                     )
 
             # Budget utilization
@@ -393,9 +405,9 @@ class CostTrackingService:
                 recommendations.append(
                     {
                         "type": "budget_warning",
-                        "message": f"Budget utilization at {costs['budget_utilization']:.1f}% - consider disabling non-essential paid APIs",
-                        "priority": "high",
-                    }
+                            "message": f"Budget utilization at {costs['budget_utilization']:.1f}% - consider disabling non - essential paid APIs",
+                            "priority": "high",
+                            }
                 )
 
             # Free tier suggestions
@@ -403,15 +415,16 @@ class CostTrackingService:
                 recommendations.append(
                     {
                         "type": "free_tier",
-                        "message": "Consider using more free tier APIs to reduce costs",
-                        "priority": "medium",
-                    }
+                            "message": "Consider using more free tier APIs to reduce costs",
+                            "priority": "medium",
+                            }
                 )
 
         except Exception as e:
             self.logger.error(f"Error generating cost recommendations: {e}")
 
         return recommendations
+
 
     def export_cost_report(self) -> Dict[str, Any]:
         """Export comprehensive cost report."""
@@ -437,21 +450,20 @@ class CostTrackingService:
 
             return {
                 "report_date": datetime.now().isoformat(),
-                "monthly_summary": costs,
-                "recommendations": recommendations,
-                "daily_costs": daily_costs,
-                "budget_status": {
+                    "monthly_summary": costs,
+                    "recommendations": recommendations,
+                    "daily_costs": daily_costs,
+                    "budget_status": {
                     "monthly_budget": self.monthly_budget,
-                    "spent": costs["total_monthly_cost"],
-                    "remaining": costs["budget_remaining"],
-                    "utilization_percentage": costs["budget_utilization"],
-                },
-            }
+                        "spent": costs["total_monthly_cost"],
+                        "remaining": costs["budget_remaining"],
+                        "utilization_percentage": costs["budget_utilization"],
+                        },
+                    }
 
         except Exception as e:
             self.logger.error(f"Error exporting cost report: {e}")
             return {}
-
 
 # CLI interface for cost tracking
 if __name__ == "__main__":
@@ -460,18 +472,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Cost Tracking Service CLI")
     parser.add_argument(
         "--action",
-        choices=["track", "report", "alert", "disable", "enable"],
-        required=True,
-    )
-    parser.add_argument("--api-name", help="API name")
-    parser.add_argument("--requests", type=int, default=1, help="Number of requests")
-    parser.add_argument("--cost", type=float, default=0.0, help="Cost amount")
+            choices=["track", "report", "alert", "disable", "enable"],
+            required = True,
+            )
+    parser.add_argument("--api - name", help="API name")
+    parser.add_argument("--requests", type = int, default = 1, help="Number of requests")
+    parser.add_argument("--cost", type = float, default = 0.0, help="Cost amount")
     parser.add_argument(
-        "--threshold-type",
-        choices=["cost", "usage", "percentage"],
-        help="Alert threshold type",
-    )
-    parser.add_argument("--threshold-value", type=float, help="Alert threshold value")
+        "--threshold - type",
+            choices=["cost", "usage", "percentage"],
+            help="Alert threshold type",
+            )
+    parser.add_argument("--threshold - value", type = float, help="Alert threshold value")
 
     args = parser.parse_args()
 
@@ -485,7 +497,7 @@ if __name__ == "__main__":
 
     elif args.action == "report":
         report = service.export_cost_report()
-        print(json.dumps(report, indent=2, default=str))
+        print(json.dumps(report, indent = 2, default = str))
 
     elif (
         args.action == "alert"

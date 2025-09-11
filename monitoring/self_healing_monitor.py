@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Self-Healing Monitoring System
+Self - Healing Monitoring System
 Detects stuck processes and automatically restarts failed services
 """
 
@@ -20,14 +20,15 @@ import psutil
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("logs/monitoring.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("logs / monitoring.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class ServiceConfig:
     """Configuration for a monitored service"""
 
@@ -38,14 +39,15 @@ class ServiceConfig:
     max_failures: int = 3
     check_interval: int = 30
     timeout: int = 10
-    failure_count: int = field(default=0)
-    last_check: Optional[datetime] = field(default=None)
-    last_failure: Optional[datetime] = field(default=None)
+    failure_count: int = field(default = 0)
+    last_check: Optional[datetime] = field(default = None)
+    last_failure: Optional[datetime] = field(default = None)
     status: str = field(default="unknown")
 
 
 class SelfHealingMonitor:
-    """Self-healing monitoring system for critical services"""
+    """Self - healing monitoring system for critical services"""
+
 
     def __init__(self):
         self.services: Dict[str, ServiceConfig] = {}
@@ -54,49 +56,53 @@ class SelfHealingMonitor:
         self.restart_cooldown = 60  # seconds between restart attempts
 
         # Create logs directory
-        Path("logs").mkdir(exist_ok=True)
+        Path("logs").mkdir(exist_ok = True)
 
         # Initialize default services
         self._initialize_default_services()
+
 
     def _initialize_default_services(self):
         """Initialize monitoring for default services"""
         self.add_service(
             ServiceConfig(
                 name="main_app",
-                health_url="http://localhost:8000/health",
-                process_name="python3",
-                restart_command=["python3", "main.py"],
-            )
+                    health_url="http://localhost:8000 / health",
+                    process_name="python3",
+                    restart_command=["python3", "main.py"],
+                    )
         )
 
         self.add_service(
             ServiceConfig(
                 name="startup_system",
-                health_url="http://localhost:8000/api/status",
-                process_name="python3",
-                restart_command=[
+                    health_url="http://localhost:8000 / api / status",
+                    process_name="python3",
+                    restart_command=[
                     "python3",
-                    "startup_system.py",
-                    "--mode",
-                    "development",
-                ],
-            )
+                        "startup_system.py",
+                        "--mode",
+                        "development",
+                        ],
+                    )
         )
+
 
     def add_service(self, service: ServiceConfig):
         """Add a service to monitor"""
         self.services[service.name] = service
         logger.info(f"📊 Added service to monitor: {service.name}")
 
+
     def add_alert_callback(self, callback: Callable):
         """Add callback for alerts"""
         self.alert_callbacks.append(callback)
 
+
     async def check_service_health(self, service: ServiceConfig) -> bool:
         """Check if a service is healthy via HTTP health check"""
         try:
-            async with httpx.AsyncClient(timeout=service.timeout) as client:
+            async with httpx.AsyncClient(timeout = service.timeout) as client:
                 response = await client.get(service.health_url)
                 if response.status_code == 200:
                     service.status = "healthy"
@@ -108,6 +114,7 @@ class SelfHealingMonitor:
         except Exception as e:
             service.status = f"unreachable: {str(e)[:50]}"
             return False
+
 
     def check_process_running(self, service: ServiceConfig) -> bool:
         """Check if the service process is running"""
@@ -123,6 +130,7 @@ class SelfHealingMonitor:
             logger.error(f"Error checking process for {service.name}: {e}")
             return False
 
+
     async def restart_service(self, service: ServiceConfig) -> bool:
         """Restart a failed service"""
         try:
@@ -136,10 +144,10 @@ class SelfHealingMonitor:
             logger.info(f"🔄 Restarting service: {service.name}")
             process = await asyncio.create_subprocess_exec(
                 *service.restart_command,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-                cwd=os.getcwd(),
-            )
+                    stdout = asyncio.subprocess.PIPE,
+                    stderr = asyncio.subprocess.PIPE,
+                    cwd = os.getcwd(),
+                    )
 
             # Give it time to start
             await asyncio.sleep(5)
@@ -160,6 +168,7 @@ class SelfHealingMonitor:
             logger.error(f"❌ Failed to restart service {service.name}: {e}")
             return False
 
+
     async def _kill_service_processes(self, service: ServiceConfig):
         """Kill existing service processes"""
         try:
@@ -172,11 +181,12 @@ class SelfHealingMonitor:
                         )
                         proc.terminate()
                         try:
-                            proc.wait(timeout=5)
+                            proc.wait(timeout = 5)
                         except psutil.TimeoutExpired:
                             proc.kill()
         except Exception as e:
             logger.error(f"Error killing processes for {service.name}: {e}")
+
 
     async def _send_alert(self, message: str):
         """Send alert to all registered callbacks"""
@@ -188,6 +198,7 @@ class SelfHealingMonitor:
                     callback(message)
             except Exception as e:
                 logger.error(f"Alert callback failed: {e}")
+
 
     async def monitor_service(self, service: ServiceConfig):
         """Monitor a single service"""
@@ -215,7 +226,7 @@ class SelfHealingMonitor:
                 if (
                     service.last_failure
                     and datetime.now() - service.last_failure
-                    < timedelta(seconds=self.restart_cooldown)
+                    < timedelta(seconds = self.restart_cooldown)
                 ):
                     logger.info(f"⏳ Service {service.name} in restart cooldown")
                     return
@@ -236,9 +247,10 @@ class SelfHealingMonitor:
                 logger.info(f"✅ Service {service.name} recovered")
                 service.failure_count = 0
 
+
     async def monitoring_loop(self):
         """Main monitoring loop"""
-        logger.info("🔍 Starting self-healing monitoring loop")
+        logger.info("🔍 Starting self - healing monitoring loop")
 
         while self.running:
             try:
@@ -248,12 +260,12 @@ class SelfHealingMonitor:
                     if (
                         not service.last_check
                         or datetime.now() - service.last_check
-                        >= timedelta(seconds=service.check_interval)
+                        >= timedelta(seconds = service.check_interval)
                     ):
                         tasks.append(self.monitor_service(service))
 
                 if tasks:
-                    await asyncio.gather(*tasks, return_exceptions=True)
+                    await asyncio.gather(*tasks, return_exceptions = True)
 
                 # Wait before next check
                 await asyncio.sleep(10)
@@ -262,6 +274,7 @@ class SelfHealingMonitor:
                 logger.error(f"Error in monitoring loop: {e}")
                 await asyncio.sleep(30)
 
+
     async def start(self):
         """Start the monitoring system"""
         if self.running:
@@ -269,37 +282,38 @@ class SelfHealingMonitor:
             return
 
         self.running = True
-        logger.info("🚀 Starting self-healing monitoring system")
+        logger.info("🚀 Starting self - healing monitoring system")
 
         # Start monitoring loop
         await self.monitoring_loop()
 
+
     async def stop(self):
         """Stop the monitoring system"""
-        logger.info("🛑 Stopping self-healing monitoring system")
+        logger.info("🛑 Stopping self - healing monitoring system")
         self.running = False
+
 
     def get_status(self) -> Dict:
         """Get current status of all monitored services"""
         return {
             "monitoring_active": self.running,
-            "services": {
+                "services": {
                 name: {
                     "status": service.status,
-                    "failure_count": service.failure_count,
-                    "last_check": (
+                        "failure_count": service.failure_count,
+                        "last_check": (
                         service.last_check.isoformat() if service.last_check else None
                     ),
-                    "last_failure": (
+                        "last_failure": (
                         service.last_failure.isoformat()
                         if service.last_failure
                         else None
                     ),
-                }
+                        }
                 for name, service in self.services.items()
             },
-        }
-
+                }
 
 # Global monitor instance
 monitor = SelfHealingMonitor()
@@ -309,6 +323,8 @@ async def main():
     """Main entry point for standalone monitoring"""
 
     # Add console alert callback
+
+
     def console_alert(message: str):
         print(f"🚨 ALERT: {message}")
 
@@ -320,7 +336,6 @@ async def main():
         logger.info("Received interrupt signal")
     finally:
         await monitor.stop()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

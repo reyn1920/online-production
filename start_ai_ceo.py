@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 AI CEO Master Startup Script - Full Automation Launch
 
@@ -6,7 +6,7 @@ This script launches the complete AI CEO automation system with:
 1. AI CEO Master Controller
 2. Full Automation Pipeline
 3. Autonomous Decision Engine
-4. Self-Healing Protocols
+4. Self - Healing Protocols
 5. Monitoring Dashboard
 6. All AI Agents and Services
 
@@ -43,9 +43,9 @@ except ImportError as e:
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("ai_ceo_system.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("ai_ceo_system.log"), logging.StreamHandler()],
 )
 
 logger = logging.getLogger(__name__)
@@ -54,16 +54,17 @@ logger = logging.getLogger(__name__)
 class AICEOSystemLauncher:
     """Master launcher for the complete AI CEO automation system."""
 
+
     def __init__(self):
         self.components = {}
         self.running = False
         self.startup_order = [
             "decision_engine",
-            "pipeline",
-            "healing_protocols",
-            "master_controller",
-            "monitoring_dashboard",
-        ]
+                "pipeline",
+                "healing_protocols",
+                "master_controller",
+                "monitoring_dashboard",
+                ]
         self.shutdown_order = list(reversed(self.startup_order))
 
         # System configuration
@@ -79,6 +80,7 @@ class AICEOSystemLauncher:
 
         logger.info("🚀 AI CEO System Launcher initialized")
 
+
     def _load_configuration(self) -> Dict[str, Any]:
         """Load system configuration."""
         config_file = Path("ai_ceo_config.json")
@@ -86,41 +88,41 @@ class AICEOSystemLauncher:
         default_config = {
             "system": {
                 "startup_timeout": 300,
-                "health_check_interval": 30,
-                "auto_restart": True,
-                "max_restart_attempts": 3,
-            },
-            "components": {
+                    "health_check_interval": 30,
+                    "auto_restart": True,
+                    "max_restart_attempts": 3,
+                    },
+                "components": {
                 "decision_engine": {"enabled": True, "startup_delay": 0},
-                "pipeline": {"enabled": True, "startup_delay": 5},
-                "healing_protocols": {"enabled": True, "startup_delay": 10},
-                "master_controller": {"enabled": True, "startup_delay": 15},
-                "monitoring_dashboard": {
+                    "pipeline": {"enabled": True, "startup_delay": 5},
+                    "healing_protocols": {"enabled": True, "startup_delay": 10},
+                    "master_controller": {"enabled": True, "startup_delay": 15},
+                    "monitoring_dashboard": {
                     "enabled": True,
-                    "startup_delay": 20,
-                    "port": 5000,
-                },
-            },
-            "agents": {
+                        "startup_delay": 20,
+                        "port": 5000,
+                        },
+                    },
+                "agents": {
                 "marketing_agent": True,
-                "financial_agent": True,
-                "monetization_agent": True,
-                "stealth_automation_agent": True,
-                "content_generation_agent": True,
-            },
-            "apis": {
+                    "financial_agent": True,
+                    "monetization_agent": True,
+                    "stealth_automation_agent": True,
+                    "content_generation_agent": True,
+                    },
+                "apis": {
                 "youtube_api": True,
-                "gmail_api": True,
-                "social_media_apis": True,
-                "payment_apis": True,
-            },
-            "monitoring": {
+                    "gmail_api": True,
+                    "social_media_apis": True,
+                    "payment_apis": True,
+                    },
+                "monitoring": {
                 "enable_real_time_alerts": True,
-                "enable_performance_tracking": True,
-                "enable_business_metrics": True,
-                "dashboard_refresh_rate": 5,
-            },
-        }
+                    "enable_performance_tracking": True,
+                    "enable_business_metrics": True,
+                    "dashboard_refresh_rate": 5,
+                    },
+                }
 
         if config_file.exists():
             try:
@@ -134,15 +136,17 @@ class AICEOSystemLauncher:
         else:
             # Save default configuration
             with open(config_file, "w") as f:
-                json.dump(default_config, f, indent=2)
+                json.dump(default_config, f, indent = 2)
             logger.info(f"📋 Default configuration saved to {config_file}")
 
         return default_config
+
 
     def _signal_handler(self, signum, frame):
         """Handle system signals for graceful shutdown."""
         logger.info(f"🛑 Received signal {signum}. Initiating graceful shutdown...")
         self.shutdown_system()
+
 
     def start_system(self, components: Optional[List[str]] = None):
         """Start the complete AI CEO system."""
@@ -156,9 +160,9 @@ class AICEOSystemLauncher:
         components_to_start = components or self.startup_order
 
         try:
-            # Pre-startup checks
+            # Pre - startup checks
             if not self._pre_startup_checks():
-                logger.error("❌ Pre-startup checks failed")
+                logger.error("❌ Pre - startup checks failed")
                 return False
 
             # Start components in order
@@ -219,28 +223,30 @@ class AICEOSystemLauncher:
             self.shutdown_system()
             return False
 
+
     def _pre_startup_checks(self) -> bool:
-        """Perform pre-startup system checks."""
-        logger.info("🔍 Performing pre-startup checks...")
+        """Perform pre - startup system checks."""
+        logger.info("🔍 Performing pre - startup checks...")
 
         checks = [
             self._check_python_version,
-            self._check_required_files,
-            self._check_system_resources,
-            self._check_network_connectivity,
-            self._check_database_access,
-        ]
+                self._check_required_files,
+                self._check_system_resources,
+                self._check_network_connectivity,
+                self._check_database_access,
+                ]
 
         for check in checks:
             try:
                 if not check():
                     return False
             except Exception as e:
-                logger.error(f"❌ Pre-startup check failed: {e}")
+                logger.error(f"❌ Pre - startup check failed: {e}")
                 return False
 
-        logger.info("✅ All pre-startup checks passed")
+        logger.info("✅ All pre - startup checks passed")
         return True
+
 
     def _check_python_version(self) -> bool:
         """Check Python version compatibility."""
@@ -250,15 +256,16 @@ class AICEOSystemLauncher:
         logger.info(f"✅ Python version: {sys.version.split()[0]}")
         return True
 
+
     def _check_required_files(self) -> bool:
         """Check for required system files."""
         required_files = [
             "ai_ceo_master_controller.py",
-            "full_automation_pipeline.py",
-            "autonomous_decision_engine.py",
-            "self_healing_protocols.py",
-            "monitoring_dashboard.py",
-        ]
+                "full_automation_pipeline.py",
+                "autonomous_decision_engine.py",
+                "self_healing_protocols.py",
+                "monitoring_dashboard.py",
+                ]
 
         missing_files = []
         for file_path in required_files:
@@ -271,6 +278,7 @@ class AICEOSystemLauncher:
 
         logger.info("✅ All required files present")
         return True
+
 
     def _check_system_resources(self) -> bool:
         """Check system resource availability."""
@@ -305,17 +313,19 @@ class AICEOSystemLauncher:
             logger.error(f"❌ Resource check failed: {e}")
             return False
 
+
     def _check_network_connectivity(self) -> bool:
         """Check network connectivity."""
         try:
             import socket
 
-            socket.create_connection(("8.8.8.8", 53), timeout=5)
+            socket.create_connection(("8.8.8.8", 53), timeout = 5)
             logger.info("✅ Network connectivity available")
             return True
         except OSError:
             logger.warning("⚠️ Limited network connectivity (offline mode)")
             return True  # Allow offline operation
+
 
     def _check_database_access(self) -> bool:
         """Check database access."""
@@ -339,6 +349,7 @@ class AICEOSystemLauncher:
             logger.error(f"❌ Database access check failed: {e}")
             return False
 
+
     def _start_component(self, component_name: str) -> bool:
         """Start a specific system component."""
         try:
@@ -360,6 +371,7 @@ class AICEOSystemLauncher:
             logger.error(f"❌ Error starting {component_name}: {e}")
             return False
 
+
     def _start_decision_engine(self) -> bool:
         """Start the autonomous decision engine."""
         try:
@@ -373,6 +385,7 @@ class AICEOSystemLauncher:
         except Exception as e:
             logger.error(f"❌ Failed to start decision engine: {e}")
             return False
+
 
     def _start_pipeline(self) -> bool:
         """Start the full automation pipeline."""
@@ -388,8 +401,9 @@ class AICEOSystemLauncher:
             logger.error(f"❌ Failed to start pipeline: {e}")
             return False
 
+
     def _start_healing_protocols(self) -> bool:
-        """Start the self-healing protocols."""
+        """Start the self - healing protocols."""
         try:
             # Connect to pipeline if available
             pipeline = self.components.get("pipeline")
@@ -398,12 +412,13 @@ class AICEOSystemLauncher:
             healing_protocols.start_healing_protocols()
 
             self.components["healing_protocols"] = healing_protocols
-            logger.info("🔧 Self-Healing Protocols started")
+            logger.info("🔧 Self - Healing Protocols started")
             return True
 
         except Exception as e:
             logger.error(f"❌ Failed to start healing protocols: {e}")
             return False
+
 
     def _start_master_controller(self) -> bool:
         """Start the AI CEO master controller."""
@@ -414,10 +429,10 @@ class AICEOSystemLauncher:
             healing_protocols = self.components.get("healing_protocols")
 
             master_controller = AICEOMasterController(
-                pipeline=pipeline,
-                decision_engine=decision_engine,
-                healing_system=healing_protocols,
-            )
+                pipeline = pipeline,
+                    decision_engine = decision_engine,
+                    healing_system = healing_protocols,
+                    )
             master_controller.start_ai_ceo()
 
             self.components["master_controller"] = master_controller
@@ -428,6 +443,7 @@ class AICEOSystemLauncher:
             logger.error(f"❌ Failed to start master controller: {e}")
             return False
 
+
     def _start_monitoring_dashboard(self) -> bool:
         """Start the monitoring dashboard."""
         try:
@@ -437,22 +453,22 @@ class AICEOSystemLauncher:
             healing_protocols = self.components.get("healing_protocols")
 
             dashboard = MonitoringDashboard(
-                pipeline=pipeline,
-                ai_ceo=master_controller,
-                healing_system=healing_protocols,
-            )
+                pipeline = pipeline,
+                    ai_ceo = master_controller,
+                    healing_system = healing_protocols,
+                    )
 
             # Start dashboard in separate thread
             dashboard_thread = threading.Thread(
-                target=dashboard.run_dashboard,
-                kwargs={
+                target = dashboard.run_dashboard,
+                    kwargs={
                     "host": "0.0.0.0",
-                    "port": self.config["components"]["monitoring_dashboard"].get(
+                        "port": self.config["components"]["monitoring_dashboard"].get(
                         "port", 5000
                     ),
-                },
-                daemon=True,
-            )
+                        },
+                    daemon = True,
+                    )
             dashboard_thread.start()
 
             self.components["monitoring_dashboard"] = dashboard
@@ -465,14 +481,16 @@ class AICEOSystemLauncher:
             logger.error(f"❌ Failed to start monitoring dashboard: {e}")
             return False
 
+
     def _start_system_monitoring(self):
-        """Start system-wide monitoring."""
+        """Start system - wide monitoring."""
         logger.info("📊 Starting system monitoring...")
 
         # Start monitoring thread
-        monitoring_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
+        monitoring_thread = threading.Thread(target = self._monitoring_loop, daemon = True)
         monitoring_thread.start()
         self.threads["system_monitoring"] = monitoring_thread
+
 
     def _monitoring_loop(self):
         """Main system monitoring loop."""
@@ -497,6 +515,7 @@ class AICEOSystemLauncher:
 
         logger.info("🛑 System monitoring loop stopped")
 
+
     def _check_component_health(self):
         """Check health of all components."""
         for component_name, component in self.components.items():
@@ -508,13 +527,14 @@ class AICEOSystemLauncher:
                             f"⚠️ Component {component_name} status: {status.get('status')}"
                         )
 
-                        # Auto-restart if enabled
+                        # Auto - restart if enabled
                         if self.config["system"].get("auto_restart", True):
-                            logger.info(f"🔄 Auto-restarting {component_name}")
+                            logger.info(f"🔄 Auto - restarting {component_name}")
                             self._restart_component(component_name)
 
             except Exception as e:
                 logger.error(f"❌ Error checking {component_name} health: {e}")
+
 
     def _restart_component(self, component_name: str):
         """Restart a specific component."""
@@ -540,13 +560,14 @@ class AICEOSystemLauncher:
         except Exception as e:
             logger.error(f"❌ Error restarting {component_name}: {e}")
 
+
     def _log_system_status(self):
         """Log current system status."""
         try:
             status = {
                 "timestamp": datetime.now().isoformat(),
-                "running_components": len(self.components),
-                "system_health": (
+                    "running_components": len(self.components),
+                    "system_health": (
                     "healthy"
                     if all(
                         comp.get_status().get("status") == "running"
@@ -555,7 +576,7 @@ class AICEOSystemLauncher:
                     )
                     else "degraded"
                 ),
-            }
+                    }
 
             # Log to file periodically (every 10 minutes)
             if int(time.time()) % 600 == 0:
@@ -563,6 +584,7 @@ class AICEOSystemLauncher:
 
         except Exception as e:
             logger.error(f"❌ Error logging system status: {e}")
+
 
     def shutdown_system(self):
         """Gracefully shutdown the AI CEO system."""
@@ -591,11 +613,12 @@ class AICEOSystemLauncher:
         for thread_name, thread in self.threads.items():
             try:
                 logger.info(f"⏳ Waiting for {thread_name} thread...")
-                thread.join(timeout=10)
+                thread.join(timeout = 10)
             except Exception as e:
                 logger.error(f"❌ Error joining {thread_name} thread: {e}")
 
         logger.info("✅ AI CEO System shutdown complete")
+
 
     def get_system_status(self) -> Dict[str, Any]:
         """Get current system status."""
@@ -610,14 +633,15 @@ class AICEOSystemLauncher:
 
             return {
                 "system_running": self.running,
-                "components": component_status,
-                "startup_time": getattr(self, "startup_time", None),
-                "configuration": self.config,
-            }
+                    "components": component_status,
+                    "startup_time": getattr(self, "startup_time", None),
+                    "configuration": self.config,
+                    }
 
         except Exception as e:
             logger.error(f"❌ Error getting system status: {e}")
             return {"error": str(e)}
+
 
     def run_interactive_mode(self):
         """Run in interactive mode with command interface."""
@@ -626,11 +650,11 @@ class AICEOSystemLauncher:
 
         while self.running:
             try:
-                command = input("AI-CEO> ").strip().lower()
+                command = input("AI - CEO> ").strip().lower()
 
                 if command == "status":
                     status = self.get_system_status()
-                    print(json.dumps(status, indent=2, default=str))
+                    print(json.dumps(status, indent = 2, default = str))
 
                 elif command.startswith("restart "):
                     component = command.split(" ", 1)[1]
@@ -689,11 +713,11 @@ def main():
         if args.status:
             # Show status and exit
             status = launcher.get_system_status()
-            print(json.dumps(status, indent=2, default=str))
+            print(json.dumps(status, indent = 2, default = str))
             return
 
         # Start the system
-        success = launcher.start_system(components=args.components)
+        success = launcher.start_system(components = args.components)
 
         if not success:
             logger.error("❌ Failed to start AI CEO system")
@@ -708,7 +732,7 @@ def main():
         else:
             # Run in daemon mode
             logger.info("🤖 AI CEO System running in daemon mode")
-            logger.info("Press Ctrl+C to shutdown")
+            logger.info("Press Ctrl + C to shutdown")
 
             try:
                 while launcher.running:
@@ -723,7 +747,6 @@ def main():
 
     finally:
         launcher.shutdown_system()
-
 
 if __name__ == "__main__":
     main()

@@ -13,290 +13,293 @@ PROVIDERS = {
         Provider(
             "newsapi", "NewsAPI", "https://newsapi.org", "General news aggregation"
         ),
-        Provider(
+            Provider(
             "guardian",
-            "The Guardian",
-            "https://open-platform.theguardian.com",
-            "UK news and opinion",
-        ),
-        Provider(
+                "The Guardian",
+                "https://open - platform.theguardian.com",
+                "UK news and opinion",
+                ),
+            Provider(
             "nytimes",
-            "New York Times",
-            "https://developer.nytimes.com",
-            "US news of record",
-        ),
-    ],
-    "ai": [
+                "New York Times",
+                "https://developer.nytimes.com",
+                "US news of record",
+                ),
+            ],
+        "ai": [
         Provider(
             "arxiv", "arXiv", "https://arxiv.org", "Academic papers and preprints"
         ),
-        Provider(
+            Provider(
             "semanticscholar",
-            "Semantic Scholar",
-            "https://www.semanticscholar.org",
-            "AI research papers",
-        ),
-    ],
-    "wellness": [
+                "Semantic Scholar",
+                "https://www.semanticscholar.org",
+                "AI research papers",
+                ),
+            ],
+        "wellness": [
         Provider(
             "usda",
-            "USDA FoodData",
-            "https://fdc.nal.usda.gov",
-            "Nutritional information",
-        ),
-        Provider(
+                "USDA FoodData",
+                "https://fdc.nal.usda.gov",
+                "Nutritional information",
+                ),
+            Provider(
             "edamam",
-            "Edamam",
-            "https://developer.edamam.com",
-            "Recipe and nutrition API",
-        ),
-    ],
-    "sports": [
+                "Edamam",
+                "https://developer.edamam.com",
+                "Recipe and nutrition API",
+                ),
+            ],
+        "sports": [
         Provider(
             "balldontlie",
-            "Ball Don't Lie",
-            "https://www.balldontlie.io",
-            "NBA games and stats",
-        ),
-        Provider(
+                "Ball Don't Lie",
+                "https://www.balldontlie.io",
+                "NBA games and stats",
+                ),
+            Provider(
             "thesportsdb",
-            "TheSportsDB",
-            "https://www.thesportsdb.com",
-            "Sports data and schedules",
-        ),
-        Provider(
+                "TheSportsDB",
+                "https://www.thesportsdb.com",
+                "Sports data and schedules",
+                ),
+            Provider(
             "football_data",
-            "Football-Data.org",
-            "https://www.football-data.org",
-            "Soccer/football data",
-        ),
-    ],
-    "finance": [
+                "Football - Data.org",
+                "https://www.football - data.org",
+                "Soccer / football data",
+                ),
+            ],
+        "finance": [
         Provider("finnhub", "Finnhub", "https://finnhub.io", "Stock market data"),
-        Provider(
+            Provider(
             "alphavantage",
-            "Alpha Vantage",
-            "https://www.alphavantage.co",
-            "Financial data and forex",
-        ),
-        Provider(
+                "Alpha Vantage",
+                "https://www.alphavantage.co",
+                "Financial data and forex",
+                ),
+            Provider(
             "coingecko", "CoinGecko", "https://www.coingecko.com", "Cryptocurrency data"
         ),
-        Provider("coincap", "CoinCap", "https://coincap.io", "Crypto market data"),
-    ],
-    "weather": [
+            Provider("coincap", "CoinCap", "https://coincap.io", "Crypto market data"),
+            ],
+        "weather": [
         Provider(
-            "openmeteo", "Open-Meteo", "https://open-meteo.com", "Weather forecasts"
+            "openmeteo", "Open - Meteo", "https://open - meteo.com", "Weather forecasts"
         ),
-        Provider(
+            Provider(
             "meteostat", "Meteostat", "https://meteostat.net", "Historical weather data"
         ),
-        Provider(
+            Provider(
             "weather_gov", "Weather.gov", "https://www.weather.gov", "US weather alerts"
         ),
-    ],
-    "geocoding": [
+            ],
+        "geocoding": [
         Provider(
             "openmeteo_geo",
-            "Open-Meteo Geocoding",
-            "https://open-meteo.com",
-            "Location geocoding",
-        )
+                "Open - Meteo Geocoding",
+                "https://open - meteo.com",
+                "Location geocoding",
+                )
     ],
-    "pets": [
+        "pets": [
         Provider(
             "thedogapi",
-            "TheDogAPI",
-            "https://api.thedogapi.com",
-            "Dog breeds and images",
-        ),
-        Provider(
+                "TheDogAPI",
+                "https://api.thedogapi.com",
+                "Dog breeds and images",
+                ),
+            Provider(
             "thecatapi",
-            "TheCatAPI",
-            "https://api.thecatapi.com",
-            "Cat breeds and images",
-        ),
-        Provider(
+                "TheCatAPI",
+                "https://api.thecatapi.com",
+                "Cat breeds and images",
+                ),
+            Provider(
             "petfinder",
-            "Petfinder",
-            "https://api.petfinder.com",
-            "Pet adoption listings",
-        ),
-    ],
-    "pets_affiliates": [
+                "Petfinder",
+                "https://api.petfinder.com",
+                "Pet adoption listings",
+                ),
+            ],
+        "pets_affiliates": [
         Provider(
             "chewy",
-            "Chewy",
-            "https://www.chewy.com/affiliates",
-            "Pet supplies affiliate program",
-        ),
-        Provider(
+                "Chewy",
+                "https://www.chewy.com / affiliates",
+                "Pet supplies affiliate program",
+                ),
+            Provider(
             "petco",
-            "Petco",
-            "https://www.petco.com/shop/en/petcostore/content/affiliate-program",
-            "Pet retailer affiliate program",
-        ),
-        Provider(
+                "Petco",
+                "https://www.petco.com / shop / en / petcostore / content / affiliate - program",
+                "Pet retailer affiliate program",
+                ),
+            Provider(
             "petsmart",
-            "PetSmart",
-            "https://www.petsmart.com/help/affiliate-program/",
-            "Pet store affiliate program",
-        ),
-        Provider(
+                "PetSmart",
+                "https://www.petsmart.com / help / affiliate - program/",
+                "Pet store affiliate program",
+                ),
+            Provider(
             "rover",
-            "Rover",
-            "https://join.rover.com/affiliates/",
-            "Pet sitting/walking affiliate program",
-        ),
-        Provider(
+                "Rover",
+                "https://join.rover.com / affiliates/",
+                "Pet sitting / walking affiliate program",
+                ),
+            Provider(
             "embark",
-            "Embark Dog DNA",
-            "https://www.embarkvet.com/affiliates/",
-            "Dog DNA testing affiliate program",
-        ),
-        Provider(
+                "Embark Dog DNA",
+                "https://www.embarkvet.com / affiliates/",
+                "Dog DNA testing affiliate program",
+                ),
+            Provider(
             "barkbox",
-            "BarkBox",
-            "https://www.barkbox.com/affiliates",
-            "Pet subscription box affiliate program",
-        ),
-    ],
-    "pets_birds_data": {
+                "BarkBox",
+                "https://www.barkbox.com / affiliates",
+                "Pet subscription box affiliate program",
+                ),
+            ],
+        "pets_birds_data": {
         "members": ["ebird", "zoo_animal_api"],
-        "strategy": "priority_round_robin",
-    },
-    "pets_exotics_info": {
+            "strategy": "priority_round_robin",
+            },
+        "pets_exotics_info": {
         "members": ["fishwatch", "zoo_animal_api"],
-        "strategy": "priority_round_robin",
-    },
-    "pets_dog_images": {
+            "strategy": "priority_round_robin",
+            },
+        "pets_dog_images": {
         "members": ["thedogapi", "dog_ceo"],
-        "strategy": "priority_round_robin",
-    },
-    "pets_birds": [
+            "strategy": "priority_round_robin",
+            },
+        "pets_birds": [
         Provider(
             "ebird",
-            "eBird (Bird Sightings)",
-            "https://api.ebird.org/v2",
-            "Bird observation and sighting data",
-        )
+                "eBird (Bird Sightings)",
+                "https://api.ebird.org / v2",
+                "Bird observation and sighting data",
+                )
     ],
-    "pets_misc": [
+        "pets_misc": [
         Provider(
             "zoo_animal_api",
-            "Zoo Animal API (Random Animal)",
-            "https://zoo-animal-api.vercel.app",
-            "Random animal facts and information",
-        ),
-        Provider(
+                "Zoo Animal API (Random Animal)",
+                "https://zoo - animal - api.vercel.app",
+                "Random animal facts and information",
+                ),
+            Provider(
             "dog_ceo",
-            "Dog CEO (Images/Breeds)",
-            "https://dog.ceo",
-            "Dog breed images and information",
-        ),
-    ],
-    "pets_fish": [
+                "Dog CEO (Images / Breeds)",
+                "https://dog.ceo",
+                "Dog breed images and information",
+                ),
+            ],
+        "pets_fish": [
         Provider(
             "fishwatch",
-            "NOAA FishWatch (Species Info)",
-            "https://www.fishwatch.gov",
-            "Fish species and sustainability information",
-        )
+                "NOAA FishWatch (Species Info)",
+                "https://www.fishwatch.gov",
+                "Fish species and sustainability information",
+                )
     ],
-    "pets_care": [
+        "pets_care": [
         Provider(
             "vetster",
-            "Vetster (Tele-vet)",
-            "https://api.vetster.com",
-            "Veterinary telemedicine services",
-        ),
-        Provider(
+                "Vetster (Tele - vet)",
+                "https://api.vetster.com",
+                "Veterinary telemedicine services",
+                ),
+            Provider(
             "pawp",
-            "Pawp (Tele-vet)",
-            "https://api.pawp.com",
-            "Online veterinary consultations",
-        ),
-        Provider(
+                "Pawp (Tele - vet)",
+                "https://api.pawp.com",
+                "Online veterinary consultations",
+                ),
+            Provider(
             "airvet",
-            "Airvet (Tele-vet)",
-            "https://api.airvet.com",
-            "Virtual veterinary care platform",
-        ),
-    ],
-    "scheduling": [
+                "Airvet (Tele - vet)",
+                "https://api.airvet.com",
+                "Virtual veterinary care platform",
+                ),
+            ],
+        "scheduling": [
         Provider(
             "calendly",
-            "Calendly (Scheduling)",
-            "https://api.calendly.com",
-            "Appointment scheduling and calendar management",
-        )
+                "Calendly (Scheduling)",
+                "https://api.calendly.com",
+                "Appointment scheduling and calendar management",
+                )
     ],
-    "gambling": [
+        "gambling": [
         Provider(
             "theoddsapi",
-            "The Odds API",
-            "https://the-odds-api.com",
-            "Sports betting odds",
-        ),
-        Provider(
+                "The Odds API",
+                "https://the - odds - api.com",
+                "Sports betting odds",
+                ),
+            Provider(
             "apisports_odds",
-            "API-Sports",
-            "https://rapidapi.com/api-sports",
-            "Sports odds via RapidAPI",
-        ),
-    ],
-    "birds_exotics_affiliates": {
+                "API - Sports",
+                "https://rapidapi.com / api - sports",
+                "Sports odds via RapidAPI",
+                ),
+            ],
+        "birds_exotics_affiliates": {
         "members": [
             {
                 "id": "tractor_supply",
-                "name": "Tractor Supply (Feed/Farm/Poultry)",
-                "url": "https://www.tractorsupply.com/tsc/cms/affiliate-program",
-                "enabled": False,
-                "status_light": "purple",
-            },
-            {
+                    "name": "Tractor Supply (Feed / Farm / Poultry)",
+                    "url": "https://www.tractorsupply.com / tsc / cms / affiliate - program",
+                    "enabled": False,
+                    "status_light": "purple",
+                    },
+                {
                 "id": "only_natural_pet",
-                "name": "Only Natural Pet",
-                "url": "https://www.onlynaturalpet.com/pages/affiliate-program",
-                "enabled": False,
-                "status_light": "purple",
-            },
-            {
+                    "name": "Only Natural Pet",
+                    "url": "https://www.onlynaturalpet.com / pages / affiliate - program",
+                    "enabled": False,
+                    "status_light": "purple",
+                    },
+                {
                 "id": "zooplus",
-                "name": "Zooplus (EU)",
-                "url": "https://www.zooplus.com/info/about/affiliate",
-                "enabled": False,
-                "status_light": "purple",
-            },
-            {
+                    "name": "Zooplus (EU)",
+                    "url": "https://www.zooplus.com / info / about / affiliate",
+                    "enabled": False,
+                    "status_light": "purple",
+                    },
+                {
                 "id": "petsuppliesplus",
-                "name": "Pet Supplies Plus",
-                "url": "https://www.petsuppliesplus.com/our-company/affiliate-program",
-                "enabled": False,
-                "status_light": "purple",
+                    "name": "Pet Supplies Plus",
+                    "url": "https://www.petsuppliesplus.com / our - company / affiliate - program",
+                    "enabled": False,
+                    "status_light": "purple",
+                    },
+                ],
+            "strategy": "priority_round_robin",
             },
-        ],
-        "strategy": "priority_round_robin",
-    },
 }
 
-
 # --- Politics / General news
-@router.get("/news/politics")
+@router.get("/news / politics")
+
+
 async def politics_news(topic: str = Query("election")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "guardian":
             key = get_secret("GUARDIAN_API_KEY")
             r = await client.get(
-                "https://content.guardianapis.com/search",
-                params={
-                    "api-key": key,
-                    "q": topic,
-                    "order-by": "newest",
-                    "page-size": 10,
-                    "show-fields": "trailText,thumbnail",
-                },
-            )
+                "https://content.guardianapis.com / search",
+                    params={
+                    "api - key": key,
+                        "q": topic,
+                        "order - by": "newest",
+                        "page - size": 10,
+                        "show - fields": "trailText,thumbnail",
+                        },
+                    )
             r.raise_for_status()
             js = r.json()
             return [
@@ -306,37 +309,37 @@ async def politics_news(topic: str = Query("election")):
         if p.id == "newsapi":
             key = get_secret("NEWSAPI_KEY")
             r = await client.get(
-                "https://newsapi.org/v2/everything",
-                headers={"Authorization": key},
-                params={
+                "https://newsapi.org / v2 / everything",
+                    headers={"Authorization": key},
+                    params={
                     "q": topic,
-                    "sortBy": "publishedAt",
-                    "pageSize": 10,
-                    "language": "en",
-                },
-            )
+                        "sortBy": "publishedAt",
+                        "pageSize": 10,
+                        "language": "en",
+                        },
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": a["title"],
-                    "url": a["url"],
-                    "source": a.get("source", {}).get("name", "NewsAPI"),
-                }
+                        "url": a["url"],
+                        "source": a.get("source", {}).get("name", "NewsAPI"),
+                        }
                 for a in js.get("articles", [])
             ]
         if p.id == "gdelt":
             # GDELT query: recent English articles with keyword
             r = await client.get(
-                "https://api.gdeltproject.org/api/v2/doc/doc",
-                params={
+                "https://api.gdeltproject.org / api / v2 / doc / doc",
+                    params={
                     "query": topic,
-                    "mode": "ArtList",
-                    "timespan": "1d",
-                    "format": "json",
-                    "maxrecords": 50,
-                },
-            )
+                        "mode": "ArtList",
+                        "timespan": "1d",
+                        "format": "json",
+                        "maxrecords": 50,
+                        },
+                    )
             r.raise_for_status()
             js = r.json()
             return [
@@ -346,26 +349,26 @@ async def politics_news(topic: str = Query("election")):
         if p.id == "hackernews":
             # HN Search by Algolia (no key)
             r = await client.get(
-                "https://hn.algolia.com/api/v1/search",
-                params={"query": topic, "tags": "story"},
-            )
+                "https://hn.algolia.com / api / v1 / search",
+                    params={"query": topic, "tags": "story"},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": h["title"],
-                    "url": h["url"]
-                    or f"https://news.ycombinator.com/item?id={h['objectID']}",
-                    "source": "HN",
-                }
+                        "url": h["url"]
+                    or f"https://news.ycombinator.com / item?id={h['objectID']}",
+                        "source": "HN",
+                        }
                 for h in js.get("hits", [])
             ]
         if p.id == "gnews":
             key = get_secret("GNEWS_KEY")
             r = await client.get(
-                "https://gnews.io/api/v4/search",
-                params={"q": topic, "lang": "en", "max": 10, "token": key},
-            )
+                "https://gnews.io / api / v4 / search",
+                    params={"q": topic, "lang": "en", "max": 10, "token": key},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
@@ -379,10 +382,13 @@ async def politics_news(topic: str = Query("election")):
     )
     return {"topic": topic, "items": results}
 
-
 # --- Tech news / launches
-@router.get("/news/tech")
+@router.get("/news / tech")
+
+
 async def tech_news(topic: str = Query("gpu")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "producthunt":
             token = get_secret("PRODUCTHUNT_TOKEN")
@@ -391,54 +397,54 @@ async def tech_news(topic: str = Query("gpu")):
                 "query": f'query {{ posts(order: RANKING, first: 10, query: "{topic}") {{ edges {{ node {{ name url tagline }} }} }} }}'
             }
             r = await client.post(
-                "https://api.producthunt.com/v2/api/graphql",
-                headers={
+                "https://api.producthunt.com / v2 / api / graphql",
+                    headers={
                     "Authorization": f"Bearer {token}",
-                    "Content-Type": "application/json",
-                },
-                json=q,
-            )
+                        "Content - Type": "application / json",
+                        },
+                    json = q,
+                    )
             r.raise_for_status()
             js = r.json()
             edges = js.get("data", {}).get("posts", {}).get("edges", [])
             return [
                 {
                     "title": e["node"]["name"],
-                    "url": e["node"]["url"],
-                    "source": "ProductHunt",
-                }
+                        "url": e["node"]["url"],
+                        "source": "ProductHunt",
+                        }
                 for e in edges
             ]
         if p.id == "github":
             r = await client.get(
-                "https://api.github.com/search/repositories",
-                params={"q": topic, "sort": "stars", "order": "desc", "per_page": 10},
-                headers={"Accept": "application/vnd.github+json"},
-            )
+                "https://api.github.com / search / repositories",
+                    params={"q": topic, "sort": "stars", "order": "desc", "per_page": 10},
+                    headers={"Accept": "application / vnd.github + json"},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": repo["full_name"],
-                    "url": repo["html_url"],
-                    "source": "GitHub",
-                }
+                        "url": repo["html_url"],
+                        "source": "GitHub",
+                        }
                 for repo in js.get("items", [])
             ]
         if p.id == "hackernews":
             r = await client.get(
-                "https://hn.algolia.com/api/v1/search",
-                params={"query": topic, "tags": "story"},
-            )
+                "https://hn.algolia.com / api / v1 / search",
+                    params={"query": topic, "tags": "story"},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": h["title"],
-                    "url": h["url"]
-                    or f"https://news.ycombinator.com/item?id={h['objectID']}",
-                    "source": "HN",
-                }
+                        "url": h["url"]
+                    or f"https://news.ycombinator.com / item?id={h['objectID']}",
+                        "source": "HN",
+                        }
                 for h in js.get("hits", [])
             ]
         raise RuntimeError("unknown tech provider")
@@ -448,19 +454,22 @@ async def tech_news(topic: str = Query("gpu")):
     )
     return {"topic": topic, "items": results}
 
-
 # --- AI papers (arXiv → PapersWithCode)
-@router.get("/ai/papers")
+@router.get("/ai / papers")
+
+
 async def ai_papers(q: str = Query("large language models")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "arxiv":
             r = await client.get(
-                "https://export.arxiv.org/api/query",
-                params={"search_query": f"all:{q}", "start": 0, "max_results": 10},
-            )
+                "https://export.arxiv.org / api / query",
+                    params={"search_query": f"all:{q}", "start": 0, "max_results": 10},
+                    )
             r.raise_for_status()
             txt = r.text
-            # super-light parse (title + link)
+            # super - light parse (title + link)
             import re
 
             entries = re.findall(r"<entry>(.*?)</entry>", txt, re.S)
@@ -472,24 +481,24 @@ async def ai_papers(q: str = Query("large language models")):
                     out.append(
                         {
                             "title": t.group(1).strip(),
-                            "url": l.group(1).strip(),
-                            "source": "arXiv",
-                        }
+                                "url": l.group(1).strip(),
+                                "source": "arXiv",
+                                }
                     )
             return out
         if p.id == "paperswithcode":
             r = await client.get(
-                "https://paperswithcode.com/api/v1/search/",
-                params={"q": q, "format": "json"},
-            )
+                "https://paperswithcode.com / api / v1 / search/",
+                    params={"q": q, "format": "json"},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": it["paper_title"],
-                    "url": it["paper_url"],
-                    "source": "PapersWithCode",
-                }
+                        "url": it["paper_url"],
+                        "source": "PapersWithCode",
+                        }
                 for it in js.get("results", [])
             ]
         raise RuntimeError("unknown knowledge provider")
@@ -499,17 +508,20 @@ async def ai_papers(q: str = Query("large language models")):
     )
     return {"query": q, "items": results}
 
-
 # --- Wellness: nutrition lookup
-@router.get("/wellness/nutrition")
+@router.get("/wellness / nutrition")
+
+
 async def wellness_nutrition(food: str = Query("oatmeal")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "usda_fdc":
             key = get_secret("USDA_FDC_KEY")
             r = await client.get(
-                "https://api.nal.usda.gov/fdc/v1/foods/search",
-                params={"api_key": key, "query": food, "pageSize": 5},
-            )
+                "https://api.nal.usda.gov / fdc / v1 / foods / search",
+                    params={"api_key": key, "query": food, "pageSize": 5},
+                    )
             r.raise_for_status()
             js = r.json()
             out = []
@@ -517,24 +529,24 @@ async def wellness_nutrition(food: str = Query("oatmeal")):
                 out.append(
                     {
                         "desc": item.get("description"),
-                        "brand": item.get("brandOwner"),
-                        "calories": next(
+                            "brand": item.get("brandOwner"),
+                            "calories": next(
                             (
                                 n["value"]
                                 for n in item.get("foodNutrients", [])
                                 if n.get("nutrientName") == "Energy"
                             ),
-                            None,
-                        ),
-                        "source": "USDA",
-                    }
+                                None,
+                                ),
+                            "source": "USDA",
+                            }
                 )
             return out
         if p.id == "openfda":
             r = await client.get(
-                "https://api.fda.gov/food/enforcement.json",
-                params={"search": food, "limit": 5},
-            )
+                "https://api.fda.gov / food / enforcement.json",
+                    params={"search": food, "limit": 5},
+                    )
             # openFDA returns 404 when no results; treat as empty
             if r.status_code == 404:
                 return []
@@ -543,10 +555,10 @@ async def wellness_nutrition(food: str = Query("oatmeal")):
             return [
                 {
                     "desc": rec.get("reason_for_recall"),
-                    "brand": rec.get("product_description"),
-                    "calories": None,
-                    "source": "openFDA",
-                }
+                        "brand": rec.get("product_description"),
+                        "calories": None,
+                        "source": "openFDA",
+                        }
                 for rec in js.get("results", [])
             ]
         raise RuntimeError("unknown wellness provider")
@@ -554,56 +566,59 @@ async def wellness_nutrition(food: str = Query("oatmeal")):
     results = await http_with_fallback("wellness", do, prefer=["usda_fdc", "openfda"])
     return {"food": food, "items": results}
 
-
 # --- Sports data
 @router.get("/sports")
+
+
 async def sports_data(sport: str = Query("basketball")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "balldontlie":
             r = await client.get(
-                "https://www.balldontlie.io/api/v1/games",
-                params={"seasons[]": "2023", "per_page": 10},
-            )
+                "https://www.balldontlie.io / api / v1 / games",
+                    params={"seasons[]": "2023", "per_page": 10},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": f"{g['home_team']['full_name']} vs {g['visitor_team']['full_name']}",
-                    "score": f"{g['home_team_score']}-{g['visitor_team_score']}",
-                    "source": "BallDontLie",
-                }
+                        "score": f"{g['home_team_score']}-{g['visitor_team_score']}",
+                        "source": "BallDontLie",
+                        }
                 for g in js.get("data", [])
             ]
         if p.id == "thesportsdb":
             key = get_secret("THESPORTSDB_KEY")
             r = await client.get(
-                f"https://www.thesportsdb.com/api/v1/json/{key}/searchteams.php",
-                params={"t": sport},
-            )
+                f"https://www.thesportsdb.com / api / v1 / json/{key}/searchteams.php",
+                    params={"t": sport},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": t["strTeam"],
-                    "league": t.get("strLeague"),
-                    "source": "TheSportsDB",
-                }
+                        "league": t.get("strLeague"),
+                        "source": "TheSportsDB",
+                        }
                 for t in js.get("teams", []) or []
             ]
         if p.id == "football_data":
             key = get_secret("FOOTBALL_DATA_KEY")
             r = await client.get(
-                "https://api.football-data.org/v4/competitions",
-                headers={"X-Auth-Token": key},
-            )
+                "https://api.football - data.org / v4 / competitions",
+                    headers={"X - Auth - Token": key},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "title": c["name"],
-                    "area": c.get("area", {}).get("name"),
-                    "source": "Football-Data",
-                }
+                        "area": c.get("area", {}).get("name"),
+                        "source": "Football - Data",
+                        }
                 for c in js.get("competitions", [])
             ]
         raise RuntimeError("unknown sports provider")
@@ -613,17 +628,20 @@ async def sports_data(sport: str = Query("basketball")):
     )
     return {"sport": sport, "items": results}
 
-
 # --- Finance data
 @router.get("/finance")
+
+
 async def finance_data(symbol: str = Query("AAPL")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "alphavantage":
             key = get_secret("ALPHAVANTAGE_KEY")
             r = await client.get(
-                "https://www.alphavantage.co/query",
-                params={"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": key},
-            )
+                "https://www.alphavantage.co / query",
+                    params={"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": key},
+                    )
             r.raise_for_status()
             js = r.json()
             quote = js.get("Global Quote", {})
@@ -631,10 +649,10 @@ async def finance_data(symbol: str = Query("AAPL")):
                 [
                     {
                         "symbol": quote.get("01. symbol"),
-                        "price": quote.get("05. price"),
-                        "change": quote.get("09. change"),
-                        "source": "AlphaVantage",
-                    }
+                            "price": quote.get("05. price"),
+                            "change": quote.get("09. change"),
+                            "source": "AlphaVantage",
+                            }
                 ]
                 if quote
                 else []
@@ -642,28 +660,28 @@ async def finance_data(symbol: str = Query("AAPL")):
         if p.id == "finnhub":
             key = get_secret("FINNHUB_KEY")
             r = await client.get(
-                "https://finnhub.io/api/v1/quote",
-                params={"symbol": symbol, "token": key},
-            )
+                "https://finnhub.io / api / v1 / quote",
+                    params={"symbol": symbol, "token": key},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "symbol": symbol,
-                    "price": js.get("c"),
-                    "change": js.get("d"),
-                    "source": "Finnhub",
-                }
+                        "price": js.get("c"),
+                        "change": js.get("d"),
+                        "source": "Finnhub",
+                        }
             ]
         if p.id == "coingecko":
             r = await client.get(
-                "https://api.coingecko.com/api/v3/simple/price",
-                params={
+                "https://api.coingecko.com / api / v3 / simple / price",
+                    params={
                     "ids": symbol.lower(),
-                    "vs_currencies": "usd",
-                    "include_24hr_change": "true",
-                },
-            )
+                        "vs_currencies": "usd",
+                        "include_24hr_change": "true",
+                        },
+                    )
             r.raise_for_status()
             js = r.json()
             data = js.get(symbol.lower(), {})
@@ -671,16 +689,16 @@ async def finance_data(symbol: str = Query("AAPL")):
                 [
                     {
                         "symbol": symbol,
-                        "price": data.get("usd"),
-                        "change": data.get("usd_24h_change"),
-                        "source": "CoinGecko",
-                    }
+                            "price": data.get("usd"),
+                            "change": data.get("usd_24h_change"),
+                            "source": "CoinGecko",
+                            }
                 ]
                 if data
                 else []
             )
         if p.id == "coincap":
-            r = await client.get(f"https://api.coincap.io/v2/assets/{symbol.lower()}")
+            r = await client.get(f"https://api.coincap.io / v2 / assets/{symbol.lower()}")
             r.raise_for_status()
             js = r.json()
             asset = js.get("data", {})
@@ -688,10 +706,10 @@ async def finance_data(symbol: str = Query("AAPL")):
                 [
                     {
                         "symbol": asset.get("symbol"),
-                        "price": asset.get("priceUsd"),
-                        "change": asset.get("changePercent24Hr"),
-                        "source": "CoinCap",
-                    }
+                            "price": asset.get("priceUsd"),
+                            "change": asset.get("changePercent24Hr"),
+                            "source": "CoinCap",
+                            }
                 ]
                 if asset
                 else []
@@ -703,33 +721,36 @@ async def finance_data(symbol: str = Query("AAPL")):
     )
     return {"symbol": symbol, "items": results}
 
-
 # --- Weather data
 @router.get("/weather")
+
+
 async def weather_data(location: str = Query("New York")):
+
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "openmeteo":
             r = await client.get(
-                "https://api.open-meteo.com/v1/forecast",
-                params={
+                "https://api.open - meteo.com / v1 / forecast",
+                    params={
                     "latitude": "40.7128",
-                    "longitude": "-74.0060",
-                    "current_weather": "true",
-                },
-            )
+                        "longitude": "-74.0060",
+                        "current_weather": "true",
+                        },
+                    )
             r.raise_for_status()
             js = r.json()
             current = js.get("current_weather", {})
             return [
                 {
                     "location": location,
-                    "temperature": current.get("temperature"),
-                    "windspeed": current.get("windspeed"),
-                    "source": "OpenMeteo",
-                }
+                        "temperature": current.get("temperature"),
+                        "windspeed": current.get("windspeed"),
+                        "source": "OpenMeteo",
+                        }
             ]
         if p.id == "weather_gov":
-            r = await client.get("https://api.weather.gov/points/40.7128,-74.0060")
+            r = await client.get("https://api.weather.gov / points / 40.7128,-74.0060")
             r.raise_for_status()
             js = r.json()
             forecast_url = js.get("properties", {}).get("forecast")
@@ -741,10 +762,10 @@ async def weather_data(location: str = Query("New York")):
                 return [
                     {
                         "location": location,
-                        "forecast": p.get("detailedForecast"),
-                        "temperature": p.get("temperature"),
-                        "source": "Weather.gov",
-                    }
+                            "forecast": p.get("detailedForecast"),
+                            "temperature": p.get("temperature"),
+                            "source": "Weather.gov",
+                            }
                     for p in periods[:3]
                 ]
             return []
@@ -755,16 +776,19 @@ async def weather_data(location: str = Query("New York")):
     )
     return {"location": location, "items": results}
 
+# --- SPORTS: scores by league / date
+@router.get("/sports / scores")
 
-# --- SPORTS: scores by league/date
-@router.get("/sports/scores")
+
 async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
+
+
     async def do(client, p):
         if p.id == "balldontlie" and league.lower() == "nba":
             params = {"per_page": 50}
             if date:
                 params["dates[]"] = date
-            r = await client.get("https://api.balldontlie.io/v1/games", params=params)
+            r = await client.get("https://api.balldontlie.io / v1 / games", params = params)
             r.raise_for_status()
             js = r.json()
             out = []
@@ -772,13 +796,13 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
                 out.append(
                     {
                         "league": "NBA",
-                        "home": g["home_team"]["abbreviation"],
-                        "away": g["visitor_team"]["abbreviation"],
-                        "home_score": g["home_team_score"],
-                        "away_score": g["visitor_team_score"],
-                        "status": g["status"],
-                        "tipoff": g["date"],
-                    }
+                            "home": g["home_team"]["abbreviation"],
+                            "away": g["visitor_team"]["abbreviation"],
+                            "home_score": g["home_team_score"],
+                            "away_score": g["visitor_team_score"],
+                            "status": g["status"],
+                            "tipoff": g["date"],
+                            }
                 )
             return out
         if p.id == "thesportsdb":
@@ -789,9 +813,9 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
 
                 d = date or str(_d.today())
                 r = await client.get(
-                    f"https://www.thesportsdb.com/api/v1/json/{key}/eventsday.php",
-                    params={"d": d, "s": league.upper()},
-                )
+                    f"https://www.thesportsdb.com / api / v1 / json/{key}/eventsday.php",
+                        params={"d": d, "s": league.upper()},
+                        )
                 r.raise_for_status()
                 js = r.json()
                 out = []
@@ -799,13 +823,13 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
                     out.append(
                         {
                             "league": league.upper(),
-                            "home": e.get("strHomeTeam"),
-                            "away": e.get("strAwayTeam"),
-                            "home_score": e.get("intHomeScore"),
-                            "away_score": e.get("intAwayScore"),
-                            "status": e.get("strStatus"),
-                            "tipoff": e.get("dateEvent"),
-                        }
+                                "home": e.get("strHomeTeam"),
+                                "away": e.get("strAwayTeam"),
+                                "home_score": e.get("intHomeScore"),
+                                "away_score": e.get("intAwayScore"),
+                                "status": e.get("strStatus"),
+                                "tipoff": e.get("dateEvent"),
+                                }
                     )
                 return out
             raise RuntimeError("league not supported by TheSportsDB handler")
@@ -814,21 +838,24 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
     pref = ["balldontlie", "thesportsdb"]
     return {
         "league": league,
-        "date": date,
-        "games": await http_with_fallback("sports", do, prefer=pref),
-    }
+            "date": date,
+            "games": await http_with_fallback("sports", do, prefer = pref),
+            }
+
+# --- SPORTS: soccer standings (EPL / LaLiga / Serie A etc.)
+@router.get("/sports / standings")
 
 
-# --- SPORTS: soccer standings (EPL/LaLiga/Serie A etc.)
-@router.get("/sports/standings")
 async def sports_standings(comp: str = Query("PL")):
+
+
     async def do(client, p):
         if p.id == "football_data":
             key = get_secret("FOOTBALL_DATA_KEY")
             r = await client.get(
-                f"https://api.football-data.org/v4/competitions/{comp}/standings",
-                headers={"X-Auth-Token": key},
-            )
+                f"https://api.football - data.org / v4 / competitions/{comp}/standings",
+                    headers={"X - Auth - Token": key},
+                    )
             r.raise_for_status()
             js = r.json()
             table = []
@@ -838,18 +865,18 @@ async def sports_standings(comp: str = Query("PL")):
                         table.append(
                             {
                                 "pos": t.get("position"),
-                                "team": t["team"]["name"],
-                                "played": t.get("playedGames"),
-                                "gd": t.get("goalDifference"),
-                                "points": t.get("points"),
-                            }
+                                    "team": t["team"]["name"],
+                                    "played": t.get("playedGames"),
+                                    "gd": t.get("goalDifference"),
+                                    "points": t.get("points"),
+                                    }
                         )
             return table
         if p.id == "thesportsdb":
             key = get_secret("THESPORTSDB_KEY")
             # minimal: EPL season table (harder generally via TSDB; demo: last events)
             r = await client.get(
-                f"https://www.thesportsdb.com/api/v1/json/{key}/latestepl.php"
+                f"https://www.thesportsdb.com / api / v1 / json/{key}/latestepl.php"
             )
             if r.status_code == 404:
                 return []
@@ -859,9 +886,9 @@ async def sports_standings(comp: str = Query("PL")):
             out = [
                 {
                     "recent_match": f"{m.get('strHomeTeam')} vs {m.get('strAwayTeam')}",
-                    "score": m.get("intHomeScore"),
-                    "score2": m.get("intAwayScore"),
-                }
+                        "score": m.get("intHomeScore"),
+                        "score2": m.get("intAwayScore"),
+                        }
                 for m in (js.get("teams") or [])
             ]
             return out
@@ -869,16 +896,18 @@ async def sports_standings(comp: str = Query("PL")):
 
     return {
         "competition": comp,
-        "table": await http_with_fallback(
+            "table": await http_with_fallback(
             "sports", do, prefer=["football_data", "thesportsdb"]
         ),
-    }
-
+            }
 
 # --- FINANCE: quotes (stocks + crypto)
-@router.get("/finance/quotes")
+@router.get("/finance / quotes")
+
+
 async def finance_quotes(symbols: str = Query("AAPL,BTC")):
     syms = [s.strip().upper() for s in symbols.split(",") if s.strip()]
+
 
     async def do(client, p):
         if p.id == "finnhub":
@@ -886,9 +915,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
             out = []
             for s in syms:
                 r = await client.get(
-                    "https://finnhub.io/api/v1/quote",
-                    params={"symbol": s, "token": key},
-                )
+                    "https://finnhub.io / api / v1 / quote",
+                        params={"symbol": s, "token": key},
+                        )
                 if r.status_code == 429:
                     r.raise_for_status()
                 if r.status_code == 200:
@@ -896,11 +925,11 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                     out.append(
                         {
                             "symbol": s,
-                            "price": q.get("c"),
-                            "high": q.get("h"),
-                            "low": q.get("l"),
-                            "source": "Finnhub",
-                        }
+                                "price": q.get("c"),
+                                "high": q.get("h"),
+                                "low": q.get("l"),
+                                "source": "Finnhub",
+                                }
                     )
             return out
         if p.id == "alphavantage":
@@ -924,11 +953,11 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                     params.update(
                         {
                             "function": "CURRENCY_EXCHANGE_RATE",
-                            "from_currency": base,
-                            "to_currency": quote,
-                        }
+                                "from_currency": base,
+                                "to_currency": quote,
+                                }
                     )
-                r = await client.get("https://www.alphavantage.co/query", params=params)
+                r = await client.get("https://www.alphavantage.co / query", params = params)
                 r.raise_for_status()
                 js = r.json()
                 if func == "GLOBAL_QUOTE":
@@ -940,9 +969,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                 out.append(
                     {
                         "symbol": s,
-                        "price": float(price) if price else None,
-                        "source": "AlphaVantage",
-                    }
+                            "price": float(price) if price else None,
+                            "source": "AlphaVantage",
+                            }
                 )
             return out
         if p.id == "coingecko":
@@ -950,7 +979,7 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
             ids = []
             for s in syms:
                 r = await client.get(
-                    "https://api.coingecko.com/api/v3/search", params={"query": s}
+                    "https://api.coingecko.com / api / v3 / search", params={"query": s}
                 )
                 if r.status_code == 200:
                     js = r.json()
@@ -960,16 +989,16 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                             for c in js.get("coins", [])
                             if c.get("symbol", "").upper() == s.upper()
                         ),
-                        None,
-                    )
+                            None,
+                            )
                     if cid:
                         ids.append(cid)
             if not ids:
                 return []
             r = await client.get(
-                "https://api.coingecko.com/api/v3/simple/price",
-                params={"ids": ",".join(ids), "vs_currencies": "usd"},
-            )
+                "https://api.coingecko.com / api / v3 / simple / price",
+                    params={"ids": ",".join(ids), "vs_currencies": "usd"},
+                    )
             r.raise_for_status()
             js = r.json()
             out = []
@@ -981,7 +1010,7 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
             out = []
             for s in syms:
                 r = await client.get(
-                    f"https://api.coincap.io/v2/assets", params={"search": s}
+                    f"https://api.coincap.io / v2 / assets", params={"search": s}
                 )
                 r.raise_for_status()
                 js = r.json()
@@ -990,9 +1019,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                     out.append(
                         {
                             "symbol": a["symbol"],
-                            "price": float(a["priceUsd"]),
-                            "source": "CoinCap",
-                        }
+                                "price": float(a["priceUsd"]),
+                                "source": "CoinCap",
+                                }
                     )
             return out
         raise RuntimeError("unknown finance provider")
@@ -1000,21 +1029,24 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
     prefer = ["finnhub", "alphavantage", "coingecko", "coincap"]
     return {
         "symbols": syms,
-        "quotes": await http_with_fallback("finance", do, prefer=prefer),
-    }
-
+            "quotes": await http_with_fallback("finance", do, prefer = prefer),
+            }
 
 # --- WEATHER: geocode + forecast + US alerts
-@router.get("/weather/forecast")
+@router.get("/weather / forecast")
+
+
 async def weather_forecast(
     city: str = Query(None), lat: float = Query(None), lon: float = Query(None)
 ):
+
+
     async def do_geo(client, p):
         if p.id == "openmeteo_geo":
             r = await client.get(
-                "https://geocoding-api.open-meteo.com/v1/search",
-                params={"name": city, "count": 1},
-            )
+                "https://geocoding - api.open - meteo.com / v1 / search",
+                    params={"name": city, "count": 1},
+                    )
             r.raise_for_status()
             js = r.json()
             if not js.get("results"):
@@ -1029,24 +1061,25 @@ async def weather_forecast(
             raise HTTPException(404, "City not found")
         lat, lon, _ = latlon
 
+
     async def do_weather(client, p):
         if p.id == "openmeteo":
             r = await client.get(
-                "https://api.open-meteo.com/v1/forecast",
-                params={
+                "https://api.open - meteo.com / v1 / forecast",
+                    params={
                     "latitude": lat,
-                    "longitude": lon,
-                    "hourly": "temperature_2m,precipitation",
-                    "daily": "weathercode,temperature_2m_max,temperature_2m_min",
-                    "forecast_days": 7,
-                    "timezone": "auto",
-                },
-            )
+                        "longitude": lon,
+                        "hourly": "temperature_2m,precipitation",
+                        "daily": "weathercode,temperature_2m_max,temperature_2m_min",
+                        "forecast_days": 7,
+                        "timezone": "auto",
+                        },
+                    )
             r.raise_for_status()
             return r.json()
         if p.id == "meteostat":
             r = await client.get(
-                "https://meteostat.net/api/point/daily", params={"lat": lat, "lon": lon}
+                "https://meteostat.net / api / point / daily", params={"lat": lat, "lon": lon}
             )
             if r.status_code == 404:
                 return {}
@@ -1061,12 +1094,13 @@ async def weather_forecast(
     # alerts (US only)
     alerts = []
 
+
     async def do_alerts(client, p):
         if p.id == "weather_gov":
             r = await client.get(
-                "https://api.weather.gov/alerts/active",
-                params={"point": f"{lat},{lon}"},
-            )
+                "https://api.weather.gov / alerts / active",
+                    params={"point": f"{lat},{lon}"},
+                    )
             if r.status_code in (404, 204):
                 return []
             r.raise_for_status()
@@ -1074,9 +1108,9 @@ async def weather_forecast(
             return [
                 {
                     "event": f["properties"]["event"],
-                    "severity": f["properties"].get("severity"),
-                    "headline": f["properties"].get("headline"),
-                }
+                        "severity": f["properties"].get("severity"),
+                        "headline": f["properties"].get("headline"),
+                        }
                 for f in js.get("features", [])
             ]
         raise RuntimeError("unknown alerts provider")
@@ -1088,32 +1122,34 @@ async def weather_forecast(
 
     return {"lat": lat, "lon": lon, "forecast": fc, "alerts": alerts}
 
+# --- GAMBLING / ODDS: moneylines / totals / spreads (opt - in)
+@router.get("/odds / lines")
 
-# --- GAMBLING/ODDS: moneylines/totals/spreads (opt-in)
-@router.get("/odds/lines")
+
 async def odds_lines(
     sport: str = Query("americanfootball_nfl"),
-    regions: str = Query("us,us2"),
-    markets: str = Query("h2h,spreads,totals"),
+        regions: str = Query("us,us2"),
+        markets: str = Query("h2h,spreads,totals"),
 ):
     if not gambling_enabled():
         raise HTTPException(
-            status_code=403,
-            detail="Gambling features are disabled. Enable with GAMBLING_FEATURES_ENABLED=true.",
-        )
+            status_code = 403,
+                detail="Gambling features are disabled. Enable with GAMBLING_FEATURES_ENABLED = true.",
+                )
+
 
     async def do(client, p):
         if p.id == "theoddsapi":
             key = get_secret("THEODDSAPI_KEY")
             r = await client.get(
-                "https://api.the-odds-api.com/v4/sports/{}/odds".format(sport),
-                params={
+                "https://api.the - odds - api.com / v4 / sports/{}/odds".format(sport),
+                    params={
                     "apiKey": key,
-                    "regions": regions,
-                    "markets": markets,
-                    "oddsFormat": "american",
-                },
-            )
+                        "regions": regions,
+                        "markets": markets,
+                        "oddsFormat": "american",
+                        },
+                    )
             r.raise_for_status()
             js = r.json()
             out = []
@@ -1121,52 +1157,52 @@ async def odds_lines(
                 out.append(
                     {
                         "commence": game.get("commence_time"),
-                        "home": game.get("home_team"),
-                        "away": game.get("away_team"),
-                        "books": [
+                            "home": game.get("home_team"),
+                            "away": game.get("away_team"),
+                            "books": [
                             {
                                 "book": b.get("bookmaker"),
-                                "h2h": next(
+                                    "h2h": next(
                                     (
                                         m["outcomes"]
                                         for m in b.get("markets", [])
                                         if m["key"] == "h2h"
                                     ),
-                                    None,
-                                ),
-                                "spreads": next(
+                                        None,
+                                        ),
+                                    "spreads": next(
                                     (
                                         m["outcomes"]
                                         for m in b.get("markets", [])
                                         if m["key"] == "spreads"
                                     ),
-                                    None,
-                                ),
-                                "totals": next(
+                                        None,
+                                        ),
+                                    "totals": next(
                                     (
                                         m["outcomes"]
                                         for m in b.get("markets", [])
                                         if m["key"] == "totals"
                                     ),
-                                    None,
-                                ),
-                            }
+                                        None,
+                                        ),
+                                    }
                             for b in game.get("bookmakers", [])
                         ],
-                    }
+                            }
                 )
             return out
         if p.id == "apisports_odds":
             key = get_secret("RAPIDAPI_KEY")
-            # demo: API-FOOTBALL odds (soccer) using RapidAPI headers
+            # demo: API - FOOTBALL odds (soccer) using RapidAPI headers
             r = await client.get(
-                "https://api-football-v1.p.rapidapi.com/v3/odds",
-                headers={
-                    "X-RapidAPI-Key": key,
-                    "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
-                },
-                params={"date": "2024-08-01"},
-            )  # adjust as needed
+                "https://api - football - v1.p.rapidapi.com / v3 / odds",
+                    headers={
+                    "X - RapidAPI - Key": key,
+                        "X - RapidAPI - Host": "api - football - v1.p.rapidapi.com",
+                        },
+                    params={"date": "2024 - 08 - 01"},
+                    )  # adjust as needed
             r.raise_for_status()
             js = r.json()
             # normalize minimally
@@ -1177,55 +1213,57 @@ async def odds_lines(
                 out.append(
                     {
                         "commence": fixture.get("date"),
-                        "home": None,
-                        "away": None,
-                        "books": [
+                            "home": None,
+                            "away": None,
+                            "books": [
                             {
                                 "book": b.get("name"),
-                                "bets": [bet.get("name") for bet in b.get("bets", [])],
-                            }
+                                    "bets": [bet.get("name") for bet in b.get("bets", [])],
+                                    }
                             for b in bks
                         ],
-                    }
+                            }
                 )
             return out
         raise RuntimeError("unknown odds provider")
 
     return {
         "sport": sport,
-        "regions": regions,
-        "markets": markets,
-        "lines": await http_with_fallback(
+            "regions": regions,
+            "markets": markets,
+            "lines": await http_with_fallback(
             "gambling", do, prefer=["theoddsapi", "apisports_odds"]
         ),
-    }
-
+            }
 
 # --- Gambling odds
-@router.get("/gambling/odds")
+@router.get("/gambling / odds")
+
+
 async def gambling_odds(sport: str = Query("americanfootball_nfl")):
     # Check if gambling features are enabled
     if not gambling_enabled():
         raise HTTPException(
-            status_code=403, detail="Gambling features are not enabled on this instance"
+            status_code = 403, detail="Gambling features are not enabled on this instance"
         )
+
 
     async def do(client: httpx.AsyncClient, p):
         if p.id == "theoddsapi":
             key = get_secret("THEODDSAPI_KEY")
             r = await client.get(
-                "https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds",
-                params={"apiKey": key, "regions": "us", "markets": "h2h"},
-            )
+                "https://api.the - odds - api.com / v4 / sports / americanfootball_nfl / odds",
+                    params={"apiKey": key, "regions": "us", "markets": "h2h"},
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "game": f"{g['home_team']} vs {g['away_team']}",
-                    "commence_time": g.get("commence_time"),
-                    "bookmakers": len(g.get("bookmakers", [])),
-                    "source": "TheOddsAPI",
-                }
+                        "commence_time": g.get("commence_time"),
+                        "bookmakers": len(g.get("bookmakers", [])),
+                        "source": "TheOddsAPI",
+                        }
                 for g in js[:5]
             ]
         raise RuntimeError("unknown gambling provider")
@@ -1233,35 +1271,37 @@ async def gambling_odds(sport: str = Query("americanfootball_nfl")):
     results = await http_with_fallback("gambling", do, prefer=["theoddsapi"])
     return {
         "sport": sport,
-        "items": results,
-        "disclaimer": "Gambling odds are for informational purposes only. Please gamble responsibly.",
-    }
-
+            "items": results,
+            "disclaimer": "Gambling odds are for informational purposes only. Please gamble responsibly.",
+            }
 
 # --- Pets endpoints
-@router.get("/pets/dogs/breeds")
+@router.get("/pets / dogs / breeds")
+
+
 async def get_dog_breeds(limit: int = Query(10)):
     """Get dog breeds from TheDogAPI"""
 
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "thedogapi":
             headers = {}
             key = get_secret("DOG_API_KEY")
             if key:
-                headers["x-api-key"] = key
+                headers["x - api - key"] = key
             r = await client.get(
-                f"https://api.thedogapi.com/v1/breeds?limit={limit}", headers=headers
+                f"https://api.thedogapi.com / v1 / breeds?limit={limit}", headers = headers
             )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "id": breed.get("id"),
-                    "name": breed.get("name"),
-                    "temperament": breed.get("temperament"),
-                    "life_span": breed.get("life_span"),
-                    "source": "TheDogAPI",
-                }
+                        "name": breed.get("name"),
+                        "temperament": breed.get("temperament"),
+                        "life_span": breed.get("life_span"),
+                        "source": "TheDogAPI",
+                        }
                 for breed in js
             ]
         raise RuntimeError("unknown pets provider")
@@ -1269,35 +1309,37 @@ async def get_dog_breeds(limit: int = Query(10)):
     results = await http_with_fallback("pets", do, prefer=["thedogapi"])
     return {"limit": limit, "breeds": results}
 
+@router.get("/pets / dogs / images")
 
-@router.get("/pets/dogs/images")
+
 async def get_dog_images(breed_id: str = Query(None), limit: int = Query(1)):
     """Get random dog images from TheDogAPI"""
 
+
     async def do(client: httpx.AsyncClient, p):
         if p.id == "thedogapi":
             headers = {}
             key = get_secret("DOG_API_KEY")
             if key:
-                headers["x-api-key"] = key
+                headers["x - api - key"] = key
             params = {"limit": limit}
             if breed_id:
                 params["breed_ids"] = breed_id
             r = await client.get(
-                "https://api.thedogapi.com/v1/images/search",
-                params=params,
-                headers=headers,
-            )
+                "https://api.thedogapi.com / v1 / images / search",
+                    params = params,
+                    headers = headers,
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "id": img.get("id"),
-                    "url": img.get("url"),
-                    "width": img.get("width"),
-                    "height": img.get("height"),
-                    "source": "TheDogAPI",
-                }
+                        "url": img.get("url"),
+                        "width": img.get("width"),
+                        "height": img.get("height"),
+                        "source": "TheDogAPI",
+                        }
                 for img in js
             ]
         raise RuntimeError("unknown pets provider")
@@ -1305,30 +1347,32 @@ async def get_dog_images(breed_id: str = Query(None), limit: int = Query(1)):
     results = await http_with_fallback("pets", do, prefer=["thedogapi"])
     return {"breed_id": breed_id, "limit": limit, "images": results}
 
+@router.get("/pets / cats / breeds")
 
-@router.get("/pets/cats/breeds")
+
 async def get_cat_breeds(limit: int = Query(10)):
     """Get cat breeds from TheCatAPI"""
+
 
     async def do(client: httpx.AsyncClient, p):
         if p.id == "thecatapi":
             headers = {}
             key = get_secret("CAT_API_KEY")
             if key:
-                headers["x-api-key"] = key
+                headers["x - api - key"] = key
             r = await client.get(
-                f"https://api.thecatapi.com/v1/breeds?limit={limit}", headers=headers
+                f"https://api.thecatapi.com / v1 / breeds?limit={limit}", headers = headers
             )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "id": breed.get("id"),
-                    "name": breed.get("name"),
-                    "temperament": breed.get("temperament"),
-                    "life_span": breed.get("life_span"),
-                    "source": "TheCatAPI",
-                }
+                        "name": breed.get("name"),
+                        "temperament": breed.get("temperament"),
+                        "life_span": breed.get("life_span"),
+                        "source": "TheCatAPI",
+                        }
                 for breed in js
             ]
         raise RuntimeError("unknown pets provider")
@@ -1336,35 +1380,37 @@ async def get_cat_breeds(limit: int = Query(10)):
     results = await http_with_fallback("pets", do, prefer=["thecatapi"])
     return {"limit": limit, "breeds": results}
 
+@router.get("/pets / cats / images")
 
-@router.get("/pets/cats/images")
+
 async def get_cat_images(breed_id: str = Query(None), limit: int = Query(1)):
     """Get random cat images from TheCatAPI"""
+
 
     async def do(client: httpx.AsyncClient, p):
         if p.id == "thecatapi":
             headers = {}
             key = get_secret("CAT_API_KEY")
             if key:
-                headers["x-api-key"] = key
+                headers["x - api - key"] = key
             params = {"limit": limit}
             if breed_id:
                 params["breed_ids"] = breed_id
             r = await client.get(
-                "https://api.thecatapi.com/v1/images/search",
-                params=params,
-                headers=headers,
-            )
+                "https://api.thecatapi.com / v1 / images / search",
+                    params = params,
+                    headers = headers,
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "id": img.get("id"),
-                    "url": img.get("url"),
-                    "width": img.get("width"),
-                    "height": img.get("height"),
-                    "source": "TheCatAPI",
-                }
+                        "url": img.get("url"),
+                        "width": img.get("width"),
+                        "height": img.get("height"),
+                        "source": "TheCatAPI",
+                        }
                 for img in js
             ]
         raise RuntimeError("unknown pets provider")
@@ -1372,14 +1418,16 @@ async def get_cat_images(breed_id: str = Query(None), limit: int = Query(1)):
     results = await http_with_fallback("pets", do, prefer=["thecatapi"])
     return {"breed_id": breed_id, "limit": limit, "images": results}
 
+@router.get("/pets / adoptions")
 
-@router.get("/pets/adoptions")
+
 async def get_pet_adoptions(
     animal_type: str = Query("dog"),
-    location: str = Query("10001"),
-    limit: int = Query(20),
+        location: str = Query("10001"),
+        limit: int = Query(20),
 ):
     """Get pet adoption listings from Petfinder (requires OAuth)"""
+
 
     async def do(client: httpx.AsyncClient, p):
         if p.id == "petfinder":
@@ -1389,21 +1437,21 @@ async def get_pet_adoptions(
             headers = {"Authorization": f"Bearer {token}"}
             params = {"type": animal_type, "location": location, "limit": limit}
             r = await client.get(
-                "https://api.petfinder.com/v2/animals", params=params, headers=headers
+                "https://api.petfinder.com / v2 / animals", params = params, headers = headers
             )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "id": animal.get("id"),
-                    "name": animal.get("name"),
-                    "type": animal.get("type"),
-                    "breed": animal.get("breeds", {}).get("primary"),
-                    "age": animal.get("age"),
-                    "gender": animal.get("gender"),
-                    "url": animal.get("url"),
-                    "source": "Petfinder",
-                }
+                        "name": animal.get("name"),
+                        "type": animal.get("type"),
+                        "breed": animal.get("breeds", {}).get("primary"),
+                        "age": animal.get("age"),
+                        "gender": animal.get("gender"),
+                        "url": animal.get("url"),
+                        "source": "Petfinder",
+                        }
                 for animal in js.get("animals", [])
             ]
         raise RuntimeError("unknown pets provider")
@@ -1411,13 +1459,14 @@ async def get_pet_adoptions(
     results = await http_with_fallback("pets", do, prefer=["petfinder"])
     return {
         "animal_type": animal_type,
-        "location": location,
-        "limit": limit,
-        "adoptions": results,
-    }
+            "location": location,
+            "limit": limit,
+            "adoptions": results,
+            }
+
+@router.get("/pets / affiliates")
 
 
-@router.get("/pets/affiliates")
 async def get_pets_affiliates(
     category: str = Query(None), enabled_only: bool = Query(False)
 ):
@@ -1435,9 +1484,9 @@ async def get_pets_affiliates(
             if category:
                 provider_categories = {
                     "supplies": ["chewy", "petco", "petsmart", "barkbox"],
-                    "services": ["rover"],
-                    "health": ["embark"],
-                }
+                        "services": ["rover"],
+                        "health": ["embark"],
+                        }
                 if provider.id not in provider_categories.get(category, []):
                     continue
 
@@ -1448,110 +1497,113 @@ async def get_pets_affiliates(
         for provider in filtered_providers:
             program_info = {
                 "id": provider.id,
-                "name": provider.name,
-                "url": provider.base_url,
-                "description": provider.description,
-                "category": (
+                    "name": provider.name,
+                    "url": provider.base_url,
+                    "description": provider.description,
+                    "category": (
                     "supplies"
                     if provider.id in ["chewy", "petco", "petsmart", "barkbox"]
                     else "services" if provider.id == "rover" else "health"
                 ),
-            }
+                    }
             affiliate_programs.append(program_info)
 
         return {
             "status": "success",
-            "data": affiliate_programs,
-            "count": len(affiliate_programs),
-            "filters": {"category": category, "enabled_only": enabled_only},
-            "categories": ["supplies", "services", "health"],
-        }
+                "data": affiliate_programs,
+                "count": len(affiliate_programs),
+                "filters": {"category": category, "enabled_only": enabled_only},
+                "categories": ["supplies", "services", "health"],
+                }
 
     except Exception as e:
         return {
             "status": "error",
-            "message": "Failed to fetch pets affiliate programs",
-            "error": str(e),
-        }
-
+                "message": "Failed to fetch pets affiliate programs",
+                "error": str(e),
+                }
 
 # --- Birds endpoints
-@router.get("/pets/birds/nearby")
+@router.get("/pets / birds / nearby")
+
+
 async def birds_nearby(
-    lat: float = Query(..., ge=-90, le=90),
-    lng: float = Query(..., ge=-180, le=180),
-    radius_km: int = Query(25, ge=1, le=50),
+    lat: float = Query(..., ge=-90, le = 90),
+        lng: float = Query(..., ge=-180, le = 180),
+        radius_km: int = Query(25, ge = 1, le = 50),
 ):
     # eBird if token present
     token = get_secret("EBIRD_API_TOKEN")
     if token:
-        async with httpx.AsyncClient(timeout=12) as client:
+        async with httpx.AsyncClient(timeout = 12) as client:
             r = await client.get(
-                "https://api.ebird.org/v2/data/obs/geo/recent",
-                params={"lat": lat, "lng": lng, "dist": radius_km},
-                headers={"X-eBirdApiToken": token},
-            )
+                "https://api.ebird.org / v2 / data / obs / geo / recent",
+                    params={"lat": lat, "lng": lng, "dist": radius_km},
+                    headers={"X - eBirdApiToken": token},
+                    )
             if r.status_code < 400:
                 return {"provider": "ebird", "data": r.json()}
     # Fallback static bird data
     return {
         "provider": "static",
-        "data": [
+            "data": [
             {
                 "speciesCode": "amecro",
-                "comName": "American Crow",
-                "sciName": "Corvus brachyrhynchos",
-                "locName": "Central Park, New York",
-                "obsDt": "2024-01-15 10:30",
-                "howMany": 3,
-            },
-            {
+                    "comName": "American Crow",
+                    "sciName": "Corvus brachyrhynchos",
+                    "locName": "Central Park, New York",
+                    "obsDt": "2024 - 01 - 15 10:30",
+                    "howMany": 3,
+                    },
+                {
                 "speciesCode": "norcrd",
-                "comName": "Northern Cardinal",
-                "sciName": "Cardinalis cardinalis",
-                "locName": "Bryant Park, New York",
-                "obsDt": "2024-01-15 09:45",
-                "howMany": 2,
-            },
-            {
+                    "comName": "Northern Cardinal",
+                    "sciName": "Cardinalis cardinalis",
+                    "locName": "Bryant Park, New York",
+                    "obsDt": "2024 - 01 - 15 09:45",
+                    "howMany": 2,
+                    },
+                {
                 "speciesCode": "blujay",
-                "comName": "Blue Jay",
-                "sciName": "Cyanocitta cristata",
-                "locName": "Washington Square Park, New York",
-                "obsDt": "2024-01-15 11:15",
-                "howMany": 1,
-            },
-        ],
-    }
+                    "comName": "Blue Jay",
+                    "sciName": "Cyanocitta cristata",
+                    "locName": "Washington Square Park, New York",
+                    "obsDt": "2024 - 01 - 15 11:15",
+                    "howMany": 1,
+                    },
+                ],
+            }
+
+@router.get("/pets / birds / sightings")
 
 
-@router.get("/pets/birds/sightings")
 async def get_bird_sightings(region: str = Query("US"), limit: int = Query(10)):
     """Get recent bird sightings from eBird API"""
+
 
     async def do(client: httpx.AsyncClient, p):
         if p.id == "ebird":
             headers = {}
             key = get_secret("EBIRD_API_TOKEN")
             if key:
-                headers["X-eBirdApiToken"] = key
+                headers["X - eBirdApiToken"] = key
             else:
                 raise RuntimeError("eBird API token required")
             r = await client.get(
-                f"https://api.ebird.org/v2/data/obs/{region}/recent?back=7&maxResults={limit}",
-                headers=headers,
-            )
+                f"https://api.ebird.org / v2 / data / obs/{region}/recent?back = 7&maxResults={limit}",
+                    headers = headers,
+                    )
             r.raise_for_status()
             js = r.json()
             return [
                 {
                     "species": obs.get("comName"),
-                    "scientific_name": obs.get("sciName"),
-                    "location": obs.get("locName"),
-                    "date": obs.get("obsDt"),
-                    "count": obs.get("howMany"),
-                    "source": "eBird",
-                }
+                        "scientific_name": obs.get("sciName"),
+                        "location": obs.get("locName"),
+                        "date": obs.get("obsDt"),
+                        "count": obs.get("howMany"),
+                        "source": "eBird",
+                        }
                 for obs in js
             ]
         raise RuntimeError("unknown birds provider")
@@ -1559,58 +1611,61 @@ async def get_bird_sightings(region: str = Query("US"), limit: int = Query(10)):
     results = await http_with_fallback("pets_birds", do, prefer=["ebird"])
     return {"region": region, "limit": limit, "sightings": results}
 
-
 # --- Fish endpoints
-@router.get("/pets/fish/species")
-async def fish_species(limit: int = Query(50, ge=1, le=500)):
+@router.get("/pets / fish / species")
+
+
+async def fish_species(limit: int = Query(50, ge = 1, le = 500)):
     # FishWatch API is no longer available, using static fallback data
     static_fish_data = [
         {
             "name": "Atlantic Salmon",
-            "scientific": "Salmo salar",
-            "biology": "Atlantic salmon are anadromous fish, meaning they are born in fresh water, migrate to the ocean, and return to fresh water to reproduce. They can live up to 8 years and grow to 30 inches long.",
-            "habitat": "North Atlantic Ocean and rivers that flow into it. Prefer cold, clean water with high oxygen levels.",
-        },
-        {
+                "scientific": "Salmo salar",
+                "biology": "Atlantic salmon are anadromous fish, meaning they are born in fresh water, migrate to the ocean, and return to fresh water to reproduce. They can live up to 8 years and grow to 30 inches long.",
+                "habitat": "North Atlantic Ocean and rivers that flow into it. Prefer cold, clean water with high oxygen levels.",
+                },
+            {
             "name": "Pacific Cod",
-            "scientific": "Gadus macrocephalus",
-            "biology": "Pacific cod are bottom-dwelling fish that can live up to 18 years. They feed on invertebrates and smaller fish, and can grow up to 3 feet in length.",
-            "habitat": "North Pacific Ocean, from the Bering Sea to California. Found in depths from 30 to 1,200 feet.",
-        },
-        {
+                "scientific": "Gadus macrocephalus",
+                "biology": "Pacific cod are bottom - dwelling fish that can live up to 18 years. They feed on invertebrates and smaller fish, and can grow up to 3 feet in length.",
+                "habitat": "North Pacific Ocean, from the Bering Sea to California. Found in depths from 30 to 1,200 feet.",
+                },
+            {
             "name": "Yellowfin Tuna",
-            "scientific": "Thunnus albacares",
-            "biology": "Yellowfin tuna are fast-swimming pelagic fish that can reach speeds of 50 mph. They can live up to 7 years and grow to over 6 feet long.",
-            "habitat": "Tropical and subtropical waters worldwide. Prefer open ocean environments with temperatures above 15°C.",
-        },
-        {
+                "scientific": "Thunnus albacares",
+                "biology": "Yellowfin tuna are fast - swimming pelagic fish that can reach speeds of 50 mph. They can live up to 7 years and grow to over 6 feet long.",
+                "habitat": "Tropical and subtropical waters worldwide. Prefer open ocean environments with temperatures above 15°C.",
+                },
+            {
             "name": "Red Snapper",
-            "scientific": "Lutjanus campechanus",
-            "biology": "Red snapper are long-lived fish that can live over 50 years. They are opportunistic feeders and important both commercially and recreationally.",
-            "habitat": "Gulf of Mexico and southeastern Atlantic coast. Found near reefs and rocky bottoms in depths of 30-620 feet.",
-        },
-        {
-            "name": "Mahi-Mahi",
-            "scientific": "Coryphaena hippurus",
-            "biology": "Mahi-mahi are fast-growing fish with a lifespan of 4-5 years. They are excellent swimmers and known for their acrobatic abilities when caught.",
-            "habitat": "Warm waters of tropical and subtropical seas worldwide. Prefer surface waters and often found near floating debris.",
-        },
-    ]
+                "scientific": "Lutjanus campechanus",
+                "biology": "Red snapper are long - lived fish that can live over 50 years. They are opportunistic feeders and important both commercially and recreationally.",
+                "habitat": "Gulf of Mexico and southeastern Atlantic coast. Found near reefs and rocky bottoms in depths of 30 - 620 feet.",
+                },
+            {
+            "name": "Mahi - Mahi",
+                "scientific": "Coryphaena hippurus",
+                "biology": "Mahi - mahi are fast - growing fish with a lifespan of 4 - 5 years. They are excellent swimmers and known for their acrobatic abilities when caught.",
+                "habitat": "Warm waters of tropical and subtropical seas worldwide. Prefer surface waters and often found near floating debris.",
+                },
+            ]
 
     # Apply limit to the static data
     limited_data = static_fish_data[: min(limit, len(static_fish_data))]
 
     return {
         "provider": "static_fallback",
-        "count": len(limited_data),
-        "species": limited_data,
-    }
-
+            "count": len(limited_data),
+            "species": limited_data,
+            }
 
 # --- Random animal facts endpoint
-@router.get("/pets/random")
+@router.get("/pets / random")
+
+
 async def get_random_animal(limit: int = Query(1)):
     """Get random animal facts from Zoo Animal API or Dog CEO"""
+
 
     async def do(client: httpx.AsyncClient, p):
         if p.id == "zoo_animal_api":
@@ -1618,24 +1673,24 @@ async def get_random_animal(limit: int = Query(1)):
             for _ in range(limit):
                 try:
                     r = await client.get(
-                        "https://zoo-animal-api.vercel.app/api/animals/rand"
+                        "https://zoo - animal - api.vercel.app / api / animals / rand"
                     )
                     r.raise_for_status()
                     js = r.json()
                     animals.append(
                         {
                             "name": js.get("name"),
-                            "latin_name": js.get("latin_name"),
-                            "habitat": js.get("habitat"),
-                            "diet": js.get("diet"),
-                            "source": "Zoo Animal API",
-                        }
+                                "latin_name": js.get("latin_name"),
+                                "habitat": js.get("habitat"),
+                                "diet": js.get("diet"),
+                                "source": "Zoo Animal API",
+                                }
                     )
-                except:
+                except Exception:
                     break
             return animals
         elif p.id == "dog_ceo":
-            r = await client.get(f"https://dog.ceo/api/breeds/image/random/{limit}")
+            r = await client.get(f"https://dog.ceo / api / breeds / image / random/{limit}")
             r.raise_for_status()
             js = r.json()
             if js.get("status") == "success":
@@ -1654,9 +1709,10 @@ async def get_random_animal(limit: int = Query(1)):
     )
     return {"limit": limit, "animals": results}
 
-
 # --- Veterinary care endpoints
-@router.get("/pets/care/providers")
+@router.get("/pets / care / providers")
+
+
 async def get_vet_providers():
     """Get available veterinary care providers"""
     try:
@@ -1665,28 +1721,29 @@ async def get_vet_providers():
         for provider in providers:
             provider_info = {
                 "id": provider.id,
-                "name": provider.name,
-                "url": provider.base_url,
-                "description": provider.description,
-                "type": "telemedicine",
-            }
+                    "name": provider.name,
+                    "url": provider.base_url,
+                    "description": provider.description,
+                    "type": "telemedicine",
+                    }
             care_providers.append(provider_info)
 
         return {
             "status": "success",
-            "providers": care_providers,
-            "count": len(care_providers),
-        }
+                "providers": care_providers,
+                "count": len(care_providers),
+                }
     except Exception as e:
         return {
             "status": "error",
-            "message": "Failed to fetch veterinary care providers",
-            "error": str(e),
-        }
-
+                "message": "Failed to fetch veterinary care providers",
+                "error": str(e),
+                }
 
 # --- Scheduling endpoint
-@router.get("/scheduling/availability")
+@router.get("/scheduling / availability")
+
+
 async def get_scheduling_info():
     """Get scheduling service information"""
     try:
@@ -1695,31 +1752,32 @@ async def get_scheduling_info():
         for provider in providers:
             service_info = {
                 "id": provider.id,
-                "name": provider.name,
-                "url": provider.base_url,
-                "description": provider.description,
-                "features": [
+                    "name": provider.name,
+                    "url": provider.base_url,
+                    "description": provider.description,
+                    "features": [
                     "appointment_booking",
-                    "calendar_integration",
-                    "automated_reminders",
-                ],
-            }
+                        "calendar_integration",
+                        "automated_reminders",
+                        ],
+                    }
             scheduling_services.append(service_info)
 
         return {
             "status": "success",
-            "services": scheduling_services,
-            "count": len(scheduling_services),
-        }
+                "services": scheduling_services,
+                "count": len(scheduling_services),
+                }
     except Exception as e:
         return {
             "status": "error",
-            "message": "Failed to fetch scheduling services",
-            "error": str(e),
-        }
+                "message": "Failed to fetch scheduling services",
+                "error": str(e),
+                }
+
+@router.get("/pets / affiliates/{affiliate_id}")
 
 
-@router.get("/pets/affiliates/{affiliate_id}")
 async def get_pets_affiliate_details(affiliate_id: str):
     """Get detailed information about a specific pets affiliate program"""
     try:
@@ -1735,46 +1793,46 @@ async def get_pets_affiliate_details(affiliate_id: str):
         if not provider:
             return {
                 "status": "error",
-                "message": f"Affiliate program '{affiliate_id}' not found",
-                "available_programs": [p.id for p in providers],
-            }
+                    "message": f"Affiliate program '{affiliate_id}' not found",
+                    "available_programs": [p.id for p in providers],
+                    }
 
         # Enhanced program details
         program_details = {
             "id": provider.id,
-            "name": provider.name,
-            "url": provider.base_url,
-            "description": provider.description,
-        }
+                "name": provider.name,
+                "url": provider.base_url,
+                "description": provider.description,
+                }
 
         # Add specific program information
         if affiliate_id == "chewy":
             program_details.update(
                 {
-                    "network": "Impact/Commission Junction",
-                    "commission_varies_by_region": True,
-                    "products": ["pet food", "supplies", "medications", "toys"],
-                }
+                    "network": "Impact / Commission Junction",
+                        "commission_varies_by_region": True,
+                        "products": ["pet food", "supplies", "medications", "toys"],
+                        }
             )
         elif affiliate_id == "barkbox":
             program_details.update(
                 {
                     "commission_rates": {
-                        "BarkBox": "$20 per sign-up",
-                        "Super Chewer": "$25 per sign-up",
-                        "Other products": "$18 per item",
-                    },
-                    "application_review_time": "3-5 business days",
-                    "contact": "affiliate@barkbox.com",
-                }
+                        "BarkBox": "$20 per sign - up",
+                            "Super Chewer": "$25 per sign - up",
+                            "Other products": "$18 per item",
+                            },
+                        "application_review_time": "3 - 5 business days",
+                        "contact": "affiliate@barkbox.com",
+                        }
             )
         elif affiliate_id == "embark":
             program_details.update(
                 {
                     "commission_rate": "Up to 10% commission",
-                    "programs": ["Content & creator", "Shelter/rescue", "Breeder"],
-                    "products": ["DNA tests", "health screenings", "supplements"],
-                }
+                        "programs": ["Content & creator", "Shelter / rescue", "Breeder"],
+                        "products": ["DNA tests", "health screenings", "supplements"],
+                        }
             )
 
         return {"status": "success", "data": program_details}
@@ -1782,6 +1840,6 @@ async def get_pets_affiliate_details(affiliate_id: str):
     except Exception as e:
         return {
             "status": "error",
-            "message": f"Failed to fetch details for affiliate program '{affiliate_id}'",
-            "error": str(e),
-        }
+                "message": f"Failed to fetch details for affiliate program '{affiliate_id}'",
+                "error": str(e),
+                }

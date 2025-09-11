@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Deployment Orchestrator
 Complete lifecycle management for 100+ APIs
@@ -33,14 +33,15 @@ import yaml
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("api_orchestrator.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("api_orchestrator.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class DeploymentStage:
     name: str
     status: str  # 'pending', 'running', 'completed', 'failed'
@@ -50,8 +51,9 @@ class DeploymentStage:
     logs: List[str]
     error: Optional[str]
 
-
 @dataclass
+
+
 class APIDeployment:
     api_key: str
     api_name: str
@@ -66,6 +68,8 @@ class APIDeployment:
 
 
 class APIDeploymentOrchestrator:
+
+
     def __init__(self):
         self.deployments = {}
         self.config = self.load_config()
@@ -76,7 +80,7 @@ class APIDeploymentOrchestrator:
         # Import required modules
         try:
             from api_integration_validator import APIIntegrationValidator
-            from api_master_dashboard import APIMasterDashboard
+                from api_master_dashboard import APIMasterDashboard
             from api_registration_automation import API_REGISTRY, APIRegistrationManager
             from api_testing_suite import APITester
 
@@ -89,6 +93,7 @@ class APIDeploymentOrchestrator:
             logger.error(f"Required modules not found: {e}")
             sys.exit(1)
 
+
     def load_config(self) -> Dict:
         """Load orchestrator configuration"""
         config_file = "orchestrator_config.yaml"
@@ -96,29 +101,29 @@ class APIDeploymentOrchestrator:
         default_config = {
             "deployment": {
                 "max_parallel_deployments": 3,
-                "timeout_minutes": 30,
-                "retry_attempts": 3,
-                "rollback_on_failure": True,
-                "health_check_interval": 300,  # 5 minutes
+                    "timeout_minutes": 30,
+                    "retry_attempts": 3,
+                    "rollback_on_failure": True,
+                    "health_check_interval": 300,  # 5 minutes
                 "cost_limit_daily": 50.0,  # USD
             },
-            "phases": {
+                "phases": {
                 1: {"name": "Critical APIs", "max_failures": 0},
-                2: {"name": "Core APIs", "max_failures": 1},
-                3: {"name": "Enhanced APIs", "max_failures": 2},
-                4: {"name": "Optional APIs", "max_failures": 5},
-            },
-            "environments": {
+                    2: {"name": "Core APIs", "max_failures": 1},
+                    3: {"name": "Enhanced APIs", "max_failures": 2},
+                    4: {"name": "Optional APIs", "max_failures": 5},
+                    },
+                "environments": {
                 "development": {"url": "http://localhost:8000", "auto_deploy": True},
-                "staging": {"url": "https://staging.example.com", "auto_deploy": False},
-                "production": {"url": "https://api.example.com", "auto_deploy": False},
-            },
-            "notifications": {
+                    "staging": {"url": "https://staging.example.com", "auto_deploy": False},
+                    "production": {"url": "https://api.example.com", "auto_deploy": False},
+                    },
+                "notifications": {
                 "slack_webhook": None,
-                "email_alerts": [],
-                "discord_webhook": None,
-            },
-        }
+                    "email_alerts": [],
+                    "discord_webhook": None,
+                    },
+                }
 
         try:
             with open(config_file, "r") as f:
@@ -131,77 +136,79 @@ class APIDeploymentOrchestrator:
         except FileNotFoundError:
             # Create default config
             with open(config_file, "w") as f:
-                yaml.dump(default_config, f, default_flow_style=False)
+                yaml.dump(default_config, f, default_flow_style = False)
             logger.info(f"Created default config: {config_file}")
             return default_config
+
 
     def create_deployment_stages(self) -> List[DeploymentStage]:
         """Create standard deployment stages"""
         return [
             DeploymentStage(
-                name="Pre-flight Check",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-            DeploymentStage(
+                name="Pre - flight Check",
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                DeploymentStage(
                 name="API Registration",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-            DeploymentStage(
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                DeploymentStage(
                 name="Integration Testing",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-            DeploymentStage(
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                DeploymentStage(
                 name="Security Validation",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-            DeploymentStage(
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                DeploymentStage(
                 name="Performance Testing",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-            DeploymentStage(
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                DeploymentStage(
                 name="Production Deployment",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-            DeploymentStage(
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                DeploymentStage(
                 name="Health Verification",
-                status="pending",
-                start_time=None,
-                end_time=None,
-                duration=None,
-                logs=[],
-                error=None,
-            ),
-        ]
+                    status="pending",
+                    start_time = None,
+                    end_time = None,
+                    duration = None,
+                    logs=[],
+                    error = None,
+                    ),
+                ]
+
 
     def execute_stage(self, deployment: APIDeployment, stage_index: int) -> bool:
         """Execute a specific deployment stage"""
@@ -213,7 +220,7 @@ class APIDeploymentOrchestrator:
         logger.info(f"Executing {stage.name} for {deployment.api_name}")
 
         try:
-            if stage.name == "Pre-flight Check":
+            if stage.name == "Pre - flight Check":
                 success = self.execute_preflight_check(deployment, stage)
             elif stage.name == "API Registration":
                 success = self.execute_api_registration(deployment, stage)
@@ -254,11 +261,12 @@ class APIDeploymentOrchestrator:
             )
             return False
 
+
     def execute_preflight_check(
         self, deployment: APIDeployment, stage: DeploymentStage
     ) -> bool:
-        """Execute pre-flight checks"""
-        stage.logs.append("🔍 Starting pre-flight checks...")
+        """Execute pre - flight checks"""
+        stage.logs.append("🔍 Starting pre - flight checks...")
 
         # Check environment variables
         from api_registration_automation import API_REGISTRY
@@ -271,13 +279,13 @@ class APIDeploymentOrchestrator:
         env_var = api_config.get("env_var")
         if env_var and not os.getenv(env_var):
             stage.logs.append(f"⚠️  Environment variable not set: {env_var}")
-            # This is not a failure for pre-flight, just a warning
+            # This is not a failure for pre - flight, just a warning
 
         # Check network connectivity
         try:
             import requests
 
-            response = requests.get("https://httpbin.org/status/200", timeout=5)
+            response = requests.get("https://httpbin.org / status / 200", timeout = 5)
             if response.status_code == 200:
                 stage.logs.append("✅ Network connectivity verified")
             else:
@@ -294,8 +302,9 @@ class APIDeploymentOrchestrator:
         else:
             stage.logs.append(f"✅ Disk space OK: {free_space:.1f}GB")
 
-        stage.logs.append("✅ Pre-flight checks completed")
+        stage.logs.append("✅ Pre - flight checks completed")
         return True
+
 
     def execute_api_registration(
         self, deployment: APIDeployment, stage: DeploymentStage
@@ -322,6 +331,7 @@ class APIDeploymentOrchestrator:
         except Exception as e:
             stage.logs.append(f"💥 Registration error: {str(e)}")
             return False
+
 
     def execute_integration_testing(
         self, deployment: APIDeployment, stage: DeploymentStage
@@ -356,6 +366,7 @@ class APIDeploymentOrchestrator:
         except Exception as e:
             stage.logs.append(f"💥 Testing error: {str(e)}")
             return False
+
 
     def execute_security_validation(
         self, deployment: APIDeployment, stage: DeploymentStage
@@ -393,6 +404,7 @@ class APIDeploymentOrchestrator:
         except Exception as e:
             stage.logs.append(f"💥 Security validation error: {str(e)}")
             return False
+
 
     def execute_performance_testing(
         self, deployment: APIDeployment, stage: DeploymentStage
@@ -449,6 +461,7 @@ class APIDeploymentOrchestrator:
             stage.logs.append(f"💥 Performance testing error: {str(e)}")
             return False
 
+
     def execute_production_deployment(
         self, deployment: APIDeployment, stage: DeploymentStage
     ) -> bool:
@@ -480,6 +493,7 @@ class APIDeploymentOrchestrator:
             stage.logs.append(f"💥 Deployment error: {str(e)}")
             return False
 
+
     def execute_health_verification(
         self, deployment: APIDeployment, stage: DeploymentStage
     ) -> bool:
@@ -507,14 +521,15 @@ class APIDeploymentOrchestrator:
             stage.logs.append(f"💥 Health verification error: {str(e)}")
             return False
 
+
     def create_rollback_snapshot(self, api_key: str):
         """Create rollback snapshot"""
         snapshot = {
             "timestamp": datetime.now().isoformat(),
-            "api_key": api_key,
-            "env_vars": {},
-            "config_files": [],
-        }
+                "api_key": api_key,
+                "env_vars": {},
+                "config_files": [],
+                }
 
         # Capture current environment variables
         from api_registration_automation import API_REGISTRY
@@ -526,11 +541,13 @@ class APIDeploymentOrchestrator:
 
         self.rollback_snapshots[api_key] = snapshot
 
+
     def update_production_config(self, api_key: str):
         """Update production configuration"""
         # This would update production configuration files
         # For now, just log the action
         logger.info(f"Updating production config for {api_key}")
+
 
     def deploy_to_environment(self, environment: str, api_key: str) -> bool:
         """Deploy API to specific environment"""
@@ -545,8 +562,9 @@ class APIDeploymentOrchestrator:
 
         return True
 
+
     def check_api_health(self, api_key: str) -> int:
-        """Check API health and return score 0-100"""
+        """Check API health and return score 0 - 100"""
         try:
             # Run a quick health check
             result = self.tester.run_specific_test(api_key)
@@ -571,6 +589,7 @@ class APIDeploymentOrchestrator:
         except Exception:
             return 0  # Critical health issue
 
+
     def deploy_api(self, api_key: str) -> APIDeployment:
         """Deploy a single API through all stages"""
         from api_registration_automation import API_REGISTRY
@@ -580,17 +599,17 @@ class APIDeploymentOrchestrator:
             raise ValueError(f"API {api_key} not found in registry")
 
         deployment = APIDeployment(
-            api_key=api_key,
-            api_name=api_config["name"],
-            phase=api_config["phase"],
-            priority=api_config["priority"],
-            cost_tier=api_config["cost"],
-            stages=self.create_deployment_stages(),
-            overall_status="running",
-            deployment_time=None,
-            rollback_available=False,
-            health_score=0,
-        )
+            api_key = api_key,
+                api_name = api_config["name"],
+                phase = api_config["phase"],
+                priority = api_config["priority"],
+                cost_tier = api_config["cost"],
+                stages = self.create_deployment_stages(),
+                overall_status="running",
+                deployment_time = None,
+                rollback_available = False,
+                health_score = 0,
+                )
 
         self.deployments[api_key] = deployment
 
@@ -616,6 +635,7 @@ class APIDeploymentOrchestrator:
 
         return deployment
 
+
     def deploy_phase(self, phase: int) -> List[APIDeployment]:
         """Deploy all APIs in a specific phase"""
         from api_registration_automation import API_REGISTRY
@@ -626,7 +646,7 @@ class APIDeploymentOrchestrator:
         deployments = []
         max_parallel = self.config["deployment"]["max_parallel_deployments"]
 
-        with ThreadPoolExecutor(max_workers=max_parallel) as executor:
+        with ThreadPoolExecutor(max_workers = max_parallel) as executor:
             future_to_api = {
                 executor.submit(self.deploy_api, api_key): api_key
                 for api_key in phase_apis
@@ -641,6 +661,7 @@ class APIDeploymentOrchestrator:
                     logger.error(f"Failed to deploy {api_key}: {str(e)}")
 
         return deployments
+
 
     def deploy_all_phases(self) -> Dict[int, List[APIDeployment]]:
         """Deploy all phases sequentially"""
@@ -671,6 +692,7 @@ class APIDeploymentOrchestrator:
 
         return all_deployments
 
+
     def rollback_deployment(self, api_key: str) -> bool:
         """Rollback a deployment"""
         if api_key not in self.rollback_snapshots:
@@ -699,6 +721,7 @@ class APIDeploymentOrchestrator:
             logger.error(f"Rollback failed for {api_key}: {str(e)}")
             return False
 
+
     def generate_deployment_report(self) -> Dict:
         """Generate comprehensive deployment report"""
         total_deployments = len(self.deployments)
@@ -720,37 +743,39 @@ class APIDeploymentOrchestrator:
             ]
             phase_stats[phase] = {
                 "total": len(phase_deployments),
-                "completed": sum(
+                    "completed": sum(
                     1 for d in phase_deployments if d.overall_status == "completed"
                 ),
-                "failed": sum(
+                    "failed": sum(
                     1 for d in phase_deployments if d.overall_status == "failed"
                 ),
-                "running": sum(
+                    "running": sum(
                     1 for d in phase_deployments if d.overall_status == "running"
                 ),
-            }
+                    }
 
         return {
             "summary": {
                 "total_deployments": total_deployments,
-                "completed": completed,
-                "failed": failed,
-                "running": running,
-                "success_rate": (
+                    "completed": completed,
+                    "failed": failed,
+                    "running": running,
+                    "success_rate": (
                     (completed / total_deployments * 100)
                     if total_deployments > 0
                     else 0
                 ),
-            },
-            "phase_breakdown": phase_stats,
-            "deployments": {k: asdict(v) for k, v in self.deployments.items()},
-            "generated_at": datetime.now().isoformat(),
-        }
+                    },
+                "phase_breakdown": phase_stats,
+                "deployments": {k: asdict(v) for k, v in self.deployments.items()},
+                "generated_at": datetime.now().isoformat(),
+                }
+
 
     def start_monitoring(self):
         """Start continuous monitoring"""
         self.monitoring_active = True
+
 
         def monitor_loop():
             while self.monitoring_active:
@@ -773,14 +798,16 @@ class APIDeploymentOrchestrator:
                     logger.error(f"Monitoring error: {str(e)}")
                     time.sleep(60)  # Wait a minute before retrying
 
-        monitoring_thread = threading.Thread(target=monitor_loop, daemon=True)
+        monitoring_thread = threading.Thread(target = monitor_loop, daemon = True)
         monitoring_thread.start()
         logger.info("Health monitoring started")
+
 
     def stop_monitoring(self):
         """Stop continuous monitoring"""
         self.monitoring_active = False
         logger.info("Health monitoring stopped")
+
 
     def interactive_menu(self):
         """Interactive deployment menu"""
@@ -797,7 +824,7 @@ class APIDeploymentOrchestrator:
             print("8. 🛑 Stop monitoring")
             print("9. ❌ Exit")
 
-            choice = input("\nSelect option (1-9): ").strip()
+            choice = input("\nSelect option (1 - 9): ").strip()
 
             if choice == "1":
                 api_key = input("Enter API key: ").strip()
@@ -809,7 +836,7 @@ class APIDeploymentOrchestrator:
                 input("\nPress Enter to continue...")
 
             elif choice == "2":
-                phase = input("Enter phase (1-4): ").strip()
+                phase = input("Enter phase (1 - 4): ").strip()
                 try:
                     phase_num = int(phase)
                     if 1 <= phase_num <= 4:
@@ -821,7 +848,7 @@ class APIDeploymentOrchestrator:
                             f"\n📊 Phase {phase_num}: {completed}/{len(deployments)} successful"
                         )
                     else:
-                        print("❌ Invalid phase. Use 1-4")
+                        print("❌ Invalid phase. Use 1 - 4")
                 except ValueError:
                     print("❌ Invalid input")
                 input("\nPress Enter to continue...")
@@ -845,10 +872,10 @@ class APIDeploymentOrchestrator:
                     for api_key, deployment in self.deployments.items():
                         status_emoji = {
                             "completed": "✅",
-                            "failed": "❌",
-                            "running": "🔄",
-                            "rolled_back": "↩️",
-                        }.get(deployment.overall_status, "❓")
+                                "failed": "❌",
+                                "running": "🔄",
+                                "rolled_back": "↩️",
+                                }.get(deployment.overall_status, "❓")
                         print(
                             f"  {status_emoji} {deployment.api_name}: {deployment.overall_status}"
                         )
@@ -862,7 +889,7 @@ class APIDeploymentOrchestrator:
                     f"deployment_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
                 )
                 with open(filename, "w") as f:
-                    json.dump(report, f, indent=2)
+                    json.dump(report, f, indent = 2)
                 print(f"\n📄 Report saved to {filename}")
                 print(
                     f"📊 Summary: {report['summary']['completed']}/{report['summary']['total_deployments']} successful"
@@ -907,7 +934,6 @@ def main():
     except Exception as e:
         logger.error(f"Orchestrator error: {str(e)}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

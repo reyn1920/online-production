@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Analytics Dashboard Service
 Comprehensive business intelligence and data visualization platform
@@ -34,29 +34,29 @@ from pydantic import BaseModel, Field
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, Integer, String, Text,
-                        create_engine)
+    create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = structlog.get_logger()
 
 # Database setup
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./analytics_dashboard.db")
 engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit = False, autoflush = False, bind = engine)
 Base = declarative_base()
 
 # Redis setup
-redis_client = redis.Redis(host=os.getenv("REDIS_HOST", "localhost"), port=6379, db=0)
+redis_client = redis.Redis(host = os.getenv("REDIS_HOST", "localhost"), port = 6379, db = 0)
 
 # Celery setup
 celery_app = Celery(
     "analytics",
-    broker=os.getenv("CELERY_BROKER", "redis://localhost:6379/0"),
-    backend=os.getenv("CELERY_BACKEND", "redis://localhost:6379/0"),
+        broker = os.getenv("CELERY_BROKER", "redis://localhost:6379 / 0"),
+        backend = os.getenv("CELERY_BACKEND", "redis://localhost:6379 / 0"),
 )
 
 # Metrics
@@ -71,62 +71,63 @@ data_points_processed = Counter(
     "data_points_processed_total", "Total data points processed", ["source"]
 )
 
-
 # Database Models
+
+
 class Dashboard(Base):
     __tablename__ = "dashboards"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String, nullable=False)
+    id = Column(String, primary_key = True, default = lambda: str(uuid.uuid4()))
+    name = Column(String, nullable = False)
     description = Column(Text)
     dashboard_type = Column(
-        String, nullable=False
+        String, nullable = False
     )  # revenue, marketing, content, executive
-    owner_id = Column(String, nullable=False)
+    owner_id = Column(String, nullable = False)
     config = Column(JSON, default={})
     widgets = Column(JSON, default=[])
-    is_public = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    last_accessed = Column(DateTime, default=datetime.utcnow)
+    is_public = Column(Boolean, default = False)
+    created_at = Column(DateTime, default = datetime.utcnow)
+    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
+    last_accessed = Column(DateTime, default = datetime.utcnow)
 
 
 class DataSource(Base):
     __tablename__ = "data_sources"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String, nullable=False)
-    source_type = Column(String, nullable=False)  # api, database, file, webhook
+    id = Column(String, primary_key = True, default = lambda: str(uuid.uuid4()))
+    name = Column(String, nullable = False)
+    source_type = Column(String, nullable = False)  # api, database, file, webhook
     connection_config = Column(JSON, default={})
-    refresh_interval = Column(Integer, default=3600)  # seconds
+    refresh_interval = Column(Integer, default = 3600)  # seconds
     last_refresh = Column(DateTime)
     status = Column(String, default="active")
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default = datetime.utcnow)
+    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
 
 
 class MetricDefinition(Base):
     __tablename__ = "metric_definitions"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String, nullable=False)
+    id = Column(String, primary_key = True, default = lambda: str(uuid.uuid4()))
+    name = Column(String, nullable = False)
     description = Column(Text)
-    metric_type = Column(String, nullable=False)  # counter, gauge, histogram, rate
-    calculation_method = Column(String, nullable=False)  # sum, avg, count, custom
-    data_source_id = Column(String, nullable=False)
+    metric_type = Column(String, nullable = False)  # counter, gauge, histogram, rate
+    calculation_method = Column(String, nullable = False)  # sum, avg, count, custom
+    data_source_id = Column(String, nullable = False)
     query = Column(Text)
     unit = Column(String, default="")
     target_value = Column(Float)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default = datetime.utcnow)
+    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
 
 
 class Report(Base):
     __tablename__ = "reports"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String, nullable=False)
-    report_type = Column(String, nullable=False)  # scheduled, ad_hoc, automated
+    id = Column(String, primary_key = True, default = lambda: str(uuid.uuid4()))
+    name = Column(String, nullable = False)
+    report_type = Column(String, nullable = False)  # scheduled, ad_hoc, automated
     dashboard_id = Column(String)
     schedule = Column(String)  # cron expression
     recipients = Column(JSON, default=[])
@@ -134,31 +135,31 @@ class Report(Base):
     last_generated = Column(DateTime)
     next_generation = Column(DateTime)
     status = Column(String, default="active")
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default = datetime.utcnow)
+    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
 
 
 class Alert(Base):
     __tablename__ = "alerts"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String, nullable=False)
-    metric_id = Column(String, nullable=False)
-    condition = Column(String, nullable=False)  # gt, lt, eq, change_percent
-    threshold = Column(Float, nullable=False)
+    id = Column(String, primary_key = True, default = lambda: str(uuid.uuid4()))
+    name = Column(String, nullable = False)
+    metric_id = Column(String, nullable = False)
+    condition = Column(String, nullable = False)  # gt, lt, eq, change_percent
+    threshold = Column(Float, nullable = False)
     severity = Column(String, default="medium")  # low, medium, high, critical
     notification_channels = Column(JSON, default=[])
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default = True)
     last_triggered = Column(DateTime)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
+    created_at = Column(DateTime, default = datetime.utcnow)
+    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
 
 # Create tables
-Base.metadata.create_all(bind=engine)
-
+Base.metadata.create_all(bind = engine)
 
 # Pydantic Models
+
+
 class DashboardCreate(BaseModel):
     name: str
     description: Optional[str] = None
@@ -213,8 +214,9 @@ class AnalyticsQuery(BaseModel):
     aggregation: str = "sum"
     limit: int = 1000
 
-
 # Dependency
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -222,11 +224,15 @@ def get_db():
     finally:
         db.close()
 
-
 # Data Processing Engine
+
+
 class DataProcessor:
+
+
     def __init__(self, db: Session):
         self.db = db
+
 
     async def fetch_data_from_source(
         self, source_id: str, query: str = None
@@ -245,6 +251,7 @@ class DataProcessor:
         else:
             raise ValueError(f"Unsupported source type: {source.source_type}")
 
+
     async def _fetch_from_api(
         self, source: DataSource, query: str = None
     ) -> pd.DataFrame:
@@ -258,11 +265,12 @@ class DataProcessor:
             params.update({"query": query})
 
         async with httpx.AsyncClient() as client:
-            response = await client.get(url, headers=headers, params=params)
+            response = await client.get(url, headers = headers, params = params)
             response.raise_for_status()
 
             data = response.json()
             return pd.DataFrame(data.get("data", []))
+
 
     async def _fetch_from_database(
         self, source: DataSource, query: str
@@ -275,6 +283,7 @@ class DataProcessor:
             query = "SELECT * FROM metrics LIMIT 1000"
 
         return pd.read_sql(query, connection_string)
+
 
     async def _fetch_from_file(self, source: DataSource) -> pd.DataFrame:
         """Fetch data from file"""
@@ -290,6 +299,7 @@ class DataProcessor:
             return pd.read_json(file_path)
         else:
             raise ValueError(f"Unsupported file type: {file_type}")
+
 
     def calculate_metric(
         self, data: pd.DataFrame, metric_def: MetricDefinition
@@ -309,6 +319,7 @@ class DataProcessor:
             # Custom calculation would go here
             return 0
 
+
     def generate_forecast(
         self, data: pd.DataFrame, periods: int = 30
     ) -> Dict[str, Any]:
@@ -316,67 +327,76 @@ class DataProcessor:
         if len(data) < 10:
             return {
                 "forecast": [],
-                "confidence_intervals": [],
-                "error": "Insufficient data",
-            }
+                    "confidence_intervals": [],
+                    "error": "Insufficient data",
+                    }
 
         try:
             # Prepare time series data
             ts_data = data.iloc[:, 0] if not data.empty else pd.Series()
 
             # Use exponential smoothing for forecasting
-            model = ExponentialSmoothing(ts_data, trend="add", seasonal=None)
+            model = ExponentialSmoothing(ts_data, trend="add", seasonal = None)
             fitted_model = model.fit()
             forecast = fitted_model.forecast(periods)
 
             return {
                 "forecast": forecast.tolist(),
-                "confidence_intervals": [],  # Would calculate actual CIs
+                    "confidence_intervals": [],  # Would calculate actual CIs
                 "model_type": "exponential_smoothing",
-            }
+                    }
         except Exception as e:
             logger.error(f"Forecasting error: {e}")
             return {"forecast": [], "error": str(e)}
 
-
 # Visualization Engine
+
+
 class VisualizationEngine:
+
+
     def __init__(self):
         pass
+
 
     def create_line_chart(
         self, data: pd.DataFrame, x_col: str, y_col: str, title: str = ""
     ) -> Dict[str, Any]:
         """Create line chart"""
-        fig = px.line(data, x=x_col, y=y_col, title=title)
+        fig = px.line(data, x = x_col, y = y_col, title = title)
         return json.loads(fig.to_json())
+
 
     def create_bar_chart(
         self, data: pd.DataFrame, x_col: str, y_col: str, title: str = ""
     ) -> Dict[str, Any]:
         """Create bar chart"""
-        fig = px.bar(data, x=x_col, y=y_col, title=title)
+        fig = px.bar(data, x = x_col, y = y_col, title = title)
         return json.loads(fig.to_json())
+
 
     def create_pie_chart(
         self, data: pd.DataFrame, values_col: str, names_col: str, title: str = ""
     ) -> Dict[str, Any]:
         """Create pie chart"""
-        fig = px.pie(data, values=values_col, names=names_col, title=title)
+        fig = px.pie(data, values = values_col, names = names_col, title = title)
         return json.loads(fig.to_json())
+
 
     def create_scatter_plot(
         self, data: pd.DataFrame, x_col: str, y_col: str, title: str = ""
     ) -> Dict[str, Any]:
         """Create scatter plot"""
-        fig = px.scatter(data, x=x_col, y=y_col, title=title)
+        fig = px.scatter(data, x = x_col, y = y_col, title = title)
         return json.loads(fig.to_json())
+
 
     def create_heatmap(self, data: pd.DataFrame, title: str = "") -> Dict[str, Any]:
         """Create heatmap"""
         correlation_matrix = data.corr()
-        fig = px.imshow(correlation_matrix, title=title)
+        fig = px.imshow(correlation_matrix, title = title)
         return json.loads(fig.to_json())
+
 
     def create_kpi_card(
         self, value: float, title: str, target: float = None, unit: str = ""
@@ -386,13 +406,14 @@ class VisualizationEngine:
 
         return {
             "type": "kpi",
-            "value": value,
-            "title": title,
-            "target": target,
-            "unit": unit,
-            "color": color,
-            "percentage_of_target": (value / target * 100) if target else None,
-        }
+                "value": value,
+                "title": title,
+                "target": target,
+                "unit": unit,
+                "color": color,
+                "percentage_of_target": (value / target * 100) if target else None,
+                }
+
 
     def create_gauge_chart(
         self, value: float, title: str, min_val: float = 0, max_val: float = 100
@@ -400,36 +421,40 @@ class VisualizationEngine:
         """Create gauge chart"""
         fig = go.Figure(
             go.Indicator(
-                mode="gauge+number+delta",
-                value=value,
-                domain={"x": [0, 1], "y": [0, 1]},
-                title={"text": title},
-                gauge={
+                mode="gauge + number + delta",
+                    value = value,
+                    domain={"x": [0, 1], "y": [0, 1]},
+                    title={"text": title},
+                    gauge={
                     "axis": {"range": [None, max_val]},
-                    "bar": {"color": "darkblue"},
-                    "steps": [
+                        "bar": {"color": "darkblue"},
+                        "steps": [
                         {"range": [0, max_val * 0.5], "color": "lightgray"},
-                        {"range": [max_val * 0.5, max_val * 0.8], "color": "gray"},
-                    ],
-                    "threshold": {
+                            {"range": [max_val * 0.5, max_val * 0.8], "color": "gray"},
+                            ],
+                        "threshold": {
                         "line": {"color": "red", "width": 4},
-                        "thickness": 0.75,
-                        "value": max_val * 0.9,
-                    },
-                },
-            )
+                            "thickness": 0.75,
+                            "value": max_val * 0.9,
+                            },
+                        },
+                    )
         )
         return json.loads(fig.to_json())
 
-
 # Alert Manager
+
+
 class AlertManager:
+
+
     def __init__(self, db: Session):
         self.db = db
 
+
     async def check_alerts(self) -> List[Dict[str, Any]]:
         """Check all active alerts"""
-        alerts = self.db.query(Alert).filter(Alert.is_active == True).all()
+        alerts = self.db.query(Alert).filter(Alert.is_active is True).all()
         triggered_alerts = []
 
         for alert in alerts:
@@ -437,6 +462,7 @@ class AlertManager:
                 triggered_alerts.append(await self._trigger_alert(alert))
 
         return triggered_alerts
+
 
     async def _evaluate_alert(self, alert: Alert) -> bool:
         """Evaluate if alert condition is met"""
@@ -472,6 +498,7 @@ class AlertManager:
             logger.error(f"Alert evaluation error: {e}")
             return False
 
+
     async def _trigger_alert(self, alert: Alert) -> Dict[str, Any]:
         """Trigger alert notification"""
         alert.last_triggered = datetime.utcnow()
@@ -482,11 +509,12 @@ class AlertManager:
 
         return {
             "alert_id": alert.id,
-            "alert_name": alert.name,
-            "severity": alert.severity,
-            "triggered_at": alert.last_triggered.isoformat(),
-            "notification_result": notification_result,
-        }
+                "alert_name": alert.name,
+                "severity": alert.severity,
+                "triggered_at": alert.last_triggered.isoformat(),
+                "notification_result": notification_result,
+                }
+
 
     async def _send_notifications(self, alert: Alert) -> Dict[str, Any]:
         """Send alert notifications"""
@@ -502,12 +530,16 @@ class AlertManager:
 
         return results
 
-
 # Report Generator
+
+
 class ReportGenerator:
+
+
     def __init__(self, db: Session):
         self.db = db
         self.viz_engine = VisualizationEngine()
+
 
     async def generate_dashboard_report(
         self, dashboard_id: str, format: str = "html"
@@ -521,10 +553,10 @@ class ReportGenerator:
 
         report_data = {
             "title": dashboard.name,
-            "generated_at": datetime.utcnow().isoformat(),
-            "widgets": [],
-            "summary": {},
-        }
+                "generated_at": datetime.utcnow().isoformat(),
+                "widgets": [],
+                "summary": {},
+                }
 
         # Process each widget
         for widget in dashboard.widgets:
@@ -541,6 +573,7 @@ class ReportGenerator:
         else:
             return report_data
 
+
     async def _process_widget(self, widget: Dict[str, Any]) -> Dict[str, Any]:
         """Process individual widget for report"""
         widget_type = widget.get("type")
@@ -549,33 +582,35 @@ class ReportGenerator:
             # Generate chart data
             return {
                 "type": "chart",
-                "title": widget.get("title", ""),
-                "chart_data": {},  # Would generate actual chart
+                    "title": widget.get("title", ""),
+                    "chart_data": {},  # Would generate actual chart
                 "insights": [],
-            }
+                    }
         elif widget_type == "kpi":
             # Generate KPI data
             return {
                 "type": "kpi",
-                "title": widget.get("title", ""),
-                "value": 0,  # Would calculate actual value
+                    "title": widget.get("title", ""),
+                    "value": 0,  # Would calculate actual value
                 "target": widget.get("target"),
-                "trend": "up",  # Would calculate trend
+                    "trend": "up",  # Would calculate trend
             }
         else:
             return widget
+
 
     async def _generate_summary(self, dashboard: Dashboard) -> Dict[str, Any]:
         """Generate dashboard summary"""
         return {
             "total_widgets": len(dashboard.widgets),
-            "last_updated": dashboard.updated_at.isoformat(),
-            "key_insights": [
+                "last_updated": dashboard.updated_at.isoformat(),
+                "key_insights": [
                 "Revenue increased by 15% this month",
-                "Customer acquisition cost decreased by 8%",
-                "Conversion rate improved to 3.2%",
-            ],
-        }
+                    "Customer acquisition cost decreased by 8%",
+                    "Conversion rate improved to 3.2%",
+                    ],
+                }
+
 
     async def _generate_html_report(
         self, report_data: Dict[str, Any]
@@ -586,7 +621,7 @@ class ReportGenerator:
         <head><title>{report_data['title']}</title></head>
         <body>
             <h1>{report_data['title']}</h1>
-            <p>Generated: {report_data['generated_at']}</p>
+            <p > Generated: {report_data['generated_at']}</p>
             <!-- Report content would be generated here -->
         </body>
         </html>
@@ -594,11 +629,11 @@ class ReportGenerator:
 
         return {"format": "html", "content": html_content, "size": len(html_content)}
 
+
     async def _generate_pdf_report(self, report_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate PDF report"""
         # PDF generation would be implemented here
         return {"format": "pdf", "content": "base64_encoded_pdf_content", "size": 1024}
-
 
 # Initialize services
 data_processor = DataProcessor
@@ -607,8 +642,9 @@ visualization_engine = VisualizationEngine()
 # Scheduler setup
 scheduler = AsyncIOScheduler()
 
-
 @asynccontextmanager
+
+
 async def lifespan(app: FastAPI):
     # Startup
     scheduler.start()
@@ -616,62 +652,64 @@ async def lifespan(app: FastAPI):
     # Add scheduled tasks
     scheduler.add_job(
         refresh_data_sources,
-        CronTrigger(minute=0),  # Every hour
+            CronTrigger(minute = 0),  # Every hour
         id="refresh_data_sources",
-    )
+            )
 
     scheduler.add_job(
         check_alerts_task,
-        CronTrigger(minute="*/5"),  # Every 5 minutes
+            CronTrigger(minute="*/5"),  # Every 5 minutes
         id="check_alerts",
-    )
+            )
 
     scheduler.add_job(
         generate_scheduled_reports,
-        CronTrigger(hour=0, minute=0),  # Daily at midnight
+            CronTrigger(hour = 0, minute = 0),  # Daily at midnight
         id="generate_reports",
-    )
+            )
 
     yield
 
     # Shutdown
     scheduler.shutdown()
 
-
 # FastAPI app
 app = FastAPI(
     title="Analytics Dashboard Service",
-    description="Comprehensive business intelligence and data visualization platform",
-    version="1.0.0",
-    lifespan=lifespan,
+        description="Comprehensive business intelligence and data visualization platform",
+        version="1.0.0",
+        lifespan = lifespan,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+        allow_origins=["*"],
+        allow_credentials = True,
+        allow_methods=["*"],
+        allow_headers=["*"],
 )
 
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-
 # Routes
 @app.get("/health")
+
+
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
 
-
 @app.get("/metrics")
+
+
 async def get_metrics():
     return generate_latest().decode()
 
-
 # Dashboard Management
-@app.post("/api/dashboards")
+@app.post("/api / dashboards")
+
+
 async def create_dashboard(
     dashboard_data: DashboardCreate, db: Session = Depends(get_db)
 ):
@@ -683,20 +721,22 @@ async def create_dashboard(
     active_dashboards.inc()
     return dashboard
 
+@app.get("/api / dashboards")
 
-@app.get("/api/dashboards")
+
 async def get_dashboards(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
     dashboards = db.query(Dashboard).offset(skip).limit(limit).all()
     return dashboards
 
+@app.get("/api / dashboards/{dashboard_id}")
 
-@app.get("/api/dashboards/{dashboard_id}")
+
 async def get_dashboard(dashboard_id: str, db: Session = Depends(get_db)):
     dashboard = db.query(Dashboard).filter(Dashboard.id == dashboard_id).first()
     if not dashboard:
-        raise HTTPException(status_code=404, detail="Dashboard not found")
+        raise HTTPException(status_code = 404, detail="Dashboard not found")
 
     # Update last accessed
     dashboard.last_accessed = datetime.utcnow()
@@ -704,14 +744,15 @@ async def get_dashboard(dashboard_id: str, db: Session = Depends(get_db)):
 
     return dashboard
 
+@app.put("/api / dashboards/{dashboard_id}")
 
-@app.put("/api/dashboards/{dashboard_id}")
+
 async def update_dashboard(
     dashboard_id: str, dashboard_data: DashboardCreate, db: Session = Depends(get_db)
 ):
     dashboard = db.query(Dashboard).filter(Dashboard.id == dashboard_id).first()
     if not dashboard:
-        raise HTTPException(status_code=404, detail="Dashboard not found")
+        raise HTTPException(status_code = 404, detail="Dashboard not found")
 
     for key, value in dashboard_data.dict().items():
         setattr(dashboard, key, value)
@@ -721,9 +762,10 @@ async def update_dashboard(
 
     return dashboard
 
-
 # Data Source Management
-@app.post("/api/data-sources")
+@app.post("/api / data - sources")
+
+
 async def create_data_source(
     source_data: DataSourceCreate, db: Session = Depends(get_db)
 ):
@@ -733,14 +775,16 @@ async def create_data_source(
     db.refresh(source)
     return source
 
+@app.get("/api / data - sources")
 
-@app.get("/api/data-sources")
+
 async def get_data_sources(db: Session = Depends(get_db)):
     sources = db.query(DataSource).all()
     return sources
 
+@app.get("/api / data - sources/{source_id}/data")
 
-@app.get("/api/data-sources/{source_id}/data")
+
 async def get_source_data(
     source_id: str, query: str = None, db: Session = Depends(get_db)
 ):
@@ -750,15 +794,16 @@ async def get_source_data(
         data = await processor.fetch_data_from_source(source_id, query)
         return {
             "data": data.to_dict(orient="records"),
-            "columns": data.columns.tolist(),
-            "row_count": len(data),
-        }
+                "columns": data.columns.tolist(),
+                "row_count": len(data),
+                }
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code = 400, detail = str(e))
 
 # Metrics Management
-@app.post("/api/metrics")
+@app.post("/api / metrics")
+
+
 async def create_metric(
     metric_data: MetricDefinitionCreate, db: Session = Depends(get_db)
 ):
@@ -768,18 +813,20 @@ async def create_metric(
     db.refresh(metric)
     return metric
 
+@app.get("/api / metrics")
 
-@app.get("/api/metrics")
+
 async def get_metrics_definitions(db: Session = Depends(get_db)):
     metrics = db.query(MetricDefinition).all()
     return metrics
 
+@app.get("/api / metrics/{metric_id}/value")
 
-@app.get("/api/metrics/{metric_id}/value")
+
 async def get_metric_value(metric_id: str, db: Session = Depends(get_db)):
     metric = db.query(MetricDefinition).filter(MetricDefinition.id == metric_id).first()
     if not metric:
-        raise HTTPException(status_code=404, detail="Metric not found")
+        raise HTTPException(status_code = 404, detail="Metric not found")
 
     processor = data_processor(db)
 
@@ -791,16 +838,17 @@ async def get_metric_value(metric_id: str, db: Session = Depends(get_db)):
 
         return {
             "metric_id": metric_id,
-            "value": value,
-            "unit": metric.unit,
-            "calculated_at": datetime.utcnow().isoformat(),
-        }
+                "value": value,
+                "unit": metric.unit,
+                "calculated_at": datetime.utcnow().isoformat(),
+                }
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code = 400, detail = str(e))
 
 # Analytics and Querying
-@app.post("/api/analytics/query")
+@app.post("/api / analytics / query")
+
+
 async def execute_analytics_query(query: AnalyticsQuery, db: Session = Depends(get_db)):
     analytics_requests.labels(endpoint="query", status="started").inc()
 
@@ -809,30 +857,31 @@ async def execute_analytics_query(query: AnalyticsQuery, db: Session = Depends(g
         # For now, return mock data
         result = {
             "data": [
-                {"date": "2024-01-01", "revenue": 10000, "users": 500},
-                {"date": "2024-01-02", "revenue": 12000, "users": 600},
-                {"date": "2024-01-03", "revenue": 11000, "users": 550},
-            ],
-            "total_rows": 3,
-            "execution_time_ms": 150,
-        }
+                {"date": "2024 - 01 - 01", "revenue": 10000, "users": 500},
+                    {"date": "2024 - 01 - 02", "revenue": 12000, "users": 600},
+                    {"date": "2024 - 01 - 03", "revenue": 11000, "users": 550},
+                    ],
+                "total_rows": 3,
+                "execution_time_ms": 150,
+                }
 
         analytics_requests.labels(endpoint="query", status="success").inc()
         return result
 
     except Exception as e:
         analytics_requests.labels(endpoint="query", status="error").inc()
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code = 400, detail = str(e))
 
 # Visualization
-@app.post("/api/visualizations/chart")
+@app.post("/api / visualizations / chart")
+
+
 async def create_chart(chart_config: Dict[str, Any], db: Session = Depends(get_db)):
     chart_type = chart_config.get("type", "line")
     data_source_id = chart_config.get("data_source_id")
 
     if not data_source_id:
-        raise HTTPException(status_code=400, detail="Data source ID required")
+        raise HTTPException(status_code = 400, detail="Data source ID required")
 
     processor = data_processor(db)
 
@@ -842,45 +891,46 @@ async def create_chart(chart_config: Dict[str, Any], db: Session = Depends(get_d
         if chart_type == "line":
             chart = visualization_engine.create_line_chart(
                 data,
-                chart_config.get("x_column", data.columns[0]),
-                chart_config.get("y_column", data.columns[1]),
-                chart_config.get("title", ""),
-            )
+                    chart_config.get("x_column", data.columns[0]),
+                    chart_config.get("y_column", data.columns[1]),
+                    chart_config.get("title", ""),
+                    )
         elif chart_type == "bar":
             chart = visualization_engine.create_bar_chart(
                 data,
-                chart_config.get("x_column", data.columns[0]),
-                chart_config.get("y_column", data.columns[1]),
-                chart_config.get("title", ""),
-            )
+                    chart_config.get("x_column", data.columns[0]),
+                    chart_config.get("y_column", data.columns[1]),
+                    chart_config.get("title", ""),
+                    )
         elif chart_type == "pie":
             chart = visualization_engine.create_pie_chart(
                 data,
-                chart_config.get("values_column", data.columns[1]),
-                chart_config.get("names_column", data.columns[0]),
-                chart_config.get("title", ""),
-            )
+                    chart_config.get("values_column", data.columns[1]),
+                    chart_config.get("names_column", data.columns[0]),
+                    chart_config.get("title", ""),
+                    )
         else:
             raise HTTPException(
-                status_code=400, detail=f"Unsupported chart type: {chart_type}"
+                status_code = 400, detail = f"Unsupported chart type: {chart_type}"
             )
 
         return chart
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code = 400, detail = str(e))
+
+@app.post("/api / visualizations / kpi")
 
 
-@app.post("/api/visualizations/kpi")
 async def create_kpi(kpi_config: Dict[str, Any], db: Session = Depends(get_db)):
     metric_id = kpi_config.get("metric_id")
 
     if not metric_id:
-        raise HTTPException(status_code=400, detail="Metric ID required")
+        raise HTTPException(status_code = 400, detail="Metric ID required")
 
     metric = db.query(MetricDefinition).filter(MetricDefinition.id == metric_id).first()
     if not metric:
-        raise HTTPException(status_code=404, detail="Metric not found")
+        raise HTTPException(status_code = 404, detail="Metric not found")
 
     processor = data_processor(db)
 
@@ -892,19 +942,20 @@ async def create_kpi(kpi_config: Dict[str, Any], db: Session = Depends(get_db)):
 
         kpi = visualization_engine.create_kpi_card(
             value,
-            kpi_config.get("title", metric.name),
-            metric.target_value,
-            metric.unit,
-        )
+                kpi_config.get("title", metric.name),
+                metric.target_value,
+                metric.unit,
+                )
 
         return kpi
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code = 400, detail = str(e))
 
 # Forecasting
-@app.post("/api/analytics/forecast")
+@app.post("/api / analytics / forecast")
+
+
 async def generate_forecast(
     forecast_config: Dict[str, Any], db: Session = Depends(get_db)
 ):
@@ -912,7 +963,7 @@ async def generate_forecast(
     periods = forecast_config.get("periods", 30)
 
     if not data_source_id:
-        raise HTTPException(status_code=400, detail="Data source ID required")
+        raise HTTPException(status_code = 400, detail="Data source ID required")
 
     processor = data_processor(db)
 
@@ -923,11 +974,12 @@ async def generate_forecast(
         return forecast
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code = 400, detail = str(e))
 
 # Alerts Management
-@app.post("/api/alerts")
+@app.post("/api / alerts")
+
+
 async def create_alert(alert_data: AlertCreate, db: Session = Depends(get_db)):
     alert = Alert(**alert_data.dict())
     db.add(alert)
@@ -935,26 +987,29 @@ async def create_alert(alert_data: AlertCreate, db: Session = Depends(get_db)):
     db.refresh(alert)
     return alert
 
+@app.get("/api / alerts")
 
-@app.get("/api/alerts")
+
 async def get_alerts(db: Session = Depends(get_db)):
     alerts = db.query(Alert).all()
     return alerts
 
+@app.post("/api / alerts / check")
 
-@app.post("/api/alerts/check")
+
 async def check_alerts_now(db: Session = Depends(get_db)):
     alert_manager = AlertManager(db)
     triggered_alerts = await alert_manager.check_alerts()
 
     return {
         "checked_at": datetime.utcnow().isoformat(),
-        "triggered_alerts": triggered_alerts,
-    }
-
+            "triggered_alerts": triggered_alerts,
+            }
 
 # Reports Management
-@app.post("/api/reports")
+@app.post("/api / reports")
+
+
 async def create_report(report_data: ReportCreate, db: Session = Depends(get_db)):
     report = Report(**report_data.dict())
     db.add(report)
@@ -962,22 +1017,24 @@ async def create_report(report_data: ReportCreate, db: Session = Depends(get_db)
     db.refresh(report)
     return report
 
+@app.get("/api / reports")
 
-@app.get("/api/reports")
+
 async def get_reports(db: Session = Depends(get_db)):
     reports = db.query(Report).all()
     return reports
 
+@app.post("/api / reports/{report_id}/generate")
 
-@app.post("/api/reports/{report_id}/generate")
+
 async def generate_report_now(report_id: str, db: Session = Depends(get_db)):
     report = db.query(Report).filter(Report.id == report_id).first()
     if not report:
-        raise HTTPException(status_code=404, detail="Report not found")
+        raise HTTPException(status_code = 404, detail="Report not found")
 
     if not report.dashboard_id:
         raise HTTPException(
-            status_code=400, detail="Report must be associated with a dashboard"
+            status_code = 400, detail="Report must be associated with a dashboard"
         )
 
     report_generator = ReportGenerator(db)
@@ -994,29 +1051,32 @@ async def generate_report_now(report_id: str, db: Session = Depends(get_db)):
         return generated_report
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+        raise HTTPException(status_code = 400, detail = str(e))
 
 # Dashboard UI Routes
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class = HTMLResponse)
+
+
 async def dashboard_home(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
+@app.get("/dashboard/{dashboard_id}", response_class = HTMLResponse)
 
-@app.get("/dashboard/{dashboard_id}", response_class=HTMLResponse)
+
 async def view_dashboard(
     request: Request, dashboard_id: str, db: Session = Depends(get_db)
 ):
     dashboard = db.query(Dashboard).filter(Dashboard.id == dashboard_id).first()
     if not dashboard:
-        raise HTTPException(status_code=404, detail="Dashboard not found")
+        raise HTTPException(status_code = 404, detail="Dashboard not found")
 
     return templates.TemplateResponse(
         "dashboard_view.html", {"request": request, "dashboard": dashboard}
     )
 
-
 # Background Tasks
+
+
 async def refresh_data_sources():
     """Refresh all data sources"""
     try:
@@ -1028,7 +1088,7 @@ async def refresh_data_sources():
             if (
                 source.last_refresh is None
                 or datetime.utcnow() - source.last_refresh
-                > timedelta(seconds=source.refresh_interval)
+                > timedelta(seconds = source.refresh_interval)
             ):
 
                 # Refresh data source
@@ -1069,9 +1129,9 @@ async def generate_scheduled_reports():
             db.query(Report)
             .filter(
                 Report.report_type == "scheduled",
-                Report.status == "active",
-                Report.next_generation <= now,
-            )
+                    Report.status == "active",
+                    Report.next_generation <= now,
+                    )
             .all()
         )
 
@@ -1086,7 +1146,7 @@ async def generate_scheduled_reports():
                 report.last_generated = now
                 # Calculate next generation time based on schedule
                 # This would parse the cron expression
-                report.next_generation = now + timedelta(days=1)  # Simplified
+                report.next_generation = now + timedelta(days = 1)  # Simplified
 
                 db.commit()
 
@@ -1099,15 +1159,15 @@ async def generate_scheduled_reports():
     except Exception as e:
         logger.error(f"Failed to generate scheduled reports: {e}")
 
-
 # Error Handlers
 @app.exception_handler(Exception)
+
+
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Global exception: {exc}")
-    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
-
+    return JSONResponse(status_code = 500, content={"detail": "Internal server error"})
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8004, reload=False, workers=1)
+    uvicorn.run("main:app", host="0.0.0.0", port = 8004, reload = False, workers = 1)

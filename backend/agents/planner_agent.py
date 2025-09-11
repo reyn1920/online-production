@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Planner Agent - The Strategist
 
-The system's brain that uses closed-loop feedback from performance data
+The system's brain that uses closed - loop feedback from performance data
 to autonomously refine its own strategies. Implements the "2% Blueprint"
-for resilient, self-improving strategic oversight.
+for resilient, self - improving strategic oversight.
 """
 
 import json
@@ -17,26 +17,28 @@ from typing import Any, Dict, List, Optional
 
 from .base_agents import BaseAgent
 
-
 @dataclass
+
+
 class StrategyMetrics:
     """Performance metrics for strategy evaluation"""
 
     strategy_id: str
-    content_performance: float  # 0-1 score
+    content_performance: float  # 0 - 1 score
     marketing_roi: float
     audience_engagement: float
     technical_health: float
     timestamp: datetime
 
+
     def overall_score(self) -> float:
         """Calculate weighted overall performance score"""
         weights = {
             "content": 0.3,
-            "marketing": 0.3,
-            "engagement": 0.25,
-            "technical": 0.15,
-        }
+                "marketing": 0.3,
+                "engagement": 0.25,
+                "technical": 0.15,
+                }
         return (
             self.content_performance * weights["content"]
             + self.marketing_roi * weights["marketing"]
@@ -44,8 +46,9 @@ class StrategyMetrics:
             + self.technical_health * weights["technical"]
         )
 
-
 @dataclass
+
+
 class StrategyPlan:
     """Strategic plan with autonomous refinement capabilities"""
 
@@ -63,7 +66,8 @@ class StrategyPlan:
 class PlannerAgent(BaseAgent):
     """The Strategist - Autonomous strategic planning and refinement"""
 
-    def __init__(self, db_path: str = "data/right_perspective.db"):
+
+    def __init__(self, db_path: str = "data / right_perspective.db"):
         super().__init__("PlannerAgent")
         self.db_path = db_path
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -74,6 +78,7 @@ class PlannerAgent(BaseAgent):
         self.refinement_trigger_threshold = 0.6
         self.learning_rate = 0.1
 
+
     def initialize_database(self):
         """Initialize strategy tracking database"""
         with sqlite3.connect(self.db_path) as conn:
@@ -81,14 +86,14 @@ class PlannerAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS strategy_plans (
                     strategy_id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    objectives TEXT NOT NULL,
-                    tactics TEXT NOT NULL,
-                    success_metrics TEXT NOT NULL,
-                    confidence_score REAL NOT NULL,
-                    created_at TIMESTAMP NOT NULL,
-                    last_refined TIMESTAMP NOT NULL,
-                    refinement_count INTEGER DEFAULT 0
+                        name TEXT NOT NULL,
+                        objectives TEXT NOT NULL,
+                        tactics TEXT NOT NULL,
+                        success_metrics TEXT NOT NULL,
+                        confidence_score REAL NOT NULL,
+                        created_at TIMESTAMP NOT NULL,
+                        last_refined TIMESTAMP NOT NULL,
+                        refinement_count INTEGER DEFAULT 0
                 )
             """
             )
@@ -97,14 +102,14 @@ class PlannerAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS strategy_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    strategy_id TEXT NOT NULL,
-                    content_performance REAL NOT NULL,
-                    marketing_roi REAL NOT NULL,
-                    audience_engagement REAL NOT NULL,
-                    technical_health REAL NOT NULL,
-                    overall_score REAL NOT NULL,
-                    timestamp TIMESTAMP NOT NULL,
-                    FOREIGN KEY (strategy_id) REFERENCES strategy_plans (strategy_id)
+                        strategy_id TEXT NOT NULL,
+                        content_performance REAL NOT NULL,
+                        marketing_roi REAL NOT NULL,
+                        audience_engagement REAL NOT NULL,
+                        technical_health REAL NOT NULL,
+                        overall_score REAL NOT NULL,
+                        timestamp TIMESTAMP NOT NULL,
+                        FOREIGN KEY (strategy_id) REFERENCES strategy_plans (strategy_id)
                 )
             """
             )
@@ -113,13 +118,14 @@ class PlannerAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS strategic_insights (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    insight_type TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    confidence REAL NOT NULL,
-                    created_at TIMESTAMP NOT NULL
+                        insight_type TEXT NOT NULL,
+                        content TEXT NOT NULL,
+                        confidence REAL NOT NULL,
+                        created_at TIMESTAMP NOT NULL
                 )
             """
             )
+
 
     def create_strategy(
         self, name: str, objectives: List[str], initial_tactics: Dict[str, Any]
@@ -131,20 +137,21 @@ class PlannerAgent(BaseAgent):
         success_metrics = self._generate_success_metrics(objectives)
 
         strategy = StrategyPlan(
-            strategy_id=strategy_id,
-            name=name,
-            objectives=objectives,
-            tactics=initial_tactics,
-            success_metrics=success_metrics,
-            confidence_score=0.8,  # Initial confidence
-            created_at=datetime.now(),
-            last_refined=datetime.now(),
-        )
+            strategy_id = strategy_id,
+                name = name,
+                objectives = objectives,
+                tactics = initial_tactics,
+                success_metrics = success_metrics,
+                confidence_score = 0.8,  # Initial confidence
+            created_at = datetime.now(),
+                last_refined = datetime.now(),
+                )
 
         self._save_strategy(strategy)
         self.logger.info(f"Created new strategy: {name} ({strategy_id})")
 
         return strategy
+
 
     def process_performance_feedback(
         self, strategy_id: str, performance_data: Dict[str, Any]
@@ -153,13 +160,13 @@ class PlannerAgent(BaseAgent):
         try:
             # Convert performance data to metrics
             metrics = StrategyMetrics(
-                strategy_id=strategy_id,
-                content_performance=performance_data.get("content_score", 0.5),
-                marketing_roi=performance_data.get("marketing_roi", 0.5),
-                audience_engagement=performance_data.get("engagement_score", 0.5),
-                technical_health=performance_data.get("system_health", 0.9),
-                timestamp=datetime.now(),
-            )
+                strategy_id = strategy_id,
+                    content_performance = performance_data.get("content_score", 0.5),
+                    marketing_roi = performance_data.get("marketing_roi", 0.5),
+                    audience_engagement = performance_data.get("engagement_score", 0.5),
+                    technical_health = performance_data.get("system_health", 0.9),
+                    timestamp = datetime.now(),
+                    )
 
             # Save metrics
             self._save_metrics(metrics)
@@ -177,6 +184,7 @@ class PlannerAgent(BaseAgent):
             self.logger.error(f"Error processing feedback: {e}")
             return False
 
+
     def _refine_strategy(
         self, strategy_id: str, current_metrics: StrategyMetrics
     ) -> bool:
@@ -187,7 +195,7 @@ class PlannerAgent(BaseAgent):
                 return False
 
             # Analyze historical performance
-            historical_metrics = self._get_historical_metrics(strategy_id, days=30)
+            historical_metrics = self._get_historical_metrics(strategy_id, days = 30)
 
             # Generate refinement insights
             insights = self._generate_refinement_insights(
@@ -209,9 +217,9 @@ class PlannerAgent(BaseAgent):
             # Log strategic insight
             self._log_strategic_insight(
                 "strategy_refinement",
-                f"Refined strategy {strategy_id} based on performance feedback",
-                0.8,
-            )
+                    f"Refined strategy {strategy_id} based on performance feedback",
+                    0.8,
+                    )
 
             self.logger.info(f"Successfully refined strategy {strategy_id}")
             return True
@@ -220,18 +228,19 @@ class PlannerAgent(BaseAgent):
             self.logger.error(f"Error refining strategy: {e}")
             return False
 
+
     def _generate_refinement_insights(
         self,
-        strategy: StrategyPlan,
-        current_metrics: StrategyMetrics,
-        historical_metrics: List[StrategyMetrics],
-    ) -> Dict[str, Any]:
+            strategy: StrategyPlan,
+            current_metrics: StrategyMetrics,
+            historical_metrics: List[StrategyMetrics],
+            ) -> Dict[str, Any]:
         """Generate insights for strategy refinement"""
         insights = {
             "performance_trends": {},
-            "tactical_adjustments": {},
-            "objective_modifications": [],
-        }
+                "tactical_adjustments": {},
+                "objective_modifications": [],
+                }
 
         # Analyze performance trends
         if historical_metrics:
@@ -247,34 +256,35 @@ class PlannerAgent(BaseAgent):
 
             insights["performance_trends"] = {
                 "content_trend": current_metrics.content_performance - avg_content,
-                "marketing_trend": current_metrics.marketing_roi - avg_marketing,
-                "engagement_trend": current_metrics.audience_engagement
+                    "marketing_trend": current_metrics.marketing_roi - avg_marketing,
+                    "engagement_trend": current_metrics.audience_engagement
                 - avg_engagement,
-            }
+                    }
 
         # Generate tactical adjustments based on weak areas
         if current_metrics.content_performance < 0.6:
             insights["tactical_adjustments"]["content"] = {
                 "increase_quality_checks": True,
-                "diversify_content_types": True,
-                "optimize_posting_schedule": True,
-            }
+                    "diversify_content_types": True,
+                    "optimize_posting_schedule": True,
+                    }
 
         if current_metrics.marketing_roi < 0.6:
             insights["tactical_adjustments"]["marketing"] = {
                 "refine_targeting": True,
-                "test_new_channels": True,
-                "optimize_conversion_funnel": True,
-            }
+                    "test_new_channels": True,
+                    "optimize_conversion_funnel": True,
+                    }
 
         if current_metrics.audience_engagement < 0.6:
             insights["tactical_adjustments"]["engagement"] = {
                 "improve_call_to_actions": True,
-                "increase_interactive_content": True,
-                "personalize_messaging": True,
-            }
+                    "increase_interactive_content": True,
+                    "personalize_messaging": True,
+                    }
 
         return insights
+
 
     def _apply_refinements(
         self, strategy: StrategyPlan, insights: Dict[str, Any]
@@ -301,24 +311,25 @@ class PlannerAgent(BaseAgent):
                     )
 
         return StrategyPlan(
-            strategy_id=strategy.strategy_id,
-            name=strategy.name,
-            objectives=strategy.objectives,
-            tactics=refined_tactics,
-            success_metrics=refined_metrics,
-            confidence_score=strategy.confidence_score,
-            created_at=strategy.created_at,
-            last_refined=strategy.last_refined,
-            refinement_count=strategy.refinement_count,
-        )
+            strategy_id = strategy.strategy_id,
+                name = strategy.name,
+                objectives = strategy.objectives,
+                tactics = refined_tactics,
+                success_metrics = refined_metrics,
+                confidence_score = strategy.confidence_score,
+                created_at = strategy.created_at,
+                last_refined = strategy.last_refined,
+                refinement_count = strategy.refinement_count,
+                )
+
 
     def get_current_strategy(self) -> Optional[StrategyPlan]:
         """Get the most recent active strategy"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                SELECT * FROM strategy_plans 
-                ORDER BY last_refined DESC 
+                SELECT * FROM strategy_plans
+                ORDER BY last_refined DESC
                 LIMIT 1
             """
             )
@@ -326,21 +337,22 @@ class PlannerAgent(BaseAgent):
 
             if row:
                 return StrategyPlan(
-                    strategy_id=row[0],
-                    name=row[1],
-                    objectives=json.loads(row[2]),
-                    tactics=json.loads(row[3]),
-                    success_metrics=json.loads(row[4]),
-                    confidence_score=row[5],
-                    created_at=datetime.fromisoformat(row[6]),
-                    last_refined=datetime.fromisoformat(row[7]),
-                    refinement_count=row[8],
-                )
+                    strategy_id = row[0],
+                        name = row[1],
+                        objectives = json.loads(row[2]),
+                        tactics = json.loads(row[3]),
+                        success_metrics = json.loads(row[4]),
+                        confidence_score = row[5],
+                        created_at = datetime.fromisoformat(row[6]),
+                        last_refined = datetime.fromisoformat(row[7]),
+                        refinement_count = row[8],
+                        )
         return None
+
 
     def get_strategic_insights(self, days: int = 7) -> List[Dict[str, Any]]:
         """Get recent strategic insights"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
@@ -351,27 +363,29 @@ class PlannerAgent(BaseAgent):
                 ORDER BY created_at DESC
             """,
                 (cutoff_date,),
-            )
+                    )
 
             return [
                 {
                     "type": row[0],
-                    "content": row[1],
-                    "confidence": row[2],
-                    "created_at": row[3],
-                }
+                        "content": row[1],
+                        "confidence": row[2],
+                        "created_at": row[3],
+                        }
                 for row in cursor.fetchall()
             ]
+
 
     def _generate_success_metrics(self, objectives: List[str]) -> Dict[str, float]:
         """Generate success metrics based on objectives"""
         return {
             "content_quality_target": 0.8,
-            "marketing_roi_target": 0.75,
-            "engagement_rate_target": 0.7,
-            "system_uptime_target": 0.99,
-            "growth_rate_target": 0.1,
-        }
+                "marketing_roi_target": 0.75,
+                "engagement_rate_target": 0.7,
+                "system_uptime_target": 0.99,
+                "growth_rate_target": 0.1,
+                }
+
 
     def _save_strategy(self, strategy: StrategyPlan):
         """Save strategy to database"""
@@ -379,22 +393,23 @@ class PlannerAgent(BaseAgent):
             conn.execute(
                 """
                 INSERT OR REPLACE INTO strategy_plans
-                (strategy_id, name, objectives, tactics, success_metrics, 
-                 confidence_score, created_at, last_refined, refinement_count)
+                (strategy_id, name, objectives, tactics, success_metrics,
+                    confidence_score, created_at, last_refined, refinement_count)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     strategy.strategy_id,
-                    strategy.name,
-                    json.dumps(strategy.objectives),
-                    json.dumps(strategy.tactics),
-                    json.dumps(strategy.success_metrics),
-                    strategy.confidence_score,
-                    strategy.created_at.isoformat(),
-                    strategy.last_refined.isoformat(),
-                    strategy.refinement_count,
-                ),
-            )
+                        strategy.name,
+                        json.dumps(strategy.objectives),
+                        json.dumps(strategy.tactics),
+                        json.dumps(strategy.success_metrics),
+                        strategy.confidence_score,
+                        strategy.created_at.isoformat(),
+                        strategy.last_refined.isoformat(),
+                        strategy.refinement_count,
+                        ),
+                    )
+
 
     def _load_strategy(self, strategy_id: str) -> Optional[StrategyPlan]:
         """Load strategy from database"""
@@ -406,17 +421,18 @@ class PlannerAgent(BaseAgent):
 
             if row:
                 return StrategyPlan(
-                    strategy_id=row[0],
-                    name=row[1],
-                    objectives=json.loads(row[2]),
-                    tactics=json.loads(row[3]),
-                    success_metrics=json.loads(row[4]),
-                    confidence_score=row[5],
-                    created_at=datetime.fromisoformat(row[6]),
-                    last_refined=datetime.fromisoformat(row[7]),
-                    refinement_count=row[8],
-                )
+                    strategy_id = row[0],
+                        name = row[1],
+                        objectives = json.loads(row[2]),
+                        tactics = json.loads(row[3]),
+                        success_metrics = json.loads(row[4]),
+                        confidence_score = row[5],
+                        created_at = datetime.fromisoformat(row[6]),
+                        last_refined = datetime.fromisoformat(row[7]),
+                        refinement_count = row[8],
+                        )
         return None
+
 
     def _save_metrics(self, metrics: StrategyMetrics):
         """Save performance metrics to database"""
@@ -424,50 +440,52 @@ class PlannerAgent(BaseAgent):
             conn.execute(
                 """
                 INSERT INTO strategy_metrics
-                (strategy_id, content_performance, marketing_roi, 
-                 audience_engagement, technical_health, overall_score, timestamp)
+                (strategy_id, content_performance, marketing_roi,
+                    audience_engagement, technical_health, overall_score, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     metrics.strategy_id,
-                    metrics.content_performance,
-                    metrics.marketing_roi,
-                    metrics.audience_engagement,
-                    metrics.technical_health,
-                    metrics.overall_score(),
-                    metrics.timestamp.isoformat(),
-                ),
-            )
+                        metrics.content_performance,
+                        metrics.marketing_roi,
+                        metrics.audience_engagement,
+                        metrics.technical_health,
+                        metrics.overall_score(),
+                        metrics.timestamp.isoformat(),
+                        ),
+                    )
+
 
     def _get_historical_metrics(
         self, strategy_id: str, days: int = 30
     ) -> List[StrategyMetrics]:
         """Get historical performance metrics"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT strategy_id, content_performance, marketing_roi,
-                       audience_engagement, technical_health, timestamp
+                    audience_engagement, technical_health, timestamp
                 FROM strategy_metrics
                 WHERE strategy_id = ? AND timestamp > ?
                 ORDER BY timestamp DESC
             """,
                 (strategy_id, cutoff_date),
-            )
+                    )
 
             return [
                 StrategyMetrics(
-                    strategy_id=row[0],
-                    content_performance=row[1],
-                    marketing_roi=row[2],
-                    audience_engagement=row[3],
-                    technical_health=row[4],
-                    timestamp=datetime.fromisoformat(row[5]),
-                )
+                    strategy_id = row[0],
+                        content_performance = row[1],
+                        marketing_roi = row[2],
+                        audience_engagement = row[3],
+                        technical_health = row[4],
+                        timestamp = datetime.fromisoformat(row[5]),
+                        )
                 for row in cursor.fetchall()
             ]
+
 
     def _log_strategic_insight(
         self, insight_type: str, content: str, confidence: float
@@ -481,14 +499,17 @@ class PlannerAgent(BaseAgent):
                 VALUES (?, ?, ?, ?)
             """,
                 (insight_type, content, confidence, datetime.now().isoformat()),
-            )
+                    )
 
     @property
+
+
     def capabilities(self) -> List["AgentCapability"]:
         """Return the capabilities of this agent"""
         from .base_agents import AgentCapability
 
         return [AgentCapability.PLANNING, AgentCapability.ANALYSIS]
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context
@@ -501,11 +522,13 @@ class PlannerAgent(BaseAgent):
             self.logger.error(f"Error executing task with monitoring: {e}")
             return {"success": False, "error": str(e)}
 
+
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
         """Rephrase task - required abstract method implementation"""
         task_type = task.get("type", "unknown")
         task_name = task.get("name", "strategic planning task")
         return f"Strategic Planning: {task_name} ({task_type})"
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
@@ -513,6 +536,7 @@ class PlannerAgent(BaseAgent):
         """Validate rephrase accuracy - required abstract method implementation"""
         # For now, always return True as basic validation
         return True
+
 
     def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute strategic planning task"""
@@ -536,7 +560,6 @@ class PlannerAgent(BaseAgent):
 
         return {"success": False, "error": f"Unknown task type: {task_type}"}
 
-
 if __name__ == "__main__":
     # Test the Planner Agent
     planner = PlannerAgent()
@@ -544,23 +567,23 @@ if __name__ == "__main__":
     # Create initial strategy
     strategy = planner.create_strategy(
         "Content Empire Growth",
-        [
+            [
             "Achieve 100K monthly views",
-            "Generate $10K monthly revenue",
-            "Build engaged community of 50K followers",
-        ],
-        {
+                "Generate $10K monthly revenue",
+                "Build engaged community of 50K followers",
+                ],
+            {
             "content": {
                 "posting_frequency": "daily",
-                "content_types": ["educational", "entertaining", "promotional"],
-                "quality_threshold": 0.8,
-            },
-            "marketing": {
+                    "content_types": ["educational", "entertaining", "promotional"],
+                    "quality_threshold": 0.8,
+                    },
+                "marketing": {
                 "channels": ["youtube", "twitter", "linkedin"],
-                "budget_allocation": {"organic": 0.7, "paid": 0.3},
-            },
-        },
-    )
+                    "budget_allocation": {"organic": 0.7, "paid": 0.3},
+                    },
+                },
+            )
 
     print(f"Created strategy: {strategy.name} ({strategy.strategy_id})")
 
@@ -568,9 +591,9 @@ if __name__ == "__main__":
     performance_data = {
         "content_score": 0.5,  # Below threshold
         "marketing_roi": 0.7,
-        "engagement_score": 0.6,
-        "system_health": 0.95,
-    }
+            "engagement_score": 0.6,
+            "system_health": 0.95,
+            }
 
     success = planner.process_performance_feedback(
         strategy.strategy_id, performance_data

@@ -1,4 +1,4 @@
-# backend/integrations/weather_adapter.py
+# backend / integrations / weather_adapter.py
 import json
 import logging
 import os
@@ -16,7 +16,7 @@ TIMEOUT_S = 15
 def get_active_weather_provider() -> Dict:
     """Get the currently active weather provider from the registry."""
     try:
-        r = requests.get(f"{BASE}/integrations/active/weather", timeout=10)
+        r = requests.get(f"{BASE}/integrations / active / weather", timeout = 10)
         r.raise_for_status()
         return r.json()["active"]
     except Exception as e:
@@ -32,7 +32,7 @@ def _get_credentials(provider_key: str) -> Dict[str, str]:
         api_key = os.getenv("OPENWEATHERMAP_API_KEY")
         if api_key:
             creds["api_key"] = api_key
-    # open-meteo doesn't need credentials
+    # open - meteo doesn't need credentials
 
     # TODO: Add secret store fallback when available
     return creds
@@ -40,10 +40,10 @@ def _get_credentials(provider_key: str) -> Dict[str, str]:
 
 def _report_usage(
     provider_key: str,
-    success: bool,
-    error: Optional[str] = None,
-    took_ms: Optional[int] = None,
-    quota_remaining: Optional[int] = None,
+        success: bool,
+        error: Optional[str] = None,
+        took_ms: Optional[int] = None,
+        quota_remaining: Optional[int] = None,
 ):
     """Report usage metrics to the integrations registry."""
     try:
@@ -53,24 +53,24 @@ def _report_usage(
         if quota_remaining is not None:
             payload["quota_remaining"] = quota_remaining
 
-        requests.post(f"{BASE}/integrations/report", json=payload, timeout=10)
+        requests.post(f"{BASE}/integrations / report", json = payload, timeout = 10)
     except Exception as e:
         logger.warning(f"Failed to report usage for {provider_key}: {e}")
 
 
 def _geocode_location(location: str) -> Optional[Tuple[float, float]]:
-    """Simple geocoding using a free service to get lat/lon from location name."""
+    """Simple geocoding using a free service to get lat / lon from location name."""
     try:
         # Use Nominatim (OpenStreetMap) for free geocoding
         params = {"q": location, "format": "json", "limit": 1}
-        headers = {"User-Agent": "WeatherAdapter/1.0"}
+        headers = {"User - Agent": "WeatherAdapter / 1.0"}
 
         resp = http_get_with_backoff(
-            "https://nominatim.openstreetmap.org/search",
-            params=params,
-            headers=headers,
-            timeout=10,
-        )
+            "https://nominatim.openstreetmap.org / search",
+                params = params,
+                headers = headers,
+                timeout = 10,
+                )
 
         if resp.status_code == 200:
             data = resp.json()
@@ -84,19 +84,19 @@ def _geocode_location(location: str) -> Optional[Tuple[float, float]]:
 
 
 def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str, Any]:
-    """Fetch weather from Open-Meteo API (free, no key required)."""
+    """Fetch weather from Open - Meteo API (free, no key required)."""
     params = {
         "latitude": lat,
-        "longitude": lon,
-        "current": "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
-        "hourly": "temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
-        "daily": "weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant",
-        "timezone": "auto",
-        "forecast_days": 7,
-    }
+            "longitude": lon,
+            "current": "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+            "hourly": "temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+            "daily": "weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant",
+            "timezone": "auto",
+            "forecast_days": 7,
+            }
 
     resp = http_get_with_backoff(
-        "https://api.open-meteo.com/v1/forecast", params=params, timeout=TIMEOUT_S
+        "https://api.open - meteo.com / v1 / forecast", params = params, timeout = TIMEOUT_S
     )
 
     if resp.status_code == 200:
@@ -105,27 +105,27 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
         # Weather code mapping (simplified)
         weather_codes = {
             0: "Clear sky",
-            1: "Mainly clear",
-            2: "Partly cloudy",
-            3: "Overcast",
-            45: "Fog",
-            48: "Depositing rime fog",
-            51: "Light drizzle",
-            53: "Moderate drizzle",
-            55: "Dense drizzle",
-            61: "Slight rain",
-            63: "Moderate rain",
-            65: "Heavy rain",
-            71: "Slight snow",
-            73: "Moderate snow",
-            75: "Heavy snow",
-            80: "Slight rain showers",
-            81: "Moderate rain showers",
-            82: "Violent rain showers",
-            95: "Thunderstorm",
-            96: "Thunderstorm with slight hail",
-            99: "Thunderstorm with heavy hail",
-        }
+                1: "Mainly clear",
+                2: "Partly cloudy",
+                3: "Overcast",
+                45: "Fog",
+                48: "Depositing rime fog",
+                51: "Light drizzle",
+                53: "Moderate drizzle",
+                55: "Dense drizzle",
+                61: "Slight rain",
+                63: "Moderate rain",
+                65: "Heavy rain",
+                71: "Slight snow",
+                73: "Moderate snow",
+                75: "Heavy snow",
+                80: "Slight rain showers",
+                81: "Moderate rain showers",
+                82: "Violent rain showers",
+                95: "Thunderstorm",
+                96: "Thunderstorm with slight hail",
+                99: "Thunderstorm with heavy hail",
+                }
 
         current = data.get("current", {})
         current_weather_code = current.get("weather_code", 0)
@@ -133,25 +133,25 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
         # Transform to standard format
         weather_data = {
             "location": location,
-            "coordinates": {"lat": lat, "lon": lon},
-            "current": {
+                "coordinates": {"lat": lat, "lon": lon},
+                "current": {
                 "temperature": current.get("temperature_2m"),
-                "feels_like": current.get("apparent_temperature"),
-                "humidity": current.get("relative_humidity_2m"),
-                "pressure": current.get("pressure_msl"),
-                "wind_speed": current.get("wind_speed_10m"),
-                "wind_direction": current.get("wind_direction_10m"),
-                "wind_gust": current.get("wind_gusts_10m"),
-                "cloud_cover": current.get("cloud_cover"),
-                "precipitation": current.get("precipitation"),
-                "weather_code": current_weather_code,
-                "description": weather_codes.get(current_weather_code, "Unknown"),
-                "is_day": current.get("is_day", 1) == 1,
-                "timestamp": current.get("time"),
-            },
-            "forecast": [],
-            "provider": "open-meteo",
-        }
+                    "feels_like": current.get("apparent_temperature"),
+                    "humidity": current.get("relative_humidity_2m"),
+                    "pressure": current.get("pressure_msl"),
+                    "wind_speed": current.get("wind_speed_10m"),
+                    "wind_direction": current.get("wind_direction_10m"),
+                    "wind_gust": current.get("wind_gusts_10m"),
+                    "cloud_cover": current.get("cloud_cover"),
+                    "precipitation": current.get("precipitation"),
+                    "weather_code": current_weather_code,
+                    "description": weather_codes.get(current_weather_code, "Unknown"),
+                    "is_day": current.get("is_day", 1) == 1,
+                    "timestamp": current.get("time"),
+                    },
+                "forecast": [],
+                "provider": "open - meteo",
+                }
 
         # Add daily forecast
         daily = data.get("daily", {})
@@ -166,59 +166,59 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
                     weather_data["forecast"].append(
                         {
                             "date": date,
-                            "temperature_max": (
+                                "temperature_max": (
                                 daily.get("temperature_2m_max", [])[i]
                                 if i < len(daily.get("temperature_2m_max", []))
                                 else None
                             ),
-                            "temperature_min": (
+                                "temperature_min": (
                                 daily.get("temperature_2m_min", [])[i]
                                 if i < len(daily.get("temperature_2m_min", []))
                                 else None
                             ),
-                            "weather_code": day_weather_code,
-                            "description": weather_codes.get(
+                                "weather_code": day_weather_code,
+                                "description": weather_codes.get(
                                 day_weather_code, "Unknown"
                             ),
-                            "precipitation_sum": (
+                                "precipitation_sum": (
                                 daily.get("precipitation_sum", [])[i]
                                 if i < len(daily.get("precipitation_sum", []))
                                 else None
                             ),
-                            "precipitation_probability": (
+                                "precipitation_probability": (
                                 daily.get("precipitation_probability_max", [])[i]
                                 if i
                                 < len(daily.get("precipitation_probability_max", []))
                                 else None
                             ),
-                            "wind_speed_max": (
+                                "wind_speed_max": (
                                 daily.get("wind_speed_10m_max", [])[i]
                                 if i < len(daily.get("wind_speed_10m_max", []))
                                 else None
                             ),
-                            "sunrise": (
+                                "sunrise": (
                                 daily.get("sunrise", [])[i]
                                 if i < len(daily.get("sunrise", []))
                                 else None
                             ),
-                            "sunset": (
+                                "sunset": (
                                 daily.get("sunset", [])[i]
                                 if i < len(daily.get("sunset", []))
                                 else None
                             ),
-                        }
+                                }
                     )
 
         return {
             "success": True,
-            "weather": weather_data,
-            "quota_remaining": None,  # Open-Meteo is free
+                "weather": weather_data,
+                "quota_remaining": None,  # Open - Meteo is free
         }
     else:
         return {
             "success": False,
-            "error": f"Open-Meteo API error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"Open - Meteo API error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def _fetch_openweathermap_weather(
@@ -229,60 +229,60 @@ def _fetch_openweathermap_weather(
     current_params = {"lat": lat, "lon": lon, "appid": api_key, "units": "metric"}
 
     current_resp = http_get_with_backoff(
-        "https://api.openweathermap.org/data/2.5/weather",
-        params=current_params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.openweathermap.org / data / 2.5 / weather",
+            params = current_params,
+            timeout = TIMEOUT_S,
+            )
 
     if current_resp.status_code != 200:
         return {
             "success": False,
-            "error": f"OpenWeatherMap current weather error: {current_resp.status_code} - {current_resp.text[:200]}",
-        }
+                "error": f"OpenWeatherMap current weather error: {current_resp.status_code} - {current_resp.text[:200]}",
+                }
 
     current_data = current_resp.json()
 
     # Get forecast
     forecast_params = {
         "lat": lat,
-        "lon": lon,
-        "appid": api_key,
-        "units": "metric",
-        "cnt": 5,  # 5 days
+            "lon": lon,
+            "appid": api_key,
+            "units": "metric",
+            "cnt": 5,  # 5 days
     }
 
     forecast_resp = http_get_with_backoff(
-        "https://api.openweathermap.org/data/2.5/forecast",
-        params=forecast_params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.openweathermap.org / data / 2.5 / forecast",
+            params = forecast_params,
+            timeout = TIMEOUT_S,
+            )
 
     forecast_data = forecast_resp.json() if forecast_resp.status_code == 200 else {}
 
     # Transform to standard format
     weather_data = {
         "location": location,
-        "coordinates": {"lat": lat, "lon": lon},
-        "current": {
+            "coordinates": {"lat": lat, "lon": lon},
+            "current": {
             "temperature": current_data["main"]["temp"],
-            "feels_like": current_data["main"]["feels_like"],
-            "humidity": current_data["main"]["humidity"],
-            "pressure": current_data["main"]["pressure"],
-            "wind_speed": current_data.get("wind", {}).get("speed"),
-            "wind_direction": current_data.get("wind", {}).get("deg"),
-            "wind_gust": current_data.get("wind", {}).get("gust"),
-            "cloud_cover": current_data.get("clouds", {}).get("all"),
-            "precipitation": current_data.get("rain", {}).get("1h", 0)
+                "feels_like": current_data["main"]["feels_like"],
+                "humidity": current_data["main"]["humidity"],
+                "pressure": current_data["main"]["pressure"],
+                "wind_speed": current_data.get("wind", {}).get("speed"),
+                "wind_direction": current_data.get("wind", {}).get("deg"),
+                "wind_gust": current_data.get("wind", {}).get("gust"),
+                "cloud_cover": current_data.get("clouds", {}).get("all"),
+                "precipitation": current_data.get("rain", {}).get("1h", 0)
             + current_data.get("snow", {}).get("1h", 0),
-            "weather_code": current_data["weather"][0]["id"],
-            "description": current_data["weather"][0]["description"].title(),
-            "icon": current_data["weather"][0]["icon"],
-            "is_day": "d" in current_data["weather"][0]["icon"],
-            "timestamp": current_data["dt"],
-        },
-        "forecast": [],
-        "provider": "openweathermap",
-    }
+                "weather_code": current_data["weather"][0]["id"],
+                "description": current_data["weather"][0]["description"].title(),
+                "icon": current_data["weather"][0]["icon"],
+                "is_day": "d" in current_data["weather"][0]["icon"],
+                "timestamp": current_data["dt"],
+                },
+            "forecast": [],
+            "provider": "openweathermap",
+            }
 
     # Add forecast data (group by day)
     if forecast_data.get("list"):
@@ -292,12 +292,12 @@ def _fetch_openweathermap_weather(
             if date not in daily_forecasts:
                 daily_forecasts[date] = {
                     "date": date,
-                    "temperatures": [],
-                    "descriptions": [],
-                    "precipitation": 0,
-                    "wind_speeds": [],
-                    "weather_codes": [],
-                }
+                        "temperatures": [],
+                        "descriptions": [],
+                        "precipitation": 0,
+                        "wind_speeds": [],
+                        "weather_codes": [],
+                        }
 
             daily_forecasts[date]["temperatures"].append(item["main"]["temp"])
             daily_forecasts[date]["descriptions"].append(
@@ -317,42 +317,42 @@ def _fetch_openweathermap_weather(
             weather_data["forecast"].append(
                 {
                     "date": date,
-                    "temperature_max": max(temps) if temps else None,
-                    "temperature_min": min(temps) if temps else None,
-                    "weather_code": (
+                        "temperature_max": max(temps) if temps else None,
+                        "temperature_min": min(temps) if temps else None,
+                        "weather_code": (
                         day_data["weather_codes"][0]
                         if day_data["weather_codes"]
                         else None
                     ),
-                    "description": (
+                        "description": (
                         day_data["descriptions"][0].title()
                         if day_data["descriptions"]
                         else "Unknown"
                     ),
-                    "precipitation_sum": day_data["precipitation"],
-                    "precipitation_probability": None,  # Not available in this endpoint
+                        "precipitation_sum": day_data["precipitation"],
+                        "precipitation_probability": None,  # Not available in this endpoint
                     "wind_speed_max": (
                         max(day_data["wind_speeds"])
                         if day_data["wind_speeds"]
                         else None
                     ),
-                    "sunrise": None,  # Not available in this endpoint
+                        "sunrise": None,  # Not available in this endpoint
                     "sunset": None,  # Not available in this endpoint
                 }
             )
 
     return {
         "success": True,
-        "weather": weather_data,
-        "quota_remaining": None,  # OpenWeatherMap doesn't provide quota in response
+            "weather": weather_data,
+            "quota_remaining": None,  # OpenWeatherMap doesn't provide quota in response
     }
 
 
 def fetch_weather(
     location: str,
-    lat: Optional[float] = None,
-    lon: Optional[float] = None,
-    max_retries: int = 1,
+        lat: Optional[float] = None,
+        lon: Optional[float] = None,
+        max_retries: int = 1,
 ) -> Dict[str, Any]:
     """Fetch weather data using the active provider with automatic failover."""
     start_time = time.time()
@@ -363,10 +363,10 @@ def fetch_weather(
         if not coords:
             return {
                 "provider": "unknown",
-                "ok": False,
-                "error": f"Could not geocode location: {location}",
-                "took_ms": int((time.time() - start_time) * 1000),
-            }
+                    "ok": False,
+                    "error": f"Could not geocode location: {location}",
+                    "took_ms": int((time.time() - start_time) * 1000),
+                    }
         lat, lon = coords
 
     for attempt in range(max_retries + 1):
@@ -383,15 +383,15 @@ def fetch_weather(
                 error_msg = f"No credentials found for {provider_key}"
                 _report_usage(
                     provider_key,
-                    False,
-                    error_msg,
-                    int((time.time() - start_time) * 1000),
-                )
+                        False,
+                        error_msg,
+                        int((time.time() - start_time) * 1000),
+                        )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
             result = None
-            if provider_key == "open-meteo":
+            if provider_key == "open - meteo":
                 result = _fetch_openmeteo_weather(lat, lon, location)
             elif provider_key == "openweathermap" and "api_key" in creds:
                 result = _fetch_openweathermap_weather(
@@ -400,8 +400,8 @@ def fetch_weather(
             else:
                 result = {
                     "success": False,
-                    "error": f"No adapter implementation for {provider_key}",
-                }
+                        "error": f"No adapter implementation for {provider_key}",
+                        }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -412,10 +412,10 @@ def fetch_weather(
                 )
                 return {
                     "provider": provider_key,
-                    "ok": True,
-                    "data": result["weather"],
-                    "took_ms": took_ms,
-                }
+                        "ok": True,
+                        "data": result["weather"],
+                        "took_ms": took_ms,
+                        }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -426,7 +426,7 @@ def fetch_weather(
                     try:
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
-                            f"{BASE}/integrations/rotate?category=weather", timeout=10
+                            f"{BASE}/integrations / rotate?category = weather", timeout = 10
                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
@@ -444,10 +444,10 @@ def fetch_weather(
                 # Return error if no more retries
                 return {
                     "provider": provider_key,
-                    "ok": False,
-                    "error": error_msg,
-                    "took_ms": took_ms,
-                }
+                        "ok": False,
+                        "error": error_msg,
+                        "took_ms": took_ms,
+                        }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -458,26 +458,27 @@ def fetch_weather(
             try:
                 active = get_active_weather_provider()
                 _report_usage(active["key"], False, error_msg, took_ms)
-            except:
+            except Exception:
                 pass
 
             return {
                 "provider": "unknown",
-                "ok": False,
-                "error": error_msg,
-                "took_ms": took_ms,
-            }
+                    "ok": False,
+                    "error": error_msg,
+                    "took_ms": took_ms,
+                    }
 
     # Should not reach here
     return {
         "provider": "unknown",
-        "ok": False,
-        "error": "Max retries exceeded",
-        "took_ms": int((time.time() - start_time) * 1000),
-    }
-
+            "ok": False,
+            "error": "Max retries exceeded",
+            "took_ms": int((time.time() - start_time) * 1000),
+            }
 
 # Convenience function for backward compatibility
+
+
 def get_weather(
     location: str, lat: Optional[float] = None, lon: Optional[float] = None
 ) -> Optional[Dict[str, Any]]:

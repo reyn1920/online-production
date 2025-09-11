@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 First Channel Setup Script
 Sets up the primary channel configuration and initializes content generation pipeline
@@ -13,19 +13,22 @@ from pathlib import Path
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("channel_setup.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("channel_setup.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
 
 class ChannelSetup:
+
+
     def __init__(self):
         self.base_dir = Path.cwd()
         self.channels_file = self.base_dir / "channels.json"
         self.output_dir = self.base_dir / "output"
         self.content_dir = self.base_dir / "content"
+
 
     def load_channels_config(self):
         """Load the channels configuration"""
@@ -39,6 +42,7 @@ class ChannelSetup:
             logger.error(f"Invalid JSON in channels config: {e}")
             return None
 
+
     def get_primary_channel(self, config):
         """Get the primary channel from configuration"""
         for channel_name, channel_data in config["channels"].items():
@@ -46,48 +50,51 @@ class ChannelSetup:
                 return channel_name, channel_data
         return None, None
 
+
     def create_channel_directories(self, channel_name):
         """Create necessary directories for the channel"""
         directories = [
             self.output_dir / "audio" / channel_name.lower().replace(" ", "_"),
-            self.output_dir / "graphics" / channel_name.lower().replace(" ", "_"),
-            self.output_dir / "thumbnails" / channel_name.lower().replace(" ", "_"),
-            self.content_dir / "scripts" / channel_name.lower().replace(" ", "_"),
-            self.content_dir / "templates" / channel_name.lower().replace(" ", "_"),
-            Path("logs") / channel_name.lower().replace(" ", "_"),
-        ]
+                self.output_dir / "graphics" / channel_name.lower().replace(" ", "_"),
+                self.output_dir / "thumbnails" / channel_name.lower().replace(" ", "_"),
+                self.content_dir / "scripts" / channel_name.lower().replace(" ", "_"),
+                self.content_dir / "templates" / channel_name.lower().replace(" ", "_"),
+                Path("logs") / channel_name.lower().replace(" ", "_"),
+                ]
 
         for directory in directories:
-            directory.mkdir(parents=True, exist_ok=True)
+            directory.mkdir(parents = True, exist_ok = True)
             logger.info(f"Created directory: {directory}")
+
 
     def setup_content_pipeline(self, channel_name, channel_config):
         """Setup content generation pipeline for the channel"""
         pipeline_config = {
             "channel_name": channel_name,
-            "channel_id": channel_config.get("channel_id"),
-            "content_type": "audio_only",  # No video production
+                "channel_id": channel_config.get("channel_id"),
+                "content_type": "audio_only",  # No video production
             "voice_profile": channel_config.get("voice"),
-            "target_length": channel_config.get("target_length"),
-            "posting_schedule": channel_config.get("posting_schedule"),
-            "content_style": channel_config.get("content_style"),
-            "category": channel_config.get("category"),
-            "target_audience": channel_config.get("target_audience"),
-            "monetization": channel_config.get("monetization", []),
-            "platforms": channel_config.get("platforms", []),
-            "setup_date": datetime.now().isoformat(),
-            "status": "initialized",
-        }
+                "target_length": channel_config.get("target_length"),
+                "posting_schedule": channel_config.get("posting_schedule"),
+                "content_style": channel_config.get("content_style"),
+                "category": channel_config.get("category"),
+                "target_audience": channel_config.get("target_audience"),
+                "monetization": channel_config.get("monetization", []),
+                "platforms": channel_config.get("platforms", []),
+                "setup_date": datetime.now().isoformat(),
+                "status": "initialized",
+                }
 
         # Save pipeline config
         config_file = (
             self.base_dir / f'{channel_name.lower().replace(" ", "_")}_pipeline.json'
         )
         with open(config_file, "w") as f:
-            json.dump(pipeline_config, f, indent=2)
+            json.dump(pipeline_config, f, indent = 2)
 
         logger.info(f"Content pipeline configured for {channel_name}")
         return pipeline_config
+
 
     def create_content_templates(self, channel_name, channel_config):
         """Create content templates for the channel"""
@@ -102,22 +109,22 @@ class ChannelSetup:
 ## Episode Information
 - Title: [EPISODE_TITLE]
 - Date: [DATE]
-- Duration Target: {channel_config.get('target_length', '10-15 minutes')}
+- Duration Target: {channel_config.get('target_length', '10 - 15 minutes')}
 - Category: {channel_config.get('category', 'general')}
 
 ## Content Structure
 
-### Introduction (30-60 seconds)
-- Hook/Opening statement
+### Introduction (30 - 60 seconds)
+- Hook / Opening statement
 - Brief overview of today's topic
 - Channel branding reminder
 
-### Main Content (8-12 minutes)
+### Main Content (8 - 12 minutes)
 - Key points and analysis
-- Supporting evidence/examples
+- Supporting evidence / examples
 - Audience engagement elements
 
-### Conclusion (1-2 minutes)
+### Conclusion (1 - 2 minutes)
 - Summary of key takeaways
 - Call to action
 - Next episode preview
@@ -138,7 +145,7 @@ class ChannelSetup:
         audio_checklist = f"""
 # {channel_name} Audio Production Checklist
 
-## Pre-Production
+## Pre - Production
 - [ ] Script finalized and reviewed
 - [ ] Voice profile configured: {channel_config.get('voice')}
 - [ ] Background music selected (if applicable)
@@ -150,7 +157,7 @@ class ChannelSetup:
 - [ ] Audio levels normalized
 - [ ] Background elements mixed in
 
-## Post-Production
+## Post - Production
 - [ ] Final audio review
 - [ ] Metadata added
 - [ ] Thumbnail created
@@ -158,7 +165,7 @@ class ChannelSetup:
 
 ## Publishing
 - [ ] Content scheduled for: {channel_config.get('posting_schedule')}
-- [ ] Platform-specific optimization
+- [ ] Platform - specific optimization
 - [ ] Monetization elements integrated
 - [ ] Analytics tracking enabled
 """
@@ -168,56 +175,58 @@ class ChannelSetup:
 
         logger.info(f"Content templates created for {channel_name}")
 
+
     def generate_setup_report(self, channel_name, channel_config, pipeline_config):
         """Generate a setup completion report"""
         report = {
             "setup_completed": datetime.now().isoformat(),
-            "channel_name": channel_name,
-            "channel_configuration": channel_config,
-            "pipeline_configuration": pipeline_config,
-            "directories_created": [
+                "channel_name": channel_name,
+                "channel_configuration": channel_config,
+                "pipeline_configuration": pipeline_config,
+                "directories_created": [
                 str(self.output_dir / "audio" / channel_name.lower().replace(" ", "_")),
-                str(
+                    str(
                     self.output_dir
                     / "graphics"
                     / channel_name.lower().replace(" ", "_")
                 ),
-                str(
+                    str(
                     self.output_dir
                     / "thumbnails"
                     / channel_name.lower().replace(" ", "_")
                 ),
-                str(
+                    str(
                     self.content_dir
                     / "scripts"
                     / channel_name.lower().replace(" ", "_")
                 ),
-                str(
+                    str(
                     self.content_dir
                     / "templates"
                     / channel_name.lower().replace(" ", "_")
                 ),
-            ],
-            "templates_created": ["script_template.md", "production_checklist.md"],
-            "next_steps": [
+                    ],
+                "templates_created": ["script_template.md", "production_checklist.md"],
+                "next_steps": [
                 "Create first content script using template",
-                "Generate audio content using voice profile",
-                "Create thumbnail graphics",
-                "Schedule first publication",
-                "Monitor analytics and engagement",
-            ],
-            "status": "READY_FOR_CONTENT_CREATION",
-        }
+                    "Generate audio content using voice profile",
+                    "Create thumbnail graphics",
+                    "Schedule first publication",
+                    "Monitor analytics and engagement",
+                    ],
+                "status": "READY_FOR_CONTENT_CREATION",
+                }
 
         report_file = (
             self.base_dir
             / f'{channel_name.lower().replace(" ", "_")}_setup_report.json'
         )
         with open(report_file, "w") as f:
-            json.dump(report, f, indent=2)
+            json.dump(report, f, indent = 2)
 
         logger.info(f"Setup report generated: {report_file}")
         return report
+
 
     def run_setup(self):
         """Run the complete channel setup process"""
@@ -256,8 +265,8 @@ class ChannelSetup:
             logger.info(
                 f"Primary channel '{channel_name}' is ready for content creation"
             )
-            logger.info("📝 Content templates available in content/templates/")
-            logger.info("🎵 Audio-only production pipeline configured")
+            logger.info("📝 Content templates available in content / templates/")
+            logger.info("🎵 Audio - only production pipeline configured")
             logger.info("📊 Setup report generated")
 
             return True
@@ -288,7 +297,6 @@ def main():
         print("\n❌ Setup failed. Check the logs for details.")
 
     return success
-
 
 if __name__ == "__main__":
     main()

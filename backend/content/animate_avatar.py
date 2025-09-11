@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Animate Avatar - Talking Head Video Generation System
 
-This module implements avatar animation using Linly-Talker or similar open-source models
+This module implements avatar animation using Linly - Talker or similar open - source models
 to generate talking head videos from a source image and audio file. It supports
 batch processing, quality settings, and integration with the content pipeline.
 
@@ -37,6 +37,7 @@ try:
     from utils.logger import get_logger
 except ImportError:
 
+
     def get_logger(name):
         return logging.getLogger(name)
 
@@ -70,8 +71,9 @@ class EmotionType(Enum):
     FEARFUL = "fearful"
     DISGUSTED = "disgusted"
 
-
 @dataclass
+
+
 class AnimationConfig:
     """Configuration for avatar animation."""
 
@@ -95,8 +97,9 @@ class AnimationConfig:
     real_time_processing: bool = False
     quality_threshold: float = 0.7
 
-
 @dataclass
+
+
 class AnimationJob:
     """Represents an animation job."""
 
@@ -112,21 +115,24 @@ class AnimationJob:
     error_message: Optional[str] = None
     metadata: Dict[str, Any] = None
 
+
     def __post_init__(self):
         if self.metadata is None:
             self.metadata = {}
 
 
 class LinlyTalkerEngine:
-    """Advanced engine for Linly-Talker model integration with production-ready features."""
+    """Advanced engine for Linly - Talker model integration with production - ready features."""
+
 
     def __init__(self, model_path: Optional[str] = None, device: str = "cuda"):
-        self.model_path = model_path or "./models/linly_talker"
+        self.model_path = model_path or "./models / linly_talker"
         self.device = device
         self.logger = get_logger(self.__class__.__name__)
         self.is_initialized = False
         self.gpu_available = self._check_gpu_availability()
         self.model_cache = {}
+
 
     def _check_gpu_availability(self) -> bool:
         """Check if GPU is available for acceleration."""
@@ -137,8 +143,9 @@ class LinlyTalkerEngine:
         except ImportError:
             return False
 
+
     def initialize(self) -> bool:
-        """Initialize the Linly-Talker model."""
+        """Initialize the Linly - Talker model."""
         try:
             # Check if model exists
             model_dir = Path(self.model_path)
@@ -163,36 +170,37 @@ class LinlyTalkerEngine:
                 return False
 
             self.is_initialized = True
-            self.logger.info("Linly-Talker engine initialized successfully")
+            self.logger.info("Linly - Talker engine initialized successfully")
             return True
 
         except Exception as e:
-            self.logger.error(f"Failed to initialize Linly-Talker: {e}")
+            self.logger.error(f"Failed to initialize Linly - Talker: {e}")
             return False
+
 
     def generate_video(
         self,
-        source_image: str,
-        audio_file: str,
-        output_path: str,
-        config: AnimationConfig,
-    ) -> bool:
-        """Generate talking head video using Linly-Talker with advanced features."""
+            source_image: str,
+            audio_file: str,
+            output_path: str,
+            config: AnimationConfig,
+            ) -> bool:
+        """Generate talking head video using Linly - Talker with advanced features."""
         if not self.is_initialized:
             if not self.initialize():
                 return False
 
         try:
-            # Pre-generation validation
+            # Pre - generation validation
             if not self._validate_inputs(source_image, audio_file):
                 return False
 
-            # Prepare advanced command for Linly-Talker
+            # Prepare advanced command for Linly - Talker
             cmd = self._build_advanced_linly_command(
                 source_image, audio_file, output_path, config
             )
 
-            self.logger.info(f"Running Linly-Talker: {' '.join(cmd)}")
+            self.logger.info(f"Running Linly - Talker: {' '.join(cmd)}")
 
             # Set environment variables for optimization
             env = os.environ.copy()
@@ -202,32 +210,33 @@ class LinlyTalkerEngine:
 
             # Run the command with progress monitoring
             process = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
+                cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True, env = env
             )
 
-            stdout, stderr = process.communicate(timeout=600)  # 10 minute timeout
+            stdout, stderr = process.communicate(timeout = 600)  # 10 minute timeout
 
             if process.returncode == 0:
-                # Post-process the generated video
+                # Post - process the generated video
                 if self._post_process_video(output_path, config):
                     self.logger.info(
-                        "Linly-Talker generation and post-processing completed successfully"
+                        "Linly - Talker generation and post - processing completed successfully"
                     )
                 else:
                     self.logger.warning(
-                        "Linly-Talker generation completed but post-processing failed"
+                        "Linly - Talker generation completed but post - processing failed"
                     )
                 return True
             else:
-                self.logger.error(f"Linly-Talker failed: {stderr}")
+                self.logger.error(f"Linly - Talker failed: {stderr}")
                 return False
 
         except subprocess.TimeoutExpired:
-            self.logger.error("Linly-Talker generation timed out")
+            self.logger.error("Linly - Talker generation timed out")
             return False
         except Exception as e:
-            self.logger.error(f"Error running Linly-Talker: {e}")
+            self.logger.error(f"Error running Linly - Talker: {e}")
             return False
+
 
     def _validate_inputs(self, source_image: str, audio_file: str) -> bool:
         """Validate input files before processing."""
@@ -260,28 +269,29 @@ class LinlyTalkerEngine:
             self.logger.error(f"Input validation failed: {e}")
             return False
 
+
     def _build_advanced_linly_command(
         self,
-        source_image: str,
-        audio_file: str,
-        output_path: str,
-        config: AnimationConfig,
-    ) -> List[str]:
-        """Build advanced command line arguments for Linly-Talker."""
+            source_image: str,
+            audio_file: str,
+            output_path: str,
+            config: AnimationConfig,
+            ) -> List[str]:
+        """Build advanced command line arguments for Linly - Talker."""
         cmd = [
             "python",
-            os.path.join(self.model_path, "inference.py"),
-            "--source_image",
-            source_image,
-            "--driven_audio",
-            audio_file,
-            "--result_dir",
-            str(Path(output_path).parent),
-            "--filename",
-            Path(output_path).stem,
-            "--device",
-            self.device,
-        ]
+                os.path.join(self.model_path, "inference.py"),
+                "--source_image",
+                source_image,
+                "--driven_audio",
+                audio_file,
+                "--result_dir",
+                str(Path(output_path).parent),
+                "--filename",
+                Path(output_path).stem,
+                "--device",
+                self.device,
+                ]
 
         # Quality and enhancement settings
         if config.quality == AnimationQuality.HIGH:
@@ -292,12 +302,12 @@ class LinlyTalkerEngine:
             cmd.extend(
                 [
                     "--enhancer",
-                    "RestoreFormer",
-                    "--background_enhancer",
-                    "realesrgan",
-                    "--upscale",
-                    "2",
-                ]
+                        "RestoreFormer",
+                        "--background_enhancer",
+                        "realesrgan",
+                        "--upscale",
+                        "2",
+                        ]
             )
             if not self.gpu_available:
                 cmd.append("--cpu")
@@ -306,14 +316,14 @@ class LinlyTalkerEngine:
         if hasattr(config, "emotion") and config.emotion != EmotionType.NEUTRAL:
             emotion_mapping = {
                 EmotionType.HAPPY: "0.8",
-                EmotionType.SAD: "-0.5",
-                EmotionType.ANGRY: "0.6",
-                EmotionType.SURPRISED: "0.7",
-            }
+                    EmotionType.SAD: "-0.5",
+                    EmotionType.ANGRY: "0.6",
+                    EmotionType.SURPRISED: "0.7",
+                    }
             if config.emotion in emotion_mapping:
                 cmd.extend(["--expression_scale", emotion_mapping[config.emotion]])
 
-        # Lip-sync and pose control
+        # Lip - sync and pose control
         if hasattr(config, "lip_sync_strength"):
             cmd.extend(["--lip_sync_weight", str(config.lip_sync_strength)])
 
@@ -336,8 +346,9 @@ class LinlyTalkerEngine:
 
         return cmd
 
+
     def _post_process_video(self, output_path: str, config: AnimationConfig) -> bool:
-        """Post-process the generated video for quality improvements."""
+        """Post - process the generated video for quality improvements."""
         try:
             if not Path(output_path).exists():
                 return False
@@ -349,36 +360,36 @@ class LinlyTalkerEngine:
                 # Use FFmpeg for additional stabilization
                 stabilize_cmd = [
                     "ffmpeg",
-                    "-i",
-                    output_path,
-                    "-vf",
-                    "vidstabdetect=shakiness=10:accuracy=10:result=transforms.trf",
-                    "-f",
-                    "null",
-                    "-",
-                ]
+                        "-i",
+                        output_path,
+                        "-vf",
+                        "vidstabdetect = shakiness = 10:accuracy = 10:result = transforms.trf",
+                        "-f",
+                        "null",
+                        "-",
+                        ]
 
                 apply_cmd = [
                     "ffmpeg",
-                    "-i",
-                    output_path,
-                    "-vf",
-                    "vidstabtransform=input=transforms.trf:zoom=0:smoothing=10",
-                    "-c:a",
-                    "copy",
-                    stabilized_path,
-                ]
+                        "-i",
+                        output_path,
+                        "-vf",
+                        "vidstabtransform = input = transforms.trf:zoom = 0:smoothing = 10",
+                        "-c:a",
+                        "copy",
+                        stabilized_path,
+                        ]
 
                 try:
-                    subprocess.run(stabilize_cmd, capture_output=True, check=True)
-                    subprocess.run(apply_cmd, capture_output=True, check=True)
+                    subprocess.run(stabilize_cmd, capture_output = True, check = True)
+                    subprocess.run(apply_cmd, capture_output = True, check = True)
 
                     # Replace original with stabilized version
                     Path(output_path).unlink()
                     Path(stabilized_path).rename(output_path)
 
                     # Clean up transform file
-                    Path("transforms.trf").unlink(missing_ok=True)
+                    Path("transforms.trf").unlink(missing_ok = True)
 
                 except subprocess.CalledProcessError:
                     self.logger.warning(
@@ -388,35 +399,38 @@ class LinlyTalkerEngine:
             return True
 
         except Exception as e:
-            self.logger.error(f"Post-processing failed: {e}")
+            self.logger.error(f"Post - processing failed: {e}")
             return False
+
 
     def _build_linly_command(
         self,
-        source_image: str,
-        audio_file: str,
-        output_path: str,
-        config: AnimationConfig,
-    ) -> List[str]:
-        """Build command line arguments for Linly-Talker (legacy method)."""
+            source_image: str,
+            audio_file: str,
+            output_path: str,
+            config: AnimationConfig,
+            ) -> List[str]:
+        """Build command line arguments for Linly - Talker (legacy method)."""
         return self._build_advanced_linly_command(
             source_image, audio_file, output_path, config
         )
 
 
 class FallbackEngine:
-    """Fallback engine using FFmpeg for basic lip-sync simulation."""
+    """Fallback engine using FFmpeg for basic lip - sync simulation."""
+
 
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
+
     def generate_video(
         self,
-        source_image: str,
-        audio_file: str,
-        output_path: str,
-        config: AnimationConfig,
-    ) -> bool:
+            source_image: str,
+            audio_file: str,
+            output_path: str,
+            config: AnimationConfig,
+            ) -> bool:
         """Generate basic video with static image and audio."""
         try:
             # Get audio duration
@@ -428,32 +442,32 @@ class FallbackEngine:
             # Create video from static image
             cmd = [
                 "ffmpeg",
-                "-y",  # Overwrite output
+                    "-y",  # Overwrite output
                 "-loop",
-                "1",
-                "-i",
-                source_image,
-                "-i",
-                audio_file,
-                "-c:v",
-                "libx264",
-                "-c:a",
-                "aac",
-                "-b:a",
-                "192k",
-                "-pix_fmt",
-                "yuv420p",
-                "-shortest",
-                "-r",
-                str(config.fps),
-                "-s",
-                f"{config.resolution[0]}x{config.resolution[1]}",
-                output_path,
-            ]
+                    "1",
+                    "-i",
+                    source_image,
+                    "-i",
+                    audio_file,
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
+                    "-b:a",
+                    "192k",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-shortest",
+                    "-r",
+                    str(config.fps),
+                    "-s",
+                    f"{config.resolution[0]}x{config.resolution[1]}",
+                    output_path,
+                    ]
 
             self.logger.info(f"Creating fallback video: {' '.join(cmd)}")
 
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
                 self.logger.info("Fallback video created successfully")
@@ -466,33 +480,36 @@ class FallbackEngine:
             self.logger.error(f"Fallback generation failed: {e}")
             return False
 
+
     def _get_audio_duration(self, audio_file: str) -> float:
         """Get duration of audio file in seconds."""
         try:
             cmd = [
                 "ffprobe",
-                "-v",
-                "quiet",
-                "-show_entries",
-                "format=duration",
-                "-of",
-                "csv=p=0",
-                audio_file,
-            ]
-            result = subprocess.run(cmd, capture_output=True, text=True)
+                    "-v",
+                    "quiet",
+                    "-show_entries",
+                    "format = duration",
+                    "-of",
+                    "csv = p=0",
+                    audio_file,
+                    ]
+            result = subprocess.run(cmd, capture_output = True, text = True)
             return float(result.stdout.strip())
-        except:
+        except Exception:
             return 0.0
 
 
 class QualityAnalyzer:
-    """Analyzes animation quality and lip-sync accuracy."""
+    """Analyzes animation quality and lip - sync accuracy."""
+
 
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
+
     def analyze_lip_sync_quality(self, video_path: str, audio_path: str) -> float:
-        """Analyze lip-sync quality between video and audio."""
+        """Analyze lip - sync quality between video and audio."""
         try:
             # Basic quality analysis using frame variance
             cap = cv2.VideoCapture(video_path)
@@ -511,9 +528,9 @@ class QualityAnalyzer:
             cap.release()
 
             if frame_variances:
-                # Higher variance indicates more movement/animation
+                # Higher variance indicates more movement / animation
                 avg_variance = np.mean(frame_variances)
-                # Normalize to 0-1 scale (simplified)
+                # Normalize to 0 - 1 scale (simplified)
                 quality_score = min(avg_variance / 1000.0, 1.0)
                 return quality_score
 
@@ -522,6 +539,7 @@ class QualityAnalyzer:
         except Exception as e:
             self.logger.error(f"Quality analysis failed: {e}")
             return 0.0
+
 
     def detect_face_landmarks(self, image_path: str) -> Optional[Dict[str, Any]]:
         """Detect face landmarks for emotion analysis."""
@@ -545,9 +563,9 @@ class QualityAnalyzer:
                 x, y, w, h = faces[0]  # Use first detected face
                 return {
                     "face_bbox": (x, y, w, h),
-                    "face_center": (x + w // 2, y + h // 2),
-                    "face_area": w * h,
-                    "confidence": 0.8,  # Simplified confidence
+                        "face_center": (x + w // 2, y + h // 2),
+                        "face_area": w * h,
+                        "confidence": 0.8,  # Simplified confidence
                 }
 
             return None
@@ -560,11 +578,13 @@ class QualityAnalyzer:
 class CacheManager:
     """Manages caching for animation results."""
 
+
     def __init__(self, cache_dir: str, max_size: int = 100):
         self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir.mkdir(parents = True, exist_ok = True)
         self.max_size = max_size
         self.logger = get_logger(self.__class__.__name__)
+
 
     def _generate_cache_key(
         self, source_image: str, audio_file: str, config: AnimationConfig
@@ -580,10 +600,11 @@ class CacheManager:
             hasher.update(f.read())
 
         # Add config hash
-        config_str = json.dumps(asdict(config), sort_keys=True)
+        config_str = json.dumps(asdict(config), sort_keys = True)
         hasher.update(config_str.encode())
 
         return hasher.hexdigest()
+
 
     def get_cached_result(
         self, source_image: str, audio_file: str, config: AnimationConfig
@@ -603,13 +624,14 @@ class CacheManager:
             self.logger.error(f"Cache retrieval failed: {e}")
             return None
 
+
     def cache_result(
         self,
-        source_image: str,
-        audio_file: str,
-        config: AnimationConfig,
-        result_path: str,
-    ) -> bool:
+            source_image: str,
+            audio_file: str,
+            config: AnimationConfig,
+            result_path: str,
+            ) -> bool:
         """Cache animation result."""
         try:
             cache_key = self._generate_cache_key(source_image, audio_file, config)
@@ -628,6 +650,7 @@ class CacheManager:
             self.logger.error(f"Cache storage failed: {e}")
             return False
 
+
     def _cleanup_old_cache(self) -> None:
         """Remove old cache files if limit exceeded."""
         try:
@@ -635,7 +658,7 @@ class CacheManager:
 
             if len(cache_files) > self.max_size:
                 # Sort by modification time and remove oldest
-                cache_files.sort(key=lambda x: x.stat().st_mtime)
+                cache_files.sort(key = lambda x: x.stat().st_mtime)
                 files_to_remove = cache_files[: -self.max_size]
 
                 for file_path in files_to_remove:
@@ -649,15 +672,16 @@ class CacheManager:
 class AnimateAvatar:
     """Main class for avatar animation with advanced features."""
 
+
     def __init__(self, config: Optional[AnimationConfig] = None):
         self.config = config or AnimationConfig()
         self.logger = get_logger(self.__class__.__name__)
 
         # Initialize engines
         self.linly_engine = LinlyTalkerEngine(
-            model_path=self.config.model_path,
-            device="cuda" if self.config.use_gpu else "cpu",
-        )
+            model_path = self.config.model_path,
+                device="cuda" if self.config.use_gpu else "cpu",
+                )
         self.fallback_engine = FallbackEngine()
 
         # Initialize advanced components
@@ -670,7 +694,7 @@ class AnimateAvatar:
         self.temp_dir = (
             Path(self.config.temp_dir or tempfile.gettempdir()) / "animate_avatar"
         )
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
+        self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Initialize cache manager if caching is enabled
         if self.config.enable_caching:
@@ -681,25 +705,26 @@ class AnimateAvatar:
         else:
             self.cache_manager = None
 
-        # Real-time processing queue
+        # Real - time processing queue
         if self.config.real_time_processing:
             self.processing_queue = queue.Queue()
             self.processing_thread = threading.Thread(
-                target=self._process_queue, daemon=True
+                target = self._process_queue, daemon = True
             )
             self.processing_thread.start()
         else:
             self.processing_queue = None
             self.processing_thread = None
 
+
     def create_animation_job(
         self,
-        source_image: str,
-        audio_file: str,
-        output_path: str,
-        job_id: Optional[str] = None,
-        config: Optional[AnimationConfig] = None,
-    ) -> AnimationJob:
+            source_image: str,
+            audio_file: str,
+            output_path: str,
+            job_id: Optional[str] = None,
+            config: Optional[AnimationConfig] = None,
+            ) -> AnimationJob:
         """Create a new animation job."""
         if job_id is None:
             job_id = f"anim_{int(time.time())}_{len(self.active_jobs)}"
@@ -712,25 +737,26 @@ class AnimateAvatar:
             raise FileNotFoundError(f"Audio file not found: {audio_file}")
 
         # Create output directory
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(output_path).parent.mkdir(parents = True, exist_ok = True)
 
         job = AnimationJob(
-            job_id=job_id,
-            source_image=source_image,
-            audio_file=audio_file,
-            output_path=output_path,
-            config=config or self.config,
-            metadata={
+            job_id = job_id,
+                source_image = source_image,
+                audio_file = audio_file,
+                output_path = output_path,
+                config = config or self.config,
+                metadata={
                 "created_at": datetime.now().isoformat(),
-                "source_image_size": self._get_image_info(source_image),
-                "audio_duration": self._get_audio_info(audio_file),
-            },
-        )
+                    "source_image_size": self._get_image_info(source_image),
+                    "audio_duration": self._get_audio_info(audio_file),
+                    },
+                )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Animation job created: {job_id}")
 
         return job
+
 
     def process_job(self, job_id: str) -> bool:
         """Process an animation job with advanced features."""
@@ -765,7 +791,7 @@ class AnimateAvatar:
                 job.metadata["face_info"] = face_info
                 job.progress = 10.0
 
-            # Preprocess inputs with emotion-aware processing
+            # Preprocess inputs with emotion - aware processing
             if (
                 hasattr(job.config, "emotion")
                 and job.config.emotion != EmotionType.NEUTRAL
@@ -811,9 +837,9 @@ class AnimateAvatar:
                     self.logger.warning(
                         f"Quality below threshold ({quality_score:.2f} < {job.config.quality_threshold:.2f}) for job {job_id}"
                     )
-                    # Could trigger re-processing with different settings here
+                    # Could trigger re - processing with different settings here
 
-                # Post-process video
+                # Post - process video
                 self._postprocess_video(job.output_path, job.config)
                 job.progress = 95.0
 
@@ -847,11 +873,12 @@ class AnimateAvatar:
             self.logger.error(f"Animation job error: {job_id} - {e}")
             return False
 
+
     def _process_queue(self) -> None:
-        """Process jobs from the real-time queue."""
+        """Process jobs from the real - time queue."""
         while True:
             try:
-                job_id = self.processing_queue.get(timeout=1.0)
+                job_id = self.processing_queue.get(timeout = 1.0)
                 if job_id is None:  # Shutdown signal
                     break
 
@@ -863,17 +890,18 @@ class AnimateAvatar:
             except Exception as e:
                 self.logger.error(f"Queue processing error: {e}")
 
+
     def submit_job_async(
         self,
-        source_image: str,
-        audio_file: str,
-        output_path: str,
-        job_id: Optional[str] = None,
-        config: Optional[AnimationConfig] = None,
-    ) -> str:
+            source_image: str,
+            audio_file: str,
+            output_path: str,
+            job_id: Optional[str] = None,
+            config: Optional[AnimationConfig] = None,
+            ) -> str:
         """Submit job for asynchronous processing."""
         if not self.config.real_time_processing:
-            raise RuntimeError("Real-time processing not enabled")
+            raise RuntimeError("Real - time processing not enabled")
 
         job = self.create_animation_job(
             source_image, audio_file, output_path, job_id, config
@@ -882,10 +910,11 @@ class AnimateAvatar:
 
         return job.job_id
 
+
     def _preprocess_image_with_emotion(
         self, image_path: str, config: AnimationConfig
     ) -> str:
-        """Preprocess source image with emotion-aware enhancements."""
+        """Preprocess source image with emotion - aware enhancements."""
         try:
             # Load image
             image = cv2.imread(image_path)
@@ -896,7 +925,7 @@ class AnimateAvatar:
             target_width, target_height = config.resolution
             image = cv2.resize(image, (target_width, target_height))
 
-            # Apply emotion-specific adjustments
+            # Apply emotion - specific adjustments
             if config.emotion != EmotionType.NEUTRAL:
                 image = self._apply_emotion_adjustments(image, config.emotion)
 
@@ -917,10 +946,11 @@ class AnimateAvatar:
             return str(processed_path)
 
         except Exception as e:
-            self.logger.error(f"Emotion-aware image preprocessing failed: {e}")
+            self.logger.error(f"Emotion - aware image preprocessing failed: {e}")
             return self._preprocess_image(
                 image_path, config
             )  # Fallback to basic preprocessing
+
 
     def _preprocess_image(self, image_path: str, config: AnimationConfig) -> str:
         """Preprocess source image for animation (basic version)."""
@@ -948,10 +978,11 @@ class AnimateAvatar:
             self.logger.error(f"Image preprocessing failed: {e}")
             return image_path  # Return original if preprocessing fails
 
+
     def _apply_emotion_adjustments(
         self, image: np.ndarray, emotion: EmotionType
     ) -> np.ndarray:
-        """Apply emotion-specific image adjustments."""
+        """Apply emotion - specific image adjustments."""
         try:
             # Convert to HSV for easier color manipulation
             hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -981,6 +1012,7 @@ class AnimateAvatar:
             self.logger.error(f"Emotion adjustment failed: {e}")
             return image
 
+
     def _apply_quality_enhancements(
         self, image: np.ndarray, config: AnimationConfig
     ) -> np.ndarray:
@@ -1001,7 +1033,7 @@ class AnimateAvatar:
             l, a, b = cv2.split(lab)
 
             # Apply CLAHE to L channel for better contrast
-            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            clahe = cv2.createCLAHE(clipLimit = 2.0, tileGridSize=(8, 8))
             l = clahe.apply(l)
 
             enhanced = cv2.merge([l, a, b])
@@ -1013,6 +1045,7 @@ class AnimateAvatar:
             self.logger.error(f"Quality enhancement failed: {e}")
             return image
 
+
     def _preprocess_audio(self, audio_path: str, config: AnimationConfig) -> str:
         """Preprocess audio for animation."""
         try:
@@ -1021,19 +1054,19 @@ class AnimateAvatar:
 
             cmd = [
                 "ffmpeg",
-                "-y",
-                "-i",
-                audio_path,
-                "-ar",
-                "16000",  # Sample rate for most TTS models
+                    "-y",
+                    "-i",
+                    audio_path,
+                    "-ar",
+                    "16000",  # Sample rate for most TTS models
                 "-ac",
-                "1",  # Mono
+                    "1",  # Mono
                 "-c:a",
-                "pcm_s16le",
-                str(processed_path),
-            ]
+                    "pcm_s16le",
+                    str(processed_path),
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
                 return str(processed_path)
@@ -1044,6 +1077,7 @@ class AnimateAvatar:
         except Exception as e:
             self.logger.error(f"Audio preprocessing failed: {e}")
             return audio_path
+
 
     def _enhance_face(self, image: np.ndarray) -> np.ndarray:
         """Basic face enhancement using OpenCV."""
@@ -1066,8 +1100,9 @@ class AnimateAvatar:
             self.logger.error(f"Face enhancement failed: {e}")
             return image
 
+
     def _postprocess_video(self, video_path: str, config: AnimationConfig) -> None:
-        """Post-process the generated video."""
+        """Post - process the generated video."""
         try:
             if not Path(video_path).exists():
                 return
@@ -1080,7 +1115,8 @@ class AnimateAvatar:
             self._optimize_video(video_path)
 
         except Exception as e:
-            self.logger.error(f"Video post-processing failed: {e}")
+            self.logger.error(f"Video post - processing failed: {e}")
+
 
     def _stabilize_video(self, video_path: str) -> None:
         """Apply basic video stabilization."""
@@ -1089,37 +1125,38 @@ class AnimateAvatar:
 
             cmd = [
                 "ffmpeg",
-                "-y",
-                "-i",
-                video_path,
-                "-vf",
-                "vidstabdetect=shakiness=10:accuracy=10:result=transforms.trf",
-                "-f",
-                "null",
-                "-",
-            ]
+                    "-y",
+                    "-i",
+                    video_path,
+                    "-vf",
+                    "vidstabdetect = shakiness = 10:accuracy = 10:result = transforms.trf",
+                    "-f",
+                    "null",
+                    "-",
+                    ]
 
-            subprocess.run(cmd, capture_output=True)
+            subprocess.run(cmd, capture_output = True)
 
             cmd = [
                 "ffmpeg",
-                "-y",
-                "-i",
-                video_path,
-                "-vf",
-                "vidstabtransform=input=transforms.trf:zoom=0:smoothing=10",
-                temp_path,
-            ]
+                    "-y",
+                    "-i",
+                    video_path,
+                    "-vf",
+                    "vidstabtransform = input = transforms.trf:zoom = 0:smoothing = 10",
+                    temp_path,
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True)
+            result = subprocess.run(cmd, capture_output = True)
 
             if result.returncode == 0:
                 shutil.move(temp_path, video_path)
                 # Clean up transform file
-                Path("transforms.trf").unlink(missing_ok=True)
+                Path("transforms.trf").unlink(missing_ok = True)
 
         except Exception as e:
             self.logger.error(f"Video stabilization failed: {e}")
+
 
     def _optimize_video(self, video_path: str) -> None:
         """Optimize video for web delivery."""
@@ -1128,25 +1165,25 @@ class AnimateAvatar:
 
             cmd = [
                 "ffmpeg",
-                "-y",
-                "-i",
-                video_path,
-                "-c:v",
-                "libx264",
-                "-preset",
-                "medium",
-                "-crf",
-                "23",
-                "-c:a",
-                "aac",
-                "-b:a",
-                "128k",
-                "-movflags",
-                "+faststart",
-                temp_path,
-            ]
+                    "-y",
+                    "-i",
+                    video_path,
+                    "-c:v",
+                    "libx264",
+                    "-preset",
+                    "medium",
+                    "-crf",
+                    "23",
+                    "-c:a",
+                    "aac",
+                    "-b:a",
+                    "128k",
+                    "-movflags",
+                    "+faststart",
+                    temp_path,
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True)
+            result = subprocess.run(cmd, capture_output = True)
 
             if result.returncode == 0:
                 shutil.move(temp_path, video_path)
@@ -1154,48 +1191,52 @@ class AnimateAvatar:
         except Exception as e:
             self.logger.error(f"Video optimization failed: {e}")
 
+
     def _get_image_info(self, image_path: str) -> Dict[str, Any]:
         """Get image information."""
         try:
             with Image.open(image_path) as img:
                 return {
                     "width": img.width,
-                    "height": img.height,
-                    "format": img.format,
-                    "mode": img.mode,
-                }
-        except:
+                        "height": img.height,
+                        "format": img.format,
+                        "mode": img.mode,
+                        }
+        except Exception:
             return {}
+
 
     def _get_audio_info(self, audio_path: str) -> Dict[str, Any]:
         """Get audio information."""
         try:
             cmd = [
                 "ffprobe",
-                "-v",
-                "quiet",
-                "-print_format",
-                "json",
-                "-show_format",
-                "-show_streams",
-                audio_path,
-            ]
-            result = subprocess.run(cmd, capture_output=True, text=True)
+                    "-v",
+                    "quiet",
+                    "-print_format",
+                    "json",
+                    "-show_format",
+                    "-show_streams",
+                    audio_path,
+                    ]
+            result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
                 info = json.loads(result.stdout)
                 return {
                     "duration": float(info.get("format", {}).get("duration", 0)),
-                    "bit_rate": info.get("format", {}).get("bit_rate"),
-                    "format_name": info.get("format", {}).get("format_name"),
-                }
-        except:
+                        "bit_rate": info.get("format", {}).get("bit_rate"),
+                        "format_name": info.get("format", {}).get("format_name"),
+                        }
+        except Exception:
             pass
         return {}
+
 
     def get_job_status(self, job_id: str) -> Optional[AnimationJob]:
         """Get status of an animation job."""
         return self.active_jobs.get(job_id)
+
 
     def cancel_job(self, job_id: str) -> bool:
         """Cancel an animation job."""
@@ -1208,15 +1249,17 @@ class AnimateAvatar:
                 return True
         return False
 
+
     def cleanup_temp_files(self) -> None:
         """Clean up temporary files."""
         try:
             if self.temp_dir.exists():
                 shutil.rmtree(self.temp_dir)
-                self.temp_dir.mkdir(parents=True, exist_ok=True)
+                self.temp_dir.mkdir(parents = True, exist_ok = True)
                 self.logger.info("Temporary files cleaned up")
         except Exception as e:
             self.logger.error(f"Cleanup failed: {e}")
+
 
     def batch_process(self, jobs: List[Tuple[str, str, str]]) -> List[str]:
         """Process multiple animation jobs in batch."""
@@ -1232,20 +1275,19 @@ class AnimateAvatar:
 
         return job_ids
 
-
 # Example usage and testing
 if __name__ == "__main__":
     # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level = logging.INFO)
 
     # Create AnimateAvatar instance
     config = AnimationConfig(
-        quality=AnimationQuality.MEDIUM,
-        fps=25,
-        resolution=(1280, 720),
-        enhance_face=True,
-        stabilize_video=True,
-    )
+        quality = AnimationQuality.MEDIUM,
+            fps = 25,
+            resolution=(1280, 720),
+            enhance_face = True,
+            stabilize_video = True,
+            )
 
     animator = AnimateAvatar(config)
 
@@ -1253,10 +1295,10 @@ if __name__ == "__main__":
     try:
         # Create animation job
         job = animator.create_animation_job(
-            source_image="./assets/avatar.jpg",
-            audio_file="./assets/speech.wav",
-            output_path="./output/animated_avatar.mp4",
-        )
+            source_image="./assets / avatar.jpg",
+                audio_file="./assets / speech.wav",
+                output_path="./output / animated_avatar.mp4",
+                )
 
         print(f"Animation job created: {job.job_id}")
 

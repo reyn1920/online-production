@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Channel Executor - Reads roadmap CSV and generates MP4 + PDF outputs
 Integrates with Hollywood pipeline for complete content generation
@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 class ChannelExecutor:
     """Executes channel roadmap to produce MP4 videos and PDF products"""
 
+
     def __init__(self):
         self.secret_store = get_secret_store()
         self.hollywood_pipeline = HollywoodPipeline()
@@ -42,11 +43,12 @@ class ChannelExecutor:
 
         for dir_path in [
             self.outputs_dir,
-            self.videos_dir,
-            self.pdfs_dir,
-            self.audio_dir,
-        ]:
-            dir_path.mkdir(exist_ok=True)
+                self.videos_dir,
+                self.pdfs_dir,
+                self.audio_dir,
+                ]:
+            dir_path.mkdir(exist_ok = True)
+
 
     def load_roadmap(
         self, roadmap_path: str = "channel_roadmaps_10.csv"
@@ -55,36 +57,36 @@ class ChannelExecutor:
         roadmap = []
 
         try:
-            with open(roadmap_path, "r", encoding="utf-8") as f:
+            with open(roadmap_path, "r", encoding="utf - 8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     # Clean and validate row data
                     channel_data = {
                         "channel_id": row.get("channel_id", "").strip(),
-                        "channel_name": row.get("channel_name", "").strip(),
-                        "niche": row.get("niche", "").strip(),
-                        "content_type": row.get("content_type", "educational").strip(),
-                        "target_audience": row.get("target_audience", "").strip(),
-                        "video_length": int(row.get("video_length", 300)),  # seconds
+                            "channel_name": row.get("channel_name", "").strip(),
+                            "niche": row.get("niche", "").strip(),
+                            "content_type": row.get("content_type", "educational").strip(),
+                            "target_audience": row.get("target_audience", "").strip(),
+                            "video_length": int(row.get("video_length", 300)),  # seconds
                         "upload_frequency": row.get(
                             "upload_frequency", "weekly"
                         ).strip(),
-                        "monetization_strategy": row.get(
+                            "monetization_strategy": row.get(
                             "monetization_strategy", ""
                         ).strip(),
-                        "voice_style": row.get("voice_style", "professional").strip(),
-                        "avatar_type": row.get("avatar_type", "realistic").strip(),
-                        "background_music": row.get(
+                            "voice_style": row.get("voice_style", "professional").strip(),
+                            "avatar_type": row.get("avatar_type", "realistic").strip(),
+                            "background_music": row.get(
                             "background_music", "ambient"
                         ).strip(),
-                        "pdf_product_type": row.get(
+                            "pdf_product_type": row.get(
                             "pdf_product_type", "ebook"
                         ).strip(),
-                        "keywords": row.get("keywords", "").strip().split(","),
-                        "description_template": row.get(
+                            "keywords": row.get("keywords", "").strip().split(","),
+                            "description_template": row.get(
                             "description_template", ""
                         ).strip(),
-                    }
+                            }
 
                     if channel_data["channel_id"]:
                         roadmap.append(channel_data)
@@ -99,6 +101,7 @@ class ChannelExecutor:
             logger.error(f"Error loading roadmap: {e}")
             return []
 
+
     async def execute_channel(self, channel_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute a single channel to produce video and PDF"""
         channel_id = channel_data["channel_id"]
@@ -106,11 +109,11 @@ class ChannelExecutor:
 
         execution_result = {
             "channel_id": channel_id,
-            "status": "started",
-            "timestamp": datetime.now().isoformat(),
-            "outputs": {},
-            "errors": [],
-        }
+                "status": "started",
+                "timestamp": datetime.now().isoformat(),
+                "outputs": {},
+                "errors": [],
+                }
 
         try:
             # Generate content script based on channel data
@@ -143,6 +146,7 @@ class ChannelExecutor:
 
         return execution_result
 
+
     async def _generate_script(self, channel_data: Dict[str, Any]) -> Optional[str]:
         """Generate video script based on channel data"""
         try:
@@ -161,21 +165,21 @@ class ChannelExecutor:
             Target audience: {audience}
             Video length: {video_length} seconds
             Target word count: {target_words} words
-            
-            The script should be engaging, informative, and suitable for text-to-speech.
+
+            The script should be engaging, informative, and suitable for text - to - speech.
             Include clear sections for introduction, main content, and conclusion.
             """
 
             # For now, return a template script
             script_content = f"""
             Welcome to our {niche} channel! Today we're exploring an exciting topic that will help {audience}.
-            
+
             [INTRODUCTION - 30 seconds]
             In this video, we'll cover the essential aspects of {niche} that every {audience} should know.
-            
+
             [MAIN CONTENT - {video_length - 60} seconds]
             Let's dive into the key points that will make a real difference in your understanding of {niche}.
-            
+
             [CONCLUSION - 30 seconds]
             Thank you for watching! Don't forget to subscribe for more {content_type} content about {niche}.
             """
@@ -186,6 +190,7 @@ class ChannelExecutor:
             logger.error(f"Script generation failed: {e}")
             return None
 
+
     async def _generate_video(
         self, channel_data: Dict[str, Any], script: str
     ) -> Dict[str, Any]:
@@ -195,20 +200,21 @@ class ChannelExecutor:
         # Prepare video generation parameters
         video_params = {
             "script": script,
-            "voice_style": channel_data["voice_style"],
-            "avatar_type": channel_data["avatar_type"],
-            "background_music": channel_data["background_music"],
-            "video_length": channel_data["video_length"],
-            "output_path": str(
+                "voice_style": channel_data["voice_style"],
+                "avatar_type": channel_data["avatar_type"],
+                "background_music": channel_data["background_music"],
+                "video_length": channel_data["video_length"],
+                "output_path": str(
                 self.videos_dir
                 / f"{channel_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp4"
             ),
-        }
+                }
 
         # Generate video using Hollywood pipeline
         video_result = await self.hollywood_pipeline.generate_video(video_params)
 
         return video_result
+
 
     async def _generate_pdf_product(
         self, channel_data: Dict[str, Any], script: str
@@ -220,12 +226,12 @@ class ChannelExecutor:
         # Prepare PDF content based on script and channel data
         pdf_content = {
             "title": f"{channel_data['channel_name']} - {product_type.title()}",
-            "subtitle": f"Complete Guide to {channel_data['niche']}",
-            "content": script,
-            "niche": channel_data["niche"],
-            "target_audience": channel_data["target_audience"],
-            "keywords": channel_data["keywords"],
-        }
+                "subtitle": f"Complete Guide to {channel_data['niche']}",
+                "content": script,
+                "niche": channel_data["niche"],
+                "target_audience": channel_data["target_audience"],
+                "keywords": channel_data["keywords"],
+                }
 
         output_path = (
             self.pdfs_dir
@@ -238,6 +244,7 @@ class ChannelExecutor:
         )
 
         return pdf_result
+
 
     async def _generate_thumbnail(
         self, channel_data: Dict[str, Any], video_result: Dict[str, Any]
@@ -252,50 +259,51 @@ class ChannelExecutor:
         )
 
         # Create thumbnails directory
-        Path(thumbnail_path).parent.mkdir(exist_ok=True)
+        Path(thumbnail_path).parent.mkdir(exist_ok = True)
 
         try:
             # Extract frame at 10% of video duration for thumbnail
             cmd = [
                 "ffmpeg",
-                "-i",
-                video_path,
-                "-ss",
-                "00:00:10",  # 10 seconds in
+                    "-i",
+                    video_path,
+                    "-ss",
+                    "00:00:10",  # 10 seconds in
                 "-vframes",
-                "1",
-                "-y",  # Overwrite output
+                    "1",
+                    "-y",  # Overwrite output
                 thumbnail_path,
-            ]
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 60)
 
             if result.returncode == 0 and Path(thumbnail_path).exists():
                 return {
                     "success": True,
-                    "thumbnail_path": thumbnail_path,
-                    "size": Path(thumbnail_path).stat().st_size,
-                }
+                        "thumbnail_path": thumbnail_path,
+                        "size": Path(thumbnail_path).stat().st_size,
+                        }
             else:
                 return {"success": False, "error": f"FFmpeg failed: {result.stderr}"}
 
         except Exception as e:
             return {"success": False, "error": f"Thumbnail generation failed: {str(e)}"}
 
+
     async def execute_roadmap(
         self,
-        roadmap_path: str = "channel_roadmaps_10.csv",
-        channel_filter: Optional[str] = None,
-    ) -> Dict[str, Any]:
+            roadmap_path: str = "channel_roadmaps_10.csv",
+            channel_filter: Optional[str] = None,
+            ) -> Dict[str, Any]:
         """Execute entire roadmap or specific channel"""
         roadmap = self.load_roadmap(roadmap_path)
 
         if not roadmap:
             return {
                 "success": False,
-                "error": "No channels loaded from roadmap",
-                "results": [],
-            }
+                    "error": "No channels loaded from roadmap",
+                    "results": [],
+                    }
 
         # Filter channels if specified
         if channel_filter:
@@ -304,9 +312,9 @@ class ChannelExecutor:
         if not roadmap:
             return {
                 "success": False,
-                "error": f"No channels match filter: {channel_filter}",
-                "results": [],
-            }
+                    "error": f"No channels match filter: {channel_filter}",
+                    "results": [],
+                    }
 
         logger.info(f"Executing {len(roadmap)} channels")
 
@@ -323,10 +331,10 @@ class ChannelExecutor:
             except Exception as e:
                 error_result = {
                     "channel_id": channel_data.get("channel_id", "unknown"),
-                    "status": "failed",
-                    "error": str(e),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "status": "failed",
+                        "error": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                        }
                 results.append(error_result)
 
         # Summary
@@ -335,54 +343,56 @@ class ChannelExecutor:
 
         return {
             "success": successful > 0,
-            "total_channels": len(roadmap),
-            "successful": successful,
-            "failed": failed,
-            "results": results,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "total_channels": len(roadmap),
+                "successful": successful,
+                "failed": failed,
+                "results": results,
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     def run_channel_once(self, channel_data: Dict[str, Any]) -> Dict[str, Any]:
         """Synchronous wrapper for executing a single channel"""
         return asyncio.run(self.execute_channel(channel_data))
 
+
     def get_execution_status(self) -> Dict[str, Any]:
         """Get current execution status and output summary"""
         status = {
             "videos_count": len(list(self.videos_dir.glob("*.mp4"))),
-            "pdfs_count": len(list(self.pdfs_dir.glob("*.pdf"))),
-            "audio_count": len(list(self.audio_dir.glob("*.wav"))),
-            "total_video_size": sum(
+                "pdfs_count": len(list(self.pdfs_dir.glob("*.pdf"))),
+                "audio_count": len(list(self.audio_dir.glob("*.wav"))),
+                "total_video_size": sum(
                 f.stat().st_size for f in self.videos_dir.glob("*.mp4")
             ),
-            "total_pdf_size": sum(
+                "total_pdf_size": sum(
                 f.stat().st_size for f in self.pdfs_dir.glob("*.pdf")
             ),
-            "latest_outputs": {
+                "latest_outputs": {
                 "videos": [
                     f.name
                     for f in sorted(
                         self.videos_dir.glob("*.mp4"),
-                        key=lambda x: x.stat().st_mtime,
-                        reverse=True,
-                    )[:5]
+                            key = lambda x: x.stat().st_mtime,
+                            reverse = True,
+                            )[:5]
                 ],
-                "pdfs": [
+                    "pdfs": [
                     f.name
                     for f in sorted(
                         self.pdfs_dir.glob("*.pdf"),
-                        key=lambda x: x.stat().st_mtime,
-                        reverse=True,
-                    )[:5]
+                            key = lambda x: x.stat().st_mtime,
+                            reverse = True,
+                            )[:5]
                 ],
-            },
-        }
+                    },
+                }
 
         return status
 
 
 def run_channel_once(
-    csv_path: str, video_dir: str = "outputs/videos", pdf_dir: str = "outputs/pdfs"
+    csv_path: str, video_dir: str = "outputs / videos", pdf_dir: str = "outputs / pdfs"
 ) -> Dict[str, Any]:
     """Synchronous function to run a single channel from CSV roadmap"""
     try:
@@ -392,9 +402,9 @@ def run_channel_once(
         if not roadmap:
             return {
                 "status": "error",
-                "error": "No channels found in roadmap",
-                "csv_path": csv_path,
-            }
+                    "error": "No channels found in roadmap",
+                    "csv_path": csv_path,
+                    }
 
         # Execute first channel from roadmap
         channel_data = roadmap[0]
@@ -402,61 +412,62 @@ def run_channel_once(
 
         return {
             "status": "success",
-            "channel_executed": channel_data.get("channel_name", "Unknown"),
-            "video_dir": video_dir,
-            "pdf_dir": pdf_dir,
-            "result": result,
-        }
+                "channel_executed": channel_data.get("channel_name", "Unknown"),
+                "video_dir": video_dir,
+                "pdf_dir": pdf_dir,
+                "result": result,
+                }
 
     except Exception as e:
         return {"status": "error", "error": str(e), "csv_path": csv_path}
 
-
 if __name__ == "__main__":
     # Test channel executor
-    async def test_executor():
+
+
+        async def test_executor():
         executor = ChannelExecutor()
 
         # Test with a single channel
         test_channel = {
             "channel_id": "test_channel_001",
-            "channel_name": "Test Educational Channel",
-            "niche": "technology",
-            "content_type": "educational",
-            "target_audience": "tech enthusiasts",
-            "video_length": 180,
-            "voice_style": "professional",
-            "avatar_type": "realistic",
-            "background_music": "ambient",
-            "pdf_product_type": "ebook",
-            "keywords": ["technology", "innovation", "future"],
-        }
+                "channel_name": "Test Educational Channel",
+                "niche": "technology",
+                "content_type": "educational",
+                "target_audience": "tech enthusiasts",
+                "video_length": 180,
+                "voice_style": "professional",
+                "avatar_type": "realistic",
+                "background_music": "ambient",
+                "pdf_product_type": "ebook",
+                "keywords": ["technology", "innovation", "future"],
+                }
 
         result = await executor.execute_channel(test_channel)
-        print(f"Execution result: {json.dumps(result, indent=2)}")
+        print(f"Execution result: {json.dumps(result, indent = 2)}")
 
         status = executor.get_execution_status()
-        print(f"Status: {json.dumps(status, indent=2)}")
+        print(f"Status: {json.dumps(status, indent = 2)}")
 
     asyncio.run(test_executor())
 
 
 def capability_reel():
-    """Generate capability reel with CI-aware timing"""
+    """Generate capability reel with CI - aware timing"""
     # Build lines for the capability reel
     lines = [
         "TRAE.AI System Capabilities",
-        "Multi-Agent Content Generation",
-        "Advanced Video Processing",
-        "Real-time Dashboard Monitoring",
-        "Secure Secret Management",
-        "Automated Channel Execution",
-        "PDF Product Generation",
-        "Hollywood Pipeline Integration",
-        "Compliance & Security Scanning",
-        "Operational Excellence",
-    ]
+            "Multi - Agent Content Generation",
+            "Advanced Video Processing",
+            "Real - time Dashboard Monitoring",
+            "Secure Secret Management",
+            "Automated Channel Execution",
+            "PDF Product Generation",
+            "Hollywood Pipeline Integration",
+            "Compliance & Security Scanning",
+            "Operational Excellence",
+            ]
 
     out_dir = os.path.join("assets", "releases", f"CapabilityReel_{int(time.time())}")
-    reel = make_slideshow_with_audio(lines, out_dir, total_minutes=cap_reel_minutes(20))
+    reel = make_slideshow_with_audio(lines, out_dir, total_minutes = cap_reel_minutes(20))
     return {"out_dir": out_dir, "mp4": reel, "lines": len(lines)}

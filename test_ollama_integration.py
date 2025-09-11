@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Test script to verify Ollama + Trae.ai integration on MacBook Air M1.
 
@@ -17,9 +17,9 @@ OLLAMA_ENDPOINT = "http://localhost:11434"
 
 def test_ollama_tags():
     """Check if Ollama is running and list models."""
-    url = f"{OLLAMA_ENDPOINT}/api/tags"
+    url = f"{OLLAMA_ENDPOINT}/api / tags"
     try:
-        resp = requests.get(url, timeout=10)
+        resp = requests.get(url, timeout = 10)
         resp.raise_for_status()
         models = resp.json().get("models", [])
         print("✅ Ollama is live:", [m["name"] for m in models])
@@ -31,21 +31,21 @@ def test_ollama_tags():
 
 def test_ollama_generate():
     """Ask Ollama to debug a snippet of Python code."""
-    url = f"{OLLAMA_ENDPOINT}/api/generate"
+    url = f"{OLLAMA_ENDPOINT}/api / generate"
     payload = {
         "model": "codellama",  # change this if you pulled another model
         "prompt": "Find the bug in this Python code:\n\nfor i in range(5)\n    print(i)",
-    }
+            }
 
     try:
-        with requests.post(url, json=payload, stream=True, timeout=30) as resp:
+        with requests.post(url, json = payload, stream = True, timeout = 30) as resp:
             resp.raise_for_status()
             print("✅ Debugging response from Ollama:\n")
             for line in resp.iter_lines():
                 if line:
-                    data = json.loads(line.decode("utf-8"))
+                    data = json.loads(line.decode("utf - 8"))
                     if "response" in data:
-                        print(data["response"], end="", flush=True)
+                        print(data["response"], end="", flush = True)
             print("\n")
         return True
     except Exception as e:
@@ -64,7 +64,6 @@ def main():
     print(
         "\n🎯 Done. If you saw responses, Trae.ai can now use Ollama for debugging & fixes."
     )
-
 
 if __name__ == "__main__":
     main()

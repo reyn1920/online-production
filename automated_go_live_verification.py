@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Automated Go-Live Verification Script
+Automated Go - Live Verification Script
 Demonstrates 100% automated production deployment readiness
 """
 
@@ -15,10 +15,13 @@ import requests
 
 
 class GoLiveVerification:
+
+
     def __init__(self):
         self.checks_passed = 0
         self.total_checks = 0
         self.results = []
+
 
     def log_check(self, name, status, details=""):
         """Log a verification check result"""
@@ -37,19 +40,20 @@ class GoLiveVerification:
         self.results.append((name, status, details))
         return status
 
+
     def verify_automation_pipeline(self):
-        """Verify CI/CD automation is ready"""
+        """Verify CI / CD automation is ready"""
         print("\n🤖 AUTOMATION PIPELINE VERIFICATION")
         print("=" * 50)
 
         # Check GitHub Actions workflows
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github / workflows")
         required_workflows = {
-            "ci-cd.yml": "Main CI/CD Pipeline",
-            "security.yml": "Security Scanning",
-            "prod-health-watch.yml": "Production Monitoring",
-            "deploy.yml": "Deployment Automation",
-        }
+            "ci - cd.yml": "Main CI / CD Pipeline",
+                "security.yml": "Security Scanning",
+                "prod - health - watch.yml": "Production Monitoring",
+                "deploy.yml": "Deployment Automation",
+                }
 
         for workflow_file, description in required_workflows.items():
             workflow_path = workflows_dir / workflow_file
@@ -63,14 +67,14 @@ class GoLiveVerification:
                         )
                         self.log_check(
                             f"Workflow: {description}",
-                            has_prod_deploy,
-                            (
+                                has_prod_deploy,
+                                (
                                 "Production deployment configured"
                                 if has_prod_deploy
                                 else "Missing production config"
                             ),
-                        )
-                except:
+                                )
+                except Exception:
                     self.log_check(
                         f"Workflow: {description}", False, "Failed to read workflow"
                     )
@@ -79,6 +83,7 @@ class GoLiveVerification:
                     f"Workflow: {description}", False, "Workflow file missing"
                 )
 
+
     def verify_live_testing_capability(self):
         """Verify system can be live tested"""
         print("\n🧪 LIVE TESTING CAPABILITY")
@@ -86,21 +91,22 @@ class GoLiveVerification:
 
         # Test main API endpoints
         api_endpoints = [
-            ("http://localhost:8000/health", "Health Check API"),
-            ("http://localhost:8000/api/version", "Version API"),
-            ("http://localhost:8081", "Paste Application"),
-        ]
+            ("http://localhost:8000 / health", "Health Check API"),
+                ("http://localhost:8000 / api / version", "Version API"),
+                ("http://localhost:8081", "Paste Application"),
+                ]
 
         for url, name in api_endpoints:
             try:
-                response = requests.get(url, timeout=5)
+                response = requests.get(url, timeout = 5)
                 self.log_check(
                     f"Live Test: {name}",
-                    response.status_code == 200,
-                    f"Status: {response.status_code}",
-                )
+                        response.status_code == 200,
+                        f"Status: {response.status_code}",
+                        )
             except Exception as e:
                 self.log_check(f"Live Test: {name}", False, f"Error: {str(e)[:50]}")
+
 
     def verify_security_compliance(self):
         """Verify security measures are in place"""
@@ -115,13 +121,13 @@ class GoLiveVerification:
                 env_protected = ".env" in gitignore_content
                 self.log_check(
                     "Environment Secrets Protection",
-                    env_protected,
-                    (
+                        env_protected,
+                        (
                         "Secrets properly excluded from Git"
                         if env_protected
                         else "Secrets not protected"
                     ),
-                )
+                        )
         else:
             self.log_check(
                 "Environment Secrets Protection", False, ".gitignore missing"
@@ -131,13 +137,13 @@ class GoLiveVerification:
         env_example = Path(".env.example")
         self.log_check(
             "Environment Template",
-            env_example.exists(),
-            (
+                env_example.exists(),
+                (
                 "Configuration template available"
                 if env_example.exists()
                 else "Template missing"
             ),
-        )
+                )
 
         # Check security tools are configured
         requirements_path = Path("requirements.txt")
@@ -149,9 +155,10 @@ class GoLiveVerification:
                     tool_configured = tool in requirements
                     self.log_check(
                         f"Security Tool: {tool}",
-                        tool_configured,
-                        "Configured" if tool_configured else "Missing",
-                    )
+                            tool_configured,
+                            "Configured" if tool_configured else "Missing",
+                            )
+
 
     def verify_deployment_readiness(self):
         """Verify deployment configuration"""
@@ -162,9 +169,9 @@ class GoLiveVerification:
         netlify_config = Path("netlify.toml")
         self.log_check(
             "Netlify Configuration",
-            netlify_config.exists(),
-            "Deployment config ready" if netlify_config.exists() else "Config missing",
-        )
+                netlify_config.exists(),
+                "Deployment config ready" if netlify_config.exists() else "Config missing",
+                )
 
         # Check production startup script
         production_scripts = ["start_production.py", "launch_live.py"]
@@ -184,22 +191,23 @@ class GoLiveVerification:
         requirements_path = Path("requirements.txt")
         self.log_check(
             "Dependencies Configuration",
-            requirements_path.exists(),
-            (
+                requirements_path.exists(),
+                (
                 "Dependencies defined"
                 if requirements_path.exists()
                 else "Requirements missing"
             ),
-        )
+                )
+
 
     def demonstrate_go_live_process(self):
-        """Demonstrate the automated go-live process"""
-        print("\n🎯 AUTOMATED GO-LIVE PROCESS DEMONSTRATION")
+        """Demonstrate the automated go - live process"""
+        print("\n🎯 AUTOMATED GO - LIVE PROCESS DEMONSTRATION")
         print("=" * 50)
 
-        print("\n📋 Go-Live Steps:")
+        print("\n📋 Go - Live Steps:")
         print("1. ✅ Code committed to main branch")
-        print("2. ✅ GitHub Actions CI/CD pipeline triggers automatically")
+        print("2. ✅ GitHub Actions CI / CD pipeline triggers automatically")
         print("3. ✅ Security scans (Bandit, Safety, CodeQL) execute")
         print("4. ✅ Automated tests run and pass")
         print("5. ✅ Build process creates deployment artifacts")
@@ -213,14 +221,15 @@ class GoLiveVerification:
         print("• API: GitHub REST API deployment trigger")
 
         print("\n🛡️ Safety Features:")
-        print("• Staging environment for pre-production testing")
+        print("• Staging environment for pre - production testing")
         print("• Atomic deployments with instant rollback capability")
         print("• Automated health monitoring and alerting")
-        print("• Zero-downtime deployment process")
+        print("• Zero - downtime deployment process")
+
 
     def generate_go_live_report(self):
-        """Generate final go-live readiness report"""
-        print("\n📊 FINAL GO-LIVE READINESS REPORT")
+        """Generate final go - live readiness report"""
+        print("\n📊 FINAL GO - LIVE READINESS REPORT")
         print("=" * 50)
 
         success_rate = (
@@ -236,18 +245,18 @@ class GoLiveVerification:
         print(f"Success Rate: {success_rate:.1f}%")
 
         if success_rate >= 90:
-            print("\n🎉 SYSTEM IS READY FOR 100% AUTOMATED GO-LIVE!")
+            print("\n🎉 SYSTEM IS READY FOR 100% AUTOMATED GO - LIVE!")
             print("\n🚀 DEPLOYMENT AUTHORIZATION: APPROVED")
             print("\n✨ Next Steps:")
             print("   1. Navigate to GitHub Actions")
-            print("   2. Select 'CI/CD Pipeline' workflow")
+            print("   2. Select 'CI / CD Pipeline' workflow")
             print("   3. Click 'Run workflow'")
             print("   4. Select 'production' environment")
             print("   5. Click 'Run workflow' to deploy")
             print("\n🌐 Your application will be live within minutes!")
             return True
         else:
-            print("\n⚠️  SYSTEM REQUIRES ATTENTION BEFORE GO-LIVE")
+            print("\n⚠️  SYSTEM REQUIRES ATTENTION BEFORE GO - LIVE")
             print(
                 f"\n❌ {self.total_checks - self.checks_passed} issues need resolution"
             )
@@ -259,10 +268,10 @@ class GoLiveVerification:
 
 
 def main():
-    """Run complete go-live verification"""
-    print("🚀 AUTOMATED GO-LIVE VERIFICATION")
+    """Run complete go - live verification"""
+    print("🚀 AUTOMATED GO - LIVE VERIFICATION")
     print("=" * 50)
-    print("Verifying 100% automated, live-testable production readiness...")
+    print("Verifying 100% automated, live - testable production readiness...")
 
     verifier = GoLiveVerification()
 
@@ -277,7 +286,6 @@ def main():
     ready_for_golive = verifier.generate_go_live_report()
 
     return 0 if ready_for_golive else 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

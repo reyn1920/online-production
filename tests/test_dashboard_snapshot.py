@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Dashboard Snapshot Contract Test
-Verifies the /api/dashboard endpoint returns expected structure.
+Verifies the /api / dashboard endpoint returns expected structure.
 """
 
 import json
@@ -22,7 +22,7 @@ def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
         bool: True if test passes, False otherwise
     """
     try:
-        response = requests.get(f"{base_url}/api/dashboard", timeout=10)
+        response = requests.get(f"{base_url}/api / dashboard", timeout = 10)
 
         if response.status_code != 200:
             print(f"❌ Dashboard endpoint returned {response.status_code}")
@@ -30,7 +30,7 @@ def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
 
         data = response.json()
 
-        # Verify required top-level keys
+        # Verify required top - level keys
         required_keys = ["version", "stats", "agents", "timestamp"]
         for key in required_keys:
             if key not in data:
@@ -84,7 +84,7 @@ def test_metrics_endpoint(base_url: str = "http://127.0.0.1:8083") -> bool:
         bool: True if test passes, False otherwise
     """
     try:
-        response = requests.get(f"{base_url}/api/metrics", timeout=10)
+        response = requests.get(f"{base_url}/api / metrics", timeout = 10)
 
         if response.status_code != 200:
             print(f"❌ Metrics endpoint returned {response.status_code}")
@@ -105,7 +105,6 @@ def test_metrics_endpoint(base_url: str = "http://127.0.0.1:8083") -> bool:
     except Exception as e:
         print(f"❌ Metrics test failed: {e}")
         return False
-
 
 if __name__ == "__main__":
     import sys

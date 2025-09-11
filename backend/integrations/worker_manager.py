@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Distributed Worker Manager
 
 This module provides utilities for managing Celery workers across different machines
 in the distributed processing system. It handles worker lifecycle, monitoring,
-and cross-platform deployment.
+and cross - platform deployment.
 
 Features:
 - Worker startup and shutdown management
 - Health monitoring and heartbeat tracking
-- Cross-platform worker deployment
+- Cross - platform worker deployment
 - Load balancing and resource optimization
 - Automatic worker recovery and failover
 
@@ -35,11 +35,12 @@ from typing import Any, Dict, List, Optional
 from distributed_processing import DistributedProcessingSystem, WorkerCapabilities
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class WorkerProcess:
     """Worker process information."""
 
@@ -58,6 +59,7 @@ class WorkerProcess:
 class WorkerManager:
     """Manages Celery workers across the distributed system."""
 
+
     def __init__(self, dps: DistributedProcessingSystem):
         """
         Initialize the worker manager.
@@ -73,18 +75,19 @@ class WorkerManager:
         # Get machine capabilities
         self.machine_capabilities = self.dps.get_worker_capabilities()
 
-        # Platform-specific settings
+        # Platform - specific settings
         self.platform = platform.system().lower()
         self.python_executable = sys.executable
 
         logger.info(f"Worker Manager initialized for {self.platform} platform")
+
 
     def start_worker(self, queue_names: List[str], concurrency: int = None) -> str:
         """Start a new Celery worker.
 
         Args:
             queue_names: List of queue names for this worker
-            concurrency: Number of concurrent processes (auto-detect if None)
+            concurrency: Number of concurrent processes (auto - detect if None)
 
         Returns:
             Worker ID
@@ -92,13 +95,13 @@ class WorkerManager:
         if concurrency is None:
             concurrency = min(
                 self.machine_capabilities.cpu_cores,
-                self.machine_capabilities.max_concurrent_tasks,
-            )
+                    self.machine_capabilities.max_concurrent_tasks,
+                    )
 
         worker_id = f"worker_{self.platform}_{int(time.time())}"
 
         # Build Celery worker command
-        command = self._build_worker_command(worker_id, queue_names, concurrency)
+            command = self._build_worker_command(worker_id, queue_names, concurrency)
 
         try:
             # Start the worker process
@@ -106,23 +109,23 @@ class WorkerManager:
 
             process = subprocess.Popen(
                 command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                bufsize=1,
-                universal_newlines=True,
-            )
+                    stdout = subprocess.PIPE,
+                    stderr = subprocess.PIPE,
+                    text = True,
+                    bufsize = 1,
+                    universal_newlines = True,
+                    )
 
             # Create worker process record
             worker_process = WorkerProcess(
-                worker_id=worker_id,
-                process_id=process.pid,
-                command=command,
-                started_at=datetime.now(),
-                status="starting",
-                queue_names=queue_names,
-                concurrency=concurrency,
-            )
+                worker_id = worker_id,
+                    process_id = process.pid,
+                    command = command,
+                    started_at = datetime.now(),
+                    status="starting",
+                    queue_names = queue_names,
+                    concurrency = concurrency,
+                    )
 
             self.workers[worker_id] = worker_process
 
@@ -136,6 +139,7 @@ class WorkerManager:
         except Exception as e:
             logger.error(f"Failed to start worker {worker_id}: {e}")
             raise
+
 
     def _build_worker_command(
         self, worker_id: str, queue_names: List[str], concurrency: int
@@ -152,25 +156,25 @@ class WorkerManager:
         """
         command = [
             self.python_executable,
-            "-m",
-            "celery",
-            "-A",
-            "distributed_processing",
-            "worker",
-            "--hostname",
-            f"{worker_id}@%h",
-            "--queues",
-            ",".join(queue_names),
-            "--concurrency",
-            str(concurrency),
-            "--loglevel",
-            "info",
-            "--without-gossip",
-            "--without-mingle",
-            "--without-heartbeat",
-        ]
+                "-m",
+                "celery",
+                "-A",
+                "distributed_processing",
+                "worker",
+                "--hostname",
+                f"{worker_id}@%h",
+                "--queues",
+                ",".join(queue_names),
+                "--concurrency",
+                str(concurrency),
+                "--loglevel",
+                "info",
+                "--without - gossip",
+                "--without - mingle",
+                "--without - heartbeat",
+                ]
 
-        # Platform-specific optimizations
+        # Platform - specific optimizations
         if self.platform == "darwin":  # macOS
             command.extend(["--pool", "prefork"])
         elif self.platform == "win32":  # Windows
@@ -179,6 +183,7 @@ class WorkerManager:
             command.extend(["--pool", "prefork"])
 
         return command
+
 
     def stop_worker(self, worker_id: str, timeout: int = 30) -> bool:
         """Stop a specific worker.
@@ -203,11 +208,11 @@ class WorkerManager:
                 # Windows
                 subprocess.run(
                     ["taskkill", "/PID", str(worker.process_id), "/T"],
-                    timeout=timeout,
-                    check=False,
-                )
+                        timeout = timeout,
+                        check = False,
+                        )
             else:
-                # Unix-like systems
+                # Unix - like systems
                 os.kill(worker.process_id, signal.SIGTERM)
 
                 # Wait for graceful shutdown
@@ -230,6 +235,7 @@ class WorkerManager:
             worker.status = "failed"
             return False
 
+
     def stop_all_workers(self, timeout: int = 30) -> Dict[str, bool]:
         """Stop all managed workers.
 
@@ -247,9 +253,10 @@ class WorkerManager:
         # Stop monitoring
         if self.monitoring_thread and self.monitoring_thread.is_alive():
             self.shutdown_event.set()
-            self.monitoring_thread.join(timeout=10)
+            self.monitoring_thread.join(timeout = 10)
 
         return results
+
 
     def restart_worker(self, worker_id: str) -> bool:
         """Restart a specific worker.
@@ -299,6 +306,7 @@ class WorkerManager:
             logger.error(f"Failed to restart worker {worker_id}: {e}")
             return False
 
+
     def start_monitoring(self):
         """Start worker monitoring thread."""
         if self.monitoring_thread and self.monitoring_thread.is_alive():
@@ -306,11 +314,12 @@ class WorkerManager:
 
         self.shutdown_event.clear()
         self.monitoring_thread = threading.Thread(
-            target=self._monitor_workers, daemon=True
+            target = self._monitor_workers, daemon = True
         )
         self.monitoring_thread.start()
 
         logger.info("Worker monitoring started")
+
 
     def _monitor_workers(self):
         """Monitor worker health and restart failed workers."""
@@ -339,7 +348,7 @@ class WorkerManager:
                     # Update worker status based on heartbeat
                     elif worker.status == "starting":
                         # Check if worker has been starting for too long
-                        if current_time - worker.started_at > timedelta(minutes=2):
+                        if current_time - worker.started_at > timedelta(minutes = 2):
                             worker.status = (
                                 "running"  # Assume it's running if process exists
                             )
@@ -354,6 +363,7 @@ class WorkerManager:
                 logger.error(f"Error in worker monitoring: {e}")
                 self.shutdown_event.wait(60)  # Wait longer on error
 
+
     def _is_process_running(self, pid: int) -> bool:
         """Check if a process is running.
 
@@ -367,15 +377,16 @@ class WorkerManager:
             if self.platform == "win32":
                 # Windows
                 result = subprocess.run(
-                    ["tasklist", "/FI", f"PID eq {pid}"], capture_output=True, text=True
+                    ["tasklist", "/FI", f"PID eq {pid}"], capture_output = True, text = True
                 )
                 return str(pid) in result.stdout
             else:
-                # Unix-like systems
+                # Unix - like systems
                 os.kill(pid, 0)  # Send signal 0 to check if process exists
                 return True
         except (OSError, subprocess.SubprocessError):
             return False
+
 
     def get_worker_status(self) -> Dict[str, Any]:
         """Get status of all managed workers.
@@ -385,31 +396,32 @@ class WorkerManager:
         """
         status = {
             "total_workers": len(self.workers),
-            "running_workers": len(
+                "running_workers": len(
                 [w for w in self.workers.values() if w.status == "running"]
             ),
-            "failed_workers": len(
+                "failed_workers": len(
                 [w for w in self.workers.values() if w.status == "failed"]
             ),
-            "workers": [],
-        }
+                "workers": [],
+                }
 
         for worker in self.workers.values():
             worker_info = {
                 "worker_id": worker.worker_id,
-                "process_id": worker.process_id,
-                "status": worker.status,
-                "queues": worker.queue_names,
-                "concurrency": worker.concurrency,
-                "started_at": worker.started_at.isoformat(),
-                "restart_count": worker.restart_count,
-                "last_heartbeat": (
+                    "process_id": worker.process_id,
+                    "status": worker.status,
+                    "queues": worker.queue_names,
+                    "concurrency": worker.concurrency,
+                    "started_at": worker.started_at.isoformat(),
+                    "restart_count": worker.restart_count,
+                    "last_heartbeat": (
                     worker.last_heartbeat.isoformat() if worker.last_heartbeat else None
                 ),
-            }
+                    }
             status["workers"].append(worker_info)
 
         return status
+
 
     def auto_scale_workers(self, target_queues: Dict[str, int]) -> Dict[str, str]:
         """Automatically scale workers based on queue requirements.
@@ -429,7 +441,7 @@ class WorkerManager:
                 for queue in worker.queue_names:
                     current_queues[queue] = current_queues.get(queue, 0) + 1
 
-        # Scale up/down as needed
+        # Scale up / down as needed
         for queue_name, target_count in target_queues.items():
             current_count = current_queues.get(queue_name, 0)
 
@@ -466,29 +478,30 @@ class WorkerManager:
 
         return actions
 
-
 # CLI interface for worker management
+
+
 def main():
-    """Command-line interface for worker management."""
+    """Command - line interface for worker management."""
     import argparse
 
     parser = argparse.ArgumentParser(description="Distributed Worker Manager")
     parser.add_argument(
         "action",
-        choices=["start", "stop", "restart", "status", "monitor"],
-        help="Action to perform",
-    )
-    parser.add_argument("--worker-id", help="Specific worker ID (for stop/restart)")
+            choices=["start", "stop", "restart", "status", "monitor"],
+            help="Action to perform",
+            )
+    parser.add_argument("--worker - id", help="Specific worker ID (for stop / restart)")
     parser.add_argument(
         "--queues", nargs="+", default=["general"], help="Queue names for new workers"
     )
-    parser.add_argument("--concurrency", type=int, help="Worker concurrency")
-    parser.add_argument("--broker-url", help="Celery broker URL")
+    parser.add_argument("--concurrency", type = int, help="Worker concurrency")
+    parser.add_argument("--broker - url", help="Celery broker URL")
 
     args = parser.parse_args()
 
     # Initialize distributed processing system
-    dps = DistributedProcessingSystem(broker_url=args.broker_url)
+    dps = DistributedProcessingSystem(broker_url = args.broker_url)
     manager = WorkerManager(dps)
 
     try:
@@ -520,10 +533,10 @@ def main():
 
         elif args.action == "status":
             status = manager.get_worker_status()
-            print(json.dumps(status, indent=2))
+            print(json.dumps(status, indent = 2))
 
         elif args.action == "monitor":
-            print("Starting worker monitoring... (Press Ctrl+C to stop)")
+            print("Starting worker monitoring... (Press Ctrl + C to stop)")
             manager.start_monitoring()
             try:
                 while True:
@@ -544,7 +557,6 @@ def main():
         return 1
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

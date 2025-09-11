@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Production Database Connection Manager
 
@@ -27,7 +27,7 @@ from utils.logger import get_logger
 try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
-    from psycopg2.pool import ThreadedConnectionPool
+        from psycopg2.pool import ThreadedConnectionPool
 
     POSTGRES_AVAILABLE = True
 except ImportError:
@@ -54,16 +54,17 @@ class DatabaseError(Exception):
 
 class ProductionDatabaseManager:
     """
-    Production-ready database connection manager for TRAE.AI system.
+    Production - ready database connection manager for TRAE.AI system.
 
     Supports both SQLite (development) and PostgreSQL (production) based on
     the DATABASE_URL environment variable. Provides connection pooling,
-    automatic failover, and environment-specific optimizations.
+        automatic failover, and environment - specific optimizations.
     """
+
 
     def __init__(self, database_url: Optional[str] = None):
         self.database_url = database_url or os.getenv(
-            "DATABASE_URL", "sqlite:///data/trae_master.db"
+            "DATABASE_URL", "sqlite:///data / trae_master.db"
         )
         self._local = threading.local()
         self._connection_pool = None
@@ -79,6 +80,7 @@ class ProductionDatabaseManager:
         else:
             self._initialize_sqlite()
 
+
     def _parse_database_type(self) -> str:
         """Parse database URL to determine database type"""
         if self.database_url.startswith("postgresql://"):
@@ -89,11 +91,12 @@ class ProductionDatabaseManager:
             # Default to SQLite for file paths
             return "sqlite"
 
+
     def _initialize_postgresql(self):
         """Initialize PostgreSQL connection pool"""
         if not POSTGRES_AVAILABLE:
             raise DatabaseError(
-                "PostgreSQL dependencies not installed. Run: pip install psycopg2-binary"
+                "PostgreSQL dependencies not installed. Run: pip install psycopg2 - binary"
             )
 
         try:
@@ -102,32 +105,33 @@ class ProductionDatabaseManager:
 
             # Create connection pool
             self._connection_pool = ThreadedConnectionPool(
-                minconn=1,
-                maxconn=20,
-                host=parsed.hostname,
-                port=parsed.port or 5432,
-                database=parsed.path[1:],  # Remove leading slash
-                user=parsed.username,
-                password=parsed.password,
-                cursor_factory=RealDictCursor,
-            )
+                minconn = 1,
+                    maxconn = 20,
+                    host = parsed.hostname,
+                    port = parsed.port or 5432,
+                    database = parsed.path[1:],  # Remove leading slash
+                user = parsed.username,
+                    password = parsed.password,
+                    cursor_factory = RealDictCursor,
+                    )
 
             # Initialize SQLAlchemy engine if available
             if SQLALCHEMY_AVAILABLE:
                 self._engine = create_engine(
                     self.database_url,
-                    pool_size=10,
-                    max_overflow=20,
-                    pool_pre_ping=True,
-                    pool_recycle=3600,
-                )
-                self._session_factory = sessionmaker(bind=self._engine)
+                        pool_size = 10,
+                        max_overflow = 20,
+                        pool_pre_ping = True,
+                        pool_recycle = 3600,
+                        )
+                self._session_factory = sessionmaker(bind = self._engine)
 
             logger.info("PostgreSQL connection pool initialized")
 
         except Exception as e:
             logger.error(f"Failed to initialize PostgreSQL: {e}")
             raise DatabaseError(f"PostgreSQL initialization failed: {e}")
+
 
     def _initialize_sqlite(self):
         """Initialize SQLite database"""
@@ -144,20 +148,22 @@ class ProductionDatabaseManager:
         if SQLALCHEMY_AVAILABLE:
             self._engine = create_engine(
                 f"sqlite:///{self.db_path}",
-                poolclass=StaticPool,
-                connect_args={"check_same_thread": False, "timeout": 30},
-                echo=False,
-            )
-            self._session_factory = sessionmaker(bind=self._engine)
+                    poolclass = StaticPool,
+                    connect_args={"check_same_thread": False, "timeout": 30},
+                    echo = False,
+                    )
+            self._session_factory = sessionmaker(bind = self._engine)
 
         # Initialize database schema
         self._initialize_sqlite_database()
 
         logger.info(f"SQLite database initialized: {self.db_path}")
 
+
     def _ensure_db_directory(self):
         """Ensure the database directory exists"""
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
+
 
     def _initialize_sqlite_database(self):
         """Initialize SQLite database with schema if needed"""
@@ -184,6 +190,7 @@ class ProductionDatabaseManager:
             logger.error(f"Failed to initialize database: {e}")
             raise DatabaseError(f"Database initialization failed: {e}")
 
+
     def _create_schema(self, conn):
         """Create database schema from schema.sql or fallback schema"""
         schema_path = Path("schema.sql")
@@ -205,28 +212,29 @@ class ProductionDatabaseManager:
             # Fallback basic schema
             self._create_fallback_schema(conn)
 
+
     def _create_fallback_schema(self, conn):
         """Create basic fallback schema"""
         if self.db_type == "sqlite":
             schema_sql = """
                 CREATE TABLE IF NOT EXISTS task_queue (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    task_id TEXT UNIQUE NOT NULL,
-                    task_type TEXT NOT NULL DEFAULT 'system',
-                    priority TEXT NOT NULL DEFAULT 'medium',
-                    status TEXT NOT NULL DEFAULT 'pending',
-                    agent_id TEXT,
-                    payload TEXT,
-                    result TEXT,
-                    error_message TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    started_at TIMESTAMP,
-                    completed_at TIMESTAMP,
-                    retry_count INTEGER DEFAULT 0,
-                    max_retries INTEGER DEFAULT 3
+                        task_id TEXT UNIQUE NOT NULL,
+                        task_type TEXT NOT NULL DEFAULT 'system',
+                        priority TEXT NOT NULL DEFAULT 'medium',
+                        status TEXT NOT NULL DEFAULT 'pending',
+                        agent_id TEXT,
+                        payload TEXT,
+                        result TEXT,
+                        error_message TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        started_at TIMESTAMP,
+                        completed_at TIMESTAMP,
+                        retry_count INTEGER DEFAULT 0,
+                        max_retries INTEGER DEFAULT 3
                 );
-                
+
                 CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status);
                 CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type);
                 CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id);
@@ -238,31 +246,33 @@ class ProductionDatabaseManager:
                 """
                 CREATE TABLE IF NOT EXISTS task_queue (
                     id SERIAL PRIMARY KEY,
-                    task_id VARCHAR(255) UNIQUE NOT NULL,
-                    task_type VARCHAR(100) NOT NULL DEFAULT 'system',
-                    priority VARCHAR(50) NOT NULL DEFAULT 'medium',
-                    status VARCHAR(50) NOT NULL DEFAULT 'pending',
-                    agent_id VARCHAR(255),
-                    payload TEXT,
-                    result TEXT,
-                    error_message TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    started_at TIMESTAMP,
-                    completed_at TIMESTAMP,
-                    retry_count INTEGER DEFAULT 0,
-                    max_retries INTEGER DEFAULT 3
+                        task_id VARCHAR(255) UNIQUE NOT NULL,
+                        task_type VARCHAR(100) NOT NULL DEFAULT 'system',
+                        priority VARCHAR(50) NOT NULL DEFAULT 'medium',
+                        status VARCHAR(50) NOT NULL DEFAULT 'pending',
+                        agent_id VARCHAR(255),
+                        payload TEXT,
+                        result TEXT,
+                        error_message TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        started_at TIMESTAMP,
+                        completed_at TIMESTAMP,
+                        retry_count INTEGER DEFAULT 0,
+                        max_retries INTEGER DEFAULT 3
                 )
                 """,
-                "CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status)",
-                "CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type)",
-                "CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id)",
-            ]
+                    "CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status)",
+                    "CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type)",
+                    "CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id)",
+                    ]
 
             for stmt in schema_statements:
                 conn.execute(stmt)
 
     @contextmanager
+
+
     def get_connection(self):
         """Get a database connection with automatic cleanup"""
         if self.db_type == "postgresql":
@@ -284,7 +294,7 @@ class ProductionDatabaseManager:
             # SQLite connection
             conn = None
             try:
-                conn = sqlite3.connect(str(self.db_path), timeout=30.0)
+                conn = sqlite3.connect(str(self.db_path), timeout = 30.0)
                 conn.row_factory = sqlite3.Row
                 conn.execute("PRAGMA foreign_keys = ON")
                 yield conn
@@ -298,6 +308,8 @@ class ProductionDatabaseManager:
                     conn.close()
 
     @contextmanager
+
+
     def get_session(self):
         """Get SQLAlchemy session (if available)"""
         if not SQLALCHEMY_AVAILABLE or not self._session_factory:
@@ -314,6 +326,7 @@ class ProductionDatabaseManager:
         finally:
             session.close()
 
+
     def execute_query(self, query: str, params: tuple = ()) -> List[Dict[str, Any]]:
         """Execute a SELECT query and return results"""
         with self.get_connection() as conn:
@@ -325,8 +338,9 @@ class ProductionDatabaseManager:
                 cursor = conn.execute(query, params)
                 return [dict(row) for row in cursor.fetchall()]
 
+
     def execute_update(self, query: str, params: tuple = ()) -> int:
-        """Execute an INSERT/UPDATE/DELETE query and return affected rows"""
+        """Execute an INSERT / UPDATE / DELETE query and return affected rows"""
         with self.get_connection() as conn:
             if self.db_type == "postgresql":
                 cursor = conn.cursor()
@@ -335,6 +349,7 @@ class ProductionDatabaseManager:
             else:
                 cursor = conn.execute(query, params)
                 return cursor.rowcount
+
 
     def execute_script(self, script: str) -> None:
         """Execute a SQL script"""
@@ -350,6 +365,7 @@ class ProductionDatabaseManager:
             else:
                 conn.executescript(script)
 
+
     def health_check(self) -> Dict[str, Any]:
         """Perform database health check"""
         try:
@@ -363,21 +379,22 @@ class ProductionDatabaseManager:
 
                 return {
                     "status": "healthy",
-                    "database_type": self.db_type,
-                    "database_url": (
+                        "database_type": self.db_type,
+                        "database_url": (
                         self.database_url.split("@")[0] + "@***"
                         if "@" in self.database_url
                         else "local"
                     ),
-                    "timestamp": str(threading.current_thread().ident),
-                }
+                        "timestamp": str(threading.current_thread().ident),
+                        }
         except Exception as e:
             return {
                 "status": "unhealthy",
-                "error": str(e),
-                "database_type": self.db_type,
-                "timestamp": str(threading.current_thread().ident),
-            }
+                    "error": str(e),
+                    "database_type": self.db_type,
+                    "timestamp": str(threading.current_thread().ident),
+                    }
+
 
     def close(self):
         """Close all connections and cleanup resources"""
@@ -390,12 +407,12 @@ class ProductionDatabaseManager:
         except Exception as e:
             logger.error(f"Error closing database connections: {e}")
 
-
 # Global database manager instance
 db_manager = ProductionDatabaseManager()
 
-
 # Convenience functions
+
+
 def get_db_connection():
     """Get database connection context manager"""
     return db_manager.get_connection()
@@ -412,7 +429,7 @@ def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:
 
 
 def execute_update(query: str, params: tuple = ()) -> int:
-    """Execute an INSERT/UPDATE/DELETE query"""
+    """Execute an INSERT / UPDATE / DELETE query"""
     return db_manager.execute_update(query, params)
 
 

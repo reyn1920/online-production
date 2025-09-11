@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Secure Secret Store for TRAE.AI System
 
-This module provides a production-ready secret storage system using AES encryption
+This module provides a production - ready secret storage system using AES encryption
 with Fernet (symmetric encryption) from the cryptography library. Secrets are
 stored in an encrypted SQLite database.
 
@@ -39,23 +39,24 @@ class SecretStoreError(Exception):
 
 class SecretStore:
     """
-    Production-ready secure secret storage system.
+    Production - ready secure secret storage system.
 
-    This class provides encrypted storage of sensitive data using industry-standard
+    This class provides encrypted storage of sensitive data using industry - standard
     cryptographic practices. All secrets are encrypted before storage and decrypted
     only when retrieved.
 
     Attributes:
         db_path (Path): Path to the SQLite database file
         master_key (bytes): Master encryption key derived from password
-        fernet (Fernet): Encryption/decryption handler
+        fernet (Fernet): Encryption / decryption handler
     """
+
 
     def __init__(
         self,
-        db_path: str = "data/secrets.sqlite",
-        master_password: Optional[str] = None,
-    ):
+            db_path: str = "data / secrets.sqlite",
+            master_password: Optional[str] = None,
+            ):
         """
         Initialize the SecretStore.
 
@@ -66,10 +67,10 @@ class SecretStore:
 
         Note:
             If no master password is provided, the SecretStore will operate in disabled mode
-            where all operations return None/False gracefully instead of raising errors.
+            where all operations return None / False gracefully instead of raising errors.
         """
         self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
 
         # Setup logging first
         self.logger = logging.getLogger(__name__)
@@ -95,6 +96,7 @@ class SecretStore:
         # Initialize database
         self._init_database()
 
+
     def _setup_encryption(self, master_password: str) -> None:
         """
         Setup encryption using PBKDF2 key derivation and Fernet encryption.
@@ -107,14 +109,15 @@ class SecretStore:
 
         # Derive key using PBKDF2
         kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,  # OWASP recommended minimum
+            algorithm = hashes.SHA256(),
+                length = 32,
+                salt = salt,
+                iterations = 100000,  # OWASP recommended minimum
         )
 
         key = base64.urlsafe_b64encode(kdf.derive(master_password.encode()))
         self.fernet = Fernet(key)
+
 
     def _get_or_create_salt(self) -> bytes:
         """
@@ -133,9 +136,10 @@ class SecretStore:
             salt = secrets.token_bytes(32)
             with open(salt_file, "wb") as f:
                 f.write(salt)
-            # Set restrictive permissions (owner read/write only)
+            # Set restrictive permissions (owner read / write only)
             os.chmod(salt_file, 0o600)
             return salt
+
 
     def _init_database(self) -> None:
         """
@@ -146,10 +150,10 @@ class SecretStore:
                 """
                 CREATE TABLE IF NOT EXISTS secrets (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    key_name TEXT UNIQUE NOT NULL,
-                    encrypted_value BLOB NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        key_name TEXT UNIQUE NOT NULL,
+                        encrypted_value BLOB NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -162,6 +166,7 @@ class SecretStore:
             )
 
             conn.commit()
+
 
     def store_secret(self, key_name: str, secret_value: str) -> bool:
         """
@@ -185,10 +190,10 @@ class SecretStore:
         try:
             # Validate inputs
             if not key_name or not isinstance(key_name, str):
-                raise SecretStoreError("Key name must be a non-empty string")
+                raise SecretStoreError("Key name must be a non - empty string")
 
             if not secret_value or not isinstance(secret_value, str):
-                raise SecretStoreError("Secret value must be a non-empty string")
+                raise SecretStoreError("Secret value must be a non - empty string")
 
             # Encrypt the secret
             encrypted_value = self.fernet.encrypt(secret_value.encode())
@@ -200,7 +205,7 @@ class SecretStore:
                     VALUES (?, ?, CURRENT_TIMESTAMP)
                 """,
                     (key_name, encrypted_value),
-                )
+                        )
                 conn.commit()
 
             self.logger.info(f"Secret stored successfully: {key_name}")
@@ -209,6 +214,7 @@ class SecretStore:
         except Exception as e:
             self.logger.error(f"Failed to store secret {key_name}: {str(e)}")
             raise SecretStoreError(f"Failed to store secret: {str(e)}")
+
 
     def get_secret(self, key_name: str) -> Optional[str]:
         """
@@ -232,13 +238,13 @@ class SecretStore:
 
         try:
             if not key_name or not isinstance(key_name, str):
-                raise SecretStoreError("Key name must be a non-empty string")
+                raise SecretStoreError("Key name must be a non - empty string")
 
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT encrypted_value FROM secrets WHERE key_name = ?",
-                    (key_name,),
-                )
+                        (key_name,),
+                        )
                 row = cursor.fetchone()
 
             if row is None:
@@ -254,6 +260,7 @@ class SecretStore:
         except Exception as e:
             self.logger.error(f"Failed to retrieve secret {key_name}: {str(e)}")
             raise SecretStoreError(f"Failed to retrieve secret: {str(e)}")
+
 
     def delete_secret(self, key_name: str) -> bool:
         """
@@ -277,7 +284,7 @@ class SecretStore:
 
         try:
             if not key_name or not isinstance(key_name, str):
-                raise SecretStoreError("Key name must be a non-empty string")
+                raise SecretStoreError("Key name must be a non - empty string")
 
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
@@ -298,6 +305,7 @@ class SecretStore:
             self.logger.error(f"Failed to delete secret {key_name}: {str(e)}")
             raise SecretStoreError(f"Failed to delete secret: {str(e)}")
 
+
     def list_secrets(self) -> List[Dict[str, str]]:
         """
         List all stored secrets (metadata only, not values).
@@ -315,8 +323,8 @@ class SecretStore:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute(
                     """
-                    SELECT key_name, created_at, updated_at 
-                    FROM secrets 
+                    SELECT key_name, created_at, updated_at
+                    FROM secrets
                     ORDER BY key_name
                 """
                 )
@@ -329,6 +337,7 @@ class SecretStore:
         except Exception as e:
             self.logger.error(f"Failed to list secrets: {str(e)}")
             raise SecretStoreError(f"Failed to list secrets: {str(e)}")
+
 
     def secret_exists(self, key_name: str) -> bool:
         """
@@ -358,6 +367,7 @@ class SecretStore:
             self.logger.error(f"Failed to check secret existence {key_name}: {str(e)}")
             return False
 
+
     def backup_secrets(self, backup_path: str) -> bool:
         """
         Create a backup of the secrets database.
@@ -372,7 +382,7 @@ class SecretStore:
             import shutil
 
             backup_path = Path(backup_path)
-            backup_path.parent.mkdir(parents=True, exist_ok=True)
+            backup_path.parent.mkdir(parents = True, exist_ok = True)
 
             # Copy database file
             shutil.copy2(self.db_path, backup_path)
@@ -390,15 +400,16 @@ class SecretStore:
             self.logger.error(f"Failed to backup secrets: {str(e)}")
             return False
 
+
     def __enter__(self):
         """Context manager entry"""
         return self
+
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit"""
         # Cleanup if needed
         pass
-
 
 if __name__ == "__main__":
     # Example usage and testing
@@ -414,8 +425,8 @@ if __name__ == "__main__":
         # Test the SecretStore
         with SecretStore(db_path) as store:
             # Store some test secrets
-            store.store_secret("api_key", "sk-1234567890abcdef")
-            store.store_secret("database_url", "postgresql://user:pass@localhost/db")
+            store.store_secret("api_key", "sk - 1234567890abcdef")
+            store.store_secret("database_url", "postgresql://user:pass@localhost / db")
 
             # Retrieve secrets
             api_key = store.get_secret("api_key")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Video Engine - Comprehensive Video Generation and Processing System
 
@@ -8,7 +8,7 @@ creation tools and provides a consistent API for video operations.
 
 Features:
 - Video generation from scripts and audio
-- Avatar-based video creation
+- Avatar - based video creation
 - Basic video composition
 - Video processing and effects
 - Batch video generation
@@ -50,8 +50,9 @@ class VideoQuality(Enum):
     HIGH = "high"
     ULTRA = "ultra"
 
-
 @dataclass
+
+
 class VideoGenerationRequest:
     """Video generation request parameters"""
 
@@ -65,8 +66,9 @@ class VideoGenerationRequest:
     output_path: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
 
-
 @dataclass
+
+
 class VideoGenerationResult:
     """Video generation result"""
 
@@ -83,18 +85,19 @@ class VideoGenerationResult:
 class VideoEngine:
     """Main video engine for video generation and processing"""
 
+
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
 
         # Default configuration
-        self.output_dir = Path(self.config.get("output_dir", "output/videos"))
-        self.temp_dir = Path(self.config.get("temp_dir", "temp/video"))
+        self.output_dir = Path(self.config.get("output_dir", "output / videos"))
+        self.temp_dir = Path(self.config.get("temp_dir", "temp / video"))
         self.ffmpeg_path = self.config.get("ffmpeg_path", "ffmpeg")
 
         # Create directories
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir.mkdir(parents = True, exist_ok = True)
+        self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Check ffmpeg availability
         self.ffmpeg_available = self._check_ffmpeg()
@@ -103,19 +106,21 @@ class VideoEngine:
             f"Video engine initialized. FFmpeg available: {self.ffmpeg_available}"
         )
 
+
     def _check_ffmpeg(self) -> bool:
         """Check if ffmpeg is available"""
         try:
             result = subprocess.run(
                 [self.ffmpeg_path, "-version"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+                    capture_output = True,
+                    text = True,
+                    timeout = 10,
+                    )
             return result.returncode == 0
         except Exception as e:
             self.logger.warning(f"FFmpeg not available: {e}")
             return False
+
 
     async def generate_video(
         self, request: VideoGenerationRequest
@@ -158,10 +163,11 @@ class VideoEngine:
         except Exception as e:
             self.logger.error(f"Error generating video: {e}")
             return VideoGenerationResult(
-                success=False,
-                error_message=str(e),
-                generation_time=(datetime.now() - start_time).total_seconds(),
-            )
+                success = False,
+                    error_message = str(e),
+                    generation_time=(datetime.now() - start_time).total_seconds(),
+                    )
+
 
     async def _generate_video_with_audio(
         self, request: VideoGenerationRequest, output_path: Path
@@ -170,9 +176,9 @@ class VideoEngine:
         try:
             if not self.ffmpeg_available:
                 return VideoGenerationResult(
-                    success=False,
-                    error_message="FFmpeg not available for video generation",
-                )
+                    success = False,
+                        error_message="FFmpeg not available for video generation",
+                        )
 
             # Create background image if not provided
             background_path = request.background_image
@@ -180,53 +186,54 @@ class VideoEngine:
                 background_path = await self._create_default_background(request.title)
 
             # Build ffmpeg command
-            cmd = [
+                cmd = [
                 self.ffmpeg_path,
-                "-loop",
-                "1",
-                "-i",
-                background_path,
-                "-i",
-                request.audio_path,
-                "-c:v",
-                "libx264",
-                "-c:a",
-                "aac",
-                "-shortest",
-                "-pix_fmt",
-                "yuv420p",
-                "-y",  # Overwrite output file
+                    "-loop",
+                    "1",
+                    "-i",
+                    background_path,
+                    "-i",
+                    request.audio_path,
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
+                    "-shortest",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-y",  # Overwrite output file
                 str(output_path),
-            ]
+                    ]
 
             # Execute ffmpeg command
-            result = subprocess.run(
-                cmd, capture_output=True, text=True, timeout=300  # 5 minute timeout
+                result = subprocess.run(
+                cmd, capture_output = True, text = True, timeout = 300  # 5 minute timeout
             )
 
             if result.returncode == 0 and output_path.exists():
                 file_size = output_path.stat().st_size
                 return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=file_size,
-                    format=request.format.value,
-                    metadata={"method": "audio_video", "background": background_path},
-                )
+                    success = True,
+                        video_path = str(output_path),
+                        file_size = file_size,
+                        format = request.format.value,
+                        metadata={"method": "audio_video", "background": background_path},
+                        )
             else:
                 return VideoGenerationResult(
-                    success=False, error_message=f"FFmpeg failed: {result.stderr}"
+                    success = False, error_message = f"FFmpeg failed: {result.stderr}"
                 )
 
         except Exception as e:
             return VideoGenerationResult(
-                success=False, error_message=f"Audio video generation failed: {str(e)}"
+                success = False, error_message = f"Audio video generation failed: {str(e)}"
             )
+
 
     async def _generate_video_from_script(
         self, request: VideoGenerationRequest, output_path: Path
     ) -> VideoGenerationResult:
-        """Generate video from script (text-to-speech + video)"""
+        """Generate video from script (text - to - speech + video)"""
         try:
             # For now, create a basic video with script as subtitle
             # In a full implementation, this would include TTS generation
@@ -241,59 +248,60 @@ class VideoEngine:
                     output_path, request.title, request.script
                 )
                 return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=output_path.stat().st_size if output_path.exists() else 0,
-                    format=request.format.value,
-                    metadata={
+                    success = True,
+                        video_path = str(output_path),
+                        file_size = output_path.stat().st_size if output_path.exists() else 0,
+                        format = request.format.value,
+                        metadata={
                         "method": "placeholder",
-                        "script_length": len(request.script or ""),
-                    },
-                )
+                            "script_length": len(request.script or ""),
+                            },
+                        )
 
             # Create video with text overlay
             cmd = [
                 self.ffmpeg_path,
-                "-loop",
-                "1",
-                "-i",
-                background_path,
-                "-vf",
-                f"drawtext=text='{request.title}':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2",
-                "-t",
-                str(request.duration),
-                "-c:v",
-                "libx264",
-                "-pix_fmt",
-                "yuv420p",
-                "-y",
-                str(output_path),
-            ]
+                    "-loop",
+                    "1",
+                    "-i",
+                    background_path,
+                    "-vf",
+                    f"drawtext = text='{request.title}':fontcolor = white:fontsize = 24:x=(w - text_w)/2:y=(h - text_h)/2",
+                    "-t",
+                    str(request.duration),
+                    "-c:v",
+                    "libx264",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-y",
+                    str(output_path),
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 120)
 
             if result.returncode == 0 and output_path.exists():
                 file_size = output_path.stat().st_size
                 return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=file_size,
-                    format=request.format.value,
-                    metadata={
+                    success = True,
+                        video_path = str(output_path),
+                        file_size = file_size,
+                        format = request.format.value,
+                        metadata={
                         "method": "script_video",
-                        "script_length": len(request.script or ""),
-                    },
-                )
+                            "script_length": len(request.script or ""),
+                            },
+                        )
             else:
                 return VideoGenerationResult(
-                    success=False,
-                    error_message=f"Script video generation failed: {result.stderr}",
-                )
+                    success = False,
+                        error_message = f"Script video generation failed: {result.stderr}",
+                        )
 
         except Exception as e:
             return VideoGenerationResult(
-                success=False, error_message=f"Script video generation failed: {str(e)}"
+                success = False, error_message = f"Script video generation failed: {str(e)}"
             )
+
 
     async def _generate_basic_video(
         self, request: VideoGenerationRequest, output_path: Path
@@ -308,51 +316,52 @@ class VideoEngine:
                 # Create placeholder file
                 await self._create_placeholder_video(output_path, request.title)
                 return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=output_path.stat().st_size if output_path.exists() else 0,
-                    format=request.format.value,
-                    metadata={"method": "placeholder"},
-                )
+                    success = True,
+                        video_path = str(output_path),
+                        file_size = output_path.stat().st_size if output_path.exists() else 0,
+                        format = request.format.value,
+                        metadata={"method": "placeholder"},
+                        )
 
             # Create basic video
             cmd = [
                 self.ffmpeg_path,
-                "-loop",
-                "1",
-                "-i",
-                background_path,
-                "-t",
-                str(request.duration),
-                "-c:v",
-                "libx264",
-                "-pix_fmt",
-                "yuv420p",
-                "-y",
-                str(output_path),
-            ]
+                    "-loop",
+                    "1",
+                    "-i",
+                    background_path,
+                    "-t",
+                    str(request.duration),
+                    "-c:v",
+                    "libx264",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-y",
+                    str(output_path),
+                    ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 60)
 
             if result.returncode == 0 and output_path.exists():
                 file_size = output_path.stat().st_size
                 return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=file_size,
-                    format=request.format.value,
-                    metadata={"method": "basic_video"},
-                )
+                    success = True,
+                        video_path = str(output_path),
+                        file_size = file_size,
+                        format = request.format.value,
+                        metadata={"method": "basic_video"},
+                        )
             else:
                 return VideoGenerationResult(
-                    success=False,
-                    error_message=f"Basic video generation failed: {result.stderr}",
-                )
+                    success = False,
+                        error_message = f"Basic video generation failed: {result.stderr}",
+                        )
 
         except Exception as e:
             return VideoGenerationResult(
-                success=False, error_message=f"Basic video generation failed: {str(e)}"
+                success = False, error_message = f"Basic video generation failed: {str(e)}"
             )
+
 
     async def _create_default_background(self, title: str) -> str:
         """Create a default background image"""
@@ -364,17 +373,17 @@ class VideoEngine:
                 # Create background using ffmpeg
                 cmd = [
                     self.ffmpeg_path,
-                    "-f",
-                    "lavfi",
-                    "-i",
-                    "color=c=blue:size=1280x720:duration=1",
-                    "-frames:v",
-                    "1",
-                    "-y",
-                    str(background_path),
-                ]
+                        "-f",
+                        "lavfi",
+                        "-i",
+                        "color = c=blue:size = 1280x720:duration = 1",
+                        "-frames:v",
+                        "1",
+                        "-y",
+                        str(background_path),
+                        ]
 
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+                result = subprocess.run(cmd, capture_output = True, text = True, timeout = 30)
 
                 if result.returncode == 0 and background_path.exists():
                     return str(background_path)
@@ -388,13 +397,14 @@ class VideoEngine:
             # Return a placeholder path
             return str(self.temp_dir / "placeholder_bg.png")
 
+
     async def _create_placeholder_video(
         self, output_path: Path, title: str, script: Optional[str] = None
     ) -> None:
         """Create a placeholder video file"""
         try:
             # Create a minimal MP4 file as placeholder
-            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.parent.mkdir(parents = True, exist_ok = True)
 
             # Write minimal video file content
             with open(output_path, "wb") as f:
@@ -406,6 +416,7 @@ class VideoEngine:
 
         except Exception as e:
             self.logger.error(f"Failed to create placeholder video: {e}")
+
 
     async def batch_generate_videos(
         self, requests: List[VideoGenerationRequest]
@@ -423,6 +434,7 @@ class VideoEngine:
 
         return results
 
+
     def get_video_info(self, video_path: str) -> Dict[str, Any]:
         """Get information about a video file"""
         try:
@@ -433,27 +445,27 @@ class VideoEngine:
 
             info = {
                 "path": video_path,
-                "size": file_size,
-                "size_mb": round(file_size / (1024 * 1024), 2),
-                "exists": True,
-            }
+                    "size": file_size,
+                    "size_mb": round(file_size / (1024 * 1024), 2),
+                    "exists": True,
+                    }
 
             if self.ffmpeg_available:
                 try:
                     # Get video metadata using ffprobe
                     cmd = [
                         "ffprobe",
-                        "-v",
-                        "quiet",
-                        "-print_format",
-                        "json",
-                        "-show_format",
-                        "-show_streams",
-                        video_path,
-                    ]
+                            "-v",
+                            "quiet",
+                            "-print_format",
+                            "json",
+                            "-show_format",
+                            "-show_streams",
+                            video_path,
+                            ]
 
                     result = subprocess.run(
-                        cmd, capture_output=True, text=True, timeout=30
+                        cmd, capture_output = True, text = True, timeout = 30
                     )
 
                     if result.returncode == 0:
@@ -487,6 +499,7 @@ class VideoEngine:
         except Exception as e:
             return {"error": str(e)}
 
+
     def cleanup_temp_files(self) -> None:
         """Clean up temporary files"""
         try:
@@ -494,38 +507,40 @@ class VideoEngine:
 
             if self.temp_dir.exists():
                 shutil.rmtree(self.temp_dir)
-                self.temp_dir.mkdir(parents=True, exist_ok=True)
+                self.temp_dir.mkdir(parents = True, exist_ok = True)
                 self.logger.info("Temporary files cleaned up")
         except Exception as e:
             self.logger.warning(f"Failed to cleanup temp files: {e}")
+
 
     def get_engine_status(self) -> Dict[str, Any]:
         """Get engine status and capabilities"""
         return {
             "engine_version": "1.0.0",
-            "ffmpeg_available": self.ffmpeg_available,
-            "output_dir": str(self.output_dir),
-            "temp_dir": str(self.temp_dir),
-            "supported_formats": [f.value for f in VideoFormat],
-            "quality_presets": [q.value for q in VideoQuality],
-            "capabilities": {
+                "ffmpeg_available": self.ffmpeg_available,
+                "output_dir": str(self.output_dir),
+                "temp_dir": str(self.temp_dir),
+                "supported_formats": [f.value for f in VideoFormat],
+                "quality_presets": [q.value for q in VideoQuality],
+                "capabilities": {
                 "audio_video_generation": self.ffmpeg_available,
-                "script_to_video": True,
-                "basic_video_generation": True,
-                "batch_processing": True,
-                "video_info_extraction": self.ffmpeg_available,
-            },
-        }
-
+                    "script_to_video": True,
+                    "basic_video_generation": True,
+                    "batch_processing": True,
+                    "video_info_extraction": self.ffmpeg_available,
+                    },
+                }
 
 # Convenience functions for backward compatibility
+
+
 async def generate_video(
     title: str, script: Optional[str] = None, audio_path: Optional[str] = None, **kwargs
 ) -> VideoGenerationResult:
     """Generate a video with simplified interface"""
     engine = VideoEngine()
     request = VideoGenerationRequest(
-        title=title, script=script, audio_path=audio_path, **kwargs
+        title = title, script = script, audio_path = audio_path, **kwargs
     )
     return await engine.generate_video(request)
 
@@ -534,14 +549,13 @@ def create_video_engine(config: Optional[Dict] = None) -> VideoEngine:
     """Create and return a video engine instance"""
     return VideoEngine(config)
 
-
 # Export main classes and functions
 __all__ = [
     "VideoEngine",
-    "VideoGenerationRequest",
-    "VideoGenerationResult",
-    "VideoFormat",
-    "VideoQuality",
-    "generate_video",
-    "create_video_engine",
+        "VideoGenerationRequest",
+        "VideoGenerationResult",
+        "VideoFormat",
+        "VideoQuality",
+        "generate_video",
+        "create_video_engine",
 ]

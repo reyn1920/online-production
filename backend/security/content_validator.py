@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Production Content Validation System
-Implements comprehensive input validation and sanitization for go-live security
+Implements comprehensive input validation and sanitization for go - live security
 """
 
 import hashlib
@@ -32,55 +32,56 @@ class ValidationResult(BaseModel):
     sanitized_content: Optional[str] = None
     errors: List[str] = []
     warnings: List[str] = []
-    risk_score: int = 0  # 0-100, higher is more risky
+    risk_score: int = 0  # 0 - 100, higher is more risky
     timestamp: datetime = datetime.utcnow()
 
 
 class ProductionContentValidator:
     """Comprehensive content validation for production environment"""
 
+
     def __init__(self):
         # Allowed HTML tags and attributes for rich content
         self.allowed_tags = [
             "p",
-            "br",
-            "strong",
-            "em",
-            "u",
-            "ol",
-            "ul",
-            "li",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "blockquote",
-            "code",
-            "pre",
-            "a",
-            "img",
-        ]
+                "br",
+                "strong",
+                "em",
+                "u",
+                "ol",
+                "ul",
+                "li",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "blockquote",
+                "code",
+                "pre",
+                "a",
+                "img",
+                ]
 
         self.allowed_attributes = {
             "a": ["href", "title"],
-            "img": ["src", "alt", "title", "width", "height"],
-            "*": ["class"],
-        }
+                "img": ["src", "alt", "title", "width", "height"],
+                "*": ["class"],
+                }
 
         # CSS sanitizer for safe styling
         self.css_sanitizer = CSSSanitizer(
             allowed_css_properties=[
                 "color",
-                "background-color",
-                "font-size",
-                "font-weight",
-                "text-align",
-                "margin",
-                "padding",
-                "border",
-            ]
+                    "background - color",
+                    "font - size",
+                    "font - weight",
+                    "text - align",
+                    "margin",
+                    "padding",
+                    "border",
+                    ]
         )
 
         # Dangerous patterns to detect
@@ -88,7 +89,7 @@ class ProductionContentValidator:
             r"<script[^>]*>.*?</script>",  # Script tags
             r"javascript:",  # JavaScript URLs
             r"on\w+\s*=",  # Event handlers
-            r"data:text/html",  # Data URLs with HTML
+            r"data:text / html",  # Data URLs with HTML
             r"vbscript:",  # VBScript URLs
             r"<iframe[^>]*>.*?</iframe>",  # Iframe tags
             r"<object[^>]*>.*?</object>",  # Object tags
@@ -98,26 +99,27 @@ class ProductionContentValidator:
         # SQL injection patterns
         self.sql_patterns = [
             r"('|(\-\-)|(;)|(\||\|)|(\*|\*))",
-            r"(union|select|insert|delete|update|drop|create|alter|exec|execute)",
-            r"(script|javascript|vbscript|onload|onerror|onclick)",
-        ]
+                r"(union|select|insert|delete|update|drop|create|alter|exec|execute)",
+                r"(script|javascript|vbscript|onload|onerror|onclick)",
+                ]
 
         # Maximum content lengths
         self.max_lengths = {
             "title": 200,
-            "description": 1000,
-            "content": 50000,
-            "comment": 2000,
-            "username": 50,
-            "email": 254,
-            "url": 2048,
-        }
+                "description": 1000,
+                "content": 50000,
+                "comment": 2000,
+                "username": 50,
+                "email": 254,
+                "url": 2048,
+                }
+
 
     def validate_text_input(
         self, content: str, content_type: str = "general"
     ) -> ValidationResult:
         """Validate and sanitize text input"""
-        result = ValidationResult(is_valid=True)
+        result = ValidationResult(is_valid = True)
 
         if not content or not isinstance(content, str):
             result.is_valid = False
@@ -173,9 +175,10 @@ class ProductionContentValidator:
 
         return result
 
+
     def validate_html_content(self, content: str) -> ValidationResult:
         """Validate and sanitize HTML content"""
-        result = ValidationResult(is_valid=True)
+        result = ValidationResult(is_valid = True)
 
         if not content or not isinstance(content, str):
             result.is_valid = False
@@ -186,11 +189,11 @@ class ProductionContentValidator:
             # Use bleach to sanitize HTML
             sanitized = bleach.clean(
                 content,
-                tags=self.allowed_tags,
-                attributes=self.allowed_attributes,
-                css_sanitizer=self.css_sanitizer,
-                strip=True,
-            )
+                    tags = self.allowed_tags,
+                    attributes = self.allowed_attributes,
+                    css_sanitizer = self.css_sanitizer,
+                    strip = True,
+                    )
 
             # Check if content was modified (indicates potentially dangerous content)
             if sanitized != content:
@@ -215,9 +218,10 @@ class ProductionContentValidator:
 
         return result
 
+
     def validate_json_input(self, content: Union[str, dict]) -> ValidationResult:
         """Validate JSON input"""
-        result = ValidationResult(is_valid=True)
+        result = ValidationResult(is_valid = True)
 
         try:
             if isinstance(content, str):
@@ -227,6 +231,7 @@ class ProductionContentValidator:
 
             # Check for dangerous keys or values
             dangerous_keys = ["__proto__", "constructor", "prototype"]
+
 
             def check_dangerous_content(obj, path=""):
                 if isinstance(obj, dict):
@@ -258,7 +263,7 @@ class ProductionContentValidator:
             check_dangerous_content(parsed_json)
 
             # Serialize back to ensure it's valid JSON
-            result.sanitized_content = json.dumps(parsed_json, ensure_ascii=False)
+            result.sanitized_content = json.dumps(parsed_json, ensure_ascii = False)
 
         except json.JSONDecodeError as e:
             result.is_valid = False
@@ -271,39 +276,40 @@ class ProductionContentValidator:
 
         return result
 
+
     def validate_file_upload(
         self, filename: str, content_type: str, file_size: int
     ) -> ValidationResult:
         """Validate file upload parameters"""
-        result = ValidationResult(is_valid=True)
+        result = ValidationResult(is_valid = True)
 
         # Allowed file types
         allowed_types = {
-            "image/jpeg",
-            "image/png",
-            "image/gif",
-            "image/webp",
-            "text/plain",
-            "text/csv",
-            "application/pdf",
-            "application/json",
-        }
+            "image / jpeg",
+                "image / png",
+                "image / gif",
+                "image / webp",
+                "text / plain",
+                "text / csv",
+                "application / pdf",
+                "application / json",
+                }
 
         # Dangerous file extensions
         dangerous_extensions = {
             ".exe",
-            ".bat",
-            ".cmd",
-            ".com",
-            ".pif",
-            ".scr",
-            ".js",
-            ".jar",
-            ".php",
-            ".asp",
-            ".aspx",
-            ".jsp",
-        }
+                ".bat",
+                ".cmd",
+                ".com",
+                ".pif",
+                ".scr",
+                ".js",
+                ".jar",
+                ".php",
+                ".asp",
+                ".aspx",
+                ".jsp",
+                }
 
         # Check file extension
         file_ext = "." + filename.split(".")[-1].lower() if "." in filename else ""
@@ -326,14 +332,16 @@ class ProductionContentValidator:
             result.risk_score += 40
 
         # Generate safe filename
-        safe_filename = re.sub(r"[^a-zA-Z0-9._-]", "_", filename)
+        safe_filename = re.sub(r"[^a - zA - Z0 - 9._-]", "_", filename)
         result.sanitized_content = safe_filename
 
         return result
 
+
     def create_content_hash(self, content: str) -> str:
         """Create a hash of content for integrity checking"""
-        return hashlib.sha256(content.encode("utf-8")).hexdigest()
+        return hashlib.sha256(content.encode("utf - 8")).hexdigest()
+
 
     def validate_batch_content(
         self, content_items: List[Dict[str, Any]]
@@ -355,12 +363,12 @@ class ProductionContentValidator:
 
         return results
 
-
 # Global validator instance
 content_validator = ProductionContentValidator()
 
-
 # Convenience functions for common validation tasks
+
+
 def validate_user_input(
     content: str, content_type: str = "general"
 ) -> ValidationResult:

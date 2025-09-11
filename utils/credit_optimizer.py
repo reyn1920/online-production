@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Credit Optimizer - Intelligent credit usage optimization
 Optimizes API calls to minimize credit consumption while maintaining quality
@@ -12,8 +12,9 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
-
 @dataclass
+
+
 class CreditUsagePattern:
     """Credit usage pattern analysis"""
 
@@ -21,11 +22,12 @@ class CreditUsagePattern:
     avg_credits_per_request: float
     success_rate: float
     avg_response_time: float
-    cost_efficiency: float  # Quality/cost ratio
+    cost_efficiency: float  # Quality / cost ratio
     last_updated: datetime
 
-
 @dataclass
+
+
 class OptimizationRecommendation:
     """Credit optimization recommendation"""
 
@@ -39,6 +41,7 @@ class OptimizationRecommendation:
 class CreditOptimizer:
     """Intelligent credit usage optimizer"""
 
+
     def __init__(self, config_path: str = None):
         """Initialize the credit optimizer"""
         self.logger = logging.getLogger(__name__)
@@ -49,56 +52,58 @@ class CreditOptimizer:
         # Optimization settings
         self.optimization_config = {
             "min_samples_for_optimization": 5,
-            "cost_weight": 0.4,
-            "quality_weight": 0.3,
-            "speed_weight": 0.3,
-            "pattern_decay_hours": 24,
-            "confidence_threshold": 0.7,
-        }
+                "cost_weight": 0.4,
+                "quality_weight": 0.3,
+                "speed_weight": 0.3,
+                "pattern_decay_hours": 24,
+                "confidence_threshold": 0.7,
+                }
 
         # Model cost estimates (credits per 1k tokens)
         self.model_costs = {
-            "gpt-4": 0.03,
-            "gpt-3.5-turbo": 0.002,
-            "claude-3-opus": 0.015,
-            "claude-3-sonnet": 0.003,
-            "claude-3-haiku": 0.00025,
-            "gemini-pro": 0.001,
-            "llama-2-70b": 0.0007,
-            "mixtral-8x7b": 0.0006,
-        }
+            "gpt - 4": 0.03,
+                "gpt - 3.5 - turbo": 0.002,
+                "claude - 3-opus": 0.015,
+                "claude - 3-sonnet": 0.003,
+                "claude - 3-haiku": 0.00025,
+                "gemini - pro": 0.001,
+                "llama - 2-70b": 0.0007,
+                "mixtral - 8x7b": 0.0006,
+                }
 
-        # Quality scores (subjective, 0-1)
+        # Quality scores (subjective, 0 - 1)
         self.model_quality = {
-            "gpt-4": 0.95,
-            "claude-3-opus": 0.93,
-            "gpt-3.5-turbo": 0.85,
-            "claude-3-sonnet": 0.88,
-            "gemini-pro": 0.82,
-            "mixtral-8x7b": 0.80,
-            "llama-2-70b": 0.78,
-            "claude-3-haiku": 0.75,
-        }
+            "gpt - 4": 0.95,
+                "claude - 3-opus": 0.93,
+                "gpt - 3.5 - turbo": 0.85,
+                "claude - 3-sonnet": 0.88,
+                "gemini - pro": 0.82,
+                "mixtral - 8x7b": 0.80,
+                "llama - 2-70b": 0.78,
+                "claude - 3-haiku": 0.75,
+                }
 
         # Speed estimates (requests per minute)
         self.model_speed = {
-            "claude-3-haiku": 60,
-            "gpt-3.5-turbo": 50,
-            "gemini-pro": 45,
-            "mixtral-8x7b": 40,
-            "llama-2-70b": 35,
-            "claude-3-sonnet": 30,
-            "gpt-4": 20,
-            "claude-3-opus": 15,
-        }
+            "claude - 3-haiku": 60,
+                "gpt - 3.5 - turbo": 50,
+                "gemini - pro": 45,
+                "mixtral - 8x7b": 40,
+                "llama - 2-70b": 35,
+                "claude - 3-sonnet": 30,
+                "gpt - 4": 20,
+                "claude - 3-opus": 15,
+                }
 
         self.logger.info("Credit optimizer initialized")
+
 
     def estimate_token_count(self, messages: List[Dict]) -> int:
         """Estimate token count for messages"""
         # Simple estimation: ~4 characters per token
         total_chars = sum(len(str(msg.get("content", ""))) for msg in messages)
         return max(total_chars // 4, 10)  # Minimum 10 tokens
+
 
     def calculate_efficiency_score(self, model: str, estimated_tokens: int) -> float:
         """Calculate efficiency score for a model"""
@@ -119,13 +124,14 @@ class CreditOptimizer:
 
         return efficiency
 
+
     def get_model_recommendation(
         self,
-        messages: List[Dict],
-        task_type: str = "general",
-        budget_limit: float = None,
-        speed_priority: bool = False,
-    ) -> OptimizationRecommendation:
+            messages: List[Dict],
+            task_type: str = "general",
+            budget_limit: float = None,
+            speed_priority: bool = False,
+            ) -> OptimizationRecommendation:
         """
         Get optimized model recommendation
 
@@ -140,14 +146,14 @@ class CreditOptimizer:
         """
         estimated_tokens = self.estimate_token_count(messages)
 
-        # Task-specific model preferences
+        # Task - specific model preferences
         task_preferences = {
-            "creative": ["gpt-4", "claude-3-opus", "claude-3-sonnet"],
-            "analytical": ["claude-3-opus", "gpt-4", "claude-3-sonnet"],
-            "coding": ["gpt-4", "claude-3-sonnet", "gpt-3.5-turbo"],
-            "general": ["gpt-3.5-turbo", "claude-3-sonnet", "gemini-pro"],
-            "fast": ["claude-3-haiku", "gpt-3.5-turbo", "gemini-pro"],
-        }
+            "creative": ["gpt - 4", "claude - 3-opus", "claude - 3-sonnet"],
+                "analytical": ["claude - 3-opus", "gpt - 4", "claude - 3-sonnet"],
+                "coding": ["gpt - 4", "claude - 3-sonnet", "gpt - 3.5 - turbo"],
+                "general": ["gpt - 3.5 - turbo", "claude - 3-sonnet", "gemini - pro"],
+                "fast": ["claude - 3-haiku", "gpt - 3.5 - turbo", "gemini - pro"],
+                }
 
         if speed_priority:
             task_type = "fast"
@@ -177,29 +183,29 @@ class CreditOptimizer:
             model_scores.append(
                 {
                     "model": model,
-                    "efficiency": efficiency,
-                    "estimated_cost": estimated_cost,
-                    "estimated_tokens": estimated_tokens,
-                }
+                        "efficiency": efficiency,
+                        "estimated_cost": estimated_cost,
+                        "estimated_tokens": estimated_tokens,
+                        }
             )
 
         # Sort by efficiency score
-        model_scores.sort(key=lambda x: x["efficiency"], reverse=True)
+        model_scores.sort(key = lambda x: x["efficiency"], reverse = True)
 
         if not model_scores:
             # Fallback to cheapest model
-            fallback_model = "claude-3-haiku"
+            fallback_model = "claude - 3-haiku"
             estimated_cost = (estimated_tokens / 1000) * self.model_costs[
                 fallback_model
             ]
 
             return OptimizationRecommendation(
-                recommended_model=fallback_model,
-                estimated_credits=estimated_cost,
-                confidence_score=0.3,
-                reasoning="Fallback to most cost-effective model",
-                fallback_options=["gpt-3.5-turbo", "gemini-pro"],
-            )
+                recommended_model = fallback_model,
+                    estimated_credits = estimated_cost,
+                    confidence_score = 0.3,
+                    reasoning="Fallback to most cost - effective model",
+                    fallback_options=["gpt - 3.5 - turbo", "gemini - pro"],
+                    )
 
         best_model = model_scores[0]
         fallback_options = [score["model"] for score in model_scores[1:3]]
@@ -223,21 +229,22 @@ class CreditOptimizer:
         )
 
         return OptimizationRecommendation(
-            recommended_model=best_model["model"],
-            estimated_credits=best_model["estimated_cost"],
-            confidence_score=confidence,
-            reasoning=reasoning,
-            fallback_options=fallback_options,
-        )
+            recommended_model = best_model["model"],
+                estimated_credits = best_model["estimated_cost"],
+                confidence_score = confidence,
+                reasoning = reasoning,
+                fallback_options = fallback_options,
+                )
+
 
     def record_usage(
         self,
-        model: str,
-        actual_credits: float,
-        success: bool,
-        response_time: float,
-        quality_score: float = None,
-    ):
+            model: str,
+            actual_credits: float,
+            success: bool,
+            response_time: float,
+            quality_score: float = None,
+            ):
         """
         Record actual usage for pattern learning
 
@@ -246,20 +253,20 @@ class CreditOptimizer:
             actual_credits: Actual credits consumed
             success: Whether the request was successful
             response_time: Response time in seconds
-            quality_score: Optional quality assessment (0-1)
+            quality_score: Optional quality assessment (0 - 1)
         """
         now = datetime.now()
 
         if model not in self.usage_patterns:
             # Initialize new pattern
             self.usage_patterns[model] = CreditUsagePattern(
-                model=model,
-                avg_credits_per_request=actual_credits,
-                success_rate=1.0 if success else 0.0,
-                avg_response_time=response_time,
-                cost_efficiency=quality_score or self.model_quality.get(model, 0.5),
-                last_updated=now,
-            )
+                model = model,
+                    avg_credits_per_request = actual_credits,
+                    success_rate = 1.0 if success else 0.0,
+                    avg_response_time = response_time,
+                    cost_efficiency = quality_score or self.model_quality.get(model, 0.5),
+                    last_updated = now,
+                    )
         else:
             # Update existing pattern with exponential moving average
             pattern = self.usage_patterns[model]
@@ -288,12 +295,13 @@ class CreditOptimizer:
             f"Recorded usage for {model}: {actual_credits:.4f} credits, success: {success}"
         )
 
+
     def get_budget_recommendation(
         self,
-        available_credits: float,
-        expected_requests: int,
-        task_distribution: Dict[str, float] = None,
-    ) -> Dict:
+            available_credits: float,
+            expected_requests: int,
+            task_distribution: Dict[str, float] = None,
+            ) -> Dict:
         """
         Get budget allocation recommendations
 
@@ -329,21 +337,21 @@ class CreditOptimizer:
         # Budget recommendations
         recommendations = {
             "estimated_total_cost": total_estimated_cost,
-            "avg_cost_per_request": avg_cost_per_request,
-            "budget_utilization": min(total_estimated_cost / available_credits, 1.0),
-            "recommended_requests": int(available_credits / avg_cost_per_request),
-            "cost_breakdown": {
+                "avg_cost_per_request": avg_cost_per_request,
+                "budget_utilization": min(total_estimated_cost / available_credits, 1.0),
+                "recommended_requests": int(available_credits / avg_cost_per_request),
+                "cost_breakdown": {
                 task_type: {
                     "proportion": proportion,
-                    "estimated_requests": int(expected_requests * proportion),
-                    "cost_per_request": task_costs[task_type],
-                    "total_cost": task_costs[task_type]
+                        "estimated_requests": int(expected_requests * proportion),
+                        "cost_per_request": task_costs[task_type],
+                        "total_cost": task_costs[task_type]
                     * expected_requests
                     * proportion,
-                }
+                        }
                 for task_type, proportion in task_distribution.items()
             },
-        }
+                }
 
         # Add warnings
         if total_estimated_cost > available_credits:
@@ -356,27 +364,28 @@ class CreditOptimizer:
 
         return recommendations
 
+
     def get_optimization_analytics(self) -> Dict:
         """Get optimization analytics and insights"""
         analytics = {
             "tracked_models": len(self.usage_patterns),
-            "total_requests_tracked": sum(
+                "total_requests_tracked": sum(
                 1 for pattern in self.usage_patterns.values()
             ),
-            "model_performance": {},
-            "cost_insights": {},
-            "recommendations": [],
-        }
+                "model_performance": {},
+                "cost_insights": {},
+                "recommendations": [],
+                }
 
         # Analyze model performance
         for model, pattern in self.usage_patterns.items():
             analytics["model_performance"][model] = {
                 "avg_credits": pattern.avg_credits_per_request,
-                "success_rate": pattern.success_rate,
-                "avg_response_time": pattern.avg_response_time,
-                "cost_efficiency": pattern.cost_efficiency,
-                "last_used": pattern.last_updated.isoformat(),
-            }
+                    "success_rate": pattern.success_rate,
+                    "avg_response_time": pattern.avg_response_time,
+                    "cost_efficiency": pattern.cost_efficiency,
+                    "last_used": pattern.last_updated.isoformat(),
+                    }
 
         # Cost insights
         if self.usage_patterns:
@@ -386,20 +395,20 @@ class CreditOptimizer:
             avg_credits = total_credits / len(self.usage_patterns)
 
             most_efficient = max(
-                self.usage_patterns.items(), key=lambda x: x[1].cost_efficiency
+                self.usage_patterns.items(), key = lambda x: x[1].cost_efficiency
             )
 
             least_efficient = min(
-                self.usage_patterns.items(), key=lambda x: x[1].cost_efficiency
+                self.usage_patterns.items(), key = lambda x: x[1].cost_efficiency
             )
 
             analytics["cost_insights"] = {
                 "avg_credits_per_request": avg_credits,
-                "most_efficient_model": most_efficient[0],
-                "least_efficient_model": least_efficient[0],
-                "efficiency_gap": most_efficient[1].cost_efficiency
+                    "most_efficient_model": most_efficient[0],
+                    "least_efficient_model": least_efficient[0],
+                    "efficiency_gap": most_efficient[1].cost_efficiency
                 - least_efficient[1].cost_efficiency,
-            }
+                    }
 
         # Generate recommendations
         recommendations = []
@@ -422,7 +431,7 @@ class CreditOptimizer:
                 (model, pattern.cost_efficiency)
                 for model, pattern in self.usage_patterns.items()
             ]
-            efficiency_scores.sort(key=lambda x: x[1], reverse=True)
+            efficiency_scores.sort(key = lambda x: x[1], reverse = True)
 
             if len(efficiency_scores) >= 2:
                 best_model = efficiency_scores[0][0]
@@ -434,11 +443,12 @@ class CreditOptimizer:
 
         return analytics
 
+
     async def cleanup(self):
         """Cleanup optimizer resources"""
         # Clean up old patterns
         cutoff_time = datetime.now() - timedelta(
-            hours=self.optimization_config["pattern_decay_hours"]
+            hours = self.optimization_config["pattern_decay_hours"]
         )
 
         expired_models = [
@@ -454,9 +464,9 @@ class CreditOptimizer:
             f"Credit optimizer cleanup completed, removed {len(expired_models)} expired patterns"
         )
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_credit_optimizer():
         print("🔧 Credit Optimizer Test")
@@ -468,8 +478,8 @@ if __name__ == "__main__":
         messages = [
             {
                 "role": "user",
-                "content": "Write a creative story about a robot learning to paint",
-            }
+                    "content": "Write a creative story about a robot learning to paint",
+                    }
         ]
 
         recommendation = optimizer.get_model_recommendation(
@@ -482,32 +492,32 @@ if __name__ == "__main__":
         print(f"   Reasoning: {recommendation.reasoning}")
         print(f"   Fallbacks: {recommendation.fallback_options}")
 
-        # Test 2: Budget-constrained recommendation
+        # Test 2: Budget - constrained recommendation
         budget_rec = optimizer.get_model_recommendation(
-            messages, task_type="general", budget_limit=0.005
+            messages, task_type="general", budget_limit = 0.005
         )
-        print(f"\n💰 Budget-Constrained Recommendation:")
+        print(f"\n💰 Budget - Constrained Recommendation:")
         print(f"   Model: {budget_rec.recommended_model}")
         print(f"   Estimated credits: {budget_rec.estimated_credits:.4f}")
         print(f"   Within budget: {budget_rec.estimated_credits <= 0.005}")
 
         # Test 3: Speed priority
-        speed_rec = optimizer.get_model_recommendation(messages, speed_priority=True)
+        speed_rec = optimizer.get_model_recommendation(messages, speed_priority = True)
         print(f"\n⚡ Speed Priority Recommendation:")
         print(f"   Model: {speed_rec.recommended_model}")
         print(f"   Estimated credits: {speed_rec.estimated_credits:.4f}")
 
         # Test 4: Record some usage patterns
-        optimizer.record_usage("gpt-3.5-turbo", 0.002, True, 1.5, 0.85)
-        optimizer.record_usage("claude-3-sonnet", 0.003, True, 2.1, 0.90)
-        optimizer.record_usage("gpt-4", 0.025, False, 5.0, 0.0)  # Failed request
+        optimizer.record_usage("gpt - 3.5 - turbo", 0.002, True, 1.5, 0.85)
+        optimizer.record_usage("claude - 3-sonnet", 0.003, True, 2.1, 0.90)
+        optimizer.record_usage("gpt - 4", 0.025, False, 5.0, 0.0)  # Failed request
 
         # Test 5: Budget analysis
         budget_analysis = optimizer.get_budget_recommendation(
-            available_credits=1.0,
-            expected_requests=100,
-            task_distribution={"general": 0.6, "creative": 0.3, "analytical": 0.1},
-        )
+            available_credits = 1.0,
+                expected_requests = 100,
+                task_distribution={"general": 0.6, "creative": 0.3, "analytical": 0.1},
+                )
 
         print(f"\n📈 Budget Analysis:")
         print(f"   Estimated total cost: {budget_analysis['estimated_total_cost']:.4f}")

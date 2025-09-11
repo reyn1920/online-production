@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Opportunity Finder - Research Agent for API Discovery
 
@@ -25,7 +25,7 @@ from urllib.parse import urljoin, urlparse
 import aiohttp
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -43,8 +43,9 @@ class SuggestionStatus(Enum):
     REJECTED = "rejected"
     INTEGRATED = "integrated"
 
-
 @dataclass
+
+
 class APIDiscoveryTask:
     """Represents a task for discovering APIs in a specific domain"""
 
@@ -61,8 +62,9 @@ class APIDiscoveryTask:
     created_at: Optional[str]
     completed_at: Optional[str]
 
-
 @dataclass
+
+
 class APISuggestion:
     """Represents a discovered API suggestion"""
 
@@ -75,15 +77,16 @@ class APISuggestion:
     documentation_url: Optional[str]
     pricing_model: Optional[str]
     estimated_cost: Optional[float]
-    integration_complexity: int  # 1-10 scale
-    potential_value: int  # 1-10 scale
-    confidence_score: float  # 0-1 scale
+    integration_complexity: int  # 1 - 10 scale
+    potential_value: int  # 1 - 10 scale
+    confidence_score: float  # 0 - 1 scale
     status: str
     review_notes: Optional[str]
     discovered_at: Optional[str]
 
-
 @dataclass
+
+
 class ResearchContext:
     """Context for research agent operations"""
 
@@ -98,15 +101,17 @@ class ResearchContext:
 class APIOpportunityFinder:
     """Research Agent for discovering and evaluating new API opportunities"""
 
+
     def __init__(
         self,
-        db_path: str = "right_perspective.db",
-        ollama_url: str = "http://localhost:11434",
-    ):
+            db_path: str = "right_perspective.db",
+            ollama_url: str = "http://localhost:11434",
+            ):
         self.db_path = db_path
         self.ollama_url = ollama_url
         self.session = None
         self._init_database()
+
 
     def _init_database(self):
         """Initialize database connection and ensure tables exist"""
@@ -115,27 +120,30 @@ class APIOpportunityFinder:
             # Add indexes for better performance
             conn.execute(
                 """
-                CREATE INDEX IF NOT EXISTS idx_api_suggestions_status 
+                CREATE INDEX IF NOT EXISTS idx_api_suggestions_status
                 ON api_suggestions(status, confidence_score DESC)
             """
             )
             conn.execute(
                 """
-                CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_status 
+                CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_status
                 ON api_discovery_tasks(status, priority DESC)
             """
             )
             conn.commit()
+
 
     async def __aenter__(self):
         """Async context manager entry"""
         self.session = aiohttp.ClientSession()
         return self
 
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit"""
         if self.session:
             await self.session.close()
+
 
     def get_research_context(self) -> ResearchContext:
         """Analyze current API registry to understand capabilities and gaps"""
@@ -146,9 +154,9 @@ class APIOpportunityFinder:
             cursor = conn.execute(
                 """
                 SELECT DISTINCT capability, COUNT(*) as api_count,
-                       AVG(success_rate) as avg_success_rate,
-                       SUM(daily_usage_count) as total_usage
-                FROM api_registry 
+                    AVG(success_rate) as avg_success_rate,
+                           SUM(daily_usage_count) as total_usage
+                FROM api_registry
                 WHERE is_active = 1
                 GROUP BY capability
                 ORDER BY total_usage DESC
@@ -172,29 +180,30 @@ class APIOpportunityFinder:
                     capability_gaps.append(f"Poor reliability for {row['capability']}")
 
             return ResearchContext(
-                current_capabilities=current_capabilities,
-                capability_gaps=capability_gaps,
-                usage_patterns=usage_patterns,
-                budget_constraints=None,  # Could be configured
-                preferred_pricing_models=["freemium", "pay-per-use"],
-                integration_preferences={"auth_type": "api_key", "format": "json"},
-            )
+                current_capabilities = current_capabilities,
+                    capability_gaps = capability_gaps,
+                    usage_patterns = usage_patterns,
+                    budget_constraints = None,  # Could be configured
+                preferred_pricing_models=["freemium", "pay - per - use"],
+                    integration_preferences={"auth_type": "api_key", "format": "json"},
+                    )
+
 
     async def query_ollama(self, prompt: str, model: str = "llama2") -> Optional[str]:
         """Query Ollama LLM for research assistance"""
         try:
             payload = {
                 "model": model,
-                "prompt": prompt,
-                "stream": False,
-                "options": {"temperature": 0.7, "top_p": 0.9},
-            }
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {"temperature": 0.7, "top_p": 0.9},
+                    }
 
             async with self.session.post(
-                f"{self.ollama_url}/api/generate",
-                json=payload,
-                timeout=aiohttp.ClientTimeout(total=60),
-            ) as response:
+                f"{self.ollama_url}/api / generate",
+                    json = payload,
+                    timeout = aiohttp.ClientTimeout(total = 60),
+                    ) as response:
                 if response.status == 200:
                     data = await response.json()
                     return data.get("response", "").strip()
@@ -205,6 +214,7 @@ class APIOpportunityFinder:
         except Exception as e:
             logger.error(f"Error querying Ollama: {e}")
             return None
+
 
     async def research_api_opportunities(
         self, context: ResearchContext, focus_area: str = None
@@ -217,13 +227,13 @@ You are an expert API researcher. Analyze the following context and suggest new 
 
 Current Capabilities: {', '.join(context.current_capabilities)}
 Capability Gaps: {', '.join(context.capability_gaps)}
-Usage Patterns: {json.dumps(context.usage_patterns, indent=2)}
+Usage Patterns: {json.dumps(context.usage_patterns, indent = 2)}
 
 {f'Focus Area: {focus_area}' if focus_area else ''}
 
-Please suggest 5-10 specific APIs that would:
+Please suggest 5 - 10 specific APIs that would:
 1. Fill capability gaps
-2. Provide redundancy for high-usage capabilities
+2. Provide redundancy for high - usage capabilities
 3. Offer better performance or cost efficiency
 4. Enable new capabilities that complement existing ones
 
@@ -231,19 +241,19 @@ For each API suggestion, provide:
 - API Name
 - Primary Capability
 - Brief Description
-- Estimated Integration Complexity (1-10)
-- Potential Business Value (1-10)
-- Confidence in Recommendation (1-10)
+- Estimated Integration Complexity (1 - 10)
+- Potential Business Value (1 - 10)
+- Confidence in Recommendation (1 - 10)
 
 Format your response as a JSON array of objects with these fields:
 [{{
-  "api_name": "Example API",
-  "capability": "text-generation",
-  "description": "High-quality text generation with...",
-  "integration_complexity": 5,
-  "potential_value": 8,
-  "confidence_score": 7,
-  "reasoning": "This API would help because..."
+    "api_name": "Example API",
+      "capability": "text - generation",
+      "description": "High - quality text generation with...",
+      "integration_complexity": 5,
+      "potential_value": 8,
+      "confidence_score": 7,
+      "reasoning": "This API would help because..."
 }}]
 """
 
@@ -265,50 +275,52 @@ Format your response as a JSON array of objects with these fields:
             logger.error(f"Failed to parse LLM response as JSON: {e}")
             return []
 
+
     def create_discovery_task(
         self,
-        task_name: str,
-        capability_gap: str,
-        search_keywords: List[str],
-        target_domains: List[str] = None,
-        priority: int = 5,
-    ) -> int:
+            task_name: str,
+            capability_gap: str,
+            search_keywords: List[str],
+            target_domains: List[str] = None,
+            priority: int = 5,
+            ) -> int:
         """Create a new API discovery task"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                INSERT INTO api_discovery_tasks 
+                INSERT INTO api_discovery_tasks
                 (task_name, capability_gap, search_keywords, target_domains, priority, status, assigned_agent)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     task_name,
-                    capability_gap,
-                    json.dumps(search_keywords),
-                    json.dumps(target_domains or []),
-                    priority,
-                    DiscoveryStatus.PENDING.value,
-                    "research_agent_v1",
-                ),
-            )
+                        capability_gap,
+                        json.dumps(search_keywords),
+                        json.dumps(target_domains or []),
+                        priority,
+                        DiscoveryStatus.PENDING.value,
+                        "research_agent_v1",
+                        ),
+                    )
             conn.commit()
             return cursor.lastrowid
 
+
     def update_discovery_task(
         self,
-        task_id: int,
-        status: DiscoveryStatus,
-        progress_notes: str = None,
-        apis_found: int = None,
-    ):
+            task_id: int,
+            status: DiscoveryStatus,
+            progress_notes: str = None,
+            apis_found: int = None,
+            ):
         """Update discovery task status and progress"""
         with sqlite3.connect(self.db_path) as conn:
             updates = ["status = ?", "updated_at = ?", "progress_notes = ?"]
             values = [
                 status.value,
-                datetime.now(timezone.utc).isoformat(),
-                progress_notes,
-            ]
+                    datetime.now(timezone.utc).isoformat(),
+                    progress_notes,
+                    ]
 
             if apis_found is not None:
                 updates.append("apis_found = ?")
@@ -322,42 +334,44 @@ Format your response as a JSON array of objects with these fields:
 
             conn.execute(
                 f"""
-                UPDATE api_discovery_tasks 
+                UPDATE api_discovery_tasks
                 SET {', '.join(updates)}
                 WHERE id = ?
             """,
                 values,
-            )
+                    )
             conn.commit()
+
 
     def save_api_suggestion(self, suggestion: APISuggestion) -> int:
         """Save a discovered API suggestion to the database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                INSERT INTO api_suggestions 
-                (discovery_task_id, api_name, api_url, capability, description, 
-                 documentation_url, pricing_model, estimated_cost, integration_complexity,
-                 potential_value, confidence_score, status)
+                INSERT INTO api_suggestions
+                (discovery_task_id, api_name, api_url, capability, description,
+                    documentation_url, pricing_model, estimated_cost, integration_complexity,
+                     potential_value, confidence_score, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     suggestion.discovery_task_id,
-                    suggestion.api_name,
-                    suggestion.api_url,
-                    suggestion.capability,
-                    suggestion.description,
-                    suggestion.documentation_url,
-                    suggestion.pricing_model,
-                    suggestion.estimated_cost,
-                    suggestion.integration_complexity,
-                    suggestion.potential_value,
-                    suggestion.confidence_score,
-                    suggestion.status,
-                ),
-            )
+                        suggestion.api_name,
+                        suggestion.api_url,
+                        suggestion.capability,
+                        suggestion.description,
+                        suggestion.documentation_url,
+                        suggestion.pricing_model,
+                        suggestion.estimated_cost,
+                        suggestion.integration_complexity,
+                        suggestion.potential_value,
+                        suggestion.confidence_score,
+                        suggestion.status,
+                        ),
+                    )
             conn.commit()
             return cursor.lastrowid
+
 
     async def execute_discovery_task(self, task_id: int) -> List[APISuggestion]:
         """Execute a specific discovery task"""
@@ -393,25 +407,25 @@ Format your response as a JSON array of objects with these fields:
             for suggestion_data in suggestions_data:
                 # Create APISuggestion object
                 suggestion = APISuggestion(
-                    id=None,
-                    discovery_task_id=task_id,
-                    api_name=suggestion_data.get("api_name", "Unknown API"),
-                    api_url=suggestion_data.get("api_url", ""),
-                    capability=suggestion_data.get("capability", task.capability_gap),
-                    description=suggestion_data.get("description", ""),
-                    documentation_url=suggestion_data.get("documentation_url"),
-                    pricing_model=suggestion_data.get("pricing_model"),
-                    estimated_cost=suggestion_data.get("estimated_cost"),
-                    integration_complexity=suggestion_data.get(
+                    id = None,
+                        discovery_task_id = task_id,
+                        api_name = suggestion_data.get("api_name", "Unknown API"),
+                        api_url = suggestion_data.get("api_url", ""),
+                        capability = suggestion_data.get("capability", task.capability_gap),
+                        description = suggestion_data.get("description", ""),
+                        documentation_url = suggestion_data.get("documentation_url"),
+                        pricing_model = suggestion_data.get("pricing_model"),
+                        estimated_cost = suggestion_data.get("estimated_cost"),
+                        integration_complexity = suggestion_data.get(
                         "integration_complexity", 5
                     ),
-                    potential_value=suggestion_data.get("potential_value", 5),
-                    confidence_score=suggestion_data.get("confidence_score", 5)
-                    / 10.0,  # Convert to 0-1
-                    status=SuggestionStatus.NEW.value,
-                    review_notes=suggestion_data.get("reasoning"),
-                    discovered_at=datetime.now(timezone.utc).isoformat(),
-                )
+                        potential_value = suggestion_data.get("potential_value", 5),
+                        confidence_score = suggestion_data.get("confidence_score", 5)
+                    / 10.0,  # Convert to 0 - 1
+                    status = SuggestionStatus.NEW.value,
+                        review_notes = suggestion_data.get("reasoning"),
+                        discovered_at = datetime.now(timezone.utc).isoformat(),
+                        )
 
                 # Save to database
                 suggestion.id = self.save_api_suggestion(suggestion)
@@ -420,10 +434,10 @@ Format your response as a JSON array of objects with these fields:
             # Update task as completed
             self.update_discovery_task(
                 task_id,
-                DiscoveryStatus.COMPLETED,
-                f"Discovered {len(suggestions)} API opportunities",
-                len(suggestions),
-            )
+                    DiscoveryStatus.COMPLETED,
+                    f"Discovered {len(suggestions)} API opportunities",
+                    len(suggestions),
+                    )
 
             logger.info(
                 f"Discovery task {task_id} completed with {len(suggestions)} suggestions"
@@ -437,6 +451,7 @@ Format your response as a JSON array of objects with these fields:
             )
             logger.error(f"Discovery task {task_id} failed: {e}")
             raise
+
 
     def get_top_suggestions(
         self, limit: int = 10, capability: str = None
@@ -466,6 +481,7 @@ Format your response as a JSON array of objects with these fields:
             cursor = conn.execute(query, params)
             return [dict(row) for row in cursor.fetchall()]
 
+
     def get_suggestions_by_status(
         self, status: str, limit: int = 20
     ) -> List[Dict[str, Any]]:
@@ -475,7 +491,7 @@ Format your response as a JSON array of objects with these fields:
 
             query = """
                 SELECT *
-                FROM api_suggestions
+                    FROM api_suggestions
                 WHERE status = ?
                 ORDER BY discovered_at DESC
                 LIMIT ?
@@ -484,6 +500,7 @@ Format your response as a JSON array of objects with these fields:
             cursor = conn.execute(query, [status, limit])
             return [dict(row) for row in cursor.fetchall()]
 
+
     def update_suggestion_status(
         self, suggestion_id: int, status: SuggestionStatus, review_notes: str = None
     ):
@@ -491,18 +508,19 @@ Format your response as a JSON array of objects with these fields:
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                UPDATE api_suggestions 
+                UPDATE api_suggestions
                 SET status = ?, review_notes = ?, updated_at = ?
                 WHERE id = ?
             """,
                 (
                     status.value,
-                    review_notes,
-                    datetime.now(timezone.utc).isoformat(),
-                    suggestion_id,
-                ),
-            )
+                        review_notes,
+                        datetime.now(timezone.utc).isoformat(),
+                        suggestion_id,
+                        ),
+                    )
             conn.commit()
+
 
     async def run_automated_discovery(self, max_tasks: int = 3) -> Dict[str, Any]:
         """Run automated discovery for pending tasks"""
@@ -511,13 +529,13 @@ Format your response as a JSON array of objects with these fields:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
                 """
-                SELECT * FROM api_discovery_tasks 
+                SELECT * FROM api_discovery_tasks
                 WHERE status = 'pending'
                 ORDER BY priority DESC, created_at ASC
                 LIMIT ?
             """,
                 (max_tasks,),
-            )
+                    )
 
             pending_tasks = [dict(row) for row in cursor.fetchall()]
 
@@ -540,6 +558,7 @@ Format your response as a JSON array of objects with these fields:
 
         return results
 
+
     def get_discovery_analytics(self) -> Dict[str, Any]:
         """Get analytics on discovery performance"""
         with sqlite3.connect(self.db_path) as conn:
@@ -548,10 +567,10 @@ Format your response as a JSON array of objects with these fields:
             # Task statistics
             cursor = conn.execute(
                 """
-                SELECT 
+                SELECT
                     status,
-                    COUNT(*) as count,
-                    AVG(apis_found) as avg_apis_found
+                        COUNT(*) as count,
+                        AVG(apis_found) as avg_apis_found
                 FROM api_discovery_tasks
                 GROUP BY status
             """
@@ -561,12 +580,12 @@ Format your response as a JSON array of objects with these fields:
             # Suggestion statistics
             cursor = conn.execute(
                 """
-                SELECT 
+                SELECT
                     capability,
-                    status,
-                    COUNT(*) as count,
-                    AVG(confidence_score) as avg_confidence,
-                    AVG(potential_value) as avg_potential_value
+                        status,
+                        COUNT(*) as count,
+                        AVG(confidence_score) as avg_confidence,
+                        AVG(potential_value) as avg_potential_value
                 FROM api_suggestions
                 GROUP BY capability, status
             """
@@ -576,10 +595,10 @@ Format your response as a JSON array of objects with these fields:
             # Top capabilities by suggestion count
             cursor = conn.execute(
                 """
-                SELECT 
+                SELECT
                     capability,
-                    COUNT(*) as suggestion_count,
-                    AVG(confidence_score) as avg_confidence
+                        COUNT(*) as suggestion_count,
+                        AVG(confidence_score) as avg_confidence
                 FROM api_suggestions
                 GROUP BY capability
                 ORDER BY suggestion_count DESC
@@ -590,23 +609,24 @@ Format your response as a JSON array of objects with these fields:
 
             return {
                 "task_statistics": task_stats,
-                "suggestion_statistics": suggestion_stats,
-                "top_capabilities": top_capabilities,
-            }
-
+                    "suggestion_statistics": suggestion_stats,
+                    "top_capabilities": top_capabilities,
+                    }
 
 # Example usage
+
+
 async def example_usage():
     """Example of how to use the API Opportunity Finder"""
     async with APIOpportunityFinder() as finder:
         # Create a discovery task
         task_id = finder.create_discovery_task(
             task_name="Find better text generation APIs",
-            capability_gap="text-generation reliability",
-            search_keywords=["text generation", "GPT", "language model", "AI writing"],
-            target_domains=["openai.com", "anthropic.com", "cohere.ai"],
-            priority=8,
-        )
+                capability_gap="text - generation reliability",
+                search_keywords=["text generation", "GPT", "language model", "AI writing"],
+                target_domains=["openai.com", "anthropic.com", "cohere.ai"],
+                priority = 8,
+                )
 
         print(f"Created discovery task: {task_id}")
 
@@ -621,7 +641,7 @@ async def example_usage():
             )
 
         # Get top suggestions
-        top_suggestions = finder.get_top_suggestions(limit=5)
+        top_suggestions = finder.get_top_suggestions(limit = 5)
         print(f"\nTop {len(top_suggestions)} suggestions:")
         for suggestion in top_suggestions:
             print(f"- {suggestion['api_name']} ({suggestion['capability']})")
@@ -632,8 +652,7 @@ async def example_usage():
         # Get analytics
         analytics = finder.get_discovery_analytics()
         print("\nDiscovery Analytics:")
-        print(json.dumps(analytics, indent=2, default=str))
-
+        print(json.dumps(analytics, indent = 2, default = str))
 
 if __name__ == "__main__":
     # Run example

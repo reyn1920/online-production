@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Database Singleton Manager
 
@@ -7,7 +7,7 @@ redundant initialization across multiple modules.
 
 Features:
 - Singleton pattern for HypocrisyDatabaseManager
-- Thread-safe initialization
+- Thread - safe initialization
 - Lazy loading
 - Error handling and fallback
 
@@ -33,6 +33,7 @@ class DatabaseSingleton:
     _hypocrisy_db_manager = None
     _hypocrisy_db_lock = threading.Lock()
 
+
     def __new__(cls):
         if cls._instance is None:
             with cls._lock:
@@ -40,6 +41,7 @@ class DatabaseSingleton:
                     cls._instance = super(DatabaseSingleton, cls).__new__(cls)
                     cls._instance.logger = logging.getLogger(__name__)
         return cls._instance
+
 
     def get_hypocrisy_db_manager(self) -> Optional[HypocrisyDatabaseManager]:
         """Get singleton instance of HypocrisyDatabaseManager"""
@@ -63,11 +65,11 @@ class DatabaseSingleton:
 
         return self._hypocrisy_db_manager
 
+
     def reset_hypocrisy_db_manager(self):
         """Reset the hypocrisy database manager (for testing)"""
         with self._hypocrisy_db_lock:
             self._hypocrisy_db_manager = None
-
 
 # Global singleton instance
 _db_singleton = DatabaseSingleton()

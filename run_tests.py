@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE AI Production Readiness Test Suite Runner
 
@@ -35,9 +35,11 @@ sys.path.insert(0, str(PROJECT_ROOT / "app"))
 class TestRunner:
     """Professional test runner for TRAE AI system."""
 
+
     def __init__(self):
         self.start_time = None
         self.results = {}
+
 
     def setup_environment(self):
         """Setup test environment variables."""
@@ -48,9 +50,10 @@ class TestRunner:
 
         # Create test data directory if needed
         test_data_dir = PROJECT_ROOT / "test_data"
-        test_data_dir.mkdir(exist_ok=True)
+        test_data_dir.mkdir(exist_ok = True)
 
-    def run_pytest(self, args=None):
+
+    def run_pytest(self, args = None):
         """Run pytest with specified arguments."""
         cmd = ["python", "-m", "pytest"]
 
@@ -61,53 +64,60 @@ class TestRunner:
         print("=" * 60)
 
         try:
-            result = subprocess.run(cmd, capture_output=False, text=True)
+            result = subprocess.run(cmd, capture_output = False, text = True)
             return result.returncode == 0
         except Exception as e:
             print(f"❌ Error running tests: {e}")
             return False
 
+
     def run_unit_tests(self):
         """Run unit tests only."""
-        return self.run_pytest(["-m", "unit", "--tb=short"])
+        return self.run_pytest(["-m", "unit", "--tb = short"])
+
 
     def run_integration_tests(self):
         """Run integration tests only."""
-        return self.run_pytest(["-m", "integration", "--tb=short"])
+        return self.run_pytest(["-m", "integration", "--tb = short"])
+
 
     def run_security_tests(self):
         """Run security tests only."""
-        return self.run_pytest(["-m", "security", "--tb=short"])
+        return self.run_pytest(["-m", "security", "--tb = short"])
+
 
     def run_fast_tests(self):
         """Run all tests except slow ones."""
-        return self.run_pytest(["-m", "not slow", "--tb=short"])
+        return self.run_pytest(["-m", "not slow", "--tb = short"])
+
 
     def run_with_coverage(self):
         """Run tests with coverage reporting."""
         return self.run_pytest(
             [
-                "--cov=backend",
-                "--cov=app",
-                "--cov-report=html",
-                "--cov-report=term-missing",
-                "--cov-fail-under=70",
-            ]
+                "--cov = backend",
+                    "--cov = app",
+                    "--cov - report = html",
+                    "--cov - report = term - missing",
+                    "--cov - fail - under = 70",
+                    ]
         )
+
 
     def run_all_tests(self):
         """Run the complete test suite."""
-        return self.run_pytest(["--tb=short"])
+        return self.run_pytest(["--tb = short"])
+
 
     def cleanup_test_artifacts(self):
         """Clean up test artifacts."""
         artifacts = [
             "test_trae_ai.db",
-            "test_right_perspective.db",
-            ".pytest_cache",
-            "htmlcov",
-            "__pycache__",
-        ]
+                "test_right_perspective.db",
+                ".pytest_cache",
+                "htmlcov",
+                "__pycache__",
+                ]
 
         for artifact in artifacts:
             artifact_path = PROJECT_ROOT / artifact
@@ -118,6 +128,7 @@ class TestRunner:
                     import shutil
 
                     shutil.rmtree(artifact_path)
+
 
     def print_summary(self, success, duration):
         """Print test run summary."""
@@ -200,7 +211,6 @@ def main():
         runner.print_summary(success, duration)
 
     return 0 if success else 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

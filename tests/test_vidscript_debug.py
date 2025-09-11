@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 VidScriptPro Debug Test
 """
@@ -10,7 +10,7 @@ from pathlib import Path
 # Add backend to path
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 
 try:
     from backend.content.vidscript_pro import VidScriptPro

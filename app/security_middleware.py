@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Security Middleware for TRAE AI Production
 
@@ -27,12 +27,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """Rate limiting middleware to prevent abuse"""
+
 
     def __init__(self, app, calls_per_minute: int = 60, burst_limit: int = 10):
         super().__init__(app)
@@ -43,18 +44,20 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.cleanup_interval = 300  # 5 minutes
         self.last_cleanup = time.time()
 
+
     def get_client_ip(self, request: Request) -> str:
         """Extract client IP from request"""
         # Check for forwarded headers (when behind proxy)
-        forwarded_for = request.headers.get("X-Forwarded-For")
+        forwarded_for = request.headers.get("X - Forwarded - For")
         if forwarded_for:
             return forwarded_for.split(",")[0].strip()
 
-        real_ip = request.headers.get("X-Real-IP")
+        real_ip = request.headers.get("X - Real - IP")
         if real_ip:
             return real_ip
 
         return request.client.host if request.client else "unknown"
+
 
     def is_rate_limited(self, client_ip: str) -> bool:
         """Check if client is rate limited"""
@@ -101,6 +104,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         client_requests.append(current_time)
         return False
 
+
     def cleanup_old_entries(self):
         """Clean up old client entries"""
         current_time = time.time()
@@ -125,19 +129,20 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         for ip in expired_blocks:
             del self.blocked_ips[ip]
 
+
     async def dispatch(self, request: Request, call_next):
         client_ip = self.get_client_ip(request)
 
         if self.is_rate_limited(client_ip):
             logger.warning(f"Rate limit exceeded for IP: {client_ip}")
             return JSONResponse(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                content={
+                status_code = status.HTTP_429_TOO_MANY_REQUESTS,
+                    content={
                     "error": "Rate limit exceeded",
-                    "message": "Too many requests. Please try again later.",
-                    "retry_after": 60,
-                },
-            )
+                        "message": "Too many requests. Please try again later.",
+                        "retry_after": 60,
+                        },
+                    )
 
         response = await call_next(request)
         return response
@@ -146,28 +151,30 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Add security headers to all responses"""
 
+
     def __init__(self, app):
         super().__init__(app)
         self.security_headers = {
-            "X-Content-Type-Options": "nosniff",
-            "X-Frame-Options": "DENY",
-            "X-XSS-Protection": "1; mode=block",
-            "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-            "Content-Security-Policy": (
-                "default-src 'self'; "
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; "
-                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; "
-                "font-src 'self' https://fonts.gstatic.com; "
-                "img-src 'self' data: https:; "
-                "connect-src 'self' https: wss: ws:; "
-                "frame-ancestors 'none';"
+            "X - Content - Type - Options": "nosniff",
+                "X - Frame - Options": "DENY",
+                "X - XSS - Protection": "1; mode = block",
+                "Strict - Transport - Security": "max - age = 31536000; includeSubDomains",
+                "Content - Security - Policy": (
+                "default - src 'self'; "
+                "script - src 'self' 'unsafe - inline' 'unsafe - eval' https://cdn.jsdelivr.net; "
+                "style - src 'self' 'unsafe - inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; "
+                "font - src 'self' https://fonts.gstatic.com; "
+                "img - src 'self' data: https:; "
+                "connect - src 'self' https: wss: ws:; "
+                "frame - ancestors 'none';"
             ),
-            "Referrer-Policy": "strict-origin-when-cross-origin",
-            "Permissions-Policy": (
+                "Referrer - Policy": "strict - origin - when - cross - origin",
+                "Permissions - Policy": (
                 "geolocation=(), microphone=(), camera=(), "
                 "payment=(), usb=(), magnetometer=(), gyroscope=()"
             ),
-        }
+                }
+
 
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
@@ -186,36 +193,38 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 class RequestValidationMiddleware(BaseHTTPMiddleware):
     """Validate and sanitize incoming requests"""
 
+
     def __init__(self, app, max_request_size: int = 10 * 1024 * 1024):  # 10MB
         super().__init__(app)
         self.max_request_size = max_request_size
         self.suspicious_patterns = [
             "<script",
-            "javascript:",
-            "vbscript:",
-            "onload=",
-            "onerror=",
-            "../",
-            "..\\",
-            "SELECT",
-            "INSERT",
-            "DELETE",
-            "DROP",
-            "UNION",
-            "eval(",
-            "setTimeout(",
-            "setInterval(",
-            "Function(",
-        ]
+                "javascript:",
+                "vbscript:",
+                "onload=",
+                "onerror=",
+                "../",
+                "..\\",
+                "SELECT",
+                "INSERT",
+                "DELETE",
+                "DROP",
+                "UNION",
+                "eval(",
+                "setTimeout(",
+                "setInterval(",
+                "Function(",
+                ]
+
 
     async def dispatch(self, request: Request, call_next):
         # Check request size
-        content_length = request.headers.get("content-length")
+        content_length = request.headers.get("content - length")
         if content_length and int(content_length) > self.max_request_size:
             return JSONResponse(
-                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                content={"error": "Request too large"},
-            )
+                status_code = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                    content={"error": "Request too large"},
+                    )
 
         # Validate request path
         if any(
@@ -224,9 +233,9 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
         ):
             logger.warning(f"Suspicious request detected: {request.url}")
             return JSONResponse(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                content={"error": "Invalid request"},
-            )
+                status_code = status.HTTP_400_BAD_REQUEST,
+                    content={"error": "Invalid request"},
+                    )
 
         response = await call_next(request)
         return response
@@ -235,29 +244,31 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
 class AuthenticationMiddleware(BaseHTTPMiddleware):
     """Handle authentication and authorization"""
 
+
     def __init__(self, app, protected_paths: List[str] = None):
         super().__init__(app)
-        self.protected_paths = protected_paths or ["/admin", "/api/private"]
+        self.protected_paths = protected_paths or ["/admin", "/api / private"]
         self.api_key = os.getenv("TRAE_API_KEY")
+
 
     async def dispatch(self, request: Request, call_next):
         # Check if path requires authentication
         if any(request.url.path.startswith(path) for path in self.protected_paths):
             auth_header = request.headers.get("Authorization")
-            api_key = request.headers.get("X-API-Key")
+            api_key = request.headers.get("X - API - Key")
 
             if not auth_header and not api_key:
                 return JSONResponse(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    content={"error": "Authentication required"},
-                )
+                    status_code = status.HTTP_401_UNAUTHORIZED,
+                        content={"error": "Authentication required"},
+                        )
 
             # Validate API key if provided
             if api_key and api_key != self.api_key:
                 return JSONResponse(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    content={"error": "Invalid API key"},
-                )
+                    status_code = status.HTTP_403_FORBIDDEN,
+                        content={"error": "Invalid API key"},
+                        )
 
         response = await call_next(request)
         return response
@@ -265,6 +276,7 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     """Log all requests for monitoring and debugging"""
+
 
     async def dispatch(self, request: Request, call_next):
         start_time = time.time()
@@ -287,14 +299,14 @@ def setup_security_middleware(app: FastAPI):
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Configure appropriately for production
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+            allow_origins=["*"],  # Configure appropriately for production
+        allow_credentials = True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+            )
 
     # Add compression middleware
-    app.add_middleware(GZipMiddleware, minimum_size=1000)
+    app.add_middleware(GZipMiddleware, minimum_size = 1000)
 
     # Add trusted host middleware
     app.add_middleware(

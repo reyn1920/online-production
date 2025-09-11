@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Workflow Engine - Advanced Media Processing Pipeline Orchestrator
 
@@ -10,7 +10,7 @@ Features:
 - Visual workflow designer integration
 - Conditional branching and loops
 - Parallel task execution
-- Real-time progress tracking
+- Real - time progress tracking
 - Error handling and recovery
 - Workflow templates and versioning
 - Integration with all media processors
@@ -37,7 +37,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Union
 import networkx as nx
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -79,8 +79,9 @@ class WorkflowStatus(Enum):
     FAILED = "failed"
     CANCELLED = "cancelled"
 
-
 @dataclass
+
+
 class WorkflowNode:
     """Represents a single node in a workflow."""
 
@@ -88,10 +89,10 @@ class WorkflowNode:
     node_type: NodeType
     name: str
     processor: str
-    config: Dict[str, Any] = field(default_factory=dict)
-    inputs: List[str] = field(default_factory=list)  # Input node IDs
-    outputs: List[str] = field(default_factory=list)  # Output node IDs
-    conditions: Dict[str, Any] = field(default_factory=dict)
+    config: Dict[str, Any] = field(default_factory = dict)
+    inputs: List[str] = field(default_factory = list)  # Input node IDs
+    outputs: List[str] = field(default_factory = list)  # Output node IDs
+    conditions: Dict[str, Any] = field(default_factory = dict)
     status: NodeStatus = NodeStatus.PENDING
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
@@ -100,10 +101,11 @@ class WorkflowNode:
     retry_count: int = 0
     max_retries: int = 3
     timeout: Optional[int] = None  # seconds
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class WorkflowDefinition:
     """Complete workflow definition."""
 
@@ -113,15 +115,16 @@ class WorkflowDefinition:
     version: str
     nodes: Dict[str, WorkflowNode]
     edges: List[Dict[str, str]]  # {"from": node_id, "to": node_id}
-    global_config: Dict[str, Any] = field(default_factory=dict)
-    input_schema: Dict[str, Any] = field(default_factory=dict)
-    output_schema: Dict[str, Any] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=datetime.now)
+    global_config: Dict[str, Any] = field(default_factory = dict)
+    input_schema: Dict[str, Any] = field(default_factory = dict)
+    output_schema: Dict[str, Any] = field(default_factory = dict)
+    created_at: datetime = field(default_factory = datetime.now)
     created_by: str = "system"
-    tags: List[str] = field(default_factory=list)
-
+    tags: List[str] = field(default_factory = list)
 
 @dataclass
+
+
 class WorkflowExecution:
     """Runtime execution state of a workflow."""
 
@@ -129,22 +132,23 @@ class WorkflowExecution:
     workflow_id: str
     status: WorkflowStatus
     input_data: Dict[str, Any]
-    output_data: Dict[str, Any] = field(default_factory=dict)
-    node_states: Dict[str, NodeStatus] = field(default_factory=dict)
-    node_results: Dict[str, Any] = field(default_factory=dict)
+    output_data: Dict[str, Any] = field(default_factory = dict)
+    node_states: Dict[str, NodeStatus] = field(default_factory = dict)
+    node_results: Dict[str, Any] = field(default_factory = dict)
     execution_graph: Optional[nx.DiGraph] = None
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
     progress: float = 0.0
-    current_nodes: Set[str] = field(default_factory=set)
-    completed_nodes: Set[str] = field(default_factory=set)
-    failed_nodes: Set[str] = field(default_factory=set)
-    error_log: List[Dict[str, Any]] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    current_nodes: Set[str] = field(default_factory = set)
+    completed_nodes: Set[str] = field(default_factory = set)
+    failed_nodes: Set[str] = field(default_factory = set)
+    error_log: List[Dict[str, Any]] = field(default_factory = list)
+    metrics: Dict[str, Any] = field(default_factory = dict)
 
 
 class WorkflowEngine:
     """Advanced workflow orchestration engine."""
+
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or self._load_default_config()
@@ -152,11 +156,11 @@ class WorkflowEngine:
         self.executions: Dict[str, WorkflowExecution] = {}
         self.processors: Dict[str, Callable] = {}
         self.executor = ThreadPoolExecutor(
-            max_workers=self.config.get("max_workers", 8)
+            max_workers = self.config.get("max_workers", 8)
         )
         self.running_executions: Set[str] = set()
 
-        # Initialize built-in processors
+        # Initialize built - in processors
         self._register_built_in_processors()
 
         # Load workflow templates
@@ -164,298 +168,305 @@ class WorkflowEngine:
 
         logger.info("Workflow Engine initialized")
 
+
     def _load_default_config(self) -> Dict[str, Any]:
         """Load default configuration."""
         return {
             "max_workers": 8,
-            "max_parallel_nodes": 4,
-            "default_timeout": 300,  # 5 minutes
+                "max_parallel_nodes": 4,
+                "default_timeout": 300,  # 5 minutes
             "retry_delay": 5,  # seconds
             "cleanup_interval": 3600,  # 1 hour
             "max_execution_history": 1000,
-            "enable_metrics": True,
-            "workflow_storage_path": "./workflows",
-            "execution_storage_path": "./executions",
-        }
+                "enable_metrics": True,
+                "workflow_storage_path": "./workflows",
+                "execution_storage_path": "./executions",
+                }
+
 
     def _register_built_in_processors(self):
-        """Register built-in workflow processors."""
+        """Register built - in workflow processors."""
         self.processors.update(
             {
                 "media_hub": self._process_media_hub,
-                "content_analyzer": self._process_content_analyzer,
-                "file_transformer": self._process_file_transformer,
-                "quality_validator": self._process_quality_validator,
-                "batch_processor": self._process_batch_processor,
-                "conditional_router": self._process_conditional_router,
-                "data_merger": self._process_data_merger,
-                "notification_sender": self._process_notification_sender,
-                "png_to_blender": self._process_png_to_blender,
-                "avatar_animator": self._process_avatar_animator,
-                "video_compositor": self._process_video_compositor,
-                "audio_mixer": self._process_audio_mixer,
-            }
+                    "content_analyzer": self._process_content_analyzer,
+                    "file_transformer": self._process_file_transformer,
+                    "quality_validator": self._process_quality_validator,
+                    "batch_processor": self._process_batch_processor,
+                    "conditional_router": self._process_conditional_router,
+                    "data_merger": self._process_data_merger,
+                    "notification_sender": self._process_notification_sender,
+                    "png_to_blender": self._process_png_to_blender,
+                    "avatar_animator": self._process_avatar_animator,
+                    "video_compositor": self._process_video_compositor,
+                    "audio_mixer": self._process_audio_mixer,
+                    }
         )
 
+
     def _load_workflow_templates(self):
-        """Load pre-defined workflow templates."""
+        """Load pre - defined workflow templates."""
         templates = [
             self._create_social_media_workflow(),
-            self._create_presentation_workflow(),
-            self._create_png_to_blender_workflow(),
-            self._create_batch_avatar_workflow(),
-            self._create_podcast_production_workflow(),
-        ]
+                self._create_presentation_workflow(),
+                self._create_png_to_blender_workflow(),
+                self._create_batch_avatar_workflow(),
+                self._create_podcast_production_workflow(),
+                ]
 
         for template in templates:
             self.workflows[template.workflow_id] = template
 
         logger.info(f"Loaded {len(templates)} workflow templates")
 
+
     def _create_social_media_workflow(self) -> WorkflowDefinition:
         """Create social media content workflow."""
         nodes = {
             "input": WorkflowNode(
                 node_id="input",
-                node_type=NodeType.INPUT,
-                name="Content Input",
-                processor="input_validator",
-                config={"required_fields": ["script", "avatar_image"]},
-            ),
-            "content_analysis": WorkflowNode(
+                    node_type = NodeType.INPUT,
+                    name="Content Input",
+                    processor="input_validator",
+                    config={"required_fields": ["script", "avatar_image"]},
+                    ),
+                "content_analysis": WorkflowNode(
                 node_id="content_analysis",
-                node_type=NodeType.PROCESSOR,
-                name="Content Analysis",
-                processor="content_analyzer",
-                inputs=["input"],
-                config={"analyze_emotions": True, "detect_topics": True},
-            ),
-            "voice_synthesis": WorkflowNode(
+                    node_type = NodeType.PROCESSOR,
+                    name="Content Analysis",
+                    processor="content_analyzer",
+                    inputs=["input"],
+                    config={"analyze_emotions": True, "detect_topics": True},
+                    ),
+                "voice_synthesis": WorkflowNode(
                 node_id="voice_synthesis",
-                node_type=NodeType.PROCESSOR,
-                name="Voice Synthesis",
-                processor="media_hub",
-                inputs=["content_analysis"],
-                config={"media_type": "audio", "workflow_type": "voice_synthesis"},
-            ),
-            "avatar_animation": WorkflowNode(
+                    node_type = NodeType.PROCESSOR,
+                    name="Voice Synthesis",
+                    processor="media_hub",
+                    inputs=["content_analysis"],
+                    config={"media_type": "audio", "workflow_type": "voice_synthesis"},
+                    ),
+                "avatar_animation": WorkflowNode(
                 node_id="avatar_animation",
-                node_type=NodeType.PROCESSOR,
-                name="Avatar Animation",
-                processor="avatar_animator",
-                inputs=["voice_synthesis", "content_analysis"],
-            ),
-            "quality_check": WorkflowNode(
+                    node_type = NodeType.PROCESSOR,
+                    name="Avatar Animation",
+                    processor="avatar_animator",
+                    inputs=["voice_synthesis", "content_analysis"],
+                    ),
+                "quality_check": WorkflowNode(
                 node_id="quality_check",
-                node_type=NodeType.VALIDATOR,
-                name="Quality Validation",
-                processor="quality_validator",
-                inputs=["avatar_animation"],
-                config={"min_duration": 10, "max_duration": 120},
-            ),
-            "format_variants": WorkflowNode(
+                    node_type = NodeType.VALIDATOR,
+                    name="Quality Validation",
+                    processor="quality_validator",
+                    inputs=["avatar_animation"],
+                    config={"min_duration": 10, "max_duration": 120},
+                    ),
+                "format_variants": WorkflowNode(
                 node_id="format_variants",
-                node_type=NodeType.PARALLEL,
-                name="Format Variants",
-                processor="batch_processor",
-                inputs=["quality_check"],
-                config={
+                    node_type = NodeType.PARALLEL,
+                    name="Format Variants",
+                    processor="batch_processor",
+                    inputs=["quality_check"],
+                    config={
                     "variants": [
                         {"format": "instagram_story", "aspect_ratio": "9:16"},
-                        {"format": "youtube_short", "aspect_ratio": "9:16"},
-                        {"format": "tiktok", "aspect_ratio": "9:16"},
-                        {"format": "facebook_post", "aspect_ratio": "1:1"},
-                    ]
+                            {"format": "youtube_short", "aspect_ratio": "9:16"},
+                            {"format": "tiktok", "aspect_ratio": "9:16"},
+                            {"format": "facebook_post", "aspect_ratio": "1:1"},
+                            ]
                 },
-            ),
-            "output": WorkflowNode(
+                    ),
+                "output": WorkflowNode(
                 node_id="output",
-                node_type=NodeType.OUTPUT,
-                name="Final Output",
-                processor="output_collector",
-                inputs=["format_variants"],
-            ),
-        }
+                    node_type = NodeType.OUTPUT,
+                    name="Final Output",
+                    processor="output_collector",
+                    inputs=["format_variants"],
+                    ),
+                }
 
         edges = [
             {"from": "input", "to": "content_analysis"},
-            {"from": "content_analysis", "to": "voice_synthesis"},
-            {"from": "voice_synthesis", "to": "avatar_animation"},
-            {"from": "content_analysis", "to": "avatar_animation"},
-            {"from": "avatar_animation", "to": "quality_check"},
-            {"from": "quality_check", "to": "format_variants"},
-            {"from": "format_variants", "to": "output"},
-        ]
+                {"from": "content_analysis", "to": "voice_synthesis"},
+                {"from": "voice_synthesis", "to": "avatar_animation"},
+                {"from": "content_analysis", "to": "avatar_animation"},
+                {"from": "avatar_animation", "to": "quality_check"},
+                {"from": "quality_check", "to": "format_variants"},
+                {"from": "format_variants", "to": "output"},
+                ]
 
         return WorkflowDefinition(
             workflow_id="social_media_content",
-            name="Social Media Content Creation",
-            description="Complete workflow for creating social media content with avatar narration",
-            version="1.0.0",
-            nodes=nodes,
-            edges=edges,
-            global_config={
+                name="Social Media Content Creation",
+                description="Complete workflow for creating social media content with avatar narration",
+                version="1.0.0",
+                nodes = nodes,
+                edges = edges,
+                global_config={
                 "quality_preset": "standard",
-                "output_formats": ["mp4", "mov"],
-                "enable_analytics": True,
-            },
-            tags=["social_media", "avatar", "video"],
-        )
+                    "output_formats": ["mp4", "mov"],
+                    "enable_analytics": True,
+                    },
+                tags=["social_media", "avatar", "video"],
+                )
+
 
     def _create_png_to_blender_workflow(self) -> WorkflowDefinition:
         """Create PNG to Blender conversion workflow."""
         nodes = {
             "input": WorkflowNode(
                 node_id="input",
-                node_type=NodeType.INPUT,
-                name="PNG Input",
-                processor="input_validator",
-                config={"required_fields": ["png_file"], "file_types": [".png"]},
-            ),
-            "image_analysis": WorkflowNode(
+                    node_type = NodeType.INPUT,
+                    name="PNG Input",
+                    processor="input_validator",
+                    config={"required_fields": ["png_file"], "file_types": [".png"]},
+                    ),
+                "image_analysis": WorkflowNode(
                 node_id="image_analysis",
-                node_type=NodeType.PROCESSOR,
-                name="Image Analysis",
-                processor="content_analyzer",
-                inputs=["input"],
-                config={"analyze_type": "image", "extract_heightmap": True},
-            ),
-            "mesh_generation": WorkflowNode(
+                    node_type = NodeType.PROCESSOR,
+                    name="Image Analysis",
+                    processor="content_analyzer",
+                    inputs=["input"],
+                    config={"analyze_type": "image", "extract_heightmap": True},
+                    ),
+                "mesh_generation": WorkflowNode(
                 node_id="mesh_generation",
-                node_type=NodeType.PROCESSOR,
-                name="Mesh Generation",
-                processor="png_to_blender",
-                inputs=["image_analysis"],
-                config={"mesh_type": "heightmap", "subdivision_level": 3},
-            ),
-            "code_optimization": WorkflowNode(
+                    node_type = NodeType.PROCESSOR,
+                    name="Mesh Generation",
+                    processor="png_to_blender",
+                    inputs=["image_analysis"],
+                    config={"mesh_type": "heightmap", "subdivision_level": 3},
+                    ),
+                "code_optimization": WorkflowNode(
                 node_id="code_optimization",
-                node_type=NodeType.PROCESSOR,
-                name="Code Optimization",
-                processor="file_transformer",
-                inputs=["mesh_generation"],
-                config={"optimize_for": "performance", "add_comments": True},
-            ),
-            "validation": WorkflowNode(
+                    node_type = NodeType.PROCESSOR,
+                    name="Code Optimization",
+                    processor="file_transformer",
+                    inputs=["mesh_generation"],
+                    config={"optimize_for": "performance", "add_comments": True},
+                    ),
+                "validation": WorkflowNode(
                 node_id="validation",
-                node_type=NodeType.VALIDATOR,
-                name="Code Validation",
-                processor="quality_validator",
-                inputs=["code_optimization"],
-                config={"validate_syntax": True, "check_blender_api": True},
-            ),
-            "output": WorkflowNode(
+                    node_type = NodeType.VALIDATOR,
+                    name="Code Validation",
+                    processor="quality_validator",
+                    inputs=["code_optimization"],
+                    config={"validate_syntax": True, "check_blender_api": True},
+                    ),
+                "output": WorkflowNode(
                 node_id="output",
-                node_type=NodeType.OUTPUT,
-                name="Blender Code Output",
-                processor="output_collector",
-                inputs=["validation"],
-            ),
-        }
+                    node_type = NodeType.OUTPUT,
+                    name="Blender Code Output",
+                    processor="output_collector",
+                    inputs=["validation"],
+                    ),
+                }
 
         edges = [
             {"from": "input", "to": "image_analysis"},
-            {"from": "image_analysis", "to": "mesh_generation"},
-            {"from": "mesh_generation", "to": "code_optimization"},
-            {"from": "code_optimization", "to": "validation"},
-            {"from": "validation", "to": "output"},
-        ]
+                {"from": "image_analysis", "to": "mesh_generation"},
+                {"from": "mesh_generation", "to": "code_optimization"},
+                {"from": "code_optimization", "to": "validation"},
+                {"from": "validation", "to": "output"},
+                ]
 
         return WorkflowDefinition(
             workflow_id="png_to_blender_conversion",
-            name="PNG to Blender Code Conversion",
-            description="Convert PNG images to optimized Blender Python code for 3D mesh generation",
-            version="1.0.0",
-            nodes=nodes,
-            edges=edges,
-            global_config={
+                name="PNG to Blender Code Conversion",
+                description="Convert PNG images to optimized Blender Python code for 3D mesh generation",
+                version="1.0.0",
+                nodes = nodes,
+                edges = edges,
+                global_config={
                 "output_format": "python_script",
-                "include_materials": True,
-                "generate_documentation": True,
-            },
-            tags=["png", "blender", "3d", "mesh"],
-        )
+                    "include_materials": True,
+                    "generate_documentation": True,
+                    },
+                tags=["png", "blender", "3d", "mesh"],
+                )
+
 
     def _create_batch_avatar_workflow(self) -> WorkflowDefinition:
         """Create batch avatar processing workflow."""
         nodes = {
             "input": WorkflowNode(
                 node_id="input",
-                node_type=NodeType.INPUT,
-                name="Batch Input",
-                processor="input_validator",
-                config={"required_fields": ["scripts", "avatar_images"]},
-            ),
-            "batch_splitter": WorkflowNode(
+                    node_type = NodeType.INPUT,
+                    name="Batch Input",
+                    processor="input_validator",
+                    config={"required_fields": ["scripts", "avatar_images"]},
+                    ),
+                "batch_splitter": WorkflowNode(
                 node_id="batch_splitter",
-                node_type=NodeType.TRANSFORM,
-                name="Batch Splitter",
-                processor="batch_processor",
-                inputs=["input"],
-                config={"split_type": "individual_jobs", "max_parallel": 4},
-            ),
-            "parallel_processing": WorkflowNode(
+                    node_type = NodeType.TRANSFORM,
+                    name="Batch Splitter",
+                    processor="batch_processor",
+                    inputs=["input"],
+                    config={"split_type": "individual_jobs", "max_parallel": 4},
+                    ),
+                "parallel_processing": WorkflowNode(
                 node_id="parallel_processing",
-                node_type=NodeType.PARALLEL,
-                name="Parallel Avatar Processing",
-                processor="avatar_animator",
-                inputs=["batch_splitter"],
-                config={"enable_parallel": True, "max_workers": 4},
-            ),
-            "quality_filter": WorkflowNode(
+                    node_type = NodeType.PARALLEL,
+                    name="Parallel Avatar Processing",
+                    processor="avatar_animator",
+                    inputs=["batch_splitter"],
+                    config={"enable_parallel": True, "max_workers": 4},
+                    ),
+                "quality_filter": WorkflowNode(
                 node_id="quality_filter",
-                node_type=NodeType.VALIDATOR,
-                name="Quality Filter",
-                processor="quality_validator",
-                inputs=["parallel_processing"],
-                config={"filter_failed": True, "min_quality_score": 0.8},
-            ),
-            "batch_merger": WorkflowNode(
+                    node_type = NodeType.VALIDATOR,
+                    name="Quality Filter",
+                    processor="quality_validator",
+                    inputs=["parallel_processing"],
+                    config={"filter_failed": True, "min_quality_score": 0.8},
+                    ),
+                "batch_merger": WorkflowNode(
                 node_id="batch_merger",
-                node_type=NodeType.MERGE,
-                name="Batch Merger",
-                processor="data_merger",
-                inputs=["quality_filter"],
-                config={"merge_type": "collection", "include_metadata": True},
-            ),
-            "output": WorkflowNode(
+                    node_type = NodeType.MERGE,
+                    name="Batch Merger",
+                    processor="data_merger",
+                    inputs=["quality_filter"],
+                    config={"merge_type": "collection", "include_metadata": True},
+                    ),
+                "output": WorkflowNode(
                 node_id="output",
-                node_type=NodeType.OUTPUT,
-                name="Batch Output",
-                processor="output_collector",
-                inputs=["batch_merger"],
-            ),
-        }
+                    node_type = NodeType.OUTPUT,
+                    name="Batch Output",
+                    processor="output_collector",
+                    inputs=["batch_merger"],
+                    ),
+                }
 
         edges = [
             {"from": "input", "to": "batch_splitter"},
-            {"from": "batch_splitter", "to": "parallel_processing"},
-            {"from": "parallel_processing", "to": "quality_filter"},
-            {"from": "quality_filter", "to": "batch_merger"},
-            {"from": "batch_merger", "to": "output"},
-        ]
+                {"from": "batch_splitter", "to": "parallel_processing"},
+                {"from": "parallel_processing", "to": "quality_filter"},
+                {"from": "quality_filter", "to": "batch_merger"},
+                {"from": "batch_merger", "to": "output"},
+                ]
 
         return WorkflowDefinition(
             workflow_id="batch_avatar_processing",
-            name="Batch Avatar Processing",
-            description="Process multiple avatar animations in parallel with quality control",
-            version="1.0.0",
-            nodes=nodes,
-            edges=edges,
-            global_config={
+                name="Batch Avatar Processing",
+                description="Process multiple avatar animations in parallel with quality control",
+                version="1.0.0",
+                nodes = nodes,
+                edges = edges,
+                global_config={
                 "max_batch_size": 20,
-                "enable_progress_tracking": True,
-                "auto_retry_failed": True,
-            },
-            tags=["batch", "avatar", "parallel"],
-        )
+                    "enable_progress_tracking": True,
+                    "auto_retry_failed": True,
+                    },
+                tags=["batch", "avatar", "parallel"],
+                )
+
 
     async def create_workflow_execution(
         self,
-        workflow_id: str,
-        input_data: Dict[str, Any],
-        config: Optional[Dict[str, Any]] = None,
-    ) -> str:
+            workflow_id: str,
+            input_data: Dict[str, Any],
+            config: Optional[Dict[str, Any]] = None,
+            ) -> str:
         """Create a new workflow execution."""
         if workflow_id not in self.workflows:
             raise ValueError(f"Workflow {workflow_id} not found")
@@ -470,13 +481,13 @@ class WorkflowEngine:
         node_states = {node_id: NodeStatus.PENDING for node_id in workflow.nodes.keys()}
 
         execution = WorkflowExecution(
-            execution_id=execution_id,
-            workflow_id=workflow_id,
-            status=WorkflowStatus.CREATED,
-            input_data=input_data,
-            node_states=node_states,
-            execution_graph=execution_graph,
-        )
+            execution_id = execution_id,
+                workflow_id = workflow_id,
+                status = WorkflowStatus.CREATED,
+                input_data = input_data,
+                node_states = node_states,
+                execution_graph = execution_graph,
+                )
 
         self.executions[execution_id] = execution
         logger.info(
@@ -485,13 +496,14 @@ class WorkflowEngine:
 
         return execution_id
 
+
     def _build_execution_graph(self, workflow: WorkflowDefinition) -> nx.DiGraph:
         """Build NetworkX graph for workflow execution."""
         graph = nx.DiGraph()
 
         # Add nodes
         for node_id, node in workflow.nodes.items():
-            graph.add_node(node_id, node=node)
+            graph.add_node(node_id, node = node)
 
         # Add edges
         for edge in workflow.edges:
@@ -502,6 +514,7 @@ class WorkflowEngine:
             raise ValueError("Workflow contains cycles")
 
         return graph
+
 
     async def execute_workflow(self, execution_id: str) -> Dict[str, Any]:
         """Execute a workflow asynchronously."""
@@ -575,19 +588,19 @@ class WorkflowEngine:
 
             return {
                 "success": execution.status == WorkflowStatus.COMPLETED,
-                "execution_id": execution_id,
-                "status": execution.status.value,
-                "output_data": execution.output_data,
-                "execution_time": (
+                    "execution_id": execution_id,
+                    "status": execution.status.value,
+                    "output_data": execution.output_data,
+                    "execution_time": (
                     execution.end_time - execution.start_time
                 ).total_seconds(),
-                "progress": execution.progress,
-                "failed_nodes": [
+                    "progress": execution.progress,
+                    "failed_nodes": [
                     nid
                     for nid, status in execution.node_states.items()
                     if status == NodeStatus.FAILED
                 ],
-            }
+                    }
 
         except Exception as e:
             execution.status = WorkflowStatus.FAILED
@@ -595,22 +608,23 @@ class WorkflowEngine:
 
             error_info = {
                 "timestamp": datetime.now().isoformat(),
-                "error": str(e),
-                "node_id": "workflow_engine",
-            }
+                    "error": str(e),
+                    "node_id": "workflow_engine",
+                    }
             execution.error_log.append(error_info)
 
             logger.error(f"Workflow execution {execution_id} failed: {e}")
 
             return {
                 "success": False,
-                "execution_id": execution_id,
-                "status": execution.status.value,
-                "error": str(e),
-            }
+                    "execution_id": execution_id,
+                    "status": execution.status.value,
+                    "error": str(e),
+                    }
 
         finally:
             self.running_executions.discard(execution_id)
+
 
     def _are_dependencies_satisfied(
         self, execution: WorkflowExecution, node_id: str
@@ -625,6 +639,7 @@ class WorkflowEngine:
                 return False
 
         return True
+
 
     async def _execute_node(self, execution: WorkflowExecution, node: WorkflowNode):
         """Execute a single workflow node."""
@@ -648,7 +663,7 @@ class WorkflowEngine:
 
             try:
                 result = await asyncio.wait_for(
-                    processor_func(input_data, node.config), timeout=timeout
+                    processor_func(input_data, node.config), timeout = timeout
                 )
             except asyncio.TimeoutError:
                 raise Exception(
@@ -674,9 +689,9 @@ class WorkflowEngine:
 
             error_info = {
                 "timestamp": datetime.now().isoformat(),
-                "node_id": node.node_id,
-                "error": str(e),
-            }
+                    "node_id": node.node_id,
+                    "error": str(e),
+                    }
             execution.error_log.append(error_info)
 
             # Handle retries
@@ -699,6 +714,7 @@ class WorkflowEngine:
         finally:
             execution.current_nodes.discard(node.node_id)
 
+
     def _prepare_node_input(
         self, execution: WorkflowExecution, node: WorkflowNode
     ) -> Dict[str, Any]:
@@ -716,14 +732,16 @@ class WorkflowEngine:
                     input_node_id
                 ]
 
-        # Add node-specific config
+        # Add node - specific config
         input_data["node_config"] = node.config
         input_data["execution_id"] = execution.execution_id
         input_data["node_id"] = node.node_id
 
         return input_data
 
-    # Built-in processor implementations
+    # Built - in processor implementations
+
+
     async def _process_media_hub(
         self, input_data: Dict[str, Any], config: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -739,24 +757,25 @@ class WorkflowEngine:
 
             # Create and process media job
             job_id = await media_hub.create_media_job(
-                media_type=media_type,
-                workflow_type=workflow_type,
-                input_data=input_data,
-                config=config,
-            )
+                media_type = media_type,
+                    workflow_type = workflow_type,
+                    input_data = input_data,
+                    config = config,
+                    )
 
             result = await media_hub.process_media_job(job_id)
 
             return {
                 "success": result["success"],
-                "job_id": job_id,
-                "output_files": result.get("output_files", []),
-                "metadata": result.get("metadata", {}),
-            }
+                    "job_id": job_id,
+                    "output_files": result.get("output_files", []),
+                    "metadata": result.get("metadata", {}),
+                    }
 
         except Exception as e:
             logger.error(f"Media hub processing failed: {e}")
             raise
+
 
     async def _process_content_analyzer(
         self, input_data: Dict[str, Any], config: Dict[str, Any]
@@ -789,10 +808,10 @@ class WorkflowEngine:
 
             return {
                 "emotions": emotions,
-                "topics": topics,
-                "text_length": len(text),
-                "word_count": len(text.split()),
-            }
+                    "topics": topics,
+                    "text_length": len(text),
+                    "word_count": len(text.split()),
+                    }
 
         elif analyze_type == "image":
             # Image analysis for PNG to Blender conversion
@@ -809,13 +828,14 @@ class WorkflowEngine:
 
                 return {
                     "dimensions": img.size,
-                    "mode": img.mode,
-                    "pixel_range": (int(img_array.min()), int(img_array.max())),
-                    "mean_brightness": float(img_array.mean()),
-                    "suitable_for_heightmap": True,
-                }
+                        "mode": img.mode,
+                        "pixel_range": (int(img_array.min()), int(img_array.max())),
+                        "mean_brightness": float(img_array.mean()),
+                        "suitable_for_heightmap": True,
+                        }
 
         return {"analysis_complete": True}
+
 
     async def _process_png_to_blender(
         self, input_data: Dict[str, Any], config: Dict[str, Any]
@@ -828,11 +848,11 @@ class WorkflowEngine:
 
             # Create PNG to Blender job
             job_id = await media_hub.create_media_job(
-                media_type=MediaType.PNG_TO_BLENDER,
-                workflow_type=WorkflowType.CUSTOM_WORKFLOW,
-                input_data=input_data,
-                config=config,
-            )
+                media_type = MediaType.PNG_TO_BLENDER,
+                    workflow_type = WorkflowType.CUSTOM_WORKFLOW,
+                    input_data = input_data,
+                    config = config,
+                    )
 
             result = await media_hub.process_media_job(job_id)
 
@@ -841,6 +861,7 @@ class WorkflowEngine:
         except Exception as e:
             logger.error(f"PNG to Blender conversion failed: {e}")
             raise
+
 
     async def _process_quality_validator(
         self, input_data: Dict[str, Any], config: Dict[str, Any]
@@ -879,6 +900,7 @@ class WorkflowEngine:
 
         return validation_results
 
+
     async def _process_batch_processor(
         self, input_data: Dict[str, Any], config: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -896,18 +918,19 @@ class WorkflowEngine:
                 jobs.append(
                     {
                         "job_id": f"batch_job_{i}",
-                        "script": script,
-                        "avatar_image": avatar_image,
-                    }
+                            "script": script,
+                            "avatar_image": avatar_image,
+                            }
                 )
 
             return {
                 "batch_jobs": jobs,
-                "total_jobs": len(jobs),
-                "max_parallel": max_parallel,
-            }
+                    "total_jobs": len(jobs),
+                    "max_parallel": max_parallel,
+                    }
 
         return {"batch_processed": True}
+
 
     def get_execution_status(self, execution_id: str) -> Optional[Dict[str, Any]]:
         """Get the status of a workflow execution."""
@@ -919,38 +942,40 @@ class WorkflowEngine:
 
         return {
             "execution_id": execution_id,
-            "workflow_id": execution.workflow_id,
-            "workflow_name": workflow.name,
-            "status": execution.status.value,
-            "progress": execution.progress,
-            "start_time": (
+                "workflow_id": execution.workflow_id,
+                "workflow_name": workflow.name,
+                "status": execution.status.value,
+                "progress": execution.progress,
+                "start_time": (
                 execution.start_time.isoformat() if execution.start_time else None
             ),
-            "end_time": execution.end_time.isoformat() if execution.end_time else None,
-            "current_nodes": list(execution.current_nodes),
-            "completed_nodes": list(execution.completed_nodes),
-            "failed_nodes": list(execution.failed_nodes),
-            "node_states": {
+                "end_time": execution.end_time.isoformat() if execution.end_time else None,
+                "current_nodes": list(execution.current_nodes),
+                "completed_nodes": list(execution.completed_nodes),
+                "failed_nodes": list(execution.failed_nodes),
+                "node_states": {
                 nid: status.value for nid, status in execution.node_states.items()
             },
-            "output_data": execution.output_data,
-            "error_log": execution.error_log[-10:],  # Last 10 errors
+                "output_data": execution.output_data,
+                "error_log": execution.error_log[-10:],  # Last 10 errors
         }
+
 
     def get_available_workflows(self) -> Dict[str, Dict[str, Any]]:
         """Get all available workflow templates."""
         return {
             workflow_id: {
                 "name": workflow.name,
-                "description": workflow.description,
-                "version": workflow.version,
-                "tags": workflow.tags,
-                "node_count": len(workflow.nodes),
-                "input_schema": workflow.input_schema,
-                "output_schema": workflow.output_schema,
-            }
+                    "description": workflow.description,
+                    "version": workflow.version,
+                    "tags": workflow.tags,
+                    "node_count": len(workflow.nodes),
+                    "input_schema": workflow.input_schema,
+                    "output_schema": workflow.output_schema,
+                    }
             for workflow_id, workflow in self.workflows.items()
         }
+
 
     async def cancel_execution(self, execution_id: str) -> bool:
         """Cancel a running workflow execution."""
@@ -967,9 +992,10 @@ class WorkflowEngine:
 
         return False
 
+
     def cleanup_old_executions(self, max_age_hours: int = 24):
         """Clean up old workflow executions."""
-        cutoff_time = datetime.now() - timedelta(hours=max_age_hours)
+        cutoff_time = datetime.now() - timedelta(hours = max_age_hours)
 
         executions_to_remove = [
             exec_id
@@ -979,9 +1005,9 @@ class WorkflowEngine:
             and execution.status
             in [
                 WorkflowStatus.COMPLETED,
-                WorkflowStatus.FAILED,
-                WorkflowStatus.CANCELLED,
-            ]
+                    WorkflowStatus.FAILED,
+                    WorkflowStatus.CANCELLED,
+                    ]
         ]
 
         for exec_id in executions_to_remove:
@@ -989,11 +1015,11 @@ class WorkflowEngine:
 
         logger.info(f"Cleaned up {len(executions_to_remove)} old executions")
 
+
     def __del__(self):
         """Cleanup resources."""
         if hasattr(self, "executor"):
-            self.executor.shutdown(wait=True)
-
+            self.executor.shutdown(wait = True)
 
 # Global instance
 _workflow_engine_instance = None
@@ -1006,20 +1032,21 @@ def get_workflow_engine(config: Optional[Dict[str, Any]] = None) -> WorkflowEngi
         _workflow_engine_instance = WorkflowEngine(config)
     return _workflow_engine_instance
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         engine = get_workflow_engine()
 
         # Example: Execute social media workflow
         execution_id = await engine.create_workflow_execution(
             "social_media_content",
-            {
+                {
                 "script": "Check out our amazing new product features!",
-                "avatar_image": "path/to/avatar.jpg",
-            },
-        )
+                    "avatar_image": "path / to / avatar.jpg",
+                    },
+                )
 
         print(f"Created execution: {execution_id}")
 
@@ -1029,7 +1056,7 @@ if __name__ == "__main__":
 
         # Example: PNG to Blender workflow
         png_execution_id = await engine.create_workflow_execution(
-            "png_to_blender_conversion", {"png_file": "path/to/heightmap.png"}
+            "png_to_blender_conversion", {"png_file": "path / to / heightmap.png"}
         )
 
         png_result = await engine.execute_workflow(png_execution_id)

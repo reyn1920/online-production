@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 YouTube Credentials Setup Script
 
@@ -32,10 +32,10 @@ def setup_youtube_credentials():
     # Check existing credentials
     youtube_creds = [
         "YOUTUBE_API_KEY",
-        "YOUTUBE_CLIENT_ID",
-        "YOUTUBE_CLIENT_SECRET",
-        "YOUTUBE_CHANNEL_ID",
-    ]
+            "YOUTUBE_CLIENT_ID",
+            "YOUTUBE_CLIENT_SECRET",
+            "YOUTUBE_CHANNEL_ID",
+            ]
 
     print("Current YouTube credentials status:")
     missing_creds = []
@@ -53,7 +53,7 @@ def setup_youtube_credentials():
 
     if not missing_creds:
         print("\n✅ All YouTube credentials are configured!")
-        update = input("\nUpdate existing credentials? (y/N): ").lower().startswith("y")
+        update = input("\nUpdate existing credentials? (y / N): ").lower().startswith("y")
         if not update:
             return
 
@@ -122,7 +122,6 @@ def test_youtube_integration():
 
     except Exception as e:
         print(f"❌ Error testing YouTube integration: {e}")
-
 
 if __name__ == "__main__":
     try:

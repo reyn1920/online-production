@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Database Setup and Migration Module
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def get_database_path() -> str:
     """Get the database path from environment or use default"""
-    return os.getenv("DATABASE_PATH", "backend/database/intelligence.db")
+    return os.getenv("DATABASE_PATH", "backend / database / intelligence.db")
 
 
 def ensure_database_directory():
@@ -25,7 +25,7 @@ def ensure_database_directory():
     db_path = get_database_path()
     db_dir = os.path.dirname(db_path)
     if db_dir and not os.path.exists(db_dir):
-        os.makedirs(db_dir, exist_ok=True)
+        os.makedirs(db_dir, exist_ok = True)
         logger.info(f"Created database directory: {db_dir}")
 
 
@@ -50,19 +50,19 @@ def run_database_migration() -> bool:
                 """
                 CREATE TABLE IF NOT EXISTS news_intelligence (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    content TEXT,
-                    url TEXT,
-                    source TEXT,
-                    published_date TEXT,
-                    category TEXT,
-                    sentiment REAL,
-                    relevance_score REAL,
-                    keywords TEXT,
-                    summary TEXT,
-                    task_name TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        title TEXT NOT NULL,
+                        content TEXT,
+                        url TEXT,
+                        source TEXT,
+                        published_date TEXT,
+                        category TEXT,
+                        sentiment REAL,
+                        relevance_score REAL,
+                        keywords TEXT,
+                        summary TEXT,
+                        task_name TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -70,7 +70,7 @@ def run_database_migration() -> bool:
             # Check if news_articles table exists and migrate data if needed
             cursor.execute(
                 """
-                SELECT name FROM sqlite_master 
+                SELECT name FROM sqlite_master
                 WHERE type='table' AND name='news_articles'
             """
             )
@@ -87,19 +87,19 @@ def run_database_migration() -> bool:
                 common_columns = []
                 target_columns = [
                     "title",
-                    "content",
-                    "url",
-                    "source",
-                    "published_date",
-                    "category",
-                    "sentiment",
-                    "relevance_score",
-                    "keywords",
-                    "summary",
-                    "task_name",
-                    "created_at",
-                    "updated_at",
-                ]
+                        "content",
+                        "url",
+                        "source",
+                        "published_date",
+                        "category",
+                        "sentiment",
+                        "relevance_score",
+                        "keywords",
+                        "summary",
+                        "task_name",
+                        "created_at",
+                        "updated_at",
+                        ]
 
                 for col in target_columns:
                     if col in columns:
@@ -142,21 +142,21 @@ def run_database_migration() -> bool:
             # Create indexes for better performance
             cursor.execute(
                 """
-                CREATE INDEX IF NOT EXISTS idx_news_intelligence_task_name 
+                CREATE INDEX IF NOT EXISTS idx_news_intelligence_task_name
                 ON news_intelligence(task_name)
             """
             )
 
             cursor.execute(
                 """
-                CREATE INDEX IF NOT EXISTS idx_news_intelligence_created_at 
+                CREATE INDEX IF NOT EXISTS idx_news_intelligence_created_at
                 ON news_intelligence(created_at)
             """
             )
 
             cursor.execute(
                 """
-                CREATE INDEX IF NOT EXISTS idx_news_intelligence_category 
+                CREATE INDEX IF NOT EXISTS idx_news_intelligence_category
                 ON news_intelligence(category)
             """
             )
@@ -166,12 +166,12 @@ def run_database_migration() -> bool:
                 """
                 CREATE TABLE IF NOT EXISTS agent_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    agent_id TEXT NOT NULL,
-                    task_type TEXT NOT NULL,
-                    task_data TEXT,
-                    status TEXT DEFAULT 'pending',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        agent_id TEXT NOT NULL,
+                        task_type TEXT NOT NULL,
+                        task_data TEXT,
+                        status TEXT DEFAULT 'pending',
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -180,10 +180,10 @@ def run_database_migration() -> bool:
                 """
                 CREATE TABLE IF NOT EXISTS system_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    metric_name TEXT NOT NULL,
-                    metric_value REAL,
-                    metric_unit TEXT,
-                    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        metric_name TEXT NOT NULL,
+                        metric_value REAL,
+                        metric_unit TEXT,
+                        recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -193,15 +193,15 @@ def run_database_migration() -> bool:
                 """
                 CREATE TABLE IF NOT EXISTS system_health (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp TIMESTAMP NOT NULL,
-                    cpu_usage REAL NOT NULL,
-                    memory_usage REAL NOT NULL,
-                    disk_usage REAL NOT NULL,
-                    agent_status TEXT NOT NULL,
-                    service_status TEXT NOT NULL,
-                    error_count INTEGER NOT NULL,
-                    uptime_seconds INTEGER NOT NULL,
-                    health_score REAL NOT NULL
+                        timestamp TIMESTAMP NOT NULL,
+                        cpu_usage REAL NOT NULL,
+                        memory_usage REAL NOT NULL,
+                        disk_usage REAL NOT NULL,
+                        agent_status TEXT NOT NULL,
+                        service_status TEXT NOT NULL,
+                        error_count INTEGER NOT NULL,
+                        uptime_seconds INTEGER NOT NULL,
+                        health_score REAL NOT NULL
                 )
             """
             )
@@ -238,7 +238,7 @@ def verify_database_schema() -> bool:
             # Check if news_intelligence table exists
             cursor.execute(
                 """
-                SELECT name FROM sqlite_master 
+                SELECT name FROM sqlite_master
                 WHERE type='table' AND name='news_intelligence'
             """
             )
@@ -262,13 +262,12 @@ def verify_database_schema() -> bool:
         logger.error(f"Database schema verification failed: {e}")
         return False
 
-
 if __name__ == "__main__":
     # Configure logging for standalone execution
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
+        level = logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            )
 
     print("Running database migration...")
     success = run_database_migration()

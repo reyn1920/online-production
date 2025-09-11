@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Marketing Agent Tools Module
 
 Implements comprehensive marketing capabilities including:
 - Day One Blitz marketing strategy
 - Relentless Optimization Loop for continuous improvement
-- Intelligent context-aware affiliate link selection
-- Cross-promotion manager with "The Right Perspective" exception handling
+- Intelligent context - aware affiliate link selection
+- Cross - promotion manager with "The Right Perspective" exception handling
 """
 
 import asyncio
@@ -60,7 +60,8 @@ except ImportError as e:
 
 
 class EmailService:
-    """Cost-free email service using SMTP with encrypted credential storage"""
+    """Cost - free email service using SMTP with encrypted credential storage"""
+
 
     def __init__(self, secret_store_path: str = "right_perspective.db"):
         self.secret_store_path = secret_store_path
@@ -68,6 +69,7 @@ class EmailService:
         self.smtp_port = None
         self.email_address = None
         self.logger = logging.getLogger(__name__)
+
 
     def _get_secret_store(self):
         """Get SecretStore instance for encrypted credential management"""
@@ -84,13 +86,14 @@ class EmailService:
             self.logger.error(f"Failed to import SecretStore: {e}")
             return None
 
+
     def setup_email_credentials(
         self,
-        email_address: str,
-        password: str,
-        smtp_server: str = "smtp.gmail.com",
-        smtp_port: int = 587,
-    ):
+            email_address: str,
+            password: str,
+            smtp_server: str = "smtp.gmail.com",
+            smtp_port: int = 587,
+            ):
         """Store email credentials securely in SecretStore"""
         secret_store = self._get_secret_store()
         if not secret_store:
@@ -109,6 +112,7 @@ class EmailService:
             self.logger.error(f"Failed to store email credentials: {e}")
             return False
 
+
     def _load_credentials(self):
         """Load email credentials from SecretStore"""
         secret_store = self._get_secret_store()
@@ -125,6 +129,7 @@ class EmailService:
             self.logger.error(f"Failed to load email credentials: {e}")
             return False
 
+
     def _create_smtp_connection(self):
         """Create secure SMTP connection"""
         try:
@@ -133,7 +138,7 @@ class EmailService:
 
             # Connect to server
             server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            server.starttls(context=context)
+            server.starttls(context = context)
             server.login(self.email_address, self.password)
 
             return server
@@ -141,15 +146,16 @@ class EmailService:
             self.logger.error(f"Failed to create SMTP connection: {e}")
             return None
 
+
     def compose_email(
         self,
-        to_email: str,
-        subject: str,
-        body_text: str,
-        body_html: str = None,
-        attachments: List[str] = None,
-    ) -> MIMEMultipart:
-        """Compose email with text/HTML content and optional attachments"""
+            to_email: str,
+            subject: str,
+            body_text: str,
+            body_html: str = None,
+            attachments: List[str] = None,
+            ) -> MIMEMultipart:
+        """Compose email with text / HTML content and optional attachments"""
         msg = MIMEMultipart("alternative")
         msg["From"] = self.email_address
         msg["To"] = to_email
@@ -169,26 +175,27 @@ class EmailService:
             for file_path in attachments:
                 if Path(file_path).exists():
                     with open(file_path, "rb") as attachment:
-                        part = MIMEBase("application", "octet-stream")
+                        part = MIMEBase("application", "octet - stream")
                         part.set_payload(attachment.read())
 
                     encoders.encode_base64(part)
                     part.add_header(
-                        "Content-Disposition",
-                        f"attachment; filename= {Path(file_path).name}",
-                    )
+                        "Content - Disposition",
+                            f"attachment; filename= {Path(file_path).name}",
+                            )
                     msg.attach(part)
 
         return msg
 
+
     def send_email(
         self,
-        to_email: str,
-        subject: str,
-        body_text: str,
-        body_html: str = None,
-        attachments: List[str] = None,
-    ) -> bool:
+            to_email: str,
+            subject: str,
+            body_text: str,
+            body_html: str = None,
+            attachments: List[str] = None,
+            ) -> bool:
         """Send email using SMTP"""
         if not self._load_credentials():
             return False
@@ -214,13 +221,14 @@ class EmailService:
             self.logger.error(f"Failed to send email: {e}")
             return False
 
+
     def send_bulk_emails(
         self,
-        recipients: List[Dict[str, str]],
-        subject_template: str,
-        body_template: str,
-        html_template: str = None,
-    ) -> Dict[str, bool]:
+            recipients: List[Dict[str, str]],
+            subject_template: str,
+            body_template: str,
+            html_template: str = None,
+            ) -> Dict[str, bool]:
         """Send personalized emails to multiple recipients"""
         if not self._load_credentials():
             return {}
@@ -259,13 +267,14 @@ class EmailService:
             server.quit()
             return results
 
+
     def track_email_event(
         self,
-        contact_email: str,
-        event_type: str,
-        campaign_id: str = None,
-        metadata: Dict = None,
-    ):
+            contact_email: str,
+            event_type: str,
+            campaign_id: str = None,
+            metadata: Dict = None,
+            ):
         """Track email events in contact_events table"""
         try:
             conn = sqlite3.connect(self.secret_store_path)
@@ -274,18 +283,18 @@ class EmailService:
             # Insert email event
             cursor.execute(
                 """
-                INSERT INTO contact_events 
+                INSERT INTO contact_events
                 (contact_email, event_type, campaign_id, event_data, created_at)
                 VALUES (?, ?, ?, ?, ?)
             """,
                 (
                     contact_email,
-                    event_type,
-                    campaign_id,
-                    json.dumps(metadata or {}),
-                    datetime.now().isoformat(),
-                ),
-            )
+                        event_type,
+                        campaign_id,
+                        json.dumps(metadata or {}),
+                        datetime.now().isoformat(),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -351,8 +360,9 @@ class AffiliateNetwork(Enum):
     PARTNERSTACK = "partnerstack"
     CUSTOM = "custom"
 
-
 @dataclass
+
+
 class MarketingCampaign:
     """Represents a marketing campaign"""
 
@@ -364,14 +374,15 @@ class MarketingCampaign:
     budget: float
     start_date: datetime
     end_date: datetime
-    objectives: List[str] = field(default_factory=list)
-    content_assets: List[str] = field(default_factory=list)
-    metrics: Dict[OptimizationMetric, float] = field(default_factory=dict)
+    objectives: List[str] = field(default_factory = list)
+    content_assets: List[str] = field(default_factory = list)
+    metrics: Dict[OptimizationMetric, float] = field(default_factory = dict)
     status: str = "draft"
-    created_at: datetime = field(default_factory=datetime.now)
-
+    created_at: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class AffiliateLink:
     """Represents an affiliate link with context"""
 
@@ -380,17 +391,18 @@ class AffiliateLink:
     network: AffiliateNetwork
     commission_rate: float
     product_category: str
-    target_keywords: List[str] = field(default_factory=list)
+    target_keywords: List[str] = field(default_factory = list)
     context_relevance: float = 0.0
     conversion_rate: float = 0.0
     earnings_per_click: float = 0.0
-    last_updated: datetime = field(default_factory=datetime.now)
+    last_updated: datetime = field(default_factory = datetime.now)
     is_active: bool = True
 
-
 @dataclass
+
+
 class OptimizationTest:
-    """Represents an A/B test or optimization experiment"""
+    """Represents an A / B test or optimization experiment"""
 
     test_id: str
     name: str
@@ -401,26 +413,28 @@ class OptimizationTest:
     end_date: Optional[datetime] = None
     sample_size: int = 0
     confidence_level: float = 0.95
-    results: Dict[str, Any] = field(default_factory=dict)
+    results: Dict[str, Any] = field(default_factory = dict)
     status: str = "running"
     winner: Optional[str] = None
 
-
 @dataclass
+
+
 class CrossPromotionRule:
-    """Rules for cross-promotion between content"""
+    """Rules for cross - promotion between content"""
 
     source_content: str
     target_content: str
     relevance_score: float
     promotion_type: str  # "mention", "link", "embed", "recommendation"
     context: str
-    exceptions: List[str] = field(default_factory=list)
+    exceptions: List[str] = field(default_factory = list)
     is_active: bool = True
 
 
 class DayOneBlitzStrategy:
     """Implements the Day One Blitz marketing strategy"""
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
@@ -428,34 +442,35 @@ class DayOneBlitzStrategy:
         self.active_campaigns: Dict[str, MarketingCampaign] = {}
         self.email_service = EmailService()
 
+
     async def launch_blitz_campaign(
         self,
-        product_name: str,
-        target_audience: str,
-        budget: float,
-        duration_hours: int = 24,
-    ) -> MarketingCampaign:
+            product_name: str,
+            target_audience: str,
+            budget: float,
+            duration_hours: int = 24,
+            ) -> MarketingCampaign:
         """Launch a Day One Blitz campaign"""
         try:
             campaign_id = f"blitz_{int(time.time())}"
 
             # Create comprehensive campaign
             campaign = MarketingCampaign(
-                campaign_id=campaign_id,
-                name=f"Day One Blitz: {product_name}",
-                campaign_type=CampaignType.PRODUCT_LAUNCH,
-                channels=self._select_optimal_channels(target_audience),
-                target_audience=target_audience,
-                budget=budget,
-                start_date=datetime.now(),
-                end_date=datetime.now() + timedelta(hours=duration_hours),
-                objectives=[
+                campaign_id = campaign_id,
+                    name = f"Day One Blitz: {product_name}",
+                    campaign_type = CampaignType.PRODUCT_LAUNCH,
+                    channels = self._select_optimal_channels(target_audience),
+                    target_audience = target_audience,
+                    budget = budget,
+                    start_date = datetime.now(),
+                    end_date = datetime.now() + timedelta(hours = duration_hours),
+                    objectives=[
                     "Maximize initial visibility",
-                    "Generate early momentum",
-                    "Capture early adopters",
-                    "Create social proof",
-                ],
-            )
+                        "Generate early momentum",
+                        "Capture early adopters",
+                        "Create social proof",
+                        ],
+                    )
 
             # Generate content assets for each channel
             campaign.content_assets = await self._generate_blitz_content(campaign)
@@ -463,7 +478,7 @@ class DayOneBlitzStrategy:
             # Execute simultaneous launch across all channels
             await self._execute_simultaneous_launch(campaign)
 
-            # Set up real-time monitoring
+            # Set up real - time monitoring
             await self._setup_realtime_monitoring(campaign)
 
             campaign.status = "active"
@@ -476,6 +491,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Error launching blitz campaign: {e}")
             raise
 
+
     def _select_optimal_channels(self, target_audience: str) -> List[MarketingChannel]:
         """Select optimal marketing channels based on target audience"""
         audience_lower = target_audience.lower()
@@ -483,8 +499,8 @@ class DayOneBlitzStrategy:
         # Channel selection based on audience
         channels = [
             MarketingChannel.EMAIL,
-            MarketingChannel.BLOG,
-        ]  # Always include these
+                MarketingChannel.BLOG,
+                ]  # Always include these
 
         if any(term in audience_lower for term in ["business", "professional", "b2b"]):
             channels.extend([MarketingChannel.LINKEDIN, MarketingChannel.TWITTER])
@@ -506,6 +522,7 @@ class DayOneBlitzStrategy:
 
         return list(set(channels))  # Remove duplicates
 
+
     async def _generate_blitz_content(self, campaign: MarketingCampaign) -> List[str]:
         """Generate content assets for the blitz campaign"""
         content_assets = []
@@ -515,60 +532,61 @@ class DayOneBlitzStrategy:
                 content_assets.extend(
                     [
                         "Product announcement video",
-                        "Behind-the-scenes launch video",
-                        "Quick demo/tutorial video",
-                    ]
+                            "Behind - the - scenes launch video",
+                            "Quick demo / tutorial video",
+                            ]
                 )
 
             elif channel == MarketingChannel.FACEBOOK:
                 content_assets.extend(
                     [
                         "Launch announcement post",
-                        "Product showcase carousel",
-                        "Live Q&A session",
-                        "User testimonial posts",
-                    ]
+                            "Product showcase carousel",
+                            "Live Q&A session",
+                            "User testimonial posts",
+                            ]
                 )
 
             elif channel == MarketingChannel.INSTAGRAM:
                 content_assets.extend(
                     [
                         "Product reveal stories",
-                        "Launch countdown posts",
-                        "Behind-the-scenes reels",
-                        "User-generated content campaign",
-                    ]
+                            "Launch countdown posts",
+                            "Behind - the - scenes reels",
+                            "User - generated content campaign",
+                            ]
                 )
 
             elif channel == MarketingChannel.TWITTER:
                 content_assets.extend(
                     [
                         "Launch announcement thread",
-                        "Product feature highlights",
-                        "Real-time launch updates",
-                        "Community engagement tweets",
-                    ]
+                            "Product feature highlights",
+                            "Real - time launch updates",
+                            "Community engagement tweets",
+                            ]
                 )
 
             elif channel == MarketingChannel.EMAIL:
                 content_assets.extend(
                     [
                         "Launch announcement email",
-                        "Exclusive early access email",
-                        "Product walkthrough email series",
-                    ]
+                            "Exclusive early access email",
+                            "Product walkthrough email series",
+                            ]
                 )
 
             elif channel == MarketingChannel.BLOG:
                 content_assets.extend(
                     [
                         "Comprehensive launch blog post",
-                        "Product development story",
-                        "Use case examples post",
-                    ]
+                            "Product development story",
+                            "Use case examples post",
+                            ]
                 )
 
         return content_assets
+
 
     async def _execute_simultaneous_launch(self, campaign: MarketingCampaign) -> None:
         """Execute simultaneous launch across all channels"""
@@ -579,7 +597,7 @@ class DayOneBlitzStrategy:
             launch_tasks.append(task)
 
         # Execute all launches simultaneously
-        results = await asyncio.gather(*launch_tasks, return_exceptions=True)
+        results = await asyncio.gather(*launch_tasks, return_exceptions = True)
 
         # Log results
         for i, result in enumerate(results):
@@ -589,12 +607,13 @@ class DayOneBlitzStrategy:
             else:
                 self.logger.info(f"Successfully launched on {channel.value}")
 
+
     async def _launch_on_channel(
         self, campaign: MarketingCampaign, channel: MarketingChannel
     ) -> bool:
         """Launch campaign on a specific channel"""
         try:
-            # Channel-specific launch implementation
+            # Channel - specific launch implementation
             launch_config = self._get_channel_config(channel)
 
             if channel == MarketingChannel.EMAIL:
@@ -640,6 +659,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Failed to launch on {channel.value}: {e}")
             return False
 
+
     def _get_channel_config(self, channel: MarketingChannel) -> Dict[str, Any]:
         """Get configuration for a specific marketing channel"""
         base_config = {"timeout": 30, "retry_attempts": 3, "rate_limit_delay": 1.0}
@@ -647,73 +667,74 @@ class DayOneBlitzStrategy:
         channel_configs = {
             MarketingChannel.EMAIL: {
                 **base_config,
-                "batch_size": 100,
-                "template_engine": "jinja2",
-                "tracking_enabled": True,
-            },
-            MarketingChannel.YOUTUBE: {
+                    "batch_size": 100,
+                    "template_engine": "jinja2",
+                    "tracking_enabled": True,
+                    },
+                MarketingChannel.YOUTUBE: {
                 **base_config,
-                "video_quality": "hd720",
-                "privacy_status": "public",
-                "category_id": "22",  # People & Blogs
+                    "video_quality": "hd720",
+                    "privacy_status": "public",
+                    "category_id": "22",  # People & Blogs
             },
-            MarketingChannel.FACEBOOK: {
+                MarketingChannel.FACEBOOK: {
                 **base_config,
-                "post_type": "status",
-                "targeting_enabled": True,
-                "boost_budget": 50.0,
-            },
-            MarketingChannel.INSTAGRAM: {
+                    "post_type": "status",
+                    "targeting_enabled": True,
+                    "boost_budget": 50.0,
+                    },
+                MarketingChannel.INSTAGRAM: {
                 **base_config,
-                "image_format": "square",
-                "story_enabled": True,
-                "hashtag_limit": 30,
-            },
-            MarketingChannel.TWITTER: {
+                    "image_format": "square",
+                    "story_enabled": True,
+                    "hashtag_limit": 30,
+                    },
+                MarketingChannel.TWITTER: {
                 **base_config,
-                "thread_enabled": True,
-                "character_limit": 280,
-                "media_enabled": True,
-            },
-            MarketingChannel.LINKEDIN: {
+                    "thread_enabled": True,
+                    "character_limit": 280,
+                    "media_enabled": True,
+                    },
+                MarketingChannel.LINKEDIN: {
                 **base_config,
-                "post_type": "article",
-                "professional_tone": True,
-                "company_page": True,
-            },
-            MarketingChannel.TIKTOK: {
+                    "post_type": "article",
+                    "professional_tone": True,
+                    "company_page": True,
+                    },
+                MarketingChannel.TIKTOK: {
                 **base_config,
-                "video_duration": 60,
-                "effects_enabled": True,
-                "trending_sounds": True,
-            },
-            MarketingChannel.BLOG: {
+                    "video_duration": 60,
+                    "effects_enabled": True,
+                    "trending_sounds": True,
+                    },
+                MarketingChannel.BLOG: {
                 **base_config,
-                "seo_optimization": True,
-                "word_count_min": 800,
-                "internal_links": 3,
-            },
-            MarketingChannel.PODCAST: {
+                    "seo_optimization": True,
+                    "word_count_min": 800,
+                    "internal_links": 3,
+                    },
+                MarketingChannel.PODCAST: {
                 **base_config,
-                "audio_quality": "high",
-                "episode_length": 30,
-                "show_notes": True,
-            },
-            MarketingChannel.REDDIT: {
+                    "audio_quality": "high",
+                    "episode_length": 30,
+                    "show_notes": True,
+                    },
+                MarketingChannel.REDDIT: {
                 **base_config,
-                "subreddit_research": True,
-                "karma_threshold": 100,
-                "community_rules": True,
-            },
-            MarketingChannel.PINTEREST: {
+                    "subreddit_research": True,
+                    "karma_threshold": 100,
+                    "community_rules": True,
+                    },
+                MarketingChannel.PINTEREST: {
                 **base_config,
-                "pin_format": "vertical",
-                "board_optimization": True,
-                "seasonal_content": True,
-            },
-        }
+                    "pin_format": "vertical",
+                    "board_optimization": True,
+                    "seasonal_content": True,
+                    },
+                }
 
         return channel_configs.get(channel, base_config)
+
 
     async def _launch_email_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
@@ -735,21 +756,21 @@ class DayOneBlitzStrategy:
 
             # Send emails using EmailService
             results = self.email_service.send_bulk_emails(
-                recipients=contacts,
-                subject_template=email_content["subject"],
-                body_template=email_content["body_text"],
-                html_template=email_content.get("body_html"),
-            )
+                recipients = contacts,
+                    subject_template = email_content["subject"],
+                    body_template = email_content["body_text"],
+                    html_template = email_content.get("body_html"),
+                    )
 
             # Track email events
             for email, success in results.items():
                 event_type = "email_sent" if success else "email_failed"
                 self.email_service.track_email_event(
-                    contact_email=email,
-                    event_type=event_type,
-                    campaign_id=campaign.campaign_id,
-                    metadata={"campaign_name": campaign.name},
-                )
+                    contact_email = email,
+                        event_type = event_type,
+                        campaign_id = campaign.campaign_id,
+                        metadata={"campaign_name": campaign.name},
+                        )
 
             success_count = sum(1 for success in results.values() if success)
             self.logger.info(
@@ -761,6 +782,7 @@ class DayOneBlitzStrategy:
         except Exception as e:
             self.logger.error(f"Email campaign launch failed: {e}")
             return False
+
 
     async def _get_email_contacts(
         self, campaign: MarketingCampaign
@@ -775,8 +797,8 @@ class DayOneBlitzStrategy:
             # Get active contacts (you can add filtering based on campaign targeting)
             cursor.execute(
                 """
-                SELECT email, first_name, last_name 
-                FROM contacts 
+                SELECT email, first_name, last_name
+                FROM contacts
                 WHERE status = 'active' AND email IS NOT NULL
             """
             )
@@ -786,9 +808,9 @@ class DayOneBlitzStrategy:
                 contacts.append(
                     {
                         "email": row[0],
-                        "first_name": row[1] or "",
-                        "last_name": row[2] or "",
-                    }
+                            "first_name": row[1] or "",
+                            "last_name": row[2] or "",
+                            }
                 )
 
             conn.close()
@@ -797,6 +819,7 @@ class DayOneBlitzStrategy:
         except Exception as e:
             self.logger.error(f"Failed to get email contacts: {e}")
             return []
+
 
     async def _generate_email_content_with_llm(
         self, campaign: MarketingCampaign
@@ -808,30 +831,30 @@ class DayOneBlitzStrategy:
             # Prepare prompt for email generation
             prompt = f"""
             Create a professional marketing email for the following campaign:
-            
+
             Campaign: {campaign.name}
             Description: {campaign.description}
             Target Audience: {campaign.target_audience}
-            
+
             Please generate:
             1. A compelling subject line
             2. Email body text (plain text version)
             3. Email body HTML (simple HTML version)
-            
-            Make it engaging, professional, and include a clear call-to-action.
+
+            Make it engaging, professional, and include a clear call - to - action.
             Format your response as JSON with keys: subject, body_text, body_html
             """
 
             # Call Ollama API (assuming it's running locally)
             response = requests.post(
-                "http://localhost:11434/api/generate",
-                json={
+                "http://localhost:11434 / api / generate",
+                    json={
                     "model": "llama2",  # or whatever model is available
                     "prompt": prompt,
-                    "stream": False,
-                },
-                timeout=30,
-            )
+                        "stream": False,
+                        },
+                    timeout = 30,
+                    )
 
             if response.status_code == 200:
                 result = response.json()
@@ -845,25 +868,26 @@ class DayOneBlitzStrategy:
                     # Fallback to basic content if JSON parsing fails
                     return {
                         "subject": f"Exciting Update: {campaign.name}",
-                        "body_text": f"Hello!\n\nWe're excited to share {campaign.description}\n\nBest regards,\nThe Team",
-                        "body_html": f"<h2>Hello!</h2><p>We're excited to share {campaign.description}</p><p>Best regards,<br>The Team</p>",
-                    }
+                            "body_text": f"Hello!\n\nWe're excited to share {campaign.description}\n\nBest regards,\nThe Team",
+                            "body_html": f"<h2 > Hello!</h2><p > We're excited to share {campaign.description}</p><p > Best regards,<br > The Team</p>",
+                            }
             else:
                 # Fallback content if Ollama is not available
                 return {
                     "subject": f"Exciting Update: {campaign.name}",
-                    "body_text": f"Hello!\n\nWe're excited to share {campaign.description}\n\nBest regards,\nThe Team",
-                    "body_html": f"<h2>Hello!</h2><p>We're excited to share {campaign.description}</p><p>Best regards,<br>The Team</p>",
-                }
+                        "body_text": f"Hello!\n\nWe're excited to share {campaign.description}\n\nBest regards,\nThe Team",
+                        "body_html": f"<h2 > Hello!</h2><p > We're excited to share {campaign.description}</p><p > Best regards,<br > The Team</p>",
+                        }
 
         except Exception as e:
             self.logger.error(f"Failed to generate email content with LLM: {e}")
             # Return fallback content
             return {
                 "subject": f"Update: {campaign.name}",
-                "body_text": f"Hello!\n\nWe have an update about {campaign.description}\n\nBest regards,\nThe Team",
-                "body_html": f"<h2>Hello!</h2><p>We have an update about {campaign.description}</p><p>Best regards,<br>The Team</p>",
-            }
+                    "body_text": f"Hello!\n\nWe have an update about {campaign.description}\n\nBest regards,\nThe Team",
+                    "body_html": f"<h2 > Hello!</h2><p > We have an update about {campaign.description}</p><p > Best regards,<br > The Team</p>",
+                    }
+
 
     async def _launch_youtube_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
@@ -884,6 +908,7 @@ class DayOneBlitzStrategy:
         except Exception as e:
             self.logger.error(f"YouTube campaign launch failed: {e}")
             return False
+
 
     async def _launch_facebook_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
@@ -908,6 +933,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Facebook campaign launch failed: {e}")
             return False
 
+
     async def _launch_instagram_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
     ) -> bool:
@@ -928,6 +954,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Instagram campaign launch failed: {e}")
             return False
 
+
     async def _launch_twitter_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
     ) -> bool:
@@ -947,6 +974,7 @@ class DayOneBlitzStrategy:
         except Exception as e:
             self.logger.error(f"Twitter campaign launch failed: {e}")
             return False
+
 
     async def _launch_linkedin_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
@@ -970,6 +998,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"LinkedIn campaign launch failed: {e}")
             return False
 
+
     async def _launch_tiktok_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
     ) -> bool:
@@ -990,6 +1019,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"TikTok campaign launch failed: {e}")
             return False
 
+
     async def _launch_blog_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
     ) -> bool:
@@ -1009,6 +1039,7 @@ class DayOneBlitzStrategy:
         except Exception as e:
             self.logger.error(f"Blog campaign launch failed: {e}")
             return False
+
 
     async def _launch_podcast_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
@@ -1032,6 +1063,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Podcast campaign launch failed: {e}")
             return False
 
+
     async def _launch_reddit_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
     ) -> bool:
@@ -1053,6 +1085,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Reddit campaign launch failed: {e}")
             return False
 
+
     async def _launch_pinterest_campaign(
         self, campaign: MarketingCampaign, config: Dict[str, Any]
     ) -> bool:
@@ -1073,32 +1106,34 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Pinterest campaign launch failed: {e}")
             return False
 
+
     async def _track_launch_metrics(
         self, campaign: MarketingCampaign, channel: MarketingChannel
     ) -> None:
         """Track metrics for campaign launch on specific channel"""
         try:
-            # Initialize channel-specific metrics
+            # Initialize channel - specific metrics
             if channel not in campaign.metrics:
                 campaign.metrics[channel] = {
                     "launch_time": datetime.now(),
-                    "status": "active",
-                    "impressions": 0,
-                    "clicks": 0,
-                    "conversions": 0,
-                    "spend": 0.0,
-                }
+                        "status": "active",
+                        "impressions": 0,
+                        "clicks": 0,
+                        "conversions": 0,
+                        "spend": 0.0,
+                        }
         except Exception as e:
             self.logger.error(
                 f"Failed to track launch metrics for {channel.value}: {e}"
             )
 
+
     async def _generate_performance_insights(
         self,
-        analysis: Dict[str, Any],
-        campaign: MarketingCampaign,
-        channel_performance: Dict[str, Any],
-    ) -> None:
+            analysis: Dict[str, Any],
+            campaign: MarketingCampaign,
+            channel_performance: Dict[str, Any],
+            ) -> None:
         """Generate actionable performance insights"""
         try:
             insights = []
@@ -1125,8 +1160,8 @@ class DayOneBlitzStrategy:
             if analysis["top_performing_channels"]:
                 best_channel = max(
                     analysis["top_performing_channels"],
-                    key=lambda ch: channel_performance[ch]["efficiency_score"],
-                )
+                        key = lambda ch: channel_performance[ch]["efficiency_score"],
+                        )
                 insights.append(
                     f"Top performer: {best_channel} with {channel_performance[best_channel]['efficiency_score']:.1%} efficiency"
                 )
@@ -1134,8 +1169,8 @@ class DayOneBlitzStrategy:
             if analysis["underperforming_channels"]:
                 worst_channel = min(
                     analysis["underperforming_channels"],
-                    key=lambda ch: channel_performance[ch]["efficiency_score"],
-                )
+                        key = lambda ch: channel_performance[ch]["efficiency_score"],
+                        )
                 insights.append(
                     f"Underperformer: {worst_channel} needs immediate attention"
                 )
@@ -1156,12 +1191,13 @@ class DayOneBlitzStrategy:
             logging.error(f"Error generating performance insights: {e}")
             analysis["key_insights"] = ["Unable to generate detailed insights"]
 
+
     async def _identify_performance_bottlenecks(
         self,
-        analysis: Dict[str, Any],
-        campaign: MarketingCampaign,
-        channel_performance: Dict[str, Any],
-    ) -> None:
+            analysis: Dict[str, Any],
+            campaign: MarketingCampaign,
+            channel_performance: Dict[str, Any],
+            ) -> None:
         """Identify performance bottlenecks"""
         try:
             bottlenecks = []
@@ -1172,7 +1208,7 @@ class DayOneBlitzStrategy:
             )
             if overall_ctr < 0.02:
                 bottlenecks.append(
-                    "Low click-through rate - creative content may need improvement"
+                    "Low click - through rate - creative content may need improvement"
                 )
 
             # Low conversion bottleneck
@@ -1189,7 +1225,7 @@ class DayOneBlitzStrategy:
                 analysis["top_performing_channels"]
             ):
                 bottlenecks.append(
-                    "More underperforming than top-performing channels - review channel strategy"
+                    "More underperforming than top - performing channels - review channel strategy"
                 )
 
             # Budget efficiency bottleneck
@@ -1204,7 +1240,7 @@ class DayOneBlitzStrategy:
                 and len(campaign.channels) > 3
             ):
                 bottlenecks.append(
-                    "Over-reliance on single channel - diversification risk"
+                    "Over - reliance on single channel - diversification risk"
                 )
 
             analysis["bottlenecks"] = bottlenecks
@@ -1213,12 +1249,13 @@ class DayOneBlitzStrategy:
             logging.error(f"Error identifying bottlenecks: {e}")
             analysis["bottlenecks"] = ["Unable to identify specific bottlenecks"]
 
+
     async def _generate_optimization_recommendations(
         self,
-        analysis: Dict[str, Any],
-        campaign: MarketingCampaign,
-        channel_performance: Dict[str, Any],
-    ) -> None:
+            analysis: Dict[str, Any],
+            campaign: MarketingCampaign,
+            channel_performance: Dict[str, Any],
+            ) -> None:
         """Generate optimization recommendations"""
         try:
             recommendations = []
@@ -1230,8 +1267,8 @@ class DayOneBlitzStrategy:
             ):
                 best_channel = max(
                     analysis["top_performing_channels"],
-                    key=lambda ch: channel_performance[ch]["roi"],
-                )
+                        key = lambda ch: channel_performance[ch]["roi"],
+                        )
                 recommendations.append(
                     f"Reallocate budget from underperforming channels to {best_channel}"
                 )
@@ -1242,7 +1279,7 @@ class DayOneBlitzStrategy:
             ]
             if low_ctr_channels:
                 recommendations.append(
-                    f"A/B test new creative content for: {', '.join(low_ctr_channels)}"
+                    f"A / B test new creative content for: {', '.join(low_ctr_channels)}"
                 )
 
             # Conversion optimization recommendations
@@ -1262,7 +1299,7 @@ class DayOneBlitzStrategy:
             ]
             if high_roi_channels:
                 recommendations.append(
-                    f"Scale up budget for high-ROI channels: {', '.join(high_roi_channels)}"
+                    f"Scale up budget for high - ROI channels: {', '.join(high_roi_channels)}"
                 )
 
             # Pause recommendations
@@ -1282,7 +1319,7 @@ class DayOneBlitzStrategy:
                 "Unable to generate specific recommendations"
             ]
 
-            # Set up real-time tracking
+            # Set up real - time tracking
             await self._setup_channel_tracking(campaign, channel)
 
         except Exception as e:
@@ -1290,22 +1327,24 @@ class DayOneBlitzStrategy:
                 f"Failed to track launch metrics for {channel.value}: {e}"
             )
 
+
     async def _setup_realtime_monitoring(self, campaign: MarketingCampaign) -> None:
-        """Set up real-time monitoring for the campaign"""
+        """Set up real - time monitoring for the campaign"""
         # Initialize metrics tracking
         campaign.metrics = {
             OptimizationMetric.IMPRESSIONS: 0.0,
-            OptimizationMetric.REACH: 0.0,
-            OptimizationMetric.ENGAGEMENT_RATE: 0.0,
-            OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
-            OptimizationMetric.CONVERSION_RATE: 0.0,
-        }
+                OptimizationMetric.REACH: 0.0,
+                OptimizationMetric.ENGAGEMENT_RATE: 0.0,
+                OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
+                OptimizationMetric.CONVERSION_RATE: 0.0,
+                }
 
         # Start monitoring task
         asyncio.create_task(self._monitor_campaign_performance(campaign))
 
+
     async def _monitor_campaign_performance(self, campaign: MarketingCampaign) -> None:
-        """Monitor campaign performance in real-time"""
+        """Monitor campaign performance in real - time"""
         while campaign.status == "active" and datetime.now() < campaign.end_date:
             try:
                 # Simulate metrics collection
@@ -1323,19 +1362,20 @@ class DayOneBlitzStrategy:
                 )
                 await asyncio.sleep(60)
 
+
     async def _collect_campaign_metrics(self, campaign: MarketingCampaign) -> None:
         """Collect current campaign metrics from various channels"""
         try:
             total_metrics = {
                 OptimizationMetric.IMPRESSIONS: 0.0,
-                OptimizationMetric.REACH: 0.0,
-                OptimizationMetric.ENGAGEMENT_RATE: 0.0,
-                OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
-                OptimizationMetric.CONVERSION_RATE: 0.0,
-                OptimizationMetric.COST_PER_ACQUISITION: 0.0,
-                OptimizationMetric.RETURN_ON_AD_SPEND: 0.0,
-                OptimizationMetric.REVENUE: 0.0,
-            }
+                    OptimizationMetric.REACH: 0.0,
+                    OptimizationMetric.ENGAGEMENT_RATE: 0.0,
+                    OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
+                    OptimizationMetric.CONVERSION_RATE: 0.0,
+                    OptimizationMetric.COST_PER_ACQUISITION: 0.0,
+                    OptimizationMetric.RETURN_ON_AD_SPEND: 0.0,
+                    OptimizationMetric.REVENUE: 0.0,
+                    }
 
             # Collect metrics from each active channel
             for channel in campaign.channels:
@@ -1348,9 +1388,9 @@ class DayOneBlitzStrategy:
                     for metric, value in channel_metrics.items():
                         if metric in [
                             OptimizationMetric.IMPRESSIONS,
-                            OptimizationMetric.REACH,
-                            OptimizationMetric.REVENUE,
-                        ]:
+                                OptimizationMetric.REACH,
+                                OptimizationMetric.REVENUE,
+                                ]:
                             total_metrics[metric] += value
                         else:
                             # For rates, calculate weighted average based on impressions
@@ -1391,6 +1431,7 @@ class DayOneBlitzStrategy:
             if not campaign.metrics:
                 campaign.metrics = {metric: 0.0 for metric in OptimizationMetric}
 
+
     async def _collect_channel_metrics(
         self, campaign: MarketingCampaign, channel: MarketingChannel
     ) -> Dict[OptimizationMetric, float]:
@@ -1402,16 +1443,16 @@ class DayOneBlitzStrategy:
             # Initialize metrics for this channel
             metrics = {
                 OptimizationMetric.IMPRESSIONS: 0.0,
-                OptimizationMetric.REACH: 0.0,
-                OptimizationMetric.ENGAGEMENT_RATE: 0.0,
-                OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
-                OptimizationMetric.CONVERSION_RATE: 0.0,
-                OptimizationMetric.COST_PER_ACQUISITION: 0.0,
-                OptimizationMetric.RETURN_ON_AD_SPEND: 0.0,
-                OptimizationMetric.REVENUE: 0.0,
-            }
+                    OptimizationMetric.REACH: 0.0,
+                    OptimizationMetric.ENGAGEMENT_RATE: 0.0,
+                    OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
+                    OptimizationMetric.CONVERSION_RATE: 0.0,
+                    OptimizationMetric.COST_PER_ACQUISITION: 0.0,
+                    OptimizationMetric.RETURN_ON_AD_SPEND: 0.0,
+                    OptimizationMetric.REVENUE: 0.0,
+                    }
 
-            # Channel-specific metric collection logic
+            # Channel - specific metric collection logic
             if channel == MarketingChannel.EMAIL:
                 metrics.update(await self._collect_email_metrics(campaign))
             elif channel == MarketingChannel.YOUTUBE:
@@ -1435,7 +1476,7 @@ class DayOneBlitzStrategy:
             elif channel == MarketingChannel.PINTEREST:
                 metrics.update(await self._collect_pinterest_metrics(campaign))
 
-            # Apply channel-specific adjustments
+            # Apply channel - specific adjustments
             metrics = self._apply_channel_adjustments(metrics, channel, campaign)
 
             return metrics
@@ -1443,74 +1484,75 @@ class DayOneBlitzStrategy:
         except Exception as e:
             self.logger.error(f"Error collecting metrics from {channel.value}: {e}")
             # Return default metrics on error
-            return {metric: 0.0 for metric in OptimizationMetric}
+                return {metric: 0.0 for metric in OptimizationMetric}
+
 
     def _apply_channel_adjustments(
         self,
-        metrics: Dict[OptimizationMetric, float],
-        channel: MarketingChannel,
-        campaign: MarketingCampaign,
-    ) -> Dict[OptimizationMetric, float]:
-        """Apply channel-specific adjustments to collected metrics"""
+            metrics: Dict[OptimizationMetric, float],
+            channel: MarketingChannel,
+            campaign: MarketingCampaign,
+            ) -> Dict[OptimizationMetric, float]:
+        """Apply channel - specific adjustments to collected metrics"""
         try:
             # Channel performance multipliers based on typical performance
             channel_multipliers = {
                 MarketingChannel.EMAIL: {
                     "ctr": 1.2,
-                    "conversion": 1.5,
-                    "cost_efficiency": 1.3,
-                },
-                MarketingChannel.YOUTUBE: {
+                        "conversion": 1.5,
+                        "cost_efficiency": 1.3,
+                        },
+                    MarketingChannel.YOUTUBE: {
                     "reach": 2.0,
-                    "engagement": 1.8,
-                    "brand_awareness": 2.2,
-                },
-                MarketingChannel.FACEBOOK: {
+                        "engagement": 1.8,
+                        "brand_awareness": 2.2,
+                        },
+                    MarketingChannel.FACEBOOK: {
                     "reach": 1.5,
-                    "targeting": 1.4,
-                    "cost_efficiency": 1.1,
-                },
-                MarketingChannel.INSTAGRAM: {
+                        "targeting": 1.4,
+                        "cost_efficiency": 1.1,
+                        },
+                    MarketingChannel.INSTAGRAM: {
                     "engagement": 2.5,
-                    "visual_appeal": 2.0,
-                    "younger_demo": 1.8,
-                },
-                MarketingChannel.TWITTER: {
+                        "visual_appeal": 2.0,
+                        "younger_demo": 1.8,
+                        },
+                    MarketingChannel.TWITTER: {
                     "real_time": 1.6,
-                    "viral_potential": 1.4,
-                    "news_cycle": 1.3,
-                },
-                MarketingChannel.LINKEDIN: {
+                        "viral_potential": 1.4,
+                        "news_cycle": 1.3,
+                        },
+                    MarketingChannel.LINKEDIN: {
                     "b2b_conversion": 2.0,
-                    "professional": 1.7,
-                    "lead_quality": 1.9,
-                },
-                MarketingChannel.TIKTOK: {
+                        "professional": 1.7,
+                        "lead_quality": 1.9,
+                        },
+                    MarketingChannel.TIKTOK: {
                     "viral_potential": 3.0,
-                    "younger_demo": 2.5,
-                    "creative": 2.2,
-                },
-                MarketingChannel.BLOG: {
+                        "younger_demo": 2.5,
+                        "creative": 2.2,
+                        },
+                    MarketingChannel.BLOG: {
                     "seo_value": 1.8,
-                    "long_term": 1.5,
-                    "authority": 1.6,
-                },
-                MarketingChannel.PODCAST: {
+                        "long_term": 1.5,
+                        "authority": 1.6,
+                        },
+                    MarketingChannel.PODCAST: {
                     "engagement_depth": 2.0,
-                    "trust": 1.8,
-                    "niche_targeting": 1.7,
-                },
-                MarketingChannel.REDDIT: {
+                        "trust": 1.8,
+                        "niche_targeting": 1.7,
+                        },
+                    MarketingChannel.REDDIT: {
                     "community_trust": 1.9,
-                    "niche_targeting": 2.1,
-                    "authenticity": 1.8,
-                },
-                MarketingChannel.PINTEREST: {
+                        "niche_targeting": 2.1,
+                        "authenticity": 1.8,
+                        },
+                    MarketingChannel.PINTEREST: {
                     "visual_discovery": 2.0,
-                    "shopping_intent": 1.8,
-                    "longevity": 1.6,
-                },
-            }
+                        "shopping_intent": 1.8,
+                        "longevity": 1.6,
+                        },
+                    }
 
             # Apply multipliers if available
             if channel in channel_multipliers:
@@ -1553,6 +1595,7 @@ class DayOneBlitzStrategy:
             self.logger.error(f"Error applying channel adjustments: {e}")
             return metrics
 
+
     async def _collect_email_metrics(
         self, campaign: MarketingCampaign
     ) -> Dict[OptimizationMetric, float]:
@@ -1565,11 +1608,11 @@ class DayOneBlitzStrategy:
         # Industry benchmarks adjusted for campaign type
         type_multipliers = {
             CampaignType.PRODUCT_LAUNCH: {"open": 1.2, "ctr": 1.1, "conv": 1.3},
-            CampaignType.BRAND_AWARENESS: {"open": 0.9, "ctr": 0.8, "conv": 0.7},
-            CampaignType.LEAD_GENERATION: {"open": 1.0, "ctr": 1.2, "conv": 1.1},
-            CampaignType.AFFILIATE_PROMOTION: {"open": 0.8, "ctr": 1.0, "conv": 0.9},
-            CampaignType.RETARGETING: {"open": 1.1, "ctr": 1.3, "conv": 1.4},
-        }
+                CampaignType.BRAND_AWARENESS: {"open": 0.9, "ctr": 0.8, "conv": 0.7},
+                CampaignType.LEAD_GENERATION: {"open": 1.0, "ctr": 1.2, "conv": 1.1},
+                CampaignType.AFFILIATE_PROMOTION: {"open": 0.8, "ctr": 1.0, "conv": 0.9},
+                CampaignType.RETARGETING: {"open": 1.1, "ctr": 1.3, "conv": 1.4},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"open": 1.0, "ctr": 1.0, "conv": 1.0}
@@ -1586,12 +1629,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: float(emails_sent),
-            OptimizationMetric.REACH: float(opens),
-            OptimizationMetric.ENGAGEMENT_RATE: open_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: ctr_rate,
-            OptimizationMetric.CONVERSION_RATE: conv_rate,
-            OptimizationMetric.REVENUE: conversions * 25.0,  # $25 average order value
+                OptimizationMetric.REACH: float(opens),
+                OptimizationMetric.ENGAGEMENT_RATE: open_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: ctr_rate,
+                OptimizationMetric.CONVERSION_RATE: conv_rate,
+                OptimizationMetric.REVENUE: conversions * 25.0,  # $25 average order value
         }
+
 
     async def _collect_youtube_metrics(
         self, campaign: MarketingCampaign
@@ -1605,15 +1649,15 @@ class DayOneBlitzStrategy:
         # Campaign type performance adjustments
         type_multipliers = {
             CampaignType.PRODUCT_LAUNCH: {"engagement": 1.3, "ctr": 1.2, "conv": 1.4},
-            CampaignType.BRAND_AWARENESS: {"engagement": 1.1, "ctr": 0.8, "conv": 0.6},
-            CampaignType.LEAD_GENERATION: {"engagement": 0.9, "ctr": 1.1, "conv": 1.2},
-            CampaignType.AFFILIATE_PROMOTION: {
+                CampaignType.BRAND_AWARENESS: {"engagement": 1.1, "ctr": 0.8, "conv": 0.6},
+                CampaignType.LEAD_GENERATION: {"engagement": 0.9, "ctr": 1.1, "conv": 1.2},
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 0.8,
-                "ctr": 1.0,
-                "conv": 0.9,
-            },
-            CampaignType.RETARGETING: {"engagement": 1.2, "ctr": 1.4, "conv": 1.5},
-        }
+                    "ctr": 1.0,
+                    "conv": 0.9,
+                    },
+                CampaignType.RETARGETING: {"engagement": 1.2, "ctr": 1.4, "conv": 1.5},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conv": 1.0}
@@ -1631,13 +1675,14 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: float(impressions),
-            OptimizationMetric.REACH: float(views),
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: ctr_rate,
-            OptimizationMetric.CONVERSION_RATE: conv_rate,
-            OptimizationMetric.REVENUE: conversions
+                OptimizationMetric.REACH: float(views),
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: ctr_rate,
+                OptimizationMetric.CONVERSION_RATE: conv_rate,
+                OptimizationMetric.REVENUE: conversions
             * 35.0,  # $35 average order value for video traffic
         }
+
 
     async def _collect_facebook_metrics(
         self, campaign: MarketingCampaign
@@ -1651,15 +1696,15 @@ class DayOneBlitzStrategy:
         # Campaign type performance adjustments
         type_multipliers = {
             CampaignType.PRODUCT_LAUNCH: {"engagement": 1.1, "ctr": 1.0, "conv": 1.2},
-            CampaignType.BRAND_AWARENESS: {"engagement": 1.3, "ctr": 0.9, "conv": 0.8},
-            CampaignType.LEAD_GENERATION: {"engagement": 0.9, "ctr": 1.2, "conv": 1.3},
-            CampaignType.AFFILIATE_PROMOTION: {
+                CampaignType.BRAND_AWARENESS: {"engagement": 1.3, "ctr": 0.9, "conv": 0.8},
+                CampaignType.LEAD_GENERATION: {"engagement": 0.9, "ctr": 1.2, "conv": 1.3},
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 0.8,
-                "ctr": 1.1,
-                "conv": 1.0,
-            },
-            CampaignType.RETARGETING: {"engagement": 1.2, "ctr": 1.5, "conv": 1.6},
-        }
+                    "ctr": 1.1,
+                    "conv": 1.0,
+                    },
+                CampaignType.RETARGETING: {"engagement": 1.2, "ctr": 1.5, "conv": 1.6},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conv": 1.0}
@@ -1677,13 +1722,14 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: float(impressions),
-            OptimizationMetric.REACH: float(reach),
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: ctr_rate,
-            OptimizationMetric.CONVERSION_RATE: conv_rate,
-            OptimizationMetric.REVENUE: conversions
+                OptimizationMetric.REACH: float(reach),
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: ctr_rate,
+                OptimizationMetric.CONVERSION_RATE: conv_rate,
+                OptimizationMetric.REVENUE: conversions
             * 28.0,  # $28 average order value for social traffic
         }
+
 
     async def _collect_instagram_metrics(
         self, campaign: MarketingCampaign
@@ -1697,36 +1743,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.3,
-                "ctr": 0.9,
-                "conversion": 0.8,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 0.9,
+                    "conversion": 0.8,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.1,
-                "ctr": 1.2,
-                "conversion": 1.1,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.2,
+                    "conversion": 1.1,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 0.9,
-                "ctr": 1.1,
-                "conversion": 1.3,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.1,
+                    "conversion": 1.3,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.4,
-                "ctr": 0.8,
-                "conversion": 0.7,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 0.8,
+                    "conversion": 0.7,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 0.8,
-                "ctr": 1.4,
-                "conversion": 1.5,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.2, "ctr": 1.1, "conversion": 1.2},
-        }
+                    "ctr": 1.4,
+                    "conversion": 1.5,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.2, "ctr": 1.1, "conversion": 1.2},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -1752,12 +1798,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_twitter_metrics(
         self, campaign: MarketingCampaign
@@ -1771,36 +1818,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.2,
-                "ctr": 0.9,
-                "conversion": 0.8,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 0.9,
+                    "conversion": 0.8,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.0,
-                "ctr": 1.1,
-                "conversion": 1.0,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.1,
+                    "conversion": 1.0,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 0.9,
-                "ctr": 1.2,
-                "conversion": 1.3,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.2,
+                    "conversion": 1.3,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.3,
-                "ctr": 0.8,
-                "conversion": 0.7,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 0.8,
+                    "conversion": 0.7,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 0.8,
-                "ctr": 1.3,
-                "conversion": 1.4,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.1, "ctr": 1.0, "conversion": 1.1},
-        }
+                    "ctr": 1.3,
+                    "conversion": 1.4,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.1, "ctr": 1.0, "conversion": 1.1},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -1826,12 +1873,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_linkedin_metrics(
         self, campaign: MarketingCampaign
@@ -1845,36 +1893,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.1,
-                "ctr": 0.9,
-                "conversion": 0.9,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 0.9,
+                    "conversion": 0.9,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 1.2,
-                "ctr": 1.3,
-                "conversion": 1.4,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.3,
+                    "conversion": 1.4,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 0.8,
-                "ctr": 0.9,
-                "conversion": 0.8,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 0.9,
+                    "conversion": 0.8,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.3,
-                "ctr": 1.1,
-                "conversion": 0.9,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 1.1,
+                    "conversion": 0.9,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 0.9,
-                "ctr": 1.2,
-                "conversion": 1.3,
-            },
-            CampaignType.SEASONAL: {"engagement": 0.9, "ctr": 0.9, "conversion": 0.9},
-        }
+                    "ctr": 1.2,
+                    "conversion": 1.3,
+                    },
+                CampaignType.SEASONAL: {"engagement": 0.9, "ctr": 0.9, "conversion": 0.9},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -1904,12 +1952,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_tiktok_metrics(
         self, campaign: MarketingCampaign
@@ -1923,36 +1972,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.4,
-                "ctr": 0.8,
-                "conversion": 0.7,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 0.8,
+                    "conversion": 0.7,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.2,
-                "ctr": 1.0,
-                "conversion": 0.9,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.0,
+                    "conversion": 0.9,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 0.8,
-                "ctr": 0.9,
-                "conversion": 1.1,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 0.9,
+                    "conversion": 1.1,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.5,
-                "ctr": 0.7,
-                "conversion": 0.6,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 0.7,
+                    "conversion": 0.6,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 0.9,
-                "ctr": 1.2,
-                "conversion": 1.3,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.3, "ctr": 1.1, "conversion": 1.0},
-        }
+                    "ctr": 1.2,
+                    "conversion": 1.3,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.3, "ctr": 1.1, "conversion": 1.0},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -1980,12 +2029,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_blog_metrics(
         self, campaign: MarketingCampaign
@@ -2001,36 +2051,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.2,
-                "ctr": 1.0,
-                "conversion": 0.9,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 1.0,
+                    "conversion": 0.9,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.0,
-                "ctr": 1.1,
-                "conversion": 1.0,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.1,
+                    "conversion": 1.0,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 1.1,
-                "ctr": 1.3,
-                "conversion": 1.4,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.3,
+                    "conversion": 1.4,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.4,
-                "ctr": 1.2,
-                "conversion": 1.1,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 1.2,
+                    "conversion": 1.1,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 0.9,
-                "ctr": 1.1,
-                "conversion": 1.2,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.1, "ctr": 1.0, "conversion": 1.0},
-        }
+                    "ctr": 1.1,
+                    "conversion": 1.2,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.1, "ctr": 1.0, "conversion": 1.0},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -2039,7 +2089,7 @@ class DayOneBlitzStrategy:
         # Calculate metrics based on blog benchmarks
         visitors = int(blog_budget / cost_per_visitor)
         impressions = visitors * 1.2  # Page views per visitor
-        reach = visitors  # Unique visitors
+            reach = visitors  # Unique visitors
 
         # Apply campaign type adjustments
         engagement_rate = (
@@ -2058,12 +2108,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_podcast_metrics(
         self, campaign: MarketingCampaign
@@ -2072,43 +2123,43 @@ class DayOneBlitzStrategy:
         # Podcast advertising benchmarks
         podcast_budget = campaign.budget * 0.08  # 8% allocation to podcast advertising
         cost_per_listener = (
-            15.00  # Average cost per podcast listener (sponsorship/ad placement)
+            15.00  # Average cost per podcast listener (sponsorship / ad placement)
         )
 
         # Campaign type multipliers for podcast
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.3,
-                "ctr": 1.0,
-                "conversion": 0.9,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 1.0,
+                    "conversion": 0.9,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.1,
-                "ctr": 1.1,
-                "conversion": 1.0,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.1,
+                    "conversion": 1.0,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 1.2,
-                "ctr": 1.2,
-                "conversion": 1.3,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.2,
+                    "conversion": 1.3,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.4,
-                "ctr": 1.1,
-                "conversion": 1.0,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 1.1,
+                    "conversion": 1.0,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 1.0,
-                "ctr": 1.3,
-                "conversion": 1.4,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.2, "ctr": 1.1, "conversion": 1.1},
-        }
+                    "ctr": 1.3,
+                    "conversion": 1.4,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.2, "ctr": 1.1, "conversion": 1.1},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -2136,12 +2187,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_reddit_metrics(
         self, campaign: MarketingCampaign
@@ -2155,36 +2207,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.1,
-                "ctr": 0.9,
-                "conversion": 0.8,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 0.9,
+                    "conversion": 0.8,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.3,
-                "ctr": 1.1,
-                "conversion": 1.0,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.1,
+                    "conversion": 1.0,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.1,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.1,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.4,
-                "ctr": 1.2,
-                "conversion": 0.9,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 1.2,
+                    "conversion": 0.9,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 0.8,
-                "ctr": 1.1,
-                "conversion": 1.2,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.2, "ctr": 1.0, "conversion": 1.0},
-        }
+                    "ctr": 1.1,
+                    "conversion": 1.2,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.2, "ctr": 1.0, "conversion": 1.0},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -2198,7 +2250,7 @@ class DayOneBlitzStrategy:
         # Apply campaign type adjustments
         engagement_rate = (
             0.22 * multiplier["engagement"]
-        )  # Reddit average engagement rate (community-driven)
+        )  # Reddit average engagement rate (community - driven)
         click_through_rate = 0.025 * multiplier["ctr"]  # Reddit average CTR
         conversion_rate = (
             0.018 * multiplier["conversion"]
@@ -2210,12 +2262,13 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
+
 
     async def _collect_pinterest_metrics(
         self, campaign: MarketingCampaign
@@ -2231,36 +2284,36 @@ class DayOneBlitzStrategy:
         type_multipliers = {
             CampaignType.BRAND_AWARENESS: {
                 "engagement": 1.2,
-                "ctr": 1.0,
-                "conversion": 0.9,
-            },
-            CampaignType.PRODUCT_LAUNCH: {
+                    "ctr": 1.0,
+                    "conversion": 0.9,
+                    },
+                CampaignType.PRODUCT_LAUNCH: {
                 "engagement": 1.1,
-                "ctr": 1.2,
-                "conversion": 1.1,
-            },
-            CampaignType.LEAD_GENERATION: {
+                    "ctr": 1.2,
+                    "conversion": 1.1,
+                    },
+                CampaignType.LEAD_GENERATION: {
                 "engagement": 0.9,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.AFFILIATE_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.AFFILIATE_PROMOTION: {
                 "engagement": 1.0,
-                "ctr": 1.0,
-                "conversion": 1.0,
-            },
-            CampaignType.CONTENT_PROMOTION: {
+                    "ctr": 1.0,
+                    "conversion": 1.0,
+                    },
+                CampaignType.CONTENT_PROMOTION: {
                 "engagement": 1.3,
-                "ctr": 1.1,
-                "conversion": 1.0,
-            },
-            CampaignType.RETARGETING: {
+                    "ctr": 1.1,
+                    "conversion": 1.0,
+                    },
+                CampaignType.RETARGETING: {
                 "engagement": 1.0,
-                "ctr": 1.3,
-                "conversion": 1.4,
-            },
-            CampaignType.SEASONAL: {"engagement": 1.4, "ctr": 1.2, "conversion": 1.2},
-        }
+                    "ctr": 1.3,
+                    "conversion": 1.4,
+                    },
+                CampaignType.SEASONAL: {"engagement": 1.4, "ctr": 1.2, "conversion": 1.2},
+                }
 
         multiplier = type_multipliers.get(
             campaign.campaign_type, {"engagement": 1.0, "ctr": 1.0, "conversion": 1.0}
@@ -2288,12 +2341,12 @@ class DayOneBlitzStrategy:
 
         return {
             OptimizationMetric.IMPRESSIONS: impressions,
-            OptimizationMetric.REACH: reach,
-            OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
-            OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
-            OptimizationMetric.CONVERSION_RATE: conversion_rate,
-            OptimizationMetric.REVENUE: revenue,
-        }
+                OptimizationMetric.REACH: reach,
+                OptimizationMetric.ENGAGEMENT_RATE: engagement_rate,
+                OptimizationMetric.CLICK_THROUGH_RATE: click_through_rate,
+                OptimizationMetric.CONVERSION_RATE: conversion_rate,
+                OptimizationMetric.REVENUE: revenue,
+                }
 
         # Simulate growing metrics over time
         time_elapsed = (datetime.now() - campaign.start_date).total_seconds() / 3600
@@ -2301,10 +2354,10 @@ class DayOneBlitzStrategy:
 
         campaign.metrics[OptimizationMetric.IMPRESSIONS] += (
             random.randint(100, 1000) * growth_factor
-        )
+                )
         campaign.metrics[OptimizationMetric.REACH] += (
             random.randint(50, 500) * growth_factor
-        )
+                )
         campaign.metrics[OptimizationMetric.ENGAGEMENT_RATE] = random.uniform(
             0.02, 0.08
         )
@@ -2315,6 +2368,7 @@ class DayOneBlitzStrategy:
             0.005, 0.02
         )
 
+
     async def _check_optimization_triggers(self, campaign: MarketingCampaign) -> None:
         """Check if optimization actions should be triggered"""
         # Check for underperforming channels
@@ -2322,7 +2376,7 @@ class DayOneBlitzStrategy:
             self.logger.warning(f"Low CTR detected for campaign {campaign.campaign_id}")
             # Trigger optimization actions
 
-        # Check for high-performing opportunities
+        # Check for high - performing opportunities
         if campaign.metrics[OptimizationMetric.ENGAGEMENT_RATE] > 0.06:
             self.logger.info(
                 f"High engagement detected for campaign {campaign.campaign_id}"
@@ -2333,11 +2387,13 @@ class DayOneBlitzStrategy:
 class RelentlessOptimizationLoop:
     """Implements continuous optimization for marketing campaigns"""
 
+
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
         self.active_tests: Dict[str, OptimizationTest] = {}
         self.optimization_history: List[Dict] = []
+
 
     async def start_optimization_loop(self, campaign: MarketingCampaign) -> None:
         """Start the relentless optimization loop for a campaign"""
@@ -2351,6 +2407,7 @@ class RelentlessOptimizationLoop:
 
         except Exception as e:
             self.logger.error(f"Error starting optimization loop: {e}")
+
 
     async def _run_optimization_cycle(self, campaign: MarketingCampaign) -> None:
         """Run continuous optimization cycles"""
@@ -2388,22 +2445,23 @@ class RelentlessOptimizationLoop:
                 self.logger.error(f"Error in optimization cycle: {e}")
                 await asyncio.sleep(1800)  # Wait 30 minutes on error
 
+
     async def _analyze_performance(self, campaign: MarketingCampaign) -> Dict[str, Any]:
         """Analyze current campaign performance using real metrics"""
         try:
             # Initialize analysis structure
             analysis = {
                 "overall_performance": "average",
-                "top_performing_channels": [],
-                "underperforming_channels": [],
-                "key_insights": [],
-                "bottlenecks": [],
-                "performance_score": 0.0,
-                "roi": 0.0,
-                "cost_efficiency": {},
-                "trend_analysis": {},
-                "recommendations": [],
-            }
+                    "top_performing_channels": [],
+                    "underperforming_channels": [],
+                    "key_insights": [],
+                    "bottlenecks": [],
+                    "performance_score": 0.0,
+                    "roi": 0.0,
+                    "cost_efficiency": {},
+                    "trend_analysis": {},
+                    "recommendations": [],
+                    }
 
             # Collect current metrics for analysis
             await self._collect_campaign_metrics(campaign)
@@ -2426,7 +2484,7 @@ class RelentlessOptimizationLoop:
             # Analyze channel performance
             channel_performance = {}
             for channel in campaign.channels:
-                # Get channel-specific metrics
+                # Get channel - specific metrics
                 channel_metrics = await self._collect_channel_metrics(campaign, channel)
 
                 channel_ctr = channel_metrics.get(
@@ -2452,11 +2510,11 @@ class RelentlessOptimizationLoop:
 
                 channel_performance[channel.value] = {
                     "ctr": channel_ctr,
-                    "conversion_rate": channel_conversion,
-                    "revenue": channel_revenue,
-                    "roi": channel_roi,
-                    "efficiency_score": efficiency_score,
-                }
+                        "conversion_rate": channel_conversion,
+                        "revenue": channel_revenue,
+                        "roi": channel_roi,
+                        "efficiency_score": efficiency_score,
+                        }
 
                 # Categorize channel performance
                 if efficiency_score > 0.6 and channel_roi > 0.2:
@@ -2473,7 +2531,7 @@ class RelentlessOptimizationLoop:
                 min(overall_conversion / 0.02, 1.0) * 0.25,  # Conversion benchmark: 2%
                 min((analysis["roi"] + 1) / 2, 1.0) * 0.3,  # ROI benchmark: 100%
                 len(analysis["top_performing_channels"]) / len(campaign.channels) * 0.2,
-            ]
+                    ]
             analysis["performance_score"] = sum(performance_factors)
 
             # Determine overall performance rating
@@ -2509,24 +2567,25 @@ class RelentlessOptimizationLoop:
         except Exception as e:
             logging.error(f"Error analyzing campaign performance: {e}")
             # Return basic analysis on error
-            return {
+                return {
                 "overall_performance": "unknown",
-                "top_performing_channels": [],
-                "underperforming_channels": [],
-                "key_insights": [f"Analysis error: {str(e)}"],
-                "bottlenecks": ["Unable to complete analysis"],
-                "performance_score": 0.0,
-                "roi": 0.0,
-                "error": str(e),
-            }
+                    "top_performing_channels": [],
+                    "underperforming_channels": [],
+                    "key_insights": [f"Analysis error: {str(e)}"],
+                    "bottlenecks": ["Unable to complete analysis"],
+                    "performance_score": 0.0,
+                    "roi": 0.0,
+                    "error": str(e),
+                    }
+
 
     async def create_ab_test_for_links(
         self,
-        content_context: str,
-        candidate_links: List[AffiliateLink],
-        test_duration_days: int = 7,
-    ) -> str:
-        """Create A/B test for affiliate link selection"""
+            content_context: str,
+            candidate_links: List[AffiliateLink],
+            test_duration_days: int = 7,
+            ) -> str:
+        """Create A / B test for affiliate link selection"""
         test_id = f"affiliate_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         # Select top candidates for testing
@@ -2534,20 +2593,20 @@ class RelentlessOptimizationLoop:
 
         test_config = {
             "test_id": test_id,
-            "content_context": content_context,
-            "variants": [
+                "content_context": content_context,
+                "variants": [
                 {
                     "variant_id": f"variant_{i}",
-                    "link": link,
-                    "traffic_split": 1.0 / len(test_links),
-                }
+                        "link": link,
+                        "traffic_split": 1.0 / len(test_links),
+                        }
                 for i, link in enumerate(test_links)
             ],
-            "start_date": datetime.now(),
-            "end_date": datetime.now() + timedelta(days=test_duration_days),
-            "metrics": {"clicks": {}, "conversions": {}, "revenue": {}},
-            "status": "active",
-        }
+                "start_date": datetime.now(),
+                "end_date": datetime.now() + timedelta(days = test_duration_days),
+                "metrics": {"clicks": {}, "conversions": {}, "revenue": {}},
+                "status": "active",
+                }
 
         # Store test configuration (in production, use proper database)
         if not hasattr(self, "ab_tests"):
@@ -2556,14 +2615,15 @@ class RelentlessOptimizationLoop:
         self.ab_tests[test_id] = test_config
 
         self.logger.info(
-            f"Created A/B test {test_id} with {len(test_links)} variants "
+            f"Created A / B test {test_id} with {len(test_links)} variants "
             f"for {test_duration_days} days"
         )
 
         return test_id
 
+
     async def get_test_winner(self, test_id: str) -> Optional[AffiliateLink]:
-        """Get the winning variant from an A/B test"""
+        """Get the winning variant from an A / B test"""
         if not hasattr(self, "ab_tests") or test_id not in self.ab_tests:
             return None
 
@@ -2593,6 +2653,7 @@ class RelentlessOptimizationLoop:
 
         return best_variant["link"] if best_variant else None
 
+
     async def track_competitor_links(
         self, competitor_content: str, competitor_id: str
     ) -> None:
@@ -2605,12 +2666,12 @@ class RelentlessOptimizationLoop:
 
         # Common affiliate link patterns
         affiliate_patterns = [
-            r"amazon\.com/[^\s]*(?:tag=|associate-id=)([^&\s]+)",
-            r"clickbank\.net/[^\s]*",
-            r"shareasale\.com/[^\s]*",
-            r"cj\.com/[^\s]*",
-            r"impact\.com/[^\s]*",
-        ]
+            r"amazon\.com/[^\s]*(?:tag=|associate - id=)([^&\s]+)",
+                r"clickbank\.net/[^\s]*",
+                r"shareasale\.com/[^\s]*",
+                r"cj\.com/[^\s]*",
+                r"impact\.com/[^\s]*",
+                ]
 
         found_links = []
         for pattern in affiliate_patterns:
@@ -2620,9 +2681,9 @@ class RelentlessOptimizationLoop:
         if competitor_id not in self.competitor_intelligence:
             self.competitor_intelligence[competitor_id] = {
                 "links": [],
-                "last_updated": datetime.now(),
-                "content_samples": [],
-            }
+                    "last_updated": datetime.now(),
+                    "content_samples": [],
+                    }
 
         competitor_data = self.competitor_intelligence[competitor_id]
         competitor_data["links"].extend(found_links)
@@ -2630,8 +2691,8 @@ class RelentlessOptimizationLoop:
             {
                 "content": competitor_content[:500],  # First 500 chars
                 "timestamp": datetime.now(),
-                "links_found": len(found_links),
-            }
+                    "links_found": len(found_links),
+                    }
         )
 
         # Keep only recent data
@@ -2643,12 +2704,13 @@ class RelentlessOptimizationLoop:
             f"found {len(found_links)} affiliate links"
         )
 
+
     def get_competitor_insights(self, days: int = 30) -> Dict[str, Any]:
         """Get insights from competitor affiliate link analysis"""
         if not hasattr(self, "competitor_intelligence"):
             return {"competitors": 0, "insights": []}
 
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
         insights = []
 
         for competitor_id, data in self.competitor_intelligence.items():
@@ -2667,23 +2729,24 @@ class RelentlessOptimizationLoop:
                     insights.append(
                         {
                             "competitor_id": competitor_id,
-                            "content_samples": len(recent_samples),
-                            "avg_links_per_content": avg_links_per_content,
-                            "total_unique_links": len(set(data["links"])),
-                            "last_activity": data["last_updated"].isoformat(),
-                        }
+                                "content_samples": len(recent_samples),
+                                "avg_links_per_content": avg_links_per_content,
+                                "total_unique_links": len(set(data["links"])),
+                                "last_activity": data["last_updated"].isoformat(),
+                                }
                     )
 
         return {
             "competitors": len(insights),
-            "insights": insights,
-            "analysis_period_days": days,
-        }
+                "insights": insights,
+                "analysis_period_days": days,
+                }
+
 
     async def predict_link_performance(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
     ) -> Dict[str, float]:
-        """Predict link performance using machine learning-like approach"""
+        """Predict link performance using machine learning - like approach"""
         try:
             # Feature extraction
             features = await self._extract_prediction_features(
@@ -2700,23 +2763,24 @@ class RelentlessOptimizationLoop:
 
             return {
                 "predicted_ctr": predicted_ctr,
-                "predicted_conversion_rate": predicted_cr,
-                "predicted_epc": predicted_epc,
-                "confidence_score": confidence,
-                "recommendation": self._generate_performance_recommendation(
+                    "predicted_conversion_rate": predicted_cr,
+                    "predicted_epc": predicted_epc,
+                    "confidence_score": confidence,
+                    "recommendation": self._generate_performance_recommendation(
                     predicted_ctr, predicted_cr, predicted_epc
                 ),
-            }
+                    }
 
         except Exception as e:
             self.logger.error(f"Error predicting link performance: {e}")
             return {
                 "predicted_ctr": 0.0,
-                "predicted_conversion_rate": 0.0,
-                "predicted_epc": 0.0,
-                "confidence_score": 0.0,
-                "recommendation": "insufficient_data",
-            }
+                    "predicted_conversion_rate": 0.0,
+                    "predicted_epc": 0.0,
+                    "confidence_score": 0.0,
+                    "recommendation": "insufficient_data",
+                    }
+
 
     async def _extract_prediction_features(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
@@ -2762,8 +2826,9 @@ class RelentlessOptimizationLoop:
 
         return features
 
+
     def _predict_click_through_rate(self, features: Dict[str, float]) -> float:
-        """Predict click-through rate using feature-based model"""
+        """Predict click - through rate using feature - based model"""
         # Simplified prediction model
         base_ctr = 0.02  # 2% base CTR
 
@@ -2782,8 +2847,9 @@ class RelentlessOptimizationLoop:
 
         return min(base_ctr, 0.15)  # Cap at 15%
 
+
     def _predict_conversion_rate(self, features: Dict[str, float]) -> float:
-        """Predict conversion rate using feature-based model"""
+        """Predict conversion rate using feature - based model"""
         if features["data_points"] > 5:
             # Use historical data with trend adjustment
             base_cr = features["historical_cr"]
@@ -2797,14 +2863,14 @@ class RelentlessOptimizationLoop:
             # New link prediction
             base_cr = 0.03  # 3% base conversion rate
 
-            # Category-based adjustment
+            # Category - based adjustment
             category_multipliers = {
                 "software": 1.2,
-                "education": 1.4,
-                "health": 1.1,
-                "finance": 0.9,
-                "lifestyle": 1.0,
-            }
+                    "education": 1.4,
+                    "health": 1.1,
+                    "finance": 0.9,
+                    "lifestyle": 1.0,
+                    }
 
             for category, multiplier in category_multipliers.items():
                 if category in features.get("product_category", "").lower():
@@ -2819,8 +2885,9 @@ class RelentlessOptimizationLoop:
 
         return min(base_cr, 0.2)  # Cap at 20%
 
+
     def _predict_earnings_per_click(self, features: Dict[str, float]) -> float:
-        """Predict earnings per click using feature-based model"""
+        """Predict earnings per click using feature - based model"""
         if features["data_points"] > 5:
             base_epc = features["historical_epc"]
 
@@ -2831,11 +2898,11 @@ class RelentlessOptimizationLoop:
             # Estimate based on commission rate and typical order values
             typical_order_values = {
                 "software": 100,
-                "education": 200,
-                "health": 50,
-                "finance": 500,
-                "lifestyle": 75,
-            }
+                    "education": 200,
+                    "health": 50,
+                    "finance": 500,
+                    "lifestyle": 75,
+                    }
 
             estimated_order_value = 100  # Default
             for category, value in typical_order_values.items():
@@ -2848,6 +2915,7 @@ class RelentlessOptimizationLoop:
             )  # 3% base CR
 
         return max(base_epc, 0.01)  # Minimum $0.01 EPC
+
 
     def _calculate_prediction_confidence(self, link: AffiliateLink) -> float:
         """Calculate confidence score for predictions"""
@@ -2863,6 +2931,7 @@ class RelentlessOptimizationLoop:
         else:
             return 0.2
 
+
     def _generate_performance_recommendation(
         self, predicted_ctr: float, predicted_cr: float, predicted_epc: float
     ) -> str:
@@ -2876,18 +2945,19 @@ class RelentlessOptimizationLoop:
         else:
             return "low_potential"
 
+
     def _get_category_popularity(self, category: str) -> float:
         """Get category popularity score (simplified)"""
         popularity_scores = {
             "software": 0.9,
-            "education": 0.8,
-            "health": 0.7,
-            "marketing": 0.8,
-            "business": 0.7,
-            "finance": 0.6,
-            "lifestyle": 0.6,
-            "technology": 0.9,
-        }
+                "education": 0.8,
+                "health": 0.7,
+                "marketing": 0.8,
+                "business": 0.7,
+                "finance": 0.6,
+                "lifestyle": 0.6,
+                "technology": 0.9,
+                }
 
         category_lower = category.lower()
         for cat, score in popularity_scores.items():
@@ -2895,6 +2965,7 @@ class RelentlessOptimizationLoop:
                 return score
 
         return 0.5  # Default moderate popularity
+
 
     async def _identify_opportunities(
         self, campaign: MarketingCampaign, analysis: Dict[str, Any]
@@ -2907,14 +2978,14 @@ class RelentlessOptimizationLoop:
             opportunities.append(
                 {
                     "type": "content_optimization",
-                    "focus": "engagement",
-                    "hypothesis": "Improved content format will increase engagement",
-                    "test_variants": [
+                        "focus": "engagement",
+                        "hypothesis": "Improved content format will increase engagement",
+                        "test_variants": [
                         "video_content",
-                        "carousel_content",
-                        "interactive_content",
-                    ],
-                }
+                            "carousel_content",
+                            "interactive_content",
+                            ],
+                        }
             )
 
         # Timing optimization
@@ -2922,14 +2993,14 @@ class RelentlessOptimizationLoop:
             opportunities.append(
                 {
                     "type": "timing_optimization",
-                    "focus": "posting_schedule",
-                    "hypothesis": "Optimal posting times will improve CTR",
-                    "test_variants": [
+                        "focus": "posting_schedule",
+                        "hypothesis": "Optimal posting times will improve CTR",
+                        "test_variants": [
                         "morning_posts",
-                        "afternoon_posts",
-                        "evening_posts",
-                    ],
-                }
+                            "afternoon_posts",
+                            "evening_posts",
+                            ],
+                        }
             )
 
         # Audience targeting optimization
@@ -2937,32 +3008,33 @@ class RelentlessOptimizationLoop:
             opportunities.append(
                 {
                     "type": "audience_optimization",
-                    "focus": "targeting",
-                    "hypothesis": "Refined audience targeting will improve conversions",
-                    "test_variants": [
+                        "focus": "targeting",
+                        "hypothesis": "Refined audience targeting will improve conversions",
+                        "test_variants": [
                         "lookalike_audience",
-                        "interest_based",
-                        "behavioral_targeting",
-                    ],
-                }
+                            "interest_based",
+                            "behavioral_targeting",
+                            ],
+                        }
             )
 
         # Creative optimization
         opportunities.append(
             {
                 "type": "creative_optimization",
-                "focus": "ad_creative",
-                "hypothesis": "New creative variations will improve performance",
-                "test_variants": ["headline_a", "headline_b", "headline_c"],
-            }
+                    "focus": "ad_creative",
+                    "hypothesis": "New creative variations will improve performance",
+                    "test_variants": ["headline_a", "headline_b", "headline_c"],
+                    }
         )
 
         return opportunities
 
+
     async def _create_optimization_tests(
         self, campaign: MarketingCampaign, opportunities: List[Dict[str, Any]]
     ) -> None:
-        """Create A/B tests for optimization opportunities"""
+        """Create A / B tests for optimization opportunities"""
         for opportunity in opportunities:
             test_id = f"test_{campaign.campaign_id}_{int(time.time())}"
 
@@ -2972,22 +3044,22 @@ class RelentlessOptimizationLoop:
                 variants.append(
                     {
                         "name": variant_name,
-                        "traffic_split": 1.0 / len(opportunity["test_variants"]),
-                        "config": self._generate_variant_config(
+                            "traffic_split": 1.0 / len(opportunity["test_variants"]),
+                            "config": self._generate_variant_config(
                             variant_name, opportunity
                         ),
-                    }
+                            }
                 )
 
             # Create optimization test
             test = OptimizationTest(
-                test_id=test_id,
-                name=f"{opportunity['type']} - {opportunity['focus']}",
-                hypothesis=opportunity["hypothesis"],
-                variants=variants,
-                metric=OptimizationMetric.CONVERSION_RATE,  # Default metric
-                start_date=datetime.now(),
-                sample_size=1000,  # Minimum sample size
+                test_id = test_id,
+                    name = f"{opportunity['type']} - {opportunity['focus']}",
+                    hypothesis = opportunity["hypothesis"],
+                    variants = variants,
+                    metric = OptimizationMetric.CONVERSION_RATE,  # Default metric
+                start_date = datetime.now(),
+                    sample_size = 1000,  # Minimum sample size
             )
 
             self.active_tests[test_id] = test
@@ -2996,6 +3068,7 @@ class RelentlessOptimizationLoop:
             await self._start_test(test)
 
             self.logger.info(f"Created optimization test: {test.name}")
+
 
     def _generate_variant_config(
         self, variant_name: str, opportunity: Dict[str, Any]
@@ -3007,40 +3080,41 @@ class RelentlessOptimizationLoop:
             config.update(
                 {
                     "content_format": variant_name,
-                    "engagement_elements": (
+                        "engagement_elements": (
                         ["cta_button", "interactive_poll"]
                         if "interactive" in variant_name
                         else ["standard_cta"]
                     ),
-                }
+                        }
             )
 
         elif opportunity["type"] == "timing_optimization":
             time_configs = {
                 "morning_posts": {"post_times": ["08:00", "09:00", "10:00"]},
-                "afternoon_posts": {"post_times": ["12:00", "13:00", "14:00"]},
-                "evening_posts": {"post_times": ["18:00", "19:00", "20:00"]},
-            }
+                    "afternoon_posts": {"post_times": ["12:00", "13:00", "14:00"]},
+                    "evening_posts": {"post_times": ["18:00", "19:00", "20:00"]},
+                    }
             config.update(time_configs.get(variant_name, {}))
 
         elif opportunity["type"] == "audience_optimization":
             audience_configs = {
                 "lookalike_audience": {
                     "audience_type": "lookalike",
-                    "similarity": 0.95,
-                },
-                "interest_based": {
+                        "similarity": 0.95,
+                        },
+                    "interest_based": {
                     "audience_type": "interests",
-                    "interests": ["marketing", "business"],
-                },
-                "behavioral_targeting": {
+                        "interests": ["marketing", "business"],
+                        },
+                    "behavioral_targeting": {
                     "audience_type": "behavioral",
-                    "behaviors": ["online_shoppers"],
-                },
-            }
+                        "behaviors": ["online_shoppers"],
+                        },
+                    }
             config.update(audience_configs.get(variant_name, {}))
 
         return config
+
 
     async def _start_test(self, test: OptimizationTest) -> None:
         """Start an optimization test"""
@@ -3051,15 +3125,16 @@ class RelentlessOptimizationLoop:
                     variant["name"]: {"conversions": 0, "impressions": 0}
                     for variant in test.variants
                 },
-                "statistical_significance": False,
-                "confidence_level": 0.0,
-            }
+                    "statistical_significance": False,
+                    "confidence_level": 0.0,
+                    }
 
             # Start test monitoring
             asyncio.create_task(self._monitor_test(test))
 
         except Exception as e:
             self.logger.error(f"Error starting test {test.test_id}: {e}")
+
 
     async def _monitor_test(self, test: OptimizationTest) -> None:
         """Monitor an active test"""
@@ -3083,6 +3158,7 @@ class RelentlessOptimizationLoop:
                 self.logger.error(f"Error monitoring test {test.test_id}: {e}")
                 await asyncio.sleep(300)
 
+
     async def _collect_test_data(self, test: OptimizationTest) -> None:
         """Collect data for an active test"""
         for variant in test.variants:
@@ -3103,6 +3179,7 @@ class RelentlessOptimizationLoop:
         test.sample_size = sum(
             data["impressions"] for data in test.results["variant_performance"].values()
         )
+
 
     async def _check_statistical_significance(self, test: OptimizationTest) -> None:
         """Check if test results are statistically significant"""
@@ -3127,6 +3204,7 @@ class RelentlessOptimizationLoop:
                 test.results["statistical_significance"] = True
                 test.results["confidence_level"] = 0.95
 
+
     def _should_end_test(self, test: OptimizationTest) -> bool:
         """Determine if a test should end"""
         # End test if statistically significant and minimum runtime met
@@ -3144,6 +3222,7 @@ class RelentlessOptimizationLoop:
             return True
 
         return False
+
 
     async def _end_test(self, test: OptimizationTest) -> None:
         """End a test and determine winner"""
@@ -3170,12 +3249,13 @@ class RelentlessOptimizationLoop:
         self.optimization_history.append(
             {
                 "test_id": test.test_id,
-                "test_name": test.name,
-                "winner": best_variant,
-                "improvement": best_conversion_rate,
-                "completed_at": datetime.now().isoformat(),
-            }
+                    "test_name": test.name,
+                    "winner": best_variant,
+                    "improvement": best_conversion_rate,
+                    "completed_at": datetime.now().isoformat(),
+                    }
         )
+
 
     async def _check_test_results(self, campaign: MarketingCampaign) -> None:
         """Check results of completed tests"""
@@ -3188,6 +3268,7 @@ class RelentlessOptimizationLoop:
         for test in completed_tests:
             self.logger.info(f"Test {test.test_id} winner: {test.winner}")
 
+
     async def _apply_winning_variations(self, campaign: MarketingCampaign) -> None:
         """Apply winning test variations to the campaign"""
         for test in self.active_tests.values():
@@ -3197,6 +3278,7 @@ class RelentlessOptimizationLoop:
 
                 # Remove from active tests
                 del self.active_tests[test.test_id]
+
 
     async def _implement_winning_variation(
         self, campaign: MarketingCampaign, test: OptimizationTest
@@ -3218,13 +3300,15 @@ class RelentlessOptimizationLoop:
 
 
 class AffiliateManager:
-    """Intelligent context-aware affiliate link selection engine"""
+    """Intelligent context - aware affiliate link selection engine"""
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
         self.affiliate_links: Dict[str, AffiliateLink] = {}
         self.performance_history: Dict[str, List[Dict]] = {}
+
 
     def add_affiliate_link(self, link: AffiliateLink) -> None:
         """Add an affiliate link to the manager"""
@@ -3233,6 +3317,7 @@ class AffiliateManager:
         self.performance_history[link_id] = []
 
         self.logger.info(f"Added affiliate link: {link.product_name}")
+
 
     async def select_optimal_links(
         self, content_context: str, target_keywords: List[str], max_links: int = 3
@@ -3255,7 +3340,7 @@ class AffiliateManager:
 
             # Sort by combined score (relevance + performance)
             scored_links.sort(
-                key=lambda x: self._calculate_combined_score(x), reverse=True
+                key = lambda x: self._calculate_combined_score(x), reverse = True
             )
 
             # Return top links
@@ -3272,6 +3357,7 @@ class AffiliateManager:
             self.logger.error(f"Error selecting affiliate links: {e}")
             return []
 
+
     async def _calculate_relevance_score(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
     ) -> float:
@@ -3279,7 +3365,7 @@ class AffiliateManager:
         score = 0.0
         content_lower = content_context.lower()
 
-        # 1. Enhanced keyword matching with TF-IDF weighting
+        # 1. Enhanced keyword matching with TF - IDF weighting
         matching_keywords = set(target_keywords) & set(link.target_keywords)
         keyword_score = len(matching_keywords) / max(len(target_keywords), 1)
 
@@ -3348,7 +3434,7 @@ class AffiliateManager:
 
                     semantic_score = min(weighted_overlap / len(content_words), 0.5)
                     score += semantic_score * 0.1 + sentiment_alignment * 0.05
-            except:
+            except Exception:
                 pass
 
         # 5. Temporal relevance (trending topics, seasonality)
@@ -3362,6 +3448,7 @@ class AffiliateManager:
         score += behavior_score * 0.1
 
         return min(score, 1.0)
+
 
     def _calculate_combined_score(self, link: AffiliateLink) -> float:
         """Calculate intelligent combined score with dynamic weighting"""
@@ -3403,6 +3490,7 @@ class AffiliateManager:
 
         return max(min(combined_score, 1.0), 0.0)
 
+
     async def track_link_performance(
         self, link_id: str, clicks: int, conversions: int, revenue: float
     ) -> None:
@@ -3420,12 +3508,12 @@ class AffiliateManager:
         # Add to performance history
         performance_record = {
             "timestamp": datetime.now().isoformat(),
-            "clicks": clicks,
-            "conversions": conversions,
-            "revenue": revenue,
-            "conversion_rate": link.conversion_rate,
-            "earnings_per_click": link.earnings_per_click,
-        }
+                "clicks": clicks,
+                "conversions": conversions,
+                "revenue": revenue,
+                "conversion_rate": link.conversion_rate,
+                "earnings_per_click": link.earnings_per_click,
+                }
 
         self.performance_history[link_id].append(performance_record)
 
@@ -3442,6 +3530,7 @@ class AffiliateManager:
         # Trigger automatic optimization if performance drops
         await self._check_performance_alerts(link_id, link)
 
+
     def get_top_performing_links(self, limit: int = 10) -> List[AffiliateLink]:
         """Get top performing affiliate links"""
         active_links = [
@@ -3450,29 +3539,30 @@ class AffiliateManager:
 
         # Sort by earnings per click
         top_links = sorted(
-            active_links, key=lambda x: x.earnings_per_click, reverse=True
+            active_links, key = lambda x: x.earnings_per_click, reverse = True
         )
 
         return top_links[:limit]
+
 
     def _get_category_synonyms(self, category: str) -> List[str]:
         """Get synonyms and related terms for a product category"""
         synonym_map = {
             "software": ["app", "application", "program", "tool", "platform", "system"],
-            "marketing": [
+                "marketing": [
                 "advertising",
-                "promotion",
-                "branding",
-                "seo",
-                "social media",
-            ],
-            "education": ["learning", "training", "course", "tutorial", "teaching"],
-            "health": ["wellness", "fitness", "medical", "healthcare", "nutrition"],
-            "business": ["entrepreneurship", "startup", "corporate", "professional"],
-            "technology": ["tech", "digital", "online", "internet", "web"],
-            "finance": ["money", "investment", "trading", "banking", "cryptocurrency"],
-            "lifestyle": ["living", "personal", "home", "family", "relationships"],
-        }
+                    "promotion",
+                    "branding",
+                    "seo",
+                    "social media",
+                    ],
+                "education": ["learning", "training", "course", "tutorial", "teaching"],
+                "health": ["wellness", "fitness", "medical", "healthcare", "nutrition"],
+                "business": ["entrepreneurship", "startup", "corporate", "professional"],
+                "technology": ["tech", "digital", "online", "internet", "web"],
+                "finance": ["money", "investment", "trading", "banking", "cryptocurrency"],
+                "lifestyle": ["living", "personal", "home", "family", "relationships"],
+                }
 
         category_lower = category.lower()
         for key, synonyms in synonym_map.items():
@@ -3480,6 +3570,7 @@ class AffiliateManager:
                 return synonyms
 
         return []
+
 
     async def _calculate_temporal_relevance(
         self, link: AffiliateLink, content_context: str
@@ -3490,15 +3581,15 @@ class AffiliateManager:
 
             # Seasonal relevance mapping
             seasonal_keywords = {
-                "christmas": [12, 11],  # Nov-Dec
-                "holiday": [11, 12, 1],  # Nov-Jan
-                "summer": [6, 7, 8],  # Jun-Aug
-                "back to school": [8, 9],  # Aug-Sep
-                "new year": [12, 1],  # Dec-Jan
+                "christmas": [12, 11],  # Nov - Dec
+                "holiday": [11, 12, 1],  # Nov - Jan
+                "summer": [6, 7, 8],  # Jun - Aug
+                "back to school": [8, 9],  # Aug - Sep
+                "new year": [12, 1],  # Dec - Jan
                 "valentine": [2],  # Feb
                 "fitness": [1, 2, 6],  # Jan, Feb, Jun (New Year, Summer prep)
-                "tax": [3, 4],  # Mar-Apr
-                "graduation": [5, 6],  # May-Jun
+                "tax": [3, 4],  # Mar - Apr
+                "graduation": [5, 6],  # May - Jun
             }
 
             content_lower = content_context.lower()
@@ -3523,6 +3614,7 @@ class AffiliateManager:
             self.logger.warning(f"Error calculating temporal relevance: {e}")
             return 0.0
 
+
     async def _predict_user_engagement(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
     ) -> float:
@@ -3537,7 +3629,7 @@ class AffiliateManager:
             elif 100 <= content_length <= 1200:
                 engagement_score += 0.1
 
-            # Question/CTA presence
+            # Question / CTA presence
             if any(
                 marker in content_context.lower()
                 for marker in ["?", "how to", "why", "what"]
@@ -3554,7 +3646,7 @@ class AffiliateManager:
             if any(word in content_context.lower() for word in social_proof):
                 engagement_score += 0.1
 
-            # Product-specific engagement patterns
+            # Product - specific engagement patterns
             high_engagement_categories = ["software", "course", "ebook", "template"]
             if any(
                 cat in link.product_category.lower()
@@ -3567,6 +3659,7 @@ class AffiliateManager:
         except Exception as e:
             self.logger.warning(f"Error predicting user engagement: {e}")
             return 0.0
+
 
     def _calculate_performance_trend(self, link: AffiliateLink) -> float:
         """Calculate performance trend with recent data weighting"""
@@ -3622,19 +3715,20 @@ class AffiliateManager:
             self.logger.warning(f"Error calculating performance trend: {e}")
             return min((link.conversion_rate * 10 + link.earnings_per_click) / 2, 1.0)
 
+
     def _calculate_commission_value(self, link: AffiliateLink) -> float:
         """Calculate commission value with network reliability factor"""
         # Network reliability scores (based on typical industry performance)
         network_reliability = {
             AffiliateNetwork.AMAZON_ASSOCIATES: 0.9,
-            AffiliateNetwork.CLICKBANK: 0.7,
-            AffiliateNetwork.COMMISSION_JUNCTION: 0.8,
-            AffiliateNetwork.SHAREASALE: 0.8,
-            AffiliateNetwork.IMPACT: 0.85,
-            AffiliateNetwork.RAKUTEN: 0.85,
-            AffiliateNetwork.PARTNERSTACK: 0.75,
-            AffiliateNetwork.CUSTOM: 0.6,
-        }
+                AffiliateNetwork.CLICKBANK: 0.7,
+                AffiliateNetwork.COMMISSION_JUNCTION: 0.8,
+                AffiliateNetwork.SHAREASALE: 0.8,
+                AffiliateNetwork.IMPACT: 0.85,
+                AffiliateNetwork.RAKUTEN: 0.85,
+                AffiliateNetwork.PARTNERSTACK: 0.75,
+                AffiliateNetwork.CUSTOM: 0.6,
+                }
 
         reliability_factor = network_reliability.get(link.network, 0.6)
 
@@ -3645,6 +3739,7 @@ class AffiliateManager:
         commission_score = normalized_commission * reliability_factor
 
         return commission_score
+
 
     def _calculate_competition_penalty(self, link: AffiliateLink) -> float:
         """Calculate penalty for high competition in same category"""
@@ -3661,6 +3756,7 @@ class AffiliateManager:
         else:
             return 0.2
 
+
     def _calculate_seasonal_boost(self, link: AffiliateLink) -> float:
         """Calculate seasonal boost for products"""
         current_month = datetime.now().month
@@ -3671,7 +3767,7 @@ class AffiliateManager:
             "gift": [11, 12],  # Holiday season
             "tax": [3, 4],  # Tax season
             "travel": [5, 6, 7, 8],  # Summer travel
-            "fashion": [3, 4, 9, 10],  # Spring/Fall fashion
+            "fashion": [3, 4, 9, 10],  # Spring / Fall fashion
         }
 
         product_lower = link.product_name.lower()
@@ -3685,6 +3781,7 @@ class AffiliateManager:
                     return 0.1
 
         return 0.0
+
 
     async def _check_performance_alerts(
         self, link_id: str, link: AffiliateLink
@@ -3740,17 +3837,18 @@ class AffiliateManager:
         except Exception as e:
             self.logger.error(f"Error checking performance alerts: {e}")
 
+
     async def _trigger_link_optimization(
         self, link_id: str, link: AffiliateLink
     ) -> None:
         """Trigger optimization actions for underperforming links"""
         optimization_actions = [
             "Update target keywords based on recent trends",
-            "Refresh product description and benefits",
-            "Test different placement strategies",
-            "Review competitor offerings",
-            "Update promotional messaging",
-        ]
+                "Refresh product description and benefits",
+                "Test different placement strategies",
+                "Review competitor offerings",
+                "Update promotional messaging",
+                ]
 
         self.logger.info(
             f"Triggering optimization for {link.product_name}. "
@@ -3758,6 +3856,7 @@ class AffiliateManager:
         )
 
         # Could integrate with external optimization systems here
+
 
     async def _consider_link_deactivation(
         self, link_id: str, link: AffiliateLink
@@ -3770,20 +3869,21 @@ class AffiliateManager:
             f"Current CR: {link.conversion_rate:.3%}, EPC: ${link.earnings_per_click:.3f}"
         )
 
+
     def analyze_link_performance(self, days: int = 30) -> Dict[str, Any]:
         """Analyze affiliate link performance over specified period"""
-        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_date = datetime.now() - timedelta(days = days)
 
         analysis = {
             "total_links": len(self.affiliate_links),
-            "active_links": len(
+                "active_links": len(
                 [l for l in self.affiliate_links.values() if l.is_active]
             ),
-            "top_performers": [],
-            "underperformers": [],
-            "total_revenue": 0.0,
-            "average_conversion_rate": 0.0,
-        }
+                "top_performers": [],
+                "underperformers": [],
+                "total_revenue": 0.0,
+                "average_conversion_rate": 0.0,
+                }
 
         conversion_rates = []
         total_revenue = 0.0
@@ -3816,17 +3916,17 @@ class AffiliateManager:
                         analysis["top_performers"].append(
                             {
                                 "product": link.product_name,
-                                "conversion_rate": recent_cr,
-                                "revenue": recent_revenue,
-                            }
+                                    "conversion_rate": recent_cr,
+                                    "revenue": recent_revenue,
+                                    }
                         )
                     elif recent_cr < 0.01:  # 1% conversion rate threshold
                         analysis["underperformers"].append(
                             {
                                 "product": link.product_name,
-                                "conversion_rate": recent_cr,
-                                "revenue": recent_revenue,
-                            }
+                                    "conversion_rate": recent_cr,
+                                    "revenue": recent_revenue,
+                                    }
                         )
 
         analysis["total_revenue"] = total_revenue
@@ -3838,7 +3938,8 @@ class AffiliateManager:
 
 
 class CrossPromotionManager:
-    """Manages cross-promotion between content with "The Right Perspective" exception"""
+    """Manages cross - promotion between content with "The Right Perspective" exception"""
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
@@ -3852,20 +3953,22 @@ class CrossPromotionManager:
         self.temporal_exceptions: Dict[str, datetime] = {}
         self.context_sensitive_rules: List[Dict[str, Any]] = []
 
+
     def add_promotion_rule(self, rule: CrossPromotionRule) -> None:
-        """Add a cross-promotion rule"""
+        """Add a cross - promotion rule"""
         self.promotion_rules.append(rule)
         self.logger.info(
             f"Added promotion rule: {rule.source_content} -> {rule.target_content}"
         )
 
+
     def add_right_perspective_exception(
         self,
-        content_id: str,
-        reason: str,
-        temporary: bool = False,
-        expires_at: Optional[datetime] = None,
-    ) -> None:
+            content_id: str,
+            reason: str,
+            temporary: bool = False,
+            expires_at: Optional[datetime] = None,
+            ) -> None:
         """Add content to 'The Right Perspective' exception list with advanced handling"""
         self.right_perspective_exceptions.add(content_id)
         self.exception_reasons[content_id] = reason
@@ -3882,22 +3985,23 @@ class CrossPromotionManager:
         # Trigger cascade exception check for related content
         self._check_cascade_exceptions(content_id, reason)
 
+
     async def generate_cross_promotions(
         self, source_content_id: str, content_metadata: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """Generate cross-promotion recommendations with advanced Right Perspective filtering"""
+        """Generate cross - promotion recommendations with advanced Right Perspective filtering"""
         try:
             # Clean expired temporal exceptions
             self._clean_expired_exceptions()
 
-            # Multi-layer Right Perspective validation
+            # Multi - layer Right Perspective validation
             perspective_check = await self._comprehensive_perspective_check(
                 source_content_id, content_metadata
             )
 
             if not perspective_check["allowed"]:
                 self.logger.info(
-                    f"Blocking cross-promotion for {source_content_id}: {perspective_check['reason']}"
+                    f"Blocking cross - promotion for {source_content_id}: {perspective_check['reason']}"
                 )
                 return []
 
@@ -3936,16 +4040,17 @@ class CrossPromotionManager:
             )
 
             self.logger.info(
-                f"Generated {len(promotions)} perspective-validated cross-promotions for {source_content_id}"
+                f"Generated {len(promotions)} perspective - validated cross - promotions for {source_content_id}"
             )
             return promotions
 
         except Exception as e:
-            self.logger.error(f"Critical error in cross-promotion generation: {e}")
+            self.logger.error(f"Critical error in cross - promotion generation: {e}")
             # Implement graceful degradation
             return await self._fallback_promotion_generation(
                 source_content_id, content_metadata
             )
+
 
     def _matches_content(
         self, rule_pattern: str, content_metadata: Dict[str, Any]
@@ -3962,6 +4067,7 @@ class CrossPromotionManager:
 
         return rule_pattern.lower() in content_text
 
+
     async def _generate_promotion(
         self, rule: CrossPromotionRule, content_metadata: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
@@ -3969,46 +4075,46 @@ class CrossPromotionManager:
         try:
             promotion = {
                 "type": rule.promotion_type,
-                "target_content": rule.target_content,
-                "context": rule.context,
-                "relevance_score": rule.relevance_score,
-                "placement_suggestions": [],
-                "content_snippet": "",
-            }
+                    "target_content": rule.target_content,
+                    "context": rule.context,
+                    "relevance_score": rule.relevance_score,
+                    "placement_suggestions": [],
+                    "content_snippet": "",
+                    }
 
             # Generate placement suggestions based on promotion type
             if rule.promotion_type == "mention":
                 promotion["placement_suggestions"] = [
                     "In the introduction",
-                    "As a related topic reference",
-                    "In the conclusion",
-                ]
+                        "As a related topic reference",
+                        "In the conclusion",
+                        ]
                 promotion["content_snippet"] = (
                     f"For more insights on this topic, check out our content on {rule.target_content}."
                 )
 
             elif rule.promotion_type == "link":
                 promotion["placement_suggestions"] = [
-                    "As a call-to-action button",
-                    "In a related resources section",
-                    "As an inline text link",
-                ]
+                    "As a call - to - action button",
+                        "In a related resources section",
+                        "As an inline text link",
+                        ]
                 promotion["content_snippet"] = f"Learn more: {rule.target_content}"
 
             elif rule.promotion_type == "embed":
                 promotion["placement_suggestions"] = [
                     "As a sidebar widget",
-                    "Between content sections",
-                    "At the end of the content",
-                ]
+                        "Between content sections",
+                        "At the end of the content",
+                        ]
                 promotion["content_snippet"] = f"[EMBED: {rule.target_content}]"
 
             elif rule.promotion_type == "recommendation":
                 promotion["placement_suggestions"] = [
                     'In a "You might also like" section',
-                    "As a popup recommendation",
-                    "In an email follow-up",
-                ]
+                        "As a popup recommendation",
+                        "In an email follow - up",
+                        ]
                 promotion["content_snippet"] = f"Recommended: {rule.target_content}"
 
             return promotion
@@ -4017,19 +4123,20 @@ class CrossPromotionManager:
             self.logger.error(f"Error generating promotion: {e}")
             return None
 
+
     def analyze_promotion_performance(self, days: int = 30) -> Dict[str, Any]:
-        """Analyze cross-promotion performance using real metrics and calculations"""
+        """Analyze cross - promotion performance using real metrics and calculations"""
 
         analysis = {
             "total_promotions": len(self.promotion_rules),
-            "active_promotions": len([r for r in self.promotion_rules if r.is_active]),
-            "right_perspective_exceptions": len(self.right_perspective_exceptions),
-            "top_performing_rules": [],
-            "underperforming_rules": [],
-            "average_click_through_rate": 0.0,
-            "performance_trends": {},
-            "optimization_recommendations": [],
-        }
+                "active_promotions": len([r for r in self.promotion_rules if r.is_active]),
+                "right_perspective_exceptions": len(self.right_perspective_exceptions),
+                "top_performing_rules": [],
+                "underperforming_rules": [],
+                "average_click_through_rate": 0.0,
+                "performance_trends": {},
+                "optimization_recommendations": [],
+                }
 
         if not self.promotion_rules:
             return analysis
@@ -4048,10 +4155,10 @@ class CrossPromotionManager:
                 # Adjust based on promotion type effectiveness
                 type_multipliers = {
                     "mention": 0.8,
-                    "link": 1.2,
-                    "embed": 1.5,
-                    "recommendation": 1.0,
-                }
+                        "link": 1.2,
+                        "embed": 1.5,
+                        "recommendation": 1.0,
+                        }
 
                 type_multiplier = type_multipliers.get(rule.promotion_type, 1.0)
                 calculated_ctr = min(base_ctr * type_multiplier, 0.15)  # Cap at 15%
@@ -4063,11 +4170,11 @@ class CrossPromotionManager:
                     analysis["top_performing_rules"].append(
                         {
                             "source": rule.source_content,
-                            "target": rule.target_content,
-                            "ctr": round(calculated_ctr, 4),
-                            "type": rule.promotion_type,
-                            "relevance_score": rule.relevance_score,
-                            "estimated_conversions": int(
+                                "target": rule.target_content,
+                                "ctr": round(calculated_ctr, 4),
+                                "type": rule.promotion_type,
+                                "relevance_score": rule.relevance_score,
+                                "estimated_conversions": int(
                                 calculated_ctr * 1000
                             ),  # Assume 1000 impressions
                         }
@@ -4076,14 +4183,14 @@ class CrossPromotionManager:
                     analysis["underperforming_rules"].append(
                         {
                             "source": rule.source_content,
-                            "target": rule.target_content,
-                            "ctr": round(calculated_ctr, 4),
-                            "type": rule.promotion_type,
-                            "relevance_score": rule.relevance_score,
-                            "improvement_potential": round(
+                                "target": rule.target_content,
+                                "ctr": round(calculated_ctr, 4),
+                                "type": rule.promotion_type,
+                                "relevance_score": rule.relevance_score,
+                                "improvement_potential": round(
                                 (0.05 - calculated_ctr) * 100, 2
                             ),
-                        }
+                                }
                     )
 
         # Calculate average CTR
@@ -4101,6 +4208,7 @@ class CrossPromotionManager:
         )
 
         return analysis
+
 
     def _calculate_performance_trends(self) -> Dict[str, Any]:
         """Calculate performance trends for promotion rules"""
@@ -4123,20 +4231,20 @@ class CrossPromotionManager:
             )
             trends["by_type"][rule_type] = {
                 "count": data["count"],
-                "average_relevance": round(avg_relevance, 3),
-                "performance_rating": (
+                    "average_relevance": round(avg_relevance, 3),
+                    "performance_rating": (
                     "excellent"
                     if avg_relevance > 0.8
                     else "good" if avg_relevance > 0.6 else "needs_improvement"
                 ),
-            }
+                    }
 
         # Analyze by relevance ranges
         relevance_ranges = {
             "high": {"min": 0.8, "count": 0},
-            "medium": {"min": 0.5, "count": 0},
-            "low": {"min": 0.0, "count": 0},
-        }
+                "medium": {"min": 0.5, "count": 0},
+                "low": {"min": 0.0, "count": 0},
+                }
 
         for rule in self.promotion_rules:
             if rule.is_active:
@@ -4163,6 +4271,7 @@ class CrossPromotionManager:
             trends["overall_health"] = "needs_improvement"
 
         return trends
+
 
     def _generate_optimization_recommendations(
         self, analysis: Dict[str, Any]
@@ -4215,18 +4324,19 @@ class CrossPromotionManager:
                 "High number of perspective exceptions detected - review content alignment"
             )
 
-        # Performance-based recommendations
+        # Performance - based recommendations
         top_performing_count = len(analysis.get("top_performing_rules", []))
         if top_performing_count == 0 and total_active > 0:
             recommendations.append(
-                "No high-performing rules detected - consider A/B testing different promotion approaches"
+                "No high - performing rules detected - consider A / B testing different promotion approaches"
             )
         elif top_performing_count > 0:
             recommendations.append(
-                f"Scale successful patterns from {top_performing_count} top-performing rules"
+                f"Scale successful patterns from {top_performing_count} top - performing rules"
             )
 
         return recommendations
+
 
     def optimize_promotion_rules(self) -> List[str]:
         """Optimize promotion rules based on performance"""
@@ -4249,6 +4359,7 @@ class CrossPromotionManager:
 
         return recommendations
 
+
     def _check_cascade_exceptions(self, content_id: str, reason: str) -> None:
         """Check if exception should cascade to related content"""
         if content_id in self.content_relationships:
@@ -4257,10 +4368,10 @@ class CrossPromotionManager:
             # Apply cascade logic based on reason
             cascade_reasons = {
                 "controversial_topic": "Related to controversial content",
-                "brand_conflict": "Brand alignment conflict",
-                "audience_mismatch": "Audience demographic mismatch",
-                "quality_concern": "Quality standards violation",
-            }
+                    "brand_conflict": "Brand alignment conflict",
+                    "audience_mismatch": "Audience demographic mismatch",
+                    "quality_concern": "Quality standards violation",
+                    }
 
             if any(
                 cascade_reason in reason.lower()
@@ -4274,14 +4385,15 @@ class CrossPromotionManager:
                                 for key in cascade_reasons.keys()
                                 if key in reason.lower()
                             ),
-                            "Cascade from related content",
-                        )
+                                "Cascade from related content",
+                                )
                         self.add_right_perspective_exception(
                             related_id,
-                            f"{cascade_reason}: {content_id}",
-                            temporary=True,
-                            expires_at=datetime.now() + timedelta(hours=24),
-                        )
+                                f"{cascade_reason}: {content_id}",
+                                temporary = True,
+                                expires_at = datetime.now() + timedelta(hours = 24),
+                                )
+
 
     def _clean_expired_exceptions(self) -> None:
         """Remove expired temporal exceptions"""
@@ -4301,6 +4413,7 @@ class CrossPromotionManager:
                 f"Removed expired Right Perspective exception for {content_id}"
             )
 
+
     async def _comprehensive_perspective_check(
         self, content_id: str, content_metadata: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -4309,14 +4422,14 @@ class CrossPromotionManager:
         if content_id in self.right_perspective_exceptions:
             return {
                 "allowed": False,
-                "reason": f"Direct exception: {self.exception_reasons.get(content_id, 'Unknown')}",
-                "score": 0.0,
-            }
+                    "reason": f"Direct exception: {self.exception_reasons.get(content_id, 'Unknown')}",
+                    "score": 0.0,
+                    }
 
         # Content analysis for perspective alignment
         perspective_score = await self._calculate_perspective_score(content_metadata)
 
-        # Context-sensitive filtering
+        # Context - sensitive filtering
         context_filters = await self._apply_context_filters(content_metadata)
 
         # Brand safety check
@@ -4337,26 +4450,27 @@ class CrossPromotionManager:
 
         return {
             "allowed": composite_score >= min_threshold,
-            "reason": (
+                "reason": (
                 self._get_blocking_reason(
                     {
                         "perspective": perspective_score,
-                        "context": context_filters,
-                        "brand_safety": brand_safety,
-                        "audience": audience_alignment,
-                    }
+                            "context": context_filters,
+                            "brand_safety": brand_safety,
+                            "audience": audience_alignment,
+                            }
                 )
                 if composite_score < min_threshold
                 else "Approved"
             ),
-            "score": composite_score,
-            "breakdown": {
+                "score": composite_score,
+                "breakdown": {
                 "perspective_score": perspective_score,
-                "context_score": context_filters["score"],
-                "brand_safety_score": brand_safety["score"],
-                "audience_alignment_score": audience_alignment["score"],
-            },
-        }
+                    "context_score": context_filters["score"],
+                    "brand_safety_score": brand_safety["score"],
+                    "audience_alignment_score": audience_alignment["score"],
+                    },
+                }
+
 
     async def _calculate_perspective_score(
         self, content_metadata: Dict[str, Any]
@@ -4378,7 +4492,7 @@ class CrossPromotionManager:
             # Sentiment analysis (simplified)
             if TextBlob:
                 blob = TextBlob(content_text)
-                sentiment_score = (blob.sentiment.polarity + 1) / 2  # Normalize to 0-1
+                sentiment_score = (blob.sentiment.polarity + 1) / 2  # Normalize to 0 - 1
             else:
                 sentiment_score = 0.5
 
@@ -4399,20 +4513,21 @@ class CrossPromotionManager:
             self.logger.warning(f"Error calculating perspective score: {e}")
             return 0.5
 
+
     def _score_topic_relevance(self, content_metadata: Dict[str, Any]) -> float:
         """Score topic relevance for Right Perspective"""
         # Define topic categories and their perspective scores
         topic_scores = {
             "educational": 0.9,
-            "tutorial": 0.9,
-            "review": 0.8,
-            "entertainment": 0.7,
-            "news": 0.6,
-            "opinion": 0.5,
-            "controversial": 0.2,
-            "political": 0.3,
-            "adult": 0.1,
-        }
+                "tutorial": 0.9,
+                "review": 0.8,
+                "entertainment": 0.7,
+                "news": 0.6,
+                "opinion": 0.5,
+                "controversial": 0.2,
+                "political": 0.3,
+                "adult": 0.1,
+                }
 
         content_text = (
             content_metadata.get("title", "")
@@ -4434,31 +4549,33 @@ class CrossPromotionManager:
 
         return (
             total_score / total_weight if total_weight > 0 else 0.7
-        )  # Default neutral-positive
+        )  # Default neutral - positive
+
 
     def _assess_content_quality(self, content_metadata: Dict[str, Any]) -> float:
         """Assess content quality indicators"""
         quality_indicators = {
             "has_description": 0.2 if content_metadata.get("description") else 0.0,
-            "has_tags": 0.2 if content_metadata.get("tags") else 0.0,
-            "title_length": min(0.2, len(content_metadata.get("title", "")) / 100),
-            "engagement_metrics": min(
+                "has_tags": 0.2 if content_metadata.get("tags") else 0.0,
+                "title_length": min(0.2, len(content_metadata.get("title", "")) / 100),
+                "engagement_metrics": min(
                 0.2, content_metadata.get("engagement_score", 0) / 100
             ),
-            "production_value": content_metadata.get("production_score", 0.2),
-        }
+                "production_value": content_metadata.get("production_score", 0.2),
+                }
 
         return sum(quality_indicators.values())
+
 
     async def _apply_context_filters(
         self, content_metadata: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Apply context-sensitive filters"""
+        """Apply context - sensitive filters"""
         filters_passed = 0
         total_filters = 0
         reasons = []
 
-        # Time-based filtering
+        # Time - based filtering
         current_hour = datetime.now().hour
         if "time_sensitive" in content_metadata:
             total_filters += 1
@@ -4475,7 +4592,7 @@ class CrossPromotionManager:
             else:
                 reasons.append("Geographic restrictions")
 
-        # Platform-specific filtering
+        # Platform - specific filtering
         if "platform_rules" in content_metadata:
             total_filters += 1
             if self._check_platform_compliance(content_metadata):
@@ -4487,10 +4604,11 @@ class CrossPromotionManager:
 
         return {
             "score": score,
-            "passed": filters_passed,
-            "total": total_filters,
-            "reasons": reasons,
-        }
+                "passed": filters_passed,
+                "total": total_filters,
+                "reasons": reasons,
+                }
+
 
     async def _check_brand_safety(
         self, content_metadata: Dict[str, Any]
@@ -4499,11 +4617,11 @@ class CrossPromotionManager:
         safety_score = 1.0
         issues = []
 
-        # Check for brand-unsafe keywords
+        # Check for brand - unsafe keywords
         unsafe_keywords = self.config.get(
             "unsafe_keywords",
-            ["controversy", "scandal", "illegal", "harmful", "offensive"],
-        )
+                ["controversy", "scandal", "illegal", "harmful", "offensive"],
+                )
 
         content_text = (
             content_metadata.get("title", "")
@@ -4523,6 +4641,7 @@ class CrossPromotionManager:
             issues.append(f"Inappropriate content rating: {content_rating}")
 
         return {"score": max(0.0, safety_score), "issues": issues}
+
 
     async def _check_audience_alignment(
         self, content_metadata: Dict[str, Any]
@@ -4557,8 +4676,9 @@ class CrossPromotionManager:
 
         return {"score": min(1.0, final_score)}
 
+
     def _get_blocking_reason(self, scores: Dict[str, Any]) -> str:
-        """Generate human-readable blocking reason"""
+        """Generate human - readable blocking reason"""
         reasons = []
 
         if scores["perspective"] < 0.5:
@@ -4575,6 +4695,7 @@ class CrossPromotionManager:
 
         return "; ".join(reasons) if reasons else "Multiple perspective violations"
 
+
     async def _get_context_aware_rules(
         self, source_content_id: str, content_metadata: Dict[str, Any]
     ) -> List[CrossPromotionRule]:
@@ -4586,11 +4707,11 @@ class CrossPromotionManager:
             and self._matches_content(rule.source_content, content_metadata)
         ]
 
-        # Apply context-sensitive rule modifications
+        # Apply context - sensitive rule modifications
         context_aware_rules = []
 
         for rule in base_rules:
-            # Check if rule has context-sensitive modifications
+            # Check if rule has context - sensitive modifications
             modified_rule = await self._apply_context_modifications(
                 rule, content_metadata
             )
@@ -4599,52 +4720,54 @@ class CrossPromotionManager:
 
         return context_aware_rules
 
+
     async def _apply_context_modifications(
         self, rule: CrossPromotionRule, content_metadata: Dict[str, Any]
     ) -> Optional[CrossPromotionRule]:
-        """Apply context-sensitive modifications to promotion rules"""
+        """Apply context - sensitive modifications to promotion rules"""
         # Create a copy of the rule for modification
         modified_rule = CrossPromotionRule(
-            source_content=rule.source_content,
-            target_content=rule.target_content,
-            relevance_score=rule.relevance_score,
-            promotion_type=rule.promotion_type,
-            context=rule.context,
-            exceptions=rule.exceptions.copy(),
-            is_active=rule.is_active,
-        )
+            source_content = rule.source_content,
+                target_content = rule.target_content,
+                relevance_score = rule.relevance_score,
+                promotion_type = rule.promotion_type,
+                context = rule.context,
+                exceptions = rule.exceptions.copy(),
+                is_active = rule.is_active,
+                )
 
-        # Apply time-based modifications
+        # Apply time - based modifications
         current_hour = datetime.now().hour
         if current_hour < 9 or current_hour > 21:  # Outside business hours
             modified_rule.relevance_score *= 0.8
 
-        # Apply audience-based modifications
+        # Apply audience - based modifications
         if "professional" in content_metadata.get("audience_type", ""):
             if rule.promotion_type == "embed":
                 modified_rule.promotion_type = (
                     "link"  # Less intrusive for professional content
                 )
 
-        # Apply content-type modifications
+        # Apply content - type modifications
         if content_metadata.get("content_type") == "educational":
-            modified_rule.relevance_score *= 1.2  # Boost educational cross-promotions
+            modified_rule.relevance_score *= 1.2  # Boost educational cross - promotions
 
         return modified_rule
 
+
     async def _validate_promotion_target(
         self,
-        rule: CrossPromotionRule,
-        content_metadata: Dict[str, Any],
-        source_content_id: str,
-    ) -> Dict[str, Any]:
+            rule: CrossPromotionRule,
+            content_metadata: Dict[str, Any],
+            source_content_id: str,
+            ) -> Dict[str, Any]:
         """Validate promotion target with advanced checks"""
         # Basic exception check
         if rule.target_content in self.right_perspective_exceptions:
             return {
                 "valid": False,
-                "reason": f"Target has Right Perspective exception: {self.exception_reasons.get(rule.target_content, 'Unknown')}",
-            }
+                    "reason": f"Target has Right Perspective exception: {self.exception_reasons.get(rule.target_content, 'Unknown')}",
+                    }
 
         # Circular promotion check
         if self._creates_circular_promotion(source_content_id, rule.target_content):
@@ -4658,8 +4781,8 @@ class CrossPromotionManager:
         if compatibility_score < self.config.get("min_compatibility_score", 0.6):
             return {
                 "valid": False,
-                "reason": f"Low content compatibility score: {compatibility_score:.2f}",
-            }
+                    "reason": f"Low content compatibility score: {compatibility_score:.2f}",
+                    }
 
         # Frequency capping check
         if self._exceeds_frequency_cap(rule.target_content, source_content_id):
@@ -4667,12 +4790,13 @@ class CrossPromotionManager:
 
         return {"valid": True, "reason": "Validation passed"}
 
+
     async def _generate_perspective_aware_promotion(
         self,
-        rule: CrossPromotionRule,
-        content_metadata: Dict[str, Any],
-        perspective_score: float,
-    ) -> Optional[Dict[str, Any]]:
+            rule: CrossPromotionRule,
+            content_metadata: Dict[str, Any],
+            perspective_score: float,
+            ) -> Optional[Dict[str, Any]]:
         """Generate promotion with perspective awareness"""
         try:
             base_promotion = await self._generate_promotion(rule, content_metadata)
@@ -4683,27 +4807,27 @@ class CrossPromotionManager:
             base_promotion["perspective_score"] = perspective_score
             base_promotion["perspective_factors"] = {
                 "content_alignment": perspective_score,
-                "audience_fit": await self._calculate_audience_fit(
+                    "audience_fit": await self._calculate_audience_fit(
                     rule, content_metadata
                 ),
-                "timing_appropriateness": self._calculate_timing_score(
+                    "timing_appropriateness": self._calculate_timing_score(
                     content_metadata
                 ),
-                "brand_safety": await self._calculate_brand_safety_score(
+                    "brand_safety": await self._calculate_brand_safety_score(
                     rule.target_content
                 ),
-            }
+                    }
 
             # Adjust promotion based on perspective score
             if perspective_score < 0.7:
-                # Lower visibility for lower-scoring content
+                # Lower visibility for lower - scoring content
                 base_promotion["placement_suggestions"] = [
                     suggestion
                     for suggestion in base_promotion["placement_suggestions"]
                     if "prominent" not in suggestion.lower()
                 ]
 
-            # Add perspective-based content modifications
+            # Add perspective - based content modifications
             base_promotion["content_snippet"] = self._adjust_content_for_perspective(
                 base_promotion["content_snippet"], perspective_score
             )
@@ -4711,13 +4835,15 @@ class CrossPromotionManager:
             return base_promotion
 
         except Exception as e:
-            self.logger.error(f"Error generating perspective-aware promotion: {e}")
+            self.logger.error(f"Error generating perspective - aware promotion: {e}")
             return None
+
 
     def _rank_promotions_by_perspective(
         self, promotions: List[Dict[str, Any]], content_metadata: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """Rank promotions using perspective-aware scoring"""
+        """Rank promotions using perspective - aware scoring"""
+
 
         def calculate_composite_score(promotion):
             base_score = promotion.get("relevance_score", 0)
@@ -4734,12 +4860,13 @@ class CrossPromotionManager:
                 return base_score * 0.5 + perspective_score * 0.5
 
         # Sort by composite score
-        promotions.sort(key=calculate_composite_score, reverse=True)
+        promotions.sort(key = calculate_composite_score, reverse = True)
 
-        # Apply diversity filtering to avoid over-promotion of similar content
+        # Apply diversity filtering to avoid over - promotion of similar content
         diverse_promotions = self._apply_diversity_filter(promotions)
 
         return diverse_promotions
+
 
     async def _fallback_promotion_generation(
         self, source_content_id: str, content_metadata: Dict[str, Any]
@@ -4772,14 +4899,14 @@ class CrossPromotionManager:
             for rule in safe_rules[:3]:  # Limit to top 3 safest
                 promotion = {
                     "type": rule.promotion_type,
-                    "target_content": rule.target_content,
-                    "context": "Safe fallback promotion",
-                    "relevance_score": rule.relevance_score
+                        "target_content": rule.target_content,
+                        "context": "Safe fallback promotion",
+                        "relevance_score": rule.relevance_score
                     * 0.8,  # Reduce score for fallback
                     "perspective_score": 0.6,  # Conservative score
                     "placement_suggestions": ["At the end of content"],
-                    "content_snippet": f"You might also find this helpful: {rule.target_content}",
-                }
+                        "content_snippet": f"You might also find this helpful: {rule.target_content}",
+                        }
                 safe_promotions.append(promotion)
 
             return safe_promotions
@@ -4789,6 +4916,8 @@ class CrossPromotionManager:
             return []
 
     # Helper methods for the new functionality
+
+
     def _is_appropriate_time(
         self, content_metadata: Dict[str, Any], current_hour: int
     ) -> bool:
@@ -4802,9 +4931,10 @@ class CrossPromotionManager:
 
         return start_hour <= current_hour <= end_hour
 
+
     def _check_geo_compliance(self, content_metadata: Dict[str, Any]) -> bool:
         """Check geographic compliance"""
-        # Simplified geo-compliance check
+        # Simplified geo - compliance check
         restricted_regions = content_metadata.get("geo_restrictions", {}).get(
             "blocked_regions", []
         )
@@ -4812,14 +4942,15 @@ class CrossPromotionManager:
 
         return current_region not in restricted_regions
 
+
     def _check_platform_compliance(self, content_metadata: Dict[str, Any]) -> bool:
-        """Check platform-specific compliance"""
+        """Check platform - specific compliance"""
         platform_rules = content_metadata.get("platform_rules", {})
         current_platform = self.config.get("current_platform", "web")
 
         platform_restrictions = platform_rules.get(current_platform, {})
 
-        # Check various platform-specific restrictions
+        # Check various platform - specific restrictions
         if platform_restrictions.get("blocked", False):
             return False
 
@@ -4830,22 +4961,24 @@ class CrossPromotionManager:
 
         return True
 
+
     def _check_age_overlap(self, target_range: str, content_range: str) -> bool:
         """Check if age ranges overlap"""
         # Simplified age range overlap check
         age_mappings = {
-            "13-17": (13, 17),
-            "18-24": (18, 24),
-            "25-34": (25, 34),
-            "35-44": (35, 44),
-            "45-54": (45, 54),
-            "55+": (55, 100),
-        }
+            "13 - 17": (13, 17),
+                "18 - 24": (18, 24),
+                "25 - 34": (25, 34),
+                "35 - 44": (35, 44),
+                "45 - 54": (45, 54),
+                "55+": (55, 100),
+                }
 
         target_min, target_max = age_mappings.get(target_range, (0, 100))
         content_min, content_max = age_mappings.get(content_range, (0, 100))
 
         return not (target_max < content_min or content_max < target_min)
+
 
     def _calculate_interest_overlap(
         self, target_interests: List[str], content_interests: List[str]
@@ -4862,6 +4995,7 @@ class CrossPromotionManager:
 
         return len(intersection) / len(union) if union else 0.0
 
+
     def _creates_circular_promotion(self, source_id: str, target_id: str) -> bool:
         """Check if promotion would create a circular reference"""
         # Simple circular reference check
@@ -4874,6 +5008,7 @@ class CrossPromotionManager:
                 return True
 
         return False
+
 
     async def _check_content_compatibility(
         self, source_metadata: Dict[str, Any], target_content: str
@@ -4897,6 +5032,7 @@ class CrossPromotionManager:
 
         return min(1.0, compatibility_score)
 
+
     def _exceeds_frequency_cap(self, target_content: str, source_content: str) -> bool:
         """Check if promotion exceeds frequency cap"""
         # Simplified frequency capping
@@ -4906,12 +5042,14 @@ class CrossPromotionManager:
         # For now, return False (no frequency cap exceeded)
         return False
 
+
     async def _calculate_audience_fit(
         self, rule: CrossPromotionRule, content_metadata: Dict[str, Any]
     ) -> float:
         """Calculate how well the promotion fits the audience"""
         # Simplified audience fit calculation
         return 0.8  # Default good fit
+
 
     def _calculate_timing_score(self, content_metadata: Dict[str, Any]) -> float:
         """Calculate timing appropriateness score"""
@@ -4933,11 +5071,13 @@ class CrossPromotionManager:
 
         return 0.8  # Default score
 
+
     async def _calculate_brand_safety_score(self, target_content: str) -> float:
         """Calculate brand safety score for target content"""
         # Simplified brand safety scoring
         # In a real implementation, this would analyze the target content
         return 0.9  # Default high safety score
+
 
     def _adjust_content_for_perspective(
         self, content_snippet: str, perspective_score: float
@@ -4954,10 +5094,11 @@ class CrossPromotionManager:
 
         return content_snippet
 
+
     def _apply_diversity_filter(
         self, promotions: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
-        """Apply diversity filtering to avoid over-promotion of similar content"""
+        """Apply diversity filtering to avoid over - promotion of similar content"""
         if len(promotions) <= 3:
             return promotions
 
@@ -4980,6 +5121,7 @@ class CrossPromotionManager:
 class CommunityEngagementManager:
     """Manages automated community building and engagement across platforms"""
 
+
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.youtube_agent = None
@@ -5000,6 +5142,7 @@ class CommunityEngagementManager:
         except Exception as e:
             logging.warning(f"Could not initialize engagement agents: {e}")
 
+
     async def analyze_youtube_comments(self, video_id: str) -> Dict[str, Any]:
         """Analyze YouTube comments and generate responses"""
         if not self.youtube_agent:
@@ -5017,14 +5160,15 @@ class CommunityEngagementManager:
 
             return {
                 "video_id": video_id,
-                "total_comments": len(comments),
-                "categories": categorized,
-                "generated_responses": responses,
-                "engagement_score": self._calculate_engagement_score(categorized),
-            }
+                    "total_comments": len(comments),
+                    "categories": categorized,
+                    "generated_responses": responses,
+                    "engagement_score": self._calculate_engagement_score(categorized),
+                    }
         except Exception as e:
             logging.error(f"Error analyzing YouTube comments: {e}")
             return {"error": str(e)}
+
 
     async def _fetch_youtube_comments(self, video_id: str) -> List[Dict[str, Any]]:
         """Fetch comments from YouTube API"""
@@ -5035,20 +5179,21 @@ class CommunityEngagementManager:
         return [
             {
                 "id": "1",
-                "text": "Great video! Can you explain more about X?",
-                "author": "user1",
-            },
-            {
+                    "text": "Great video! Can you explain more about X?",
+                    "author": "user1",
+                    },
+                {
                 "id": "2",
-                "text": "This helped me so much, thank you!",
-                "author": "user2",
-            },
-            {
+                    "text": "This helped me so much, thank you!",
+                    "author": "user2",
+                    },
+                {
                 "id": "3",
-                "text": "What software do you recommend for beginners?",
-                "author": "user3",
-            },
-        ]
+                    "text": "What software do you recommend for beginners?",
+                    "author": "user3",
+                    },
+                ]
+
 
     async def _categorize_comments(
         self, comments: List[Dict[str, Any]]
@@ -5056,11 +5201,11 @@ class CommunityEngagementManager:
         """Categorize comments into questions, feedback, praise, etc."""
         categories = {
             "questions": [],
-            "feedback": [],
-            "praise": [],
-            "requests": [],
-            "other": [],
-        }
+                "feedback": [],
+                "praise": [],
+                "requests": [],
+                "other": [],
+                }
 
         for comment in comments:
             text = comment.get("text", "").lower()
@@ -5087,10 +5232,11 @@ class CommunityEngagementManager:
 
         return categories
 
+
     async def _generate_comment_responses(
         self, categorized: Dict[str, List[Dict]]
     ) -> List[Dict[str, Any]]:
-        """Generate AI-powered responses to comments"""
+        """Generate AI - powered responses to comments"""
         responses = []
 
         # Respond to questions
@@ -5100,9 +5246,9 @@ class CommunityEngagementManager:
                 responses.append(
                     {
                         "comment_id": comment["id"],
-                        "response": response,
-                        "type": "question_answer",
-                    }
+                            "response": response,
+                            "type": "question_answer",
+                            }
                 )
 
         # Respond to praise
@@ -5112,12 +5258,13 @@ class CommunityEngagementManager:
                 responses.append(
                     {
                         "comment_id": comment["id"],
-                        "response": response,
-                        "type": "appreciation",
-                    }
+                            "response": response,
+                            "type": "appreciation",
+                            }
                 )
 
         return responses
+
 
     async def _generate_helpful_response(self, comment: Dict[str, Any]) -> str:
         """Generate a helpful response to a question"""
@@ -5132,14 +5279,16 @@ class CommunityEngagementManager:
         else:
             return "Thanks for your question! I'll consider making a dedicated video about this topic. Stay tuned!"
 
+
     async def _generate_appreciation_response(self, comment: Dict[str, Any]) -> str:
         """Generate an appreciation response"""
         responses = [
             "Thank you so much! Comments like yours make creating content worthwhile! 🙏",
-            "I'm so glad this helped you! Don't forget to subscribe for more content like this!",
-            "Your support means everything! What topic would you like me to cover next?",
-        ]
+                "I'm so glad this helped you! Don't forget to subscribe for more content like this!",
+                "Your support means everything! What topic would you like me to cover next?",
+                ]
         return random.choice(responses)
+
 
     def _calculate_engagement_score(self, categorized: Dict[str, List[Dict]]) -> float:
         """Calculate engagement score based on comment categories"""
@@ -5158,6 +5307,7 @@ class CommunityEngagementManager:
 
         return min(score / total_comments, 10.0)  # Cap at 10.0
 
+
     async def monitor_reddit_discussions(
         self, subreddits: List[str], keywords: List[str]
     ) -> Dict[str, Any]:
@@ -5173,27 +5323,28 @@ class CommunityEngagementManager:
                     if await self._is_relevant_discussion(post, keywords):
                         opportunity = {
                             "subreddit": subreddit,
-                            "post_id": post.get("id"),
-                            "title": post.get("title"),
-                            "url": post.get("url"),
-                            "relevance_score": await self._calculate_relevance_score(
+                                "post_id": post.get("id"),
+                                "title": post.get("title"),
+                                "url": post.get("url"),
+                                "relevance_score": await self._calculate_relevance_score(
                                 post, keywords
                             ),
-                            "suggested_response": await self._generate_reddit_response(
+                                "suggested_response": await self._generate_reddit_response(
                                 post
                             ),
-                        }
+                                }
                         opportunities.append(opportunity)
             except Exception as e:
                 logging.error(f"Error monitoring subreddit {subreddit}: {e}")
 
         return {
             "opportunities": sorted(
-                opportunities, key=lambda x: x["relevance_score"], reverse=True
+                opportunities, key = lambda x: x["relevance_score"], reverse = True
             )[:10],
-            "total_monitored": len(subreddits),
-            "keywords": keywords,
-        }
+                "total_monitored": len(subreddits),
+                "keywords": keywords,
+                }
+
 
     async def _fetch_reddit_posts(
         self, subreddit: str, keywords: List[str]
@@ -5203,19 +5354,20 @@ class CommunityEngagementManager:
         return [
             {
                 "id": "post1",
-                "title": "Need help with SEO for my new website",
-                "text": "I'm struggling with getting my site to rank...",
-                "url": f"https://reddit.com/r/{subreddit}/post1",
-                "score": 15,
-            },
-            {
+                    "title": "Need help with SEO for my new website",
+                    "text": "I'm struggling with getting my site to rank...",
+                    "url": f"https://reddit.com / r/{subreddit}/post1",
+                    "score": 15,
+                    },
+                {
                 "id": "post2",
-                "title": "Best tools for content marketing?",
-                "text": "Looking for recommendations on content marketing tools...",
-                "url": f"https://reddit.com/r/{subreddit}/post2",
-                "score": 8,
-            },
-        ]
+                    "title": "Best tools for content marketing?",
+                    "text": "Looking for recommendations on content marketing tools...",
+                    "url": f"https://reddit.com / r/{subreddit}/post2",
+                    "score": 8,
+                    },
+                ]
+
 
     async def _is_relevant_discussion(
         self, post: Dict[str, Any], keywords: List[str]
@@ -5223,6 +5375,7 @@ class CommunityEngagementManager:
         """Check if a Reddit post is relevant to our content"""
         text = (post.get("title", "") + " " + post.get("text", "")).lower()
         return any(keyword.lower() in text for keyword in keywords)
+
 
     async def _calculate_relevance_score(
         self, post: Dict[str, Any], keywords: List[str]
@@ -5240,6 +5393,7 @@ class CommunityEngagementManager:
 
         return score
 
+
     async def _generate_reddit_response(self, post: Dict[str, Any]) -> str:
         """Generate a helpful Reddit response"""
         title = post.get("title", "").lower()
@@ -5250,6 +5404,7 @@ class CommunityEngagementManager:
             return "Great question! I've been working in marketing for years and found these strategies most effective... Here's a detailed breakdown I put together: [link]"
         else:
             return "This is a great discussion! I've actually covered this topic in detail in my recent content. Here's what I've learned: [helpful summary] Full details here: [link]"
+
 
     async def monitor_twitter_hashtags(
         self, hashtags: List[str], keywords: List[str]
@@ -5268,25 +5423,26 @@ class CommunityEngagementManager:
                     if await self._is_relevant_tweet(tweet, keywords):
                         opportunity = {
                             "hashtag": hashtag,
-                            "tweet_id": tweet.get("id"),
-                            "text": tweet.get("text"),
-                            "author": tweet.get("author"),
-                            "engagement_score": tweet.get("engagement_score", 0),
-                            "suggested_reply": await self._generate_twitter_reply(
+                                "tweet_id": tweet.get("id"),
+                                "text": tweet.get("text"),
+                                "author": tweet.get("author"),
+                                "engagement_score": tweet.get("engagement_score", 0),
+                                "suggested_reply": await self._generate_twitter_reply(
                                 tweet
                             ),
-                        }
+                                }
                         opportunities.append(opportunity)
             except Exception as e:
                 logging.error(f"Error monitoring hashtag {hashtag}: {e}")
 
         return {
             "opportunities": sorted(
-                opportunities, key=lambda x: x["engagement_score"], reverse=True
+                opportunities, key = lambda x: x["engagement_score"], reverse = True
             )[:10],
-            "hashtags_monitored": hashtags,
-            "keywords": keywords,
-        }
+                "hashtags_monitored": hashtags,
+                "keywords": keywords,
+                }
+
 
     async def _fetch_twitter_posts(
         self, hashtag: str, keywords: List[str]
@@ -5296,11 +5452,12 @@ class CommunityEngagementManager:
         return [
             {
                 "id": "tweet1",
-                "text": f"Struggling with {keywords[0] if keywords else 'marketing'} - any tips? #{hashtag}",
-                "author": "@user1",
-                "engagement_score": 5,
-            }
+                    "text": f"Struggling with {keywords[0] if keywords else 'marketing'} - any tips? #{hashtag}",
+                    "author": "@user1",
+                    "engagement_score": 5,
+                    }
         ]
+
 
     async def _is_relevant_tweet(
         self, tweet: Dict[str, Any], keywords: List[str]
@@ -5309,9 +5466,11 @@ class CommunityEngagementManager:
         text = tweet.get("text", "").lower()
         return any(keyword.lower() in text for keyword in keywords)
 
+
     async def _generate_twitter_reply(self, tweet: Dict[str, Any]) -> str:
         """Generate Twitter reply"""
         return "Great question! I've found success with these strategies... Check out my latest content for a detailed breakdown: [link] 🚀"
+
 
     async def execute_community_engagement_cycle(
         self, config: Dict[str, Any]
@@ -5319,12 +5478,12 @@ class CommunityEngagementManager:
         """Execute a complete community engagement cycle"""
         results = {
             "youtube_analysis": {},
-            "reddit_monitoring": {},
-            "twitter_monitoring": {},
-            "total_opportunities": 0,
-            "responses_generated": 0,
-            "responses_posted": 0,
-        }
+                "reddit_monitoring": {},
+                "twitter_monitoring": {},
+                "total_opportunities": 0,
+                "responses_generated": 0,
+                "responses_posted": 0,
+                }
 
         try:
             # YouTube comment analysis
@@ -5387,6 +5546,7 @@ class CommunityEngagementManager:
 
         return results
 
+
     async def post_youtube_responses(
         self, video_id: str, responses: List[Dict[str, Any]]
     ) -> int:
@@ -5402,9 +5562,9 @@ class CommunityEngagementManager:
                 if response.get("should_respond", False):
                     success = await self._post_youtube_comment_reply(
                         video_id,
-                        response.get("comment_id"),
-                        response.get("response_text"),
-                    )
+                            response.get("comment_id"),
+                            response.get("response_text"),
+                            )
                     if success:
                         posted_count += 1
                         # Add delay to avoid rate limiting
@@ -5413,6 +5573,7 @@ class CommunityEngagementManager:
             logging.error(f"Error posting YouTube responses: {e}")
 
         return posted_count
+
 
     async def _post_youtube_comment_reply(
         self, video_id: str, comment_id: str, reply_text: str
@@ -5428,6 +5589,7 @@ class CommunityEngagementManager:
             logging.error(f"Failed to post YouTube reply: {e}")
             return False
 
+
     async def engage_reddit_discussions(
         self, opportunities: List[Dict[str, Any]]
     ) -> int:
@@ -5439,9 +5601,9 @@ class CommunityEngagementManager:
                 if opportunity.get("relevance_score", 0) > 0.7:
                     success = await self._post_reddit_comment(
                         opportunity.get("subreddit"),
-                        opportunity.get("post_id"),
-                        opportunity.get("suggested_response"),
-                    )
+                            opportunity.get("post_id"),
+                            opportunity.get("suggested_response"),
+                            )
                     if success:
                         engaged_count += 1
                         # Add delay to avoid rate limiting
@@ -5450,6 +5612,7 @@ class CommunityEngagementManager:
             logging.error(f"Error engaging with Reddit discussions: {e}")
 
         return engaged_count
+
 
     async def _post_reddit_comment(
         self, subreddit: str, post_id: str, comment_text: str
@@ -5464,6 +5627,7 @@ class CommunityEngagementManager:
         except Exception as e:
             logging.error(f"Failed to post Reddit comment: {e}")
             return False
+
 
     async def engage_twitter_discussions(
         self, opportunities: List[Dict[str, Any]]
@@ -5490,6 +5654,7 @@ class CommunityEngagementManager:
 
         return engaged_count
 
+
     async def _post_twitter_reply(self, tweet_id: str, reply_text: str) -> bool:
         """Post a reply to a Twitter tweet"""
         try:
@@ -5502,39 +5667,40 @@ class CommunityEngagementManager:
             logging.error(f"Failed to post Twitter reply: {e}")
             return False
 
+
     async def get_engagement_analytics(self, days: int = 7) -> Dict[str, Any]:
         """Get community engagement analytics"""
         return {
             "period_days": days,
-            "youtube_engagement": {
+                "youtube_engagement": {
                 "comments_analyzed": 150,
-                "responses_generated": 45,
-                "responses_posted": 32,
-                "engagement_rate": 0.21,
-            },
-            "reddit_engagement": {
+                    "responses_generated": 45,
+                    "responses_posted": 32,
+                    "engagement_rate": 0.21,
+                    },
+                "reddit_engagement": {
                 "posts_monitored": 89,
-                "opportunities_found": 23,
-                "comments_posted": 12,
-                "upvotes_received": 156,
-            },
-            "twitter_engagement": {
+                    "opportunities_found": 23,
+                    "comments_posted": 12,
+                    "upvotes_received": 156,
+                    },
+                "twitter_engagement": {
                 "tweets_monitored": 234,
-                "opportunities_found": 18,
-                "replies_posted": 8,
-                "retweets_received": 45,
-            },
-            "overall_metrics": {
+                    "opportunities_found": 18,
+                    "replies_posted": 8,
+                    "retweets_received": 45,
+                    },
+                "overall_metrics": {
                 "total_opportunities": 86,
-                "total_engagements": 52,
-                "engagement_conversion_rate": 0.60,
-                "estimated_traffic_driven": 1250,
-            },
-        }
-
+                    "total_engagements": 52,
+                    "engagement_conversion_rate": 0.60,
+                    "estimated_traffic_driven": 1250,
+                    },
+                }
 
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_marketing_tools():
         """Test the marketing tools"""
@@ -5547,10 +5713,10 @@ if __name__ == "__main__":
         try:
             campaign = await blitz.launch_blitz_campaign(
                 product_name="AI Content Creator Pro",
-                target_audience="Content creators and digital marketers",
-                budget=5000.0,
-                duration_hours=24,
-            )
+                    target_audience="Content creators and digital marketers",
+                    budget = 5000.0,
+                    duration_hours = 24,
+                    )
 
             print(f"Launched campaign: {campaign.name}")
             print(f"Channels: {[c.value for c in campaign.channels]}")
@@ -5572,21 +5738,21 @@ if __name__ == "__main__":
             # Create a sample campaign for optimization
             sample_campaign = MarketingCampaign(
                 campaign_id="test_campaign",
-                name="Test Optimization Campaign",
-                campaign_type=CampaignType.LEAD_GENERATION,
-                channels=[MarketingChannel.FACEBOOK, MarketingChannel.GOOGLE],
-                target_audience="Business owners",
-                budget=2000.0,
-                start_date=datetime.now(),
-                end_date=datetime.now() + timedelta(days=7),
-            )
+                    name="Test Optimization Campaign",
+                    campaign_type = CampaignType.LEAD_GENERATION,
+                    channels=[MarketingChannel.FACEBOOK, MarketingChannel.GOOGLE],
+                    target_audience="Business owners",
+                    budget = 2000.0,
+                    start_date = datetime.now(),
+                    end_date = datetime.now() + timedelta(days = 7),
+                    )
 
             # Initialize some metrics
             sample_campaign.metrics = {
                 OptimizationMetric.CLICK_THROUGH_RATE: 0.015,
-                OptimizationMetric.CONVERSION_RATE: 0.008,
-                OptimizationMetric.ENGAGEMENT_RATE: 0.025,
-            }
+                    OptimizationMetric.CONVERSION_RATE: 0.008,
+                    OptimizationMetric.ENGAGEMENT_RATE: 0.025,
+                    }
 
             await optimizer.start_optimization_loop(sample_campaign)
 
@@ -5608,25 +5774,25 @@ if __name__ == "__main__":
             sample_links = [
                 AffiliateLink(
                     product_name="ConvertKit Email Marketing",
-                    affiliate_url="https://convertkit.com?ref=affiliate123",
-                    network=AffiliateNetwork.CUSTOM,
-                    commission_rate=0.30,
-                    product_category="email marketing",
-                    target_keywords=["email", "marketing", "automation"],
-                    conversion_rate=0.045,
-                    earnings_per_click=0.85,
-                ),
-                AffiliateLink(
+                        affiliate_url="https://convertkit.com?ref = affiliate123",
+                        network = AffiliateNetwork.CUSTOM,
+                        commission_rate = 0.30,
+                        product_category="email marketing",
+                        target_keywords=["email", "marketing", "automation"],
+                        conversion_rate = 0.045,
+                        earnings_per_click = 0.85,
+                        ),
+                    AffiliateLink(
                     product_name="Canva Pro Design Tool",
-                    affiliate_url="https://canva.com/pro?ref=affiliate456",
-                    network=AffiliateNetwork.CUSTOM,
-                    commission_rate=0.25,
-                    product_category="design tools",
-                    target_keywords=["design", "graphics", "templates"],
-                    conversion_rate=0.032,
-                    earnings_per_click=0.65,
-                ),
-            ]
+                        affiliate_url="https://canva.com / pro?ref = affiliate456",
+                        network = AffiliateNetwork.CUSTOM,
+                        commission_rate = 0.25,
+                        product_category="design tools",
+                        target_keywords=["design", "graphics", "templates"],
+                        conversion_rate = 0.032,
+                        earnings_per_click = 0.65,
+                        ),
+                    ]
 
             for link in sample_links:
                 affiliate_mgr.add_affiliate_link(link)
@@ -5638,7 +5804,7 @@ if __name__ == "__main__":
             target_keywords = ["email", "marketing", "design"]
 
             selected_links = await affiliate_mgr.select_optimal_links(
-                content_context, target_keywords, max_links=2
+                content_context, target_keywords, max_links = 2
             )
 
             print(f"Selected {len(selected_links)} affiliate links:")
@@ -5650,10 +5816,10 @@ if __name__ == "__main__":
             # Test performance tracking
             await affiliate_mgr.track_link_performance(
                 "custom_convertkit_email_marketing",
-                clicks=100,
-                conversions=4,
-                revenue=340.0,
-            )
+                    clicks = 100,
+                    conversions = 4,
+                    revenue = 340.0,
+                    )
 
             # Get performance analysis
             analysis = affiliate_mgr.analyze_link_performance()
@@ -5663,8 +5829,8 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Affiliate manager test failed: {e}")
 
-        # Test Cross-Promotion Manager
-        print("\n4. Testing Cross-Promotion Manager...")
+        # Test Cross - Promotion Manager
+        print("\n4. Testing Cross - Promotion Manager...")
         cross_promo = CrossPromotionManager()
 
         try:
@@ -5672,19 +5838,19 @@ if __name__ == "__main__":
             rules = [
                 CrossPromotionRule(
                     source_content="email marketing",
-                    target_content="Advanced Email Automation Course",
-                    relevance_score=0.9,
-                    promotion_type="recommendation",
-                    context="Related educational content",
-                ),
-                CrossPromotionRule(
+                        target_content="Advanced Email Automation Course",
+                        relevance_score = 0.9,
+                        promotion_type="recommendation",
+                        context="Related educational content",
+                        ),
+                    CrossPromotionRule(
                     source_content="design",
-                    target_content="Graphic Design Masterclass",
-                    relevance_score=0.85,
-                    promotion_type="link",
-                    context="Skill development",
-                ),
-            ]
+                        target_content="Graphic Design Masterclass",
+                        relevance_score = 0.85,
+                        promotion_type="link",
+                        context="Skill development",
+                        ),
+                    ]
 
             for rule in rules:
                 cross_promo.add_promotion_rule(rule)
@@ -5697,15 +5863,15 @@ if __name__ == "__main__":
             # Test promotion generation
             content_metadata = {
                 "title": "How to Master Email Marketing in 2024",
-                "description": "Complete guide to email marketing strategies",
-                "tags": ["email", "marketing", "automation"],
-            }
+                    "description": "Complete guide to email marketing strategies",
+                    "tags": ["email", "marketing", "automation"],
+                    }
 
             promotions = await cross_promo.generate_cross_promotions(
                 "email_marketing_guide_2024", content_metadata
             )
 
-            print(f"Generated {len(promotions)} cross-promotions:")
+            print(f"Generated {len(promotions)} cross - promotions:")
             for promo in promotions:
                 print(
                     f"  - {promo['type']}: {promo['target_content']} (score: {promo['relevance_score']})"
@@ -5723,7 +5889,7 @@ if __name__ == "__main__":
             print(f"Optimization recommendations: {len(recommendations)}")
 
         except Exception as e:
-            print(f"Cross-promotion manager test failed: {e}")
+            print(f"Cross - promotion manager test failed: {e}")
 
         print("\nMarketing tools testing completed!")
 

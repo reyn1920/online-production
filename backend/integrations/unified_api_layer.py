@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Unified API Layer
 
@@ -12,9 +12,9 @@ Features:
 - CrewAI agent coordination
 - Supabase database operations
 - MCP protocol communication
-- Real-time WebSocket connections
+- Real - time WebSocket connections
 - Authentication and authorization
-- Request/response transformation
+- Request / response transformation
 - Error handling and logging
 - Rate limiting and throttling
 
@@ -44,7 +44,7 @@ from urllib.parse import urljoin, urlparse
 try:
     import uvicorn
     from fastapi import (Depends, FastAPI, HTTPException, Request, Response, WebSocket,
-                         WebSocketDisconnect)
+        WebSocketDisconnect)
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.middleware.trustedhost import TrustedHostMiddleware
     from fastapi.responses import JSONResponse
@@ -56,15 +56,18 @@ except ImportError:
     FASTAPI_AVAILABLE = False
 
     # Fallback classes
+
+
     class BaseModel:
         pass
+
 
     class FastAPI:
         pass
 
+
     class HTTPException(Exception):
         pass
-
 
 # Add project root to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -83,17 +86,23 @@ except ImportError as e:
     print(f"Warning: Could not import integrations: {e}")
 
     # Create dummy classes for development
+
+
     class N8nIntegration:
         pass
+
 
     class CrewAIIntegration:
         pass
 
+
     class SupabaseIntegration:
         pass
 
+
     class MCPServer:
         pass
+
 
     class MCPClient:
         pass
@@ -133,15 +142,16 @@ class AuthLevel(Enum):
     ADMIN = "admin"
     SYSTEM = "system"
 
-
-# Pydantic models for API requests/responses
+# Pydantic models for API requests / responses
 if FASTAPI_AVAILABLE:
+
 
     class HealthResponse(BaseModel):
         status: str
         timestamp: str
         version: str
         components: Dict[str, Any]
+
 
     class WorkflowRequest(BaseModel):
         name: str
@@ -150,12 +160,14 @@ if FASTAPI_AVAILABLE:
         trigger_type: str = "manual"
         active: bool = True
 
+
     class WorkflowResponse(BaseModel):
         id: str
         name: str
         status: str
         created_at: str
         updated_at: str
+
 
     class AgentRequest(BaseModel):
         name: str
@@ -166,12 +178,14 @@ if FASTAPI_AVAILABLE:
         max_iter: int = 5
         memory: bool = True
 
+
     class AgentResponse(BaseModel):
         id: str
         name: str
         role: str
         status: str
         created_at: str
+
 
     class TaskRequest(BaseModel):
         description: str
@@ -180,12 +194,14 @@ if FASTAPI_AVAILABLE:
         context: Optional[Dict[str, Any]] = None
         tools: List[str] = []
 
+
     class TaskResponse(BaseModel):
         id: str
         description: str
         status: str
         result: Optional[str] = None
         created_at: str
+
 
     class DatabaseQuery(BaseModel):
         table: str
@@ -194,10 +210,12 @@ if FASTAPI_AVAILABLE:
         filters: Optional[Dict[str, Any]] = None
         limit: Optional[int] = None
 
+
     class MCPRequest(BaseModel):
         method: str
         params: Optional[Dict[str, Any]] = None
         server_name: Optional[str] = None
+
 
     class WebhookPayload(BaseModel):
         event: str
@@ -207,38 +225,50 @@ if FASTAPI_AVAILABLE:
 
 else:
     # Fallback models
+
+
     class HealthResponse:
         pass
+
 
     class WorkflowRequest:
         pass
 
+
     class WorkflowResponse:
         pass
+
 
     class AgentRequest:
         pass
 
+
     class AgentResponse:
         pass
+
 
     class TaskRequest:
         pass
 
+
     class TaskResponse:
         pass
+
 
     class DatabaseQuery:
         pass
 
+
     class MCPRequest:
         pass
+
 
     class WebhookPayload:
         pass
 
-
 @dataclass
+
+
 class APIConfig:
     """Unified API configuration."""
 
@@ -257,9 +287,11 @@ class APIConfig:
 class ConnectionManager:
     """WebSocket connection manager."""
 
+
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
         self.logger = setup_logger("websocket_manager")
+
 
     async def connect(self, websocket: WebSocket, client_id: str):
         """Accept WebSocket connection."""
@@ -267,11 +299,13 @@ class ConnectionManager:
         self.active_connections[client_id] = websocket
         self.logger.info(f"WebSocket client connected: {client_id}")
 
+
     def disconnect(self, client_id: str):
         """Remove WebSocket connection."""
         if client_id in self.active_connections:
             del self.active_connections[client_id]
             self.logger.info(f"WebSocket client disconnected: {client_id}")
+
 
     async def send_personal_message(self, message: str, client_id: str):
         """Send message to specific client."""
@@ -281,6 +315,7 @@ class ConnectionManager:
             except Exception as e:
                 self.logger.error(f"Error sending message to {client_id}: {e}")
                 self.disconnect(client_id)
+
 
     async def broadcast(self, message: str):
         """Broadcast message to all connected clients."""
@@ -303,8 +338,9 @@ class UnifiedAPILayer:
     Provides a single REST API interface for n8n, CrewAI, Supabase, and MCP.
     """
 
+
     def __init__(
-        self, config: APIConfig = None, secrets_db_path: str = "data/secrets.sqlite"
+        self, config: APIConfig = None, secrets_db_path: str = "data / secrets.sqlite"
     ):
         self.logger = setup_logger("unified_api")
         self.config = config or APIConfig()
@@ -321,10 +357,10 @@ class UnifiedAPILayer:
         # Initialize FastAPI app
         self.app = FastAPI(
             title="TRAE.AI Unified API",
-            description="Unified API layer for TRAE.AI system components",
-            version="1.0.0",
-            debug=self.config.debug,
-        )
+                description="Unified API layer for TRAE.AI system components",
+                version="1.0.0",
+                debug = self.config.debug,
+                )
 
         # Add middleware
         self._setup_middleware()
@@ -343,12 +379,13 @@ class UnifiedAPILayer:
         self.rate_limits = {}
 
         # Authentication
-        self.security = HTTPBearer(auto_error=False)
+        self.security = HTTPBearer(auto_error = False)
 
         # Setup routes
         self._setup_routes()
 
         self.logger.info("Unified API Layer initialized")
+
 
     def _setup_middleware(self):
         """Setup FastAPI middleware."""
@@ -358,17 +395,18 @@ class UnifiedAPILayer:
         # CORS middleware
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins=self.config.cors_origins or ["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
-        )
+                allow_origins = self.config.cors_origins or ["*"],
+                allow_credentials = True,
+                allow_methods=["*"],
+                allow_headers=["*"],
+                )
 
         # Trusted host middleware
         if self.config.trusted_hosts:
             self.app.add_middleware(
-                TrustedHostMiddleware, allowed_hosts=self.config.trusted_hosts
+                TrustedHostMiddleware, allowed_hosts = self.config.trusted_hosts
             )
+
 
     def _setup_routes(self):
         """Setup API routes."""
@@ -376,74 +414,94 @@ class UnifiedAPILayer:
             return
 
         # Health check
-        @self.app.get("/health", response_model=HealthResponse)
+        @self.app.get("/health", response_model = HealthResponse)
+
+
         async def health_check():
             return await self._health_check()
 
         # Authentication
-        @self.app.post("/auth/token")
+        @self.app.post("/auth / token")
+
+
         async def authenticate(credentials: dict):
             return await self._authenticate(credentials)
 
         # n8n Workflow endpoints
         @self.app.get("/workflows")
+
+
         async def list_workflows(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                ):
             await self._verify_auth(auth)
             return await self._list_workflows()
 
-        @self.app.post("/workflows", response_model=WorkflowResponse)
+        @self.app.post("/workflows", response_model = WorkflowResponse)
+
+
         async def create_workflow(
             workflow: WorkflowRequest,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._create_workflow(workflow)
 
         @self.app.get("/workflows/{workflow_id}")
+
+
         async def get_workflow(
             workflow_id: str,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._get_workflow(workflow_id)
 
         @self.app.post("/workflows/{workflow_id}/execute")
+
+
         async def execute_workflow(
             workflow_id: str,
-            data: dict = None,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                data: dict = None,
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._execute_workflow(workflow_id, data)
 
         # CrewAI Agent endpoints
         @self.app.get("/agents")
+
+
         async def list_agents(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                ):
             await self._verify_auth(auth)
             return await self._list_agents()
 
-        @self.app.post("/agents", response_model=AgentResponse)
+        @self.app.post("/agents", response_model = AgentResponse)
+
+
         async def create_agent(
             agent: AgentRequest,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._create_agent(agent)
 
-        @self.app.post("/agents/{agent_id}/tasks", response_model=TaskResponse)
+        @self.app.post("/agents/{agent_id}/tasks", response_model = TaskResponse)
+
+
         async def create_task(
             agent_id: str,
-            task: TaskRequest,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                task: TaskRequest,
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._create_task(agent_id, task)
 
         @self.app.get("/tasks/{task_id}")
+
+
         async def get_task(
             task_id: str, auth: HTTPAuthorizationCredentials = Depends(self.security)
         ):
@@ -451,57 +509,71 @@ class UnifiedAPILayer:
             return await self._get_task(task_id)
 
         # Supabase Database endpoints
-        @self.app.post("/database/query")
+        @self.app.post("/database / query")
+
+
         async def database_query(
             query: DatabaseQuery,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._database_query(query)
 
-        @self.app.get("/database/tables")
+        @self.app.get("/database / tables")
+
+
         async def list_tables(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                ):
             await self._verify_auth(auth)
             return await self._list_tables()
 
         # MCP Protocol endpoints
-        @self.app.post("/mcp/request")
+        @self.app.post("/mcp / request")
+
+
         async def mcp_request(
             request: MCPRequest,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._mcp_request(request)
 
-        @self.app.get("/mcp/tools")
+        @self.app.get("/mcp / tools")
+
+
         async def list_mcp_tools(
             server_name: str = None,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._list_mcp_tools(server_name)
 
         # File management
-        @self.app.post("/files/upload")
+        @self.app.post("/files / upload")
+
+
         async def upload_file(
             request: Request,
-            auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                auth: HTTPAuthorizationCredentials = Depends(self.security),
+                ):
             await self._verify_auth(auth)
             return await self._upload_file(request)
 
         # Analytics
-        @self.app.get("/analytics/metrics")
+        @self.app.get("/analytics / metrics")
+
+
         async def get_metrics(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+                ):
             await self._verify_auth(auth)
             return await self._get_metrics()
 
         # Webhooks
         @self.app.post("/webhooks/{webhook_id}")
+
+
         async def handle_webhook(
             webhook_id: str, payload: WebhookPayload, request: Request
         ):
@@ -509,8 +581,11 @@ class UnifiedAPILayer:
 
         # WebSocket endpoint
         @self.app.websocket("/ws/{client_id}")
+
+
         async def websocket_endpoint(websocket: WebSocket, client_id: str):
             await self._handle_websocket(websocket, client_id)
+
 
     async def initialize_integrations(self):
         """Initialize all system integrations."""
@@ -540,17 +615,18 @@ class UnifiedAPILayer:
                 )
 
             # Initialize MCP server
-            self.mcp_server = MCPServer("TRAE-AI-Unified")
+            self.mcp_server = MCPServer("TRAE - AI - Unified")
 
             self.logger.info("All integrations initialized successfully")
 
         except Exception as e:
             self.logger.error(f"Error initializing integrations: {e}")
 
+
     async def _verify_auth(self, auth: HTTPAuthorizationCredentials):
         """Verify authentication token."""
         if not auth:
-            raise HTTPException(status_code=401, detail="Authentication required")
+            raise HTTPException(status_code = 401, detail="Authentication required")
 
         # Simple token verification (implement proper JWT validation in production)
         if not self.config.auth_secret:
@@ -560,16 +636,17 @@ class UnifiedAPILayer:
             # Verify token signature
             token_parts = auth.credentials.split(".")
             if len(token_parts) != 3:
-                raise HTTPException(status_code=401, detail="Invalid token format")
+                raise HTTPException(status_code = 401, detail="Invalid token format")
 
             # In production, implement proper JWT verification
             # For now, just check if token exists
             if not auth.credentials:
-                raise HTTPException(status_code=401, detail="Invalid token")
+                raise HTTPException(status_code = 401, detail="Invalid token")
 
         except Exception as e:
             self.logger.error(f"Authentication error: {e}")
-            raise HTTPException(status_code=401, detail="Authentication failed")
+            raise HTTPException(status_code = 401, detail="Authentication failed")
+
 
     async def _health_check(self) -> Dict[str, Any]:
         """Comprehensive health check."""
@@ -603,10 +680,11 @@ class UnifiedAPILayer:
 
         return {
             "status": "healthy" if all_healthy else "degraded",
-            "timestamp": datetime.now().isoformat(),
-            "version": "1.0.0",
-            "components": components,
-        }
+                "timestamp": datetime.now().isoformat(),
+                "version": "1.0.0",
+                "components": components,
+                }
+
 
     async def _authenticate(self, credentials: dict) -> Dict[str, Any]:
         """Authenticate user and return token."""
@@ -616,7 +694,7 @@ class UnifiedAPILayer:
 
         if not username or not password:
             raise HTTPException(
-                status_code=400, detail="Username and password required"
+                status_code = 400, detail="Username and password required"
             )
 
         # In production, verify against database
@@ -625,82 +703,88 @@ class UnifiedAPILayer:
             token = self._generate_token(username)
             return {"access_token": token, "token_type": "bearer", "expires_in": 3600}
 
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code = 401, detail="Invalid credentials")
+
 
     def _generate_token(self, username: str) -> str:
         """Generate authentication token."""
         # Simple token generation (implement proper JWT in production)
         payload = {
             "username": username,
-            "exp": (datetime.now() + timedelta(hours=1)).timestamp(),
-        }
+                "exp": (datetime.now() + timedelta(hours = 1)).timestamp(),
+                }
 
         token_data = json.dumps(payload)
         return f"trae.{hashlib.sha256(token_data.encode()).hexdigest()}"
 
+
     async def _list_workflows(self) -> List[Dict]:
         """List n8n workflows."""
         if not self.n8n:
-            raise HTTPException(status_code=503, detail="n8n integration not available")
+            raise HTTPException(status_code = 503, detail="n8n integration not available")
 
         try:
             workflows = await self.n8n.list_workflows()
             return workflows
         except Exception as e:
             self.logger.error(f"Error listing workflows: {e}")
-            raise HTTPException(status_code=500, detail="Failed to list workflows")
+            raise HTTPException(status_code = 500, detail="Failed to list workflows")
+
 
     async def _create_workflow(self, workflow: WorkflowRequest) -> Dict[str, Any]:
         """Create new n8n workflow."""
         if not self.n8n:
-            raise HTTPException(status_code=503, detail="n8n integration not available")
+            raise HTTPException(status_code = 503, detail="n8n integration not available")
 
         try:
             result = await self.n8n.create_workflow(
-                name=workflow.name,
-                workflow_data=workflow.workflow_data,
-                active=workflow.active,
-            )
+                name = workflow.name,
+                    workflow_data = workflow.workflow_data,
+                    active = workflow.active,
+                    )
             return result
         except Exception as e:
             self.logger.error(f"Error creating workflow: {e}")
-            raise HTTPException(status_code=500, detail="Failed to create workflow")
+            raise HTTPException(status_code = 500, detail="Failed to create workflow")
+
 
     async def _get_workflow(self, workflow_id: str) -> Dict[str, Any]:
         """Get n8n workflow by ID."""
         if not self.n8n:
-            raise HTTPException(status_code=503, detail="n8n integration not available")
+            raise HTTPException(status_code = 503, detail="n8n integration not available")
 
         try:
             workflow = await self.n8n.get_workflow(workflow_id)
             if not workflow:
-                raise HTTPException(status_code=404, detail="Workflow not found")
+                raise HTTPException(status_code = 404, detail="Workflow not found")
             return workflow
         except HTTPException:
             raise
         except Exception as e:
             self.logger.error(f"Error getting workflow: {e}")
-            raise HTTPException(status_code=500, detail="Failed to get workflow")
+            raise HTTPException(status_code = 500, detail="Failed to get workflow")
+
 
     async def _execute_workflow(
         self, workflow_id: str, data: dict = None
     ) -> Dict[str, Any]:
         """Execute n8n workflow."""
         if not self.n8n:
-            raise HTTPException(status_code=503, detail="n8n integration not available")
+            raise HTTPException(status_code = 503, detail="n8n integration not available")
 
         try:
             result = await self.n8n.execute_workflow(workflow_id, data or {})
             return result
         except Exception as e:
             self.logger.error(f"Error executing workflow: {e}")
-            raise HTTPException(status_code=500, detail="Failed to execute workflow")
+            raise HTTPException(status_code = 500, detail="Failed to execute workflow")
+
 
     async def _list_agents(self) -> List[Dict]:
         """List CrewAI agents."""
         if not self.crewai:
             raise HTTPException(
-                status_code=503, detail="CrewAI integration not available"
+                status_code = 503, detail="CrewAI integration not available"
             )
 
         try:
@@ -708,73 +792,77 @@ class UnifiedAPILayer:
             return agents
         except Exception as e:
             self.logger.error(f"Error listing agents: {e}")
-            raise HTTPException(status_code=500, detail="Failed to list agents")
+            raise HTTPException(status_code = 500, detail="Failed to list agents")
+
 
     async def _create_agent(self, agent: AgentRequest) -> Dict[str, Any]:
         """Create new CrewAI agent."""
         if not self.crewai:
             raise HTTPException(
-                status_code=503, detail="CrewAI integration not available"
+                status_code = 503, detail="CrewAI integration not available"
             )
 
         try:
             result = await self.crewai.create_agent(
-                name=agent.name,
-                role=agent.role,
-                goal=agent.goal,
-                backstory=agent.backstory,
-                tools=agent.tools,
-                max_iter=agent.max_iter,
-                memory=agent.memory,
-            )
+                name = agent.name,
+                    role = agent.role,
+                    goal = agent.goal,
+                    backstory = agent.backstory,
+                    tools = agent.tools,
+                    max_iter = agent.max_iter,
+                    memory = agent.memory,
+                    )
             return result
         except Exception as e:
             self.logger.error(f"Error creating agent: {e}")
-            raise HTTPException(status_code=500, detail="Failed to create agent")
+            raise HTTPException(status_code = 500, detail="Failed to create agent")
+
 
     async def _create_task(self, agent_id: str, task: TaskRequest) -> Dict[str, Any]:
         """Create new task for agent."""
         if not self.crewai:
             raise HTTPException(
-                status_code=503, detail="CrewAI integration not available"
+                status_code = 503, detail="CrewAI integration not available"
             )
 
         try:
             result = await self.crewai.create_task(
-                agent_id=agent_id,
-                description=task.description,
-                expected_output=task.expected_output,
-                context=task.context,
-                tools=task.tools,
-            )
+                agent_id = agent_id,
+                    description = task.description,
+                    expected_output = task.expected_output,
+                    context = task.context,
+                    tools = task.tools,
+                    )
             return result
         except Exception as e:
             self.logger.error(f"Error creating task: {e}")
-            raise HTTPException(status_code=500, detail="Failed to create task")
+            raise HTTPException(status_code = 500, detail="Failed to create task")
+
 
     async def _get_task(self, task_id: str) -> Dict[str, Any]:
         """Get task by ID."""
         if not self.crewai:
             raise HTTPException(
-                status_code=503, detail="CrewAI integration not available"
+                status_code = 503, detail="CrewAI integration not available"
             )
 
         try:
             task = await self.crewai.get_task(task_id)
             if not task:
-                raise HTTPException(status_code=404, detail="Task not found")
+                raise HTTPException(status_code = 404, detail="Task not found")
             return task
         except HTTPException:
             raise
         except Exception as e:
             self.logger.error(f"Error getting task: {e}")
-            raise HTTPException(status_code=500, detail="Failed to get task")
+            raise HTTPException(status_code = 500, detail="Failed to get task")
+
 
     async def _database_query(self, query: DatabaseQuery) -> Dict[str, Any]:
         """Execute database query."""
         if not self.supabase:
             raise HTTPException(
-                status_code=503, detail="Supabase integration not available"
+                status_code = 503, detail="Supabase integration not available"
             )
 
         try:
@@ -782,18 +870,19 @@ class UnifiedAPILayer:
             # For now, return a placeholder
             return {
                 "operation": query.operation,
-                "table": query.table,
-                "result": "Query executed successfully",
-            }
+                    "table": query.table,
+                    "result": "Query executed successfully",
+                    }
         except Exception as e:
             self.logger.error(f"Error executing database query: {e}")
-            raise HTTPException(status_code=500, detail="Failed to execute query")
+            raise HTTPException(status_code = 500, detail="Failed to execute query")
+
 
     async def _list_tables(self) -> List[str]:
         """List database tables."""
         if not self.supabase:
             raise HTTPException(
-                status_code=503, detail="Supabase integration not available"
+                status_code = 503, detail="Supabase integration not available"
             )
 
         try:
@@ -801,7 +890,8 @@ class UnifiedAPILayer:
             return ["users", "workflows", "agents", "tasks", "executions"]
         except Exception as e:
             self.logger.error(f"Error listing tables: {e}")
-            raise HTTPException(status_code=500, detail="Failed to list tables")
+            raise HTTPException(status_code = 500, detail="Failed to list tables")
+
 
     async def _mcp_request(self, request: MCPRequest) -> Dict[str, Any]:
         """Handle MCP protocol request."""
@@ -815,10 +905,11 @@ class UnifiedAPILayer:
                 # Handle locally if it's a server request
                 return {"message": "MCP request processed", "method": request.method}
             else:
-                raise HTTPException(status_code=503, detail="MCP not available")
+                raise HTTPException(status_code = 503, detail="MCP not available")
         except Exception as e:
             self.logger.error(f"Error handling MCP request: {e}")
-            raise HTTPException(status_code=500, detail="Failed to process MCP request")
+            raise HTTPException(status_code = 500, detail="Failed to process MCP request")
+
 
     async def _list_mcp_tools(self, server_name: str = None) -> List[Dict]:
         """List MCP tools."""
@@ -833,16 +924,17 @@ class UnifiedAPILayer:
                     tools.append(
                         {
                             "name": tool.name,
-                            "description": tool.description,
-                            "inputSchema": tool.inputSchema,
-                        }
+                                "description": tool.description,
+                                "inputSchema": tool.inputSchema,
+                                }
                     )
                 return tools
             else:
                 return []
         except Exception as e:
             self.logger.error(f"Error listing MCP tools: {e}")
-            raise HTTPException(status_code=500, detail="Failed to list MCP tools")
+            raise HTTPException(status_code = 500, detail="Failed to list MCP tools")
+
 
     async def _upload_file(self, request: Request) -> Dict[str, Any]:
         """Handle file upload."""
@@ -851,25 +943,27 @@ class UnifiedAPILayer:
             return {"message": "File upload endpoint", "status": "not_implemented"}
         except Exception as e:
             self.logger.error(f"Error uploading file: {e}")
-            raise HTTPException(status_code=500, detail="Failed to upload file")
+            raise HTTPException(status_code = 500, detail="Failed to upload file")
+
 
     async def _get_metrics(self) -> Dict[str, Any]:
         """Get system metrics."""
         try:
             return {
                 "timestamp": datetime.now().isoformat(),
-                "uptime": time.time(),
-                "active_connections": len(self.connection_manager.active_connections),
-                "integrations": {
+                    "uptime": time.time(),
+                    "active_connections": len(self.connection_manager.active_connections),
+                    "integrations": {
                     "n8n": bool(self.n8n),
-                    "crewai": bool(self.crewai),
-                    "supabase": bool(self.supabase),
-                    "mcp": bool(self.mcp_server),
-                },
-            }
+                        "crewai": bool(self.crewai),
+                        "supabase": bool(self.supabase),
+                        "mcp": bool(self.mcp_server),
+                        },
+                    }
         except Exception as e:
             self.logger.error(f"Error getting metrics: {e}")
-            raise HTTPException(status_code=500, detail="Failed to get metrics")
+            raise HTTPException(status_code = 500, detail="Failed to get metrics")
+
 
     async def _handle_webhook(
         self, webhook_id: str, payload: WebhookPayload, request: Request
@@ -878,10 +972,10 @@ class UnifiedAPILayer:
         try:
             # Verify webhook signature if configured
             if self.config.webhook_secret:
-                signature = request.headers.get("X-Signature-256")
+                signature = request.headers.get("X - Signature - 256")
                 if not self._verify_webhook_signature(payload.dict(), signature):
                     raise HTTPException(
-                        status_code=401, detail="Invalid webhook signature"
+                        status_code = 401, detail="Invalid webhook signature"
                     )
 
             # Process webhook
@@ -892,11 +986,11 @@ class UnifiedAPILayer:
                 json.dumps(
                     {
                         "type": "webhook",
-                        "webhook_id": webhook_id,
-                        "event": payload.event,
-                        "data": payload.data,
-                        "timestamp": payload.timestamp,
-                    }
+                            "webhook_id": webhook_id,
+                            "event": payload.event,
+                            "data": payload.data,
+                            "timestamp": payload.timestamp,
+                            }
                 )
             )
 
@@ -904,7 +998,8 @@ class UnifiedAPILayer:
 
         except Exception as e:
             self.logger.error(f"Error handling webhook: {e}")
-            raise HTTPException(status_code=500, detail="Failed to process webhook")
+            raise HTTPException(status_code = 500, detail="Failed to process webhook")
+
 
     def _verify_webhook_signature(self, payload: dict, signature: str) -> bool:
         """Verify webhook signature."""
@@ -912,16 +1007,17 @@ class UnifiedAPILayer:
             return False
 
         try:
-            payload_bytes = json.dumps(payload, sort_keys=True).encode("utf-8")
+            payload_bytes = json.dumps(payload, sort_keys = True).encode("utf - 8")
             expected_signature = hmac.new(
-                self.config.webhook_secret.encode("utf-8"),
-                payload_bytes,
-                hashlib.sha256,
-            ).hexdigest()
+                self.config.webhook_secret.encode("utf - 8"),
+                    payload_bytes,
+                    hashlib.sha256,
+                    ).hexdigest()
 
             return hmac.compare_digest(signature, f"sha256={expected_signature}")
         except Exception:
             return False
+
 
     async def _handle_websocket(self, websocket: WebSocket, client_id: str):
         """Handle WebSocket connection."""
@@ -935,9 +1031,9 @@ class UnifiedAPILayer:
                 # Echo message back (implement proper message handling)
                 response = {
                     "type": "echo",
-                    "original": message,
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "original": message,
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
                 await self.connection_manager.send_personal_message(
                     json.dumps(response), client_id
@@ -948,6 +1044,7 @@ class UnifiedAPILayer:
         except Exception as e:
             self.logger.error(f"WebSocket error for client {client_id}: {e}")
             self.connection_manager.disconnect(client_id)
+
 
     async def start_server(self):
         """Start the unified API server."""
@@ -963,17 +1060,17 @@ class UnifiedAPILayer:
         if self.config.ssl_cert and self.config.ssl_key:
             ssl_config = {
                 "ssl_certfile": self.config.ssl_cert,
-                "ssl_keyfile": self.config.ssl_key,
-            }
+                    "ssl_keyfile": self.config.ssl_key,
+                    }
 
         # Start server
         config = uvicorn.Config(
-            app=self.app,
-            host=self.config.host,
-            port=self.config.port,
-            log_level="info" if self.config.debug else "warning",
-            **(ssl_config or {}),
-        )
+            app = self.app,
+                host = self.config.host,
+                port = self.config.port,
+                log_level="info" if self.config.debug else "warning",
+                **(ssl_config or {}),
+                )
 
         server = uvicorn.Server(config)
 
@@ -982,19 +1079,19 @@ class UnifiedAPILayer:
         )
         await server.serve()
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_unified_api():
         config = APIConfig(
             host="localhost",
-            port=8000,
-            debug=True,
-            cors_origins=["http://localhost:3000"],
-            auth_secret="test-secret",
-            webhook_secret="webhook-secret",
-        )
+                port = 8000,
+                debug = True,
+                cors_origins=["http://localhost:3000"],
+                auth_secret="test - secret",
+                webhook_secret="webhook - secret",
+                )
 
         api = UnifiedAPILayer(config)
 

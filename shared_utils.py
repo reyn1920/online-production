@@ -6,8 +6,9 @@ from typing import Any, Callable, Dict, List, Optional
 
 import httpx
 
-
 @dataclass
+
+
 class Provider:
     id: str
     name: str
@@ -22,6 +23,7 @@ class Provider:
     last_error: Optional[str] = None
     health_url: Optional[str] = None
     headers: Dict[str, str] = None
+
 
     def __post_init__(self):
         if self.headers is None:
@@ -46,97 +48,97 @@ def get_secret(name: str) -> Optional[str]:
 
 async def http_with_fallback(
     category: str,
-    func: Callable[[httpx.AsyncClient, Provider], Any],
-    prefer: List[str] = None,
-    timeout: float = 10.0,
+        func: Callable[[httpx.AsyncClient, Provider], Any],
+        prefer: List[str] = None,
+        timeout: float = 10.0,
 ) -> Any:
     """Execute HTTP requests with provider fallback logic"""
     # For now, just use a simple mock provider system
     # In a real implementation, this would load from the providers config
     mock_providers = {
         "news": [
-            Provider(id=p, name=p.title(), category="news", docs_url="")
+            Provider(id = p, name = p.title(), category="news", docs_url="")
             for p in (prefer or ["guardian", "newsapi"])
         ],
-        "tech": [
-            Provider(id=p, name=p.title(), category="tech", docs_url="")
+            "tech": [
+            Provider(id = p, name = p.title(), category="tech", docs_url="")
             for p in (prefer or ["github", "hackernews"])
         ],
-        "knowledge": [
-            Provider(id=p, name=p.title(), category="knowledge", docs_url="")
+            "knowledge": [
+            Provider(id = p, name = p.title(), category="knowledge", docs_url="")
             for p in (prefer or ["arxiv", "paperswithcode"])
         ],
-        "wellness": [
-            Provider(id=p, name=p.title(), category="wellness", docs_url="")
+            "wellness": [
+            Provider(id = p, name = p.title(), category="wellness", docs_url="")
             for p in (prefer or ["usda_fdc", "openfda"])
         ],
-        "pets": [
+            "pets": [
             Provider(
-                id=p,
-                name=p.title(),
-                category="pets",
-                docs_url="",
-                needs_key=False,
-                enabled=True,
-            )
+                id = p,
+                    name = p.title(),
+                    category="pets",
+                    docs_url="",
+                    needs_key = False,
+                    enabled = True,
+                    )
             for p in (prefer or ["thedogapi", "thecatapi", "dog_ceo"])
         ],
-        "pets_misc": [
+            "pets_misc": [
             Provider(
-                id=p,
-                name=p.title(),
-                category="pets_misc",
-                docs_url="",
-                needs_key=False,
-                enabled=True,
-            )
+                id = p,
+                    name = p.title(),
+                    category="pets_misc",
+                    docs_url="",
+                    needs_key = False,
+                    enabled = True,
+                    )
             for p in (prefer or ["zoo_animal_api", "dog_ceo"])
         ],
-        "pets_birds": [
+            "pets_birds": [
             Provider(
-                id=p,
-                name=p.title(),
-                category="pets_birds",
-                docs_url="",
-                needs_key=True,
-                enabled=False,
-            )
+                id = p,
+                    name = p.title(),
+                    category="pets_birds",
+                    docs_url="",
+                    needs_key = True,
+                    enabled = False,
+                    )
             for p in (prefer or ["ebird"])
         ],
-        "pets_fish": [
+            "pets_fish": [
             Provider(
-                id=p,
-                name=p.title(),
-                category="pets_fish",
-                docs_url="",
-                needs_key=False,
-                enabled=True,
-            )
+                id = p,
+                    name = p.title(),
+                    category="pets_fish",
+                    docs_url="",
+                    needs_key = False,
+                    enabled = True,
+                    )
             for p in (prefer or ["fishwatch"])
         ],
-        "pets_care": [
+            "pets_care": [
             Provider(
-                id=p,
-                name=p.title(),
-                category="pets_care",
-                docs_url="",
-                needs_key=True,
-                enabled=False,
-            )
+                id = p,
+                    name = p.title(),
+                    category="pets_care",
+                    docs_url="",
+                    needs_key = True,
+                    enabled = False,
+                    )
             for p in (prefer or ["vetster", "pawp", "airvet"])
         ],
-        "scheduling": [
+            "scheduling": [
             Provider(
-                id=p,
-                name=p.title(),
-                category="scheduling",
-                docs_url="",
-                needs_key=True,
-                enabled=False,
-            )
+                id = p,
+                    name = p.title(),
+                    category="scheduling",
+                    docs_url="",
+                    needs_key = True,
+                    enabled = False,
+                    )
             for p in (prefer or ["calendly"])
         ],
-    }
+            }
 
     providers = mock_providers.get(category, [])
     if prefer:
@@ -149,7 +151,7 @@ async def http_with_fallback(
                     break
         providers = preferred_providers
 
-    async with httpx.AsyncClient(timeout=timeout) as client:
+    async with httpx.AsyncClient(timeout = timeout) as client:
         for provider in providers:
             try:
                 result = await func(client, provider)

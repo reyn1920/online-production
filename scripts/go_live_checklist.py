@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Go-Live Checklist Validator
-Comprehensive validation of all go-live requirements before production deployment
+Go - Live Checklist Validator
+Comprehensive validation of all go - live requirements before production deployment
 """
 
 import json
@@ -16,7 +16,8 @@ import requests
 
 
 class GoLiveValidator:
-    """Validates all go-live requirements and readiness"""
+    """Validates all go - live requirements and readiness"""
+
 
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
@@ -25,16 +26,17 @@ class GoLiveValidator:
         self.failed = 0
         self.warnings = 0
 
+
     def add_check(self, name: str, status: str, message: str, critical: bool = True):
         """Add a check result"""
         self.checks.append(
             {
                 "name": name,
-                "status": status,
-                "message": message,
-                "critical": critical,
-                "timestamp": datetime.utcnow().isoformat(),
-            }
+                    "status": status,
+                    "message": message,
+                    "critical": critical,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    }
         )
 
         if status == "PASS":
@@ -44,6 +46,7 @@ class GoLiveValidator:
         elif status == "WARN":
             self.warnings += 1
 
+
     def check_environment_setup(self) -> bool:
         """Check environment configuration"""
         print("🔧 Checking Environment Setup...")
@@ -51,12 +54,12 @@ class GoLiveValidator:
         # Check required files exist
         required_files = [
             ".env.example",
-            ".env.production",
-            "netlify.toml",
-            ".github/workflows/ci-cd.yml",
-            "package.json",
-            "requirements.txt",
-        ]
+                ".env.production",
+                "netlify.toml",
+                ".github / workflows / ci - cd.yml",
+                "package.json",
+                "requirements.txt",
+                ]
 
         all_files_exist = True
         for file in required_files:
@@ -72,10 +75,10 @@ class GoLiveValidator:
         # Check environment variables
         required_env_vars = [
             "NETLIFY_AUTH_TOKEN",
-            "NETLIFY_SITE_ID",
-            "ENVIRONMENT",
-            "NODE_ENV",
-        ]
+                "NETLIFY_SITE_ID",
+                "ENVIRONMENT",
+                "NODE_ENV",
+                ]
 
         env_vars_set = True
         for var in required_env_vars:
@@ -91,14 +94,15 @@ class GoLiveValidator:
 
         return all_files_exist and env_vars_set
 
+
     def check_security_configuration(self) -> bool:
         """Check security configuration"""
         print("🔒 Checking Security Configuration...")
 
         security_files = [
-            "backend/security/content_validator.py",
-            "backend/routers/production_health.py",
-        ]
+            "backend / security / content_validator.py",
+                "backend / routers / production_health.py",
+                ]
 
         security_ok = True
         for file in security_files:
@@ -114,7 +118,7 @@ class GoLiveValidator:
                 security_ok = False
 
         # Check GitHub Actions workflow has security scanning
-        workflow_path = self.project_root / ".github/workflows/ci-cd.yml"
+        workflow_path = self.project_root / ".github / workflows / ci - cd.yml"
         if workflow_path.exists():
             with open(workflow_path, "r") as f:
                 workflow_content = f.read()
@@ -124,27 +128,28 @@ class GoLiveValidator:
                 if tool.lower() in workflow_content.lower():
                     self.add_check(
                         f"Security Tool: {tool}",
-                        "PASS",
-                        f"Security tool configured: {tool}",
-                    )
+                            "PASS",
+                            f"Security tool configured: {tool}",
+                            )
                 else:
                     self.add_check(
                         f"Security Tool: {tool}",
-                        "WARN",
-                        f"Security tool not found: {tool}",
-                        critical=False,
-                    )
+                            "WARN",
+                            f"Security tool not found: {tool}",
+                            critical = False,
+                            )
 
         return security_ok
 
-    def check_ci_cd_pipeline(self) -> bool:
-        """Check CI/CD pipeline configuration"""
-        print("🚀 Checking CI/CD Pipeline...")
 
-        workflow_path = self.project_root / ".github/workflows/ci-cd.yml"
+    def check_ci_cd_pipeline(self) -> bool:
+        """Check CI / CD pipeline configuration"""
+        print("🚀 Checking CI / CD Pipeline...")
+
+        workflow_path = self.project_root / ".github / workflows / ci - cd.yml"
         if not workflow_path.exists():
             self.add_check(
-                "CI/CD Workflow", "FAIL", "GitHub Actions workflow file missing"
+                "CI / CD Workflow", "FAIL", "GitHub Actions workflow file missing"
             )
             return False
 
@@ -152,17 +157,17 @@ class GoLiveValidator:
             workflow_content = f.read()
 
         # Check for required jobs
-        required_jobs = ["code-quality", "security-scan", "test", "deploy-production"]
+        required_jobs = ["code - quality", "security - scan", "test", "deploy - production"]
         pipeline_ok = True
 
         for job in required_jobs:
             if job in workflow_content:
                 self.add_check(
-                    f"CI/CD Job: {job}", "PASS", f"Required job configured: {job}"
+                    f"CI / CD Job: {job}", "PASS", f"Required job configured: {job}"
                 )
             else:
                 self.add_check(
-                    f"CI/CD Job: {job}", "FAIL", f"Required job missing: {job}"
+                    f"CI / CD Job: {job}", "FAIL", f"Required job missing: {job}"
                 )
                 pipeline_ok = False
 
@@ -178,6 +183,7 @@ class GoLiveValidator:
             pipeline_ok = False
 
         return pipeline_ok
+
 
     def check_build_system(self) -> bool:
         """Check build system configuration"""
@@ -196,15 +202,15 @@ class GoLiveValidator:
                 if script in package_data.get("scripts", {}):
                     self.add_check(
                         f"NPM Script: {script}",
-                        "PASS",
-                        f"Required script configured: {script}",
-                    )
+                            "PASS",
+                            f"Required script configured: {script}",
+                            )
                 else:
                     self.add_check(
                         f"NPM Script: {script}",
-                        "FAIL",
-                        f"Required script missing: {script}",
-                    )
+                            "FAIL",
+                            f"Required script missing: {script}",
+                            )
                     build_ok = False
         else:
             self.add_check("Package.json", "FAIL", "package.json file missing")
@@ -224,13 +230,14 @@ class GoLiveValidator:
 
         return build_ok
 
+
     def check_health_monitoring(self) -> bool:
         """Check health monitoring setup"""
         print("💓 Checking Health Monitoring...")
 
         health_endpoints = [
-            "backend/routers/production_health.py",
-            "app/dashboard.py",  # Assuming dashboard has health checks
+            "backend / routers / production_health.py",
+                "app / dashboard.py",  # Assuming dashboard has health checks
         ]
 
         monitoring_ok = True
@@ -239,24 +246,25 @@ class GoLiveValidator:
             if endpoint_path.exists():
                 self.add_check(
                     f"Health Endpoint: {endpoint}",
-                    "PASS",
-                    f"Health monitoring component exists: {endpoint}",
-                )
+                        "PASS",
+                        f"Health monitoring component exists: {endpoint}",
+                        )
             else:
                 self.add_check(
                     f"Health Endpoint: {endpoint}",
-                    "WARN",
-                    f"Health monitoring component missing: {endpoint}",
-                    critical=False,
-                )
+                        "WARN",
+                        f"Health monitoring component missing: {endpoint}",
+                        critical = False,
+                        )
 
         return monitoring_ok
+
 
     def check_content_validation(self) -> bool:
         """Check content validation system"""
         print("🛡️ Checking Content Validation...")
 
-        validator_path = self.project_root / "backend/security/content_validator.py"
+        validator_path = self.project_root / "backend / security / content_validator.py"
         if validator_path.exists():
             self.add_check(
                 "Content Validator", "PASS", "Content validation system exists"
@@ -267,6 +275,7 @@ class GoLiveValidator:
                 "Content Validator", "FAIL", "Content validation system missing"
             )
             return False
+
 
     def check_secrets_management(self) -> bool:
         """Check secrets management"""
@@ -282,15 +291,15 @@ class GoLiveValidator:
             result = subprocess.run(
                 [
                     "grep",
-                    "-r",
-                    "-i",
-                    "--include=*.py",
-                    "|".join(dangerous_patterns),
-                    str(self.project_root),
-                ],
-                capture_output=True,
-                text=True,
-            )
+                        "-r",
+                        "-i",
+                        "--include=*.py",
+                        "|".join(dangerous_patterns),
+                        str(self.project_root),
+                        ],
+                    capture_output = True,
+                    text = True,
+                    )
 
             if result.returncode == 0 and result.stdout.strip():
                 # Found potential secrets
@@ -304,10 +313,10 @@ class GoLiveValidator:
                 for file_path in secret_files:
                     self.add_check(
                         f"Secret Scan: {file_path}",
-                        "WARN",
-                        f"Potential hardcoded secrets detected in: {file_path}",
-                        critical=False,
-                    )
+                            "WARN",
+                            f"Potential hardcoded secrets detected in: {file_path}",
+                            critical = False,
+                            )
             else:
                 self.add_check(
                     "Secret Scan", "PASS", "No obvious hardcoded secrets detected"
@@ -315,7 +324,7 @@ class GoLiveValidator:
 
         except subprocess.CalledProcessError:
             self.add_check(
-                "Secret Scan", "WARN", "Could not perform secret scan", critical=False
+                "Secret Scan", "WARN", "Could not perform secret scan", critical = False
             )
 
         # Check .env files are in .gitignore
@@ -336,6 +345,7 @@ class GoLiveValidator:
 
         return secrets_ok
 
+
     def check_deployment_readiness(self) -> bool:
         """Check deployment readiness"""
         print("🎯 Checking Deployment Readiness...")
@@ -346,45 +356,45 @@ class GoLiveValidator:
         try:
             result = subprocess.run(
                 ["git", "status", "--porcelain"],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
+                    capture_output = True,
+                    text = True,
+                    check = True,
+                    )
             if result.stdout.strip():
                 self.add_check(
-                    "Git Status", "WARN", "Uncommitted changes detected", critical=False
+                    "Git Status", "WARN", "Uncommitted changes detected", critical = False
                 )
             else:
                 self.add_check("Git Status", "PASS", "Working directory clean")
         except subprocess.CalledProcessError:
             self.add_check(
-                "Git Status", "WARN", "Could not check git status", critical=False
+                "Git Status", "WARN", "Could not check git status", critical = False
             )
 
         # Check current branch
         try:
             result = subprocess.run(
-                ["git", "branch", "--show-current"],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
+                ["git", "branch", "--show - current"],
+                    capture_output = True,
+                    text = True,
+                    check = True,
+                    )
             current_branch = result.stdout.strip()
             if current_branch == "main":
                 self.add_check("Git Branch", "PASS", "On main branch")
             else:
                 self.add_check(
                     "Git Branch",
-                    "FAIL",
-                    f"Not on main branch (currently on: {current_branch})",
-                )
+                        "FAIL",
+                        f"Not on main branch (currently on: {current_branch})",
+                        )
                 readiness_ok = False
         except subprocess.CalledProcessError:
             self.add_check("Git Branch", "FAIL", "Could not determine current branch")
             readiness_ok = False
 
         # Check deployment script exists
-        deploy_script_path = self.project_root / "scripts/deploy_production.py"
+        deploy_script_path = self.project_root / "scripts / deploy_production.py"
         if deploy_script_path.exists():
             self.add_check(
                 "Deployment Script", "PASS", "Production deployment script exists"
@@ -397,22 +407,23 @@ class GoLiveValidator:
 
         return readiness_ok
 
+
     def run_all_checks(self) -> Dict[str, Any]:
-        """Run all go-live validation checks"""
-        print("🚀 Starting Go-Live Validation Checklist")
+        """Run all go - live validation checks"""
+        print("🚀 Starting Go - Live Validation Checklist")
         print("=" * 50)
 
         # Run all check categories
         checks = [
             ("Environment Setup", self.check_environment_setup),
-            ("Security Configuration", self.check_security_configuration),
-            ("CI/CD Pipeline", self.check_ci_cd_pipeline),
-            ("Build System", self.check_build_system),
-            ("Health Monitoring", self.check_health_monitoring),
-            ("Content Validation", self.check_content_validation),
-            ("Secrets Management", self.check_secrets_management),
-            ("Deployment Readiness", self.check_deployment_readiness),
-        ]
+                ("Security Configuration", self.check_security_configuration),
+                ("CI / CD Pipeline", self.check_ci_cd_pipeline),
+                ("Build System", self.check_build_system),
+                ("Health Monitoring", self.check_health_monitoring),
+                ("Content Validation", self.check_content_validation),
+                ("Secrets Management", self.check_secrets_management),
+                ("Deployment Readiness", self.check_deployment_readiness),
+                ]
 
         category_results = {}
         for category_name, check_func in checks:
@@ -421,7 +432,7 @@ class GoLiveValidator:
 
         # Generate summary
         print("\n" + "=" * 50)
-        print("📊 GO-LIVE VALIDATION SUMMARY")
+        print("📊 GO - LIVE VALIDATION SUMMARY")
         print("=" * 50)
 
         critical_failures = [
@@ -450,30 +461,30 @@ class GoLiveValidator:
         is_ready = len(critical_failures) == 0
 
         if is_ready:
-            print("\n🎉 GO-LIVE READINESS: ✅ READY FOR PRODUCTION DEPLOYMENT")
+            print("\n🎉 GO - LIVE READINESS: ✅ READY FOR PRODUCTION DEPLOYMENT")
             print("\nTo deploy to production, run:")
-            print("  python scripts/deploy_production.py --confirm-production")
+            print("  python scripts / deploy_production.py --confirm - production")
         else:
-            print("\n🛑 GO-LIVE READINESS: ❌ NOT READY FOR PRODUCTION")
+            print("\n🛑 GO - LIVE READINESS: ❌ NOT READY FOR PRODUCTION")
             print("\nPlease resolve all critical issues before attempting deployment.")
 
         # Save detailed report
         report = {
             "timestamp": datetime.utcnow().isoformat(),
-            "ready_for_production": is_ready,
-            "summary": {
+                "ready_for_production": is_ready,
+                "summary": {
                 "passed": self.passed,
-                "failed": self.failed,
-                "warnings": self.warnings,
-                "critical_failures": len(critical_failures),
-            },
-            "category_results": category_results,
-            "detailed_checks": self.checks,
-        }
+                    "failed": self.failed,
+                    "warnings": self.warnings,
+                    "critical_failures": len(critical_failures),
+                    },
+                "category_results": category_results,
+                "detailed_checks": self.checks,
+                }
 
         report_path = self.project_root / "go_live_report.json"
         with open(report_path, "w") as f:
-            json.dump(report, f, indent=2)
+            json.dump(report, f, indent = 2)
 
         print(f"\n📄 Detailed report saved to: {report_path}")
 
@@ -487,7 +498,6 @@ def main():
 
     # Exit with appropriate code
     sys.exit(0 if report["ready_for_production"] else 1)
-
 
 if __name__ == "__main__":
     main()

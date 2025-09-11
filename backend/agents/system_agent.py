@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI System Agent - The Chief Engineer
 
@@ -35,7 +35,11 @@ try:
     from app.actions import dashboard_action
 except ImportError:
     # Fallback decorator if dashboard not available
-    def dashboard_action(doc=None, method="POST", public=True):
+
+
+    def dashboard_action(doc = None, method="POST", public = True):
+
+
         def decorator(func):
             func._dash_action = True
             func._dash_doc = doc
@@ -45,8 +49,9 @@ except ImportError:
 
         return decorator
 
-
 @dataclass
+
+
 class SystemHealth:
     """System health metrics"""
 
@@ -59,8 +64,9 @@ class SystemHealth:
     error_count: int
     uptime_seconds: int
 
+
     def overall_health_score(self) -> float:
-        """Calculate overall system health score (0-1)"""
+        """Calculate overall system health score (0 - 1)"""
         # Weight factors
         cpu_score = max(0, 1 - (self.cpu_usage / 100))
         memory_score = max(0, 1 - (self.memory_usage / 100))
@@ -86,8 +92,9 @@ class SystemHealth:
             + error_penalty * 0.1
         )
 
-
 @dataclass
+
+
 class DiagnosticResult:
     """Result of system diagnostic"""
 
@@ -98,8 +105,9 @@ class DiagnosticResult:
     confidence: float
     timestamp: datetime
 
-
 @dataclass
+
+
 class RepairAction:
     """Automated repair action"""
 
@@ -116,13 +124,14 @@ class RepairAction:
 class SystemAgent(BaseAgent):
     """The Chief Engineer - Autonomous system management and repair"""
 
+
     def __init__(
         self,
-        db_path: str = "data/right_perspective.db",
-        agent_id: str = "SystemAgent",
-        name: str = "System Management Agent",
-        main_loop=None,
-    ):
+            db_path: str = "data / right_perspective.db",
+            agent_id: str = "SystemAgent",
+            name: str = "System Management Agent",
+            main_loop = None,
+            ):
         super().__init__(agent_id)
         self.name = name
         self.db_path = db_path
@@ -168,6 +177,7 @@ class SystemAgent(BaseAgent):
         # System start time
         self.start_time = datetime.now()
 
+
     def initialize_database(self):
         """Initialize system monitoring database"""
         with sqlite3.connect(self.db_path) as conn:
@@ -175,15 +185,15 @@ class SystemAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS system_health (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp TIMESTAMP NOT NULL,
-                    cpu_usage REAL NOT NULL,
-                    memory_usage REAL NOT NULL,
-                    disk_usage REAL NOT NULL,
-                    agent_status TEXT NOT NULL,
-                    service_status TEXT NOT NULL,
-                    error_count INTEGER NOT NULL,
-                    uptime_seconds INTEGER NOT NULL,
-                    health_score REAL NOT NULL
+                        timestamp TIMESTAMP NOT NULL,
+                        cpu_usage REAL NOT NULL,
+                        memory_usage REAL NOT NULL,
+                        disk_usage REAL NOT NULL,
+                        agent_status TEXT NOT NULL,
+                        service_status TEXT NOT NULL,
+                        error_count INTEGER NOT NULL,
+                        uptime_seconds INTEGER NOT NULL,
+                        health_score REAL NOT NULL
                 )
             """
             )
@@ -192,12 +202,12 @@ class SystemAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS diagnostic_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    component TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    message TEXT NOT NULL,
-                    suggested_action TEXT,
-                    confidence REAL NOT NULL,
-                    timestamp TIMESTAMP NOT NULL
+                        component TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        message TEXT NOT NULL,
+                        suggested_action TEXT,
+                        confidence REAL NOT NULL,
+                        timestamp TIMESTAMP NOT NULL
                 )
             """
             )
@@ -206,14 +216,14 @@ class SystemAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS repair_actions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    action_id TEXT NOT NULL,
-                    component TEXT NOT NULL,
-                    action_type TEXT NOT NULL,
-                    description TEXT NOT NULL,
-                    command TEXT,
-                    success BOOLEAN NOT NULL,
-                    timestamp TIMESTAMP NOT NULL,
-                    execution_time REAL NOT NULL
+                        action_id TEXT NOT NULL,
+                        component TEXT NOT NULL,
+                        action_type TEXT NOT NULL,
+                        description TEXT NOT NULL,
+                        command TEXT,
+                        success BOOLEAN NOT NULL,
+                        timestamp TIMESTAMP NOT NULL,
+                        execution_time REAL NOT NULL
                 )
             """
             )
@@ -222,15 +232,17 @@ class SystemAgent(BaseAgent):
                 """
                 CREATE TABLE IF NOT EXISTS agent_registry (
                     agent_name TEXT PRIMARY KEY,
-                    agent_class TEXT NOT NULL,
-                    last_heartbeat TIMESTAMP,
-                    status TEXT NOT NULL,
-                    registered_at TIMESTAMP NOT NULL
+                        agent_class TEXT NOT NULL,
+                        last_heartbeat TIMESTAMP,
+                        status TEXT NOT NULL,
+                        registered_at TIMESTAMP NOT NULL
                 )
             """
             )
 
-    # Back-compat: expose both names so any caller works
+    # Back - compat: expose both names so any caller works
+
+
     def _health_summary(self, report: dict) -> str:
         """
         Create a short, readable summary of a health report.
@@ -252,8 +264,11 @@ class SystemAgent(BaseAgent):
             return f"health summary unavailable ({type(e).__name__}: {e})"
 
     # Optional convenience alias used by older callers
+
+
     def health_summary(self, report: dict) -> str:
         return self._health_summary(report)
+
 
     def start_monitoring(self):
         """Start autonomous monitoring system"""
@@ -264,24 +279,24 @@ class SystemAgent(BaseAgent):
 
         # Start heartbeat monitoring
         self.heartbeat_thread = threading.Thread(
-            target=self._heartbeat_monitor, daemon=True
+            target = self._heartbeat_monitor, daemon = True
         )
         self.heartbeat_thread.start()
 
         # Start health monitoring
-        self.health_thread = threading.Thread(target=self._health_monitor, daemon=True)
+        self.health_thread = threading.Thread(target = self._health_monitor, daemon = True)
         self.health_thread.start()
 
         # Start repair processor
-        self.repair_thread = threading.Thread(
-            target=self._repair_processor, daemon=True
+            self.repair_thread = threading.Thread(
+            target = self._repair_processor, daemon = True
         )
         self.repair_thread.start()
 
         # Start watchdog monitor if enabled
         if self.watchdog_enabled:
             self.watchdog_thread = threading.Thread(
-                target=self._watchdog_monitor, daemon=True
+                target = self._watchdog_monitor, daemon = True
             )
             self.watchdog_thread.start()
             self.logger.info(
@@ -290,25 +305,27 @@ class SystemAgent(BaseAgent):
 
         self.logger.info("System monitoring started")
 
+
     def stop_monitoring(self):
         """Stop monitoring system"""
         self.monitoring_active = False
 
         # Wait for threads to finish
         if hasattr(self, "health_thread") and self.health_thread.is_alive():
-            self.health_thread.join(timeout=5)
+            self.health_thread.join(timeout = 5)
 
         if hasattr(self, "repair_thread") and self.repair_thread.is_alive():
-            self.repair_thread.join(timeout=5)
+            self.repair_thread.join(timeout = 5)
 
         if (
             hasattr(self, "watchdog_thread")
             and self.watchdog_thread
             and self.watchdog_thread.is_alive()
         ):
-            self.watchdog_thread.join(timeout=5)
+            self.watchdog_thread.join(timeout = 5)
 
         self.logger.info("System monitoring stopped")
+
 
     def register_agent(self, agent_name: str, agent_class: str):
         """Register agent for monitoring"""
@@ -324,14 +341,15 @@ class SystemAgent(BaseAgent):
             """,
                 (
                     agent_name,
-                    agent_class,
-                    datetime.now().isoformat(),
-                    "active",
-                    datetime.now().isoformat(),
-                ),
-            )
+                        agent_class,
+                        datetime.now().isoformat(),
+                        "active",
+                        datetime.now().isoformat(),
+                        ),
+                    )
 
         self.logger.info(f"Registered agent: {agent_name} ({agent_class})")
+
 
     def agent_heartbeat(self, agent_name: str):
         """Record agent heartbeat"""
@@ -346,24 +364,27 @@ class SystemAgent(BaseAgent):
                     WHERE agent_name = ?
                 """,
                     (datetime.now().isoformat(), agent_name),
-                )
+                        )
 
             # Update system activity on agent heartbeat
             if self.watchdog_enabled:
                 self.update_system_activity()
 
+
     def register_service(self, service_name: str, check_command: str):
         """Register service for monitoring"""
         self.registered_services[service_name] = check_command
-        self.logger.info(f"Registered service: {service_name}")
+            self.logger.info(f"Registered service: {service_name}")
 
     @dashboard_action(
         "Get System Health", "Retrieve current system health metrics and status"
     )
+
+
     def get_system_health(self) -> SystemHealth:
         """Get current system health metrics"""
         # System metrics
-        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_usage = psutil.cpu_percent(interval = 1)
         memory = psutil.virtual_memory()
         disk = psutil.disk_usage("/")
 
@@ -382,7 +403,7 @@ class SystemAgent(BaseAgent):
         for service_name, check_command in self.registered_services.items():
             try:
                 result = subprocess.run(
-                    check_command, shell=True, capture_output=True, timeout=10
+                    check_command, shell = True, capture_output = True, timeout = 10
                 )
                 service_status[service_name] = result.returncode == 0
             except Exception:
@@ -395,19 +416,21 @@ class SystemAgent(BaseAgent):
         uptime_seconds = int((current_time - self.start_time).total_seconds())
 
         return SystemHealth(
-            timestamp=current_time,
-            cpu_usage=cpu_usage,
-            memory_usage=memory.percent,
-            disk_usage=disk.percent,
-            agent_status=agent_status,
-            service_status=service_status,
-            error_count=error_count,
-            uptime_seconds=uptime_seconds,
-        )
+            timestamp = current_time,
+                cpu_usage = cpu_usage,
+                memory_usage = memory.percent,
+                disk_usage = disk.percent,
+                agent_status = agent_status,
+                service_status = service_status,
+                error_count = error_count,
+                uptime_seconds = uptime_seconds,
+                )
 
     @dashboard_action(
         "Run System Diagnostics", "Perform comprehensive system health diagnostics"
     )
+
+
     def run_diagnostics(self) -> List[DiagnosticResult]:
         """Run comprehensive system diagnostics"""
         results = []
@@ -418,23 +441,23 @@ class SystemAgent(BaseAgent):
             results.append(
                 DiagnosticResult(
                     component="CPU",
-                    status="critical",
-                    message=f"CPU usage at {health.cpu_usage:.1f}%",
-                    suggested_action="restart_high_cpu_processes",
-                    confidence=0.9,
-                    timestamp=datetime.now(),
-                )
+                        status="critical",
+                        message = f"CPU usage at {health.cpu_usage:.1f}%",
+                        suggested_action="restart_high_cpu_processes",
+                        confidence = 0.9,
+                        timestamp = datetime.now(),
+                        )
             )
         elif health.cpu_usage > 70:
             results.append(
                 DiagnosticResult(
                     component="CPU",
-                    status="warning",
-                    message=f"CPU usage at {health.cpu_usage:.1f}%",
-                    suggested_action="monitor_cpu_usage",
-                    confidence=0.8,
-                    timestamp=datetime.now(),
-                )
+                        status="warning",
+                        message = f"CPU usage at {health.cpu_usage:.1f}%",
+                        suggested_action="monitor_cpu_usage",
+                        confidence = 0.8,
+                        timestamp = datetime.now(),
+                        )
             )
 
         # Memory diagnostics
@@ -442,12 +465,12 @@ class SystemAgent(BaseAgent):
             results.append(
                 DiagnosticResult(
                     component="Memory",
-                    status="critical",
-                    message=f"Memory usage at {health.memory_usage:.1f}%",
-                    suggested_action="clear_memory_cache",
-                    confidence=0.9,
-                    timestamp=datetime.now(),
-                )
+                        status="critical",
+                        message = f"Memory usage at {health.memory_usage:.1f}%",
+                        suggested_action="clear_memory_cache",
+                        confidence = 0.9,
+                        timestamp = datetime.now(),
+                        )
             )
 
         # Agent diagnostics
@@ -455,13 +478,13 @@ class SystemAgent(BaseAgent):
             if not is_healthy:
                 results.append(
                     DiagnosticResult(
-                        component=f"Agent_{agent_name}",
-                        status="critical",
-                        message=f"Agent {agent_name} not responding",
-                        suggested_action="restart_agent",
-                        confidence=0.95,
-                        timestamp=datetime.now(),
-                    )
+                        component = f"Agent_{agent_name}",
+                            status="critical",
+                            message = f"Agent {agent_name} not responding",
+                            suggested_action="restart_agent",
+                            confidence = 0.95,
+                            timestamp = datetime.now(),
+                            )
                 )
 
         # Service diagnostics
@@ -469,13 +492,13 @@ class SystemAgent(BaseAgent):
             if not is_healthy:
                 results.append(
                     DiagnosticResult(
-                        component=f"Service_{service_name}",
-                        status="critical",
-                        message=f"Service {service_name} is down",
-                        suggested_action="restart_service",
-                        confidence=0.9,
-                        timestamp=datetime.now(),
-                    )
+                        component = f"Service_{service_name}",
+                            status="critical",
+                            message = f"Service {service_name} is down",
+                            suggested_action="restart_service",
+                            confidence = 0.9,
+                            timestamp = datetime.now(),
+                            )
                 )
 
         # Disk space diagnostics
@@ -483,18 +506,19 @@ class SystemAgent(BaseAgent):
             results.append(
                 DiagnosticResult(
                     component="Disk",
-                    status="critical",
-                    message=f"Disk usage at {health.disk_usage:.1f}%",
-                    suggested_action="cleanup_disk_space",
-                    confidence=0.9,
-                    timestamp=datetime.now(),
-                )
+                        status="critical",
+                        message = f"Disk usage at {health.disk_usage:.1f}%",
+                        suggested_action="cleanup_disk_space",
+                        confidence = 0.9,
+                        timestamp = datetime.now(),
+                        )
             )
 
         # Save diagnostic results
         self._save_diagnostic_results(results)
 
         return results
+
 
     def execute_repair(self, diagnostic: DiagnosticResult) -> RepairAction:
         """Execute automated repair action"""
@@ -504,15 +528,15 @@ class SystemAgent(BaseAgent):
         start_time = time.time()
 
         repair_action = RepairAction(
-            action_id=action_id,
-            component=diagnostic.component,
-            action_type=diagnostic.suggested_action or "unknown",
-            description=f"Automated repair for {diagnostic.component}: {diagnostic.message}",
-            command=None,
-            success=False,
-            timestamp=datetime.now(),
-            execution_time=0,
-        )
+            action_id = action_id,
+                component = diagnostic.component,
+                action_type = diagnostic.suggested_action or "unknown",
+                description = f"Automated repair for {diagnostic.component}: {diagnostic.message}",
+                command = None,
+                success = False,
+                timestamp = datetime.now(),
+                execution_time = 0,
+                )
 
         try:
             success = False
@@ -560,6 +584,7 @@ class SystemAgent(BaseAgent):
 
         return repair_action
 
+
     def _heartbeat_monitor(self):
         """Monitor agent heartbeats using main event loop"""
         import asyncio
@@ -571,7 +596,7 @@ class SystemAgent(BaseAgent):
                     future = asyncio.run_coroutine_threadsafe(
                         self._heartbeat_monitor_async_single(), self.main_loop
                     )
-                    future.result(timeout=30)  # Wait for completion with timeout
+                    future.result(timeout = 30)  # Wait for completion with timeout
                 else:
                     # Fallback to synchronous monitoring if no main loop
                     self._heartbeat_monitor_sync()
@@ -579,6 +604,7 @@ class SystemAgent(BaseAgent):
             except Exception as e:
                 self.logger.error(f"Heartbeat monitoring loop error: {e}")
                 time.sleep(self.heartbeat_interval)
+
 
     async def _heartbeat_monitor_async_single(self):
         """Single async heartbeat check iteration"""
@@ -595,17 +621,18 @@ class SystemAgent(BaseAgent):
 
                     # Queue repair action
                     diagnostic = DiagnosticResult(
-                        component=f"Agent_{agent_name}",
-                        status="critical",
-                        message=f"Agent {agent_name} missed heartbeat",
-                        suggested_action="restart_agent",
-                        confidence=0.9,
-                        timestamp=current_time,
-                    )
+                        component = f"Agent_{agent_name}",
+                            status="critical",
+                            message = f"Agent {agent_name} missed heartbeat",
+                            suggested_action="restart_agent",
+                            confidence = 0.9,
+                            timestamp = current_time,
+                            )
                     self.repair_queue.put(diagnostic)
 
         except Exception as e:
             self.logger.error(f"Heartbeat check error: {e}")
+
 
     def _heartbeat_monitor_sync(self):
         """Synchronous heartbeat monitoring fallback"""
@@ -622,17 +649,18 @@ class SystemAgent(BaseAgent):
 
                     # Queue repair action
                     diagnostic = DiagnosticResult(
-                        component=f"Agent_{agent_name}",
-                        status="critical",
-                        message=f"Agent {agent_name} missed heartbeat",
-                        suggested_action="restart_agent",
-                        confidence=0.9,
-                        timestamp=current_time,
-                    )
+                        component = f"Agent_{agent_name}",
+                            status="critical",
+                            message = f"Agent {agent_name} missed heartbeat",
+                            suggested_action="restart_agent",
+                            confidence = 0.9,
+                            timestamp = current_time,
+                            )
                     self.repair_queue.put(diagnostic)
 
         except Exception as e:
             self.logger.error(f"Heartbeat check error: {e}")
+
 
     async def _heartbeat_monitor_async(self):
         """Async heartbeat monitoring loop (legacy method)"""
@@ -645,6 +673,7 @@ class SystemAgent(BaseAgent):
                 self.logger.error(f"Heartbeat monitoring loop error: {e}")
                 await asyncio.sleep(self.heartbeat_interval)
 
+
     def _health_monitor(self):
         """Monitor overall system health using main event loop"""
         import asyncio
@@ -656,7 +685,7 @@ class SystemAgent(BaseAgent):
                     future = asyncio.run_coroutine_threadsafe(
                         self._health_monitor_async_single(), self.main_loop
                     )
-                    future.result(timeout=30)  # Wait for completion with timeout
+                    future.result(timeout = 30)  # Wait for completion with timeout
                 else:
                     # Fallback to synchronous monitoring if no main loop
                     self._health_monitor_sync()
@@ -664,6 +693,7 @@ class SystemAgent(BaseAgent):
             except Exception as e:
                 self.logger.error(f"Health monitoring loop error: {e}")
                 time.sleep(self.health_check_interval)
+
 
     async def _health_monitor_async_single(self):
         """Single async health check iteration"""
@@ -678,27 +708,28 @@ class SystemAgent(BaseAgent):
             if health_score < self.critical_threshold:
                 diagnostic = DiagnosticResult(
                     component="System",
-                    status="critical",
-                    message=f"Critical system health: {health_score:.2f}",
-                    suggested_action="immediate_intervention",
-                    confidence=0.95,
-                    timestamp=datetime.now(),
-                )
+                        status="critical",
+                        message = f"Critical system health: {health_score:.2f}",
+                        suggested_action="immediate_intervention",
+                        confidence = 0.95,
+                        timestamp = datetime.now(),
+                        )
                 self.repair_queue.put(diagnostic)
 
             elif health_score < self.warning_threshold:
                 diagnostic = DiagnosticResult(
                     component="System",
-                    status="warning",
-                    message=f"System health degraded: {health_score:.2f}",
-                    suggested_action="monitor_closely",
-                    confidence=0.8,
-                    timestamp=datetime.now(),
-                )
+                        status="warning",
+                        message = f"System health degraded: {health_score:.2f}",
+                        suggested_action="monitor_closely",
+                        confidence = 0.8,
+                        timestamp = datetime.now(),
+                        )
                 self.repair_queue.put(diagnostic)
 
         except Exception as e:
             self.logger.error(f"Health check error: {e}")
+
 
     def _health_monitor_sync(self):
         """Synchronous health monitoring fallback"""
@@ -713,27 +744,28 @@ class SystemAgent(BaseAgent):
             if health_score < self.critical_threshold:
                 diagnostic = DiagnosticResult(
                     component="System",
-                    status="critical",
-                    message=f"Critical system health: {health_score:.2f}",
-                    suggested_action="immediate_intervention",
-                    confidence=0.95,
-                    timestamp=datetime.now(),
-                )
+                        status="critical",
+                        message = f"Critical system health: {health_score:.2f}",
+                        suggested_action="immediate_intervention",
+                        confidence = 0.95,
+                        timestamp = datetime.now(),
+                        )
                 self.repair_queue.put(diagnostic)
 
             elif health_score < self.warning_threshold:
                 diagnostic = DiagnosticResult(
                     component="System",
-                    status="warning",
-                    message=f"System health degraded: {health_score:.2f}",
-                    suggested_action="monitor_closely",
-                    confidence=0.8,
-                    timestamp=datetime.now(),
-                )
+                        status="warning",
+                        message = f"System health degraded: {health_score:.2f}",
+                        suggested_action="monitor_closely",
+                        confidence = 0.8,
+                        timestamp = datetime.now(),
+                        )
                 self.repair_queue.put(diagnostic)
 
         except Exception as e:
             self.logger.error(f"Health check error: {e}")
+
 
     async def _health_monitor_async(self):
         """Async health monitoring loop (legacy method)"""
@@ -767,12 +799,13 @@ class SystemAgent(BaseAgent):
                 self.logger.error(f"Health monitoring loop error: {e}")
                 await asyncio.sleep(self.health_check_interval)
 
+
     def _repair_processor(self):
         """Process repair queue"""
         while self.monitoring_active:
             try:
                 # Get repair task with timeout
-                diagnostic = self.repair_queue.get(timeout=10)
+                diagnostic = self.repair_queue.get(timeout = 10)
 
                 # Execute repair
                 repair_result = self.execute_repair(diagnostic)
@@ -789,6 +822,7 @@ class SystemAgent(BaseAgent):
             except Exception as e:
                 self.logger.error(f"Repair processor error: {e}")
 
+
     def _restart_agent(self, agent_name: str) -> bool:
         """Restart a specific agent"""
         try:
@@ -800,17 +834,18 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to restart agent {agent_name}: {e}")
             return False
 
+
     def _restart_service(self, service_name: str) -> bool:
         """Restart a specific service"""
         try:
             # Use launchctl for macOS services
             if sys.platform == "darwin":
                 subprocess.run(
-                    ["launchctl", "kickstart", "-k", f"gui/501/{service_name}"],
-                    check=True,
-                )
+                    ["launchctl", "kickstart", "-k", f"gui / 501/{service_name}"],
+                        check = True,
+                        )
             else:
-                subprocess.run(["systemctl", "restart", service_name], check=True)
+                subprocess.run(["systemctl", "restart", service_name], check = True)
 
             self.logger.info(f"Restarted service: {service_name}")
             return True
@@ -818,14 +853,15 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to restart service {service_name}: {e}")
             return False
 
+
     def _clear_memory_cache(self) -> bool:
         """Clear system memory cache"""
         try:
             if sys.platform == "darwin":
-                subprocess.run(["sudo", "purge"], check=True)
+                subprocess.run(["sudo", "purge"], check = True)
             else:
-                subprocess.run(["sync"], check=True)
-                with open("/proc/sys/vm/drop_caches", "w") as f:
+                subprocess.run(["sync"], check = True)
+                with open("/proc / sys / vm / drop_caches", "w") as f:
                     f.write("3")
 
             self.logger.info("Cleared memory cache")
@@ -834,32 +870,34 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to clear memory cache: {e}")
             return False
 
+
     def _cleanup_disk_space(self) -> bool:
         """Clean up disk space"""
         try:
             # Clean temporary files
-            temp_dirs = ["/tmp", "/var/tmp"]
+            temp_dirs = ["/tmp", "/var / tmp"]
             for temp_dir in temp_dirs:
                 if os.path.exists(temp_dir):
                     subprocess.run(
                         ["find", temp_dir, "-type", "f", "-atime", "+7", "-delete"],
-                        check=True,
-                    )
+                            check = True,
+                            )
 
             # Clean logs older than 30 days
-            log_dirs = ["/var/log", "./logs"]
+            log_dirs = ["/var / log", "./logs"]
             for log_dir in log_dirs:
                 if os.path.exists(log_dir):
                     subprocess.run(
                         ["find", log_dir, "-name", "*.log", "-mtime", "+30", "-delete"],
-                        check=True,
-                    )
+                            check = True,
+                            )
 
             self.logger.info("Cleaned up disk space")
             return True
         except Exception as e:
             self.logger.error(f"Failed to cleanup disk space: {e}")
             return False
+
 
     def _restart_high_cpu_processes(self) -> bool:
         """Restart processes using high CPU"""
@@ -874,13 +912,14 @@ class SystemAgent(BaseAgent):
             for proc in high_cpu_processes:
                 if proc.info["name"] in ["python", "python3"]:
                     proc.terminate()
-                    proc.wait(timeout=10)
+                    proc.wait(timeout = 10)
 
             self.logger.info(f"Restarted {len(high_cpu_processes)} high CPU processes")
             return True
         except Exception as e:
             self.logger.error(f"Failed to restart high CPU processes: {e}")
             return False
+
 
     def _count_recent_errors(self, hours: int = 1) -> int:
         """Count recent errors from logs"""
@@ -890,6 +929,7 @@ class SystemAgent(BaseAgent):
             return 0
         except Exception:
             return 0
+
 
     def _investigate_system_stall(self) -> bool:
         """Investigate system stall and gather diagnostic information"""
@@ -933,7 +973,7 @@ class SystemAgent(BaseAgent):
                     f"Potentially stuck processes: {', '.join(stuck_processes)}"
                 )
 
-            # Reset watchdog activity to prevent immediate re-triggering
+            # Reset watchdog activity to prevent immediate re - triggering
             self.update_system_activity()
 
             return True
@@ -941,28 +981,30 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to investigate system stall: {e}")
             return False
 
+
     def _save_health_metrics(self, health: SystemHealth):
         """Save health metrics to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO system_health
-                (timestamp, cpu_usage, memory_usage, disk_usage, 
-                 agent_status, service_status, error_count, uptime_seconds, health_score)
+                (timestamp, cpu_usage, memory_usage, disk_usage,
+                    agent_status, service_status, error_count, uptime_seconds, health_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     health.timestamp.isoformat(),
-                    health.cpu_usage,
-                    health.memory_usage,
-                    health.disk_usage,
-                    json.dumps(health.agent_status),
-                    json.dumps(health.service_status),
-                    health.error_count,
-                    health.uptime_seconds,
-                    health.overall_health_score(),
-                ),
-            )
+                        health.cpu_usage,
+                        health.memory_usage,
+                        health.disk_usage,
+                        json.dumps(health.agent_status),
+                        json.dumps(health.service_status),
+                        health.error_count,
+                        health.uptime_seconds,
+                        health.overall_health_score(),
+                        ),
+                    )
+
 
     def _save_diagnostic_results(self, results: List[DiagnosticResult]):
         """Save diagnostic results to database"""
@@ -976,13 +1018,14 @@ class SystemAgent(BaseAgent):
                 """,
                     (
                         result.component,
-                        result.status,
-                        result.message,
-                        result.suggested_action,
-                        result.confidence,
-                        result.timestamp.isoformat(),
-                    ),
-                )
+                            result.status,
+                            result.message,
+                            result.suggested_action,
+                            result.confidence,
+                            result.timestamp.isoformat(),
+                            ),
+                        )
+
 
     def _save_repair_action(self, action: RepairAction):
         """Save repair action to database"""
@@ -990,21 +1033,22 @@ class SystemAgent(BaseAgent):
             conn.execute(
                 """
                 INSERT INTO repair_actions
-                (action_id, component, action_type, description, command, 
-                 success, timestamp, execution_time)
+                (action_id, component, action_type, description, command,
+                    success, timestamp, execution_time)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     action.action_id,
-                    action.component,
-                    action.action_type,
-                    action.description,
-                    action.command,
-                    action.success,
-                    action.timestamp.isoformat(),
-                    action.execution_time,
-                ),
-            )
+                        action.component,
+                        action.action_type,
+                        action.description,
+                        action.command,
+                        action.success,
+                        action.timestamp.isoformat(),
+                        action.execution_time,
+                        ),
+                    )
+
 
     def update_system_activity(self):
         """Update last system activity timestamp - call this on any significant system activity"""
@@ -1014,6 +1058,7 @@ class SystemAgent(BaseAgent):
                 "System activity detected, resetting watchdog alert counter"
             )
             self.watchdog_alerts_sent = 0
+
 
     def _watchdog_monitor(self):
         """Monitor system cadence and alert when stalled beyond threshold"""
@@ -1035,14 +1080,14 @@ class SystemAgent(BaseAgent):
                         # Create diagnostic for system stall
                         diagnostic = DiagnosticResult(
                             component="SystemCadence",
-                            status="critical",
-                            message=f"System cadence stalled for {time_since_activity:.1f}s (threshold: {self.watchdog_threshold}s)",
-                            suggested_action="investigate_system_stall",
-                            confidence=0.95,
-                            timestamp=current_time,
-                        )
+                                status="critical",
+                                message = f"System cadence stalled for {time_since_activity:.1f}s (threshold: {self.watchdog_threshold}s)",
+                                suggested_action="investigate_system_stall",
+                                confidence = 0.95,
+                                timestamp = current_time,
+                                )
 
-                        # Queue for repair/investigation
+                        # Queue for repair / investigation
                         self.repair_queue.put(diagnostic)
 
                         # Log critical alert
@@ -1068,6 +1113,7 @@ class SystemAgent(BaseAgent):
                 self.logger.error(f"Watchdog monitor error: {e}")
                 time.sleep(self.watchdog_check_interval)
 
+
     def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute system management task"""
         # Update system activity on task execution
@@ -1080,9 +1126,9 @@ class SystemAgent(BaseAgent):
             health = self.get_system_health()
             return {
                 "success": True,
-                "health": asdict(health),
-                "health_score": health.overall_health_score(),
-            }
+                    "health": asdict(health),
+                    "health_score": health.overall_health_score(),
+                    }
 
         elif task_type == "run_diagnostics":
             results = self.run_diagnostics()
@@ -1099,37 +1145,43 @@ class SystemAgent(BaseAgent):
         return {"success": False, "error": f"Unknown task type: {task_type}"}
 
     @dashboard_action(doc="Run immediate health checks (sync)")
+
+
     def run_health_checks(self):
         """Run immediate synchronous health checks"""
         try:
             health = self.get_system_health()
             return {
                 "ok": True,
-                "health_score": health.overall_health_score(),
-                "cpu_usage": health.cpu_usage,
-                "memory_usage": health.memory_usage,
-                "disk_usage": health.disk_usage,
-                "timestamp": health.timestamp.isoformat(),
-            }
+                    "health_score": health.overall_health_score(),
+                    "cpu_usage": health.cpu_usage,
+                    "memory_usage": health.memory_usage,
+                    "disk_usage": health.disk_usage,
+                    "timestamp": health.timestamp.isoformat(),
+                    }
         except Exception as e:
             return {"ok": False, "error": str(e)}
 
-    @dashboard_action(doc="Get current system snapshot", method="GET", public=False)
+    @dashboard_action(doc="Get current system snapshot", method="GET", public = False)
+
+
     def status(self):
         """Get current system status snapshot"""
         try:
             health = self.get_system_health()
             return {
                 "timestamp": time.time(),
-                "health": asdict(health),
-                "monitoring_active": self.monitoring_active,
-                "registered_agents": list(self.registered_agents.keys()),
-                "registered_services": list(self.registered_services.keys()),
-            }
+                    "health": asdict(health),
+                    "monitoring_active": self.monitoring_active,
+                    "registered_agents": list(self.registered_agents.keys()),
+                    "registered_services": list(self.registered_services.keys()),
+                    }
         except Exception as e:
             return {"timestamp": time.time(), "error": str(e)}
 
     @dashboard_action(doc="Force watchdog investigation")
+
+
     def investigate_system_stall(self):
         """Force a watchdog investigation for system stalls"""
         try:
@@ -1143,15 +1195,18 @@ class SystemAgent(BaseAgent):
             return {"queued": False, "error": str(e)}
 
     @property
+
+
     def capabilities(self) -> List["AgentCapability"]:
         """Return system agent capabilities"""
         from .base_agents import AgentCapability
 
         return [
             AgentCapability.SYSTEM_MONITORING,
-            AgentCapability.AUTONOMOUS_REPAIR,
-            AgentCapability.HEALTH_DIAGNOSTICS,
-        ]
+                AgentCapability.AUTONOMOUS_REPAIR,
+                AgentCapability.HEALTH_DIAGNOSTICS,
+                ]
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context
@@ -1161,24 +1216,25 @@ class SystemAgent(BaseAgent):
             result = await self.process_task(task)
             return {
                 "success": True,
-                "result": result,
-                "monitoring": "System health monitored during execution",
-            }
+                    "result": result,
+                    "monitoring": "System health monitored during execution",
+                    }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
         """Rephrase system task for clarity"""
         task_type = task.get("type", "unknown")
         return f"System operation: {task_type} - {task.get('description', 'No description')}"
 
+
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
     ) -> bool:
         """Validate rephrased task accuracy"""
         return True
-
 
 # Test code removed to prevent duplicate SystemAgent instances
 # The SystemAgent should only be instantiated by the orchestrator

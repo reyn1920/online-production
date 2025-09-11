@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 API Security and Compliance Validator
 Comprehensive security validation and compliance checking for 100+ APIs
@@ -8,7 +8,7 @@ Features:
 - Compliance validation (GDPR, CCPA, SOC2, etc.)
 - API authentication testing
 - Rate limiting validation
-- SSL/TLS certificate checking
+- SSL / TLS certificate checking
 - Data privacy assessment
 - Penetration testing
 - Compliance reporting
@@ -45,12 +45,13 @@ from cryptography.hazmat.backends import default_backend
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class SecurityVulnerability:
     severity: str  # critical, high, medium, low
     category: str
@@ -61,8 +62,9 @@ class SecurityVulnerability:
     remediation_effort: str  # low, medium, high
     compliance_impact: List[str]
 
-
 @dataclass
+
+
 class ComplianceRequirement:
     regulation: str  # GDPR, CCPA, SOC2, HIPAA, etc.
     requirement_id: str
@@ -73,13 +75,14 @@ class ComplianceRequirement:
     deadline: Optional[str]
     risk_level: str
 
-
 @dataclass
+
+
 class SecurityTestResult:
     api_name: str
     api_key: str
     test_timestamp: str
-    overall_score: float  # 0-100
+    overall_score: float  # 0 - 100
     security_grade: str  # A+, A, B, C, D, F
     vulnerabilities: List[SecurityVulnerability]
     compliance_status: List[ComplianceRequirement]
@@ -93,15 +96,17 @@ class SecurityTestResult:
 
 
 class APISecurityCompliance:
+
+
     def __init__(self):
         self.results_dir = Path("security_results")
         self.reports_dir = Path("compliance_reports")
         self.templates_dir = Path("compliance_templates")
 
         # Create directories
-        self.results_dir.mkdir(exist_ok=True)
-        self.reports_dir.mkdir(exist_ok=True)
-        self.templates_dir.mkdir(exist_ok=True)
+        self.results_dir.mkdir(exist_ok = True)
+        self.reports_dir.mkdir(exist_ok = True)
+        self.templates_dir.mkdir(exist_ok = True)
 
         self.security_results = {}
         self.compliance_frameworks = self.load_compliance_frameworks()
@@ -118,123 +123,126 @@ class APISecurityCompliance:
         # Security testing configuration
         self.security_config = {
             "timeout": 30,
-            "max_retries": 3,
-            "user_agent": "SecurityScanner/1.0",
-            "rate_limit_test_requests": 100,
-            "penetration_test_payloads": self.load_penetration_payloads(),
-        }
+                "max_retries": 3,
+                "user_agent": "SecurityScanner / 1.0",
+                "rate_limit_test_requests": 100,
+                "penetration_test_payloads": self.load_penetration_payloads(),
+                }
+
 
     def load_compliance_frameworks(self) -> Dict[str, Any]:
         """Load compliance framework definitions"""
         frameworks = {
             "GDPR": {
                 "name": "General Data Protection Regulation",
-                "region": "EU",
-                "requirements": {
+                    "region": "EU",
+                    "requirements": {
                     "data_minimization": "Collect only necessary personal data",
-                    "consent_management": "Obtain explicit consent for data processing",
-                    "right_to_erasure": "Implement data deletion capabilities",
-                    "data_portability": "Enable data export functionality",
-                    "breach_notification": "Report breaches within 72 hours",
-                    "privacy_by_design": "Implement privacy controls by default",
-                    "dpo_appointment": "Appoint Data Protection Officer if required",
-                    "impact_assessment": "Conduct privacy impact assessments",
-                },
-            },
-            "CCPA": {
+                        "consent_management": "Obtain explicit consent for data processing",
+                        "right_to_erasure": "Implement data deletion capabilities",
+                        "data_portability": "Enable data export functionality",
+                        "breach_notification": "Report breaches within 72 hours",
+                        "privacy_by_design": "Implement privacy controls by default",
+                        "dpo_appointment": "Appoint Data Protection Officer if required",
+                        "impact_assessment": "Conduct privacy impact assessments",
+                        },
+                    },
+                "CCPA": {
                 "name": "California Consumer Privacy Act",
-                "region": "California, US",
-                "requirements": {
+                    "region": "California, US",
+                    "requirements": {
                     "disclosure_notice": "Provide clear privacy notices",
-                    "opt_out_rights": "Enable opt-out of data sales",
-                    "access_rights": "Provide data access to consumers",
-                    "deletion_rights": "Enable data deletion requests",
-                    "non_discrimination": "No discrimination for privacy choices",
-                    "third_party_disclosure": "Disclose third-party data sharing",
-                },
-            },
-            "SOC2": {
+                        "opt_out_rights": "Enable opt - out of data sales",
+                        "access_rights": "Provide data access to consumers",
+                        "deletion_rights": "Enable data deletion requests",
+                        "non_discrimination": "No discrimination for privacy choices",
+                        "third_party_disclosure": "Disclose third - party data sharing",
+                        },
+                    },
+                "SOC2": {
                 "name": "Service Organization Control 2",
-                "region": "US",
-                "requirements": {
+                    "region": "US",
+                    "requirements": {
                     "security_controls": "Implement comprehensive security controls",
-                    "availability_monitoring": "Monitor system availability",
-                    "processing_integrity": "Ensure data processing accuracy",
-                    "confidentiality_protection": "Protect confidential information",
-                    "privacy_safeguards": "Implement privacy protection measures",
-                },
-            },
-            "HIPAA": {
+                        "availability_monitoring": "Monitor system availability",
+                        "processing_integrity": "Ensure data processing accuracy",
+                        "confidentiality_protection": "Protect confidential information",
+                        "privacy_safeguards": "Implement privacy protection measures",
+                        },
+                    },
+                "HIPAA": {
                 "name": "Health Insurance Portability and Accountability Act",
-                "region": "US",
-                "requirements": {
+                    "region": "US",
+                    "requirements": {
                     "administrative_safeguards": "Implement administrative controls",
-                    "physical_safeguards": "Secure physical access to systems",
-                    "technical_safeguards": "Implement technical security measures",
-                    "breach_notification": "Report breaches to authorities",
-                    "business_associate": "Manage business associate agreements",
-                    "minimum_necessary": "Limit data access to minimum necessary",
-                },
-            },
-            "PCI_DSS": {
+                        "physical_safeguards": "Secure physical access to systems",
+                        "technical_safeguards": "Implement technical security measures",
+                        "breach_notification": "Report breaches to authorities",
+                        "business_associate": "Manage business associate agreements",
+                        "minimum_necessary": "Limit data access to minimum necessary",
+                        },
+                    },
+                "PCI_DSS": {
                 "name": "Payment Card Industry Data Security Standard",
-                "region": "Global",
-                "requirements": {
+                    "region": "Global",
+                    "requirements": {
                     "firewall_configuration": "Maintain secure firewall configuration",
-                    "default_passwords": "Change default passwords and security parameters",
-                    "cardholder_data": "Protect stored cardholder data",
-                    "data_transmission": "Encrypt cardholder data transmission",
-                    "antivirus_software": "Use and maintain antivirus software",
-                    "secure_systems": "Develop and maintain secure systems",
-                    "access_control": "Restrict access to cardholder data",
-                    "unique_ids": "Assign unique ID to each person with access",
-                    "physical_access": "Restrict physical access to cardholder data",
-                    "network_monitoring": "Track and monitor access to network resources",
-                    "security_testing": "Regularly test security systems and processes",
-                    "information_security": "Maintain information security policy",
-                },
-            },
-        }
+                        "default_passwords": "Change default passwords and security parameters",
+                        "cardholder_data": "Protect stored cardholder data",
+                        "data_transmission": "Encrypt cardholder data transmission",
+                        "antivirus_software": "Use and maintain antivirus software",
+                        "secure_systems": "Develop and maintain secure systems",
+                        "access_control": "Restrict access to cardholder data",
+                        "unique_ids": "Assign unique ID to each person with access",
+                        "physical_access": "Restrict physical access to cardholder data",
+                        "network_monitoring": "Track and monitor access to network resources",
+                        "security_testing": "Regularly test security systems and processes",
+                        "information_security": "Maintain information security policy",
+                        },
+                    },
+                }
 
         return frameworks
+
 
     def load_penetration_payloads(self) -> Dict[str, List[str]]:
         """Load penetration testing payloads"""
         return {
             "sql_injection": [
                 "' OR '1'='1",
-                "'; DROP TABLE users; --",
-                "' UNION SELECT * FROM users --",
-                "admin'--",
-                "' OR 1=1#",
-            ],
-            "xss": [
-                "<script>alert('XSS')</script>",
-                "javascript:alert('XSS')",
-                "<img src=x onerror=alert('XSS')>",
-                "<svg onload=alert('XSS')>",
-                "'><script>alert('XSS')</script>",
-            ],
-            "command_injection": [
+                    "'; DROP TABLE users; --",
+                    "' UNION SELECT * FROM users --",
+                    "admin'--",
+                    "' OR 1 = 1#",
+                    ],
+                "xss": [
+                "<script > alert('XSS')</script>",
+                    "javascript:alert('XSS')",
+                    "<img src = x onerror = alert('XSS')>",
+                    "<svg onload = alert('XSS')>",
+                    "'><script > alert('XSS')</script>",
+                    ],
+                "command_injection": [
                 "; ls -la",
-                "| whoami",
-                "&& cat /etc/passwd",
-                "`id`",
-                "$(whoami)",
-            ],
-            "path_traversal": [
-                "../../../etc/passwd",
-                "..\\..\\..\\windows\\system32\\drivers\\etc\\hosts",
-                "....//....//....//etc/passwd",
-                "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd",
-            ],
-            "ldap_injection": [
+                    "| whoami",
+                    "&& cat /etc / passwd",
+                    "`id`",
+                    "$(whoami)",
+                    ],
+                "path_traversal": [
+                "../../../etc / passwd",
+                    "..\\..\\..\\windows\\system32\\drivers\\etc\\hosts",
+                    "....//....//....//etc / passwd",
+                    "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+                    ],
+                "ldap_injection": [
                 "*)(uid=*))(|(uid=*",
-                "*)(|(password=*))",
-                "admin)(&(password=*))",
-                "*))%00",
-            ],
-        }
+                    "*)(|(password=*))",
+                    "admin)(&(password=*))",
+                    "*))%00",
+                    ],
+                }
+
 
     async def scan_api_security(
         self, api_key: str, api_config: Dict[str, Any]
@@ -248,24 +256,24 @@ class APISecurityCompliance:
 
         # Initialize result structure
         result = SecurityTestResult(
-            api_name=api_config.get("name", api_key),
-            api_key=api_key,
-            test_timestamp=start_time.isoformat(),
-            overall_score=0.0,
-            security_grade="F",
-            vulnerabilities=[],
-            compliance_status=[],
-            ssl_certificate={},
-            authentication_security={},
-            rate_limiting={},
-            data_privacy={},
-            penetration_test={},
-            recommendations=[],
-            next_scan_date=(start_time + timedelta(days=30)).isoformat(),
-        )
+            api_name = api_config.get("name", api_key),
+                api_key = api_key,
+                test_timestamp = start_time.isoformat(),
+                overall_score = 0.0,
+                security_grade="F",
+                vulnerabilities=[],
+                compliance_status=[],
+                ssl_certificate={},
+                authentication_security={},
+                rate_limiting={},
+                data_privacy={},
+                penetration_test={},
+                recommendations=[],
+                next_scan_date=(start_time + timedelta(days = 30)).isoformat(),
+                )
 
         try:
-            # 1. SSL/TLS Certificate Analysis
+            # 1. SSL / TLS Certificate Analysis
             result.ssl_certificate = await self.analyze_ssl_certificate(api_config)
 
             # 2. Authentication Security Testing
@@ -308,22 +316,23 @@ class APISecurityCompliance:
             result.vulnerabilities.append(
                 SecurityVulnerability(
                     severity="high",
-                    category="scan_error",
-                    description=f"Security scan failed: {str(e)}",
-                    recommendation="Investigate scan failure and retry",
-                    cve_id=None,
-                    affected_endpoints=["all"],
-                    remediation_effort="medium",
-                    compliance_impact=["all"],
-                )
+                        category="scan_error",
+                        description = f"Security scan failed: {str(e)}",
+                        recommendation="Investigate scan failure and retry",
+                        cve_id = None,
+                        affected_endpoints=["all"],
+                        remediation_effort="medium",
+                        compliance_impact=["all"],
+                        )
             )
 
         return result
 
+
     async def analyze_ssl_certificate(
         self, api_config: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Analyze SSL/TLS certificate security"""
+        """Analyze SSL / TLS certificate security"""
         base_url = api_config.get("base_url", "")
         if not base_url:
             return {"status": "no_url", "score": 0}
@@ -336,16 +345,16 @@ class APISecurityCompliance:
             if parsed_url.scheme != "https":
                 return {
                     "status": "no_ssl",
-                    "score": 0,
-                    "issues": ["API does not use HTTPS"],
-                    "recommendations": ["Enable HTTPS/SSL encryption"],
-                }
+                        "score": 0,
+                        "issues": ["API does not use HTTPS"],
+                        "recommendations": ["Enable HTTPS / SSL encryption"],
+                        }
 
             # Get certificate
             context = ssl.create_default_context()
-            with socket.create_connection((hostname, port), timeout=10) as sock:
-                with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-                    cert_der = ssock.getpeercert(binary_form=True)
+            with socket.create_connection((hostname, port), timeout = 10) as sock:
+                with context.wrap_socket(sock, server_hostname = hostname) as ssock:
+                    cert_der = ssock.getpeercert(binary_form = True)
                     cert_info = ssock.getpeercert()
 
             # Parse certificate
@@ -354,18 +363,18 @@ class APISecurityCompliance:
             # Analyze certificate
             analysis = {
                 "status": "valid",
-                "score": 100,
-                "issuer": cert_info.get("issuer", []),
-                "subject": cert_info.get("subject", []),
-                "serial_number": str(cert.serial_number),
-                "not_before": cert.not_valid_before.isoformat(),
-                "not_after": cert.not_valid_after.isoformat(),
-                "signature_algorithm": cert.signature_algorithm_oid._name,
-                "public_key_size": cert.public_key().key_size,
-                "san_domains": [],
-                "issues": [],
-                "recommendations": [],
-            }
+                    "score": 100,
+                    "issuer": cert_info.get("issuer", []),
+                    "subject": cert_info.get("subject", []),
+                    "serial_number": str(cert.serial_number),
+                    "not_before": cert.not_valid_before.isoformat(),
+                    "not_after": cert.not_valid_after.isoformat(),
+                    "signature_algorithm": cert.signature_algorithm_oid._name,
+                    "public_key_size": cert.public_key().key_size,
+                    "san_domains": [],
+                    "issues": [],
+                    "recommendations": [],
+                    }
 
             # Check expiration
             days_until_expiry = (cert.not_valid_after - datetime.now()).days
@@ -385,7 +394,7 @@ class APISecurityCompliance:
                     f'Weak key size: {analysis["public_key_size"]} bits'
                 )
                 analysis["score"] -= 30
-                analysis["recommendations"].append("Use at least 2048-bit RSA keys")
+                analysis["recommendations"].append("Use at least 2048 - bit RSA keys")
 
             # Check signature algorithm
             weak_algorithms = ["sha1", "md5"]
@@ -398,7 +407,7 @@ class APISecurityCompliance:
                 )
                 analysis["score"] -= 25
                 analysis["recommendations"].append(
-                    "Use SHA-256 or stronger signature algorithm"
+                    "Use SHA - 256 or stronger signature algorithm"
                 )
 
             # Extract SAN domains
@@ -415,11 +424,12 @@ class APISecurityCompliance:
         except Exception as e:
             return {
                 "status": "error",
-                "score": 0,
-                "error": str(e),
-                "issues": [f"SSL analysis failed: {str(e)}"],
-                "recommendations": ["Investigate SSL configuration"],
-            }
+                    "score": 0,
+                    "error": str(e),
+                    "issues": [f"SSL analysis failed: {str(e)}"],
+                    "recommendations": ["Investigate SSL configuration"],
+                    }
+
 
     async def test_authentication_security(
         self, api_config: Dict[str, Any]
@@ -430,15 +440,15 @@ class APISecurityCompliance:
 
         analysis = {
             "methods": auth_methods,
-            "score": 0,
-            "issues": [],
-            "recommendations": [],
-            "tests": {},
-        }
+                "score": 0,
+                "issues": [],
+                "recommendations": [],
+                "tests": {},
+                }
 
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=30)
+                timeout = aiohttp.ClientTimeout(total = 30)
             ) as session:
                 # Test 1: No authentication
                 analysis["tests"]["no_auth"] = await self.test_no_auth_access(
@@ -493,18 +503,19 @@ class APISecurityCompliance:
 
         return analysis
 
+
     async def test_no_auth_access(
         self, session: aiohttp.ClientSession, base_url: str
     ) -> Dict[str, Any]:
         """Test if API allows access without authentication"""
-        test_endpoints = ["/api/users", "/api/data", "/api/admin", "/health", "/status"]
+        test_endpoints = ["/api / users", "/api / data", "/api / admin", "/health", "/status"]
 
         results = {
             "passed": True,
-            "vulnerable": False,
-            "accessible_endpoints": [],
-            "protected_endpoints": [],
-        }
+                "vulnerable": False,
+                "accessible_endpoints": [],
+                "protected_endpoints": [],
+                }
 
         for endpoint in test_endpoints:
             try:
@@ -521,13 +532,14 @@ class APISecurityCompliance:
 
         return results
 
+
     async def test_invalid_credentials(
         self, session: aiohttp.ClientSession, base_url: str, auth_methods: List[str]
     ) -> Dict[str, Any]:
         """Test API response to invalid credentials"""
         results = {"passed": True, "tests": {}}
 
-        test_endpoints = ["/api/login", "/api/auth", "/oauth/token"]
+        test_endpoints = ["/api / login", "/api / auth", "/oauth / token"]
 
         for method in auth_methods:
             method_results = {"responses": [], "secure": True}
@@ -538,26 +550,26 @@ class APISecurityCompliance:
 
                     if method == "api_key":
                         headers = {"Authorization": "Bearer invalid_key_12345"}
-                        async with session.get(url, headers=headers) as response:
+                        async with session.get(url, headers = headers) as response:
                             method_results["responses"].append(
                                 {
                                     "endpoint": endpoint,
-                                    "status": response.status,
-                                    "headers": dict(response.headers),
-                                }
+                                        "status": response.status,
+                                        "headers": dict(response.headers),
+                                        }
                             )
 
                     elif method == "basic":
                         headers = {
                             "Authorization": "Basic aW52YWxpZDppbnZhbGlk"
                         }  # invalid:invalid
-                        async with session.get(url, headers=headers) as response:
+                        async with session.get(url, headers = headers) as response:
                             method_results["responses"].append(
                                 {
                                     "endpoint": endpoint,
-                                    "status": response.status,
-                                    "headers": dict(response.headers),
-                                }
+                                        "status": response.status,
+                                        "headers": dict(response.headers),
+                                        }
                             )
 
                     # Check for information disclosure
@@ -574,18 +586,19 @@ class APISecurityCompliance:
 
         return results
 
+
     async def test_brute_force_protection(
         self, session: aiohttp.ClientSession, base_url: str, auth_methods: List[str]
     ) -> Dict[str, Any]:
         """Test brute force protection mechanisms"""
         results = {
             "passed": True,
-            "vulnerable": False,
-            "rate_limited": False,
-            "attempts": [],
-        }
+                "vulnerable": False,
+                "rate_limited": False,
+                "attempts": [],
+                }
 
-        login_endpoint = urljoin(base_url, "/api/login")
+        login_endpoint = urljoin(base_url, "/api / login")
 
         # Attempt multiple failed logins
         for i in range(10):
@@ -593,20 +606,20 @@ class APISecurityCompliance:
                 data = {"username": "testuser", "password": f"wrongpassword{i}"}
 
                 start_time = time.time()
-                async with session.post(login_endpoint, json=data) as response:
+                async with session.post(login_endpoint, json = data) as response:
                     end_time = time.time()
 
                     attempt_result = {
                         "attempt": i + 1,
-                        "status": response.status,
-                        "response_time": end_time - start_time,
-                        "headers": dict(response.headers),
-                    }
+                            "status": response.status,
+                            "response_time": end_time - start_time,
+                            "headers": dict(response.headers),
+                            }
 
                     results["attempts"].append(attempt_result)
 
                     # Check for rate limiting indicators
-                    if response.status == 429 or "rate-limit" in response.headers:
+                    if response.status == 429 or "rate - limit" in response.headers:
                         results["rate_limited"] = True
                         break
 
@@ -627,21 +640,22 @@ class APISecurityCompliance:
 
         return results
 
+
     async def test_token_security(
         self, session: aiohttp.ClientSession, base_url: str
     ) -> Dict[str, Any]:
-        """Test JWT/Bearer token security"""
+        """Test JWT / Bearer token security"""
         results = {"passed": True, "issues": [], "tests": {}}
 
-        # Test weak/predictable tokens
+        # Test weak / predictable tokens
         weak_tokens = ["token123", "abc123", "12345", "admin", "test"]
 
-        test_endpoint = urljoin(base_url, "/api/user")
+        test_endpoint = urljoin(base_url, "/api / user")
 
         for token in weak_tokens:
             try:
                 headers = {"Authorization": f"Bearer {token}"}
-                async with session.get(test_endpoint, headers=headers) as response:
+                async with session.get(test_endpoint, headers = headers) as response:
                     if response.status == 200:
                         results["issues"].append(f"Weak token accepted: {token}")
                         results["passed"] = False
@@ -651,15 +665,15 @@ class APISecurityCompliance:
         # Test token format validation
         malformed_tokens = [
             "Bearer",
-            "Bearer ",
-            "Bearer invalid.token.format",
-            "NotBearer validtoken",
-        ]
+                "Bearer ",
+                "Bearer invalid.token.format",
+                "NotBearer validtoken",
+                ]
 
         for token in malformed_tokens:
             try:
                 headers = {"Authorization": token}
-                async with session.get(test_endpoint, headers=headers) as response:
+                async with session.get(test_endpoint, headers = headers) as response:
                     if response.status == 200:
                         results["issues"].append(f"Malformed token accepted: {token}")
                         results["passed"] = False
@@ -668,6 +682,7 @@ class APISecurityCompliance:
 
         return results
 
+
     async def test_rate_limiting(self, api_config: Dict[str, Any]) -> Dict[str, Any]:
         """Test API rate limiting implementation"""
         base_url = api_config.get("base_url", "")
@@ -675,12 +690,12 @@ class APISecurityCompliance:
 
         analysis = {
             "configured_limits": rate_limits,
-            "score": 0,
-            "implemented": False,
-            "effective": False,
-            "bypass_attempts": [],
-            "recommendations": [],
-        }
+                "score": 0,
+                "implemented": False,
+                "effective": False,
+                "bypass_attempts": [],
+                "recommendations": [],
+                }
 
         if not base_url:
             analysis["recommendations"].append(
@@ -690,9 +705,9 @@ class APISecurityCompliance:
 
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=60)
+                timeout = aiohttp.ClientTimeout(total = 60)
             ) as session:
-                test_endpoint = urljoin(base_url, "/api/test")
+                test_endpoint = urljoin(base_url, "/api / test")
 
                 # Test 1: Rapid requests
                 rapid_test = await self.test_rapid_requests(session, test_endpoint)
@@ -710,7 +725,7 @@ class APISecurityCompliance:
                     analysis["effective"] = True
                     analysis["score"] += 30
 
-                # Test 3: User-based limiting
+                # Test 3: User - based limiting
                 user_test = await self.test_user_based_limiting(session, test_endpoint)
                 analysis["user_based"] = user_test
 
@@ -734,16 +749,17 @@ class APISecurityCompliance:
 
         return analysis
 
+
     async def test_rapid_requests(
         self, session: aiohttp.ClientSession, endpoint: str
     ) -> Dict[str, Any]:
         """Test rapid request handling"""
         results = {
             "rate_limited": False,
-            "requests_sent": 0,
-            "responses": [],
-            "rate_limit_triggered_at": None,
-        }
+                "requests_sent": 0,
+                "responses": [],
+                "rate_limit_triggered_at": None,
+                }
 
         # Send rapid requests
         for i in range(self.security_config["rate_limit_test_requests"]):
@@ -754,10 +770,10 @@ class APISecurityCompliance:
 
                     response_data = {
                         "request_number": i + 1,
-                        "status": response.status,
-                        "response_time": end_time - start_time,
-                        "headers": dict(response.headers),
-                    }
+                            "status": response.status,
+                            "response_time": end_time - start_time,
+                            "headers": dict(response.headers),
+                            }
 
                     results["responses"].append(response_data)
                     results["requests_sent"] += 1
@@ -765,7 +781,7 @@ class APISecurityCompliance:
                     # Check for rate limiting
                     if (
                         response.status == 429
-                        or "rate-limit" in str(response.headers).lower()
+                        or "rate - limit" in str(response.headers).lower()
                     ):
                         results["rate_limited"] = True
                         results["rate_limit_triggered_at"] = i + 1
@@ -780,26 +796,27 @@ class APISecurityCompliance:
 
         return results
 
+
     async def test_ip_based_limiting(
         self, session: aiohttp.ClientSession, endpoint: str
     ) -> Dict[str, Any]:
-        """Test IP-based rate limiting"""
+        """Test IP - based rate limiting"""
         # Note: This is a simplified test as we can't easily change IP addresses
         results = {"effective": False, "test_method": "header_spoofing", "attempts": []}
 
-        # Try different X-Forwarded-For headers
+        # Try different X - Forwarded - For headers
         test_ips = ["192.168.1.1", "10.0.0.1", "172.16.0.1", "203.0.113.1"]
 
         for ip in test_ips:
             try:
-                headers = {"X-Forwarded-For": ip, "X-Real-IP": ip}
-                async with session.get(endpoint, headers=headers) as response:
+                headers = {"X - Forwarded - For": ip, "X - Real - IP": ip}
+                async with session.get(endpoint, headers = headers) as response:
                     results["attempts"].append(
                         {
                             "ip": ip,
-                            "status": response.status,
-                            "headers": dict(response.headers),
-                        }
+                                "status": response.status,
+                                "headers": dict(response.headers),
+                                }
                     )
             except Exception as e:
                 results["attempts"].append({"ip": ip, "error": str(e)})
@@ -815,10 +832,11 @@ class APISecurityCompliance:
 
         return results
 
+
     async def test_user_based_limiting(
         self, session: aiohttp.ClientSession, endpoint: str
     ) -> Dict[str, Any]:
-        """Test user-based rate limiting"""
+        """Test user - based rate limiting"""
         results = {"effective": False, "test_users": [], "different_limits": False}
 
         # Test with different user tokens (if available)
@@ -832,7 +850,7 @@ class APISecurityCompliance:
             # Send multiple requests for this user
             for i in range(20):
                 try:
-                    async with session.get(endpoint, headers=headers) as response:
+                    async with session.get(endpoint, headers = headers) as response:
                         user_results["requests"].append(
                             {"request": i + 1, "status": response.status}
                         )
@@ -858,18 +876,19 @@ class APISecurityCompliance:
 
         return results
 
+
     async def assess_data_privacy(self, api_config: Dict[str, Any]) -> Dict[str, Any]:
         """Assess data privacy and protection measures"""
         analysis = {
             "score": 0,
-            "privacy_policy": {"exists": False, "url": None},
-            "data_collection": {"minimal": False, "disclosed": False},
-            "user_rights": {"access": False, "deletion": False, "portability": False},
-            "consent_management": {"implemented": False, "granular": False},
-            "data_retention": {"policy_exists": False, "automated_deletion": False},
-            "third_party_sharing": {"disclosed": False, "controlled": False},
-            "recommendations": [],
-        }
+                "privacy_policy": {"exists": False, "url": None},
+                "data_collection": {"minimal": False, "disclosed": False},
+                "user_rights": {"access": False, "deletion": False, "portability": False},
+                "consent_management": {"implemented": False, "granular": False},
+                "data_retention": {"policy_exists": False, "automated_deletion": False},
+                "third_party_sharing": {"disclosed": False, "controlled": False},
+                "recommendations": [],
+                }
 
         base_url = api_config.get("base_url", "")
 
@@ -881,10 +900,10 @@ class APISecurityCompliance:
 
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=30)
+                timeout = aiohttp.ClientTimeout(total = 30)
             ) as session:
                 # Check for privacy policy
-                privacy_urls = ["/privacy", "/privacy-policy", "/legal/privacy"]
+                privacy_urls = ["/privacy", "/privacy - policy", "/legal / privacy"]
                 for url in privacy_urls:
                     try:
                         full_url = urljoin(base_url, url)
@@ -899,10 +918,10 @@ class APISecurityCompliance:
 
                 # Check for data subject rights endpoints
                 rights_endpoints = {
-                    "access": ["/api/data-access", "/api/user/data"],
-                    "deletion": ["/api/delete-account", "/api/user/delete"],
-                    "portability": ["/api/export-data", "/api/user/export"],
-                }
+                    "access": ["/api / data - access", "/api / user / data"],
+                        "deletion": ["/api / delete - account", "/api / user / delete"],
+                        "portability": ["/api / export - data", "/api / user / export"],
+                        }
 
                 for right, endpoints in rights_endpoints.items():
                     for endpoint in endpoints:
@@ -911,9 +930,9 @@ class APISecurityCompliance:
                             async with session.get(full_url) as response:
                                 if response.status in [
                                     200,
-                                    401,
-                                    403,
-                                ]:  # Endpoint exists
+                                        401,
+                                        403,
+                                        ]:  # Endpoint exists
                                     analysis["user_rights"][right] = True
                                     analysis["score"] += 15
                                     break
@@ -921,7 +940,7 @@ class APISecurityCompliance:
                             continue
 
                 # Check for consent management
-                consent_endpoints = ["/api/consent", "/api/preferences"]
+                consent_endpoints = ["/api / consent", "/api / preferences"]
                 for endpoint in consent_endpoints:
                     try:
                         full_url = urljoin(base_url, endpoint)
@@ -955,16 +974,17 @@ class APISecurityCompliance:
 
         return analysis
 
+
     async def conduct_penetration_test(
         self, api_config: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Conduct basic penetration testing"""
         analysis = {
             "score": 100,
-            "vulnerabilities_found": [],
-            "tests_conducted": [],
-            "recommendations": [],
-        }
+                "vulnerabilities_found": [],
+                "tests_conducted": [],
+                "recommendations": [],
+                }
 
         base_url = api_config.get("base_url", "")
 
@@ -976,7 +996,7 @@ class APISecurityCompliance:
 
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=30)
+                timeout = aiohttp.ClientTimeout(total = 30)
             ) as session:
                 # Test each vulnerability category
                 for category, payloads in self.security_config[
@@ -1017,24 +1037,25 @@ class APISecurityCompliance:
 
         return analysis
 
+
     async def test_vulnerability_category(
         self,
-        session: aiohttp.ClientSession,
-        base_url: str,
-        category: str,
-        payloads: List[str],
-    ) -> Dict[str, Any]:
+            session: aiohttp.ClientSession,
+            base_url: str,
+            category: str,
+            payloads: List[str],
+            ) -> Dict[str, Any]:
         """Test a specific vulnerability category"""
         result = {
             "category": category,
-            "vulnerable": False,
-            "vulnerabilities": [],
-            "score_impact": 0,
-            "tested_endpoints": [],
-        }
+                "vulnerable": False,
+                "vulnerabilities": [],
+                "score_impact": 0,
+                "tested_endpoints": [],
+                }
 
         # Common test endpoints
-        test_endpoints = ["/api/search", "/api/user", "/api/data", "/login"]
+        test_endpoints = ["/api / search", "/api / user", "/api / data", "/login"]
 
         for endpoint in test_endpoints:
             for payload in payloads:
@@ -1045,7 +1066,7 @@ class APISecurityCompliance:
                     test_cases = [
                         {"params": {"q": payload}},  # Query parameter
                         {"json": {"input": payload}},  # JSON body
-                        {"headers": {"X-Test": payload}},  # Header
+                        {"headers": {"X - Test": payload}},  # Header
                     ]
 
                     for test_case in test_cases:
@@ -1058,10 +1079,10 @@ class APISecurityCompliance:
                             ):
                                 vulnerability = {
                                     "endpoint": endpoint,
-                                    "payload": payload,
-                                    "injection_point": list(test_case.keys())[0],
-                                    "response_status": response.status,
-                                    "evidence": response_text[:200],  # First 200 chars
+                                        "payload": payload,
+                                        "injection_point": list(test_case.keys())[0],
+                                        "response_status": response.status,
+                                        "evidence": response_text[:200],  # First 200 chars
                                 }
 
                                 result["vulnerabilities"].append(vulnerability)
@@ -1077,13 +1098,14 @@ class APISecurityCompliance:
 
         return result
 
+
     def is_vulnerable_response(
         self,
-        category: str,
-        payload: str,
-        response: aiohttp.ClientResponse,
-        response_text: str,
-    ) -> bool:
+            category: str,
+            payload: str,
+            response: aiohttp.ClientResponse,
+            response_text: str,
+            ) -> bool:
         """Check if response indicates vulnerability"""
         if category == "sql_injection":
             # Look for SQL error messages
@@ -1103,7 +1125,7 @@ class APISecurityCompliance:
 
         elif category == "path_traversal":
             # Look for file contents
-            file_indicators = ["root:x:", "[boot loader]", "etc/passwd"]
+            file_indicators = ["root:x:", "[boot loader]", "etc / passwd"]
             return any(
                 indicator in response_text.lower() for indicator in file_indicators
             )
@@ -1115,16 +1137,18 @@ class APISecurityCompliance:
 
         return False
 
+
     def get_vulnerability_impact(self, category: str) -> int:
         """Get score impact for vulnerability category"""
         impacts = {
             "sql_injection": 30,
-            "xss": 20,
-            "command_injection": 35,
-            "path_traversal": 25,
-            "ldap_injection": 20,
-        }
+                "xss": 20,
+                "command_injection": 35,
+                "path_traversal": 25,
+                "ldap_injection": 20,
+                }
         return impacts.get(category, 15)
+
 
     async def validate_compliance(
         self, api_config: Dict[str, Any]
@@ -1142,18 +1166,19 @@ class APISecurityCompliance:
 
                 compliance_results.append(
                     ComplianceRequirement(
-                        regulation=framework_name,
-                        requirement_id=req_id,
-                        description=req_description,
-                        status=status["status"],
-                        evidence=status["evidence"],
-                        remediation_steps=status["remediation_steps"],
-                        deadline=status.get("deadline"),
-                        risk_level=status["risk_level"],
-                    )
+                        regulation = framework_name,
+                            requirement_id = req_id,
+                            description = req_description,
+                            status = status["status"],
+                            evidence = status["evidence"],
+                            remediation_steps = status["remediation_steps"],
+                            deadline = status.get("deadline"),
+                            risk_level = status["risk_level"],
+                            )
                 )
 
         return compliance_results
+
 
     async def assess_compliance_requirement(
         self, api_config: Dict[str, Any], framework: str, req_id: str, description: str
@@ -1162,12 +1187,12 @@ class APISecurityCompliance:
         # This is a simplified assessment - in practice, this would be much more detailed
         assessment = {
             "status": "unknown",
-            "evidence": [],
-            "remediation_steps": [],
-            "risk_level": "medium",
-        }
+                "evidence": [],
+                "remediation_steps": [],
+                "risk_level": "medium",
+                }
 
-        # GDPR-specific assessments
+        # GDPR - specific assessments
         if framework == "GDPR":
             if req_id == "data_minimization":
                 # Check if API collects minimal data
@@ -1195,7 +1220,7 @@ class APISecurityCompliance:
                         "Implement consent management system"
                     )
 
-        # SOC2-specific assessments
+        # SOC2 - specific assessments
         elif framework == "SOC2":
             if req_id == "security_controls":
                 # Check security score
@@ -1209,19 +1234,20 @@ class APISecurityCompliance:
                     assessment["status"] = "partial"
                     assessment["remediation_steps"].append("Improve security controls")
 
-        # PCI DSS-specific assessments
+        # PCI DSS - specific assessments
         elif framework == "PCI_DSS":
             if req_id == "data_transmission":
-                # Check SSL/TLS
+                # Check SSL / TLS
                 if api_config.get("ssl_enabled", False):
                     assessment["status"] = "compliant"
-                    assessment["evidence"].append("SSL/TLS encryption enabled")
+                    assessment["evidence"].append("SSL / TLS encryption enabled")
                 else:
                     assessment["status"] = "non_compliant"
-                    assessment["remediation_steps"].append("Enable SSL/TLS encryption")
+                    assessment["remediation_steps"].append("Enable SSL / TLS encryption")
                     assessment["risk_level"] = "high"
 
         return assessment
+
 
     async def assess_vulnerabilities(
         self, api_config: Dict[str, Any]
@@ -1237,14 +1263,14 @@ class APISecurityCompliance:
             vulnerabilities.append(
                 SecurityVulnerability(
                     severity="high",
-                    category="authentication",
-                    description="No authentication mechanism configured",
-                    recommendation="Implement strong authentication (OAuth2, JWT, API keys)",
-                    cve_id=None,
-                    affected_endpoints=["all"],
-                    remediation_effort="medium",
-                    compliance_impact=["GDPR", "SOC2", "HIPAA"],
-                )
+                        category="authentication",
+                        description="No authentication mechanism configured",
+                        recommendation="Implement strong authentication (OAuth2, JWT, API keys)",
+                        cve_id = None,
+                        affected_endpoints=["all"],
+                        remediation_effort="medium",
+                        compliance_impact=["GDPR", "SOC2", "HIPAA"],
+                        )
             )
 
         # 2. Missing HTTPS
@@ -1253,14 +1279,14 @@ class APISecurityCompliance:
             vulnerabilities.append(
                 SecurityVulnerability(
                     severity="high",
-                    category="encryption",
-                    description="API does not use HTTPS encryption",
-                    recommendation="Enable HTTPS/SSL encryption for all endpoints",
-                    cve_id=None,
-                    affected_endpoints=["all"],
-                    remediation_effort="low",
-                    compliance_impact=["PCI_DSS", "HIPAA", "SOC2"],
-                )
+                        category="encryption",
+                        description="API does not use HTTPS encryption",
+                        recommendation="Enable HTTPS / SSL encryption for all endpoints",
+                        cve_id = None,
+                        affected_endpoints=["all"],
+                        remediation_effort="low",
+                        compliance_impact=["PCI_DSS", "HIPAA", "SOC2"],
+                        )
             )
 
         # 3. No rate limiting
@@ -1269,14 +1295,14 @@ class APISecurityCompliance:
             vulnerabilities.append(
                 SecurityVulnerability(
                     severity="medium",
-                    category="availability",
-                    description="No rate limiting configured",
-                    recommendation="Implement rate limiting to prevent abuse and DoS attacks",
-                    cve_id=None,
-                    affected_endpoints=["all"],
-                    remediation_effort="medium",
-                    compliance_impact=["SOC2"],
-                )
+                        category="availability",
+                        description="No rate limiting configured",
+                        recommendation="Implement rate limiting to prevent abuse and DoS attacks",
+                        cve_id = None,
+                        affected_endpoints=["all"],
+                        remediation_effort="medium",
+                        compliance_impact=["SOC2"],
+                        )
             )
 
         # 4. Weak API key format
@@ -1285,17 +1311,18 @@ class APISecurityCompliance:
             vulnerabilities.append(
                 SecurityVulnerability(
                     severity="medium",
-                    category="authentication",
-                    description="API keys may be too short or predictable",
-                    recommendation="Use cryptographically secure, long API keys (32+ characters)",
-                    cve_id=None,
-                    affected_endpoints=["authenticated"],
-                    remediation_effort="low",
-                    compliance_impact=["SOC2"],
-                )
+                        category="authentication",
+                        description="API keys may be too short or predictable",
+                        recommendation="Use cryptographically secure, long API keys (32+ characters)",
+                        cve_id = None,
+                        affected_endpoints=["authenticated"],
+                        remediation_effort="low",
+                        compliance_impact=["SOC2"],
+                        )
             )
 
         return vulnerabilities
+
 
     def calculate_security_score(self, result: SecurityTestResult) -> float:
         """Calculate overall security score"""
@@ -1337,6 +1364,7 @@ class APISecurityCompliance:
 
         return max(0, min(100, total_score))
 
+
     def calculate_security_grade(self, score: float) -> str:
         """Calculate security grade based on score"""
         if score >= 95:
@@ -1362,13 +1390,14 @@ class APISecurityCompliance:
         else:
             return "F"
 
+
     def generate_security_recommendations(
         self, result: SecurityTestResult
     ) -> List[str]:
         """Generate security recommendations based on test results"""
         recommendations = []
 
-        # SSL/TLS recommendations
+        # SSL / TLS recommendations
         ssl_issues = result.ssl_certificate.get("issues", [])
         if ssl_issues:
             recommendations.extend(result.ssl_certificate.get("recommendations", []))
@@ -1392,7 +1421,7 @@ class APISecurityCompliance:
         pentest_recommendations = result.penetration_test.get("recommendations", [])
         recommendations.extend(pentest_recommendations)
 
-        # Vulnerability-based recommendations
+        # Vulnerability - based recommendations
         for vuln in result.vulnerabilities:
             recommendations.append(vuln.recommendation)
 
@@ -1404,6 +1433,7 @@ class APISecurityCompliance:
         # Remove duplicates and return
         return list(set(recommendations))
 
+
     async def save_security_result(self, result: SecurityTestResult):
         """Save security test result to disk"""
         result_file = self.results_dir / f"{result.api_key}_security_result.json"
@@ -1413,12 +1443,13 @@ class APISecurityCompliance:
             result_dict = asdict(result)
 
             with open(result_file, "w") as f:
-                json.dump(result_dict, f, indent=2, default=str)
+                json.dump(result_dict, f, indent = 2, default = str)
 
             logger.info(f"Saved security result for {result.api_key}")
 
         except Exception as e:
             logger.error(f"Failed to save security result for {result.api_key}: {e}")
+
 
     async def generate_compliance_report(
         self, apis: List[str] = None
@@ -1429,13 +1460,13 @@ class APISecurityCompliance:
 
         report = {
             "generated_at": datetime.now().isoformat(),
-            "apis_assessed": len(apis),
-            "overall_compliance": {},
-            "framework_compliance": {},
-            "critical_issues": [],
-            "recommendations": [],
-            "api_details": {},
-        }
+                "apis_assessed": len(apis),
+                "overall_compliance": {},
+                "framework_compliance": {},
+                "critical_issues": [],
+                "recommendations": [],
+                "api_details": {},
+                }
 
         # Analyze compliance across all APIs
         framework_stats = {}
@@ -1447,14 +1478,14 @@ class APISecurityCompliance:
             result = self.security_results[api_key]
             report["api_details"][api_key] = {
                 "security_grade": result.security_grade,
-                "overall_score": result.overall_score,
-                "critical_vulnerabilities": len(
+                    "overall_score": result.overall_score,
+                    "critical_vulnerabilities": len(
                     [v for v in result.vulnerabilities if v.severity == "critical"]
                 ),
-                "compliance_issues": len(
+                    "compliance_issues": len(
                     [c for c in result.compliance_status if c.status == "non_compliant"]
                 ),
-            }
+                    }
 
             # Aggregate framework compliance
             for compliance in result.compliance_status:
@@ -1462,11 +1493,11 @@ class APISecurityCompliance:
                 if framework not in framework_stats:
                     framework_stats[framework] = {
                         "total_requirements": 0,
-                        "compliant": 0,
-                        "non_compliant": 0,
-                        "partial": 0,
-                        "unknown": 0,
-                    }
+                            "compliant": 0,
+                            "non_compliant": 0,
+                            "partial": 0,
+                            "unknown": 0,
+                            }
 
                 framework_stats[framework]["total_requirements"] += 1
                 framework_stats[framework][compliance.status] += 1
@@ -1477,9 +1508,9 @@ class APISecurityCompliance:
                     report["critical_issues"].append(
                         {
                             "api": api_key,
-                            "vulnerability": vuln.description,
-                            "recommendation": vuln.recommendation,
-                        }
+                                "vulnerability": vuln.description,
+                                "recommendation": vuln.recommendation,
+                                }
                     )
 
         # Calculate framework compliance percentages
@@ -1491,13 +1522,13 @@ class APISecurityCompliance:
             )
             report["framework_compliance"][framework] = {
                 "compliance_rate": compliance_rate,
-                "status": (
+                    "status": (
                     "compliant"
                     if compliance_rate >= 90
                     else "partial" if compliance_rate >= 70 else "non_compliant"
                 ),
-                **stats,
-            }
+                    **stats,
+                    }
 
         # Overall compliance score
         if framework_stats:
@@ -1506,12 +1537,12 @@ class APISecurityCompliance:
             ) / len(report["framework_compliance"])
             report["overall_compliance"] = {
                 "rate": overall_compliance_rate,
-                "status": (
+                    "status": (
                     "compliant"
                     if overall_compliance_rate >= 90
                     else "partial" if overall_compliance_rate >= 70 else "non_compliant"
                 ),
-            }
+                    }
 
         # Generate top recommendations
         all_recommendations = []
@@ -1528,10 +1559,11 @@ class APISecurityCompliance:
 
         # Top 10 most common recommendations
         report["recommendations"] = sorted(
-            recommendation_counts.items(), key=lambda x: x[1], reverse=True
+            recommendation_counts.items(), key = lambda x: x[1], reverse = True
         )[:10]
 
         return report
+
 
     async def scan_all_apis(
         self, parallel: bool = True, max_workers: int = 5
@@ -1547,6 +1579,7 @@ class APISecurityCompliance:
             # Parallel scanning
             semaphore = asyncio.Semaphore(max_workers)
 
+
             async def scan_with_semaphore(api_key, config):
                 async with semaphore:
                     return await self.scan_api_security(api_key, asdict(config))
@@ -1557,7 +1590,7 @@ class APISecurityCompliance:
                 if config.is_configured
             ]
 
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions = True)
 
             # Process results
             for i, result in enumerate(results):
@@ -1579,6 +1612,7 @@ class APISecurityCompliance:
 
         return self.security_results
 
+
     def interactive_menu(self):
         """Interactive security and compliance management menu"""
         while True:
@@ -1595,7 +1629,7 @@ class APISecurityCompliance:
             print("9. ⚙️  Configure security settings")
             print("10. ❌ Exit")
 
-            choice = input("\nSelect option (1-10): ").strip()
+            choice = input("\nSelect option (1 - 10): ").strip()
 
             if choice == "1":
                 asyncio.run(self.interactive_scan_single_api())
@@ -1620,6 +1654,7 @@ class APISecurityCompliance:
                 break
             else:
                 print("❌ Invalid choice. Please try again.")
+
 
     async def interactive_scan_single_api(self):
         """Interactive single API security scan"""
@@ -1661,16 +1696,17 @@ class APISecurityCompliance:
         except ValueError:
             print("❌ Invalid input")
 
+
     async def interactive_scan_all_apis(self):
         """Interactive all APIs security scan"""
         print("\n🔍 Scanning all configured APIs...")
 
-        parallel = input("Use parallel scanning? (y/n): ").lower().startswith("y")
+        parallel = input("Use parallel scanning? (y / n): ").lower().startswith("y")
 
         if parallel:
             try:
                 max_workers = int(
-                    input("Max parallel workers (1-10, default 5): ") or "5"
+                    input("Max parallel workers (1 - 10, default 5): ") or "5"
                 )
                 max_workers = max(1, min(10, max_workers))
             except ValueError:
@@ -1678,7 +1714,7 @@ class APISecurityCompliance:
         else:
             max_workers = 1
 
-        results = await self.scan_all_apis(parallel=parallel, max_workers=max_workers)
+        results = await self.scan_all_apis(parallel = parallel, max_workers = max_workers)
 
         print(f"\n✅ Scan completed! Processed {len(results)} APIs")
 
@@ -1692,8 +1728,9 @@ class APISecurityCompliance:
 
         print(f"Average Security Score: {avg_score:.1f}/100")
         print(
-            f"Grade Distribution: {dict(zip(*np.unique(grades, return_counts=True))) if grades else 'None'}"
+            f"Grade Distribution: {dict(zip(*np.unique(grades, return_counts = True))) if grades else 'None'}"
         )
+
 
     def show_security_results(self):
         """Display security scan results"""
@@ -1716,6 +1753,7 @@ class APISecurityCompliance:
             ]
             if critical_vulns:
                 print(f"   ⚠️  Critical Issues: {len(critical_vulns)}")
+
 
     async def interactive_compliance_report(self):
         """Interactive compliance report generation"""
@@ -1753,9 +1791,10 @@ class APISecurityCompliance:
             / f"compliance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         )
         with open(report_file, "w") as f:
-            json.dump(report, f, indent=2, default=str)
+            json.dump(report, f, indent = 2, default = str)
 
         print(f"\n💾 Report saved to: {report_file}")
+
 
     def show_vulnerabilities(self):
         """Display vulnerability summary"""
@@ -1791,6 +1830,7 @@ class APISecurityCompliance:
             for api_key, vuln in critical_vulns[:10]:  # Show first 10
                 print(f"   • {api_key}: {vuln.description}")
 
+
     def show_compliance_status(self):
         """Display compliance status summary"""
         if not self.security_results:
@@ -1808,10 +1848,10 @@ class APISecurityCompliance:
                 if framework not in framework_stats:
                     framework_stats[framework] = {
                         "compliant": 0,
-                        "non_compliant": 0,
-                        "partial": 0,
-                        "total": 0,
-                    }
+                            "non_compliant": 0,
+                            "partial": 0,
+                            "total": 0,
+                            }
 
                 framework_stats[framework][compliance.status] += 1
                 framework_stats[framework]["total"] += 1
@@ -1829,8 +1869,9 @@ class APISecurityCompliance:
             print(f"\n{status_emoji} {framework}")
             print(f"   Compliance Rate: {compliance_rate:.1f}%")
             print(f"   Compliant: {stats['compliant']}/{stats['total']}")
-            print(f"   Non-Compliant: {stats['non_compliant']}")
+            print(f"   Non - Compliant: {stats['non_compliant']}")
             print(f"   Partial: {stats['partial']}")
+
 
     def show_security_recommendations(self):
         """Display security recommendations"""
@@ -1852,12 +1893,13 @@ class APISecurityCompliance:
 
         # Sort by frequency
         sorted_recommendations = sorted(
-            recommendation_counts.items(), key=lambda x: x[1], reverse=True
+            recommendation_counts.items(), key = lambda x: x[1], reverse = True
         )
 
         print(f"Top {min(15, len(sorted_recommendations))} Recommendations:")
         for i, (recommendation, count) in enumerate(sorted_recommendations[:15], 1):
             print(f"{i:2d}. {recommendation} (affects {count} APIs)")
+
 
     async def interactive_export_report(self):
         """Interactive security report export"""
@@ -1870,7 +1912,7 @@ class APISecurityCompliance:
         print("2. CSV format")
         print("3. HTML format")
 
-        choice = input("Select format (1-3): ").strip()
+        choice = input("Select format (1 - 3): ").strip()
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -1883,31 +1925,33 @@ class APISecurityCompliance:
         else:
             print("❌ Invalid choice")
 
+
     async def export_json_report(self, timestamp: str):
         """Export security report in JSON format"""
         report_data = {
             "generated_at": datetime.now().isoformat(),
-            "summary": {
+                "summary": {
                 "total_apis": len(self.security_results),
-                "average_score": sum(
+                    "average_score": sum(
                     r.overall_score for r in self.security_results.values()
                 )
                 / len(self.security_results),
-                "total_vulnerabilities": sum(
+                    "total_vulnerabilities": sum(
                     len(r.vulnerabilities) for r in self.security_results.values()
                 ),
-            },
-            "results": {
+                    },
+                "results": {
                 api_key: asdict(result)
                 for api_key, result in self.security_results.items()
             },
-        }
+                }
 
         report_file = self.reports_dir / f"security_report_{timestamp}.json"
         with open(report_file, "w") as f:
-            json.dump(report_data, f, indent=2, default=str)
+            json.dump(report_data, f, indent = 2, default = str)
 
         print(f"✅ JSON report exported to: {report_file}")
+
 
     async def export_csv_report(self, timestamp: str):
         """Export security report in CSV format"""
@@ -1922,16 +1966,16 @@ class APISecurityCompliance:
             writer.writerow(
                 [
                     "API Name",
-                    "Security Grade",
-                    "Overall Score",
-                    "Vulnerabilities",
-                    "Critical Vulns",
-                    "High Vulns",
-                    "Medium Vulns",
-                    "Low Vulns",
-                    "Compliance Issues",
-                    "Last Scan",
-                ]
+                        "Security Grade",
+                        "Overall Score",
+                        "Vulnerabilities",
+                        "Critical Vulns",
+                        "High Vulns",
+                        "Medium Vulns",
+                        "Low Vulns",
+                        "Compliance Issues",
+                        "Last Scan",
+                        ]
             )
 
             # Data rows
@@ -1947,19 +1991,20 @@ class APISecurityCompliance:
                 writer.writerow(
                     [
                         api_key,
-                        result.security_grade,
-                        result.overall_score,
-                        len(result.vulnerabilities),
-                        vuln_counts["critical"],
-                        vuln_counts["high"],
-                        vuln_counts["medium"],
-                        vuln_counts["low"],
-                        compliance_issues,
-                        result.test_timestamp[:19],
-                    ]
+                            result.security_grade,
+                            result.overall_score,
+                            len(result.vulnerabilities),
+                            vuln_counts["critical"],
+                            vuln_counts["high"],
+                            vuln_counts["medium"],
+                            vuln_counts["low"],
+                            compliance_issues,
+                            result.test_timestamp[:19],
+                            ]
                 )
 
         print(f"✅ CSV report exported to: {report_file}")
+
 
     async def export_html_report(self, timestamp: str):
         """Export security report in HTML format"""
@@ -1971,41 +2016,42 @@ class APISecurityCompliance:
 
         print(f"✅ HTML report exported to: {report_file}")
 
+
     def generate_html_report(self) -> str:
         """Generate HTML security report"""
         html = f"""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>API Security & Compliance Report</title>
+    <title > API Security & Compliance Report</title>
     <style>
-        body {{ font-family: Arial, sans-serif; margin: 20px; }}
-        .header {{ background: #2c3e50; color: white; padding: 20px; border-radius: 5px; }}
-        .summary {{ background: #ecf0f1; padding: 15px; margin: 20px 0; border-radius: 5px; }}
-        .api-result {{ border: 1px solid #bdc3c7; margin: 10px 0; padding: 15px; border-radius: 5px; }}
-        .grade-A {{ background: #d5f4e6; }}
-        .grade-B {{ background: #fef9e7; }}
-        .grade-C {{ background: #fdf2e9; }}
-        .grade-D {{ background: #fadbd8; }}
-        .grade-F {{ background: #f8d7da; }}
-        .vulnerability {{ margin: 5px 0; padding: 5px; border-left: 3px solid #e74c3c; }}
-        .critical {{ border-left-color: #c0392b; background: #fadbd8; }}
-        .high {{ border-left-color: #e67e22; background: #fdeaa7; }}
-        .medium {{ border-left-color: #f39c12; background: #fcf3cf; }}
-        .low {{ border-left-color: #27ae60; background: #d5f4e6; }}
+        body {{ font - family: Arial, sans - serif; margin: 20px; }}
+        .header {{ background: #2c3e50; color: white; padding: 20px; border - radius: 5px; }}
+        .summary {{ background: #ecf0f1; padding: 15px; margin: 20px 0; border - radius: 5px; }}
+        .api - result {{ border: 1px solid #bdc3c7; margin: 10px 0; padding: 15px; border - radius: 5px; }}
+        .grade - A {{ background: #d5f4e6; }}
+        .grade - B {{ background: #fef9e7; }}
+        .grade - C {{ background: #fdf2e9; }}
+        .grade - D {{ background: #fadbd8; }}
+        .grade - F {{ background: #f8d7da; }}
+        .vulnerability {{ margin: 5px 0; padding: 5px; border - left: 3px solid #e74c3c; }}
+        .critical {{ border - left - color: #c0392b; background: #fadbd8; }}
+        .high {{ border - left - color: #e67e22; background: #fdeaa7; }}
+        .medium {{ border - left - color: #f39c12; background: #fcf3cf; }}
+        .low {{ border - left - color: #27ae60; background: #d5f4e6; }}
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🔒 API Security & Compliance Report</h1>
-        <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        <p > Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
     </div>
-    
+
     <div class="summary">
         <h2>📊 Summary</h2>
-        <p><strong>Total APIs:</strong> {len(self.security_results)}</p>
-        <p><strong>Average Score:</strong> {sum(r.overall_score for r in self.security_results.values()) / len(self.security_results):.1f}/100</p>
-        <p><strong>Total Vulnerabilities:</strong> {sum(len(r.vulnerabilities) for r in self.security_results.values())}</p>
+        <p><strong > Total APIs:</strong> {len(self.security_results)}</p>
+        <p><strong > Average Score:</strong> {sum(r.overall_score for r in self.security_results.values()) / len(self.security_results):.1f}/100</p>
+        <p><strong > Total Vulnerabilities:</strong> {sum(len(r.vulnerabilities) for r in self.security_results.values())}</p>
     </div>
 """
 
@@ -2013,11 +2059,11 @@ class APISecurityCompliance:
             grade_class = f"grade-{result.security_grade[0]}"
 
             html += f"""
-    <div class="api-result {grade_class}">
+    <div class="api - result {grade_class}">
         <h3>🔧 {api_key}</h3>
-        <p><strong>Security Grade:</strong> {result.security_grade} ({result.overall_score:.1f}/100)</p>
-        <p><strong>Last Scan:</strong> {result.test_timestamp[:19]}</p>
-        
+        <p><strong > Security Grade:</strong> {result.security_grade} ({result.overall_score:.1f}/100)</p>
+        <p><strong > Last Scan:</strong> {result.test_timestamp[:19]}</p>
+
         <h4>🛡️ Vulnerabilities ({len(result.vulnerabilities)})</h4>
 """
 
@@ -2032,6 +2078,7 @@ class APISecurityCompliance:
 """
 
         return html
+
 
     def configure_security_settings(self):
         """Configure security testing settings"""
@@ -2073,7 +2120,7 @@ def main():
     if len(sys.argv) > 1:
         command = sys.argv[1].lower()
 
-        if command == "scan-all":
+        if command == "scan - all":
             asyncio.run(validator.scan_all_apis())
         elif command == "report":
             asyncio.run(validator.generate_compliance_report())
@@ -2081,10 +2128,9 @@ def main():
             validator.interactive_menu()
         else:
             print(f"Unknown command: {command}")
-            print("Available commands: scan-all, report, interactive")
+            print("Available commands: scan - all, report, interactive")
     else:
         validator.interactive_menu()
-
 
 if __name__ == "__main__":
     main()

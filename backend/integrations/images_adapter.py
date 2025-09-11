@@ -1,4 +1,4 @@
-# backend/integrations/images_adapter.py
+# backend / integrations / images_adapter.py
 import json
 import logging
 import os
@@ -16,7 +16,7 @@ TIMEOUT_S = 15
 def get_active_image_provider() -> Dict:
     """Get the currently active image provider from the registry."""
     try:
-        r = requests.get(f"{BASE}/integrations/active/images", timeout=10)
+        r = requests.get(f"{BASE}/integrations / active / images", timeout = 10)
         r.raise_for_status()
         return r.json()["active"]
     except Exception as e:
@@ -47,10 +47,10 @@ def _get_credentials(provider_key: str) -> Dict[str, str]:
 
 def _report_usage(
     provider_key: str,
-    success: bool,
-    error: Optional[str] = None,
-    took_ms: Optional[int] = None,
-    quota_remaining: Optional[int] = None,
+        success: bool,
+        error: Optional[str] = None,
+        took_ms: Optional[int] = None,
+        quota_remaining: Optional[int] = None,
 ):
     """Report usage metrics to the integrations registry."""
     try:
@@ -60,7 +60,7 @@ def _report_usage(
         if quota_remaining is not None:
             payload["quota_remaining"] = quota_remaining
 
-        requests.post(f"{BASE}/integrations/report", json=payload, timeout=10)
+        requests.post(f"{BASE}/integrations / report", json = payload, timeout = 10)
     except Exception as e:
         logger.warning(f"Failed to report usage for {provider_key}: {e}")
 
@@ -70,16 +70,16 @@ def _fetch_pexels_images(query: str, limit: int, api_key: str) -> Dict[str, Any]
     headers = {"Authorization": api_key}
     params = {
         "query": query,
-        "per_page": min(limit, 80),  # Pexels max is 80
+            "per_page": min(limit, 80),  # Pexels max is 80
         "orientation": "all",
-    }
+            }
 
     resp = http_get_with_backoff(
-        "https://api.pexels.com/v1/search",
-        headers=headers,
-        params=params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.pexels.com / v1 / search",
+            headers = headers,
+            params = params,
+            timeout = TIMEOUT_S,
+            )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -89,43 +89,43 @@ def _fetch_pexels_images(query: str, limit: int, api_key: str) -> Dict[str, Any]
             images.append(
                 {
                     "id": str(photo["id"]),
-                    "url": photo["src"]["large"],
-                    "thumbnail": photo["src"]["medium"],
-                    "title": photo.get("alt", query),
-                    "author": photo["photographer"],
-                    "source": "pexels",
-                    "source_url": photo["url"],
-                }
+                        "url": photo["src"]["large"],
+                        "thumbnail": photo["src"]["medium"],
+                        "title": photo.get("alt", query),
+                        "author": photo["photographer"],
+                        "source": "pexels",
+                        "source_url": photo["url"],
+                        }
             )
 
         return {
             "success": True,
-            "images": images,
-            "total": data.get("total_results", len(images)),
-            "quota_remaining": None,  # Pexels doesn't provide quota info in response
+                "images": images,
+                "total": data.get("total_results", len(images)),
+                "quota_remaining": None,  # Pexels doesn't provide quota info in response
         }
     else:
         return {
             "success": False,
-            "error": f"Pexels API error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"Pexels API error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def _fetch_unsplash_images(query: str, limit: int, access_key: str) -> Dict[str, Any]:
     """Fetch images from Unsplash API."""
-    headers = {"Authorization": f"Client-ID {access_key}"}
+    headers = {"Authorization": f"Client - ID {access_key}"}
     params = {
         "query": query,
-        "per_page": min(limit, 30),  # Unsplash max is 30
+            "per_page": min(limit, 30),  # Unsplash max is 30
         "orientation": "landscape",
-    }
+            }
 
     resp = http_get_with_backoff(
-        "https://api.unsplash.com/search/photos",
-        headers=headers,
-        params=params,
-        timeout=TIMEOUT_S,
-    )
+        "https://api.unsplash.com / search / photos",
+            headers = headers,
+            params = params,
+            timeout = TIMEOUT_S,
+            )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -135,40 +135,40 @@ def _fetch_unsplash_images(query: str, limit: int, access_key: str) -> Dict[str,
             images.append(
                 {
                     "id": photo["id"],
-                    "url": photo["urls"]["regular"],
-                    "thumbnail": photo["urls"]["small"],
-                    "title": photo.get("alt_description", query),
-                    "author": photo["user"]["name"],
-                    "source": "unsplash",
-                    "source_url": photo["links"]["html"],
-                }
+                        "url": photo["urls"]["regular"],
+                        "thumbnail": photo["urls"]["small"],
+                        "title": photo.get("alt_description", query),
+                        "author": photo["user"]["name"],
+                        "source": "unsplash",
+                        "source_url": photo["links"]["html"],
+                        }
             )
 
         return {
             "success": True,
-            "images": images,
-            "total": data.get("total", len(images)),
-            "quota_remaining": None,  # Check rate limit headers if needed
+                "images": images,
+                "total": data.get("total", len(images)),
+                "quota_remaining": None,  # Check rate limit headers if needed
         }
     else:
         return {
             "success": False,
-            "error": f"Unsplash API error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"Unsplash API error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def _fetch_pixabay_images(query: str, limit: int, api_key: str) -> Dict[str, Any]:
     """Fetch images from Pixabay API."""
     params = {
         "key": api_key,
-        "q": query,
-        "per_page": min(limit, 200),  # Pixabay max is 200
+            "q": query,
+            "per_page": min(limit, 200),  # Pixabay max is 200
         "safesearch": "true",
-        "image_type": "photo",
-    }
+            "image_type": "photo",
+            }
 
     resp = http_get_with_backoff(
-        "https://pixabay.com/api/", params=params, timeout=TIMEOUT_S
+        "https://pixabay.com / api/", params = params, timeout = TIMEOUT_S
     )
 
     if resp.status_code == 200:
@@ -179,26 +179,26 @@ def _fetch_pixabay_images(query: str, limit: int, api_key: str) -> Dict[str, Any
             images.append(
                 {
                     "id": str(hit["id"]),
-                    "url": hit["largeImageURL"],
-                    "thumbnail": hit["webformatURL"],
-                    "title": hit.get("tags", query),
-                    "author": hit["user"],
-                    "source": "pixabay",
-                    "source_url": hit["pageURL"],
-                }
+                        "url": hit["largeImageURL"],
+                        "thumbnail": hit["webformatURL"],
+                        "title": hit.get("tags", query),
+                        "author": hit["user"],
+                        "source": "pixabay",
+                        "source_url": hit["pageURL"],
+                        }
             )
 
         return {
             "success": True,
-            "images": images,
-            "total": data.get("totalHits", len(images)),
-            "quota_remaining": None,  # Pixabay doesn't provide quota info
+                "images": images,
+                "total": data.get("totalHits", len(images)),
+                "quota_remaining": None,  # Pixabay doesn't provide quota info
         }
     else:
         return {
             "success": False,
-            "error": f"Pixabay API error: {resp.status_code} - {resp.text[:200]}",
-        }
+                "error": f"Pixabay API error: {resp.status_code} - {resp.text[:200]}",
+                }
 
 
 def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str, Any]:
@@ -219,10 +219,10 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                 error_msg = f"No credentials found for {provider_key}"
                 _report_usage(
                     provider_key,
-                    False,
-                    error_msg,
-                    int((time.time() - start_time) * 1000),
-                )
+                        False,
+                        error_msg,
+                        int((time.time() - start_time) * 1000),
+                        )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -236,8 +236,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
             else:
                 result = {
                     "success": False,
-                    "error": f"No adapter implementation for {provider_key}",
-                }
+                        "error": f"No adapter implementation for {provider_key}",
+                        }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -248,11 +248,11 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                 )
                 return {
                     "provider": provider_key,
-                    "ok": True,
-                    "data": result["images"],
-                    "total": result.get("total", len(result["images"])),
-                    "took_ms": took_ms,
-                }
+                        "ok": True,
+                        "data": result["images"],
+                        "total": result.get("total", len(result["images"])),
+                        "took_ms": took_ms,
+                        }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -263,7 +263,7 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                     try:
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
-                            f"{BASE}/integrations/rotate?category=images", timeout=10
+                            f"{BASE}/integrations / rotate?category = images", timeout = 10
                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
@@ -281,10 +281,10 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                 # Return error if no more retries
                 return {
                     "provider": provider_key,
-                    "ok": False,
-                    "error": error_msg,
-                    "took_ms": took_ms,
-                }
+                        "ok": False,
+                        "error": error_msg,
+                        "took_ms": took_ms,
+                        }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -295,26 +295,27 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
             try:
                 active = get_active_image_provider()
                 _report_usage(active["key"], False, error_msg, took_ms)
-            except:
+            except Exception:
                 pass
 
             return {
                 "provider": "unknown",
-                "ok": False,
-                "error": error_msg,
-                "took_ms": took_ms,
-            }
+                    "ok": False,
+                    "error": error_msg,
+                    "took_ms": took_ms,
+                    }
 
     # Should not reach here
     return {
         "provider": "unknown",
-        "ok": False,
-        "error": "Max retries exceeded",
-        "took_ms": int((time.time() - start_time) * 1000),
-    }
-
+            "ok": False,
+            "error": "Max retries exceeded",
+            "took_ms": int((time.time() - start_time) * 1000),
+            }
 
 # Convenience function for backward compatibility
+
+
 def search_images(query: str, limit: int = 10) -> List[Dict[str, Any]]:
     """Search for images and return just the image list."""
     result = fetch_images(query, limit)

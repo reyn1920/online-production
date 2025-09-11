@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Process Watchdog for TRAE.AI Production
 Monitors critical services and restarts them if they become unresponsive
@@ -22,14 +22,15 @@ import requests
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("watchdog.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("watchdog.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class ServiceConfig:
     """Configuration for a monitored service"""
 
@@ -47,6 +48,7 @@ class ServiceConfig:
 class ProcessWatchdog:
     """Monitors and manages critical processes"""
 
+
     def __init__(self):
         self.services = self._load_service_configs()
         self.service_processes = {}  # service_name -> psutil.Process
@@ -59,34 +61,37 @@ class ProcessWatchdog:
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
+
     def _load_service_configs(self) -> Dict[str, ServiceConfig]:
         """Load service configurations"""
-        base_dir = "/Users/thomasbrianreynolds/online production"
+        base_dir = "/Users / thomasbrianreynolds / online production"
 
         return {
             "minimal_server": ServiceConfig(
                 name="minimal_server",
-                command=["python3", "minimal_server.py"],
-                working_dir=base_dir,
-                health_check_url="http://localhost:8000/health",
-                process_match_pattern="minimal_server.py",
-                critical=True,
-            ),
-            "monitoring_system": ServiceConfig(
+                    command=["python3", "minimal_server.py"],
+                    working_dir = base_dir,
+                    health_check_url="http://localhost:8000 / health",
+                    process_match_pattern="minimal_server.py",
+                    critical = True,
+                    ),
+                "monitoring_system": ServiceConfig(
                 name="monitoring_system",
-                command=["python3", "monitoring_system.py"],
-                working_dir=base_dir,
-                process_match_pattern="monitoring_system.py",
-                critical=False,
-                max_restarts_per_hour=5,
-            ),
-        }
+                    command=["python3", "monitoring_system.py"],
+                    working_dir = base_dir,
+                    process_match_pattern="monitoring_system.py",
+                    critical = False,
+                    max_restarts_per_hour = 5,
+                    ),
+                }
+
 
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals"""
         logger.info(f"🛑 Received signal {signum}, shutting down watchdog...")
         self.shutdown_event.set()
         self.running = False
+
 
     def _find_process_by_pattern(self, pattern: str) -> Optional[psutil.Process]:
         """Find a process by command line pattern"""
@@ -101,6 +106,7 @@ class ProcessWatchdog:
         except Exception as e:
             logger.error(f"Error finding process by pattern '{pattern}': {e}")
         return None
+
 
     def _is_process_running(self, service_name: str) -> bool:
         """Check if a service process is running"""
@@ -127,6 +133,7 @@ class ProcessWatchdog:
 
         return False
 
+
     def _check_service_health(self, service_name: str) -> bool:
         """Check service health via HTTP endpoint"""
         config = self.services[service_name]
@@ -137,11 +144,12 @@ class ProcessWatchdog:
 
         try:
             response = requests.get(
-                config.health_check_url, timeout=config.health_check_timeout
+                config.health_check_url, timeout = config.health_check_timeout
             )
             return response.status_code == 200
         except requests.exceptions.RequestException:
             return False
+
 
     def _can_restart_service(self, service_name: str) -> bool:
         """Check if service can be restarted (not hitting rate limits)"""
@@ -163,6 +171,7 @@ class ProcessWatchdog:
         # Check if we're under the restart limit
         return len(self.restart_history[service_name]) < config.max_restarts_per_hour
 
+
     def _start_service(self, service_name: str) -> bool:
         """Start a service"""
         config = self.services[service_name]
@@ -173,10 +182,10 @@ class ProcessWatchdog:
             # Start the process
             proc = subprocess.Popen(
                 config.command,
-                cwd=config.working_dir,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
+                    cwd = config.working_dir,
+                    stdout = subprocess.PIPE,
+                    stderr = subprocess.PIPE,
+                    )
 
             # Convert to psutil process for better monitoring
             psutil_proc = psutil.Process(proc.pid)
@@ -192,6 +201,7 @@ class ProcessWatchdog:
             logger.error(f"❌ Failed to start service {service_name}: {e}")
             return False
 
+
     def _stop_service(self, service_name: str) -> bool:
         """Stop a service gracefully"""
         try:
@@ -204,12 +214,12 @@ class ProcessWatchdog:
 
                 # Wait for graceful shutdown
                 try:
-                    proc.wait(timeout=10)
+                    proc.wait(timeout = 10)
                 except psutil.TimeoutExpired:
                     # Force kill if graceful shutdown failed
                     logger.warning(f"⚡ Force killing service: {service_name}")
                     proc.kill()
-                    proc.wait(timeout=5)
+                    proc.wait(timeout = 5)
 
                 del self.service_processes[service_name]
                 logger.info(f"✅ Service {service_name} stopped")
@@ -222,7 +232,7 @@ class ProcessWatchdog:
                 if proc:
                     proc.terminate()
                     try:
-                        proc.wait(timeout=10)
+                        proc.wait(timeout = 10)
                     except psutil.TimeoutExpired:
                         proc.kill()
                     return True
@@ -232,6 +242,7 @@ class ProcessWatchdog:
         except Exception as e:
             logger.error(f"❌ Failed to stop service {service_name}: {e}")
             return False
+
 
     def _restart_service(self, service_name: str) -> bool:
         """Restart a service"""
@@ -248,17 +259,18 @@ class ProcessWatchdog:
         # Start the service
         return self._start_service(service_name)
 
+
     def _monitor_service(self, service_name: str) -> Dict[str, Any]:
         """Monitor a single service and take action if needed"""
         config = self.services[service_name]
         status = {
             "service": service_name,
-            "timestamp": datetime.now().isoformat(),
-            "running": False,
-            "healthy": False,
-            "action_taken": None,
-            "restart_count_last_hour": 0,
-        }
+                "timestamp": datetime.now().isoformat(),
+                "running": False,
+                "healthy": False,
+                "action_taken": None,
+                "restart_count_last_hour": 0,
+                }
 
         try:
             # Check if process is running
@@ -307,6 +319,7 @@ class ProcessWatchdog:
 
         return status
 
+
     def start_watchdog(self):
         """Start the watchdog monitoring loop"""
         logger.info("🐕 Starting Process Watchdog...")
@@ -327,8 +340,8 @@ class ProcessWatchdog:
             try:
                 monitoring_report = {
                     "timestamp": datetime.now().isoformat(),
-                    "services": {},
-                }
+                        "services": {},
+                        }
 
                 # Monitor each service
                 for service_name in self.services:
@@ -358,6 +371,7 @@ class ProcessWatchdog:
 
         logger.info("🛑 Process Watchdog stopped")
 
+
     def stop_watchdog(self):
         """Stop the watchdog and all monitored services"""
         logger.info("🛑 Stopping Process Watchdog...")
@@ -368,22 +382,23 @@ class ProcessWatchdog:
         for service_name in self.services:
             self._stop_service(service_name)
 
+
     def get_status(self) -> Dict[str, Any]:
         """Get current status of all services"""
         status = {
             "watchdog_running": self.running,
-            "timestamp": datetime.now().isoformat(),
-            "services": {},
-        }
+                "timestamp": datetime.now().isoformat(),
+                "services": {},
+                }
 
         for service_name in self.services:
             service_status = {
                 "running": self._is_process_running(service_name),
-                "healthy": self._check_service_health(service_name),
-                "restart_count_last_hour": len(
+                    "healthy": self._check_service_health(service_name),
+                    "restart_count_last_hour": len(
                     self.restart_history.get(service_name, [])
                 ),
-            }
+                    }
 
             if service_name in self.service_processes:
                 proc = self.service_processes[service_name]
@@ -409,7 +424,6 @@ def main():
         logger.info("🛑 Watchdog stopped by user")
     finally:
         watchdog.stop_watchdog()
-
 
 if __name__ == "__main__":
     main()

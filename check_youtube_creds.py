@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 
 from backend.secret_store import SecretStore
 
@@ -9,10 +9,10 @@ def check_youtube_credentials():
         store = SecretStore()
         youtube_creds = [
             "YOUTUBE_CLIENT_ID",
-            "YOUTUBE_CLIENT_SECRET",
-            "YOUTUBE_REFRESH_TOKEN",
-            "YOUTUBE_ACCESS_TOKEN",
-        ]
+                "YOUTUBE_CLIENT_SECRET",
+                "YOUTUBE_REFRESH_TOKEN",
+                "YOUTUBE_ACCESS_TOKEN",
+                ]
 
         print("\n🔐 YouTube Credentials Status:")
         print("=" * 40)
@@ -41,7 +41,6 @@ def check_youtube_credentials():
 
     except Exception as e:
         print(f"❌ Error checking credentials: {e}")
-
 
 if __name__ == "__main__":
     check_youtube_credentials()

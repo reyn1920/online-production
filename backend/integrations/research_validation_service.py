@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Research Validation Service
 
 This module provides a service layer that integrates the HypocrisyEngine with
-research agents, enabling automated research validation and fact-checking.
+research agents, enabling automated research validation and fact - checking.
 
 Features:
 - Research claim validation
-- Automated fact-checking integration
-- Evidence cross-referencing
+- Automated fact - checking integration
+- Evidence cross - referencing
 - Content opportunity identification
 - Research quality scoring
 - Validation reporting
@@ -27,7 +27,7 @@ from typing import Any, Dict, List, Optional, Union
 
 try:
     from backend.engines.hypocrisy_engine import (HypocrisyEngine, ResearchClaim,
-                                                  ValidationResult)
+        ValidationResult)
 except ImportError:
     HypocrisyEngine = None
     ValidationResult = None
@@ -42,8 +42,9 @@ except ImportError:
     HypocrisyDatabaseManager = None
     logging.warning("HypocrisyDatabaseManager not available.")
 
-
 @dataclass
+
+
 class ResearchValidationRequest:
     """Request for research validation"""
 
@@ -56,8 +57,9 @@ class ResearchValidationRequest:
     context: Optional[str] = None
     requested_by: Optional[str] = None
 
-
 @dataclass
+
+
 class ResearchValidationResponse:
     """Response from research validation"""
 
@@ -76,6 +78,7 @@ class ResearchValidationResponse:
 
 class ResearchValidationService:
     """Service for validating research claims and detecting inconsistencies"""
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
@@ -103,6 +106,7 @@ class ResearchValidationService:
         # Internal state
         self._validation_cache = {}
         self._active_validations = {}
+
 
     async def validate_research(
         self, request: ResearchValidationRequest
@@ -141,32 +145,32 @@ class ResearchValidationService:
 
             # Create response
             response = ResearchValidationResponse(
-                request_id=request_id,
-                is_valid=validation_result.is_valid if validation_result else False,
-                confidence_score=(
+                request_id = request_id,
+                    is_valid = validation_result.is_valid if validation_result else False,
+                    confidence_score=(
                     validation_result.confidence_score if validation_result else 0.0
                 ),
-                validation_status=(
+                    validation_status=(
                     validation_result.fact_check_status
                     if validation_result
                     else "error"
                 ),
-                contradictions_found=(
+                    contradictions_found=(
                     validation_result.contradictions_found if validation_result else []
                 ),
-                evidence_sources=(
+                    evidence_sources=(
                     validation_result.evidence_sources if validation_result else []
                 ),
-                validation_notes=(
+                    validation_notes=(
                     validation_result.validation_notes
                     if validation_result
                     else "Validation failed"
                 ),
-                recommendations=recommendations,
-                content_opportunities=content_opportunities,
-                processing_time_ms=processing_time,
-                timestamp=datetime.now(),
-            )
+                    recommendations = recommendations,
+                    content_opportunities = content_opportunities,
+                    processing_time_ms = processing_time,
+                    timestamp = datetime.now(),
+                    )
 
             # Cache the result
             if self.cache_results:
@@ -182,18 +186,19 @@ class ResearchValidationService:
             self.logger.error(f"Error in research validation {request_id}: {e}")
 
             return ResearchValidationResponse(
-                request_id=request_id,
-                is_valid=False,
-                confidence_score=0.0,
-                validation_status="error",
-                contradictions_found=[],
-                evidence_sources=[],
-                validation_notes=f"Validation error: {str(e)}",
-                recommendations=["Manual review required due to validation error"],
-                content_opportunities=[],
-                processing_time_ms=processing_time,
-                timestamp=datetime.now(),
-            )
+                request_id = request_id,
+                    is_valid = False,
+                    confidence_score = 0.0,
+                    validation_status="error",
+                    contradictions_found=[],
+                    evidence_sources=[],
+                    validation_notes = f"Validation error: {str(e)}",
+                    recommendations=["Manual review required due to validation error"],
+                    content_opportunities=[],
+                    processing_time_ms = processing_time,
+                    timestamp = datetime.now(),
+                    )
+
 
     async def _perform_validation(
         self, request: ResearchValidationRequest
@@ -206,13 +211,13 @@ class ResearchValidationService:
 
             # Convert request to research claim
             claim = ResearchClaim(
-                claim_text=request.content,
-                source=request.source_url or "unknown",
-                author=request.author,
-                date_published=datetime.now(),
-                topic_tags=[request.topic] if request.topic else [],
-                context=request.context,
-            )
+                claim_text = request.content,
+                    source = request.source_url or "unknown",
+                    author = request.author,
+                    date_published = datetime.now(),
+                    topic_tags=[request.topic] if request.topic else [],
+                    context = request.context,
+                    )
 
             # Validate the claim
             result = await self.hypocrisy_engine.validate_research_claim(claim)
@@ -220,11 +225,11 @@ class ResearchValidationService:
             # If this is a statement from a known person, also check for hypocrisy
             if request.author and request.validation_type == "statement":
                 hypocrisy_finding = await self.hypocrisy_engine.detect_hypocrisy(
-                    subject_name=request.author,
-                    new_statement=request.content,
-                    source=request.source_url or "validation_service",
-                    context=request.context,
-                )
+                    subject_name = request.author,
+                        new_statement = request.content,
+                        source = request.source_url or "validation_service",
+                        context = request.context,
+                        )
 
                 if hypocrisy_finding:
                     self.logger.info(
@@ -234,11 +239,11 @@ class ResearchValidationService:
                     result.contradictions_found.append(
                         {
                             "type": "hypocrisy_detected",
-                            "previous_statement": hypocrisy_finding.statement_1,
-                            "current_statement": hypocrisy_finding.statement_2,
-                            "confidence": hypocrisy_finding.confidence_score,
-                            "severity": hypocrisy_finding.severity_score,
-                        }
+                                "previous_statement": hypocrisy_finding.statement_1,
+                                "current_statement": hypocrisy_finding.statement_2,
+                                "confidence": hypocrisy_finding.confidence_score,
+                                "severity": hypocrisy_finding.severity_score,
+                                }
                     )
 
             return result
@@ -247,18 +252,19 @@ class ResearchValidationService:
             self.logger.error(f"Error performing validation: {e}")
             return None
 
+
     def _generate_recommendations(
         self,
-        request: ResearchValidationRequest,
-        validation_result: Optional[ValidationResult],
-    ) -> List[str]:
+            request: ResearchValidationRequest,
+            validation_result: Optional[ValidationResult],
+            ) -> List[str]:
         """Generate actionable recommendations based on validation results"""
         recommendations = []
 
         try:
             if not validation_result:
                 recommendations.append(
-                    "Manual fact-checking required - automated validation unavailable"
+                    "Manual fact - checking required - automated validation unavailable"
                 )
                 recommendations.append(
                     "Verify claims through multiple independent sources"
@@ -285,21 +291,21 @@ class ResearchValidationService:
                         f"Investigate {len(validation_result.contradictions_found)} contradictions identified"
                     )
 
-                recommendations.append("Consider fact-checking with primary sources")
+                recommendations.append("Consider fact - checking with primary sources")
 
-            # Priority-based recommendations
+            # Priority - based recommendations
             if request.priority == "high":
                 recommendations.append("High priority: Expedite manual review process")
                 recommendations.append(
-                    "Consider real-time fact-checking before publication"
+                    "Consider real - time fact - checking before publication"
                 )
 
-            # Content-type specific recommendations
+            # Content - type specific recommendations
             if request.validation_type == "statement" and request.author:
                 recommendations.append(
-                    f"Cross-reference with {request.author}'s historical statements"
+                    f"Cross - reference with {request.author}'s historical statements"
                 )
-                recommendations.append("Check for context-dependent interpretations")
+                recommendations.append("Check for context - dependent interpretations")
 
             return recommendations
 
@@ -307,11 +313,12 @@ class ResearchValidationService:
             self.logger.error(f"Error generating recommendations: {e}")
             return ["Manual review recommended due to processing error"]
 
+
     async def _find_content_opportunities(
         self,
-        request: ResearchValidationRequest,
-        validation_result: Optional[ValidationResult],
-    ) -> List[Dict[str, Any]]:
+            request: ResearchValidationRequest,
+            validation_result: Optional[ValidationResult],
+            ) -> List[Dict[str, Any]]:
         """Find content creation opportunities based on validation results"""
         opportunities = []
 
@@ -324,40 +331,40 @@ class ResearchValidationService:
                 for contradiction in validation_result.contradictions_found:
                     opportunity = {
                         "type": "contradiction_analysis",
-                        "title": f"Analyzing Contradictory Claims: {request.author or 'Unknown Source'}",
-                        "description": f"Investigation into contradictory statements found during validation",
-                        "confidence": contradiction.get("similarity_score", 0.5),
-                        "potential_impact": "medium",
-                        "content_angle": "fact_check",
-                        "sources": [contradiction.get("source", request.source_url)],
-                        "tags": ["fact-check", "contradiction", "research"],
-                    }
+                            "title": f"Analyzing Contradictory Claims: {request.author or 'Unknown Source'}",
+                            "description": f"Investigation into contradictory statements found during validation",
+                            "confidence": contradiction.get("similarity_score", 0.5),
+                            "potential_impact": "medium",
+                            "content_angle": "fact_check",
+                            "sources": [contradiction.get("source", request.source_url)],
+                            "tags": ["fact - check", "contradiction", "research"],
+                            }
                     opportunities.append(opportunity)
 
             # Get general content opportunities from hypocrisy engine
             if request.author:
                 engine_opportunities = self.hypocrisy_engine.get_content_opportunities(
-                    limit=5, min_confidence=0.6
+                    limit = 5, min_confidence = 0.6
                 )
 
                 for opp in engine_opportunities:
                     if opp.get("subject_name") == request.author:
                         content_opp = {
                             "type": "hypocrisy_expose",
-                            "title": f"Exposing Inconsistencies: {request.author}",
-                            "description": opp.get(
+                                "title": f"Exposing Inconsistencies: {request.author}",
+                                "description": opp.get(
                                 "analysis_notes", "Hypocrisy analysis"
                             ),
-                            "confidence": opp.get("confidence_score", 0.5),
-                            "potential_impact": (
+                                "confidence": opp.get("confidence_score", 0.5),
+                                "potential_impact": (
                                 "high"
                                 if opp.get("public_impact_score", 5) > 7
                                 else "medium"
                             ),
-                            "content_angle": "investigative",
-                            "sources": opp.get("evidence_links", []),
-                            "tags": ["hypocrisy", "investigation", "politics"],
-                        }
+                                "content_angle": "investigative",
+                                "sources": opp.get("evidence_links", []),
+                                "tags": ["hypocrisy", "investigation", "politics"],
+                                }
                         opportunities.append(content_opp)
 
             return opportunities[:3]  # Return top 3 opportunities
@@ -365,6 +372,7 @@ class ResearchValidationService:
         except Exception as e:
             self.logger.error(f"Error finding content opportunities: {e}")
             return []
+
 
     def _get_cached_result(
         self, request: ResearchValidationRequest
@@ -377,7 +385,7 @@ class ResearchValidationService:
                 cached_entry = self._validation_cache[cache_key]
 
                 # Check if cache entry is still valid (1 hour expiry)
-                if datetime.now() - cached_entry["timestamp"] < timedelta(hours=1):
+                if datetime.now() - cached_entry["timestamp"] < timedelta(hours = 1):
                     return cached_entry["result"]
                 else:
                     # Remove expired entry
@@ -389,6 +397,7 @@ class ResearchValidationService:
             self.logger.error(f"Error getting cached result: {e}")
             return None
 
+
     def _cache_result(
         self, request: ResearchValidationRequest, response: ResearchValidationResponse
     ) -> None:
@@ -398,14 +407,14 @@ class ResearchValidationService:
 
             self._validation_cache[cache_key] = {
                 "result": response,
-                "timestamp": datetime.now(),
-            }
+                    "timestamp": datetime.now(),
+                    }
 
             # Clean up old cache entries (keep max 100 entries)
             if len(self._validation_cache) > 100:
                 # Remove oldest entries
                 sorted_entries = sorted(
-                    self._validation_cache.items(), key=lambda x: x[1]["timestamp"]
+                    self._validation_cache.items(), key = lambda x: x[1]["timestamp"]
                 )
 
                 for key, _ in sorted_entries[:20]:  # Remove oldest 20
@@ -414,22 +423,24 @@ class ResearchValidationService:
         except Exception as e:
             self.logger.error(f"Error caching result: {e}")
 
+
     def _generate_cache_key(self, request: ResearchValidationRequest) -> str:
         """Generate cache key for validation request"""
         try:
-            # Create a hash-like key based on request content
+            # Create a hash - like key based on request content
             key_components = [
                 request.content[:200],  # First 200 chars of content
                 request.author or "unknown",
-                request.validation_type,
-                request.source_url or "no_source",
-            ]
+                    request.validation_type,
+                    request.source_url or "no_source",
+                    ]
 
             return "|".join(key_components).replace(" ", "_").lower()
 
         except Exception as e:
             self.logger.error(f"Error generating cache key: {e}")
             return f"error_key_{datetime.now().timestamp()}"
+
 
     async def batch_validate(
         self, requests: List[ResearchValidationRequest]
@@ -441,13 +452,14 @@ class ResearchValidationService:
             # Limit concurrent validations
             semaphore = asyncio.Semaphore(self.max_concurrent_validations)
 
+
             async def validate_with_semaphore(request):
                 async with semaphore:
                     return await self.validate_research(request)
 
             # Execute validations concurrently
             tasks = [validate_with_semaphore(request) for request in requests]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions = True)
 
             # Handle any exceptions
             processed_results = []
@@ -455,18 +467,18 @@ class ResearchValidationService:
                 if isinstance(result, Exception):
                     self.logger.error(f"Error in batch validation {i}: {result}")
                     error_response = ResearchValidationResponse(
-                        request_id=f"batch_error_{i}",
-                        is_valid=False,
-                        confidence_score=0.0,
-                        validation_status="error",
-                        contradictions_found=[],
-                        evidence_sources=[],
-                        validation_notes=f"Batch validation error: {str(result)}",
-                        recommendations=["Manual review required"],
-                        content_opportunities=[],
-                        processing_time_ms=0,
-                        timestamp=datetime.now(),
-                    )
+                        request_id = f"batch_error_{i}",
+                            is_valid = False,
+                            confidence_score = 0.0,
+                            validation_status="error",
+                            contradictions_found=[],
+                            evidence_sources=[],
+                            validation_notes = f"Batch validation error: {str(result)}",
+                            recommendations=["Manual review required"],
+                            content_opportunities=[],
+                            processing_time_ms = 0,
+                            timestamp = datetime.now(),
+                            )
                     processed_results.append(error_response)
                 else:
                     processed_results.append(result)
@@ -478,18 +490,19 @@ class ResearchValidationService:
             self.logger.error(f"Error in batch validation: {e}")
             return []
 
+
     def get_validation_statistics(self) -> Dict[str, Any]:
         """Get statistics about validation service performance"""
         try:
             stats = {
                 "service_version": "1.0.0",
-                "cache_size": len(self._validation_cache),
-                "active_validations": len(self._active_validations),
-                "hypocrisy_engine_available": self.hypocrisy_engine is not None,
-                "max_concurrent_validations": self.max_concurrent_validations,
-                "validation_timeout_seconds": self.validation_timeout_seconds,
-                "cache_enabled": self.cache_results,
-            }
+                    "cache_size": len(self._validation_cache),
+                    "active_validations": len(self._active_validations),
+                    "hypocrisy_engine_available": self.hypocrisy_engine is not None,
+                    "max_concurrent_validations": self.max_concurrent_validations,
+                    "validation_timeout_seconds": self.validation_timeout_seconds,
+                    "cache_enabled": self.cache_results,
+                    }
 
             # Add hypocrisy engine stats if available
             if self.hypocrisy_engine:
@@ -502,6 +515,7 @@ class ResearchValidationService:
             self.logger.error(f"Error getting validation statistics: {e}")
             return {"error": str(e)}
 
+
     def clear_cache(self) -> bool:
         """Clear validation cache"""
         try:
@@ -512,32 +526,33 @@ class ResearchValidationService:
             self.logger.error(f"Error clearing cache: {e}")
             return False
 
-
 # Convenience functions for easy integration
+
+
 async def validate_claim(
     content: str, author: Optional[str] = None, source: Optional[str] = None
 ) -> ResearchValidationResponse:
     """Quick validation of a research claim"""
     service = ResearchValidationService()
     request = ResearchValidationRequest(
-        content=content, author=author, source_url=source, validation_type="claim"
+        content = content, author = author, source_url = source, validation_type="claim"
     )
     return await service.validate_research(request)
 
 
 async def validate_statement(
     content: str,
-    author: str,
-    source: Optional[str] = None,
-    context: Optional[str] = None,
+        author: str,
+        source: Optional[str] = None,
+        context: Optional[str] = None,
 ) -> ResearchValidationResponse:
     """Quick validation of a statement for hypocrisy detection"""
     service = ResearchValidationService()
     request = ResearchValidationRequest(
-        content=content,
-        author=author,
-        source_url=source,
-        validation_type="statement",
-        context=context,
-    )
+        content = content,
+            author = author,
+            source_url = source,
+            validation_type="statement",
+            context = context,
+            )
     return await service.validate_research(request)

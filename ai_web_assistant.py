@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 AI Web Assistant for Trae AI Integration
 Automatically uses external AI services for coding, debugging, research, and error fixing.
@@ -13,11 +13,12 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class AIResponse:
     """Structure for AI service responses"""
 
@@ -30,21 +31,23 @@ class AIResponse:
 
 
 class AIWebAssistant:
-    """Web-based AI assistant that integrates with external AI services"""
+    """Web - based AI assistant that integrates with external AI services"""
+
 
     def __init__(self):
         self.services = {
-            "abacus": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
-            "gemini": "https://gemini.google.com/app",
-            "chatgpt": "https://chatgpt.com/",
-        }
+            "abacus": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
+                "gemini": "https://gemini.google.com / app",
+                "chatgpt": "https://chatgpt.com/",
+                }
         self.responses_cache = []
+
 
     async def query_ai_service(
         self, service: str, query: str, context: str = ""
     ) -> AIResponse:
         """
-        Query an AI service with a coding/debugging question
+        Query an AI service with a coding / debugging question
 
         Args:
             service: The AI service to query ('abacus', 'gemini', 'chatgpt')
@@ -56,13 +59,13 @@ class AIWebAssistant:
         """
         if service not in self.services:
             return AIResponse(
-                service=service,
-                query=query,
-                response="",
-                timestamp=time.time(),
-                success=False,
-                error=f"Unknown service: {service}",
-            )
+                service = service,
+                    query = query,
+                    response="",
+                    timestamp = time.time(),
+                    success = False,
+                    error = f"Unknown service: {service}",
+                    )
 
         try:
             # Format the query for the AI service
@@ -72,12 +75,12 @@ class AIWebAssistant:
             response_text = await self._interact_with_service(service, formatted_query)
 
             response = AIResponse(
-                service=service,
-                query=query,
-                response=response_text,
-                timestamp=time.time(),
-                success=True,
-            )
+                service = service,
+                    query = query,
+                    response = response_text,
+                    timestamp = time.time(),
+                    success = True,
+                    )
 
             self.responses_cache.append(response)
             return response
@@ -85,13 +88,14 @@ class AIWebAssistant:
         except Exception as e:
             logger.error(f"Error querying {service}: {str(e)}")
             return AIResponse(
-                service=service,
-                query=query,
-                response="",
-                timestamp=time.time(),
-                success=False,
-                error=str(e),
-            )
+                service = service,
+                    query = query,
+                    response="",
+                    timestamp = time.time(),
+                    success = False,
+                    error = str(e),
+                    )
+
 
     def _format_query_for_service(self, service: str, query: str, context: str) -> str:
         """
@@ -119,6 +123,7 @@ Respond with clear, actionable advice."""
 
         return base_prompt
 
+
     async def _interact_with_service(self, service: str, query: str) -> str:
         """
         Use Puppeteer to interact with the AI service
@@ -137,6 +142,7 @@ Respond with clear, actionable advice."""
             return f"ChatGPT Analysis: This looks like a common database schema issue. Here's what I recommend: 1) Check if the column exists, 2) Run proper migrations, 3) Add error handling for missing columns."
 
         return "Service response not available"
+
 
     async def debug_error(
         self, error_message: str, code_context: str = ""
@@ -164,6 +170,7 @@ Respond with clear, actionable advice."""
 
         return {response.service: response for response in responses}
 
+
     async def research_topic(
         self, topic: str, programming_language: str = "python"
     ) -> Dict[str, AIResponse]:
@@ -190,6 +197,7 @@ Respond with clear, actionable advice."""
 
         return {response.service: response for response in responses}
 
+
     def get_cached_responses(self, limit: int = 10) -> List[AIResponse]:
         """
         Get recent cached responses
@@ -200,9 +208,10 @@ Respond with clear, actionable advice."""
         Returns:
             List of recent AIResponse objects
         """
-        return sorted(self.responses_cache, key=lambda x: x.timestamp, reverse=True)[
+        return sorted(self.responses_cache, key = lambda x: x.timestamp, reverse = True)[
             :limit
         ]
+
 
     def export_responses(self, filename: str = "ai_responses.json") -> str:
         """
@@ -217,27 +226,30 @@ Respond with clear, actionable advice."""
         export_data = [
             {
                 "service": r.service,
-                "query": r.query,
-                "response": r.response,
-                "timestamp": r.timestamp,
-                "success": r.success,
-                "error": r.error,
-            }
+                    "query": r.query,
+                    "response": r.response,
+                    "timestamp": r.timestamp,
+                    "success": r.success,
+                    "error": r.error,
+                    }
             for r in self.responses_cache
         ]
 
         with open(filename, "w") as f:
-            json.dump(export_data, f, indent=2)
+            json.dump(export_data, f, indent = 2)
 
         return filename
 
-
 # Integration functions for Trae AI
+
+
 class TraeAIIntegration:
     """Integration layer for Trae AI to use the web assistant"""
 
+
     def __init__(self):
         self.assistant = AIWebAssistant()
+
 
     async def auto_debug(self, error_message: str, code_snippet: str = "") -> str:
         """
@@ -265,6 +277,7 @@ class TraeAIIntegration:
 
         return consolidated
 
+
     async def research_and_implement(
         self, feature_request: str, language: str = "python"
     ) -> str:
@@ -290,8 +303,9 @@ class TraeAIIntegration:
 
         return consolidated
 
-
 # Demo usage
+
+
 async def demo_ai_web_assistant():
     """Demonstrate the AI Web Assistant functionality"""
     print("🤖 AI Web Assistant Demo")
@@ -301,7 +315,7 @@ async def demo_ai_web_assistant():
     trae_integration = TraeAIIntegration()
 
     # Demo 1: Debug an error
-    print("\n📋 Demo 1: Debugging SQLite Error")
+        print("\n📋 Demo 1: Debugging SQLite Error")
     error_msg = "no such column: search_keywords"
     code_context = "ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT;"
 
@@ -328,7 +342,6 @@ async def demo_ai_web_assistant():
     print(f"\n💾 Responses exported to: {export_file}")
 
     print("\n🎉 Demo completed!")
-
 
 if __name__ == "__main__":
     asyncio.run(demo_ai_web_assistant())

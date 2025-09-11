@@ -10,11 +10,11 @@ from .youtube_api import YouTubeAPI
 
 __all__ = [
     "GoogleTrendsAPI",
-    "RedditAPI",
-    "GitHubAPI",
-    "ArxivAPI",
-    "YouTubeAPI",
-    "BaseAPI",
-    "APIError",
-    "RateLimitError",
+        "RedditAPI",
+        "GitHubAPI",
+        "ArxivAPI",
+        "YouTubeAPI",
+        "BaseAPI",
+        "APIError",
+        "RateLimitError",
 ]

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Golden Ratio Avatar Generator
 
@@ -20,7 +20,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -44,8 +44,9 @@ class ColorScheme(Enum):
     ANALOGOUS = "analogous"
     SPLIT_COMPLEMENTARY = "split_complementary"
 
-
 @dataclass
+
+
 class GoldenRatioConfig:
     """Configuration for golden ratio avatar generation."""
 
@@ -53,7 +54,7 @@ class GoldenRatioConfig:
     height: int = 512
     style: AvatarStyle = AvatarStyle.PROFESSIONAL
     color_scheme: ColorScheme = ColorScheme.COMPLEMENTARY
-    base_hue: float = 0.6  # Blue-ish by default
+    base_hue: float = 0.6  # Blue - ish by default
     complexity: float = 0.7  # 0.0 to 1.0
     symmetry: bool = True
     include_text: bool = False
@@ -67,6 +68,7 @@ class GoldenRatioAvatarGenerator:
     # Golden ratio constant
     PHI = (1 + math.sqrt(5)) / 2  # ≈ 1.618
 
+
     def __init__(self, config: Optional[GoldenRatioConfig] = None):
         self.config = config or GoldenRatioConfig()
         if self.config.seed:
@@ -78,12 +80,13 @@ class GoldenRatioAvatarGenerator:
             "major_section": 1 / self.PHI,  # ≈ 0.618
             "minor_section": 1 - (1 / self.PHI),  # ≈ 0.382
             "spiral_ratio": self.PHI,
-            "rectangle_ratio": self.PHI,
-        }
+                "rectangle_ratio": self.PHI,
+                }
 
         logger.info(
             f"Initialized Golden Ratio Avatar Generator with PHI={self.PHI:.3f}"
         )
+
 
     def generate_avatar(self, channel_name: str, **kwargs) -> Image.Image:
         """Generate a golden ratio avatar for a channel."""
@@ -103,7 +106,7 @@ class GoldenRatioAvatarGenerator:
         # Generate color palette
         colors = self._generate_color_palette()
 
-        # Apply style-specific generation
+        # Apply style - specific generation
         if self.config.style == AvatarStyle.GEOMETRIC:
             image = self._generate_geometric_avatar(image, draw, colors)
         elif self.config.style == AvatarStyle.ORGANIC:
@@ -121,11 +124,12 @@ class GoldenRatioAvatarGenerator:
         if self.config.include_text and self.config.channel_name:
             image = self._add_channel_text(image, self.config.channel_name, colors)
 
-        # Apply post-processing
+        # Apply post - processing
         image = self._apply_post_processing(image)
 
         logger.info(f"Successfully generated avatar for {channel_name}")
         return image
+
 
     def _generate_color_palette(self) -> List[Tuple[int, int, int, int]]:
         """Generate a color palette based on golden ratio and color theory."""
@@ -172,6 +176,7 @@ class GoldenRatioAvatarGenerator:
 
         return colors[:6]  # Limit to 6 colors
 
+
     def _generate_geometric_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
     ) -> Image.Image:
@@ -188,19 +193,20 @@ class GoldenRatioAvatarGenerator:
         # Draw nested golden rectangles
         rectangles = [
             (0, 0, major_w, major_h),
-            (major_w, 0, w, minor_h),
-            (major_w, minor_h, w, h),
-            (0, major_h, minor_w, h),
-        ]
+                (major_w, 0, w, minor_h),
+                (major_w, minor_h, w, h),
+                (0, major_h, minor_w, h),
+                ]
 
         for i, rect in enumerate(rectangles):
             color = colors[i % len(colors)]
-            draw.rectangle(rect, fill=color)
+            draw.rectangle(rect, fill = color)
 
         # Add golden spiral elements
         self._draw_golden_spiral(draw, center_x, center_y, min(w, h) // 4, colors[0])
 
         return image
+
 
     def _generate_organic_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
@@ -225,14 +231,15 @@ class GoldenRatioAvatarGenerator:
             draw.ellipse(
                 (
                     x - circle_radius,
-                    y - circle_radius,
-                    x + circle_radius,
-                    y + circle_radius,
-                ),
-                fill=color,
-            )
+                        y - circle_radius,
+                        x + circle_radius,
+                        y + circle_radius,
+                        ),
+                    fill = color,
+                    )
 
         return image
+
 
     def _generate_minimalist_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
@@ -245,23 +252,24 @@ class GoldenRatioAvatarGenerator:
         division_y = int(h * self.proportions["major_section"])
 
         # Draw clean sections
-        draw.rectangle((0, 0, division_x, h), fill=colors[0])
-        draw.rectangle((division_x, 0, w, division_y), fill=colors[1])
-        draw.rectangle((division_x, division_y, w, h), fill=colors[2])
+        draw.rectangle((0, 0, division_x, h), fill = colors[0])
+        draw.rectangle((division_x, 0, w, division_y), fill = colors[1])
+        draw.rectangle((division_x, division_y, w, h), fill = colors[2])
 
         # Add subtle accent
         accent_size = int(min(w, h) * 0.1)
         draw.ellipse(
             (
                 division_x - accent_size,
-                division_y - accent_size,
-                division_x + accent_size,
-                division_y + accent_size,
-            ),
-            fill=colors[3],
-        )
+                    division_y - accent_size,
+                    division_x + accent_size,
+                    division_y + accent_size,
+                    ),
+                fill = colors[3],
+                )
 
         return image
+
 
     def _generate_professional_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
@@ -275,7 +283,7 @@ class GoldenRatioAvatarGenerator:
             ratio = y / h
             color_index = int(ratio * (len(colors) - 1))
             color = colors[color_index]
-            draw.line([(0, y), (w, y)], fill=color)
+            draw.line([(0, y), (w, y)], fill = color)
 
         # Golden ratio based professional elements
         # Main focal circle
@@ -283,40 +291,41 @@ class GoldenRatioAvatarGenerator:
         draw.ellipse(
             (
                 center_x - main_radius,
-                center_y - main_radius,
-                center_x + main_radius,
-                center_y + main_radius,
-            ),
-            fill=colors[-1],
-            outline=colors[0],
-            width=3,
-        )
+                    center_y - main_radius,
+                    center_x + main_radius,
+                    center_y + main_radius,
+                    ),
+                fill = colors[-1],
+                outline = colors[0],
+                width = 3,
+                )
 
         # Accent elements at golden ratio positions
         accent_positions = [
             (
                 int(w * self.proportions["major_section"]),
-                int(h * self.proportions["minor_section"]),
-            ),
-            (
+                    int(h * self.proportions["minor_section"]),
+                    ),
+                (
                 int(w * self.proportions["minor_section"]),
-                int(h * self.proportions["major_section"]),
-            ),
-        ]
+                    int(h * self.proportions["major_section"]),
+                    ),
+                ]
 
         for x, y in accent_positions:
             accent_radius = int(main_radius * self.proportions["minor_section"])
             draw.ellipse(
                 (
                     x - accent_radius,
-                    y - accent_radius,
-                    x + accent_radius,
-                    y + accent_radius,
-                ),
-                fill=colors[1],
-            )
+                        y - accent_radius,
+                        x + accent_radius,
+                        y + accent_radius,
+                        ),
+                    fill = colors[1],
+                    )
 
         return image
+
 
     def _generate_creative_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
@@ -337,9 +346,9 @@ class GoldenRatioAvatarGenerator:
 
             # Alternate between circles and squares
             if i % 2 == 0:
-                draw.ellipse((x - size, y - size, x + size, y + size), fill=color)
+                draw.ellipse((x - size, y - size, x + size, y + size), fill = color)
             else:
-                draw.rectangle((x - size, y - size, x + size, y + size), fill=color)
+                draw.rectangle((x - size, y - size, x + size, y + size), fill = color)
 
         # Add creative overlays
         overlay_image = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -356,7 +365,7 @@ class GoldenRatioAvatarGenerator:
             y2 = center_y + int(length * self.PHI * math.sin(math.radians(angle + 90)))
 
             overlay_draw.line(
-                [(x1, y1), (x2, y2)], fill=colors[i % len(colors)], width=2
+                [(x1, y1), (x2, y2)], fill = colors[i % len(colors)], width = 2
             )
 
         # Blend overlay
@@ -364,10 +373,11 @@ class GoldenRatioAvatarGenerator:
 
         return image
 
+
     def _generate_tech_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
     ) -> Image.Image:
-        """Generate tech-style avatar with digital golden ratio patterns."""
+        """Generate tech - style avatar with digital golden ratio patterns."""
         w, h = image.size
 
         # Tech grid based on golden ratio
@@ -379,7 +389,7 @@ class GoldenRatioAvatarGenerator:
             for y in range(0, h, grid_size_y):
                 if random.random() < self.config.complexity:
                     color = colors[random.randint(0, len(colors) - 1)]
-                    draw.rectangle((x, y, x + grid_size_x, y + grid_size_y), fill=color)
+                    draw.rectangle((x, y, x + grid_size_x, y + grid_size_y), fill = color)
 
         # Add tech circuit patterns
         center_x, center_y = w // 2, h // 2
@@ -395,29 +405,30 @@ class GoldenRatioAvatarGenerator:
             x2 = center_x + int(radius2 * math.cos(math.radians(angle)))
             y2 = center_y + int(radius2 * math.sin(math.radians(angle)))
 
-            draw.line([(x1, y1), (x2, y2)], fill=colors[0], width=2)
+            draw.line([(x1, y1), (x2, y2)], fill = colors[0], width = 2)
 
             # Add connection nodes
             node_size = 3
             draw.ellipse(
                 (x1 - node_size, y1 - node_size, x1 + node_size, y1 + node_size),
-                fill=colors[1],
-            )
+                    fill = colors[1],
+                    )
             draw.ellipse(
                 (x2 - node_size, y2 - node_size, x2 + node_size, y2 + node_size),
-                fill=colors[1],
-            )
+                    fill = colors[1],
+                    )
 
         return image
 
+
     def _draw_golden_spiral(
         self,
-        draw: ImageDraw.Draw,
-        center_x: int,
-        center_y: int,
-        initial_radius: int,
-        color: Tuple[int, int, int, int],
-    ):
+            draw: ImageDraw.Draw,
+            center_x: int,
+            center_y: int,
+            initial_radius: int,
+            color: Tuple[int, int, int, int],
+            ):
         """Draw a golden spiral."""
         points = self._calculate_golden_spiral_points(
             center_x, center_y, initial_radius, 30
@@ -425,7 +436,8 @@ class GoldenRatioAvatarGenerator:
 
         # Draw spiral as connected lines
         for i in range(len(points) - 1):
-            draw.line([points[i], points[i + 1]], fill=color, width=2)
+            draw.line([points[i], points[i + 1]], fill = color, width = 2)
+
 
     def _calculate_golden_spiral_points(
         self, center_x: int, center_y: int, initial_radius: int, num_points: int
@@ -445,12 +457,13 @@ class GoldenRatioAvatarGenerator:
 
         return points
 
+
     def _add_channel_text(
         self,
-        image: Image.Image,
-        channel_name: str,
-        colors: List[Tuple[int, int, int, int]],
-    ) -> Image.Image:
+            image: Image.Image,
+            channel_name: str,
+            colors: List[Tuple[int, int, int, int]],
+            ) -> Image.Image:
         """Add channel name text using golden ratio positioning."""
         draw = ImageDraw.Draw(image)
         w, h = image.size
@@ -458,8 +471,8 @@ class GoldenRatioAvatarGenerator:
         # Try to load a font, fall back to default if not available
         try:
             font_size = int(min(w, h) * 0.08)
-            font = ImageFont.truetype("/System/Library/Fonts/Arial.ttf", font_size)
-        except:
+            font = ImageFont.truetype("/System / Library / Fonts / Arial.ttf", font_size)
+        except Exception:
             font = ImageFont.load_default()
 
         # Position text at golden ratio point
@@ -476,21 +489,22 @@ class GoldenRatioAvatarGenerator:
                 if dx != 0 or dy != 0:
                     draw.text(
                         (text_x + dx, text_y + dy),
-                        channel_name,
-                        font=font,
-                        fill=outline_color,
-                    )
+                            channel_name,
+                            font = font,
+                            fill = outline_color,
+                            )
 
         # Draw main text
-        draw.text((text_x, text_y), channel_name, font=font, fill=text_color)
+        draw.text((text_x, text_y), channel_name, font = font, fill = text_color)
 
         return image
 
+
     def _apply_post_processing(self, image: Image.Image) -> Image.Image:
-        """Apply post-processing effects."""
+        """Apply post - processing effects."""
         # Subtle blur for smoothing
         if self.config.complexity > 0.5:
-            image = image.filter(ImageFilter.GaussianBlur(radius=0.5))
+            image = image.filter(ImageFilter.GaussianBlur(radius = 0.5))
 
         # Enhance edges
         if self.config.style in [AvatarStyle.TECH, AvatarStyle.GEOMETRIC]:
@@ -498,19 +512,21 @@ class GoldenRatioAvatarGenerator:
 
         return image
 
+
     def save_avatar(self, image: Image.Image, filepath: str) -> bool:
         """Save avatar to file."""
         try:
             # Ensure directory exists
-            os.makedirs(os.path.dirname(filepath), exist_ok=True)
+            os.makedirs(os.path.dirname(filepath), exist_ok = True)
 
             # Save as PNG with transparency
-            image.save(filepath, "PNG", optimize=True)
+            image.save(filepath, "PNG", optimize = True)
             logger.info(f"Avatar saved to: {filepath}")
             return True
         except Exception as e:
             logger.error(f"Failed to save avatar: {e}")
             return False
+
 
     def generate_avatar_variations(
         self, channel_name: str, count: int = 3
@@ -524,12 +540,12 @@ class GoldenRatioAvatarGenerator:
         for i in range(count):
             # Vary parameters for each variation
             config = GoldenRatioConfig(
-                style=styles[i % len(styles)],
-                color_scheme=color_schemes[i % len(color_schemes)],
-                base_hue=random.random(),
-                complexity=0.3 + (i * 0.2),
-                seed=i,
-            )
+                style = styles[i % len(styles)],
+                    color_scheme = color_schemes[i % len(color_schemes)],
+                    base_hue = random.random(),
+                    complexity = 0.3 + (i * 0.2),
+                    seed = i,
+                    )
 
             generator = GoldenRatioAvatarGenerator(config)
             avatar = generator.generate_avatar(channel_name)
@@ -537,10 +553,11 @@ class GoldenRatioAvatarGenerator:
 
         return variations
 
-
 # Utility functions for integration
+
+
 def create_channel_avatar(
-    channel_name: str, style: str = "professional", output_dir: str = "assets/avatars"
+    channel_name: str, style: str = "professional", output_dir: str = "assets / avatars"
 ) -> str:
     """Create a golden ratio avatar for a channel."""
     try:
@@ -549,7 +566,7 @@ def create_channel_avatar(
         style_enum = AvatarStyle.PROFESSIONAL
 
     config = GoldenRatioConfig(
-        style=style_enum, include_text=True, channel_name=channel_name
+        style = style_enum, include_text = True, channel_name = channel_name
     )
 
     generator = GoldenRatioAvatarGenerator(config)
@@ -568,7 +585,6 @@ def create_channel_avatar(
     else:
         raise Exception("Failed to save avatar")
 
-
 if __name__ == "__main__":
     # Example usage
     generator = GoldenRatioAvatarGenerator()
@@ -576,13 +592,13 @@ if __name__ == "__main__":
     # Generate test avatars
     test_channels = [
         ("Tech Insights", AvatarStyle.TECH),
-        ("Creative Studio", AvatarStyle.CREATIVE),
-        ("Business Pro", AvatarStyle.PROFESSIONAL),
-        ("Art & Design", AvatarStyle.ORGANIC),
-    ]
+            ("Creative Studio", AvatarStyle.CREATIVE),
+            ("Business Pro", AvatarStyle.PROFESSIONAL),
+            ("Art & Design", AvatarStyle.ORGANIC),
+            ]
 
     for channel_name, style in test_channels:
-        config = GoldenRatioConfig(style=style, include_text=True)
+        config = GoldenRatioConfig(style = style, include_text = True)
         gen = GoldenRatioAvatarGenerator(config)
         avatar = gen.generate_avatar(channel_name)
 

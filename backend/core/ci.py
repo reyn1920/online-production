@@ -6,7 +6,7 @@ def ci() -> bool:
 
 
 def fast() -> bool:
-    # default fast in CI; explicit FAST_MODE=0 disables
+    # default fast in CI; explicit FAST_MODE = 0 disables
     return os.environ.get("FAST_MODE", "1") != "0"
 
 

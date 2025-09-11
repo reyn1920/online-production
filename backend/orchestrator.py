@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Autonomous Content Empire - Orchestrator
 
@@ -26,82 +26,111 @@ try:
 except ImportError:
     import logging
 
+
     def get_logger(name):
         return logging.getLogger(name)
-
 
 try:
     from backend.secret_store import SecretStore
 except ImportError:
 
+
     class SecretStore:
+
+
         def __init__(self):
             pass
-
 
 try:
     from backend.task_queue_manager import TaskQueueManager
 except ImportError:
 
+
     class TaskQueueManager:
+
+
         def __init__(self):
             pass
 
+
         def get_tasks_for_agent(self, agent_name):
             return []
-
 
 try:
     from backend.agents.base_agents import AuditorAgent, ExecutorAgent, PlannerAgent
 except ImportError:
 
+
     class PlannerAgent:
+
+
         def __init__(self):
             pass
+
 
     class ExecutorAgent:
+
+
         def __init__(self):
             pass
+
 
     class AuditorAgent:
+
+
         def __init__(self):
             pass
-
 
 try:
     from backend.agents.specialized_agents import (ContentAgent, MarketingAgent,
-                                                   QAAgent, ResearchAgent, SystemAgent)
+        QAAgent, ResearchAgent, SystemAgent)
 except ImportError:
 
+
     class SystemAgent:
+
+
         def __init__(self):
             pass
+
 
     class ResearchAgent:
+
+
         def __init__(self):
             pass
+
 
     class ContentAgent:
+
+
         def __init__(self):
             pass
+
 
     class MarketingAgent:
+
+
         def __init__(self):
             pass
+
 
     class QAAgent:
+
+
         def __init__(self):
             pass
-
 
 try:
     from backend.agents.growth_agent import GrowthAgent
 except ImportError:
 
+
     class GrowthAgent:
+
+
         def __init__(self):
             pass
-
 
 try:
     from backend.agents.evolution_agent import EvolutionAgent
@@ -117,28 +146,34 @@ try:
     from backend.agents.stealth_automation_agent import StealthAutomationAgent
 except ImportError:
 
-    class StealthAutomationAgent:
-        def __init__(self, config=None):
-            pass
 
+    class StealthAutomationAgent:
+
+
+        def __init__(self, config = None):
+            pass
 
 try:
     from backend.agents.strategic_advisor_agent import StrategicAdvisorAgent
 except ImportError:
 
+
     class StrategicAdvisorAgent:
+
+
         def __init__(self):
             pass
-
 
 try:
     from backend.integrations.ollama_integration import OllamaIntegration
 except ImportError:
 
+
     class OllamaIntegration:
+
+
         def __init__(self):
             pass
-
 
 try:
     from backend.api_orchestrator import APIOrchestrator, FailoverStrategy
@@ -160,10 +195,11 @@ def get_orchestrator_instance():
 def set_orchestrator_instance(orchestrator):
     """Set the global orchestrator instance"""
     global _global_orchestrator
-    _global_orchestrator = orchestrator
-
+        _global_orchestrator = orchestrator
 
 @dataclass
+
+
 class SystemMetrics:
     """System performance metrics"""
 
@@ -182,8 +218,9 @@ class AutonomousOrchestrator:
     Master orchestrator for the TRAE.AI autonomous content empire.
 
     This class coordinates all autonomous agents, manages the production pipeline,
-    and ensures continuous operation of the content empire system.
+        and ensures continuous operation of the content empire system.
     """
+
 
     def __init__(self, config_path: str = "config.json"):
         """Initialize the autonomous orchestrator"""
@@ -192,7 +229,7 @@ class AutonomousOrchestrator:
         # Core configuration
         self.config = self._load_config()
         self.running = False
-        self.db_path = "data/trae_production.db"
+        self.db_path = "data / trae_production.db"
 
         # Initialize core components
         self.secret_store = SecretStore()
@@ -229,14 +266,15 @@ class AutonomousOrchestrator:
         # Agent status tracking
         self.agent_status = {
             "growth": "initialized",
-            "evolution": "initialized",
-            "financial": "initialized",
-            "stealth_automation": "initialized",
-            "strategic_advisor": "initialized",
-            "marketing": "initialized",
-        }
+                "evolution": "initialized",
+                "financial": "initialized",
+                "stealth_automation": "initialized",
+                "strategic_advisor": "initialized",
+                "marketing": "initialized",
+                }
 
         logger.info("AutonomousOrchestrator initialization complete")
+
 
     def update_agent_status(
         self, agent_name: str, status: str, task_id: Optional[str] = None
@@ -244,9 +282,10 @@ class AutonomousOrchestrator:
         """Update agent status for monitoring"""
         self.agent_status[agent_name] = {
             "status": status,
-            "last_update": datetime.now().isoformat(),
-            "task_id": task_id,
-        }
+                "last_update": datetime.now().isoformat(),
+                "task_id": task_id,
+                }
+
 
     def _load_config(self) -> Dict[str, Any]:
         """Load system configuration"""
@@ -263,31 +302,32 @@ class AutonomousOrchestrator:
         default_config = {
             "system": {
                 "max_concurrent_tasks": 10,
-                "health_check_interval": 300,
-                "metrics_collection_interval": 60,
-                "auto_scaling_enabled": True,
-            },
-            "agents": {
+                    "health_check_interval": 300,
+                    "metrics_collection_interval": 60,
+                    "auto_scaling_enabled": True,
+                    },
+                "agents": {
                 "growth_agent_interval": 3600,
-                "evolution_agent_interval": 7200,
-                "financial_agent_interval": 1800,
-                "strategic_advisor_interval": 86400,
-            },
-            "autonomous_operations": {
+                    "evolution_agent_interval": 7200,
+                    "financial_agent_interval": 1800,
+                    "strategic_advisor_interval": 86400,
+                    },
+                "autonomous_operations": {
                 "niche_expansion_threshold": 0.8,
-                "format_evolution_threshold": 0.7,
-                "financial_optimization_threshold": 0.9,
-                "proactive_mode": True,
-            },
-        }
+                    "format_evolution_threshold": 0.7,
+                    "financial_optimization_threshold": 0.9,
+                    "proactive_mode": True,
+                    },
+                }
 
         logger.info("Using default configuration")
         return default_config
 
+
     def _init_database(self):
         """Initialize production database"""
         try:
-            os.makedirs("data", exist_ok=True)
+            os.makedirs("data", exist_ok = True)
 
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -297,11 +337,11 @@ class AutonomousOrchestrator:
                 """
                 CREATE TABLE IF NOT EXISTS performance_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    metric_name TEXT NOT NULL,
-                    metric_type TEXT NOT NULL,
-                    value REAL NOT NULL,
-                    unit TEXT,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                        metric_name TEXT NOT NULL,
+                        metric_type TEXT NOT NULL,
+                        value REAL NOT NULL,
+                        unit TEXT,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -315,55 +355,56 @@ class AutonomousOrchestrator:
             logger.error(f"Database initialization failed: {e}")
             raise
 
+
     def _init_agents(self):
         """Initialize all autonomous agents"""
         try:
             # Core agents
             self.agents = {
                 "planner": PlannerAgent(),
-                "executor": ExecutorAgent(),
-                "auditor": AuditorAgent(),
-            }
+                    "executor": ExecutorAgent(),
+                    "auditor": AuditorAgent(),
+                    }
 
             # Specialized agents
             specialized_agents = {
                 "system": SystemAgent(),
-                "research": ResearchAgent(),
-                "content": ContentAgent(),
-                "marketing": MarketingAgent(),
-                "qa": QAAgent(),
-            }
+                    "research": ResearchAgent(),
+                    "content": ContentAgent(),
+                    "marketing": MarketingAgent(),
+                    "qa": QAAgent(),
+                    }
 
             self.agents.update(specialized_agents)
 
             # Phase 6 autonomous agents
             evolution_config = {
                 "trend_monitoring": True,
-                "format_detection": True,
-                "tool_generation": True,
-                "self_improvement": True,
-                "innovation_tracking": True,
-                "platform_analysis": True,
-                "platforms": ["youtube", "tiktok", "instagram", "twitter", "linkedin"],
-                "trend_threshold": 0.7,
-                "monitoring_interval": 1800,
-            }
+                    "format_detection": True,
+                    "tool_generation": True,
+                    "self_improvement": True,
+                    "innovation_tracking": True,
+                    "platform_analysis": True,
+                    "platforms": ["youtube", "tiktok", "instagram", "twitter", "linkedin"],
+                    "trend_threshold": 0.7,
+                    "monitoring_interval": 1800,
+                    }
 
             stealth_config = {
                 "stealth_level": "moderate",
-                "automation_mode": "stealth_medium",
-                "detection_threshold": 0.3,
-                "session_timeout": 3600,
-                "max_concurrent_sessions": 3,
-            }
+                    "automation_mode": "stealth_medium",
+                    "detection_threshold": 0.3,
+                    "session_timeout": 3600,
+                    "max_concurrent_sessions": 3,
+                    }
 
             self.autonomous_agents = {
                 "growth": GrowthAgent(),
-                "evolution": EvolutionAgent(evolution_config),
-                "financial": FinancialAgent(),
-                "stealth_automation": StealthAutomationAgent(stealth_config),
-                "strategic_advisor": StrategicAdvisorAgent(),
-            }
+                    "evolution": EvolutionAgent(evolution_config),
+                    "financial": FinancialAgent(),
+                    "stealth_automation": StealthAutomationAgent(stealth_config),
+                    "strategic_advisor": StrategicAdvisorAgent(),
+                    }
 
             self.agents.update(self.autonomous_agents)
 
@@ -372,6 +413,7 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(f"Agent initialization failed: {e}")
             raise
+
 
     def _calculate_next_quarter(self) -> datetime:
         """Calculate next quarterly report date"""
@@ -386,6 +428,7 @@ class AutonomousOrchestrator:
 
         return next_quarter_start
 
+
     def _initialize_phase6_operations(self):
         """Initialize Phase 6 autonomous operations"""
         logger.info("Initializing Phase 6 autonomous operations...")
@@ -393,37 +436,39 @@ class AutonomousOrchestrator:
         # Growth agent configuration
         self.growth_config = {
             "niche_expansion_enabled": True,
-            "proactive_domination": True,
-            "competitive_analysis": True,
-        }
+                "proactive_domination": True,
+                "competitive_analysis": True,
+                }
 
         # Evolution agent configuration
         self.evolution_config = {
             "format_scanning_enabled": True,
-            "trend_adaptation": True,
-            "content_optimization": True,
-        }
+                "trend_adaptation": True,
+                "content_optimization": True,
+                }
 
         # Financial agent configuration
         self.financial_config = {
             "revenue_optimization": True,
-            "cost_management": True,
-            "affiliate_monitoring": True,
-        }
+                "cost_management": True,
+                "affiliate_monitoring": True,
+                }
 
         logger.info("Phase 6 operations initialized")
+
 
     def get_status(self) -> Dict[str, Any]:
         """Get current orchestrator status"""
         return {
             "running": self.running,
-            "agents": self.agent_status,
-            "last_niche_expansion": self.last_niche_expansion.isoformat(),
-            "last_format_scan": self.last_format_scan.isoformat(),
-            "last_financial_analysis": self.last_financial_analysis.isoformat(),
-            "quarterly_report_due": self.quarterly_report_due.isoformat(),
-            "metrics_count": len(self.metrics_history),
-        }
+                "agents": self.agent_status,
+                "last_niche_expansion": self.last_niche_expansion.isoformat(),
+                "last_format_scan": self.last_format_scan.isoformat(),
+                "last_financial_analysis": self.last_financial_analysis.isoformat(),
+                "quarterly_report_due": self.quarterly_report_due.isoformat(),
+                "metrics_count": len(self.metrics_history),
+                }
+
 
     async def start(self):
         """Start the orchestrator"""
@@ -431,6 +476,7 @@ class AutonomousOrchestrator:
         self.running = True
         set_orchestrator_instance(self)
         return True
+
 
     async def stop(self):
         """Stop the orchestrator"""

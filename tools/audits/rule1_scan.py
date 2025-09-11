@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Rule-1 Scanner CLI Wrapper
+Rule - 1 Scanner CLI Wrapper
 
-Command-line interface for the Rule-1 content scanner.
+Command - line interface for the Rule - 1 content scanner.
 This script provides a simple way to scan directories for forbidden content.
 """
 
@@ -35,7 +35,7 @@ def main():
         print(f"Error: Directory '{scan_dir}' does not exist.")
         sys.exit(1)
 
-    print(f"🔍 Running Rule-1 scanner on: {scan_dir}")
+    print(f"🔍 Running Rule - 1 scanner on: {scan_dir}")
     print("=" * 50)
 
     try:
@@ -63,16 +63,15 @@ def main():
                     print(
                         f"   {result.file_path}: {result.total_violations} violations"
                     )
-            print(f"\n✅ Rule-1 scan completed with violations detected.")
+            print(f"\n✅ Rule - 1 scan completed with violations detected.")
             sys.exit(1)
         else:
-            print(f"\n✅ Rule-1 scan completed successfully - no violations found.")
+            print(f"\n✅ Rule - 1 scan completed successfully - no violations found.")
             sys.exit(0)
 
     except Exception as e:
         print(f"❌ Error during scan: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

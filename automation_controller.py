@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Automation Controller - Master Control System
 
@@ -30,14 +30,15 @@ from utils.logger import get_logger
 from breaking_news_watcher import RSSIntelligenceEngine
 # Import automation components
 from content_automation_pipeline import (ContentAutomationPipeline, ContentFormat,
-                                         ContentPriority)
+    ContentPriority)
 
 logger = get_logger(__name__)
 
-
 @dataclass
+
+
 class AutomationStatus:
-    """System-wide automation status."""
+    """System - wide automation status."""
 
     content_pipeline_running: bool
     rss_monitoring_active: bool
@@ -51,6 +52,7 @@ class AutomationStatus:
 
 class AutomationController:
     """Master controller for all automation systems."""
+
 
     def __init__(self, config_path: str = "automation_config.json"):
         self.config_path = config_path
@@ -81,6 +83,7 @@ class AutomationController:
 
         logger.info("Automation Controller initialized")
 
+
     def _load_config(self) -> Dict[str, Any]:
         """Load automation configuration."""
         try:
@@ -89,25 +92,26 @@ class AutomationController:
         except FileNotFoundError:
             default_config = {
                 "auto_start": True,
-                "content_pipeline_enabled": True,
-                "rss_monitoring_enabled": True,
-                "api_port": 8082,
-                "monitoring_interval": 60,  # seconds
+                    "content_pipeline_enabled": True,
+                    "rss_monitoring_enabled": True,
+                    "api_port": 8082,
+                    "monitoring_interval": 60,  # seconds
                 "max_daily_content": 20,
-                "error_threshold": 10,
-                "performance_retention_days": 30,
-                "notification_webhooks": [],
-                "quality_gates": {
+                    "error_threshold": 10,
+                    "performance_retention_days": 30,
+                    "notification_webhooks": [],
+                    "quality_gates": {
                     "min_engagement_score": 0.4,
-                    "max_error_rate": 0.1,
-                    "min_success_rate": 0.8,
-                },
-            }
+                        "max_error_rate": 0.1,
+                        "min_success_rate": 0.8,
+                        },
+                    }
 
             with open(self.config_path, "w") as f:
-                json.dump(default_config, f, indent=2)
+                json.dump(default_config, f, indent = 2)
 
             return default_config
+
 
     def _init_performance_tracking(self):
         """Initialize performance tracking database."""
@@ -119,11 +123,11 @@ class AutomationController:
             """
             CREATE TABLE IF NOT EXISTS system_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                component TEXT NOT NULL,
-                metric_name TEXT NOT NULL,
-                metric_value REAL NOT NULL,
-                metadata TEXT
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    component TEXT NOT NULL,
+                    metric_name TEXT NOT NULL,
+                    metric_value REAL NOT NULL,
+                    metadata TEXT
             )
         """
         )
@@ -133,12 +137,12 @@ class AutomationController:
             """
             CREATE TABLE IF NOT EXISTS error_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                component TEXT NOT NULL,
-                error_type TEXT NOT NULL,
-                error_message TEXT,
-                stack_trace TEXT,
-                resolved BOOLEAN DEFAULT FALSE
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    component TEXT NOT NULL,
+                    error_type TEXT NOT NULL,
+                    error_message TEXT,
+                    stack_trace TEXT,
+                    resolved BOOLEAN DEFAULT FALSE
             )
         """
         )
@@ -148,13 +152,13 @@ class AutomationController:
             """
             CREATE TABLE IF NOT EXISTS content_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                content_type TEXT NOT NULL,
-                production_time_seconds REAL,
-                quality_score REAL,
-                engagement_prediction REAL,
-                success BOOLEAN DEFAULT TRUE,
-                project_id TEXT
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    content_type TEXT NOT NULL,
+                    production_time_seconds REAL,
+                    quality_score REAL,
+                    engagement_prediction REAL,
+                    success BOOLEAN DEFAULT TRUE,
+                    project_id TEXT
             )
         """
         )
@@ -162,6 +166,7 @@ class AutomationController:
         conn.commit()
         conn.close()
         logger.info("Performance tracking database initialized")
+
 
     def start_automation(self):
         """Start all automation systems."""
@@ -179,7 +184,7 @@ class AutomationController:
             # Start RSS monitoring
             if self.config["rss_monitoring_enabled"]:
                 self.rss_thread = threading.Thread(
-                    target=self._run_rss_monitoring, daemon=True
+                    target = self._run_rss_monitoring, daemon = True
                 )
                 self.rss_thread.start()
                 logger.info("RSS monitoring started")
@@ -187,14 +192,14 @@ class AutomationController:
             # Start content pipeline
             if self.config["content_pipeline_enabled"]:
                 self.content_thread = threading.Thread(
-                    target=self._run_content_pipeline, daemon=True
+                    target = self._run_content_pipeline, daemon = True
                 )
                 self.content_thread.start()
                 logger.info("Content pipeline started")
 
             # Start performance monitoring
             self.monitor_thread = threading.Thread(
-                target=self._run_performance_monitoring, daemon=True
+                target = self._run_performance_monitoring, daemon = True
             )
             self.monitor_thread.start()
             logger.info("Performance monitoring started")
@@ -205,6 +210,7 @@ class AutomationController:
             logger.error(f"Error starting automation: {e}")
             self.stop_automation()
             raise
+
 
     def stop_automation(self):
         """Stop all automation systems."""
@@ -225,9 +231,10 @@ class AutomationController:
         # Wait for threads to finish
         for thread in [self.content_thread, self.rss_thread, self.monitor_thread]:
             if thread and thread.is_alive():
-                thread.join(timeout=5)
+                thread.join(timeout = 5)
 
         logger.info("Automation systems stopped")
+
 
     def _run_rss_monitoring(self):
         """Run RSS monitoring in background thread."""
@@ -238,6 +245,7 @@ class AutomationController:
             self._log_error("rss_engine", "monitoring_error", str(e))
             self.error_count += 1
 
+
     def _run_content_pipeline(self):
         """Run content pipeline in background thread."""
         try:
@@ -246,6 +254,7 @@ class AutomationController:
             logger.error(f"Content pipeline error: {e}")
             self._log_error("content_pipeline", "pipeline_error", str(e))
             self.error_count += 1
+
 
     def _run_performance_monitoring(self):
         """Run performance monitoring loop."""
@@ -257,6 +266,7 @@ class AutomationController:
                 logger.error(f"Performance monitoring error: {e}")
                 self._log_error("monitor", "metrics_error", str(e))
                 time.sleep(60)  # Wait longer on error
+
 
     def _collect_performance_metrics(self):
         """Collect and store performance metrics."""
@@ -275,41 +285,42 @@ class AutomationController:
                 uptime_hours = (timestamp - self.start_time).total_seconds() / 3600
                 cursor.execute(
                     "INSERT INTO system_metrics (component, metric_name, metric_value) VALUES (?, ?, ?)",
-                    ("system", "uptime_hours", uptime_hours),
-                )
+                        ("system", "uptime_hours", uptime_hours),
+                        )
 
             # Error count
             cursor.execute(
                 "INSERT INTO system_metrics (component, metric_name, metric_value) VALUES (?, ?, ?)",
-                ("system", "error_count", self.error_count),
-            )
+                    ("system", "error_count", self.error_count),
+                    )
 
             # Content pipeline metrics
             if "pending_opportunities" in pipeline_status:
                 cursor.execute(
                     "INSERT INTO system_metrics (component, metric_name, metric_value) VALUES (?, ?, ?)",
-                    (
+                        (
                         "content_pipeline",
-                        "pending_opportunities",
-                        pipeline_status["pending_opportunities"],
-                    ),
-                )
+                            "pending_opportunities",
+                            pipeline_status["pending_opportunities"],
+                            ),
+                        )
 
             if "recent_projects_24h" in pipeline_status:
                 cursor.execute(
                     "INSERT INTO system_metrics (component, metric_name, metric_value) VALUES (?, ?, ?)",
-                    (
+                        (
                         "content_pipeline",
-                        "projects_24h",
-                        pipeline_status["recent_projects_24h"],
-                    ),
-                )
+                            "projects_24h",
+                            pipeline_status["recent_projects_24h"],
+                            ),
+                        )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"Error collecting metrics: {e}")
+
 
     def _log_error(
         self, component: str, error_type: str, message: str, stack_trace: str = None
@@ -325,13 +336,14 @@ class AutomationController:
                 VALUES (?, ?, ?, ?)
             """,
                 (component, error_type, message, stack_trace),
-            )
+                    )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"Error logging error: {e}")
+
 
     def get_automation_status(self) -> AutomationStatus:
         """Get comprehensive automation status."""
@@ -350,8 +362,8 @@ class AutomationController:
 
             cursor.execute(
                 """
-                SELECT COUNT(*) FROM content_projects 
-                WHERE status = 'completed' 
+                SELECT COUNT(*) FROM content_projects
+                WHERE status = 'completed'
                 AND DATE(updated_at) = DATE('now')
             """
             )
@@ -359,7 +371,7 @@ class AutomationController:
 
             cursor.execute(
                 """
-                SELECT COUNT(*) FROM content_projects 
+                SELECT COUNT(*) FROM content_projects
                 WHERE status IN ('planning', 'scripting', 'production')
             """
             )
@@ -368,34 +380,37 @@ class AutomationController:
             conn.close()
 
             return AutomationStatus(
-                content_pipeline_running=pipeline_status.get("running", False),
-                rss_monitoring_active=hasattr(self.rss_engine, "running")
+                content_pipeline_running = pipeline_status.get("running", False),
+                    rss_monitoring_active = hasattr(self.rss_engine, "running")
                 and self.rss_engine.running,
-                total_opportunities=pipeline_status.get("pending_opportunities", 0),
-                active_projects=active_projects,
-                completed_today=completed_today,
-                error_count=self.error_count,
-                last_update=datetime.now(),
-                uptime_hours=uptime_hours,
-            )
+                    total_opportunities = pipeline_status.get("pending_opportunities", 0),
+                    active_projects = active_projects,
+                    completed_today = completed_today,
+                    error_count = self.error_count,
+                    last_update = datetime.now(),
+                    uptime_hours = uptime_hours,
+                    )
 
         except Exception as e:
             logger.error(f"Error getting automation status: {e}")
             return AutomationStatus(
-                content_pipeline_running=False,
-                rss_monitoring_active=False,
-                total_opportunities=0,
-                active_projects=0,
-                completed_today=0,
-                error_count=self.error_count,
-                last_update=datetime.now(),
-                uptime_hours=0,
-            )
+                content_pipeline_running = False,
+                    rss_monitoring_active = False,
+                    total_opportunities = 0,
+                    active_projects = 0,
+                    completed_today = 0,
+                    error_count = self.error_count,
+                    last_update = datetime.now(),
+                    uptime_hours = 0,
+                    )
+
 
     def _setup_api_routes(self):
         """Setup Flask API routes for automation control."""
 
-        @self.api.route("/api/automation/status", methods=["GET"])
+        @self.api.route("/api / automation / status", methods=["GET"])
+
+
         def get_status():
             """Get automation status."""
             try:
@@ -404,7 +419,9 @@ class AutomationController:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @self.api.route("/api/automation/start", methods=["POST"])
+        @self.api.route("/api / automation / start", methods=["POST"])
+
+
         def start_automation_api():
             """Start automation systems."""
             try:
@@ -418,7 +435,9 @@ class AutomationController:
             except Exception as e:
                 return jsonify({"error": str(e), "success": False}), 500
 
-        @self.api.route("/api/automation/stop", methods=["POST"])
+        @self.api.route("/api / automation / stop", methods=["POST"])
+
+
         def stop_automation_api():
             """Stop automation systems."""
             try:
@@ -427,7 +446,9 @@ class AutomationController:
             except Exception as e:
                 return jsonify({"error": str(e), "success": False}), 500
 
-        @self.api.route("/api/automation/content/opportunities", methods=["GET"])
+        @self.api.route("/api / automation / content / opportunities", methods=["GET"])
+
+
         def get_content_opportunities():
             """Get current content opportunities."""
             try:
@@ -436,7 +457,7 @@ class AutomationController:
 
                 cursor.execute(
                     """
-                    SELECT * FROM content_opportunities 
+                    SELECT * FROM content_opportunities
                     WHERE status = 'pending'
                     ORDER BY priority DESC, estimated_engagement DESC
                     LIMIT 20
@@ -466,7 +487,9 @@ class AutomationController:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @self.api.route("/api/automation/content/projects", methods=["GET"])
+        @self.api.route("/api / automation / content / projects", methods=["GET"])
+
+
         def get_content_projects():
             """Get current content projects."""
             try:
@@ -475,7 +498,7 @@ class AutomationController:
 
                 cursor.execute(
                     """
-                    SELECT * FROM content_projects 
+                    SELECT * FROM content_projects
                     ORDER BY created_at DESC
                     LIMIT 50
                 """
@@ -502,7 +525,9 @@ class AutomationController:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @self.api.route("/api/automation/content/generate", methods=["POST"])
+        @self.api.route("/api / automation / content / generate", methods=["POST"])
+
+
         def trigger_content_generation():
             """Manually trigger content generation cycle."""
             try:
@@ -522,28 +547,30 @@ class AutomationController:
                 return jsonify(
                     {
                         "success": True,
-                        "opportunities_found": len(opportunities),
-                        "projects_generated": len(generated_projects),
-                        "projects": [
+                            "opportunities_found": len(opportunities),
+                            "projects_generated": len(generated_projects),
+                            "projects": [
                             {
                                 "id": p.id,
-                                "title": p.title,
-                                "format": p.format.value,
-                                "status": p.status,
-                            }
+                                    "title": p.title,
+                                    "format": p.format.value,
+                                    "status": p.status,
+                                    }
                             for p in generated_projects
                         ],
-                    }
+                            }
                 )
 
             except Exception as e:
                 return jsonify({"error": str(e), "success": False}), 500
 
-        @self.api.route("/api/automation/metrics", methods=["GET"])
+        @self.api.route("/api / automation / metrics", methods=["GET"])
+
+
         def get_performance_metrics():
             """Get performance metrics."""
             try:
-                days = request.args.get("days", 7, type=int)
+                days = request.args.get("days", 7, type = int)
 
                 conn = sqlite3.connect(self.performance_db)
                 cursor = conn.cursor()
@@ -551,13 +578,13 @@ class AutomationController:
                 cursor.execute(
                     """
                     SELECT component, metric_name, AVG(metric_value) as avg_value,
-                           COUNT(*) as sample_count
-                    FROM system_metrics 
+                        COUNT(*) as sample_count
+                    FROM system_metrics
                     WHERE timestamp > datetime('now', '-{} days')
                     GROUP BY component, metric_name
                     ORDER BY component, metric_name
                 """.format(
-                        days
+                    days
                     )
                 )
 
@@ -566,22 +593,22 @@ class AutomationController:
                     metrics.append(
                         {
                             "component": row[0],
-                            "metric": row[1],
-                            "average_value": row[2],
-                            "sample_count": row[3],
-                        }
+                                "metric": row[1],
+                                "average_value": row[2],
+                                "sample_count": row[3],
+                                }
                     )
 
                 # Get recent errors
                 cursor.execute(
                     """
                     SELECT component, error_type, COUNT(*) as error_count
-                    FROM error_log 
+                    FROM error_log
                     WHERE timestamp > datetime('now', '-{} days')
                     GROUP BY component, error_type
                     ORDER BY error_count DESC
                 """.format(
-                        days
+                    days
                     )
                 )
 
@@ -600,13 +627,15 @@ class AutomationController:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-    def run_api_server(self, host="0.0.0.0", port=None):
+
+    def run_api_server(self, host="0.0.0.0", port = None):
         """Run the API server."""
         if port is None:
             port = self.config["api_port"]
 
         logger.info(f"Starting Automation API server on {host}:{port}")
-        self.api.run(host=host, port=port, debug=False)
+        self.api.run(host = host, port = port, debug = False)
+
 
     def cleanup(self):
         """Cleanup resources."""
@@ -646,8 +675,8 @@ def main():
     parser.add_argument(
         "--config", default="automation_config.json", help="Configuration file path"
     )
-    parser.add_argument("--api-only", action="store_true", help="Run API server only")
-    parser.add_argument("--port", type=int, default=8082, help="API server port")
+    parser.add_argument("--api - only", action="store_true", help="Run API server only")
+    parser.add_argument("--port", type = int, default = 8082, help="API server port")
     parser.add_argument("--host", default="0.0.0.0", help="API server host")
 
     args = parser.parse_args()
@@ -658,21 +687,20 @@ def main():
     try:
         if args.api_only:
             # Run API server only
-            controller.run_api_server(host=args.host, port=args.port)
+            controller.run_api_server(host = args.host, port = args.port)
         else:
             # Start automation and API server
             if controller.config["auto_start"]:
                 controller.start_automation()
 
             # Run API server (blocking)
-            controller.run_api_server(host=args.host, port=args.port)
+            controller.run_api_server(host = args.host, port = args.port)
 
     except KeyboardInterrupt:
         logger.info("Received interrupt signal")
     finally:
         controller.cleanup()
         logger.info("Automation Controller shutdown complete")
-
 
 if __name__ == "__main__":
     main()

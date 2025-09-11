@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 RouteLL API Integration Example
 Demonstrates complete integration with monitoring, rate limiting, and intelligent routing
@@ -34,11 +34,12 @@ class RouteLL_IntegratedClient:
     - Error handling and fallbacks
     """
 
+
     def __init__(self, api_key: str = None, config_path: str = None):
         # Initialize components
         self.config_path = (
             config_path
-            or "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
+            or "/Users / thomasbrianreynolds / online production / config / routellm_config.json"
         )
         self.config = self._load_config()
 
@@ -51,7 +52,7 @@ class RouteLL_IntegratedClient:
 
         # Intelligent routing
         self.router = ModelRouter(
-            config_path=self.config_path, rate_limiter=self.rate_limiter
+            config_path = self.config_path, rate_limiter = self.rate_limiter
         )
 
         # Monitoring
@@ -66,15 +67,15 @@ class RouteLL_IntegratedClient:
         # Usage tracking
         self.session_stats = {
             "requests_made": 0,
-            "total_tokens": 0,
-            "total_cost": 0.0,
-            "successful_requests": 0,
-            "failed_requests": 0,
-            "fallback_requests": 0,
-            "web_ai_requests": 0,
-            "avatar_generations": 0,
-            "start_time": time.time(),
-        }
+                "total_tokens": 0,
+                "total_cost": 0.0,
+                "successful_requests": 0,
+                "failed_requests": 0,
+                "fallback_requests": 0,
+                "web_ai_requests": 0,
+                "avatar_generations": 0,
+                "start_time": time.time(),
+                }
 
         print("🚀 RouteLL Integrated Client initialized")
         print(
@@ -85,6 +86,7 @@ class RouteLL_IntegratedClient:
             f"⚡ Rate limiting: {'✅ Enabled' if self.rate_limiter else '❌ Disabled'}"
         )
 
+
     def _load_config(self) -> Dict:
         """Load configuration from file"""
         try:
@@ -93,6 +95,7 @@ class RouteLL_IntegratedClient:
         except Exception as e:
             print(f"⚠️ Failed to load config: {e}")
             return {}
+
 
     async def chat_completion(self, messages: List[Dict], **kwargs) -> APIResponse:
         """
@@ -133,7 +136,7 @@ class RouteLL_IntegratedClient:
 
             # Step 3: Intelligent model routing
             routing_result = self.router.route_request(
-                messages, preferences=kwargs.get("preferences")
+                messages, preferences = kwargs.get("preferences")
             )
             selected_model = routing_result["routing_decision"]["selected_model"]
             optimized_params = routing_result["optimized_params"]
@@ -146,7 +149,7 @@ class RouteLL_IntegratedClient:
                 f"🎯 Routed to model: {selected_model} ({routing_result['model_info']['tier']})"
             )
             print(
-                f"💰 Estimated cost/token: ${routing_result['model_info']['cost_per_token']:.4f}"
+                f"💰 Estimated cost / token: ${routing_result['model_info']['cost_per_token']:.4f}"
             )
 
             # Step 4: Make the API request
@@ -161,7 +164,7 @@ class RouteLL_IntegratedClient:
 
             if response.success:
                 self.router.record_request_outcome(
-                    selected_model, task_type, True, request_time, quality_rating=0.85
+                    selected_model, task_type, True, request_time, quality_rating = 0.85
                 )
                 self.session_stats["successful_requests"] += 1
             else:
@@ -192,11 +195,11 @@ class RouteLL_IntegratedClient:
                 response.routing_info = routing_result["routing_decision"]
                 response.optimization_info = {
                     "original_params": kwargs,
-                    "optimized_params": final_params,
-                    "cost_savings": self._calculate_cost_savings(
+                        "optimized_params": final_params,
+                        "cost_savings": self._calculate_cost_savings(
                         kwargs, final_params, routing_result
                     ),
-                }
+                        }
 
             return response
 
@@ -212,13 +215,14 @@ class RouteLL_IntegratedClient:
 
             # Return error response
             return APIResponse(
-                success=False,
-                content=None,
-                error=str(e),
-                usage=None,
-                model=kwargs.get("model", "unknown"),
-                response_time=time.time() - request_start,
-            )
+                success = False,
+                    content = None,
+                    error = str(e),
+                    usage = None,
+                    model = kwargs.get("model", "unknown"),
+                    response_time = time.time() - request_start,
+                    )
+
 
     def _calculate_cost_savings(
         self, original_params: Dict, optimized_params: Dict, routing_result: Dict
@@ -239,10 +243,11 @@ class RouteLL_IntegratedClient:
 
         return {
             "estimated_original_cost": original_cost,
-            "estimated_optimized_cost": optimized_cost,
-            "estimated_savings": savings,
-            "savings_percentage": savings_percentage,
-        }
+                "estimated_optimized_cost": optimized_cost,
+                "estimated_savings": savings,
+                "savings_percentage": savings_percentage,
+                }
+
 
     async def stream_completion(
         self, messages: List[Dict], **kwargs
@@ -250,22 +255,23 @@ class RouteLL_IntegratedClient:
         """Stream completion with full integration"""
         # Similar to chat_completion but with streaming
         routing_result = self.router.route_request(
-            messages, preferences=kwargs.get("preferences")
+            messages, preferences = kwargs.get("preferences")
         )
         selected_model = routing_result["routing_decision"]["selected_model"]
         optimized_params = routing_result["optimized_params"]
 
         final_params = {
             **optimized_params,
-            **kwargs,
-            "model": selected_model,
-            "stream": True,
-        }
+                **kwargs,
+                "model": selected_model,
+                "stream": True,
+                }
 
         print(f"🎯 Streaming from model: {selected_model}")
 
         async for chunk in self.client.stream_completion(messages, **final_params):
             yield chunk
+
 
     def get_session_analytics(self) -> Dict:
         """Get comprehensive session analytics"""
@@ -273,12 +279,12 @@ class RouteLL_IntegratedClient:
 
         analytics = {
             "session_duration_minutes": session_duration / 60,
-            "requests_per_minute": (
+                "requests_per_minute": (
                 self.session_stats["requests_made"] / (session_duration / 60)
                 if session_duration > 0
                 else 0
             ),
-            "success_rate": (
+                "success_rate": (
                 (
                     self.session_stats["successful_requests"]
                     / self.session_stats["requests_made"]
@@ -287,17 +293,17 @@ class RouteLL_IntegratedClient:
                 if self.session_stats["requests_made"] > 0
                 else 0
             ),
-            "total_requests": self.session_stats["requests_made"],
-            "successful_requests": self.session_stats["successful_requests"],
-            "failed_requests": self.session_stats["failed_requests"],
-            "total_tokens_used": self.session_stats["total_tokens"],
-            "estimated_total_cost": self.session_stats["total_cost"],
-            "avg_cost_per_request": (
+                "total_requests": self.session_stats["requests_made"],
+                "successful_requests": self.session_stats["successful_requests"],
+                "failed_requests": self.session_stats["failed_requests"],
+                "total_tokens_used": self.session_stats["total_tokens"],
+                "estimated_total_cost": self.session_stats["total_cost"],
+                "avg_cost_per_request": (
                 self.session_stats["total_cost"] / self.session_stats["requests_made"]
                 if self.session_stats["requests_made"] > 0
                 else 0
             ),
-        }
+                }
 
         # Add routing analytics
         routing_analytics = self.router.get_routing_analytics()
@@ -306,11 +312,12 @@ class RouteLL_IntegratedClient:
         # Add rate limiting status
         analytics["rate_limiting"] = {
             "current_window_requests": len(self.rate_limiter.request_history),
-            "can_make_request": self.rate_limiter.can_make_request(),
-            "wait_time_seconds": self.rate_limiter.can_make_request()[2],
-        }
+                "can_make_request": self.rate_limiter.can_make_request(),
+                "wait_time_seconds": self.rate_limiter.can_make_request()[2],
+                }
 
         return analytics
+
 
     async def _try_fallback(
         self, messages: List[Dict], **kwargs
@@ -330,7 +337,7 @@ class RouteLL_IntegratedClient:
 
             # Use fallback system
             fallback_response = await self.fallback.chat_completion(
-                messages=messages, **kwargs
+                messages = messages, **kwargs
             )
 
             if fallback_response.success:
@@ -340,19 +347,19 @@ class RouteLL_IntegratedClient:
 
                 # Convert fallback response to APIResponse format
                 return APIResponse(
-                    success=True,
-                    data={
+                    success = True,
+                        data={
                         "content": fallback_response.content,
-                        "usage": fallback_response.usage,
-                    },
-                    error=None,
-                    credits_used=0,  # Fallback APIs are free
-                    response_time_ms=int(fallback_response.response_time * 1000),
-                    model_used=fallback_response.model,
-                    timestamp=datetime.now(),
-                    provider=fallback_response.provider,
-                    fallback_used=True,
-                )
+                            "usage": fallback_response.usage,
+                            },
+                        error = None,
+                        credits_used = 0,  # Fallback APIs are free
+                    response_time_ms = int(fallback_response.response_time * 1000),
+                        model_used = fallback_response.model,
+                        timestamp = datetime.now(),
+                        provider = fallback_response.provider,
+                        fallback_used = True,
+                        )
             else:
                 print(f"❌ Fallback failed: {fallback_response.error}")
                 return None
@@ -361,29 +368,30 @@ class RouteLL_IntegratedClient:
             print(f"❌ Fallback exception: {e}")
             return None
 
+
     async def health_check(self) -> Dict:
         """Comprehensive health check"""
         health_status = {
             "timestamp": datetime.now().isoformat(),
-            "overall_status": "healthy",
-            "components": {},
-        }
+                "overall_status": "healthy",
+                "components": {},
+                }
 
         try:
             # Check API connectivity
             api_status = await self.client.health_check()
             health_status["components"]["api"] = {
                 "status": "healthy" if api_status.success else "unhealthy",
-                "response_time": api_status.response_time,
-                "details": (
+                    "response_time": api_status.response_time,
+                    "details": (
                     api_status.content if api_status.success else api_status.error
-                ),
-            }
+                        ),
+                    }
         except Exception as e:
             health_status["components"]["api"] = {
                 "status": "unhealthy",
-                "error": str(e),
-            }
+                    "error": str(e),
+                    }
             health_status["overall_status"] = "degraded"
 
         try:
@@ -393,37 +401,38 @@ class RouteLL_IntegratedClient:
                 "status": (
                     "healthy" if credit_status.remaining_credits > 100 else "warning"
                 ),
-                "remaining_credits": credit_status.remaining_credits,
-                "daily_usage": credit_status.daily_usage,
-            }
+                    "remaining_credits": credit_status.remaining_credits,
+                    "daily_usage": credit_status.daily_usage,
+                    }
         except Exception as e:
             health_status["components"]["credits"] = {
                 "status": "unknown",
-                "error": str(e),
-            }
+                    "error": str(e),
+                    }
 
         # Check rate limiting
         health_status["components"]["rate_limiting"] = {
             "status": "healthy",
-            "can_make_request": self.rate_limiter.can_make_request(),
-            "current_usage": len(self.rate_limiter.request_history),
-        }
+                "can_make_request": self.rate_limiter.can_make_request(),
+                "current_usage": len(self.rate_limiter.request_history),
+                }
 
         # Check model router
         health_status["components"]["model_router"] = {
             "status": "healthy",
-            "available_models": len(self.router.models),
-            "routing_decisions_made": len(self.router.routing_history),
-        }
+                "available_models": len(self.router.models),
+                "routing_decisions_made": len(self.router.routing_history),
+                }
 
         return health_status
 
+
     async def generate_avatar(
         self,
-        description: str,
-        style: str = "realistic",
-        platform: WebAIPlatform = WebAIPlatform.CHATGPT,
-    ) -> Dict:
+            description: str,
+            style: str = "realistic",
+            platform: WebAIPlatform = WebAIPlatform.CHATGPT,
+            ) -> Dict:
         """
         Generate avatar using web AI platforms
 
@@ -442,17 +451,17 @@ class RouteLL_IntegratedClient:
             messages = [
                 {
                     "role": "system",
-                    "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high-quality avatar images.",
-                },
-                {
+                        "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high - quality avatar images.",
+                        },
+                    {
                     "role": "user",
-                    "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, and quality modifiers that work well with AI image generators like DALL-E, Midjourney, or Stable Diffusion.",
-                },
-            ]
+                        "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, and quality modifiers that work well with AI image generators like DALL - E, Midjourney, or Stable Diffusion.",
+                        },
+                    ]
 
             # Generate optimized prompt using web AI
             response = await self.web_ai_client.chat_completion(
-                messages=messages, platform=platform
+                messages = messages, platform = platform
             )
 
             self.session_stats["web_ai_requests"] += 1
@@ -463,25 +472,26 @@ class RouteLL_IntegratedClient:
 
                 return {
                     "success": True,
-                    "description": description,
-                    "style": style,
-                    "optimized_prompt": response.content,
-                    "platform_used": platform.value,
-                    "response_time": response.response_time,
-                    "timestamp": datetime.now(),
-                }
+                        "description": description,
+                        "style": style,
+                        "optimized_prompt": response.content,
+                        "platform_used": platform.value,
+                        "response_time": response.response_time,
+                        "timestamp": datetime.now(),
+                        }
             else:
                 print(f"❌ Avatar generation failed: {response.error}")
                 return {
                     "success": False,
-                    "error": response.error,
-                    "platform_used": platform.value,
-                    "timestamp": datetime.now(),
-                }
+                        "error": response.error,
+                        "platform_used": platform.value,
+                        "timestamp": datetime.now(),
+                        }
 
         except Exception as e:
             print(f"❌ Avatar generation exception: {e}")
             return {"success": False, "error": str(e), "timestamp": datetime.now()}
+
 
     async def multi_platform_avatar_generation(
         self, description: str, style: str = "realistic"
@@ -496,7 +506,7 @@ class RouteLL_IntegratedClient:
         Returns:
             Dictionary with results from multiple platforms
         """
-        print(f"🔄 Multi-platform avatar generation: {description}")
+        print(f"🔄 Multi - platform avatar generation: {description}")
 
         platforms = [WebAIPlatform.CHATGPT, WebAIPlatform.GEMINI, WebAIPlatform.CLAUDE]
         results = {}
@@ -512,25 +522,26 @@ class RouteLL_IntegratedClient:
             except Exception as e:
                 results[platform.value] = {
                     "success": False,
-                    "error": str(e),
-                    "platform_used": platform.value,
-                }
+                        "error": str(e),
+                        "platform_used": platform.value,
+                        }
 
         return {
             "description": description,
-            "style": style,
-            "platform_results": results,
-            "timestamp": datetime.now(),
-        }
-
+                "style": style,
+                "platform_results": results,
+                "timestamp": datetime.now(),
+                }
 
 # Example usage and testing
+
+
 async def main():
     """Example usage of the integrated RouteLL client"""
 
     # Initialize client (API key should be set in environment)
     api_key = os.getenv("ROUTELLM_API_KEY", "s2_f0b00d6897a0431f8367a7fc859b697a")
-    client = RouteLL_IntegratedClient(api_key=api_key)
+    client = RouteLL_IntegratedClient(api_key = api_key)
 
     print("\n🧪 Testing RouteLL Integration")
     print("=" * 50)
@@ -561,8 +572,8 @@ async def main():
     code_messages = [
         {
             "role": "user",
-            "content": "Write a Python function to calculate the factorial of a number",
-        }
+                "content": "Write a Python function to calculate the factorial of a number",
+                }
     ]
 
     response = await client.chat_completion(
@@ -581,7 +592,7 @@ async def main():
 
     print("   📡 Streaming response:")
     async for chunk in client.stream_completion(stream_messages):
-        print(chunk, end="", flush=True)
+        print(chunk, end="", flush = True)
     print("\n   ✅ Streaming completed")
 
     # Test 5: Session analytics
@@ -590,7 +601,7 @@ async def main():
     print(f"   📊 Total requests: {analytics['total_requests']}")
     print(f"   ✅ Success rate: {analytics['success_rate']:.1f}%")
     print(f"   💰 Total cost: ${analytics['estimated_total_cost']:.4f}")
-    print(f"   ⚡ Requests/min: {analytics['requests_per_minute']:.1f}")
+    print(f"   ⚡ Requests / min: {analytics['requests_per_minute']:.1f}")
     print(f"   🎨 Avatar generations: {client.session_stats['avatar_generations']}")
     print(f"   🌐 Web AI requests: {client.session_stats['web_ai_requests']}")
 
@@ -598,9 +609,9 @@ async def main():
     print("\n6️⃣ Avatar Generation:")
     avatar_result = await client.generate_avatar(
         description="A professional software developer with glasses and a friendly smile",
-        style="realistic",
-        platform=WebAIPlatform.CHATGPT,
-    )
+            style="realistic",
+            platform = WebAIPlatform.CHATGPT,
+            )
 
     if avatar_result["success"]:
         print(f"   ✅ Avatar prompt generated")
@@ -609,8 +620,8 @@ async def main():
     else:
         print(f"   ❌ Avatar generation failed: {avatar_result['error']}")
 
-    # Test 7: Multi-platform avatar generation
-    print("\n7️⃣ Multi-Platform Avatar Generation:")
+    # Test 7: Multi - platform avatar generation
+    print("\n7️⃣ Multi - Platform Avatar Generation:")
     multi_result = await client.multi_platform_avatar_generation(
         description="A futuristic AI assistant avatar", style="digital art"
     )
@@ -625,9 +636,9 @@ async def main():
     print("\n8️⃣ Model Suggestions:")
     suggestions = [
         "Help me debug this complex algorithm",
-        "Write a poem about technology",
-        "Solve this math equation: 2x^2 + 5x - 3 = 0",
-    ]
+            "Write a poem about technology",
+            "Solve this math equation: 2x^2 + 5x - 3 = 0",
+            ]
 
     for task in suggestions:
         suggestion = client.router.suggest_model_for_task(task)
@@ -647,7 +658,7 @@ async def main():
     print("   ✅ Cost optimization enabled")
     print("   ✅ Analytics and monitoring ready")
     print("   ✅ Avatar generation integrated")
-    print("   ✅ Multi-platform AI access enabled")
+    print("   ✅ Multi - platform AI access enabled")
 
     # Cleanup resources
     await client.web_ai_client.cleanup_sessions()
@@ -655,7 +666,6 @@ async def main():
     # Additional cleanup
     print("\n🧹 Cleaning up resources...")
     print("✅ Cleanup completed")
-
 
 if __name__ == "__main__":
     # Run the example

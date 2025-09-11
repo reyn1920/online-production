@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Affiliate Dashboard Credentials Viewer
 
@@ -24,8 +24,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-
 class AffiliateCredentialsViewer:
+
     def __init__(self, db_path: str = None):
         if db_path is None:
             # Default to the intelligence database
@@ -69,8 +69,8 @@ class AffiliateCredentialsViewer:
             # Query affiliate dashboards
             cursor.execute(
                 """
-                SELECT id, platform_name, dashboard_url, login_credentials_encrypted, 
-                       last_scraped, scraping_config, created_at
+                SELECT id, platform_name, dashboard_url, login_credentials_encrypted,
+                    last_scraped, scraping_config, created_at
                 FROM affiliate_dashboards
                 ORDER BY platform_name
             """
@@ -84,13 +84,13 @@ class AffiliateCredentialsViewer:
             for row in dashboards:
                 dashboard = {
                     "id": row[0],
-                    "platform_name": row[1],
-                    "dashboard_url": row[2],
-                    "login_credentials": row[3],  # Encrypted
+                        "platform_name": row[1],
+                        "dashboard_url": row[2],
+                        "login_credentials": row[3],  # Encrypted
                     "last_scraped": row[4],
-                    "scraping_config": json.loads(row[5]) if row[5] else {},
-                    "created_at": row[6],
-                }
+                        "scraping_config": json.loads(row[5]) if row[5] else {},
+                        "created_at": row[6],
+                        }
                 dashboard_list.append(dashboard)
 
             return dashboard_list
@@ -112,8 +112,8 @@ class AffiliateCredentialsViewer:
 
             cursor.execute(
                 """
-                SELECT profile_id, user_agent, viewport_size, timezone, 
-                       language, platform, last_used, success_rate
+                SELECT profile_id, user_agent, viewport_size, timezone,
+                    language, platform, last_used, success_rate
                 FROM stealth_profiles
                 ORDER BY success_rate DESC
             """
@@ -126,14 +126,14 @@ class AffiliateCredentialsViewer:
             for row in profiles:
                 profile = {
                     "profile_id": row[0],
-                    "user_agent": row[1],
-                    "viewport_size": row[2],
-                    "timezone": row[3],
-                    "language": row[4],
-                    "platform": row[5],
-                    "last_used": row[6],
-                    "success_rate": row[7],
-                }
+                        "user_agent": row[1],
+                        "viewport_size": row[2],
+                        "timezone": row[3],
+                        "language": row[4],
+                        "platform": row[5],
+                        "last_used": row[6],
+                        "success_rate": row[7],
+                        }
                 profile_list.append(profile)
 
             return profile_list
@@ -145,7 +145,7 @@ class AffiliateCredentialsViewer:
     def decrypt_credentials(self, encrypted_data: str) -> Dict[str, str]:
         """
         Decrypt stored credentials (placeholder implementation)
-        In production, use proper encryption/decryption
+        In production, use proper encryption / decryption
         """
         try:
             # This is a placeholder - implement actual decryption
@@ -153,7 +153,7 @@ class AffiliateCredentialsViewer:
             if encrypted_data:
                 return json.loads(encrypted_data)
             return {}
-        except:
+        except Exception:
             return {"username": "[ENCRYPTED]", "password": "[ENCRYPTED]"}
 
     def display_dashboards(self):
@@ -238,27 +238,26 @@ class AffiliateCredentialsViewer:
         # Prepare export data (without sensitive info in plain text)
         export_data = {
             "export_date": datetime.now().isoformat(),
-            "total_dashboards": len(dashboards),
-            "dashboards": [],
-        }
+                "total_dashboards": len(dashboards),
+                "dashboards": [],
+                }
 
         for dashboard in dashboards:
             export_item = {
                 "platform_name": dashboard["platform_name"],
-                "dashboard_url": dashboard["dashboard_url"],
-                "created_at": dashboard["created_at"],
-                "last_scraped": dashboard["last_scraped"],
-                "has_credentials": bool(dashboard["login_credentials"]),
-            }
+                    "dashboard_url": dashboard["dashboard_url"],
+                    "created_at": dashboard["created_at"],
+                    "last_scraped": dashboard["last_scraped"],
+                    "has_credentials": bool(dashboard["login_credentials"]),
+                    }
             export_data["dashboards"].append(export_item)
 
         try:
             with open(output_file, "w") as f:
-                json.dump(export_data, f, indent=2)
+                json.dump(export_data, f, indent = 2)
             print(f"\n✅ Credentials summary exported to: {output_file}")
         except Exception as e:
             print(f"\n❌ Export failed: {e}")
-
 
 def main():
     """
@@ -283,7 +282,7 @@ def main():
         print("3. Export Credentials Summary")
         print("4. Exit")
 
-        choice = input("\nSelect an option (1-4): ").strip()
+        choice = input("\nSelect an option (1 - 4): ").strip()
 
         if choice == "1":
             viewer.display_dashboards()
@@ -301,7 +300,6 @@ def main():
             print("\n❌ Invalid option. Please try again.")
 
         input("\nPress Enter to continue...")
-
 
 if __name__ == "__main__":
     main()

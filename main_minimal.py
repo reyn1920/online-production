@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Minimal FastAPI server for debugging
 """
@@ -12,46 +12,47 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # Set up logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
     title="Online Production API - Minimal",
-    description="Minimal version for debugging",
-    version="1.0.0",
+        description="Minimal version for debugging",
+        version="1.0.0",
 )
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
+        allow_origins=[
         "http://localhost:3000",
-        "http://localhost:8000",
-        "https://*.netlify.app",
-    ],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["*"],
+            "http://localhost:8000",
+            "https://*.netlify.app",
+            ],
+        allow_credentials = True,
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["*"],
 )
 
-
 @app.get("/health")
+
+
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "message": "Minimal server is running"}
 
-
 @app.get("/")
+
+
 async def root():
     """Root endpoint"""
     return {
         "message": "Online Production API - Minimal Mode",
-        "status": "running",
-        "endpoints": ["/health", "/docs"],
-    }
-
+            "status": "running",
+            "endpoints": ["/health", "/docs"],
+            }
 
 if __name__ == "__main__":
     # Get configuration from environment
@@ -62,4 +63,4 @@ if __name__ == "__main__":
     logger.info(f"📖 API docs: http://{host}:{port}/docs")
     logger.info(f"❤️ Health check: http://{host}:{port}/health")
 
-    uvicorn.run(app, host=host, port=port, reload=False, log_level="info")
+    uvicorn.run(app, host = host, port = port, reload = False, log_level="info")

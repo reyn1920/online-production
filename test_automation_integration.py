@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Integration Test Suite for Content Automation Pipeline
 
@@ -8,7 +8,7 @@ This comprehensive test suite validates:
 3. Video generation capabilities
 4. Database operations and data integrity
 5. API endpoints and automation controller
-6. End-to-end content creation workflow
+6. End - to - end content creation workflow
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -38,7 +38,7 @@ from automation_controller import AutomationController
 # Import modules to test
 from breaking_news_watcher import NewsArticle, RSSIntelligenceEngine, TrendData
 from content_automation_pipeline import (ContentAutomationPipeline, ContentFormat,
-                                         ContentOpportunity, ContentPriority)
+    ContentOpportunity, ContentPriority)
 from tools.basic_video_generator import create_basic_video
 
 logger = get_logger(__name__)
@@ -46,6 +46,7 @@ logger = get_logger(__name__)
 
 class TestRSSIntelligenceEngine(unittest.TestCase):
     """Test RSS Intelligence Engine functionality."""
+
 
     def setUp(self):
         """Set up test environment."""
@@ -57,11 +58,13 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
         self.rss_engine.db_path = self.test_db
         self.rss_engine._init_intelligence_tables()
 
+
     def tearDown(self):
         """Clean up test environment."""
         import shutil
 
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+        shutil.rmtree(self.temp_dir, ignore_errors = True)
+
 
     def test_database_initialization(self):
         """Test database table creation."""
@@ -74,32 +77,33 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
 
         required_tables = [
             "news_articles",
-            "trend_analysis",
-            "hypocrisy_tracker",
-            "intelligence_briefings",
-        ]
+                "trend_analysis",
+                "hypocrisy_tracker",
+                "intelligence_briefings",
+                ]
 
         for table in required_tables:
             self.assertIn(table, tables, f"Required table {table} not found")
 
         conn.close()
 
+
     def test_article_storage_and_retrieval(self):
         """Test article storage and retrieval functionality."""
         # Create test article
         test_article = NewsArticle(
             title="Test Breaking News",
-            url="https://example.com/test-news",
-            content="This is a test news article about important events.",
-            published=datetime.now(),
-            source="Test Source",
-            category="General",
-            keywords=["test", "news", "breaking"],
-            entities=["TestEntity"],
-            sentiment_score=0.5,
-            readability_score=50.0,
-            hash_id="test_hash_123",
-        )
+                url="https://example.com / test - news",
+                content="This is a test news article about important events.",
+                published = datetime.now(),
+                source="Test Source",
+                category="General",
+                keywords=["test", "news", "breaking"],
+                entities=["TestEntity"],
+                sentiment_score = 0.5,
+                readability_score = 50.0,
+                hash_id="test_hash_123",
+                )
 
         # Store article
         success = self.rss_engine._store_article(test_article)
@@ -120,9 +124,10 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
         self.assertIsNotNone(result, "Article not found in database")
         self.assertEqual(result[1], "test_hash_123")  # hash_id
         self.assertEqual(result[2], "Test Breaking News")  # title
-        self.assertEqual(result[3], "https://example.com/test-news")  # url
+        self.assertEqual(result[3], "https://example.com / test - news")  # url
 
         conn.close()
+
 
     def test_trend_analysis(self):
         """Test trend analysis functionality."""
@@ -130,31 +135,31 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
         test_articles = [
             NewsArticle(
                 title="Breaking: Climate Change Impact",
-                url="https://example.com/climate1",
-                content="Climate change is affecting global weather patterns.",
-                published=datetime.now(),
-                source="News Source 1",
-                category="Environment",
-                keywords=["climate", "change", "global"],
-                entities=["Earth"],
-                sentiment_score=0.3,
-                readability_score=45.0,
-                hash_id="climate_1",
-            ),
-            NewsArticle(
+                    url="https://example.com / climate1",
+                    content="Climate change is affecting global weather patterns.",
+                    published = datetime.now(),
+                    source="News Source 1",
+                    category="Environment",
+                    keywords=["climate", "change", "global"],
+                    entities=["Earth"],
+                    sentiment_score = 0.3,
+                    readability_score = 45.0,
+                    hash_id="climate_1",
+                    ),
+                NewsArticle(
                 title="Climate Summit Announces New Policies",
-                url="https://example.com/climate2",
-                content="World leaders discuss climate change solutions.",
-                published=datetime.now(),
-                source="News Source 2",
-                category="Politics",
-                keywords=["climate", "summit", "policies"],
-                entities=["Leaders"],
-                sentiment_score=0.7,
-                readability_score=55.0,
-                hash_id="climate_2",
-            ),
-        ]
+                    url="https://example.com / climate2",
+                    content="World leaders discuss climate change solutions.",
+                    published = datetime.now(),
+                    source="News Source 2",
+                    category="Politics",
+                    keywords=["climate", "summit", "policies"],
+                    entities=["Leaders"],
+                    sentiment_score = 0.7,
+                    readability_score = 55.0,
+                    hash_id="climate_2",
+                    ),
+                ]
 
         # Store test articles
         for article in test_articles:
@@ -165,41 +170,42 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
 
         self.assertIsInstance(trends, list, "Trends should be a list")
 
-        # Check if climate-related trend is detected
+        # Check if climate - related trend is detected
         climate_trends = [t for t in trends if "climate" in t.keyword.lower()]
         # Note: May not find climate trends in test data, but structure is validated
-        logger.info(f"Found {len(climate_trends)} climate-related trends")
+        logger.info(f"Found {len(climate_trends)} climate - related trends")
+
 
     def test_hypocrisy_detection(self):
         """Test hypocrisy detection functionality."""
         # Create contradictory articles about the same subject
         article1 = NewsArticle(
             title="Politician A Supports Environmental Protection",
-            url="https://example.com/env1",
-            content="Politician A strongly advocates for environmental protection and green policies.",
-            published=datetime.now() - timedelta(days=30),
-            source="News Source 1",
-            category="Politics",
-            keywords=["environment", "protection", "green"],
-            entities=["Politician A"],
-            sentiment_score=0.8,
-            readability_score=60.0,
-            hash_id="env_support",
-        )
+                url="https://example.com / env1",
+                content="Politician A strongly advocates for environmental protection and green policies.",
+                published = datetime.now() - timedelta(days = 30),
+                source="News Source 1",
+                category="Politics",
+                keywords=["environment", "protection", "green"],
+                entities=["Politician A"],
+                sentiment_score = 0.8,
+                readability_score = 60.0,
+                hash_id="env_support",
+                )
 
         article2 = NewsArticle(
             title="Politician A Approves Oil Drilling Project",
-            url="https://example.com/oil1",
-            content="Politician A has approved a major oil drilling project despite environmental concerns.",
-            published=datetime.now(),
-            source="News Source 2",
-            category="Politics",
-            keywords=["oil", "drilling", "project"],
-            entities=["Politician A"],
-            sentiment_score=0.2,
-            readability_score=52.0,
-            hash_id="oil_approval",
-        )
+                url="https://example.com / oil1",
+                content="Politician A has approved a major oil drilling project despite environmental concerns.",
+                published = datetime.now(),
+                source="News Source 2",
+                category="Politics",
+                keywords=["oil", "drilling", "project"],
+                entities=["Politician A"],
+                sentiment_score = 0.2,
+                readability_score = 52.0,
+                hash_id="oil_approval",
+                )
 
         # Store articles
         self.rss_engine._store_article(article1)
@@ -219,6 +225,7 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
 class TestContentAutomationPipeline(unittest.TestCase):
     """Test Content Automation Pipeline functionality."""
 
+
     def setUp(self):
         """Set up test environment."""
         self.temp_dir = tempfile.mkdtemp()
@@ -227,13 +234,13 @@ class TestContentAutomationPipeline(unittest.TestCase):
         # Create test configuration
         test_config = {
             "monitoring_interval": 1,
-            "content_generation_interval": 1,
-            "max_daily_content": 5,
-            "priority_keywords": ["test", "breaking"],
-            "content_formats": ["video", "article"],
-            "auto_publish": False,
-            "quality_threshold": 0.5,
-        }
+                "content_generation_interval": 1,
+                "max_daily_content": 5,
+                "priority_keywords": ["test", "breaking"],
+                "content_formats": ["video", "article"],
+                "auto_publish": False,
+                "quality_threshold": 0.5,
+                }
 
         with open(self.test_config, "w") as f:
             json.dump(test_config, f)
@@ -243,28 +250,30 @@ class TestContentAutomationPipeline(unittest.TestCase):
         self.pipeline.db_path = os.path.join(self.temp_dir, "test_content.db")
         self.pipeline._init_automation_tables()
 
+
     def tearDown(self):
         """Clean up test environment."""
         import shutil
 
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+        shutil.rmtree(self.temp_dir, ignore_errors = True)
+
 
     def test_content_opportunity_creation(self):
         """Test content opportunity creation and storage."""
         # Create test opportunity
         opportunity = ContentOpportunity(
             id="test_opp_123",
-            topic="Test Topic",
-            angle="Testing content creation pipeline",
-            priority=ContentPriority.HIGH,
-            formats=[ContentFormat.VIDEO, ContentFormat.ARTICLE],
-            source_articles=["https://example.com/source1"],
-            keywords=["test", "content", "pipeline"],
-            estimated_engagement=0.8,
-            deadline=datetime.now() + timedelta(hours=24),
-            created_at=datetime.now(),
-            metadata={"test": True},
-        )
+                topic="Test Topic",
+                angle="Testing content creation pipeline",
+                priority = ContentPriority.HIGH,
+                formats=[ContentFormat.VIDEO, ContentFormat.ARTICLE],
+                source_articles=["https://example.com / source1"],
+                keywords=["test", "content", "pipeline"],
+                estimated_engagement = 0.8,
+                deadline = datetime.now() + timedelta(hours = 24),
+                created_at = datetime.now(),
+                metadata={"test": True},
+                )
 
         # Store opportunity
         self.pipeline._store_content_opportunity(opportunity)
@@ -283,22 +292,23 @@ class TestContentAutomationPipeline(unittest.TestCase):
 
         conn.close()
 
+
     def test_content_project_generation(self):
         """Test content project generation from opportunities."""
         # Create test opportunity
         opportunity = ContentOpportunity(
             id="test_opp_456",
-            topic="Breaking News Test",
-            angle="Testing project generation",
-            priority=ContentPriority.MEDIUM,
-            formats=[ContentFormat.VIDEO],
-            source_articles=[],
-            keywords=["breaking", "test"],
-            estimated_engagement=0.6,
-            deadline=datetime.now() + timedelta(hours=12),
-            created_at=datetime.now(),
-            metadata={},
-        )
+                topic="Breaking News Test",
+                angle="Testing project generation",
+                priority = ContentPriority.MEDIUM,
+                formats=[ContentFormat.VIDEO],
+                source_articles=[],
+                keywords=["breaking", "test"],
+                estimated_engagement = 0.6,
+                deadline = datetime.now() + timedelta(hours = 12),
+                created_at = datetime.now(),
+                metadata={},
+                )
 
         # Generate projects
         projects = self.pipeline.generate_content_from_opportunity(opportunity)
@@ -315,6 +325,7 @@ class TestContentAutomationPipeline(unittest.TestCase):
         self.assertIsNotNone(video_project.script, "No script generated")
         self.assertEqual(video_project.status, "scripted")
 
+
     def test_pipeline_status(self):
         """Test pipeline status reporting."""
         status = self.pipeline.get_pipeline_status()
@@ -323,26 +334,29 @@ class TestContentAutomationPipeline(unittest.TestCase):
         self.assertIn("running", status, "Status should include running state")
         self.assertIn(
             "pending_opportunities",
-            status,
-            "Status should include pending opportunities",
-        )
+                status,
+                "Status should include pending opportunities",
+                )
         self.assertIn("project_stats", status, "Status should include project stats")
 
 
 class TestVideoGeneration(unittest.TestCase):
     """Test video generation functionality."""
 
+
     def setUp(self):
         """Set up test environment."""
         self.temp_dir = tempfile.mkdtemp()
         self.output_dir = os.path.join(self.temp_dir, "videos")
-        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok = True)
+
 
     def tearDown(self):
         """Clean up test environment."""
         import shutil
 
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+        shutil.rmtree(self.temp_dir, ignore_errors = True)
+
 
     def test_basic_video_generation(self):
         """Test basic video generation functionality."""
@@ -367,10 +381,10 @@ class TestVideoGeneration(unittest.TestCase):
 
         # Generate test video
         success = create_basic_video(
-            background_image_path=background_path,
-            audio_path=audio_path,
-            output_path=output_path,
-        )
+            background_image_path = background_path,
+                audio_path = audio_path,
+                output_path = output_path,
+                )
 
         self.assertTrue(success, "Video generation failed")
         self.assertTrue(os.path.exists(output_path), "Video file not created")
@@ -378,6 +392,7 @@ class TestVideoGeneration(unittest.TestCase):
         # Check file size (should be > 0)
         file_size = os.path.getsize(output_path)
         self.assertGreater(file_size, 0, "Video file is empty")
+
 
     def test_video_with_background(self):
         """Test video generation with custom background."""
@@ -402,10 +417,10 @@ class TestVideoGeneration(unittest.TestCase):
 
         # Generate video with background
         success = create_basic_video(
-            background_image_path=background_path,
-            audio_path=audio_path,
-            output_path=output_path,
-        )
+            background_image_path = background_path,
+                audio_path = audio_path,
+                output_path = output_path,
+                )
 
         self.assertTrue(success, "Video generation with background failed")
         self.assertTrue(os.path.exists(output_path), "Video file not created")
@@ -413,6 +428,7 @@ class TestVideoGeneration(unittest.TestCase):
 
 class TestAutomationController(unittest.TestCase):
     """Test Automation Controller functionality."""
+
 
     def setUp(self):
         """Set up test environment."""
@@ -422,14 +438,14 @@ class TestAutomationController(unittest.TestCase):
         # Create test configuration
         test_config = {
             "auto_start": False,
-            "content_pipeline_enabled": True,
-            "rss_monitoring_enabled": True,
-            "api_port": 8083,  # Different port for testing
+                "content_pipeline_enabled": True,
+                "rss_monitoring_enabled": True,
+                "api_port": 8083,  # Different port for testing
             "monitoring_interval": 1,
-            "max_daily_content": 5,
-            "error_threshold": 5,
-            "performance_retention_days": 7,
-        }
+                "max_daily_content": 5,
+                "error_threshold": 5,
+                "performance_retention_days": 7,
+                }
 
         with open(self.test_config, "w") as f:
             json.dump(test_config, f)
@@ -441,6 +457,7 @@ class TestAutomationController(unittest.TestCase):
         )
         self.controller._init_performance_tracking()
 
+
     def tearDown(self):
         """Clean up test environment."""
         if hasattr(self.controller, "stop_automation"):
@@ -448,7 +465,8 @@ class TestAutomationController(unittest.TestCase):
 
         import shutil
 
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+        shutil.rmtree(self.temp_dir, ignore_errors = True)
+
 
     def test_controller_initialization(self):
         """Test controller initialization."""
@@ -460,6 +478,7 @@ class TestAutomationController(unittest.TestCase):
             self.controller.running, "Controller should not be running initially"
         )
 
+
     def test_automation_status(self):
         """Test automation status reporting."""
         status = self.controller.get_automation_status()
@@ -470,6 +489,7 @@ class TestAutomationController(unittest.TestCase):
         )
         self.assertEqual(status.error_count, 0, "Error count should be 0 initially")
         self.assertIsInstance(status.uptime_hours, float, "Uptime should be a float")
+
 
     def test_performance_tracking(self):
         """Test performance metrics collection."""
@@ -486,10 +506,11 @@ class TestAutomationController(unittest.TestCase):
 
         conn.close()
 
+
     def test_error_logging(self):
         """Test error logging functionality."""
         # Log test error
-        self.controller._log_error("test_component", "test_error", "Test error message")
+            self.controller._log_error("test_component", "test_error", "Test error message")
 
         # Check if error was logged
         conn = sqlite3.connect(self.controller.performance_db)
@@ -506,7 +527,8 @@ class TestAutomationController(unittest.TestCase):
 
 
 class TestEndToEndIntegration(unittest.TestCase):
-    """Test complete end-to-end integration."""
+    """Test complete end - to - end integration."""
+
 
     def setUp(self):
         """Set up test environment."""
@@ -527,11 +549,13 @@ class TestEndToEndIntegration(unittest.TestCase):
         # Override RSS engine in pipeline
         self.pipeline.rss_engine = self.rss_engine
 
+
     def tearDown(self):
         """Clean up test environment."""
         import shutil
 
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+        shutil.rmtree(self.temp_dir, ignore_errors = True)
+
 
     def test_complete_content_workflow(self):
         """Test complete content creation workflow."""
@@ -539,31 +563,31 @@ class TestEndToEndIntegration(unittest.TestCase):
         test_articles = [
             NewsArticle(
                 title="Breaking: Major Political Scandal Exposed",
-                url="https://example.com/scandal1",
-                content="A major political figure has been caught in a significant scandal involving corruption.",
-                published=datetime.now(),
-                source="Test News",
-                category="Politics",
-                keywords=["scandal", "politics", "corruption"],
-                entities=["Political Figure"],
-                sentiment_score=0.2,
-                readability_score=48.0,
-                hash_id="scandal_123",
-            ),
-            NewsArticle(
+                    url="https://example.com / scandal1",
+                    content="A major political figure has been caught in a significant scandal involving corruption.",
+                    published = datetime.now(),
+                    source="Test News",
+                    category="Politics",
+                    keywords=["scandal", "politics", "corruption"],
+                    entities=["Political Figure"],
+                    sentiment_score = 0.2,
+                    readability_score = 48.0,
+                    hash_id="scandal_123",
+                    ),
+                NewsArticle(
                 title="Political Figure Denies All Allegations",
-                url="https://example.com/denial1",
-                content="The political figure strongly denies all corruption allegations and claims innocence.",
-                published=datetime.now(),
-                source="Test News",
-                category="Politics",
-                keywords=["denial", "politics", "allegations"],
-                entities=["Political Figure"],
-                sentiment_score=0.6,
-                readability_score=53.0,
-                hash_id="denial_123",
-            ),
-        ]
+                    url="https://example.com / denial1",
+                    content="The political figure strongly denies all corruption allegations and claims innocence.",
+                    published = datetime.now(),
+                    source="Test News",
+                    category="Politics",
+                    keywords=["denial", "politics", "allegations"],
+                    entities=["Political Figure"],
+                    sentiment_score = 0.6,
+                    readability_score = 53.0,
+                    hash_id="denial_123",
+                    ),
+                ]
 
         # Store articles in RSS engine
         for article in test_articles:
@@ -591,7 +615,7 @@ class TestEndToEndIntegration(unittest.TestCase):
                 video_project = video_projects[0]
 
                 # Mock video production (don't actually create video in test)
-                video_project.output_files = ["/tmp/test_video.mp4"]
+                video_project.output_files = ["/tmp / test_video.mp4"]
                 video_project.status = "completed"
 
                 self.assertEqual(
@@ -601,6 +625,7 @@ class TestEndToEndIntegration(unittest.TestCase):
 
         # Step 5: Verify database integrity
         self._verify_database_integrity()
+
 
     def _verify_database_integrity(self):
         """Verify database integrity across all components."""
@@ -646,11 +671,11 @@ def run_integration_tests():
     # Add test classes
     test_classes = [
         TestRSSIntelligenceEngine,
-        TestContentAutomationPipeline,
-        TestVideoGeneration,
-        TestAutomationController,
-        TestEndToEndIntegration,
-    ]
+            TestContentAutomationPipeline,
+            TestVideoGeneration,
+            TestAutomationController,
+            TestEndToEndIntegration,
+            ]
 
     for test_class in test_classes:
         tests = unittest.TestLoader().loadTestsFromTestCase(test_class)
@@ -658,7 +683,7 @@ def run_integration_tests():
 
     # Run tests with detailed output
     runner = unittest.TextTestRunner(
-        verbosity=2, stream=sys.stdout, descriptions=True, failfast=False
+        verbosity = 2, stream = sys.stdout, descriptions = True, failfast = False
     )
 
     print(f"\nRunning {test_suite.countTestCases()} integration tests...\n")
@@ -716,18 +741,18 @@ def run_performance_benchmark():
         test_articles = []
         for i in range(100):
             article = NewsArticle(
-                title=f"Test Article {i}",
-                url=f"https://example.com/article{i}",
-                content=f"This is test content for article {i} with various keywords and entities.",
-                published=datetime.now(),
-                source="Benchmark Source",
-                category="General",
-                keywords=["test", "benchmark", f"keyword{i}"],
-                entities=[f"Entity{i}"],
-                sentiment_score=0.5,
-                readability_score=50.0,
-                hash_id=f"hash_{i}",
-            )
+                title = f"Test Article {i}",
+                    url = f"https://example.com / article{i}",
+                    content = f"This is test content for article {i} with various keywords and entities.",
+                    published = datetime.now(),
+                    source="Benchmark Source",
+                    category="General",
+                    keywords=["test", "benchmark", f"keyword{i}"],
+                    entities=[f"Entity{i}"],
+                    sentiment_score = 0.5,
+                    readability_score = 50.0,
+                    hash_id = f"hash_{i}",
+                    )
             test_articles.append(article)
 
         # Benchmark article storage
@@ -737,7 +762,7 @@ def run_performance_benchmark():
         storage_time = time.time() - start_time
 
         print(f"   - Stored 100 articles in {storage_time:.3f} seconds")
-        print(f"   - Average: {storage_time/100*1000:.2f} ms per article")
+        print(f"   - Average: {storage_time / 100 * 1000:.2f} ms per article")
 
         # Benchmark trend analysis
         start_time = time.time()
@@ -794,17 +819,17 @@ def run_performance_benchmark():
             wav_file.writeframes(b"\x00" * 44100 * 2 * 10)  # 10 seconds of silence
 
         success = create_basic_video(
-            background_image_path=background_path,
-            audio_path=audio_path,
-            output_path=video_output,
-        )
+            background_image_path = background_path,
+                audio_path = audio_path,
+                output_path = video_output,
+                )
         video_time = time.time() - start_time
 
         if success:
             file_size = os.path.getsize(video_output) / (1024 * 1024)  # MB
-            print(f"   - Generated 10-second video in {video_time:.3f} seconds")
+            print(f"   - Generated 10 - second video in {video_time:.3f} seconds")
             print(f"   - Video size: {file_size:.2f} MB")
-            print(f"   - Generation rate: {10/video_time:.2f}x real-time")
+            print(f"   - Generation rate: {10 / video_time:.2f}x real - time")
         else:
             print("   - Video generation failed")
 
@@ -812,10 +837,9 @@ def run_performance_benchmark():
         # Cleanup
         import shutil
 
-        shutil.rmtree(temp_dir, ignore_errors=True)
+        shutil.rmtree(temp_dir, ignore_errors = True)
 
     print("\n" + "=" * 80)
-
 
 if __name__ == "__main__":
     import argparse
@@ -833,7 +857,7 @@ if __name__ == "__main__":
     if args.verbose:
         import logging
 
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level = logging.INFO)
 
     try:
         # Run integration tests

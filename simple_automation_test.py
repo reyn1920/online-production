@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Simple Automation Systems Validation Test
 
@@ -20,13 +20,14 @@ from pathlib import Path
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s"
+    level = logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 class SimpleAutomationValidator:
     """Simple validation for automation systems"""
+
 
     def __init__(self):
         self.test_results = []
@@ -36,14 +37,15 @@ class SimpleAutomationValidator:
         # Set environment for testing
         os.environ["TRAE_MASTER_KEY"] = "test123"
 
+
     def log_result(self, test_name: str, success: bool, message: str = ""):
         """Log test result"""
         result = {
             "test": test_name,
-            "success": success,
-            "message": message,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "success": success,
+                "message": message,
+                "timestamp": datetime.now().isoformat(),
+                }
         self.test_results.append(result)
 
         if success:
@@ -53,12 +55,13 @@ class SimpleAutomationValidator:
             self.failed += 1
             logger.error(f"❌ {test_name}: FAILED - {message}")
 
+
     def test_database_files(self):
         """Test database file existence and integrity"""
         databases = [
-            "/Users/thomasbrianreynolds/online production/data/performance_analytics.db",
-            "/Users/thomasbrianreynolds/online production/collaboration_outreach.db",
-        ]
+            "/Users / thomasbrianreynolds / online production / data / performance_analytics.db",
+                "/Users / thomasbrianreynolds / online production / collaboration_outreach.db",
+                ]
 
         for db_path in databases:
             db_name = Path(db_path).name
@@ -66,9 +69,9 @@ class SimpleAutomationValidator:
                 if not Path(db_path).exists():
                     self.log_result(
                         f"database_exists_{db_name}",
-                        False,
-                        f"Database file not found: {db_path}",
-                    )
+                            False,
+                            f"Database file not found: {db_path}",
+                            )
                     continue
 
                 # Test database integrity
@@ -85,31 +88,32 @@ class SimpleAutomationValidator:
                 if result == "ok":
                     self.log_result(
                         f"database_integrity_{db_name}",
-                        True,
-                        f"Database OK with {len(tables)} tables",
-                    )
+                            True,
+                            f"Database OK with {len(tables)} tables",
+                            )
                 else:
                     self.log_result(
                         f"database_integrity_{db_name}",
-                        False,
-                        f"Integrity check failed: {result}",
-                    )
+                            False,
+                            f"Integrity check failed: {result}",
+                            )
 
             except Exception as e:
                 self.log_result(
                     f"database_test_{db_name}", False, f"Database test failed: {e}"
                 )
 
+
     def test_agent_imports(self):
         """Test critical agent imports"""
         agents_to_test = [
             ("base_agents", "backend.agents.base_agents"),
-            ("specialized_agents", "backend.agents.specialized_agents"),
-            ("monetization_services", "backend.agents.monetization_services_agent"),
-            ("collaboration_outreach", "backend.agents.collaboration_outreach_agent"),
-            ("evolution_agent", "backend.agents.evolution_agent"),
-            ("financial_agent", "backend.agents.financial_agent"),
-        ]
+                ("specialized_agents", "backend.agents.specialized_agents"),
+                ("monetization_services", "backend.agents.monetization_services_agent"),
+                ("collaboration_outreach", "backend.agents.collaboration_outreach_agent"),
+                ("evolution_agent", "backend.agents.evolution_agent"),
+                ("financial_agent", "backend.agents.financial_agent"),
+                ]
 
         for agent_name, module_path in agents_to_test:
             try:
@@ -121,6 +125,7 @@ class SimpleAutomationValidator:
                 self.log_result(f"import_{agent_name}", False, f"Import failed: {e}")
             except Exception as e:
                 self.log_result(f"import_{agent_name}", False, f"Unexpected error: {e}")
+
 
     def test_collaboration_agent_basic(self):
         """Test basic collaboration agent functionality"""
@@ -135,17 +140,17 @@ class SimpleAutomationValidator:
             if "marketing" in capabilities and "execution" in capabilities:
                 self.log_result(
                     "collaboration_capabilities",
-                    True,
-                    f"Agent has required capabilities: {capabilities}",
-                )
+                        True,
+                        f"Agent has required capabilities: {capabilities}",
+                        )
             else:
                 self.log_result(
                     "collaboration_capabilities",
-                    False,
-                    f"Missing required capabilities: {capabilities}",
-                )
+                        False,
+                        f"Missing required capabilities: {capabilities}",
+                        )
 
-            # Test creator discovery (non-async)
+            # Test creator discovery (non - async)
             creators = agent.discover_creators("tech", "youtube", 10000)
             if creators and len(creators) > 0:
                 self.log_result(
@@ -158,6 +163,7 @@ class SimpleAutomationValidator:
             self.log_result(
                 "collaboration_agent_test", False, f"Agent test failed: {e}"
             )
+
 
     def test_monetization_agent_basic(self):
         """Test basic monetization agent functionality"""
@@ -188,12 +194,12 @@ class SimpleAutomationValidator:
             except Exception as cap_error:
                 print(f"DEBUG: Error getting capabilities: {cap_error}")
                 raise cap_error
-            if capabilities and len(capabilities) > 0:
+                    if capabilities and len(capabilities) > 0:
                 self.log_result(
                     "monetization_capabilities",
-                    True,
-                    f"Agent has {len(capabilities)} capabilities",
-                )
+                        True,
+                        f"Agent has {len(capabilities)} capabilities",
+                        )
             else:
                 self.log_result(
                     "monetization_capabilities", False, "No capabilities found"
@@ -207,25 +213,26 @@ class SimpleAutomationValidator:
                     package_count = packages.get("total_packages", 0)
                     self.log_result(
                         "monetization_packages",
-                        True,
-                        f"Found {package_count} service packages",
-                    )
+                            True,
+                            f"Found {package_count} service packages",
+                            )
                 else:
                     self.log_result(
                         "monetization_packages",
-                        False,
-                        f"No service packages found. Got: {packages}",
-                    )
+                            False,
+                            f"No service packages found. Got: {packages}",
+                            )
             except Exception as pkg_error:
                 print(f"DEBUG: Error in get_service_packages: {pkg_error}")
                 self.log_result(
                     "monetization_packages",
-                    False,
-                    f"Error getting packages: {pkg_error}",
-                )
+                        False,
+                        f"Error getting packages: {pkg_error}",
+                        )
 
         except Exception as e:
             self.log_result("monetization_agent_test", False, f"Agent test failed: {e}")
+
 
     def test_evolution_agent_basic(self):
         """Test basic evolution agent functionality"""
@@ -242,40 +249,41 @@ class SimpleAutomationValidator:
             if len(found_caps) >= 2:
                 self.log_result(
                     "evolution_capabilities",
-                    True,
-                    f"Agent has key capabilities: {found_caps}",
-                )
+                        True,
+                        f"Agent has key capabilities: {found_caps}",
+                        )
             else:
                 self.log_result(
                     "evolution_capabilities",
-                    False,
-                    f"Missing key capabilities. Found: {capabilities}",
-                )
+                        False,
+                        f"Missing key capabilities. Found: {capabilities}",
+                        )
 
             # Test status
             status = agent.get_status()
             if status and "agent_type" in status:
                 self.log_result(
                     "evolution_status",
-                    True,
-                    f"Agent status available: {status.get('agent_type')}",
-                )
+                        True,
+                        f"Agent status available: {status.get('agent_type')}",
+                        )
             else:
                 self.log_result("evolution_status", False, "Agent status not available")
 
         except Exception as e:
             self.log_result("evolution_agent_test", False, f"Agent test failed: {e}")
 
+
     def test_file_structure(self):
         """Test critical file structure"""
         critical_files = [
-            "/Users/thomasbrianreynolds/online production/backend/agents/base_agents.py",
-            "/Users/thomasbrianreynolds/online production/backend/agents/specialized_agents.py",
-            "/Users/thomasbrianreynolds/online production/backend/agents/monetization_services_agent.py",
-            "/Users/thomasbrianreynolds/online production/backend/agents/collaboration_outreach_agent.py",
-            "/Users/thomasbrianreynolds/online production/backend/agents/evolution_agent.py",
-            "/Users/thomasbrianreynolds/online production/backend/agents/financial_agent.py",
-        ]
+            "/Users / thomasbrianreynolds / online production / backend / agents / base_agents.py",
+                "/Users / thomasbrianreynolds / online production / backend / agents / specialized_agents.py",
+                "/Users / thomasbrianreynolds / online production / backend / agents / monetization_services_agent.py",
+                "/Users / thomasbrianreynolds / online production / backend / agents / collaboration_outreach_agent.py",
+                "/Users / thomasbrianreynolds / online production / backend / agents / evolution_agent.py",
+                "/Users / thomasbrianreynolds / online production / backend / agents / financial_agent.py",
+                ]
 
         for file_path in critical_files:
             file_name = Path(file_path).name
@@ -288,6 +296,7 @@ class SimpleAutomationValidator:
                 self.log_result(
                     f"file_exists_{file_name}", False, f"File missing: {file_path}"
                 )
+
 
     def run_all_tests(self):
         """Run all validation tests"""
@@ -304,6 +313,7 @@ class SimpleAutomationValidator:
 
         # Generate summary and return results
         return self.generate_summary()
+
 
     def generate_summary(self):
         """Generate test summary"""
@@ -344,12 +354,12 @@ class SimpleAutomationValidator:
 
         return {
             "total_tests": total,
-            "passed": self.passed,
-            "failed": self.failed,
-            "success_rate": success_rate,
-            "status": status,
-            "production_ready": success_rate >= 75,
-        }
+                "passed": self.passed,
+                "failed": self.failed,
+                "success_rate": success_rate,
+                "status": status,
+                "production_ready": success_rate >= 75,
+                }
 
 
 def main():
@@ -370,7 +380,6 @@ def main():
             f"Status: {results['status']} ({results['success_rate']:.1f}% success rate)"
         )
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

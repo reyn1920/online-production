@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Watchdog service monitor with debounce logic and restart policy support.
-Rule-1 compliant monitoring system for the runtime environment.
+Rule - 1 compliant monitoring system for the runtime environment.
 """
 
 import logging
@@ -17,7 +17,7 @@ import yaml
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger("watchdog")
 
@@ -25,7 +25,7 @@ logger = logging.getLogger("watchdog")
 _last_warn = {}
 
 
-def _should_warn(service_name: str, min_interval=10):
+def _should_warn(service_name: str, min_interval = 10):
     """Debounce warning messages to prevent spam."""
     now = time.time()
     t = _last_warn.get(service_name, 0)
@@ -36,8 +36,8 @@ def _should_warn(service_name: str, min_interval=10):
 
 
 def load_services_config():
-    """Load services configuration from config/services.yaml."""
-    config_path = Path("config/services.yaml")
+    """Load services configuration from config / services.yaml."""
+    config_path = Path("config / services.yaml")
     if not config_path.exists():
         logger.warning(f"Config file not found: {config_path}")
         return {}
@@ -58,9 +58,9 @@ def is_running(service_name: str) -> bool:
         if service_name == "monitoring_system":
             result = subprocess.run(
                 ["pgrep", "-f", "trae_ai.monitoring_system"],
-                capture_output=True,
-                text=True,
-            )
+                    capture_output = True,
+                    text = True,
+                    )
             return result.returncode == 0
         return False
     except Exception as e:
@@ -73,21 +73,21 @@ def schedule_restart(service_name: str):
     try:
         if service_name == "monitoring_system":
             # Use the launcher script
-            launcher_path = "tools/monitoring_system_launcher.py"
+            launcher_path = "tools / monitoring_system_launcher.py"
             if os.path.exists(launcher_path):
                 subprocess.Popen(
                     [sys.executable, launcher_path],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
+                        stdout = subprocess.DEVNULL,
+                        stderr = subprocess.DEVNULL,
+                        )
                 logger.info(f"Started {service_name} via launcher")
             else:
                 # Fallback to direct execution
                 subprocess.Popen(
                     [sys.executable, "-m", "trae_ai.monitoring_system"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
+                        stdout = subprocess.DEVNULL,
+                        stderr = subprocess.DEVNULL,
+                        )
                 logger.info(f"Started {service_name} directly")
     except Exception as e:
         logger.error(f"Failed to restart {service_name}: {e}")
@@ -113,7 +113,7 @@ def monitor_services():
                 ):
                     schedule_restart("monitoring_system")
                     logger.info(
-                        "🔁 Restart scheduled: monitoring_system (policy=always)"
+                        "🔁 Restart scheduled: monitoring_system (policy = always)"
                     )
 
                     # Apply backoff if configured
@@ -121,7 +121,7 @@ def monitor_services():
                     time.sleep(backoff)
                 else:
                     logger.info(
-                        "ℹ️ Service monitoring_system marked non-critical, restart skipped (config)."
+                        "ℹ️ Service monitoring_system marked non - critical, restart skipped (config)."
                     )
 
             # Sleep before next check
@@ -149,7 +149,6 @@ def main():
 
     logger.info("Starting watchdog service monitor...")
     monitor_services()
-
 
 if __name__ == "__main__":
     main()

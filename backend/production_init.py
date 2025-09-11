@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Production Initialization Module for TRAE.AI
 Initializes all production services and agents
@@ -27,11 +27,13 @@ logger = logging.getLogger(__name__)
 class ProductionManager:
     """Manages all production services and agents"""
 
+
     def __init__(self):
         self.services = {}
         self.agents = {}
         self.initialized = False
         self.startup_time = None
+
 
     async def initialize_all_services(self):
         """Initialize all production services"""
@@ -77,6 +79,7 @@ class ProductionManager:
             logger.error(f"Full traceback: {traceback.format_exc()}")
             raise
 
+
     async def _initialize_content_agent(self):
         """Initialize the main content agent"""
         try:
@@ -93,13 +96,14 @@ class ProductionManager:
             logger.warning(f"⚠️ Content Agent initialization failed: {e}")
             self.services["content_agent"] = None
 
+
     async def _initialize_specialized_agents(self):
         """Initialize specialized agents"""
         try:
             from backend.agents.specialized_agents import \
                 ContentAgent as SpecializedContentAgent
             from backend.agents.specialized_agents import (FinancialAgent,
-                                                           ResearchAgent, SystemAgent)
+                ResearchAgent, SystemAgent)
 
             # Initialize ContentAgent
             if os.getenv("CONTENT_AGENT_ENABLED", "true").lower() == "true":
@@ -131,8 +135,9 @@ class ProductionManager:
         except Exception as e:
             logger.warning(f"⚠️ Specialized agents initialization failed: {e}")
 
+
     async def _initialize_twitter_agents(self):
-        """Initialize Twitter-related agents"""
+        """Initialize Twitter - related agents"""
         try:
             # Initialize Twitter Integration
             if os.getenv("TWITTER_INTEGRATION_ENABLED", "true").lower() == "true":
@@ -173,6 +178,7 @@ class ProductionManager:
         except Exception as e:
             logger.warning(f"⚠️ Twitter agents initialization failed: {e}")
 
+
     async def _initialize_avatar_services(self):
         """Initialize avatar generation services"""
         try:
@@ -188,6 +194,7 @@ class ProductionManager:
             logger.warning(f"⚠️ Avatar services initialization failed: {e}")
             self.services["avatar_manager"] = None
 
+
     async def _initialize_tts_engine(self):
         """Initialize TTS engine"""
         try:
@@ -201,22 +208,24 @@ class ProductionManager:
             logger.warning(f"⚠️ TTS Engine initialization failed: {e}")
             self.services["tts_engine"] = None
 
+
     async def _initialize_video_generation(self):
         """Initialize video generation services"""
         try:
             if os.getenv("VIDEO_GENERATION_ENABLED", "true").lower() == "true":
                 from backend.content.ai_video_editor import AIVideoEditor
-                from backend.content.blender_compositor import BlenderCompositor
+                    from backend.content.blender_compositor import BlenderCompositor
 
                 video_editor = AIVideoEditor()
                 blender_compositor = BlenderCompositor()
 
                 self.services["video_editor"] = video_editor
-                self.services["blender_compositor"] = blender_compositor
-                logger.info("✅ Video generation services initialized")
+                    self.services["blender_compositor"] = blender_compositor
+                    logger.info("✅ Video generation services initialized")
 
         except Exception as e:
             logger.warning(f"⚠️ Video generation initialization failed: {e}")
+
 
     async def _initialize_revenue_tracking(self):
         """Initialize revenue tracking services"""
@@ -231,6 +240,7 @@ class ProductionManager:
         except Exception as e:
             logger.warning(f"⚠️ Revenue tracking initialization failed: {e}")
 
+
     async def _initialize_monitoring(self):
         """Initialize monitoring services"""
         try:
@@ -239,34 +249,36 @@ class ProductionManager:
 
                 health_monitor = HealthMonitor()
                 self.services["health_monitor"] = health_monitor
-                logger.info("✅ Monitoring services initialized")
+                    logger.info("✅ Monitoring services initialized")
 
         except Exception as e:
             logger.warning(f"⚠️ Monitoring initialization failed: {e}")
+
 
     def get_service(self, service_name: str) -> Optional[Any]:
         """Get a service by name"""
         return self.services.get(service_name)
 
+
     def get_agent(self, agent_name: str) -> Optional[Any]:
         """Get an agent by name"""
         return self.agents.get(agent_name)
+
 
     def get_status(self) -> Dict[str, Any]:
         """Get production status"""
         return {
             "initialized": self.initialized,
-            "startup_time": (
+                "startup_time": (
                 self.startup_time.isoformat() if self.startup_time else None
             ),
-            "services": {
+                "services": {
                 name: service is not None for name, service in self.services.items()
             },
-            "agents": {name: agent is not None for name, agent in self.agents.items()},
-            "environment": os.getenv("ENVIRONMENT", "development"),
-            "autonomous_mode": os.getenv("AUTONOMOUS_MODE", "false").lower() == "true",
-        }
-
+                "agents": {name: agent is not None for name, agent in self.agents.items()},
+                "environment": os.getenv("ENVIRONMENT", "development"),
+                "autonomous_mode": os.getenv("AUTONOMOUS_MODE", "false").lower() == "true",
+                }
 
 # Global production manager instance
 production_manager = ProductionManager()
@@ -296,7 +308,6 @@ def initialize_production_sync():
 def get_production_manager() -> ProductionManager:
     """Get the global production manager"""
     return production_manager
-
 
 if __name__ == "__main__":
     # For testing

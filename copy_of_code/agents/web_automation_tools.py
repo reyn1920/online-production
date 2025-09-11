@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Web Automation Agent Tools Module
 
 Implements comprehensive web automation capabilities including:
 - RPA tools using pyautogui for Spechelo Pro and Thumbnail Blaster Suite
 - Stealth Operation protocols with randomized timing and mouse movement emulation
-- Automated affiliate signups with human-like behavior
-- Browser automation with anti-detection measures
+- Automated affiliate signups with human - like behavior
+- Browser automation with anti - detection measures
 """
 
 import asyncio
@@ -74,8 +74,8 @@ class StealthLevel(Enum):
     """Stealth operation levels"""
 
     MINIMAL = "minimal"  # Basic randomization
-    MODERATE = "moderate"  # Human-like patterns
-    MAXIMUM = "maximum"  # Advanced anti-detection
+    MODERATE = "moderate"  # Human - like patterns
+    MAXIMUM = "maximum"  # Advanced anti - detection
 
 
 class ActionType(Enum):
@@ -92,8 +92,9 @@ class ActionType(Enum):
     UPLOAD_FILE = "upload_file"
     DOWNLOAD_FILE = "download_file"
 
-
 @dataclass
+
+
 class AutomationAction:
     """Represents a single automation action"""
 
@@ -105,10 +106,11 @@ class AutomationAction:
     delay_after: float = 0.0  # Delay after action
     retry_count: int = 3
     timeout: float = 10.0
-    stealth_params: Dict[str, Any] = field(default_factory=dict)
-
+    stealth_params: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class AutomationSequence:
     """Represents a sequence of automation actions"""
 
@@ -118,13 +120,14 @@ class AutomationSequence:
     actions: List[AutomationAction]
     stealth_level: StealthLevel = StealthLevel.MODERATE
     max_retries: int = 3
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory = datetime.now)
     last_executed: Optional[datetime] = None
     success_rate: float = 0.0
     execution_count: int = 0
 
-
 @dataclass
+
+
 class StealthProfile:
     """Configuration for stealth operations"""
 
@@ -142,61 +145,64 @@ class StealthProfile:
 class StealthOperations:
     """Implements stealth operation protocols"""
 
+
     def __init__(self, stealth_level: StealthLevel = StealthLevel.MODERATE):
         self.stealth_level = stealth_level
         self.logger = logging.getLogger(__name__)
         self.profile = self._create_stealth_profile()
         self.user_agents = [
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
-        ]
+            "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
+                "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 605.1.15 (KHTML, like Gecko) Version / 17.1 Safari / 605.1.15",
+                "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko / 20100101 Firefox / 121.0",
+                "Mozilla / 5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
+                "Mozilla / 5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko / 20100101 Firefox / 121.0",
+                ]
 
         # Configure pyautogui for stealth
         if pyautogui:
             pyautogui.FAILSAFE = True
             pyautogui.PAUSE = 0.1
 
+
     def _create_stealth_profile(self) -> StealthProfile:
         """Create stealth profile based on stealth level"""
         if self.stealth_level == StealthLevel.MINIMAL:
             return StealthProfile(
                 mouse_speed=(1.0, 2.0),
-                click_delay=(0.05, 0.2),
-                typing_speed=(0.02, 0.1),
-                human_errors=False,
-                mouse_jitter=False,
-                random_pauses=False,
-            )
+                    click_delay=(0.05, 0.2),
+                    typing_speed=(0.02, 0.1),
+                    human_errors = False,
+                    mouse_jitter = False,
+                    random_pauses = False,
+                    )
 
         elif self.stealth_level == StealthLevel.MODERATE:
             return StealthProfile(
                 mouse_speed=(0.5, 1.5),
-                click_delay=(0.1, 0.4),
-                typing_speed=(0.05, 0.15),
-                human_errors=True,
-                mouse_jitter=True,
-                random_pauses=True,
-            )
+                    click_delay=(0.1, 0.4),
+                    typing_speed=(0.05, 0.15),
+                    human_errors = True,
+                    mouse_jitter = True,
+                    random_pauses = True,
+                    )
 
         else:  # MAXIMUM
             return StealthProfile(
                 mouse_speed=(0.3, 1.0),
-                click_delay=(0.2, 0.8),
-                typing_speed=(0.08, 0.25),
-                human_errors=True,
-                mouse_jitter=True,
-                random_pauses=True,
-                user_agent_rotation=True,
-                viewport_randomization=True,
-            )
+                    click_delay=(0.2, 0.8),
+                    typing_speed=(0.08, 0.25),
+                    human_errors = True,
+                    mouse_jitter = True,
+                    random_pauses = True,
+                    user_agent_rotation = True,
+                    viewport_randomization = True,
+                    )
+
 
     async def stealth_delay(
         self, base_delay: float = 1.0, variance: float = 0.5
     ) -> None:
-        """Add randomized delay with human-like patterns"""
+        """Add randomized delay with human - like patterns"""
         if not self.profile.random_pauses:
             await asyncio.sleep(base_delay)
             return
@@ -211,10 +217,11 @@ class StealthOperations:
 
         await asyncio.sleep(delay)
 
+
     def stealth_mouse_move(
         self, x: int, y: int, duration: Optional[float] = None
     ) -> None:
-        """Move mouse with human-like behavior"""
+        """Move mouse with human - like behavior"""
         if not pyautogui:
             return
 
@@ -231,8 +238,9 @@ class StealthOperations:
             x += random.randint(-2, 2)
             y += random.randint(-2, 2)
 
-        # Move with easing (human-like acceleration/deceleration)
-        pyautogui.moveTo(x, y, duration=duration, tween=pyautogui.easeInOutQuad)
+        # Move with easing (human - like acceleration / deceleration)
+        pyautogui.moveTo(x, y, duration = duration, tween = pyautogui.easeInOutQuad)
+
 
     async def stealth_click(self, x: int, y: int, button: str = "left") -> None:
         """Perform click with stealth timing"""
@@ -242,18 +250,19 @@ class StealthOperations:
         # Move to position
         self.stealth_mouse_move(x, y)
 
-        # Add pre-click delay
+        # Add pre - click delay
         delay = random.uniform(*self.profile.click_delay)
         await asyncio.sleep(delay)
 
         # Perform click
-        pyautogui.click(button=button)
+        pyautogui.click(button = button)
 
-        # Add post-click delay
+        # Add post - click delay
         await asyncio.sleep(delay)
 
+
     async def stealth_type(self, text: str, interval: Optional[float] = None) -> None:
-        """Type text with human-like timing and errors"""
+        """Type text with human - like timing and errors"""
         if not pyautogui:
             return
 
@@ -271,7 +280,7 @@ class StealthOperations:
 
                 # Type wrong character
                 wrong_char = random.choice("abcdefghijklmnopqrstuvwxyz")
-                pyautogui.write(wrong_char, interval=interval)
+                pyautogui.write(wrong_char, interval = interval)
                 await asyncio.sleep(random.uniform(0.1, 0.3))
 
                 # Backspace and correct
@@ -279,39 +288,43 @@ class StealthOperations:
                 await asyncio.sleep(random.uniform(0.1, 0.2))
 
             # Type the correct character
-            pyautogui.write(char, interval=interval)
+            pyautogui.write(char, interval = interval)
 
             # Vary typing speed slightly
             if random.random() < 0.1:  # 10% chance
                 await asyncio.sleep(random.uniform(0.1, 0.3))
 
+
     def get_random_user_agent(self) -> str:
         """Get a random user agent string"""
         return random.choice(self.user_agents)
+
 
     def get_random_viewport(self) -> Tuple[int, int]:
         """Get random viewport dimensions"""
         common_resolutions = [
             (1920, 1080),
-            (1366, 768),
-            (1440, 900),
-            (1536, 864),
-            (1280, 720),
-            (1600, 900),
-            (1024, 768),
-            (1280, 1024),
-        ]
+                (1366, 768),
+                (1440, 900),
+                (1536, 864),
+                (1280, 720),
+                (1600, 900),
+                (1024, 768),
+                (1280, 1024),
+                ]
         return random.choice(common_resolutions)
 
 
 class SpecheloPro:
-    """Automation for Spechelo Pro text-to-speech software"""
+    """Automation for Spechelo Pro text - to - speech software"""
+
 
     def __init__(self, stealth_ops: StealthOperations):
         self.stealth_ops = stealth_ops
         self.logger = logging.getLogger(__name__)
-        self.app_path = "/Applications/Spechelo Pro.app"  # Default macOS path
+        self.app_path = "/Applications / Spechelo Pro.app"  # Default macOS path
         self.is_running = False
+
 
     async def launch_application(self) -> bool:
         """Launch Spechelo Pro application"""
@@ -338,6 +351,7 @@ class SpecheloPro:
             self.logger.error(f"Error launching Spechelo Pro: {e}")
             return False
 
+
     async def _verify_app_running(self) -> bool:
         """Verify that Spechelo Pro is running"""
         if not psutil:
@@ -348,15 +362,16 @@ class SpecheloPro:
                 if "spechelo" in proc.info["name"].lower():
                     return True
             return False
-        except:
+        except Exception:
             return True  # Assume success on error
+
 
     async def create_voiceover(
         self,
-        text: str,
-        voice_name: str = "default",
-        output_filename: str = "voiceover.mp3",
-    ) -> bool:
+            text: str,
+            voice_name: str = "default",
+            output_filename: str = "voiceover.mp3",
+            ) -> bool:
         """Create a voiceover using Spechelo Pro"""
         try:
             if not self.is_running:
@@ -389,6 +404,7 @@ class SpecheloPro:
             self.logger.error(f"Error creating voiceover: {e}")
             return False
 
+
     async def _clear_text_area(self) -> None:
         """Clear the text input area"""
         # Look for text area (this would need to be customized based on actual UI)
@@ -398,6 +414,7 @@ class SpecheloPro:
             await self.stealth_ops.stealth_delay(0.5)
             pyautogui.press("delete")
             await self.stealth_ops.stealth_delay(0.5)
+
 
     async def _input_text(self, text: str) -> None:
         """Input text into Spechelo Pro"""
@@ -409,6 +426,7 @@ class SpecheloPro:
             await self.stealth_ops.stealth_type(chunk)
             await self.stealth_ops.stealth_delay(0.5)
 
+
     async def _select_voice(self, voice_name: str) -> None:
         """Select a specific voice"""
         # This would need to be implemented based on Spechelo Pro's actual UI
@@ -416,12 +434,14 @@ class SpecheloPro:
         self.logger.info(f"Selecting voice: {voice_name}")
         await self.stealth_ops.stealth_delay(1.0)
 
+
     async def _generate_voiceover(self) -> None:
         """Generate the voiceover"""
-        # Look for generate/create button
+        # Look for generate / create button
         # This would need actual UI element detection
         self.logger.info("Generating voiceover...")
         await self.stealth_ops.stealth_delay(5.0)  # Wait for generation
+
 
     async def _save_voiceover(self, filename: str) -> None:
         """Save the generated voiceover"""
@@ -442,11 +462,13 @@ class SpecheloPro:
 class ThumbnailBlaster:
     """Automation for Thumbnail Blaster Suite"""
 
+
     def __init__(self, stealth_ops: StealthOperations):
         self.stealth_ops = stealth_ops
         self.logger = logging.getLogger(__name__)
         self.browser_driver = None
         self.is_initialized = False
+
 
     async def initialize_browser(self) -> bool:
         """Initialize browser for Thumbnail Blaster"""
@@ -458,20 +480,20 @@ class ThumbnailBlaster:
             # Configure Chrome options for stealth
             options = ChromeOptions()
             options.add_argument(
-                f"--user-agent={self.stealth_ops.get_random_user_agent()}"
+                f"--user - agent={self.stealth_ops.get_random_user_agent()}"
             )
 
             if self.stealth_ops.profile.viewport_randomization:
                 width, height = self.stealth_ops.get_random_viewport()
-                options.add_argument(f"--window-size={width},{height}")
+                options.add_argument(f"--window - size={width},{height}")
 
-            # Anti-detection measures
-            options.add_argument("--disable-blink-features=AutomationControlled")
-            options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            # Anti - detection measures
+            options.add_argument("--disable - blink - features = AutomationControlled")
+            options.add_experimental_option("excludeSwitches", ["enable - automation"])
             options.add_experimental_option("useAutomationExtension", False)
 
             # Launch browser
-            self.browser_driver = webdriver.Chrome(options=options)
+            self.browser_driver = webdriver.Chrome(options = options)
 
             # Execute script to remove webdriver property
             self.browser_driver.execute_script(
@@ -485,6 +507,7 @@ class ThumbnailBlaster:
         except Exception as e:
             self.logger.error(f"Error initializing browser: {e}")
             return False
+
 
     async def navigate_to_thumbnail_blaster(
         self, url: str = "https://thumbnailblaster.com"
@@ -504,6 +527,7 @@ class ThumbnailBlaster:
         except Exception as e:
             self.logger.error(f"Error navigating to Thumbnail Blaster: {e}")
             return False
+
 
     async def login(self, username: str, password: str) -> bool:
         """Login to Thumbnail Blaster"""
@@ -548,8 +572,8 @@ class ThumbnailBlaster:
             )
             await self.stealth_ops.stealth_delay(0.5)
 
-            # Click with ActionChains for more human-like behavior
-            actions = ActionChains(self.browser_driver)
+            # Click with ActionChains for more human - like behavior
+                actions = ActionChains(self.browser_driver)
             actions.move_to_element(login_button)
             await self.stealth_ops.stealth_delay(0.3)
             actions.click()
@@ -565,16 +589,17 @@ class ThumbnailBlaster:
             self.logger.error(f"Error during login: {e}")
             return False
 
+
     async def create_thumbnail(
         self,
-        template_name: str,
-        title_text: str,
-        background_image: Optional[str] = None,
-    ) -> bool:
+            template_name: str,
+            title_text: str,
+            background_image: Optional[str] = None,
+            ) -> bool:
         """Create a thumbnail using Thumbnail Blaster"""
         try:
             # Navigate to thumbnail creation page
-            create_url = "https://thumbnailblaster.com/create"
+            create_url = "https://thumbnailblaster.com / create"
             self.browser_driver.get(create_url)
             await self.stealth_ops.stealth_delay(2.0)
 
@@ -601,16 +626,17 @@ class ThumbnailBlaster:
             self.logger.error(f"Error creating thumbnail: {e}")
             return False
 
+
     async def _select_template(self, template_name: str) -> None:
         """Select a thumbnail template"""
         try:
             # Look for template selection area
             templates = self.browser_driver.find_elements(
-                By.CLASS_NAME, "template-item"
+                By.CLASS_NAME, "template - item"
             )
 
             for template in templates:
-                if template_name.lower() in template.get_attribute("data-name").lower():
+                if template_name.lower() in template.get_attribute("data - name").lower():
                     # Scroll to template
                     self.browser_driver.execute_script(
                         "arguments[0].scrollIntoView();", template
@@ -630,11 +656,12 @@ class ThumbnailBlaster:
         except Exception as e:
             self.logger.error(f"Error selecting template: {e}")
 
+
     async def _add_title_text(self, title_text: str) -> None:
         """Add title text to thumbnail"""
         try:
             # Find title input field
-            title_field = self.browser_driver.find_element(By.ID, "title-input")
+            title_field = self.browser_driver.find_element(By.ID, "title - input")
             title_field.clear()
             await self.stealth_ops.stealth_delay(0.5)
 
@@ -647,6 +674,7 @@ class ThumbnailBlaster:
 
         except Exception as e:
             self.logger.error(f"Error adding title text: {e}")
+
 
     async def _upload_background_image(self, image_path: str) -> None:
         """Upload background image"""
@@ -661,11 +689,12 @@ class ThumbnailBlaster:
         except Exception as e:
             self.logger.error(f"Error uploading background image: {e}")
 
+
     async def _generate_thumbnail(self) -> None:
         """Generate the thumbnail"""
         try:
             # Find generate button
-            generate_button = self.browser_driver.find_element(By.ID, "generate-btn")
+            generate_button = self.browser_driver.find_element(By.ID, "generate - btn")
 
             # Scroll to button
             self.browser_driver.execute_script(
@@ -686,11 +715,12 @@ class ThumbnailBlaster:
         except Exception as e:
             self.logger.error(f"Error generating thumbnail: {e}")
 
+
     async def _download_thumbnail(self) -> None:
         """Download the generated thumbnail"""
         try:
             # Find download button
-            download_button = self.browser_driver.find_element(By.ID, "download-btn")
+            download_button = self.browser_driver.find_element(By.ID, "download - btn")
 
             # Click download
             actions = ActionChains(self.browser_driver)
@@ -705,6 +735,7 @@ class ThumbnailBlaster:
         except Exception as e:
             self.logger.error(f"Error downloading thumbnail: {e}")
 
+
     def close_browser(self) -> None:
         """Close the browser"""
         if self.browser_driver:
@@ -716,54 +747,57 @@ class ThumbnailBlaster:
 class AffiliateSignupAutomator:
     """Automates affiliate program signups with stealth protocols"""
 
+
     def __init__(self, stealth_ops: StealthOperations):
         self.stealth_ops = stealth_ops
         self.logger = logging.getLogger(__name__)
         self.browser_driver = None
         self.signup_templates = self._load_signup_templates()
 
+
     def _load_signup_templates(self) -> Dict[str, Dict[str, Any]]:
         """Load affiliate signup templates"""
         return {
             "clickbank": {
-                "url": "https://accounts.clickbank.com/signup",
-                "fields": {
+                "url": "https://accounts.clickbank.com / signup",
+                    "fields": {
                     "first_name": "input[name='firstName']",
-                    "last_name": "input[name='lastName']",
-                    "email": "input[name='email']",
-                    "password": "input[name='password']",
-                    "confirm_password": "input[name='confirmPassword']",
-                    "country": "select[name='country']",
-                    "agree_terms": "input[name='agreeToTerms']",
-                },
-                "submit_button": "button[type='submit']",
-            },
-            "commission_junction": {
-                "url": "https://signup.cj.com/member/signup",
-                "fields": {
+                        "last_name": "input[name='lastName']",
+                        "email": "input[name='email']",
+                        "password": "input[name='password']",
+                        "confirm_password": "input[name='confirmPassword']",
+                        "country": "select[name='country']",
+                        "agree_terms": "input[name='agreeToTerms']",
+                        },
+                    "submit_button": "button[type='submit']",
+                    },
+                "commission_junction": {
+                "url": "https://signup.cj.com / member / signup",
+                    "fields": {
                     "company_name": "input[name='companyName']",
-                    "website_url": "input[name='websiteUrl']",
-                    "first_name": "input[name='firstName']",
-                    "last_name": "input[name='lastName']",
-                    "email": "input[name='email']",
-                    "password": "input[name='password']",
-                    "phone": "input[name='phone']",
-                },
-                "submit_button": "input[type='submit']",
-            },
-            "shareasale": {
-                "url": "https://www.shareasale.com/shareasale.cfm?task=affiliatesignup",
-                "fields": {
+                        "website_url": "input[name='websiteUrl']",
+                        "first_name": "input[name='firstName']",
+                        "last_name": "input[name='lastName']",
+                        "email": "input[name='email']",
+                        "password": "input[name='password']",
+                        "phone": "input[name='phone']",
+                        },
+                    "submit_button": "input[type='submit']",
+                    },
+                "shareasale": {
+                "url": "https://www.shareasale.com / shareasale.cfm?task = affiliatesignup",
+                    "fields": {
                     "first_name": "input[name='firstname']",
-                    "last_name": "input[name='lastname']",
-                    "email": "input[name='emailaddress']",
-                    "password": "input[name='password']",
-                    "website_url": "input[name='website']",
-                    "company_name": "input[name='company']",
-                },
-                "submit_button": "input[value='Submit Application']",
-            },
-        }
+                        "last_name": "input[name='lastname']",
+                        "email": "input[name='emailaddress']",
+                        "password": "input[name='password']",
+                        "website_url": "input[name='website']",
+                        "company_name": "input[name='company']",
+                        },
+                    "submit_button": "input[value='Submit Application']",
+                    },
+                }
+
 
     async def signup_for_affiliate_program(
         self, program_name: str, user_data: Dict[str, str]
@@ -800,27 +834,29 @@ class AffiliateSignupAutomator:
             self.logger.error(f"Error signing up for {program_name}: {e}")
             return False
 
+
     async def _initialize_browser(self) -> None:
         """Initialize browser for affiliate signups"""
         if not webdriver:
             raise Exception("Selenium webdriver not available")
 
         options = ChromeOptions()
-        options.add_argument(f"--user-agent={self.stealth_ops.get_random_user_agent()}")
+        options.add_argument(f"--user - agent={self.stealth_ops.get_random_user_agent()}")
 
-        # Enhanced anti-detection measures
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--no-sandbox")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # Enhanced anti - detection measures
+        options.add_argument("--disable - blink - features = AutomationControlled")
+        options.add_argument("--disable - dev - shm - usage")
+        options.add_argument("--no - sandbox")
+        options.add_experimental_option("excludeSwitches", ["enable - automation"])
         options.add_experimental_option("useAutomationExtension", False)
 
-        self.browser_driver = webdriver.Chrome(options=options)
+        self.browser_driver = webdriver.Chrome(options = options)
 
         # Remove webdriver property
         self.browser_driver.execute_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
         )
+
 
     async def _fill_signup_form(
         self, template: Dict[str, Any], user_data: Dict[str, str]
@@ -873,6 +909,7 @@ class AffiliateSignupAutomator:
             except Exception as e:
                 self.logger.warning(f"Could not fill field {field_name}: {e}")
 
+
     async def _submit_form(self, template: Dict[str, Any]) -> None:
         """Submit the signup form"""
         try:
@@ -886,8 +923,8 @@ class AffiliateSignupAutomator:
             )
             await self.stealth_ops.stealth_delay(1.0)
 
-            # Click submit with human-like behavior
-            actions = ActionChains(self.browser_driver)
+            # Click submit with human - like behavior
+                actions = ActionChains(self.browser_driver)
             actions.move_to_element(submit_button)
             await self.stealth_ops.stealth_delay(0.5)
             actions.click()
@@ -899,19 +936,20 @@ class AffiliateSignupAutomator:
         except Exception as e:
             self.logger.error(f"Error submitting form: {e}")
 
+
     async def _handle_post_signup(self, program_name: str) -> None:
-        """Handle post-signup steps like email verification"""
+        """Handle post - signup steps like email verification"""
         # Check for success message or redirect
         current_url = self.browser_driver.current_url
         page_source = self.browser_driver.page_source.lower()
 
         success_indicators = [
             "thank you",
-            "success",
-            "confirmation",
-            "verify",
-            "check your email",
-        ]
+                "success",
+                "confirmation",
+                "verify",
+                "check your email",
+                ]
 
         if any(indicator in page_source for indicator in success_indicators):
             self.logger.info(f"Signup appears successful for {program_name}")
@@ -920,6 +958,7 @@ class AffiliateSignupAutomator:
 
         # Wait a bit more for any redirects
         await self.stealth_ops.stealth_delay(2.0)
+
 
     def close_browser(self) -> None:
         """Close the browser"""
@@ -930,6 +969,7 @@ class AffiliateSignupAutomator:
 
 class WebAutomationAgent:
     """Main Web Automation Agent class"""
+
 
     def __init__(self, stealth_level: StealthLevel = StealthLevel.MODERATE):
         self.stealth_ops = StealthOperations(stealth_level)
@@ -947,6 +987,7 @@ class WebAutomationAgent:
             f"Web Automation Agent initialized with {stealth_level.value} stealth level"
         )
 
+
     async def execute_sequence(self, sequence: AutomationSequence) -> bool:
         """Execute an automation sequence"""
         try:
@@ -959,10 +1000,10 @@ class WebAutomationAgent:
 
             for i, action in enumerate(sequence.actions):
                 self.logger.debug(
-                    f"Executing action {i+1}/{len(sequence.actions)}: {action.action_type.value}"
+                    f"Executing action {i + 1}/{len(sequence.actions)}: {action.action_type.value}"
                 )
 
-                # Pre-action delay
+                # Pre - action delay
                 if action.delay_before > 0:
                     await self.stealth_ops.stealth_delay(action.delay_before)
 
@@ -973,12 +1014,12 @@ class WebAutomationAgent:
                     success_count += 1
                 else:
                     self.logger.warning(
-                        f"Action {i+1} failed: {action.action_type.value}"
+                        f"Action {i + 1} failed: {action.action_type.value}"
                     )
 
                     # Retry if configured
                     for retry in range(action.retry_count):
-                        self.logger.info(f"Retrying action {i+1}, attempt {retry+1}")
+                        self.logger.info(f"Retrying action {i + 1}, attempt {retry + 1}")
                         await self.stealth_ops.stealth_delay(1.0)
 
                         if await self._execute_action(action):
@@ -988,11 +1029,11 @@ class WebAutomationAgent:
 
                     if not action_success:
                         self.logger.error(
-                            f"Action {i+1} failed after {action.retry_count} retries"
+                            f"Action {i + 1} failed after {action.retry_count} retries"
                         )
                         break
 
-                # Post-action delay
+                # Post - action delay
                 if action.delay_after > 0:
                     await self.stealth_ops.stealth_delay(action.delay_after)
 
@@ -1013,6 +1054,7 @@ class WebAutomationAgent:
         except Exception as e:
             self.logger.error(f"Error executing sequence: {e}")
             return False
+
 
     async def _execute_action(self, action: AutomationAction) -> bool:
         """Execute a single automation action"""
@@ -1043,7 +1085,7 @@ class WebAutomationAgent:
                 if pyautogui and action.coordinates:
                     x, y = action.coordinates
                     scroll_amount = int(action.value) if action.value else 3
-                    pyautogui.scroll(scroll_amount, x=x, y=y)
+                    pyautogui.scroll(scroll_amount, x = x, y = y)
 
             return True
 
@@ -1051,34 +1093,37 @@ class WebAutomationAgent:
             self.logger.error(f"Error executing action {action.action_type.value}: {e}")
             return False
 
+
     def create_sequence(
         self,
-        name: str,
-        target_app: AutomationTarget,
-        actions: List[AutomationAction],
-        stealth_level: StealthLevel = StealthLevel.MODERATE,
-    ) -> str:
+            name: str,
+            target_app: AutomationTarget,
+            actions: List[AutomationAction],
+            stealth_level: StealthLevel = StealthLevel.MODERATE,
+            ) -> str:
         """Create a new automation sequence"""
         sequence_id = f"seq_{int(time.time())}_{random.randint(1000, 9999)}"
 
         sequence = AutomationSequence(
-            sequence_id=sequence_id,
-            name=name,
-            target_app=target_app,
-            actions=actions,
-            stealth_level=stealth_level,
-        )
+            sequence_id = sequence_id,
+                name = name,
+                target_app = target_app,
+                actions = actions,
+                stealth_level = stealth_level,
+                )
 
         self.sequences[sequence_id] = sequence
 
         self.logger.info(f"Created automation sequence: {name} ({sequence_id})")
         return sequence_id
 
+
     async def create_voiceover_with_spechelo(
         self, text: str, voice: str = "default", output_file: str = "voiceover.mp3"
     ) -> bool:
         """Create voiceover using Spechelo Pro"""
         return await self.spechelo.create_voiceover(text, voice, output_file)
+
 
     async def create_thumbnail_with_blaster(
         self, template: str, title: str, background_image: Optional[str] = None
@@ -1091,6 +1136,7 @@ class WebAutomationAgent:
             template, title, background_image
         )
 
+
     async def signup_for_affiliates(
         self, programs: List[str], user_data: Dict[str, str]
     ) -> Dict[str, bool]:
@@ -1102,7 +1148,7 @@ class WebAutomationAgent:
 
             # Add random delay between signups to avoid detection
             if len(results) > 0:
-                await self.stealth_ops.stealth_delay(30.0, 15.0)  # 15-45 second delay
+                await self.stealth_ops.stealth_delay(30.0, 15.0)  # 15 - 45 second delay
 
             success = await self.affiliate_automator.signup_for_affiliate_program(
                 program, user_data
@@ -1116,6 +1162,7 @@ class WebAutomationAgent:
 
         return results
 
+
     def get_sequence_status(self, sequence_id: str) -> Optional[Dict[str, Any]]:
         """Get status of an automation sequence"""
         if sequence_id not in self.sequences:
@@ -1125,16 +1172,17 @@ class WebAutomationAgent:
 
         return {
             "sequence_id": sequence_id,
-            "name": sequence.name,
-            "target_app": sequence.target_app.value,
-            "action_count": len(sequence.actions),
-            "execution_count": sequence.execution_count,
-            "success_rate": sequence.success_rate,
-            "last_executed": (
+                "name": sequence.name,
+                "target_app": sequence.target_app.value,
+                "action_count": len(sequence.actions),
+                "execution_count": sequence.execution_count,
+                "success_rate": sequence.success_rate,
+                "last_executed": (
                 sequence.last_executed.isoformat() if sequence.last_executed else None
             ),
-            "created_at": sequence.created_at.isoformat(),
-        }
+                "created_at": sequence.created_at.isoformat(),
+                }
+
 
     def cleanup(self) -> None:
         """Clean up resources"""
@@ -1145,9 +1193,9 @@ class WebAutomationAgent:
         except Exception as e:
             self.logger.error(f"Error during cleanup: {e}")
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_web_automation():
         """Test the web automation tools"""
@@ -1161,9 +1209,9 @@ if __name__ == "__main__":
         try:
             success = await agent.create_voiceover_with_spechelo(
                 text="Welcome to our amazing product demonstration. This is a test of the Spechelo Pro automation system.",
-                voice="default",
-                output_file="test_voiceover.mp3",
-            )
+                    voice="default",
+                    output_file="test_voiceover.mp3",
+                    )
             print(f"Spechelo automation result: {success}")
         except Exception as e:
             print(f"Spechelo test failed: {e}")
@@ -1173,9 +1221,9 @@ if __name__ == "__main__":
         try:
             success = await agent.create_thumbnail_with_blaster(
                 template="modern_tech",
-                title="Amazing AI Tool Review",
-                background_image=None,
-            )
+                    title="Amazing AI Tool Review",
+                    background_image = None,
+                    )
             print(f"Thumbnail Blaster automation result: {success}")
         except Exception as e:
             print(f"Thumbnail Blaster test failed: {e}")
@@ -1185,14 +1233,14 @@ if __name__ == "__main__":
         try:
             user_data = {
                 "first_name": "John",
-                "last_name": "Doe",
-                "email": "john.doe@example.com",
-                "password": "SecurePassword123!",
-                "company_name": "Digital Marketing Pro",
-                "website_url": "https://digitalmarketingpro.com",
-                "phone": "+1-555-123-4567",
-                "country": "United States",
-            }
+                    "last_name": "Doe",
+                    "email": "john.doe@example.com",
+                    "password": "SecurePassword123!",
+                    "company_name": "Digital Marketing Pro",
+                    "website_url": "https://digitalmarketingpro.com",
+                    "phone": "+1 - 555 - 123 - 4567",
+                    "country": "United States",
+                    }
 
             programs = ["clickbank", "commission_junction"]
             results = await agent.signup_for_affiliates(programs, user_data)
@@ -1209,24 +1257,24 @@ if __name__ == "__main__":
         try:
             actions = [
                 AutomationAction(
-                    action_type=ActionType.WAIT, target="startup_delay", value="2.0"
+                    action_type = ActionType.WAIT, target="startup_delay", value="2.0"
                 ),
-                AutomationAction(
-                    action_type=ActionType.SCREENSHOT,
-                    target="desktop",
-                    value="test_screenshot.png",
+                    AutomationAction(
+                    action_type = ActionType.SCREENSHOT,
+                        target="desktop",
+                        value="test_screenshot.png",
+                        ),
+                    AutomationAction(
+                    action_type = ActionType.WAIT, target="completion_delay", value="1.0"
                 ),
-                AutomationAction(
-                    action_type=ActionType.WAIT, target="completion_delay", value="1.0"
-                ),
-            ]
+                    ]
 
             sequence_id = agent.create_sequence(
                 name="Test Sequence",
-                target_app=AutomationTarget.DESKTOP_APP,
-                actions=actions,
-                stealth_level=StealthLevel.MODERATE,
-            )
+                    target_app = AutomationTarget.DESKTOP_APP,
+                    actions = actions,
+                    stealth_level = StealthLevel.MODERATE,
+                    )
 
             sequence = agent.sequences[sequence_id]
             success = await agent.execute_sequence(sequence)

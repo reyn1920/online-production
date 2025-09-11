@@ -1,16 +1,16 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Stealth Automation Agent - Advanced Web Automation for Affiliate Monitoring
 
 This agent implements sophisticated stealth web automation capabilities for monitoring
 affiliate dashboards, verifying payments, and conducting covert market research.
-It uses advanced anti-detection techniques and human-like behavior patterns.
+It uses advanced anti - detection techniques and human - like behavior patterns.
 
 Features:
-- Maximum stealth web automation with anti-detection
+- Maximum stealth web automation with anti - detection
 - Affiliate dashboard monitoring and login automation
 - Payment verification and discrepancy detection
-- Human-like interaction patterns and timing
+- Human - like interaction patterns and timing
 - Advanced fingerprint masking and rotation
 - Captcha solving and bot detection evasion
 
@@ -37,7 +37,7 @@ from urllib.parse import urljoin, urlparse
 # Import base agent and automation tools
 from .base_agents import BaseAgent
 from .web_automation_tools import (ActionType, AutomationAction, AutomationTarget,
-                                   StealthLevel, WebAutomationAgent)
+    StealthLevel, WebAutomationAgent)
 
 logger = logging.getLogger(__name__)
 
@@ -71,8 +71,9 @@ class SessionStatus(Enum):
     FAILED = "failed"
     DETECTED = "detected"
 
-
 @dataclass
+
+
 class StealthProfile:
     """Stealth automation profile configuration"""
 
@@ -92,13 +93,14 @@ class StealthProfile:
     audio_fingerprint: str
     fonts_list: List[str]
     plugins_list: List[str]
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory = datetime.now)
     last_used: Optional[datetime] = None
     detection_count: int = 0
     success_rate: float = 1.0
 
-
 @dataclass
+
+
 class AutomationSession:
     """Web automation session tracking"""
 
@@ -109,14 +111,15 @@ class AutomationSession:
     start_time: datetime
     end_time: Optional[datetime] = None
     status: SessionStatus = SessionStatus.ACTIVE
-    actions_performed: List[str] = field(default_factory=list)
-    data_extracted: Dict[str, Any] = field(default_factory=dict)
-    detection_events: List[str] = field(default_factory=list)
+    actions_performed: List[str] = field(default_factory = list)
+    data_extracted: Dict[str, Any] = field(default_factory = dict)
+    detection_events: List[str] = field(default_factory = list)
     success: bool = False
     error_message: Optional[str] = None
 
-
 @dataclass
+
+
 class AffiliateDashboard:
     """Affiliate dashboard configuration"""
 
@@ -135,8 +138,9 @@ class AffiliateDashboard:
     success_rate: float = 1.0
     risk_level: DetectionRisk = DetectionRisk.LOW
 
-
 @dataclass
+
+
 class PayoutRecord:
     """Payout verification record"""
 
@@ -157,8 +161,9 @@ class StealthAutomationAgent(BaseAgent):
     Advanced Stealth Web Automation Agent
 
     Implements sophisticated stealth techniques for affiliate monitoring,
-    payment verification, and covert market research operations.
+        payment verification, and covert market research operations.
     """
+
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()
@@ -193,6 +198,7 @@ class StealthAutomationAgent(BaseAgent):
             f"StealthAutomationAgent initialized with {self.default_mode.value} mode"
         )
 
+
     def _initialize_stealth_tools(self):
         """Initialize stealth automation tools and engines"""
         try:
@@ -200,7 +206,7 @@ class StealthAutomationAgent(BaseAgent):
             self.web_engine = WebAutomationAgent()
 
             # Human behavior simulator
-            self.behavior_simulator = self._setup_behavior_simulator()
+                self.behavior_simulator = self._setup_behavior_simulator()
 
             # Fingerprint manager
             self.fingerprint_manager = self._setup_fingerprint_manager()
@@ -212,6 +218,7 @@ class StealthAutomationAgent(BaseAgent):
             logger.info("Stealth automation tools initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize stealth tools: {e}")
+
 
     def _setup_stealth_database(self):
         """Setup database tables for stealth automation tracking"""
@@ -226,25 +233,25 @@ class StealthAutomationAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS stealth_profiles (
                         profile_id TEXT PRIMARY KEY,
-                        user_agent TEXT NOT NULL,
-                        viewport_size TEXT NOT NULL,
-                        timezone TEXT DEFAULT 'UTC',
-                        language TEXT DEFAULT 'en-US',
-                        platform TEXT DEFAULT 'Win32',
-                        screen_resolution TEXT NOT NULL,
-                        color_depth INTEGER DEFAULT 24,
-                        device_memory INTEGER DEFAULT 8,
-                        hardware_concurrency INTEGER DEFAULT 4,
-                        webgl_vendor TEXT,
-                        webgl_renderer TEXT,
-                        canvas_fingerprint TEXT,
-                        audio_fingerprint TEXT,
-                        fonts_list TEXT,
-                        plugins_list TEXT,
-                        detection_count INTEGER DEFAULT 0,
-                        success_rate REAL DEFAULT 1.0,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        last_used TIMESTAMP
+                            user_agent TEXT NOT NULL,
+                            viewport_size TEXT NOT NULL,
+                            timezone TEXT DEFAULT 'UTC',
+                            language TEXT DEFAULT 'en - US',
+                            platform TEXT DEFAULT 'Win32',
+                            screen_resolution TEXT NOT NULL,
+                            color_depth INTEGER DEFAULT 24,
+                            device_memory INTEGER DEFAULT 8,
+                            hardware_concurrency INTEGER DEFAULT 4,
+                            webgl_vendor TEXT,
+                            webgl_renderer TEXT,
+                            canvas_fingerprint TEXT,
+                            audio_fingerprint TEXT,
+                            fonts_list TEXT,
+                            plugins_list TEXT,
+                            detection_count INTEGER DEFAULT 0,
+                            success_rate REAL DEFAULT 1.0,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            last_used TIMESTAMP
                     )
                 """
                 )
@@ -254,18 +261,18 @@ class StealthAutomationAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS automation_sessions (
                         session_id TEXT PRIMARY KEY,
-                        target_site TEXT NOT NULL,
-                        automation_mode TEXT NOT NULL,
-                        profile_id TEXT NOT NULL,
-                        start_time TIMESTAMP NOT NULL,
-                        end_time TIMESTAMP,
-                        status TEXT DEFAULT 'active',
-                        actions_performed TEXT,
-                        data_extracted TEXT,
-                        detection_events TEXT,
-                        success BOOLEAN DEFAULT FALSE,
-                        error_message TEXT,
-                        FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
+                            target_site TEXT NOT NULL,
+                            automation_mode TEXT NOT NULL,
+                            profile_id TEXT NOT NULL,
+                            start_time TIMESTAMP NOT NULL,
+                            end_time TIMESTAMP,
+                            status TEXT DEFAULT 'active',
+                            actions_performed TEXT,
+                            data_extracted TEXT,
+                            detection_events TEXT,
+                            success BOOLEAN DEFAULT FALSE,
+                            error_message TEXT,
+                            FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
                     )
                 """
                 )
@@ -275,20 +282,20 @@ class StealthAutomationAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS affiliate_dashboards (
                         dashboard_id TEXT PRIMARY KEY,
-                        program_name TEXT NOT NULL,
-                        dashboard_url TEXT NOT NULL,
-                        login_url TEXT NOT NULL,
-                        username TEXT NOT NULL,
-                        password_encrypted TEXT NOT NULL,
-                        two_factor_enabled BOOLEAN DEFAULT FALSE,
-                        selectors TEXT,
-                        expected_elements TEXT,
-                        anti_bot_measures TEXT,
-                        access_frequency INTEGER DEFAULT 24,
-                        success_rate REAL DEFAULT 1.0,
-                        risk_level TEXT DEFAULT 'low',
-                        last_accessed TIMESTAMP,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            program_name TEXT NOT NULL,
+                            dashboard_url TEXT NOT NULL,
+                            login_url TEXT NOT NULL,
+                            username TEXT NOT NULL,
+                            password_encrypted TEXT NOT NULL,
+                            two_factor_enabled BOOLEAN DEFAULT FALSE,
+                            selectors TEXT,
+                            expected_elements TEXT,
+                            anti_bot_measures TEXT,
+                            access_frequency INTEGER DEFAULT 24,
+                            success_rate REAL DEFAULT 1.0,
+                            risk_level TEXT DEFAULT 'low',
+                            last_accessed TIMESTAMP,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -298,17 +305,17 @@ class StealthAutomationAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS payout_records (
                         record_id TEXT PRIMARY KEY,
-                        dashboard_id TEXT NOT NULL,
-                        payout_date DATE NOT NULL,
-                        expected_amount REAL NOT NULL,
-                        actual_amount REAL,
-                        currency TEXT DEFAULT 'USD',
-                        status TEXT DEFAULT 'pending',
-                        discrepancy_amount REAL DEFAULT 0.0,
-                        verification_date TIMESTAMP,
-                        notes TEXT,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (dashboard_id) REFERENCES affiliate_dashboards (dashboard_id)
+                            dashboard_id TEXT NOT NULL,
+                            payout_date DATE NOT NULL,
+                            expected_amount REAL NOT NULL,
+                            actual_amount REAL,
+                            currency TEXT DEFAULT 'USD',
+                            status TEXT DEFAULT 'pending',
+                            discrepancy_amount REAL DEFAULT 0.0,
+                            verification_date TIMESTAMP,
+                            notes TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (dashboard_id) REFERENCES affiliate_dashboards (dashboard_id)
                     )
                 """
                 )
@@ -318,16 +325,16 @@ class StealthAutomationAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS detection_events (
                         event_id TEXT PRIMARY KEY,
-                        session_id TEXT NOT NULL,
-                        profile_id TEXT NOT NULL,
-                        target_site TEXT NOT NULL,
-                        detection_type TEXT NOT NULL,
-                        detection_details TEXT,
-                        countermeasure_applied TEXT,
-                        success BOOLEAN DEFAULT FALSE,
-                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (session_id) REFERENCES automation_sessions (session_id),
-                        FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
+                            session_id TEXT NOT NULL,
+                            profile_id TEXT NOT NULL,
+                            target_site TEXT NOT NULL,
+                            detection_type TEXT NOT NULL,
+                            detection_details TEXT,
+                            countermeasure_applied TEXT,
+                            success BOOLEAN DEFAULT FALSE,
+                            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (session_id) REFERENCES automation_sessions (session_id),
+                            FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
                     )
                 """
                 )
@@ -337,6 +344,7 @@ class StealthAutomationAgent(BaseAgent):
 
         except Exception as e:
             logger.error(f"Failed to setup stealth database: {e}")
+
 
     def _setup_behavior_simulator(self):
         """Setup human behavior simulator for stealth operations"""
@@ -352,24 +360,24 @@ class StealthAutomationAgent(BaseAgent):
 
             behavior_simulator = {
                 "stealth_ops": StealthOperations(stealth_level),
-                "human_delays": {
+                    "human_delays": {
                     "typing": (0.05, 0.2),  # seconds per character
                     "mouse_move": (0.1, 0.3),  # seconds for movement
-                    "click_delay": (0.1, 0.5),  # seconds before/after click
+                    "click_delay": (0.1, 0.5),  # seconds before / after click
                     "page_load": (2, 5),  # seconds to wait for page load
                     "thinking": (1, 3),  # random thinking pauses
                 },
-                "error_simulation": {
+                    "error_simulation": {
                     "typo_rate": 0.02 if self.human_behavior_enabled else 0,
-                    "backspace_rate": 0.01 if self.human_behavior_enabled else 0,
-                    "mouse_jitter": self.human_behavior_enabled,
-                },
-                "patterns": {
+                        "backspace_rate": 0.01 if self.human_behavior_enabled else 0,
+                        "mouse_jitter": self.human_behavior_enabled,
+                        },
+                    "patterns": {
                     "scroll_behavior": "human_like",
-                    "mouse_curves": True,
-                    "variable_speed": True,
-                },
-            }
+                        "mouse_curves": True,
+                        "variable_speed": True,
+                        },
+                    }
 
             logger.info("Human behavior simulator initialized successfully")
             return behavior_simulator
@@ -378,29 +386,30 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Failed to setup behavior simulator: {e}")
             return None
 
+
     def _setup_fingerprint_manager(self):
-        """Setup fingerprint management system for anti-detection"""
+        """Setup fingerprint management system for anti - detection"""
         try:
             fingerprint_manager = {
                 "canvas_spoofing": True,
-                "webgl_spoofing": True,
-                "audio_spoofing": True,
-                "font_spoofing": True,
-                "timezone_spoofing": True,
-                "language_spoofing": True,
-                "screen_spoofing": True,
-                "user_agent_rotation": True,
-                "header_randomization": True,
-                "cookie_management": {
+                    "webgl_spoofing": True,
+                    "audio_spoofing": True,
+                    "font_spoofing": True,
+                    "timezone_spoofing": True,
+                    "language_spoofing": True,
+                    "screen_spoofing": True,
+                    "user_agent_rotation": True,
+                    "header_randomization": True,
+                    "cookie_management": {
                     "clear_on_rotation": True,
-                    "selective_persistence": True,
-                },
-                "fingerprint_entropy": {
+                        "selective_persistence": True,
+                        },
+                    "fingerprint_entropy": {
                     "canvas_noise": 0.1,
-                    "audio_noise": 0.05,
-                    "timing_variance": 0.2,
-                },
-            }
+                        "audio_noise": 0.05,
+                        "timing_variance": 0.2,
+                        },
+                    }
 
             logger.info("Fingerprint manager initialized successfully")
             return fingerprint_manager
@@ -409,33 +418,34 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Failed to setup fingerprint manager: {e}")
             return None
 
+
     def _setup_captcha_solver(self):
         """Setup captcha solving capabilities"""
         try:
             captcha_solver = {
                 "enabled": self.captcha_solving_enabled,
-                "services": {
+                    "services": {
                     "recaptcha_v2": True,
-                    "recaptcha_v3": True,
-                    "hcaptcha": True,
-                    "image_captcha": True,
-                },
-                "solving_methods": {
+                        "recaptcha_v3": True,
+                        "hcaptcha": True,
+                        "image_captcha": True,
+                        },
+                    "solving_methods": {
                     "audio_challenge": True,
-                    "image_recognition": True,
-                    "behavioral_analysis": True,
-                },
-                "fallback_options": {
+                        "image_recognition": True,
+                        "behavioral_analysis": True,
+                        },
+                    "fallback_options": {
                     "manual_intervention": False,
-                    "skip_on_failure": True,
-                    "retry_attempts": 3,
-                },
-                "detection_evasion": {
+                        "skip_on_failure": True,
+                        "retry_attempts": 3,
+                        },
+                    "detection_evasion": {
                     "mouse_movement": True,
-                    "timing_randomization": True,
-                    "human_like_solving": True,
-                },
-            }
+                        "timing_randomization": True,
+                        "human_like_solving": True,
+                        },
+                    }
 
             logger.info("Captcha solver initialized successfully")
             return captcha_solver
@@ -443,6 +453,7 @@ class StealthAutomationAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to setup captcha solver: {e}")
             return None
+
 
     def _load_stealth_profiles(self):
         """Load or generate stealth profiles"""
@@ -472,61 +483,62 @@ class StealthAutomationAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to load stealth profiles: {e}")
 
+
     def _generate_initial_profiles(self):
         """Generate initial set of stealth profiles"""
         try:
             # Common user agents for different browsers and OS
             user_agents = [
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            ]
+                "Mozilla / 5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
+                    "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
+                    "Mozilla / 5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko / 20100101 Firefox / 121.0",
+                    "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 605.1.15 (KHTML, like Gecko) Version / 17.2 Safari / 605.1.15",
+                    "Mozilla / 5.0 (X11; Linux x86_64) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
+                    ]
 
             # Common screen resolutions
             resolutions = [
                 (1920, 1080),
-                (1366, 768),
-                (1536, 864),
-                (1440, 900),
-                (1280, 720),
-                (2560, 1440),
-                (3840, 2160),
-            ]
+                    (1366, 768),
+                    (1536, 864),
+                    (1440, 900),
+                    (1280, 720),
+                    (2560, 1440),
+                    (3840, 2160),
+                    ]
 
             # Generate 10 diverse profiles
             for i in range(10):
-                profile_id = f"profile_{i+1:02d}_{datetime.now().strftime('%Y%m%d')}"
+                profile_id = f"profile_{i + 1:02d}_{datetime.now().strftime('%Y%m%d')}"
 
                 # Randomize profile characteristics
                 user_agent = random.choice(user_agents)
                 resolution = random.choice(resolutions)
                 viewport = (
                     resolution[0] - random.randint(0, 100),
-                    resolution[1] - random.randint(0, 100),
-                )
+                        resolution[1] - random.randint(0, 100),
+                        )
 
                 profile = StealthProfile(
-                    profile_id=profile_id,
-                    user_agent=user_agent,
-                    viewport_size=viewport,
-                    timezone=random.choice(
-                        ["UTC", "America/New_York", "Europe/London", "Asia/Tokyo"]
+                    profile_id = profile_id,
+                        user_agent = user_agent,
+                        viewport_size = viewport,
+                        timezone = random.choice(
+                        ["UTC", "America / New_York", "Europe / London", "Asia / Tokyo"]
                     ),
-                    language=random.choice(["en-US", "en-GB", "en-CA"]),
-                    platform=self._extract_platform_from_ua(user_agent),
-                    screen_resolution=resolution,
-                    color_depth=random.choice([24, 32]),
-                    device_memory=random.choice([4, 8, 16]),
-                    hardware_concurrency=random.choice([2, 4, 8, 12]),
-                    webgl_vendor=self._generate_webgl_vendor(),
-                    webgl_renderer=self._generate_webgl_renderer(),
-                    canvas_fingerprint=self._generate_canvas_fingerprint(),
-                    audio_fingerprint=self._generate_audio_fingerprint(),
-                    fonts_list=self._generate_fonts_list(),
-                    plugins_list=self._generate_plugins_list(),
-                )
+                        language = random.choice(["en - US", "en - GB", "en - CA"]),
+                        platform = self._extract_platform_from_ua(user_agent),
+                        screen_resolution = resolution,
+                        color_depth = random.choice([24, 32]),
+                        device_memory = random.choice([4, 8, 16]),
+                        hardware_concurrency = random.choice([2, 4, 8, 12]),
+                        webgl_vendor = self._generate_webgl_vendor(),
+                        webgl_renderer = self._generate_webgl_renderer(),
+                        canvas_fingerprint = self._generate_canvas_fingerprint(),
+                        audio_fingerprint = self._generate_audio_fingerprint(),
+                        fonts_list = self._generate_fonts_list(),
+                        plugins_list = self._generate_plugins_list(),
+                        )
 
                 self.stealth_profiles[profile_id] = profile
                 self._save_stealth_profile(profile)
@@ -537,6 +549,7 @@ class StealthAutomationAgent(BaseAgent):
 
         except Exception as e:
             logger.error(f"Failed to generate initial profiles: {e}")
+
 
     def _extract_platform_from_ua(self, user_agent: str) -> str:
         """Extract platform information from user agent string"""
@@ -576,108 +589,116 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Error extracting platform from user agent: {e}")
             return "unknown"
 
+
     def _generate_webgl_vendor(self) -> str:
         """Generate realistic WebGL vendor string"""
         vendors = ["Google Inc.", "Mozilla", "WebKit", "Microsoft Corporation"]
         return random.choice(vendors)
 
+
     def _generate_webgl_renderer(self) -> str:
         """Generate realistic WebGL renderer string"""
         renderers = [
-            "ANGLE (Intel, Intel(R) HD Graphics 620 Direct3D11 vs_5_0 ps_5_0, D3D11-27.20.100.8476)",
-            "ANGLE (NVIDIA, NVIDIA GeForce GTX 1060 Direct3D11 vs_5_0 ps_5_0, D3D11-27.21.14.5671)",
-            "WebKit WebGL",
-            "Mozilla -- ANGLE (Intel, Intel(R) UHD Graphics 620 Direct3D11 vs_5_0 ps_5_0)",
-        ]
+            "ANGLE (Intel, Intel(R) HD Graphics 620 Direct3D11 vs_5_0 ps_5_0, D3D11 - 27.20.100.8476)",
+                "ANGLE (NVIDIA, NVIDIA GeForce GTX 1060 Direct3D11 vs_5_0 ps_5_0, D3D11 - 27.21.14.5671)",
+                "WebKit WebGL",
+                "Mozilla -- ANGLE (Intel, Intel(R) UHD Graphics 620 Direct3D11 vs_5_0 ps_5_0)",
+                ]
         return random.choice(renderers)
+
 
     def _generate_canvas_fingerprint(self) -> str:
         """Generate unique canvas fingerprint"""
-        # Generate a pseudo-random canvas fingerprint
+        # Generate a pseudo - random canvas fingerprint
         base_string = f"{random.randint(1000000, 9999999)}_{datetime.now().microsecond}"
         return hashlib.md5(base_string.encode()).hexdigest()[:16]
 
+
     def _generate_audio_fingerprint(self) -> str:
         """Generate unique audio fingerprint"""
-        # Generate a pseudo-random audio fingerprint
+        # Generate a pseudo - random audio fingerprint
         base_string = (
             f"audio_{random.randint(100000, 999999)}_{datetime.now().microsecond}"
         )
         return hashlib.sha256(base_string.encode()).hexdigest()[:24]
 
+
     def _generate_fonts_list(self) -> List[str]:
         """Generate realistic fonts list"""
         common_fonts = [
             "Arial",
-            "Helvetica",
-            "Times New Roman",
-            "Courier New",
-            "Verdana",
-            "Georgia",
-            "Palatino",
-            "Garamond",
-            "Bookman",
-            "Comic Sans MS",
-            "Trebuchet MS",
-            "Arial Black",
-            "Impact",
-            "Lucida Sans Unicode",
-            "Tahoma",
-            "Lucida Console",
-            "Monaco",
-            "Courier",
-            "Times",
-        ]
+                "Helvetica",
+                "Times New Roman",
+                "Courier New",
+                "Verdana",
+                "Georgia",
+                "Palatino",
+                "Garamond",
+                "Bookman",
+                "Comic Sans MS",
+                "Trebuchet MS",
+                "Arial Black",
+                "Impact",
+                "Lucida Sans Unicode",
+                "Tahoma",
+                "Lucida Console",
+                "Monaco",
+                "Courier",
+                "Times",
+                ]
         # Return a random subset of fonts
         num_fonts = random.randint(15, len(common_fonts))
         return random.sample(common_fonts, num_fonts)
+
 
     def _generate_plugins_list(self) -> List[str]:
         """Generate realistic plugins list"""
         common_plugins = [
             "Chrome PDF Plugin",
-            "Chrome PDF Viewer",
-            "Native Client",
-            "Widevine Content Decryption Module",
-        ]
+                "Chrome PDF Viewer",
+                "Native Client",
+                "Widevine Content Decryption Module",
+                ]
         return common_plugins
+
 
     def _create_profile_from_data(self, profile_data: tuple) -> StealthProfile:
         """Create StealthProfile object from database data"""
         try:
             return StealthProfile(
-                profile_id=profile_data[0],
-                user_agent=profile_data[1],
-                viewport_size=eval(profile_data[2]),  # Convert string back to tuple
-                timezone=profile_data[3],
-                language=profile_data[4],
-                platform=profile_data[5],
-                screen_resolution=eval(profile_data[6]),
-                color_depth=profile_data[7],
-                device_memory=profile_data[8],
-                hardware_concurrency=profile_data[9],
-                webgl_vendor=profile_data[10],
-                webgl_renderer=profile_data[11],
-                canvas_fingerprint=profile_data[12],
-                audio_fingerprint=profile_data[13],
-                fonts_list=json.loads(profile_data[14]) if profile_data[14] else [],
-                plugins_list=json.loads(profile_data[15]) if profile_data[15] else [],
-                detection_count=profile_data[16],
-                success_rate=profile_data[17],
-                created_at=(
+                profile_id = profile_data[0],
+                    user_agent = profile_data[1],
+                    viewport_size = eval(profile_data[2]),  # Convert string back to tuple
+                timezone = profile_data[3],
+                    language = profile_data[4],
+                    platform = profile_data[5],
+                    screen_resolution = eval(profile_data[6]),
+                    color_depth = profile_data[7],
+                    device_memory = profile_data[8],
+                    hardware_concurrency = profile_data[9],
+                    webgl_vendor = profile_data[10],
+                    webgl_renderer = profile_data[11],
+                    canvas_fingerprint = profile_data[12],
+                    audio_fingerprint = profile_data[13],
+                    fonts_list = json.loads(profile_data[14]) if profile_data[14] else [],
+                    plugins_list = json.loads(profile_data[15]) if profile_data[15] else [],
+                    detection_count = profile_data[16],
+                    success_rate = profile_data[17],
+                    created_at=(
                     datetime.fromisoformat(profile_data[18])
                     if profile_data[18]
                     else datetime.now()
                 ),
-                last_used=(
+                    last_used=(
                     datetime.fromisoformat(profile_data[19])
                     if profile_data[19]
                     else None
                 ),
-            )
+                    )
         except Exception as e:
             logger.error(f"Error creating profile from data: {e}")
             return None
+
 
     def _save_stealth_profile(self, profile: StealthProfile):
         """Save stealth profile to database"""
@@ -691,40 +712,41 @@ class StealthAutomationAgent(BaseAgent):
                     """
                     INSERT OR REPLACE INTO stealth_profiles (
                         profile_id, user_agent, viewport_size, timezone, language,
-                        platform, screen_resolution, color_depth, device_memory,
-                        hardware_concurrency, webgl_vendor, webgl_renderer,
-                        canvas_fingerprint, audio_fingerprint, fonts_list,
-                        plugins_list, detection_count, success_rate, created_at, last_used
+                            platform, screen_resolution, color_depth, device_memory,
+                            hardware_concurrency, webgl_vendor, webgl_renderer,
+                            canvas_fingerprint, audio_fingerprint, fonts_list,
+                            plugins_list, detection_count, success_rate, created_at, last_used
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         profile.profile_id,
-                        profile.user_agent,
-                        str(profile.viewport_size),
-                        profile.timezone,
-                        profile.language,
-                        profile.platform,
-                        str(profile.screen_resolution),
-                        profile.color_depth,
-                        profile.device_memory,
-                        profile.hardware_concurrency,
-                        profile.webgl_vendor,
-                        profile.webgl_renderer,
-                        profile.canvas_fingerprint,
-                        profile.audio_fingerprint,
-                        json.dumps(profile.fonts_list),
-                        json.dumps(profile.plugins_list),
-                        profile.detection_count,
-                        profile.success_rate,
-                        profile.created_at.isoformat(),
-                        profile.last_used.isoformat() if profile.last_used else None,
-                    ),
-                )
+                            profile.user_agent,
+                            str(profile.viewport_size),
+                            profile.timezone,
+                            profile.language,
+                            profile.platform,
+                            str(profile.screen_resolution),
+                            profile.color_depth,
+                            profile.device_memory,
+                            profile.hardware_concurrency,
+                            profile.webgl_vendor,
+                            profile.webgl_renderer,
+                            profile.canvas_fingerprint,
+                            profile.audio_fingerprint,
+                            json.dumps(profile.fonts_list),
+                            json.dumps(profile.plugins_list),
+                            profile.detection_count,
+                            profile.success_rate,
+                            profile.created_at.isoformat(),
+                            profile.last_used.isoformat() if profile.last_used else None,
+                            ),
+                        )
 
                 conn.commit()
 
         except Exception as e:
             logger.error(f"Error saving stealth profile: {e}")
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process stealth automation tasks"""
@@ -732,8 +754,8 @@ class StealthAutomationAgent(BaseAgent):
         if not self.config.get("stealth_automation_enabled", False):
             return {
                 "status": "disabled",
-                "message": "Stealth automation is currently disabled in configuration",
-            }
+                    "message": "Stealth automation is currently disabled in configuration",
+                    }
 
         task_type = task.get("type", "")
 
@@ -757,6 +779,7 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Error processing stealth task {task_type}: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _monitor_affiliate_dashboard(self, dashboard_id: str) -> Dict[str, Any]:
         """Monitor affiliate dashboard with maximum stealth"""
         logger.info(f"Starting stealth monitoring of dashboard {dashboard_id}")
@@ -771,9 +794,9 @@ class StealthAutomationAgent(BaseAgent):
             if self._is_access_too_frequent(dashboard):
                 return {
                     "status": "delayed",
-                    "message": "Access delayed to avoid detection",
-                    "next_safe_access": self._calculate_next_safe_access(dashboard),
-                }
+                        "message": "Access delayed to avoid detection",
+                        "next_safe_access": self._calculate_next_safe_access(dashboard),
+                        }
 
             # Select optimal stealth profile
             profile = self._select_optimal_profile(dashboard)
@@ -796,6 +819,7 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Dashboard monitoring failed for {dashboard_id}: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _execute_stealth_monitoring(
         self, session: AutomationSession, dashboard: AffiliateDashboard
     ) -> Dict[str, Any]:
@@ -806,10 +830,10 @@ class StealthAutomationAgent(BaseAgent):
                 session.stealth_profile
             )
 
-            # Navigate to login page with human-like behavior
-            await self._stealth_navigate(session, dashboard.login_url)
+            # Navigate to login page with human - like behavior
+                await self._stealth_navigate(session, dashboard.login_url)
 
-            # Perform human-like login sequence
+            # Perform human - like login sequence
             login_success = await self._stealth_login(session, dashboard)
 
             if not login_success:
@@ -820,8 +844,8 @@ class StealthAutomationAgent(BaseAgent):
             # Navigate to dashboard sections
             dashboard_data = await self._extract_dashboard_data(session, dashboard)
 
-            # Perform human-like browsing behavior
-            await self._simulate_human_browsing(session)
+            # Perform human - like browsing behavior
+                await self._simulate_human_browsing(session)
 
             # Extract payout information
             payout_data = await self._extract_payout_data(session, dashboard)
@@ -833,15 +857,15 @@ class StealthAutomationAgent(BaseAgent):
             session.success = True
             session.data_extracted = {
                 "dashboard_data": dashboard_data,
-                "payout_data": payout_data,
-                "extraction_time": datetime.now().isoformat(),
-            }
+                    "payout_data": payout_data,
+                    "extraction_time": datetime.now().isoformat(),
+                    }
 
             return {
                 "status": "success",
-                "data": session.data_extracted,
-                "session_id": session.session_id,
-            }
+                    "data": session.data_extracted,
+                    "session_id": session.session_id,
+                    }
 
         except Exception as e:
             session.status = SessionStatus.FAILED
@@ -849,10 +873,11 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Stealth monitoring execution failed: {e}")
             return {"status": "error", "message": str(e)}
 
+
     async def _stealth_login(
         self, session: AutomationSession, dashboard: AffiliateDashboard
     ) -> bool:
-        """Perform stealth login with human-like behavior"""
+        """Perform stealth login with human - like behavior"""
         try:
             # Wait for page load with random delay
             await self._human_delay(2, 5)
@@ -909,8 +934,9 @@ class StealthAutomationAgent(BaseAgent):
             logger.error(f"Stealth login error: {e}")
             return False
 
+
     async def _human_delay(self, min_seconds: float, max_seconds: float):
-        """Simulate human-like delay with natural variation"""
+        """Simulate human - like delay with natural variation"""
         if self.human_behavior_enabled:
             # Use normal distribution for more natural timing
             mean_delay = (min_seconds + max_seconds) / 2
@@ -920,8 +946,9 @@ class StealthAutomationAgent(BaseAgent):
             )
             await asyncio.sleep(delay)
 
+
     async def _human_type(self, session: AutomationSession, selector: str, text: str):
-        """Type text with human-like timing and errors"""
+        """Type text with human - like timing and errors"""
         try:
             if self.human_behavior_enabled:
                 # Simulate human typing with occasional pauses and corrections
@@ -945,13 +972,14 @@ class StealthAutomationAgent(BaseAgent):
                     await self._type_character(session, selector, char)
                     await asyncio.sleep(char_delay)
             else:
-                # Fast typing for non-human mode
+                # Fast typing for non - human mode
                 await self._type_text_fast(session, selector, text)
 
             session.actions_performed.append(f"typed_text:{selector}")
 
         except Exception as e:
             logger.error(f"Human typing error: {e}")
+
 
     async def start_autonomous_stealth_operations(self):
         """Start autonomous stealth operations loop"""
@@ -968,7 +996,7 @@ class StealthAutomationAgent(BaseAgent):
                         await self._monitor_affiliate_dashboard(dashboard_id)
 
                         # Stagger requests to avoid pattern detection
-                        await asyncio.sleep(random.uniform(300, 900))  # 5-15 minutes
+                        await asyncio.sleep(random.uniform(300, 900))  # 5 - 15 minutes
 
                 # Rotate stealth profiles periodically
                 if self._should_rotate_profiles():
@@ -985,20 +1013,23 @@ class StealthAutomationAgent(BaseAgent):
                 await asyncio.sleep(300)  # Wait 5 minutes before retry
 
     @property
+
+
     def capabilities(self) -> List[str]:
         """Return list of agent capabilities"""
         return [
             "stealth_web_automation",
-            "affiliate_monitoring",
-            "payout_verification",
-            "anti_detection_evasion",
-            "human_behavior_simulation",
-            "fingerprint_masking",
-            "captcha_solving",
-            "session_management",
-            "covert_research",
-            "profile_rotation",
-        ]
+                "affiliate_monitoring",
+                "payout_verification",
+                "anti_detection_evasion",
+                "human_behavior_simulation",
+                "fingerprint_masking",
+                "captcha_solving",
+                "session_management",
+                "covert_research",
+                "profile_rotation",
+                ]
+
 
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
@@ -1012,11 +1043,11 @@ class StealthAutomationAgent(BaseAgent):
 
         return {
             "agent_type": self.agent_type,
-            "active_sessions": active_sessions,
-            "stealth_profiles": len(self.stealth_profiles),
-            "monitored_dashboards": len(self.affiliate_dashboards),
-            "automation_mode": self.default_mode.value,
-            "human_behavior_enabled": self.human_behavior_enabled,
-            "captcha_solving_enabled": self.captcha_solving_enabled,
-            "capabilities": self.capabilities,
-        }
+                "active_sessions": active_sessions,
+                "stealth_profiles": len(self.stealth_profiles),
+                "monitored_dashboards": len(self.affiliate_dashboards),
+                "automation_mode": self.default_mode.value,
+                "human_behavior_enabled": self.human_behavior_enabled,
+                "captcha_solving_enabled": self.captcha_solving_enabled,
+                "capabilities": self.capabilities,
+                }

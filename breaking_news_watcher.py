@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Breaking News Watcher - Core RSS Intelligence Engine
 
 This module serves as the central RSS intelligence system that continuously
-parses RSS feeds, extracts key information, and provides real-time intelligence
+parses RSS feeds, extracts key information, and provides real - time intelligence
 to the Research, Planner, and Content agents.
 """
 
@@ -28,8 +28,9 @@ from backend.secret_store import SecretStore
 
 logger = get_logger(__name__)
 
-
 @dataclass
+
+
 class NewsArticle:
     """Represents a parsed news article with extracted intelligence."""
 
@@ -45,8 +46,9 @@ class NewsArticle:
     readability_score: float
     hash_id: str
 
-
 @dataclass
+
+
 class TrendData:
     """Represents trend analysis data for topics and keywords."""
 
@@ -62,11 +64,12 @@ class TrendData:
 class RSSIntelligenceEngine:
     """Core RSS intelligence engine for continuous news monitoring and analysis."""
 
+
     def __init__(
         self,
-        db_path: str = "right_perspective.db",
-        config_path: str = "rss_feeds_example.json",
-    ):
+            db_path: str = "right_perspective.db",
+            config_path: str = "rss_feeds_example.json",
+            ):
         self.db_path = db_path
         self.config_path = config_path
         self.secret_store = SecretStore()
@@ -79,6 +82,7 @@ class RSSIntelligenceEngine:
         self._init_intelligence_tables()
 
         logger.info(f"RSS Intelligence Engine initialized with {len(self.feeds)} feeds")
+
 
     def _load_rss_feeds(self) -> List[Dict]:
         """Load RSS feeds configuration from JSON file."""
@@ -95,6 +99,7 @@ class RSSIntelligenceEngine:
             logger.error(f"Error parsing RSS config: {e}")
             return []
 
+
     def _init_intelligence_tables(self):
         """Initialize database tables for intelligence storage."""
         conn = sqlite3.connect(self.db_path)
@@ -105,18 +110,18 @@ class RSSIntelligenceEngine:
             """
             CREATE TABLE IF NOT EXISTS news_articles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                hash_id TEXT UNIQUE NOT NULL,
-                title TEXT NOT NULL,
-                url TEXT NOT NULL,
-                content TEXT,
-                published TIMESTAMP,
-                source TEXT,
-                category TEXT,
-                keywords TEXT,
-                entities TEXT,
-                sentiment_score REAL,
-                readability_score REAL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    hash_id TEXT UNIQUE NOT NULL,
+                    title TEXT NOT NULL,
+                    url TEXT NOT NULL,
+                    content TEXT,
+                    published TIMESTAMP,
+                    source TEXT,
+                    category TEXT,
+                    keywords TEXT,
+                    entities TEXT,
+                    sentiment_score REAL,
+                    readability_score REAL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -126,15 +131,15 @@ class RSSIntelligenceEngine:
             """
             CREATE TABLE IF NOT EXISTS trend_analysis (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                keyword TEXT NOT NULL,
-                frequency INTEGER DEFAULT 1,
-                trend_score REAL DEFAULT 0.0,
-                first_seen TIMESTAMP,
-                last_seen TIMESTAMP,
-                sources TEXT,
-                related_articles TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    keyword TEXT NOT NULL,
+                    frequency INTEGER DEFAULT 1,
+                    trend_score REAL DEFAULT 0.0,
+                    first_seen TIMESTAMP,
+                    last_seen TIMESTAMP,
+                    sources TEXT,
+                    related_articles TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -144,34 +149,34 @@ class RSSIntelligenceEngine:
             """
             CREATE TABLE IF NOT EXISTS hypocrisy_tracker (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                subject_name TEXT NOT NULL,
-                subject_type TEXT CHECK (subject_type IN ('person', 'organization', 'publication', 'politician', 'celebrity', 'influencer')),
-                statement_1 TEXT NOT NULL,
-                statement_2 TEXT NOT NULL,
-                context_1 TEXT,
-                context_2 TEXT,
-                date_1 DATE,
-                date_2 DATE,
-                source_1 TEXT,
-                source_2 TEXT,
-                contradiction_type TEXT CHECK (contradiction_type IN ('direct', 'contextual', 'temporal', 'value', 'policy_shift', 'audience_based')),
-                severity_score INTEGER CHECK (severity_score BETWEEN 1 AND 10),
-                confidence_score REAL CHECK (confidence_score BETWEEN 0.0 AND 1.0),
-                verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'disputed', 'debunked')),
-                evidence_links JSON,
-                tags JSON,
-                analysis_notes TEXT,
-                public_impact_score INTEGER CHECK (public_impact_score BETWEEN 1 AND 10),
-                media_coverage_count INTEGER DEFAULT 0,
-                social_media_mentions INTEGER DEFAULT 0,
-                fact_check_results JSON,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by TEXT,
-                reviewed_by TEXT,
-                reviewed_at TIMESTAMP,
-                content_used BOOLEAN DEFAULT FALSE,
-                content_used_at TIMESTAMP
+                    subject_name TEXT NOT NULL,
+                    subject_type TEXT CHECK (subject_type IN ('person', 'organization', 'publication', 'politician', 'celebrity', 'influencer')),
+                    statement_1 TEXT NOT NULL,
+                    statement_2 TEXT NOT NULL,
+                    context_1 TEXT,
+                    context_2 TEXT,
+                    date_1 DATE,
+                    date_2 DATE,
+                    source_1 TEXT,
+                    source_2 TEXT,
+                    contradiction_type TEXT CHECK (contradiction_type IN ('direct', 'contextual', 'temporal', 'value', 'policy_shift', 'audience_based')),
+                    severity_score INTEGER CHECK (severity_score BETWEEN 1 AND 10),
+                    confidence_score REAL CHECK (confidence_score BETWEEN 0.0 AND 1.0),
+                    verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'disputed', 'debunked')),
+                    evidence_links JSON,
+                    tags JSON,
+                    analysis_notes TEXT,
+                    public_impact_score INTEGER CHECK (public_impact_score BETWEEN 1 AND 10),
+                    media_coverage_count INTEGER DEFAULT 0,
+                    social_media_mentions INTEGER DEFAULT 0,
+                    fact_check_results JSON,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    created_by TEXT,
+                    reviewed_by TEXT,
+                    reviewed_at TIMESTAMP,
+                    content_used BOOLEAN DEFAULT FALSE,
+                    content_used_at TIMESTAMP
             )
         """
         )
@@ -181,11 +186,11 @@ class RSSIntelligenceEngine:
             """
             CREATE TABLE IF NOT EXISTS intelligence_briefings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                topic TEXT NOT NULL,
-                briefing_data TEXT NOT NULL,
-                relevance_score REAL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                expires_at TIMESTAMP
+                    topic TEXT NOT NULL,
+                    briefing_data TEXT NOT NULL,
+                    relevance_score REAL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    expires_at TIMESTAMP
             )
         """
         )
@@ -194,93 +199,97 @@ class RSSIntelligenceEngine:
         conn.close()
         logger.info("Intelligence database tables initialized")
 
+
     def _generate_article_hash(self, title: str, url: str, published: datetime) -> str:
         """Generate unique hash for article deduplication."""
         content = f"{title}{url}{published.isoformat()}"
         return hashlib.md5(content.encode()).hexdigest()
+
 
     def _extract_keywords(self, text: str) -> List[str]:
         """Extract keywords from text using simple NLP techniques."""
         # Remove common stop words and extract meaningful terms
         stop_words = {
             "the",
-            "a",
-            "an",
-            "and",
-            "or",
-            "but",
-            "in",
-            "on",
-            "at",
-            "to",
-            "for",
-            "of",
-            "with",
-            "by",
-            "is",
-            "are",
-            "was",
-            "were",
-            "be",
-            "been",
-            "being",
-            "have",
-            "has",
-            "had",
-            "do",
-            "does",
-            "did",
-            "will",
-            "would",
-            "could",
-            "should",
-        }
+                "a",
+                "an",
+                "and",
+                "or",
+                "but",
+                "in",
+                "on",
+                "at",
+                "to",
+                "for",
+                "of",
+                "with",
+                "by",
+                "is",
+                "are",
+                "was",
+                "were",
+                "be",
+                "been",
+                "being",
+                "have",
+                "has",
+                "had",
+                "do",
+                "does",
+                "did",
+                "will",
+                "would",
+                "could",
+                "should",
+                }
 
         # Extract words (3+ characters, alphanumeric)
-        words = re.findall(r"\b[a-zA-Z]{3,}\b", text.lower())
+        words = re.findall(r"\b[a - zA - Z]{3,}\b", text.lower())
         keywords = [word for word in words if word not in stop_words]
 
         # Return top keywords by frequency
         keyword_counts = Counter(keywords)
         return [word for word, count in keyword_counts.most_common(10)]
 
+
     def _extract_entities(self, text: str) -> List[str]:
         """Extract named entities (simple pattern matching)."""
-        # Simple entity extraction - capitalized words/phrases
-        entities = re.findall(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b", text)
+        # Simple entity extraction - capitalized words / phrases
+        entities = re.findall(r"\b[A - Z][a - z]+(?:\s+[A - Z][a - z]+)*\b", text)
         return list(set(entities))[:10]  # Deduplicate and limit
+
 
     def _calculate_sentiment(self, text: str) -> float:
         """Calculate basic sentiment score (-1 to 1)."""
         # Simple sentiment analysis using keyword matching
         positive_words = [
             "good",
-            "great",
-            "excellent",
-            "amazing",
-            "wonderful",
-            "fantastic",
-            "positive",
-            "success",
-            "win",
-            "victory",
-            "breakthrough",
-            "achievement",
-        ]
+                "great",
+                "excellent",
+                "amazing",
+                "wonderful",
+                "fantastic",
+                "positive",
+                "success",
+                "win",
+                "victory",
+                "breakthrough",
+                "achievement",
+                ]
         negative_words = [
             "bad",
-            "terrible",
-            "awful",
-            "horrible",
-            "negative",
-            "failure",
-            "lose",
-            "defeat",
-            "crisis",
-            "disaster",
-            "scandal",
-            "controversy",
-        ]
+                "terrible",
+                "awful",
+                "horrible",
+                "negative",
+                "failure",
+                "lose",
+                "defeat",
+                "crisis",
+                "disaster",
+                "scandal",
+                "controversy",
+                ]
 
         words = text.lower().split()
         positive_count = sum(1 for word in words if word in positive_words)
@@ -293,13 +302,14 @@ class RSSIntelligenceEngine:
         sentiment = (positive_count - negative_count) / total_words
         return max(-1.0, min(1.0, sentiment))  # Clamp to [-1, 1]
 
+
     def _fetch_article_content(self, url: str) -> str:
         """Fetch and extract article content from URL."""
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
             }
-            response = requests.get(url, headers=headers, timeout=10)
+            response = requests.get(url, headers = headers, timeout = 10)
             response.raise_for_status()
 
             soup = BeautifulSoup(response.content, "html.parser")
@@ -311,24 +321,24 @@ class RSSIntelligenceEngine:
             # Extract text from common article containers
             content_selectors = [
                 "article",
-                ".article-content",
-                ".post-content",
-                ".entry-content",
-                ".content",
-                "main",
-                ".main-content",
-            ]
+                    ".article - content",
+                    ".post - content",
+                    ".entry - content",
+                    ".content",
+                    "main",
+                    ".main - content",
+                    ]
 
             content = ""
             for selector in content_selectors:
                 element = soup.select_one(selector)
                 if element:
-                    content = element.get_text(strip=True)
+                    content = element.get_text(strip = True)
                     break
 
             if not content:
                 # Fallback to body text
-                content = soup.get_text(strip=True)
+                content = soup.get_text(strip = True)
 
             # Clean up content
             content = re.sub(r"\s+", " ", content)  # Normalize whitespace
@@ -337,6 +347,7 @@ class RSSIntelligenceEngine:
         except Exception as e:
             logger.warning(f"Failed to fetch content from {url}: {e}")
             return ""
+
 
     def _parse_feed(self, feed_config: Dict) -> List[NewsArticle]:
         """Parse a single RSS feed and extract articles."""
@@ -381,18 +392,18 @@ class RSSIntelligenceEngine:
                     readability = flesch_reading_ease(content) if content else 0.0
 
                     article = NewsArticle(
-                        title=entry.title,
-                        url=entry.link,
-                        content=content,
-                        published=published,
-                        source=source,
-                        category=category,
-                        keywords=keywords,
-                        entities=entities,
-                        sentiment_score=sentiment,
-                        readability_score=readability,
-                        hash_id=hash_id,
-                    )
+                        title = entry.title,
+                            url = entry.link,
+                            content = content,
+                            published = published,
+                            source = source,
+                            category = category,
+                            keywords = keywords,
+                            entities = entities,
+                            sentiment_score = sentiment,
+                            readability_score = readability,
+                            hash_id = hash_id,
+                            )
 
                     articles.append(article)
 
@@ -409,6 +420,7 @@ class RSSIntelligenceEngine:
 
         return articles
 
+
     def _article_exists(self, hash_id: str) -> bool:
         """Check if article already exists in database."""
         conn = sqlite3.connect(self.db_path)
@@ -420,6 +432,7 @@ class RSSIntelligenceEngine:
         conn.close()
         return exists
 
+
     def _store_article(self, article: NewsArticle) -> bool:
         """Store article in database."""
         try:
@@ -428,25 +441,25 @@ class RSSIntelligenceEngine:
 
             cursor.execute(
                 """
-                INSERT OR IGNORE INTO news_articles 
-                (hash_id, title, url, content, published, source, category, 
-                 keywords, entities, sentiment_score, readability_score)
+                INSERT OR IGNORE INTO news_articles
+                (hash_id, title, url, content, published, source, category,
+                    keywords, entities, sentiment_score, readability_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     article.hash_id,
-                    article.title,
-                    article.url,
-                    article.content,
-                    article.published,
-                    article.source,
-                    article.category,
-                    json.dumps(article.keywords),
-                    json.dumps(article.entities),
-                    article.sentiment_score,
-                    article.readability_score,
-                ),
-            )
+                        article.title,
+                        article.url,
+                        article.content,
+                        article.published,
+                        article.source,
+                        article.category,
+                        json.dumps(article.keywords),
+                        json.dumps(article.entities),
+                        article.sentiment_score,
+                        article.readability_score,
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -454,6 +467,7 @@ class RSSIntelligenceEngine:
         except Exception as e:
             logger.error(f"Error storing article: {e}")
             return False
+
 
     def _update_trend_analysis(self, articles: List[NewsArticle]):
         """Update trend analysis based on new articles."""
@@ -474,8 +488,8 @@ class RSSIntelligenceEngine:
             # Check if keyword trend exists
             cursor.execute(
                 "SELECT frequency, sources, related_articles FROM trend_analysis WHERE keyword = ?",
-                (keyword,),
-            )
+                    (keyword,),
+                    )
             result = cursor.fetchone()
 
             if result:
@@ -492,45 +506,46 @@ class RSSIntelligenceEngine:
 
                 cursor.execute(
                     """
-                    UPDATE trend_analysis 
+                    UPDATE trend_analysis
                     SET frequency = ?, trend_score = ?, last_seen = CURRENT_TIMESTAMP,
                         sources = ?, related_articles = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE keyword = ?
                 """,
                     (
                         new_frequency,
-                        trend_score,
-                        json.dumps(list(set(all_sources))),
-                        json.dumps(list(set(all_articles))),
-                        keyword,
-                    ),
-                )
+                            trend_score,
+                            json.dumps(list(set(all_sources))),
+                            json.dumps(list(set(all_articles))),
+                            keyword,
+                            ),
+                        )
             else:
                 # Create new trend
                 trend_score = self._calculate_trend_score(keyword, len(sources))
 
                 cursor.execute(
                     """
-                    INSERT INTO trend_analysis 
+                    INSERT INTO trend_analysis
                     (keyword, frequency, trend_score, first_seen, last_seen, sources, related_articles)
                     VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?)
                 """,
                     (
                         keyword,
-                        len(sources),
-                        trend_score,
-                        json.dumps(sources),
-                        json.dumps(keyword_articles[keyword]),
-                    ),
-                )
+                            len(sources),
+                            trend_score,
+                            json.dumps(sources),
+                            json.dumps(keyword_articles[keyword]),
+                            ),
+                        )
 
         conn.commit()
         conn.close()
 
+
     def _calculate_trend_score(self, keyword: str, frequency: int) -> float:
         """Calculate trend score for a keyword based on frequency and recency."""
         # Simple trend scoring: frequency weighted by recency
-        base_score = min(frequency / 10.0, 1.0)  # Normalize to 0-1
+        base_score = min(frequency / 10.0, 1.0)  # Normalize to 0 - 1
 
         # Add recency bonus (keywords seen recently get higher scores)
         conn = sqlite3.connect(self.db_path)
@@ -550,6 +565,7 @@ class RSSIntelligenceEngine:
         conn.close()
         return min(base_score, 2.0)  # Cap at 2.0
 
+
     def get_trending_topics(self, limit: int = 10) -> List[TrendData]:
         """Get current trending topics based on analysis."""
         conn = sqlite3.connect(self.db_path)
@@ -564,33 +580,34 @@ class RSSIntelligenceEngine:
             LIMIT ?
         """,
             (self.min_trend_frequency, limit),
-        )
+                )
 
         trends = []
         for row in cursor.fetchall():
             (
                 keyword,
-                frequency,
-                trend_score,
-                first_seen,
-                last_seen,
-                sources,
-                related_articles,
-            ) = row
+                    frequency,
+                    trend_score,
+                    first_seen,
+                    last_seen,
+                    sources,
+                    related_articles,
+                    ) = row
 
             trend = TrendData(
-                keyword=keyword,
-                frequency=frequency,
-                trend_score=trend_score,
-                first_seen=datetime.fromisoformat(first_seen),
-                last_seen=datetime.fromisoformat(last_seen),
-                sources=json.loads(sources),
-                related_articles=json.loads(related_articles),
-            )
+                keyword = keyword,
+                    frequency = frequency,
+                    trend_score = trend_score,
+                    first_seen = datetime.fromisoformat(first_seen),
+                    last_seen = datetime.fromisoformat(last_seen),
+                    sources = json.loads(sources),
+                    related_articles = json.loads(related_articles),
+                    )
             trends.append(trend)
 
         conn.close()
         return trends
+
 
     def get_intelligence_briefing(self, topic: str, max_articles: int = 5) -> Dict:
         """Generate intelligence briefing for a specific topic."""
@@ -608,49 +625,50 @@ class RSSIntelligenceEngine:
             LIMIT ?
         """,
             (f"%{topic}%", f"%{topic}%", f"%{topic}%", max_articles),
-        )
+                )
 
         articles = cursor.fetchall()
 
         # Get trend data for the topic
         cursor.execute(
             "SELECT frequency, trend_score FROM trend_analysis WHERE keyword LIKE ?",
-            (f"%{topic}%",),
-        )
+                (f"%{topic}%",),
+                )
         trend_data = cursor.fetchone()
 
         conn.close()
 
         briefing = {
             "topic": topic,
-            "generated_at": datetime.now().isoformat(),
-            "article_count": len(articles),
-            "articles": [
+                "generated_at": datetime.now().isoformat(),
+                "article_count": len(articles),
+                "articles": [
                 {
                     "title": article[0],
-                    "url": article[1],
-                    "summary": (
+                        "url": article[1],
+                        "summary": (
                         article[2][:200] + "..."
                         if len(article[2]) > 200
                         else article[2]
                     ),
-                    "published": article[3],
-                    "source": article[4],
-                    "sentiment": article[5],
-                }
+                        "published": article[3],
+                        "source": article[4],
+                        "sentiment": article[5],
+                        }
                 for article in articles
             ],
-            "trend_data": (
+                "trend_data": (
                 {
                     "frequency": trend_data[0] if trend_data else 0,
-                    "trend_score": trend_data[1] if trend_data else 0.0,
-                }
+                        "trend_score": trend_data[1] if trend_data else 0.0,
+                        }
                 if trend_data
                 else None
             ),
-        }
+                }
 
         return briefing
+
 
     def get_latest_intelligence_briefing(
         self, briefing_type: str = None
@@ -687,28 +705,29 @@ class RSSIntelligenceEngine:
 
         return {
             "briefing_type": briefing_type or "general",
-            "generated_at": datetime.now().isoformat(),
-            "article_count": len(articles),
-            "articles": [
+                "generated_at": datetime.now().isoformat(),
+                "article_count": len(articles),
+                "articles": [
                 {
                     "title": article[0],
-                    "url": article[1],
-                    "summary": (
+                        "url": article[1],
+                        "summary": (
                         article[2][:200] + "..."
                         if len(article[2]) > 200
                         else article[2]
                     ),
-                    "published": article[3],
-                    "source": article[4],
-                    "sentiment": article[5],
-                }
+                        "published": article[3],
+                        "source": article[4],
+                        "sentiment": article[5],
+                        }
                 for article in articles
             ],
-            "trending_topics": [
+                "trending_topics": [
                 {"keyword": trend[0], "frequency": trend[1], "trend_score": trend[2]}
                 for trend in trending
             ],
-        }
+                }
+
 
     async def run_continuous_monitoring(self, interval_minutes: int = 30):
         """Run continuous RSS monitoring and analysis."""
@@ -744,11 +763,11 @@ class RSSIntelligenceEngine:
                 logger.error(f"Error in RSS monitoring cycle: {e}")
                 await asyncio.sleep(60)  # Wait 1 minute before retrying
 
+
     def stop_monitoring(self):
         """Stop continuous monitoring."""
         self.running = False
         logger.info("RSS monitoring stopped")
-
 
 if __name__ == "__main__":
     # Example usage

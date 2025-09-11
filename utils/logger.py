@@ -1,18 +1,18 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Centralized Logging System
 
-Production-ready logging configuration with automatic log rotation,
+Production - ready logging configuration with automatic log rotation,
 structured formatting, and multiple output handlers. Designed for
-high-performance applications with comprehensive audit trails.
+high - performance applications with comprehensive audit trails.
 
 Features:
 - Automatic log rotation (5 files, 10MB each)
 - Structured JSON and text formatting
 - Multiple log levels and handlers
 - Performance monitoring
-- Security-aware logging (no sensitive data)
-- Thread-safe operations
+- Security - aware logging (no sensitive data)
+- Thread - safe operations
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -41,20 +41,21 @@ class SecurityFilter(logging.Filter):
 
     SENSITIVE_PATTERNS = [
         "password",
-        "passwd",
-        "pwd",
-        "secret",
-        "key",
-        "token",
-        "api_key",
-        "apikey",
-        "auth",
-        "credential",
-        "cred",
-        "private",
-        "confidential",
-        "sensitive",
-    ]
+            "passwd",
+            "pwd",
+            "secret",
+            "key",
+            "token",
+            "api_key",
+            "apikey",
+            "auth",
+            "credential",
+            "cred",
+            "private",
+            "confidential",
+            "sensitive",
+            ]
+
 
     def filter(self, record: logging.LogRecord) -> bool:
         """
@@ -77,6 +78,7 @@ class SecurityFilter(logging.Filter):
 
         return True
 
+
     def _redact_sensitive_data(self, message: str) -> str:
         """
         Redact sensitive data from log messages.
@@ -90,16 +92,16 @@ class SecurityFilter(logging.Filter):
         # Simple redaction - replace potential sensitive values
         import re
 
-        # Redact key-value pairs that might contain sensitive data
+        # Redact key - value pairs that might contain sensitive data
         patterns = [
             r"(password|passwd|pwd|secret|key|token|api_key|apikey)\s*[=:]\s*[^\s]+",
-            r"(auth|credential|cred)\s*[=:]\s*[^\s]+",
-        ]
+                r"(auth|credential|cred)\s*[=:]\s*[^\s]+",
+                ]
 
         redacted_message = message
         for pattern in patterns:
             redacted_message = re.sub(
-                pattern, r"\1=***REDACTED***", redacted_message, flags=re.IGNORECASE
+                pattern, r"\1=***REDACTED***", redacted_message, flags = re.IGNORECASE
             )
 
         return redacted_message
@@ -107,7 +109,7 @@ class SecurityFilter(logging.Filter):
 
 class RegexNoiseFilter(logging.Filter):
     """
-    Regex-based noise filter to reduce chatty log output.
+    Regex - based noise filter to reduce chatty log output.
 
     This filter uses configurable regex patterns to drop or reduce
     repetitive, verbose, or noisy log messages that clutter the logs
@@ -117,7 +119,7 @@ class RegexNoiseFilter(logging.Filter):
     # Default noise patterns - common chatty log messages
     DEFAULT_DROP_PATTERNS = [
         r".*heartbeat.*",  # Heartbeat messages
-        r".*ping.*pong.*",  # Ping/pong messages
+        r".*ping.*pong.*",  # Ping / pong messages
         r".*health.*check.*ok.*",  # Health check success messages
         r".*connection.*established.*",  # Repeated connection messages
         r".*polling.*",  # Polling messages
@@ -135,12 +137,13 @@ class RegexNoiseFilter(logging.Filter):
         r".*request.*processed.*",  # Request processing messages
     ]
 
+
     def __init__(
         self,
-        drop_patterns: List[str] = None,
-        reduce_patterns: List[str] = None,
-        reduce_frequency: int = 10,
-    ):
+            drop_patterns: List[str] = None,
+            reduce_patterns: List[str] = None,
+            reduce_frequency: int = 10,
+            ):
         """
         Initialize the regex noise filter.
 
@@ -165,6 +168,7 @@ class RegexNoiseFilter(logging.Filter):
 
         # Counter for reduce patterns
         self.reduce_counters = {}
+
 
     def filter(self, record: logging.LogRecord) -> bool:
         """
@@ -200,6 +204,7 @@ class RegexNoiseFilter(logging.Filter):
 
         return True
 
+
     def add_drop_pattern(self, pattern: str) -> None:
         """
         Add a new drop pattern at runtime.
@@ -210,6 +215,7 @@ class RegexNoiseFilter(logging.Filter):
         self.drop_patterns.append(pattern)
         self.compiled_drop_patterns.append(re.compile(pattern, re.IGNORECASE))
 
+
     def add_reduce_pattern(self, pattern: str) -> None:
         """
         Add a new reduce pattern at runtime.
@@ -219,6 +225,7 @@ class RegexNoiseFilter(logging.Filter):
         """
         self.reduce_patterns.append(pattern)
         self.compiled_reduce_patterns.append(re.compile(pattern, re.IGNORECASE))
+
 
     def clear_patterns(self) -> None:
         """
@@ -239,6 +246,7 @@ class JSONFormatter(logging.Formatter):
     for easy parsing by log aggregation systems.
     """
 
+
     def format(self, record: logging.LogRecord) -> str:
         """
         Format log record as JSON.
@@ -247,34 +255,34 @@ class JSONFormatter(logging.Formatter):
             record (LogRecord): The log record to format
 
         Returns:
-            str: JSON-formatted log message
+            str: JSON - formatted log message
         """
         log_entry = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
-            "level": record.levelname,
-            "logger": record.name,
-            "message": record.getMessage(),
-            "module": record.module,
-            "function": record.funcName,
-            "line": record.lineno,
-            "thread": record.thread,
-            "thread_name": record.threadName,
-            "process": record.process,
-        }
+                "level": record.levelname,
+                "logger": record.name,
+                "message": record.getMessage(),
+                "module": record.module,
+                "function": record.funcName,
+                "line": record.lineno,
+                "thread": record.thread,
+                "thread_name": record.threadName,
+                "process": record.process,
+                }
 
         # Add exception information if present
         if record.exc_info:
             log_entry["exception"] = {
                 "type": record.exc_info[0].__name__,
-                "message": str(record.exc_info[1]),
-                "traceback": traceback.format_exception(*record.exc_info),
-            }
+                    "message": str(record.exc_info[1]),
+                    "traceback": traceback.format_exception(*record.exc_info),
+                    }
 
         # Add extra fields if present
         if hasattr(record, "extra_data"):
             log_entry["extra"] = record.extra_data
 
-        return json.dumps(log_entry, ensure_ascii=False)
+        return json.dumps(log_entry, ensure_ascii = False)
 
 
 class ColoredFormatter(logging.Formatter):
@@ -294,6 +302,7 @@ class ColoredFormatter(logging.Formatter):
         "CRITICAL": "\033[35m",  # Magenta
         "RESET": "\033[0m",  # Reset
     }
+
 
     def format(self, record: logging.LogRecord) -> str:
         """
@@ -324,11 +333,12 @@ class TraeLogger:
     Centralized logging system for TRAE.AI.
 
     Provides a standardized logging interface with automatic rotation,
-    multiple output formats, and security-aware filtering.
+        multiple output formats, and security - aware filtering.
     """
 
     _instance = None
     _lock = threading.Lock()
+
 
     def __new__(cls, *args, **kwargs):
         """Singleton pattern implementation"""
@@ -338,20 +348,21 @@ class TraeLogger:
                     cls._instance = super().__new__(cls)
         return cls._instance
 
+
     def __init__(
         self,
-        log_dir: str = "data/logs",
-        log_level: Union[str, int] = logging.INFO,
-        max_bytes: int = 10 * 1024 * 1024,  # 10MB
+            log_dir: str = "data / logs",
+            log_level: Union[str, int] = logging.INFO,
+            max_bytes: int = 10 * 1024 * 1024,  # 10MB
         backup_count: int = 5,
-        enable_console: bool = True,
-        enable_json: bool = True,
-        enable_security_filter: bool = True,
-        enable_noise_filter: bool = False,
-        noise_drop_patterns: List[str] = None,
-        noise_reduce_patterns: List[str] = None,
-        noise_reduce_frequency: int = 10,
-    ):
+            enable_console: bool = True,
+            enable_json: bool = True,
+            enable_security_filter: bool = True,
+            enable_noise_filter: bool = False,
+            noise_drop_patterns: List[str] = None,
+            noise_reduce_patterns: List[str] = None,
+            noise_reduce_frequency: int = 10,
+            ):
         """
         Initialize the centralized logger.
 
@@ -363,17 +374,17 @@ class TraeLogger:
             enable_console (bool): Enable console output
             enable_json (bool): Enable JSON log file
             enable_security_filter (bool): Enable security filtering
-            enable_noise_filter (bool): Enable regex-based noise filtering
+            enable_noise_filter (bool): Enable regex - based noise filtering
             noise_drop_patterns (List[str]): Custom patterns to drop entirely
             noise_reduce_patterns (List[str]): Custom patterns to reduce frequency
             noise_reduce_frequency (int): Show 1 out of every N messages for reduce patterns
         """
-        # Prevent re-initialization
+        # Prevent re - initialization
         if hasattr(self, "_initialized"):
             return
 
         self.log_dir = Path(log_dir)
-        self.log_dir.mkdir(parents=True, exist_ok=True)
+        self.log_dir.mkdir(parents = True, exist_ok = True)
 
         self.log_level = self._parse_log_level(log_level)
         self.max_bytes = max_bytes
@@ -392,6 +403,7 @@ class TraeLogger:
 
         self._initialized = True
 
+
     def _parse_log_level(self, level: Union[str, int]) -> int:
         """
         Parse log level from string or int.
@@ -405,6 +417,7 @@ class TraeLogger:
         if isinstance(level, str):
             return getattr(logging, level.upper(), logging.INFO)
         return level
+
 
     def _setup_root_logger(self) -> None:
         """
@@ -424,15 +437,16 @@ class TraeLogger:
         # Add noise filter if enabled
         if self.enable_noise_filter:
             noise_filter = RegexNoiseFilter(
-                drop_patterns=self.noise_drop_patterns,
-                reduce_patterns=self.noise_reduce_patterns,
-                reduce_frequency=self.noise_reduce_frequency,
-            )
+                drop_patterns = self.noise_drop_patterns,
+                    reduce_patterns = self.noise_reduce_patterns,
+                    reduce_frequency = self.noise_reduce_frequency,
+                    )
             root_logger.addFilter(noise_filter)
+
 
     def _setup_application_logger(self) -> None:
         """
-        Setup application-specific loggers.
+        Setup application - specific loggers.
         """
         # Main application logger
         self.app_logger = logging.getLogger("trae_ai")
@@ -442,17 +456,17 @@ class TraeLogger:
         text_log_file = self.log_dir / "trae_ai.log"
         text_handler = logging.handlers.RotatingFileHandler(
             text_log_file,
-            maxBytes=self.max_bytes,
-            backupCount=self.backup_count,
-            encoding="utf-8",
-        )
+                maxBytes = self.max_bytes,
+                backupCount = self.backup_count,
+                encoding="utf - 8",
+                )
         text_handler.setLevel(self.log_level)
 
         # Text formatter
         text_formatter = logging.Formatter(
             fmt="%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
+                datefmt="%Y-%m-%d %H:%M:%S",
+                )
         text_handler.setFormatter(text_formatter)
         self.app_logger.addHandler(text_handler)
 
@@ -461,10 +475,10 @@ class TraeLogger:
             json_log_file = self.log_dir / "trae_ai.json.log"
             json_handler = logging.handlers.RotatingFileHandler(
                 json_log_file,
-                maxBytes=self.max_bytes,
-                backupCount=self.backup_count,
-                encoding="utf-8",
-            )
+                    maxBytes = self.max_bytes,
+                    backupCount = self.backup_count,
+                    encoding="utf - 8",
+                    )
             json_handler.setLevel(self.log_level)
             json_handler.setFormatter(JSONFormatter())
             self.app_logger.addHandler(json_handler)
@@ -476,8 +490,8 @@ class TraeLogger:
             console_handler.setFormatter(
                 ColoredFormatter(
                     fmt="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
-                    datefmt="%H:%M:%S",
-                )
+                        datefmt="%H:%M:%S",
+                        )
             )
             self.app_logger.addHandler(console_handler)
 
@@ -485,13 +499,14 @@ class TraeLogger:
         error_log_file = self.log_dir / "trae_ai_errors.log"
         error_handler = logging.handlers.RotatingFileHandler(
             error_log_file,
-            maxBytes=self.max_bytes,
-            backupCount=self.backup_count,
-            encoding="utf-8",
-        )
+                maxBytes = self.max_bytes,
+                backupCount = self.backup_count,
+                encoding="utf - 8",
+                )
         error_handler.setLevel(logging.ERROR)
         error_handler.setFormatter(text_formatter)
         self.app_logger.addHandler(error_handler)
+
 
     def get_logger(self, name: str = None) -> logging.Logger:
         """
@@ -512,6 +527,7 @@ class TraeLogger:
 
         return logger
 
+
     def log_performance(self, operation: str, duration: float, **kwargs) -> None:
         """
         Log performance metrics.
@@ -525,21 +541,22 @@ class TraeLogger:
 
         metrics = {
             "operation": operation,
-            "duration_seconds": duration,
-            "duration_ms": duration * 1000,
-            **kwargs,
-        }
+                "duration_seconds": duration,
+                "duration_ms": duration * 1000,
+                **kwargs,
+                }
 
         # Add extra data for JSON formatter
         extra = {"extra_data": metrics}
 
         perf_logger.info(
-            f"Performance: {operation} completed in {duration:.3f}s", extra=extra
+            f"Performance: {operation} completed in {duration:.3f}s", extra = extra
         )
+
 
     def log_security_event(self, event_type: str, details: Dict[str, Any]) -> None:
         """
-        Log security-related events.
+        Log security - related events.
 
         Args:
             event_type (str): Type of security event
@@ -552,7 +569,8 @@ class TraeLogger:
 
         extra = {"extra_data": {"event_type": event_type, **sanitized_details}}
 
-        security_logger.warning(f"Security Event: {event_type}", extra=extra)
+        security_logger.warning(f"Security Event: {event_type}", extra = extra)
+
 
     def _sanitize_security_details(self, details: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -579,6 +597,7 @@ class TraeLogger:
 
         return sanitized
 
+
     def configure_external_logger(
         self, logger_name: str, level: Union[str, int] = None
     ) -> None:
@@ -597,12 +616,13 @@ class TraeLogger:
             # Set external loggers to WARNING by default to reduce noise
             external_logger.setLevel(logging.WARNING)
 
+
     def configure_noise_filter(
         self,
-        drop_patterns: List[str] = None,
-        reduce_patterns: List[str] = None,
-        reduce_frequency: int = None,
-    ) -> None:
+            drop_patterns: List[str] = None,
+            reduce_patterns: List[str] = None,
+            reduce_frequency: int = None,
+            ) -> None:
         """
         Configure the noise filter at runtime.
 
@@ -636,19 +656,19 @@ class TraeLogger:
             if reduce_frequency is not None:
                 noise_filter.reduce_frequency = reduce_frequency
 
+
     def shutdown(self) -> None:
         """
         Shutdown the logging system gracefully.
         """
         logging.shutdown()
 
-
 # Global logger instance
 _global_logger = None
 
 
 def setup_logging(
-    log_dir: str = "data/logs", log_level: Union[str, int] = logging.INFO, **kwargs
+    log_dir: str = "data / logs", log_level: Union[str, int] = logging.INFO, **kwargs
 ) -> TraeLogger:
     """
     Setup the global logging system.
@@ -664,7 +684,7 @@ def setup_logging(
     global _global_logger
 
     if _global_logger is None:
-        _global_logger = TraeLogger(log_dir=log_dir, log_level=log_level, **kwargs)
+        _global_logger = TraeLogger(log_dir = log_dir, log_level = log_level, **kwargs)
 
         # Configure common external loggers
         _global_logger.configure_external_logger("urllib3", logging.WARNING)
@@ -694,9 +714,9 @@ def get_logger(name: str = None) -> logging.Logger:
 
 def setup_logger(
     name: str = None,
-    log_dir: str = "data/logs",
-    log_level: Union[str, int] = logging.INFO,
-    **kwargs,
+        log_dir: str = "data / logs",
+        log_level: Union[str, int] = logging.INFO,
+        **kwargs,
 ) -> logging.Logger:
     """
     Setup and return a logger instance (backward compatibility function).
@@ -715,13 +735,14 @@ def setup_logger(
         logging.Logger: Configured logger instance
     """
     # Initialize the global logging system
-    setup_logging(log_dir=log_dir, log_level=log_level, **kwargs)
+    setup_logging(log_dir = log_dir, log_level = log_level, **kwargs)
 
     # Return the requested logger
     return get_logger(name)
 
-
 # Context manager for performance logging
+
+
 class PerformanceTimer:
     """
     Context manager for automatic performance logging.
@@ -732,6 +753,7 @@ class PerformanceTimer:
             pass
     """
 
+
     def __init__(self, operation: str, logger_name: str = None, **kwargs):
         self.operation = operation
         self.logger_name = logger_name
@@ -739,11 +761,13 @@ class PerformanceTimer:
         self.start_time = None
         self.elapsed_time = 0
 
+
     def __enter__(self):
         import time
 
         self.start_time = time.time()
         return self
+
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         import time
@@ -755,7 +779,6 @@ class PerformanceTimer:
             _global_logger = setup_logging()
 
         _global_logger.log_performance(self.operation, self.elapsed_time, **self.kwargs)
-
 
 if __name__ == "__main__":
     # Example usage and testing
@@ -778,29 +801,29 @@ if __name__ == "__main__":
     # Test structured logging
     db_logger.info(
         "Database query executed",
-        extra={
+            extra={
             "extra_data": {
                 "query_type": "SELECT",
-                "table": "users",
-                "duration_ms": 45.2,
-            }
+                    "table": "users",
+                    "duration_ms": 45.2,
+                    }
         },
-    )
+            )
 
     # Test performance logging
-    with PerformanceTimer("test_operation", user_id=123, operation_type="test"):
+    with PerformanceTimer("test_operation", user_id = 123, operation_type="test"):
         time.sleep(0.1)  # Simulate work
 
     # Test security logging
     logger_system.log_security_event(
         "authentication_failure",
-        {
+            {
             "username": "test_user",
-            "ip_address": "192.168.1.100",
-            "password": "secret123",  # This will be redacted
+                "ip_address": "192.168.1.100",
+                "password": "secret123",  # This will be redacted
             "timestamp": datetime.now().isoformat(),
-        },
-    )
+                },
+            )
 
     # Test exception logging
     try:
@@ -808,7 +831,7 @@ if __name__ == "__main__":
     except Exception as e:
         main_logger.exception("Exception occurred during testing")
 
-    print("\nLogging test completed. Check the logs in data/logs/ directory.")
+    print("\nLogging test completed. Check the logs in data / logs/ directory.")
     print("Files created:")
     print("- trae_ai.log (text format)")
     print("- trae_ai.json.log (JSON format)")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Comprehensive Payment Processing System
 Supports multiple payment providers with fraud protection and security
@@ -20,7 +20,7 @@ import stripe
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -46,8 +46,9 @@ class FraudRiskLevel(Enum):
     HIGH = "high"
     BLOCKED = "blocked"
 
-
 @dataclass
+
+
 class PaymentRequest:
     amount: float
     currency: str
@@ -56,8 +57,9 @@ class PaymentRequest:
     provider: PaymentProvider
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class FraudCheck:
     risk_level: FraudRiskLevel
     score: float
@@ -66,7 +68,9 @@ class FraudCheck:
 
 
 class PaymentProcessor:
-    def __init__(self, db_path: str = "data/payments.db"):
+
+
+    def __init__(self, db_path: str = "data / payments.db"):
         self.db_path = db_path
         self.app = Flask(__name__)
         CORS(self.app)
@@ -79,42 +83,44 @@ class PaymentProcessor:
         # Fraud detection settings
         self.fraud_rules = {
             "max_amount_per_hour": 1000.0,
-            "max_transactions_per_hour": 10,
-            "suspicious_countries": ["XX", "YY"],  # ISO country codes
+                "max_transactions_per_hour": 10,
+                "suspicious_countries": ["XX", "YY"],  # ISO country codes
             "velocity_threshold": 5,  # transactions per minute
             "amount_threshold": 500.0,  # single transaction limit
         }
+
 
     def _init_providers(self):
         """Initialize payment provider configurations"""
         self.providers = {
             PaymentProvider.STRIPE: {
                 "api_key": os.getenv("STRIPE_SECRET_KEY"),
-                "webhook_secret": os.getenv("STRIPE_WEBHOOK_SECRET"),
-                "enabled": bool(os.getenv("STRIPE_SECRET_KEY")),
-            },
-            PaymentProvider.PAYPAL: {
+                    "webhook_secret": os.getenv("STRIPE_WEBHOOK_SECRET"),
+                    "enabled": bool(os.getenv("STRIPE_SECRET_KEY")),
+                    },
+                PaymentProvider.PAYPAL: {
                 "client_id": os.getenv("PAYPAL_CLIENT_ID"),
-                "client_secret": os.getenv("PAYPAL_CLIENT_SECRET"),
-                "sandbox": os.getenv("PAYPAL_SANDBOX", "true").lower() == "true",
-                "enabled": bool(os.getenv("PAYPAL_CLIENT_ID")),
-            },
-            PaymentProvider.SQUARE: {
+                    "client_secret": os.getenv("PAYPAL_CLIENT_SECRET"),
+                    "sandbox": os.getenv("PAYPAL_SANDBOX", "true").lower() == "true",
+                    "enabled": bool(os.getenv("PAYPAL_CLIENT_ID")),
+                    },
+                PaymentProvider.SQUARE: {
                 "access_token": os.getenv("SQUARE_ACCESS_TOKEN"),
-                "application_id": os.getenv("SQUARE_APPLICATION_ID"),
-                "sandbox": os.getenv("SQUARE_SANDBOX", "true").lower() == "true",
-                "enabled": bool(os.getenv("SQUARE_ACCESS_TOKEN")),
-            },
-            PaymentProvider.RAZORPAY: {
+                    "application_id": os.getenv("SQUARE_APPLICATION_ID"),
+                    "sandbox": os.getenv("SQUARE_SANDBOX", "true").lower() == "true",
+                    "enabled": bool(os.getenv("SQUARE_ACCESS_TOKEN")),
+                    },
+                PaymentProvider.RAZORPAY: {
                 "key_id": os.getenv("RAZORPAY_KEY_ID"),
-                "key_secret": os.getenv("RAZORPAY_KEY_SECRET"),
-                "enabled": bool(os.getenv("RAZORPAY_KEY_ID")),
-            },
-        }
+                    "key_secret": os.getenv("RAZORPAY_KEY_SECRET"),
+                    "enabled": bool(os.getenv("RAZORPAY_KEY_ID")),
+                    },
+                }
 
         # Initialize Stripe if available
         if self.providers[PaymentProvider.STRIPE]["enabled"]:
             stripe.api_key = self.providers[PaymentProvider.STRIPE]["api_key"]
+
 
     def _init_database(self):
         """Initialize database tables for payment processing"""
@@ -126,18 +132,18 @@ class PaymentProcessor:
             """
             CREATE TABLE IF NOT EXISTS payments (
                 payment_id TEXT PRIMARY KEY,
-                provider TEXT NOT NULL,
-                provider_payment_id TEXT,
-                amount REAL NOT NULL,
-                currency TEXT NOT NULL,
-                customer_email TEXT NOT NULL,
-                customer_ip TEXT,
-                status TEXT DEFAULT 'pending',
-                fraud_score REAL DEFAULT 0,
-                fraud_risk_level TEXT DEFAULT 'low',
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    provider TEXT NOT NULL,
+                    provider_payment_id TEXT,
+                    amount REAL NOT NULL,
+                    currency TEXT NOT NULL,
+                    customer_email TEXT NOT NULL,
+                    customer_ip TEXT,
+                    status TEXT DEFAULT 'pending',
+                    fraud_score REAL DEFAULT 0,
+                    fraud_risk_level TEXT DEFAULT 'low',
+                    metadata TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -147,15 +153,15 @@ class PaymentProcessor:
             """
             CREATE TABLE IF NOT EXISTS fraud_logs (
                 log_id TEXT PRIMARY KEY,
-                payment_id TEXT,
-                customer_email TEXT,
-                customer_ip TEXT,
-                risk_level TEXT,
-                fraud_score REAL,
-                reasons TEXT,
-                action_taken TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
+                    payment_id TEXT,
+                    customer_email TEXT,
+                    customer_ip TEXT,
+                    risk_level TEXT,
+                    fraud_score REAL,
+                    reasons TEXT,
+                    action_taken TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
             )
         """
         )
@@ -165,13 +171,13 @@ class PaymentProcessor:
             """
             CREATE TABLE IF NOT EXISTS payment_attempts (
                 attempt_id TEXT PRIMARY KEY,
-                customer_email TEXT,
-                customer_ip TEXT,
-                amount REAL,
-                currency TEXT,
-                provider TEXT,
-                success BOOLEAN,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    customer_email TEXT,
+                    customer_ip TEXT,
+                    amount REAL,
+                    currency TEXT,
+                    provider TEXT,
+                    success BOOLEAN,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -181,13 +187,13 @@ class PaymentProcessor:
             """
             CREATE TABLE IF NOT EXISTS refunds (
                 refund_id TEXT PRIMARY KEY,
-                payment_id TEXT NOT NULL,
-                amount REAL NOT NULL,
-                reason TEXT,
-                status TEXT DEFAULT 'pending',
-                provider_refund_id TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
+                    payment_id TEXT NOT NULL,
+                    amount REAL NOT NULL,
+                    reason TEXT,
+                    status TEXT DEFAULT 'pending',
+                    provider_refund_id TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
             )
         """
         )
@@ -196,10 +202,13 @@ class PaymentProcessor:
         conn.close()
         logger.info("Payment processing database initialized")
 
+
     def _setup_routes(self):
         """Setup Flask routes for payment processing"""
 
-        @self.app.route("/api/payments/providers", methods=["GET"])
+        @self.app.route("/api / payments / providers", methods=["GET"])
+
+
         def get_available_providers():
             """Get list of available payment providers"""
             available = {}
@@ -207,15 +216,17 @@ class PaymentProcessor:
                 if config["enabled"]:
                     available[provider.value] = {
                         "name": provider.value.title(),
-                        "supported_currencies": self._get_supported_currencies(
+                            "supported_currencies": self._get_supported_currencies(
                             provider
                         ),
-                        "features": self._get_provider_features(provider),
-                    }
+                            "features": self._get_provider_features(provider),
+                            }
 
             return jsonify({"success": True, "providers": available})
 
-        @self.app.route("/api/payments/process", methods=["POST"])
+        @self.app.route("/api / payments / process", methods=["POST"])
+
+
         def process_payment():
             """Process a payment with fraud detection"""
             try:
@@ -227,32 +238,32 @@ class PaymentProcessor:
                 # Validate required fields
                 required_fields = [
                     "amount",
-                    "currency",
-                    "customer_email",
-                    "payment_method",
-                    "provider",
-                ]
+                        "currency",
+                        "customer_email",
+                        "payment_method",
+                        "provider",
+                        ]
                 for field in required_fields:
                     if field not in data:
                         return (
                             jsonify(
                                 {
                                     "success": False,
-                                    "error": f"Missing required field: {field}",
-                                }
+                                        "error": f"Missing required field: {field}",
+                                        }
                             ),
-                            400,
-                        )
+                                400,
+                                )
 
                 # Create payment request
                 payment_request = PaymentRequest(
-                    amount=float(data["amount"]),
-                    currency=data["currency"].upper(),
-                    customer_email=data["customer_email"],
-                    payment_method=data["payment_method"],
-                    provider=PaymentProvider(data["provider"]),
-                    metadata=data.get("metadata", {}),
-                )
+                    amount = float(data["amount"]),
+                        currency = data["currency"].upper(),
+                        customer_email = data["customer_email"],
+                        payment_method = data["payment_method"],
+                        provider = PaymentProvider(data["provider"]),
+                        metadata = data.get("metadata", {}),
+                        )
 
                 # Generate payment ID
                 payment_id = f"pay_{int(time.time())}_{hash(payment_request.customer_email) % 10000}"
@@ -273,13 +284,13 @@ class PaymentProcessor:
                         jsonify(
                             {
                                 "success": False,
-                                "error": "Payment blocked due to fraud detection",
-                                "fraud_score": fraud_check.score,
-                                "risk_level": fraud_check.risk_level.value,
-                            }
+                                    "error": "Payment blocked due to fraud detection",
+                                    "fraud_score": fraud_check.score,
+                                    "risk_level": fraud_check.risk_level.value,
+                                    }
                         ),
-                        403,
-                    )
+                            403,
+                            )
 
                 # Process payment with selected provider
                 result = self._process_with_provider(
@@ -292,7 +303,9 @@ class PaymentProcessor:
                 logger.error(f"Error processing payment: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/payments/<payment_id>", methods=["GET"])
+        @self.app.route("/api / payments/<payment_id>", methods=["GET"])
+
+
         def get_payment_status(payment_id):
             """Get payment status and details"""
             try:
@@ -302,35 +315,35 @@ class PaymentProcessor:
                 cursor.execute(
                     """
                     SELECT payment_id, provider, provider_payment_id, amount, currency,
-                           customer_email, status, fraud_score, fraud_risk_level,
-                           metadata, created_at, updated_at
+                        customer_email, status, fraud_score, fraud_risk_level,
+                               metadata, created_at, updated_at
                     FROM payments WHERE payment_id = ?
                 """,
                     (payment_id,),
-                )
+                        )
 
                 result = cursor.fetchone()
                 if not result:
                     conn.close()
                     return (
                         jsonify({"success": False, "error": "Payment not found"}),
-                        404,
-                    )
+                            404,
+                            )
 
                 payment_data = {
                     "payment_id": result[0],
-                    "provider": result[1],
-                    "provider_payment_id": result[2],
-                    "amount": result[3],
-                    "currency": result[4],
-                    "customer_email": result[5],
-                    "status": result[6],
-                    "fraud_score": result[7],
-                    "fraud_risk_level": result[8],
-                    "metadata": json.loads(result[9]) if result[9] else {},
-                    "created_at": result[10],
-                    "updated_at": result[11],
-                }
+                        "provider": result[1],
+                        "provider_payment_id": result[2],
+                        "amount": result[3],
+                        "currency": result[4],
+                        "customer_email": result[5],
+                        "status": result[6],
+                        "fraud_score": result[7],
+                        "fraud_risk_level": result[8],
+                        "metadata": json.loads(result[9]) if result[9] else {},
+                        "created_at": result[10],
+                        "updated_at": result[11],
+                        }
 
                 conn.close()
 
@@ -340,7 +353,9 @@ class PaymentProcessor:
                 logger.error(f"Error getting payment status: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/payments/<payment_id>/refund", methods=["POST"])
+        @self.app.route("/api / payments/<payment_id>/refund", methods=["POST"])
+
+
         def refund_payment(payment_id):
             """Process a refund for a payment"""
             try:
@@ -358,15 +373,15 @@ class PaymentProcessor:
                     FROM payments WHERE payment_id = ?
                 """,
                     (payment_id,),
-                )
+                        )
 
                 result = cursor.fetchone()
                 if not result:
                     conn.close()
                     return (
                         jsonify({"success": False, "error": "Payment not found"}),
-                        404,
-                    )
+                            404,
+                            )
 
                 provider, provider_payment_id, original_amount, currency, status = (
                     result
@@ -378,11 +393,11 @@ class PaymentProcessor:
                         jsonify(
                             {
                                 "success": False,
-                                "error": "Can only refund completed payments",
-                            }
+                                    "error": "Can only refund completed payments",
+                                    }
                         ),
-                        400,
-                    )
+                            400,
+                            )
 
                 # Validate refund amount
                 if refund_amount is None:
@@ -393,19 +408,19 @@ class PaymentProcessor:
                         jsonify(
                             {
                                 "success": False,
-                                "error": "Refund amount cannot exceed original amount",
-                            }
+                                    "error": "Refund amount cannot exceed original amount",
+                                    }
                         ),
-                        400,
-                    )
+                            400,
+                            )
 
                 # Process refund with provider
                 refund_result = self._process_refund_with_provider(
                     PaymentProvider(provider),
-                    provider_payment_id,
-                    refund_amount,
-                    reason,
-                )
+                        provider_payment_id,
+                        refund_amount,
+                        reason,
+                        )
 
                 if refund_result["success"]:
                     # Record refund in database
@@ -413,19 +428,19 @@ class PaymentProcessor:
 
                     cursor.execute(
                         """
-                        INSERT INTO refunds 
+                        INSERT INTO refunds
                         (refund_id, payment_id, amount, reason, status, provider_refund_id)
                         VALUES (?, ?, ?, ?, ?, ?)
                     """,
                         (
                             refund_id,
-                            payment_id,
-                            refund_amount,
-                            reason,
-                            "completed",
-                            refund_result.get("refund_id"),
-                        ),
-                    )
+                                payment_id,
+                                refund_amount,
+                                reason,
+                                "completed",
+                                refund_result.get("refund_id"),
+                                ),
+                            )
 
                     # Update payment status if full refund
                     if refund_amount == original_amount:
@@ -435,7 +450,7 @@ class PaymentProcessor:
                             WHERE payment_id = ?
                         """,
                             (datetime.now().isoformat(), payment_id),
-                        )
+                                )
 
                     conn.commit()
 
@@ -447,7 +462,9 @@ class PaymentProcessor:
                 logger.error(f"Error processing refund: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
 
-        @self.app.route("/api/payments/webhooks/<provider>", methods=["POST"])
+        @self.app.route("/api / payments / webhooks/<provider>", methods=["POST"])
+
+
         def handle_webhook(provider):
             """Handle payment provider webhooks"""
             try:
@@ -462,15 +479,16 @@ class PaymentProcessor:
                         jsonify(
                             {
                                 "success": False,
-                                "error": "Webhook not supported for this provider",
-                            }
+                                    "error": "Webhook not supported for this provider",
+                                    }
                         ),
-                        400,
-                    )
+                            400,
+                            )
 
             except Exception as e:
                 logger.error(f"Error handling webhook: {e}")
                 return jsonify({"success": False, "error": str(e)}), 500
+
 
     def _perform_fraud_detection(
         self, payment_request: PaymentRequest, customer_ip: str
@@ -507,7 +525,7 @@ class PaymentProcessor:
             risk_factors.append(f"Suspicious email pattern: {email_score}")
             risk_score += email_score * 0.35
 
-        # Check time-based patterns
+        # Check time - based patterns
         time_score = self._check_time_patterns()
         if time_score > 0:
             risk_factors.append(f"Unusual time pattern: {time_score}")
@@ -528,11 +546,12 @@ class PaymentProcessor:
             blocked = False
 
         return FraudCheck(
-            risk_level=risk_level,
-            score=risk_score,
-            reasons=risk_factors,
-            blocked=blocked,
-        )
+            risk_level = risk_level,
+                score = risk_score,
+                reasons = risk_factors,
+                blocked = blocked,
+                )
+
 
     def _check_transaction_velocity(
         self, customer_email: str, customer_ip: str
@@ -543,16 +562,16 @@ class PaymentProcessor:
             cursor = conn.cursor()
 
             # Check transactions in last hour
-            one_hour_ago = (datetime.now() - timedelta(hours=1)).isoformat()
+            one_hour_ago = (datetime.now() - timedelta(hours = 1)).isoformat()
 
             cursor.execute(
                 """
-                SELECT COUNT(*) FROM payment_attempts 
-                WHERE (customer_email = ? OR customer_ip = ?) 
+                SELECT COUNT(*) FROM payment_attempts
+                WHERE (customer_email = ? OR customer_ip = ?)
                 AND created_at > ?
             """,
                 (customer_email, customer_ip, one_hour_ago),
-            )
+                    )
 
             count = cursor.fetchone()[0]
             conn.close()
@@ -567,6 +586,7 @@ class PaymentProcessor:
         except Exception as e:
             logger.error(f"Error checking transaction velocity: {e}")
             return 0.0
+
 
     def _check_amount_patterns(self, amount: float, customer_email: str) -> float:
         """Check for suspicious amount patterns"""
@@ -586,12 +606,13 @@ class PaymentProcessor:
 
         return min(1.0, score)
 
+
     def _check_ip_reputation(self, customer_ip: str) -> float:
         """Check IP reputation for fraud indicators"""
         # Basic IP checks (in production, integrate with IP reputation services)
         score = 0.0
 
-        # Check for localhost/private IPs in production
+        # Check for localhost / private IPs in production
         if customer_ip in ["127.0.0.1", "localhost"] or customer_ip.startswith(
             "192.168."
         ):
@@ -599,6 +620,7 @@ class PaymentProcessor:
 
         # Add more sophisticated IP reputation checks here
         return score
+
 
     def _check_email_patterns(self, email: str) -> float:
         """Check email for suspicious patterns"""
@@ -617,8 +639,9 @@ class PaymentProcessor:
 
         return score
 
+
     def _check_time_patterns(self) -> float:
-        """Check for suspicious time-based patterns"""
+        """Check for suspicious time - based patterns"""
         current_hour = datetime.now().hour
 
         # Flag transactions during unusual hours (2 AM - 6 AM)
@@ -627,13 +650,14 @@ class PaymentProcessor:
 
         return 0.0
 
+
     def _process_with_provider(
         self,
-        payment_request: PaymentRequest,
-        payment_id: str,
-        customer_ip: str,
-        fraud_check: FraudCheck,
-    ) -> Dict:
+            payment_request: PaymentRequest,
+            payment_id: str,
+            customer_ip: str,
+            fraud_check: FraudCheck,
+            ) -> Dict:
         """Process payment with the specified provider"""
         try:
             # Store payment record
@@ -656,6 +680,7 @@ class PaymentProcessor:
             logger.error(f"Error processing payment with provider: {e}")
             return {"success": False, "error": str(e)}
 
+
     def _process_stripe_payment(
         self, payment_request: PaymentRequest, payment_id: str
     ) -> Dict:
@@ -663,29 +688,30 @@ class PaymentProcessor:
         try:
             # Create payment intent
             intent = stripe.PaymentIntent.create(
-                amount=int(payment_request.amount * 100),  # Convert to cents
-                currency=payment_request.currency.lower(),
-                payment_method=payment_request.payment_method,
-                customer_email=payment_request.customer_email,
-                confirm=True,
-                metadata={"payment_id": payment_id, **(payment_request.metadata or {})},
-            )
+                amount = int(payment_request.amount * 100),  # Convert to cents
+                currency = payment_request.currency.lower(),
+                    payment_method = payment_request.payment_method,
+                    customer_email = payment_request.customer_email,
+                    confirm = True,
+                    metadata={"payment_id": payment_id, **(payment_request.metadata or {})},
+                    )
 
             # Update payment record
             self._update_payment_status(payment_id, intent.status, intent.id)
 
             return {
                 "success": True,
-                "payment_id": payment_id,
-                "provider_payment_id": intent.id,
-                "status": intent.status,
-                "client_secret": intent.client_secret,
-            }
+                    "payment_id": payment_id,
+                    "provider_payment_id": intent.id,
+                    "status": intent.status,
+                    "client_secret": intent.client_secret,
+                    }
 
         except stripe.error.StripeError as e:
             logger.error(f"Stripe error: {e}")
             self._update_payment_status(payment_id, "failed")
             return {"success": False, "error": str(e)}
+
 
     def _process_paypal_payment(
         self, payment_request: PaymentRequest, payment_id: str
@@ -694,12 +720,14 @@ class PaymentProcessor:
         # PayPal integration would go here
         return {"success": False, "error": "PayPal integration not implemented"}
 
+
     def _process_square_payment(
         self, payment_request: PaymentRequest, payment_id: str
     ) -> Dict:
         """Process payment with Square"""
         # Square integration would go here
         return {"success": False, "error": "Square integration not implemented"}
+
 
     def _process_razorpay_payment(
         self, payment_request: PaymentRequest, payment_id: str
@@ -708,40 +736,42 @@ class PaymentProcessor:
         # Razorpay integration would go here
         return {"success": False, "error": "Razorpay integration not implemented"}
 
+
     def _store_payment_record(
         self,
-        payment_request: PaymentRequest,
-        payment_id: str,
-        customer_ip: str,
-        fraud_check: FraudCheck,
-    ):
+            payment_request: PaymentRequest,
+            payment_id: str,
+            customer_ip: str,
+            fraud_check: FraudCheck,
+            ):
         """Store payment record in database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
             """
-            INSERT INTO payments 
+            INSERT INTO payments
             (payment_id, provider, amount, currency, customer_email, customer_ip,
-             status, fraud_score, fraud_risk_level, metadata)
+                status, fraud_score, fraud_risk_level, metadata)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 payment_id,
-                payment_request.provider.value,
-                payment_request.amount,
-                payment_request.currency,
-                payment_request.customer_email,
-                customer_ip,
-                PaymentStatus.PENDING.value,
-                fraud_check.score,
-                fraud_check.risk_level.value,
-                json.dumps(payment_request.metadata or {}),
-            ),
-        )
+                    payment_request.provider.value,
+                    payment_request.amount,
+                    payment_request.currency,
+                    payment_request.customer_email,
+                    customer_ip,
+                    PaymentStatus.PENDING.value,
+                    fraud_check.score,
+                    fraud_check.risk_level.value,
+                    json.dumps(payment_request.metadata or {}),
+                    ),
+                )
 
         conn.commit()
         conn.close()
+
 
     def _update_payment_status(
         self, payment_id: str, status: str, provider_payment_id: str = None
@@ -753,24 +783,25 @@ class PaymentProcessor:
         if provider_payment_id:
             cursor.execute(
                 """
-                UPDATE payments 
+                UPDATE payments
                 SET status = ?, provider_payment_id = ?, updated_at = ?
                 WHERE payment_id = ?
             """,
                 (status, provider_payment_id, datetime.now().isoformat(), payment_id),
-            )
+                    )
         else:
             cursor.execute(
                 """
-                UPDATE payments 
+                UPDATE payments
                 SET status = ?, updated_at = ?
                 WHERE payment_id = ?
             """,
                 (status, datetime.now().isoformat(), payment_id),
-            )
+                    )
 
         conn.commit()
         conn.close()
+
 
     def _record_payment_attempt(
         self, payment_request: PaymentRequest, customer_ip: str, payment_id: str
@@ -786,32 +817,33 @@ class PaymentProcessor:
 
         cursor.execute(
             """
-            INSERT INTO payment_attempts 
+            INSERT INTO payment_attempts
             (attempt_id, customer_email, customer_ip, amount, currency, provider, success)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 attempt_id,
-                payment_request.customer_email,
-                customer_ip,
-                payment_request.amount,
-                payment_request.currency,
-                payment_request.provider.value,
-                False,  # Will be updated on success
+                    payment_request.customer_email,
+                    customer_ip,
+                    payment_request.amount,
+                    payment_request.currency,
+                    payment_request.provider.value,
+                    False,  # Will be updated on success
             ),
-        )
+                )
 
         conn.commit()
         conn.close()
 
+
     def _log_fraud_detection(
         self,
-        payment_id: str,
-        payment_request: PaymentRequest,
-        customer_ip: str,
-        fraud_check: FraudCheck,
-        action: str,
-    ):
+            payment_id: str,
+            payment_request: PaymentRequest,
+            customer_ip: str,
+            fraud_check: FraudCheck,
+            action: str,
+            ):
         """Log fraud detection results"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -820,75 +852,78 @@ class PaymentProcessor:
 
         cursor.execute(
             """
-            INSERT INTO fraud_logs 
-            (log_id, payment_id, customer_email, customer_ip, risk_level, 
-             fraud_score, reasons, action_taken)
+            INSERT INTO fraud_logs
+            (log_id, payment_id, customer_email, customer_ip, risk_level,
+                fraud_score, reasons, action_taken)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 log_id,
-                payment_id,
-                payment_request.customer_email,
-                customer_ip,
-                fraud_check.risk_level.value,
-                fraud_check.score,
-                json.dumps(fraud_check.reasons),
-                action,
-            ),
-        )
+                    payment_id,
+                    payment_request.customer_email,
+                    customer_ip,
+                    fraud_check.risk_level.value,
+                    fraud_check.score,
+                    json.dumps(fraud_check.reasons),
+                    action,
+                    ),
+                )
 
         conn.commit()
         conn.close()
+
 
     def _get_supported_currencies(self, provider: PaymentProvider) -> List[str]:
         """Get supported currencies for a provider"""
         currency_map = {
             PaymentProvider.STRIPE: ["USD", "EUR", "GBP", "CAD", "AUD", "JPY"],
-            PaymentProvider.PAYPAL: ["USD", "EUR", "GBP", "CAD", "AUD"],
-            PaymentProvider.SQUARE: ["USD", "CAD", "GBP", "AUD"],
-            PaymentProvider.RAZORPAY: ["INR", "USD"],
-        }
+                PaymentProvider.PAYPAL: ["USD", "EUR", "GBP", "CAD", "AUD"],
+                PaymentProvider.SQUARE: ["USD", "CAD", "GBP", "AUD"],
+                PaymentProvider.RAZORPAY: ["INR", "USD"],
+                }
         return currency_map.get(provider, ["USD"])
+
 
     def _get_provider_features(self, provider: PaymentProvider) -> List[str]:
         """Get features supported by a provider"""
         features_map = {
             PaymentProvider.STRIPE: [
                 "Credit Cards",
-                "Digital Wallets",
-                "Bank Transfers",
-                "Subscriptions",
-            ],
-            PaymentProvider.PAYPAL: [
+                    "Digital Wallets",
+                    "Bank Transfers",
+                    "Subscriptions",
+                    ],
+                PaymentProvider.PAYPAL: [
                 "PayPal Account",
+                    "Credit Cards",
+                    "Digital Wallets",
+                    ],
+                PaymentProvider.SQUARE: [
                 "Credit Cards",
-                "Digital Wallets",
-            ],
-            PaymentProvider.SQUARE: [
+                    "Digital Wallets",
+                    "In - Person Payments",
+                    ],
+                PaymentProvider.RAZORPAY: [
                 "Credit Cards",
-                "Digital Wallets",
-                "In-Person Payments",
-            ],
-            PaymentProvider.RAZORPAY: [
-                "Credit Cards",
-                "UPI",
-                "Net Banking",
-                "Digital Wallets",
-            ],
-        }
+                    "UPI",
+                    "Net Banking",
+                    "Digital Wallets",
+                    ],
+                }
         return features_map.get(provider, [])
+
 
     def _handle_stripe_webhook(self) -> Dict:
         """Handle Stripe webhook events"""
         payload = request.get_data()
-        sig_header = request.headers.get("Stripe-Signature")
+        sig_header = request.headers.get("Stripe - Signature")
 
         try:
             event = stripe.Webhook.construct_event(
                 payload,
-                sig_header,
-                self.providers[PaymentProvider.STRIPE]["webhook_secret"],
-            )
+                    sig_header,
+                    self.providers[PaymentProvider.STRIPE]["webhook_secret"],
+                    )
         except ValueError:
             return jsonify({"success": False, "error": "Invalid payload"}), 400
         except stripe.error.SignatureVerificationError:
@@ -911,51 +946,53 @@ class PaymentProcessor:
 
         return jsonify({"success": True})
 
+
     def _handle_paypal_webhook(self) -> Dict:
         """Handle PayPal webhook events"""
         # PayPal webhook handling would go here
         return jsonify({"success": True})
 
+
     def _process_refund_with_provider(
         self,
-        provider: PaymentProvider,
-        provider_payment_id: str,
-        amount: float,
-        reason: str,
-    ) -> Dict:
+            provider: PaymentProvider,
+            provider_payment_id: str,
+            amount: float,
+            reason: str,
+            ) -> Dict:
         """Process refund with the specified provider"""
         if provider == PaymentProvider.STRIPE:
             try:
                 refund = stripe.Refund.create(
-                    payment_intent=provider_payment_id,
-                    amount=int(amount * 100),  # Convert to cents
+                    payment_intent = provider_payment_id,
+                        amount = int(amount * 100),  # Convert to cents
                     reason="requested_by_customer",
-                )
+                        )
 
                 return {
                     "success": True,
-                    "refund_id": refund.id,
-                    "status": refund.status,
-                    "amount": amount,
-                }
+                        "refund_id": refund.id,
+                        "status": refund.status,
+                        "amount": amount,
+                        }
 
             except stripe.error.StripeError as e:
                 return {"success": False, "error": str(e)}
 
         return {"success": False, "error": "Refund not supported for this provider"}
 
-    def run(self, host="0.0.0.0", port=5003, debug=False):
+
+    def run(self, host="0.0.0.0", port = 5003, debug = False):
         """Run the payment processor server"""
         logger.info(f"Starting Payment Processor on {host}:{port}")
-        self.app.run(host=host, port=port, debug=debug)
-
+        self.app.run(host = host, port = port, debug = debug)
 
 if __name__ == "__main__":
     # Create data directory if it doesn't exist
     import os
 
-    os.makedirs("data", exist_ok=True)
+    os.makedirs("data", exist_ok = True)
 
     # Initialize and run payment processor
-    processor = PaymentProcessor()
-    processor.run(debug=True)
+        processor = PaymentProcessor()
+    processor.run(debug = True)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 AI Video Production Pipeline
 Integrates Linly Talker, DaVinci Resolve, and Blender for automated video production
@@ -26,40 +26,43 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 class LinlyTalkerAPI:
     """Interface for Linly Talker AI avatar generation"""
 
+
     def __init__(self, base_url: str = "http://localhost:7860"):
         self.base_url = base_url
         self.session = requests.Session()
 
+
     def health_check(self) -> bool:
         """Check if Linly Talker service is running"""
         try:
-            response = self.session.get(f"{self.base_url}/health", timeout=5)
+            response = self.session.get(f"{self.base_url}/health", timeout = 5)
             return response.status_code == 200
         except requests.RequestException:
             return False
 
+
     def generate_avatar_video(
         self,
-        text: str,
-        voice_sample: Optional[str] = None,
-        image_path: Optional[str] = None,
-        output_dir: str = "/tmp",
-    ) -> Dict:
+            text: str,
+            voice_sample: Optional[str] = None,
+            image_path: Optional[str] = None,
+            output_dir: str = "/tmp",
+            ) -> Dict:
         """Generate talking avatar video from text input"""
 
         if not self.health_check():
             raise ConnectionError("Linly Talker service is not available")
 
-        endpoint = f"{self.base_url}/api/generate"
+        endpoint = f"{self.base_url}/api / generate"
 
         # Prepare payload
         payload = {
             "text": text,
-            "output_format": "mp4",
-            "output_dir": output_dir,
-            "quality": "high",
-            "fps": 24,
-        }
+                "output_format": "mp4",
+                "output_dir": output_dir,
+                "quality": "high",
+                "fps": 24,
+                }
 
         if voice_sample and os.path.exists(voice_sample):
             payload["voice_sample"] = voice_sample
@@ -68,11 +71,12 @@ class LinlyTalkerAPI:
             payload["image_path"] = image_path
 
         try:
-            response = self.session.post(endpoint, json=payload, timeout=300)
+            response = self.session.post(endpoint, json = payload, timeout = 300)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
             raise Exception(f"Failed to generate avatar video: {str(e)}")
+
 
     def clone_voice(self, audio_file_path: str) -> Dict:
         """Clone voice using provided audio sample"""
@@ -80,12 +84,12 @@ class LinlyTalkerAPI:
         if not os.path.exists(audio_file_path):
             raise FileNotFoundError(f"Audio file not found: {audio_file_path}")
 
-        endpoint = f"{self.base_url}/api/voice_clone"
+        endpoint = f"{self.base_url}/api / voice_clone"
 
         try:
             with open(audio_file_path, "rb") as f:
                 files = {"audio": f}
-                response = self.session.post(endpoint, files=files, timeout=120)
+                response = self.session.post(endpoint, files = files, timeout = 120)
                 response.raise_for_status()
                 return response.json()
         except requests.RequestException as e:
@@ -95,18 +99,20 @@ class LinlyTalkerAPI:
 class DaVinciResolveAutomation:
     """DaVinci Resolve automation interface"""
 
+
     def __init__(self):
         self.resolve = None
         self.project_manager = None
         self.media_storage = None
         self._initialize_resolve()
 
+
     def _initialize_resolve(self):
         """Initialize DaVinci Resolve API connection"""
         try:
             # Set up environment variables
-            resolve_script_api = "/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/Scripting"
-            resolve_script_lib = "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/Libraries/Fusion/fusionscript.so"
+            resolve_script_api = "/Library / Application Support / Blackmagic Design / DaVinci Resolve / Developer / Scripting"
+            resolve_script_lib = "/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / Libraries / Fusion / fusionscript.so"
 
             os.environ["RESOLVE_SCRIPT_API"] = resolve_script_api
             os.environ["RESOLVE_SCRIPT_LIB"] = resolve_script_lib
@@ -136,9 +142,11 @@ class DaVinciResolveAutomation:
             print(f"⚠ DaVinci Resolve initialization failed: {str(e)}")
             self.resolve = None
 
+
     def is_available(self) -> bool:
         """Check if DaVinci Resolve is available"""
         return self.resolve is not None
+
 
     def create_project(self, project_name: str) -> Optional[object]:
         """Create new DaVinci Resolve project"""
@@ -153,6 +161,7 @@ class DaVinciResolveAutomation:
         except Exception as e:
             print(f"✗ Failed to create project: {str(e)}")
             return None
+
 
     def import_media(self, file_paths: List[str]) -> List:
         """Import media files into current project"""
@@ -181,6 +190,7 @@ class DaVinciResolveAutomation:
             print(f"✗ Failed to import media: {str(e)}")
             return []
 
+
     def create_timeline_with_clips(
         self, timeline_name: str, clips: List
     ) -> Optional[object]:
@@ -201,13 +211,14 @@ class DaVinciResolveAutomation:
             for i, clip in enumerate(clips):
                 success = timeline.InsertClip(clip, i + 1, 0)
                 if success:
-                    print(f"✓ Added clip {i+1} to timeline")
+                    print(f"✓ Added clip {i + 1} to timeline")
 
             print(f"✓ Created timeline: {timeline_name}")
             return timeline
         except Exception as e:
             print(f"✗ Failed to create timeline: {str(e)}")
             return None
+
 
     def render_project(
         self, output_path: str, format_preset: str = "H.264"
@@ -224,9 +235,9 @@ class DaVinciResolveAutomation:
             # Set render settings
             render_settings = {
                 "TargetDir": os.path.dirname(output_path),
-                "CustomName": os.path.splitext(os.path.basename(output_path))[0],
-                "Format": format_preset,
-            }
+                    "CustomName": os.path.splitext(os.path.basename(output_path))[0],
+                    "Format": format_preset,
+                    }
 
             project.SetRenderSettings(render_settings)
 
@@ -247,23 +258,26 @@ class DaVinciResolveAutomation:
 class BlenderAutomation:
     """Blender automation interface"""
 
+
     def __init__(self, blender_executable: str = "blender"):
         self.blender_executable = blender_executable
-        self.temp_script_dir = "/tmp/blender_scripts"
-        os.makedirs(self.temp_script_dir, exist_ok=True)
+        self.temp_script_dir = "/tmp / blender_scripts"
+        os.makedirs(self.temp_script_dir, exist_ok = True)
+
 
     def is_available(self) -> bool:
         """Check if Blender is available"""
         try:
             result = subprocess.run(
                 [self.blender_executable, "--version"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+                    capture_output = True,
+                    text = True,
+                    timeout = 10,
+                    )
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
+
 
     def create_enhancement_script(
         self, video_path: str, output_path: str, environment_type: str = "studio"
@@ -277,7 +291,7 @@ import sys
 
 # Clear existing scene
 bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False)
+bpy.ops.object.delete(use_global = False)
 
 # Set render settings
 scene = bpy.context.scene
@@ -295,34 +309,34 @@ scene.render.ffmpeg.codec = 'H264'
 video_path = "{video_path}"
 if os.path.exists(video_path):
     # Add plane for video
-    bpy.ops.mesh.primitive_plane_add(size=4, location=(0, 0, 0))
+    bpy.ops.mesh.primitive_plane_add(size = 4, location=(0, 0, 0))
     plane = bpy.context.active_object
-    
+
     # Create material with video texture
     material = bpy.data.materials.new(name="VideoMaterial")
     material.use_nodes = True
-    
+
     # Clear default nodes
     material.node_tree.nodes.clear()
-    
+
     # Add nodes
     output_node = material.node_tree.nodes.new('ShaderNodeOutputMaterial')
     emission_node = material.node_tree.nodes.new('ShaderNodeEmission')
     image_node = material.node_tree.nodes.new('ShaderNodeTexImage')
-    
+
     # Load video texture
     try:
         image = bpy.data.images.load(video_path)
         image_node.image = image
         image.source = 'MOVIE'
-        
+
         # Connect nodes
         material.node_tree.links.new(image_node.outputs['Color'], emission_node.inputs['Color'])
         material.node_tree.links.new(emission_node.outputs['Emission'], output_node.inputs['Surface'])
-        
+
         # Assign material to plane
         plane.data.materials.append(material)
-        
+
         print("✓ Video texture applied successfully")
     except Exception as e:
         print(f"✗ Failed to load video texture: {{e}}")
@@ -334,17 +348,17 @@ if "{environment_type}" == "studio":
     key_light = bpy.context.active_object
     key_light.data.energy = 100
     key_light.data.size = 2
-    
+
     bpy.ops.object.light_add(type='AREA', location=(-5, 5, 3))
     fill_light = bpy.context.active_object
     fill_light.data.energy = 50
     fill_light.data.size = 2
-    
+
     # Add backdrop
-    bpy.ops.mesh.primitive_plane_add(size=10, location=(0, -3, 0))
+    bpy.ops.mesh.primitive_plane_add(size = 10, location=(0, -3, 0))
     backdrop = bpy.context.active_object
     backdrop.rotation_euler = (1.5708, 0, 0)  # 90 degrees
-    
+
     # Create backdrop material
     backdrop_material = bpy.data.materials.new(name="BackdropMaterial")
     backdrop_material.use_nodes = True
@@ -366,7 +380,7 @@ print(f"Rendering to: {{scene.render.filepath}}")
 
 # Render animation
 try:
-    bpy.ops.render.render(animation=True)
+    bpy.ops.render.render(animation = True)
     print("✓ Render completed successfully")
 except Exception as e:
     print(f"✗ Render failed: {{e}}")
@@ -380,6 +394,7 @@ except Exception as e:
             f.write(script_content)
 
         return script_path
+
 
     def enhance_video(
         self, video_path: str, output_path: str, environment_type: str = "studio"
@@ -404,7 +419,7 @@ except Exception as e:
             cmd = [self.blender_executable, "--background", "--python", script_path]
 
             print(f"Running Blender enhancement...")
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 600)
 
             if result.returncode == 0:
                 print("✓ Blender enhancement completed")
@@ -428,6 +443,7 @@ except Exception as e:
 class AIVideoProductionPipeline:
     """Main pipeline orchestrator"""
 
+
     def __init__(self, config_path: Optional[str] = None):
         self.config = (
             self.load_config(config_path) if config_path else self.default_config()
@@ -436,8 +452,8 @@ class AIVideoProductionPipeline:
         self.output_dir = self.config["output"]["final_directory"]
 
         # Create directories
-        os.makedirs(self.temp_dir, exist_ok=True)
-        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(self.temp_dir, exist_ok = True)
+        os.makedirs(self.output_dir, exist_ok = True)
 
         # Initialize components
         self.linly_api = LinlyTalkerAPI(self.config["linly_talker"]["url"])
@@ -449,37 +465,39 @@ class AIVideoProductionPipeline:
         # Check component availability
         self.check_system_requirements()
 
+
     def default_config(self) -> Dict:
         """Default configuration"""
         return {
             "linly_talker": {
                 "url": "http://localhost:7860",
-                "models": {
-                    "llm": "gpt-3.5-turbo",
-                    "tts": "edge-tts",
-                    "avatar": "sadtalker",
-                },
-            },
-            "blender": {
+                    "models": {
+                    "llm": "gpt - 3.5 - turbo",
+                        "tts": "edge - tts",
+                        "avatar": "sadtalker",
+                        },
+                    },
+                "blender": {
                 "executable_path": "blender",
-                "render_settings": {
+                    "render_settings": {
                     "resolution_x": 1920,
-                    "resolution_y": 1080,
-                    "fps": 24,
-                    "samples": 128,
-                },
-            },
-            "resolve": {
+                        "resolution_y": 1080,
+                        "fps": 24,
+                        "samples": 128,
+                        },
+                    },
+                "resolve": {
                 "project_settings": {
                     "timeline_resolution": "1920x1080",
-                    "timeline_framerate": "24",
+                        "timeline_framerate": "24",
+                        }
+            },
+                "output": {
+                "temp_directory": "/tmp / ai_pipeline",
+                    "final_directory": "/Users / thomasbrianreynolds / online production / output",
+                    },
                 }
-            },
-            "output": {
-                "temp_directory": "/tmp/ai_pipeline",
-                "final_directory": "/Users/thomasbrianreynolds/online production/output",
-            },
-        }
+
 
     def load_config(self, config_path: str) -> Dict:
         """Load configuration from file"""
@@ -489,6 +507,7 @@ class AIVideoProductionPipeline:
         except Exception as e:
             print(f"⚠ Failed to load config: {str(e)}")
             return self.default_config()
+
 
     def check_system_requirements(self):
         """Check if all required components are available"""
@@ -521,23 +540,24 @@ class AIVideoProductionPipeline:
 
         print("=== End System Check ===\n")
 
+
     def generate_ai_avatar_content(
         self,
-        script_text: str,
-        character_image: Optional[str] = None,
-        voice_sample: Optional[str] = None,
-    ) -> Optional[str]:
+            script_text: str,
+            character_image: Optional[str] = None,
+            voice_sample: Optional[str] = None,
+            ) -> Optional[str]:
         """Step 1: Generate AI avatar video using Linly Talker"""
 
         print("\n=== Step 1: Generating AI Avatar Content ===")
 
         try:
             result = self.linly_api.generate_avatar_video(
-                text=script_text,
-                voice_sample=voice_sample,
-                image_path=character_image,
-                output_dir=self.temp_dir,
-            )
+                text = script_text,
+                    voice_sample = voice_sample,
+                    image_path = character_image,
+                    output_dir = self.temp_dir,
+                    )
 
             avatar_video_path = result.get("output_path")
 
@@ -551,6 +571,7 @@ class AIVideoProductionPipeline:
         except Exception as e:
             print(f"✗ Avatar generation failed: {str(e)}")
             return None
+
 
     def enhance_with_blender(
         self, avatar_video_path: str, environment_type: str = "studio"
@@ -578,10 +599,11 @@ class AIVideoProductionPipeline:
             print("✗ Blender enhancement failed")
             return None
 
+
     def finalize_in_resolve(
         self, enhanced_video_path: str, additional_assets: Optional[List[str]] = None
     ) -> Optional[str]:
-        """Step 3: Final editing and post-production in DaVinci Resolve"""
+        """Step 3: Final editing and post - production in DaVinci Resolve"""
 
         print("\n=== Step 3: Finalizing in DaVinci Resolve ===")
 
@@ -648,14 +670,15 @@ class AIVideoProductionPipeline:
             print(f"✗ DaVinci Resolve processing failed: {str(e)}")
             return None
 
+
     def run_complete_pipeline(
         self,
-        script_text: str,
-        character_image: Optional[str] = None,
-        voice_sample: Optional[str] = None,
-        additional_assets: Optional[List[str]] = None,
-        environment_type: str = "studio",
-    ) -> Dict:
+            script_text: str,
+            character_image: Optional[str] = None,
+            voice_sample: Optional[str] = None,
+            additional_assets: Optional[List[str]] = None,
+            environment_type: str = "studio",
+            ) -> Dict:
         """Execute complete AI video production pipeline"""
 
         print("\n" + "=" * 50)
@@ -689,11 +712,11 @@ class AIVideoProductionPipeline:
 
             result = {
                 "success": True,
-                "avatar_video": avatar_video,
-                "enhanced_video": enhanced_video,
-                "final_video": final_video,
-                "processing_time": elapsed_time,
-            }
+                    "avatar_video": avatar_video,
+                    "enhanced_video": enhanced_video,
+                    "final_video": final_video,
+                    "processing_time": elapsed_time,
+                    }
 
             print("\n" + "=" * 50)
             print("PIPELINE COMPLETED SUCCESSFULLY")
@@ -708,9 +731,9 @@ class AIVideoProductionPipeline:
 
             result = {
                 "success": False,
-                "error": str(e),
-                "processing_time": elapsed_time,
-            }
+                    "error": str(e),
+                    "processing_time": elapsed_time,
+                    }
 
             print("\n" + "=" * 50)
             print("PIPELINE FAILED")
@@ -726,16 +749,16 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="AI Video Production Pipeline")
-    parser.add_argument("--script", required=True, help="Script text for avatar")
+    parser.add_argument("--script", required = True, help="Script text for avatar")
     parser.add_argument("--image", help="Character image path")
     parser.add_argument("--voice", help="Voice sample path")
     parser.add_argument("--config", help="Configuration file path")
     parser.add_argument(
         "--environment",
-        default="studio",
-        choices=["studio", "outdoor"],
-        help="3D environment type",
-    )
+            default="studio",
+            choices=["studio", "outdoor"],
+            help="3D environment type",
+            )
     parser.add_argument("--assets", nargs="*", help="Additional asset files")
 
     args = parser.parse_args()
@@ -745,16 +768,15 @@ def main():
 
     # Run pipeline
     result = pipeline.run_complete_pipeline(
-        script_text=args.script,
-        character_image=args.image,
-        voice_sample=args.voice,
-        additional_assets=args.assets,
-        environment_type=args.environment,
-    )
+        script_text = args.script,
+            character_image = args.image,
+            voice_sample = args.voice,
+            additional_assets = args.assets,
+            environment_type = args.environment,
+            )
 
     # Exit with appropriate code
     sys.exit(0 if result["success"] else 1)
-
 
 if __name__ == "__main__":
     main()

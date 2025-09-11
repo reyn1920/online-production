@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Realistic Avatar Generation Script
-Demonstrates how to create 100% realistic Linly-Talker avatars using built-in features.
+Demonstrates how to create 100% realistic Linly - Talker avatars using built - in features.
 
-This script provides a complete workflow for generating ultra-realistic talking avatars
+This script provides a complete workflow for generating ultra - realistic talking avatars
 without any additional costs, leveraging all the advanced features already built into
 our production system.
 
 Usage:
-    python scripts/generate_realistic_avatar.py --image path/to/image.jpg --text "Your script here"
+    python scripts / generate_realistic_avatar.py --image path / to / image.jpg --text "Your script here"
 
 Author: TRAE.AI Production System
 Version: 1.0.0
@@ -27,22 +27,23 @@ from utils.logger import get_logger
 from backend.content.animate_avatar import AnimateAvatar, AnimationJob
 from backend.services.avatar_engines import AvatarRequest, generate_avatar
 from config.linly_talker_realistic import (REALISTIC_CONFIGS, RealisticLinlyConfig,
-                                           RealisticOptimizations, RealisticWorkflow)
+    RealisticOptimizations, RealisticWorkflow)
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
-
 
 logger = get_logger(__name__)
 
 
 class RealisticAvatarGenerator:
-    """Generator for ultra-realistic avatars using optimized Linly-Talker settings."""
+    """Generator for ultra - realistic avatars using optimized Linly - Talker settings."""
+
 
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
-        self.output_dir = Path("./output/realistic_avatars")
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir = Path("./output / realistic_avatars")
+        self.output_dir.mkdir(parents = True, exist_ok = True)
+
 
     def optimize_script_for_realism(self, text: str) -> str:
         """Optimize text script for natural, realistic speech."""
@@ -70,6 +71,7 @@ class RealisticAvatarGenerator:
         self.logger.info(f"Optimized script: {optimized[:100]}...")
         return optimized
 
+
     def validate_source_image(self, image_path: str) -> bool:
         """Validate source image meets quality requirements."""
         if not Path(image_path).exists():
@@ -93,7 +95,7 @@ class RealisticAvatarGenerator:
                 if aspect_ratio < 0.7 or aspect_ratio > 1.5:
                     self.logger.warning(
                         f"Unusual aspect ratio {
-                            aspect_ratio:.2f}. Portrait orientation (0.75-1.33) works best."
+                            aspect_ratio:.2f}. Portrait orientation (0.75 - 1.33) works best."
                     )
 
                 self.logger.info(
@@ -106,14 +108,15 @@ class RealisticAvatarGenerator:
             self.logger.error(f"Error validating image: {e}")
             return False
 
+
     async def generate_realistic_avatar(
         self,
-        image_path: str,
-        text: str,
-        config_type: str = "ultra_realistic",
-        output_name: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """Generate ultra-realistic avatar with optimized settings."""
+            image_path: str,
+            text: str,
+            config_type: str = "ultra_realistic",
+            output_name: Optional[str] = None,
+            ) -> Dict[str, Any]:
+        """Generate ultra - realistic avatar with optimized settings."""
 
         # Validate inputs
         if not self.validate_source_image(image_path):
@@ -147,47 +150,47 @@ class RealisticAvatarGenerator:
 
             # Create and process job
             job = animator.create_animation_job(
-                source_image=image_path,
-                audio_file=None,  # Will be generated from text
-                output_path=str(output_path),
-                config=config,
-            )
+                source_image = image_path,
+                    audio_file = None,  # Will be generated from text
+                output_path = str(output_path),
+                    config = config,
+                    )
 
-            # For text-to-speech, we need to generate audio first
+            # For text - to - speech, we need to generate audio first
             # This would typically use a TTS service
             self.logger.info(
-                "Note: Text-to-speech audio generation needed for complete workflow"
+                "Note: Text - to - speech audio generation needed for complete workflow"
             )
 
             # Alternative: Use avatar service API
             self.logger.info("Generating avatar using service API...")
 
             request = AvatarRequest(
-                text=optimized_text,
-                voice_settings={
+                text = optimized_text,
+                    voice_settings={
                     "voice_id": "natural",
-                    "speed": 1.0,
-                    "pitch": 1.0,
-                    "volume": 1.0,
-                },
-                video_settings={
+                        "speed": 1.0,
+                        "pitch": 1.0,
+                        "volume": 1.0,
+                        },
+                    video_settings={
                     "quality": "ultra",
-                    "fps": config.fps,
-                    "resolution": config.resolution,
-                    "enhance_face": config.enhance_face,
-                    "stabilize_video": config.stabilize_video,
-                },
-                source_image=image_path,
-                output_path=str(output_path),
-            )
+                        "fps": config.fps,
+                        "resolution": config.resolution,
+                        "enhance_face": config.enhance_face,
+                        "stabilize_video": config.stabilize_video,
+                        },
+                    source_image = image_path,
+                    output_path = str(output_path),
+                    )
 
             response = await generate_avatar(
-                text=optimized_text,
-                voice_settings=request.voice_settings,
-                video_settings=request.video_settings,
-                source_image=image_path,
-                preferred_engine="linly-talker-enhanced",
-            )
+                text = optimized_text,
+                    voice_settings = request.voice_settings,
+                    video_settings = request.video_settings,
+                    source_image = image_path,
+                    preferred_engine="linly - talker - enhanced",
+                    )
 
             if response.success:
                 self.logger.info(
@@ -195,39 +198,40 @@ class RealisticAvatarGenerator:
                         response.video_path}"
                 )
 
-                # Apply post-processing enhancements
+                # Apply post - processing enhancements
                 enhanced_path = await self.apply_realistic_enhancements(
                     response.video_path, config_type
                 )
 
                 return {
                     "success": True,
-                    "video_path": enhanced_path or response.video_path,
-                    "original_path": response.video_path,
-                    "processing_time": response.processing_time,
-                    "config_used": config_type,
-                    "optimizations_applied": True,
-                    "metadata": response.metadata,
-                }
+                        "video_path": enhanced_path or response.video_path,
+                        "original_path": response.video_path,
+                        "processing_time": response.processing_time,
+                        "config_used": config_type,
+                        "optimizations_applied": True,
+                        "metadata": response.metadata,
+                        }
             else:
                 return {
                     "success": False,
-                    "error": response.error_message,
-                    "processing_time": response.processing_time,
-                }
+                        "error": response.error_message,
+                        "processing_time": response.processing_time,
+                        }
 
         except Exception as e:
             self.logger.error(f"Error generating avatar: {e}")
             return {"success": False, "error": str(e)}
 
+
     async def apply_realistic_enhancements(
         self, video_path: str, config_type: str
     ) -> Optional[str]:
-        """Apply post-processing enhancements for camera-like realism."""
+        """Apply post - processing enhancements for camera - like realism."""
         try:
             enhancements = RealisticOptimizations.get_post_processing_enhancements()
 
-            # This would apply various post-processing effects
+            # This would apply various post - processing effects
             # For now, we'll log what would be applied
             self.logger.info("Applying realistic enhancements:")
 
@@ -244,9 +248,10 @@ class RealisticAvatarGenerator:
             self.logger.error(f"Error applying enhancements: {e}")
             return None
 
+
     def print_optimization_tips(self):
         """Print tips for achieving maximum realism."""
-        print("\n🎯 TIPS FOR 100% REALISTIC LINLY-TALKER AVATARS\n")
+        print("\n🎯 TIPS FOR 100% REALISTIC LINLY - TALKER AVATARS\n")
 
         script_tips = RealisticOptimizations.get_script_optimization_tips()
         print("📝 SCRIPT OPTIMIZATION:")
@@ -263,7 +268,7 @@ class RealisticAvatarGenerator:
         for tip, description in audio_tips.items():
             print(f"  • {tip.upper()}: {description}")
 
-        print("\n🎬 POST-PROCESSING:")
+        print("\n🎬 POST - PROCESSING:")
         enhancements = RealisticOptimizations.get_post_processing_enhancements()
         for enhancement, settings in enhancements.items():
             if settings.get("enabled", False):
@@ -274,35 +279,35 @@ class RealisticAvatarGenerator:
         for item in checklist.keys():
             print(f"  □ {item.replace('_', ' ').title()}")
 
-        print("\n🚀 READY-TO-USE CONFIGS:")
+        print("\n🚀 READY - TO - USE CONFIGS:")
         for config_name in REALISTIC_CONFIGS.keys():
             print(f"  • {config_name}")
 
 
 async def main():
-    """Main function for command-line usage."""
+    """Main function for command - line usage."""
     parser = argparse.ArgumentParser(
-        description="Generate ultra-realistic Linly-Talker avatars",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        description="Generate ultra - realistic Linly - Talker avatars",
+            formatter_class = argparse.RawDescriptionHelpFormatter,
+            epilog="""
 Examples:
-  python scripts/generate_realistic_avatar.py --image avatar.jpg --text "Hello, how are you today?"
-  python scripts/generate_realistic_avatar.py --image avatar.jpg --text "Welcome to our presentation" --config professional
-  python scripts/generate_realistic_avatar.py --tips  # Show optimization tips
+  python scripts / generate_realistic_avatar.py --image avatar.jpg --text "Hello, how are you today?"
+  python scripts / generate_realistic_avatar.py --image avatar.jpg --text "Welcome to our presentation" --config professional
+  python scripts / generate_realistic_avatar.py --tips  # Show optimization tips
         """,
-    )
+            )
 
-    parser.add_argument("--image", type=str, help="Path to source image")
-    parser.add_argument("--text", type=str, help="Text to speak")
+    parser.add_argument("--image", type = str, help="Path to source image")
+    parser.add_argument("--text", type = str, help="Text to speak")
     parser.add_argument(
         "--config",
-        type=str,
-        default="ultra_realistic",
-        choices=list(REALISTIC_CONFIGS.keys()),
-        help="Configuration preset to use",
-    )
+            type = str,
+            default="ultra_realistic",
+            choices = list(REALISTIC_CONFIGS.keys()),
+            help="Configuration preset to use",
+            )
     parser.add_argument(
-        "--output", type=str, help="Output filename (without extension)"
+        "--output", type = str, help="Output filename (without extension)"
     )
     parser.add_argument(
         "--tips", action="store_true", help="Show optimization tips and exit"
@@ -326,23 +331,22 @@ Examples:
     print(f"💬 Text: {args.text[:100]}{'...' if len(args.text) > 100 else ''}")
 
     result = await generator.generate_realistic_avatar(
-        image_path=args.image,
-        text=args.text,
-        config_type=args.config,
-        output_name=args.output,
-    )
+        image_path = args.image,
+            text = args.text,
+            config_type = args.config,
+            output_name = args.output,
+            )
 
     if result["success"]:
         print(f"\n✅ SUCCESS!")
         print(f"📹 Video: {result['video_path']}")
-        print(f"⏱️  Processing time: {result.get('processing_time', 'N/A')}s")
+        print(f"⏱️  Processing time: {result.get('processing_time', 'N / A')}s")
         print(f"🎯 Config used: {result['config_used']}")
 
         if result.get("optimizations_applied"):
             print(f"🔧 Optimizations: Applied")
     else:
         print(f"\n❌ FAILED: {result['error']}")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

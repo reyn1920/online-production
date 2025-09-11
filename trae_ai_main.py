@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Complete Application Launcher
 Unified entry point for the entire TRAE.AI ecosystem
@@ -19,7 +19,7 @@ Environment Variables:
     REDIS_URL - Redis connection string
     OPENAI_API_KEY - OpenAI API key
     ANTHROPIC_API_KEY - Anthropic API key
-    And other service-specific API keys
+    And other service - specific API keys
 """
 
 import asyncio
@@ -41,7 +41,7 @@ sys.path.insert(0, str(project_root))
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -49,15 +49,18 @@ logger = logging.getLogger(__name__)
 class TraeAILauncher:
     """Main launcher for the complete TRAE.AI application"""
 
+
     def __init__(self):
         self.processes = {}
         self.running = False
         self.setup_signal_handlers()
 
+
     def setup_signal_handlers(self):
         """Setup graceful shutdown handlers"""
         signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
+
 
     def check_dependencies(self) -> bool:
         """Check if all required dependencies are available"""
@@ -66,15 +69,15 @@ class TraeAILauncher:
         # Check Python packages
         required_packages = [
             "fastapi",
-            "uvicorn",
-            "sqlalchemy",
-            "redis",
-            "celery",
-            "openai",
-            "anthropic",
-            "flask",
-            "flask_socketio",
-        ]
+                "uvicorn",
+                "sqlalchemy",
+                "redis",
+                "celery",
+                "openai",
+                "anthropic",
+                "flask",
+                "flask_socketio",
+                ]
 
         missing_packages = []
         for package in required_packages:
@@ -102,23 +105,25 @@ class TraeAILauncher:
 
         return True
 
+
     def setup_directories(self):
         """Create necessary directories"""
         directories = [
             "logs",
-            "temp",
-            "output",
-            "data",
-            "uploads",
-            "static/videos",
-            "static/images",
-            "static/audio",
-        ]
+                "temp",
+                "output",
+                "data",
+                "uploads",
+                "static / videos",
+                "static / images",
+                "static / audio",
+                ]
 
         for directory in directories:
-            Path(directory).mkdir(parents=True, exist_ok=True)
+            Path(directory).mkdir(parents = True, exist_ok = True)
 
         logger.info("Created necessary directories")
+
 
     def start_service(
         self, name: str, module_path: str, port: int, cwd: str = None
@@ -134,18 +139,18 @@ class TraeAILauncher:
 
             process = subprocess.Popen(
                 cmd,
-                cwd=cwd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                env=os.environ.copy(),
-            )
+                    cwd = cwd,
+                    stdout = subprocess.PIPE,
+                    stderr = subprocess.PIPE,
+                    env = os.environ.copy(),
+                    )
 
             self.processes[name] = {
                 "process": process,
-                "port": port,
-                "module": module_path,
-                "cwd": cwd,
-            }
+                    "port": port,
+                    "module": module_path,
+                    "cwd": cwd,
+                    }
 
             # Give the service time to start
             time.sleep(2)
@@ -164,6 +169,7 @@ class TraeAILauncher:
             logger.error(f"❌ Failed to start {name}: {e}")
             return False
 
+
     def start_all_services(self) -> bool:
         """Start all TRAE.AI services"""
         logger.info("🚀 Starting TRAE.AI Complete Application...")
@@ -171,35 +177,35 @@ class TraeAILauncher:
         services = [
             {
                 "name": "Content Agent",
-                "module": "content-agent/main.py",
-                "port": 8001,
-                "cwd": str(project_root / "content-agent"),
-            },
-            {
+                    "module": "content - agent / main.py",
+                    "port": 8001,
+                    "cwd": str(project_root / "content - agent"),
+                    },
+                {
                 "name": "Marketing Agent",
-                "module": "marketing-agent/main.py",
-                "port": 8002,
-                "cwd": str(project_root / "marketing-agent"),
-            },
-            {
+                    "module": "marketing - agent / main.py",
+                    "port": 8002,
+                    "cwd": str(project_root / "marketing - agent"),
+                    },
+                {
                 "name": "Monetization Bundle",
-                "module": "monetization-bundle/main.py",
-                "port": 8003,
-                "cwd": str(project_root / "monetization-bundle"),
-            },
-            {
+                    "module": "monetization - bundle / main.py",
+                    "port": 8003,
+                    "cwd": str(project_root / "monetization - bundle"),
+                    },
+                {
                 "name": "Analytics Dashboard",
-                "module": "analytics-dashboard/main.py",
-                "port": 8004,
-                "cwd": str(project_root / "analytics-dashboard"),
-            },
-            {
+                    "module": "analytics - dashboard / main.py",
+                    "port": 8004,
+                    "cwd": str(project_root / "analytics - dashboard"),
+                    },
+                {
                 "name": "Orchestrator",
-                "module": "orchestrator/main.py",
-                "port": 8000,
-                "cwd": str(project_root / "orchestrator"),
-            },
-        ]
+                    "module": "orchestrator / main.py",
+                    "port": 8000,
+                    "cwd": str(project_root / "orchestrator"),
+                    },
+                ]
 
         success_count = 0
         for service in services:
@@ -213,11 +219,12 @@ class TraeAILauncher:
             logger.info("Starting TRAE.AI Dashboard...")
             from app.dashboard import DashboardApp
 
+
             def run_dashboard():
                 dashboard = DashboardApp()
-                dashboard.run(use_waitress=True)
+                dashboard.run(use_waitress = True)
 
-            dashboard_thread = threading.Thread(target=run_dashboard, daemon=True)
+            dashboard_thread = threading.Thread(target = run_dashboard, daemon = True)
             dashboard_thread.start()
 
             logger.info("✅ TRAE.AI Dashboard started on port 8083")
@@ -235,6 +242,7 @@ class TraeAILauncher:
             logger.error("❌ No services started successfully")
             return False
 
+
     def print_service_status(self):
         """Print status of all services"""
         print("\n" + "=" * 80)
@@ -243,12 +251,12 @@ class TraeAILauncher:
 
         services_info = [
             ("Content Agent", "8001", "AI content creation and video generation"),
-            ("Marketing Agent", "8002", "Campaign management and social media"),
-            ("Monetization Bundle", "8003", "Revenue tracking and payments"),
-            ("Analytics Dashboard", "8004", "Business intelligence and reporting"),
-            ("Orchestrator", "8000", "Service coordination and management"),
-            ("Main Dashboard", "8083", "Total access command center"),
-        ]
+                ("Marketing Agent", "8002", "Campaign management and social media"),
+                ("Monetization Bundle", "8003", "Revenue tracking and payments"),
+                ("Analytics Dashboard", "8004", "Business intelligence and reporting"),
+                ("Orchestrator", "8000", "Service coordination and management"),
+                ("Main Dashboard", "8083", "Total access command center"),
+                ]
 
         for name, port, description in services_info:
             status = (
@@ -265,6 +273,7 @@ class TraeAILauncher:
         print("\n📊 Main Dashboard: http://localhost:8083")
         print("\n✨ The complete TRAE.AI ecosystem is now running!")
         print("=" * 80 + "\n")
+
 
     def monitor_services(self):
         """Monitor running services and restart if needed"""
@@ -291,7 +300,8 @@ class TraeAILauncher:
                 logger.error(f"Error in service monitoring: {e}")
                 time.sleep(5)
 
-    def shutdown(self, signum=None, frame=None):
+
+    def shutdown(self, signum = None, frame = None):
         """Gracefully shutdown all services"""
         logger.info("\n🛑 Shutting down TRAE.AI services...")
         self.running = False
@@ -305,7 +315,7 @@ class TraeAILauncher:
 
                 # Wait for graceful shutdown
                 try:
-                    process.wait(timeout=10)
+                    process.wait(timeout = 10)
                     logger.info(f"✅ {name} stopped gracefully")
                 except subprocess.TimeoutExpired:
                     logger.warning(f"Force killing {name}...")
@@ -318,10 +328,11 @@ class TraeAILauncher:
         logger.info("🏁 All services stopped")
         sys.exit(0)
 
+
     def run(self):
         """Main run method"""
         try:
-            # Pre-flight checks
+            # Pre - flight checks
             if not self.check_dependencies():
                 return False
 
@@ -335,11 +346,11 @@ class TraeAILauncher:
             self.running = True
 
             # Start monitoring in background
-            monitor_thread = threading.Thread(target=self.monitor_services, daemon=True)
+            monitor_thread = threading.Thread(target = self.monitor_services, daemon = True)
             monitor_thread.start()
 
             # Keep main thread alive
-            logger.info("\n🎯 TRAE.AI is running. Press Ctrl+C to stop.")
+            logger.info("\n🎯 TRAE.AI is running. Press Ctrl + C to stop.")
 
             try:
                 while self.running:
@@ -367,7 +378,6 @@ def main():
 
     exit_code = 0 if success else 1
     sys.exit(exit_code)
-
 
 if __name__ == "__main__":
     main()

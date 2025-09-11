@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Comprehensive Health Monitoring System
 
-This module provides real-time health monitoring for all model generation
+This module provides real - time health monitoring for all model generation
 components to ensure 100% system reliability and availability.
 
 Features:
-- Real-time component health tracking
+- Real - time component health tracking
 - Automated failure detection and alerting
 - Performance metrics collection
 - Predictive failure analysis
@@ -32,7 +32,7 @@ import psutil
 import requests
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -68,8 +68,9 @@ class AlertSeverity(Enum):
     CRITICAL = "critical"
     EMERGENCY = "emergency"
 
-
 @dataclass
+
+
 class HealthMetric:
     """Individual health metric"""
 
@@ -78,29 +79,31 @@ class HealthMetric:
     unit: str
     threshold_warning: Optional[float] = None
     threshold_critical: Optional[float] = None
-    timestamp: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    timestamp: datetime = field(default_factory = datetime.now)
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class ComponentHealth:
     """Health status of a component"""
 
     component_id: str
     component_type: ComponentType
     status: HealthStatus
-    metrics: List[HealthMetric] = field(default_factory=list)
-    last_check: datetime = field(default_factory=datetime.now)
+    metrics: List[HealthMetric] = field(default_factory = list)
+    last_check: datetime = field(default_factory = datetime.now)
     uptime_seconds: float = 0
     error_count: int = 0
     success_count: int = 0
     response_time_ms: float = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+
+
 class HealthAlert:
-    """Health alert/notification"""
+    """Health alert / notification"""
 
     alert_id: str
     component_id: str
@@ -109,14 +112,15 @@ class HealthAlert:
     metric_name: Optional[str] = None
     metric_value: Optional[float] = None
     threshold: Optional[float] = None
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory = datetime.now)
     resolved_at: Optional[datetime] = None
     acknowledged: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory = dict)
 
 
 class HealthChecker:
     """Base class for component health checkers"""
+
 
     def __init__(self, component_id: str, component_type: ComponentType):
         self.component_id = component_id
@@ -125,34 +129,38 @@ class HealthChecker:
         self.consecutive_failures = 0
         self.max_consecutive_failures = 3
 
+
     async def check_health(self) -> ComponentHealth:
         """Check component health - to be implemented by subclasses"""
         raise NotImplementedError
 
+
     def _create_metric(
         self,
-        name: str,
-        value: float,
-        unit: str,
-        warning_threshold: float = None,
-        critical_threshold: float = None,
-    ) -> HealthMetric:
+            name: str,
+            value: float,
+            unit: str,
+            warning_threshold: float = None,
+            critical_threshold: float = None,
+            ) -> HealthMetric:
         """Create a health metric"""
         return HealthMetric(
-            name=name,
-            value=value,
-            unit=unit,
-            threshold_warning=warning_threshold,
-            threshold_critical=critical_threshold,
-        )
+            name = name,
+                value = value,
+                unit = unit,
+                threshold_warning = warning_threshold,
+                threshold_critical = critical_threshold,
+                )
 
 
 class ModelGeneratorHealthChecker(HealthChecker):
     """Health checker for model generator"""
 
-    def __init__(self, generator_instance=None):
+
+    def __init__(self, generator_instance = None):
         super().__init__("model_generator", ComponentType.MODEL_GENERATOR)
         self.generator = generator_instance
+
 
     async def check_health(self) -> ComponentHealth:
         """Check model generator health"""
@@ -164,17 +172,17 @@ class ModelGeneratorHealthChecker(HealthChecker):
         try:
             if self.generator:
                 # Get system status from generator
-                system_status = self.generator.get_system_status()
+                    system_status = self.generator.get_system_status()
 
                 # Active requests metric
                 metrics.append(
                     self._create_metric(
                         "active_requests",
-                        system_status.get("active_requests", 0),
-                        "count",
-                        warning_threshold=10,
-                        critical_threshold=50,
-                    )
+                            system_status.get("active_requests", 0),
+                            "count",
+                            warning_threshold = 10,
+                            critical_threshold = 50,
+                            )
                 )
 
                 # Healthy backends metric
@@ -187,11 +195,11 @@ class ModelGeneratorHealthChecker(HealthChecker):
                 metrics.append(
                     self._create_metric(
                         "backend_availability",
-                        backend_ratio * 100,
-                        "percent",
-                        warning_threshold=80,
-                        critical_threshold=50,
-                    )
+                            backend_ratio * 100,
+                            "percent",
+                            warning_threshold = 80,
+                            critical_threshold = 50,
+                            )
                 )
 
                 # Cache performance
@@ -221,21 +229,23 @@ class ModelGeneratorHealthChecker(HealthChecker):
         response_time = (time.time() - start_time) * 1000
 
         return ComponentHealth(
-            component_id=self.component_id,
-            component_type=self.component_type,
-            status=status,
-            metrics=metrics,
-            response_time_ms=response_time,
-            error_count=error_count,
-            success_count=1 if error_count == 0 else 0,
-        )
+            component_id = self.component_id,
+                component_type = self.component_type,
+                status = status,
+                metrics = metrics,
+                response_time_ms = response_time,
+                error_count = error_count,
+                success_count = 1 if error_count == 0 else 0,
+                )
 
 
 class SystemResourceHealthChecker(HealthChecker):
     """Health checker for system resources"""
 
+
     def __init__(self):
         super().__init__("system_resources", ComponentType.SYSTEM_RESOURCE)
+
 
     async def check_health(self) -> ComponentHealth:
         """Check system resource health"""
@@ -245,15 +255,15 @@ class SystemResourceHealthChecker(HealthChecker):
 
         try:
             # CPU usage
-            cpu_percent = psutil.cpu_percent(interval=1)
+            cpu_percent = psutil.cpu_percent(interval = 1)
             metrics.append(
                 self._create_metric(
                     "cpu_usage",
-                    cpu_percent,
-                    "percent",
-                    warning_threshold=80,
-                    critical_threshold=95,
-                )
+                        cpu_percent,
+                        "percent",
+                        warning_threshold = 80,
+                        critical_threshold = 95,
+                        )
             )
 
             # Memory usage
@@ -261,11 +271,11 @@ class SystemResourceHealthChecker(HealthChecker):
             metrics.append(
                 self._create_metric(
                     "memory_usage",
-                    memory.percent,
-                    "percent",
-                    warning_threshold=80,
-                    critical_threshold=95,
-                )
+                        memory.percent,
+                        "percent",
+                        warning_threshold = 80,
+                        critical_threshold = 95,
+                        )
             )
 
             # Disk usage
@@ -274,11 +284,11 @@ class SystemResourceHealthChecker(HealthChecker):
             metrics.append(
                 self._create_metric(
                     "disk_usage",
-                    disk_percent,
-                    "percent",
-                    warning_threshold=80,
-                    critical_threshold=95,
-                )
+                        disk_percent,
+                        "percent",
+                        warning_threshold = 80,
+                        critical_threshold = 95,
+                        )
             )
 
             # Available memory in GB
@@ -286,26 +296,26 @@ class SystemResourceHealthChecker(HealthChecker):
             metrics.append(
                 self._create_metric(
                     "available_memory",
-                    available_memory_gb,
-                    "GB",
-                    warning_threshold=2,
-                    critical_threshold=1,
-                )
+                        available_memory_gb,
+                        "GB",
+                        warning_threshold = 2,
+                        critical_threshold = 1,
+                        )
             )
 
             # Load average (Unix systems)
             try:
-                load_avg = os.getloadavg()[0]  # 1-minute load average
+                load_avg = os.getloadavg()[0]  # 1 - minute load average
                 cpu_count = psutil.cpu_count()
                 load_percent = (load_avg / cpu_count) * 100
                 metrics.append(
                     self._create_metric(
                         "load_average",
-                        load_percent,
-                        "percent",
-                        warning_threshold=80,
-                        critical_threshold=100,
-                    )
+                            load_percent,
+                            "percent",
+                            warning_threshold = 80,
+                            critical_threshold = 100,
+                            )
                 )
             except (OSError, AttributeError):
                 # Not available on all systems
@@ -335,22 +345,24 @@ class SystemResourceHealthChecker(HealthChecker):
         response_time = (time.time() - start_time) * 1000
 
         return ComponentHealth(
-            component_id=self.component_id,
-            component_type=self.component_type,
-            status=status,
-            metrics=metrics,
-            response_time_ms=response_time,
-            error_count=1 if status == HealthStatus.CRITICAL else 0,
-            success_count=1 if status != HealthStatus.CRITICAL else 0,
-        )
+            component_id = self.component_id,
+                component_type = self.component_type,
+                status = status,
+                metrics = metrics,
+                response_time_ms = response_time,
+                error_count = 1 if status == HealthStatus.CRITICAL else 0,
+                success_count = 1 if status != HealthStatus.CRITICAL else 0,
+                )
 
 
 class DatabaseHealthChecker(HealthChecker):
     """Health checker for database connections"""
 
+
     def __init__(self, db_path: str):
         super().__init__("database", ComponentType.DATABASE)
         self.db_path = db_path
+
 
     async def check_health(self) -> ComponentHealth:
         """Check database health"""
@@ -361,7 +373,7 @@ class DatabaseHealthChecker(HealthChecker):
 
         try:
             # Test database connection and basic operations
-            with sqlite3.connect(self.db_path, timeout=5) as conn:
+            with sqlite3.connect(self.db_path, timeout = 5) as conn:
                 cursor = conn.cursor()
 
                 # Test query
@@ -378,11 +390,11 @@ class DatabaseHealthChecker(HealthChecker):
                 metrics.append(
                     self._create_metric(
                         "database_size",
-                        db_size_mb,
-                        "MB",
-                        warning_threshold=1000,
-                        critical_threshold=5000,
-                    )
+                            db_size_mb,
+                            "MB",
+                            warning_threshold = 1000,
+                            critical_threshold = 5000,
+                            )
                 )
 
                 # Test write operation
@@ -390,21 +402,21 @@ class DatabaseHealthChecker(HealthChecker):
                     """
                     CREATE TABLE IF NOT EXISTS health_check_test (
                         id INTEGER PRIMARY KEY,
-                        timestamp TEXT
+                            timestamp TEXT
                     )
                 """
                 )
 
                 cursor.execute(
                     "INSERT INTO health_check_test (timestamp) VALUES (?)",
-                    (datetime.now().isoformat(),),
-                )
+                        (datetime.now().isoformat(),),
+                        )
 
                 # Clean up old test records
                 cursor.execute(
                     "DELETE FROM health_check_test WHERE timestamp < ?",
-                    ((datetime.now() - timedelta(hours=1)).isoformat(),),
-                )
+                        ((datetime.now() - timedelta(hours = 1)).isoformat(),),
+                        )
 
                 conn.commit()
 
@@ -418,39 +430,41 @@ class DatabaseHealthChecker(HealthChecker):
         metrics.append(
             self._create_metric(
                 "response_time",
-                response_time,
-                "ms",
-                warning_threshold=1000,
-                critical_threshold=5000,
-            )
+                    response_time,
+                    "ms",
+                    warning_threshold = 1000,
+                    critical_threshold = 5000,
+                    )
         )
 
         return ComponentHealth(
-            component_id=self.component_id,
-            component_type=self.component_type,
-            status=status,
-            metrics=metrics,
-            response_time_ms=response_time,
-            error_count=error_count,
-            success_count=1 if error_count == 0 else 0,
-        )
+            component_id = self.component_id,
+                component_type = self.component_type,
+                status = status,
+                metrics = metrics,
+                response_time_ms = response_time,
+                error_count = error_count,
+                success_count = 1 if error_count == 0 else 0,
+                )
 
 
 class ExternalAPIHealthChecker(HealthChecker):
     """Health checker for external APIs"""
 
+
     def __init__(
         self,
-        api_name: str,
-        health_check_url: str,
-        headers: Dict[str, str] = None,
-        timeout: int = 10,
-    ):
+            api_name: str,
+            health_check_url: str,
+            headers: Dict[str, str] = None,
+            timeout: int = 10,
+            ):
         super().__init__(f"api_{api_name}", ComponentType.EXTERNAL_API)
         self.api_name = api_name
         self.health_check_url = health_check_url
         self.headers = headers or {}
         self.timeout = timeout
+
 
     async def check_health(self) -> ComponentHealth:
         """Check external API health"""
@@ -461,7 +475,7 @@ class ExternalAPIHealthChecker(HealthChecker):
 
         try:
             response = requests.get(
-                self.health_check_url, headers=self.headers, timeout=self.timeout
+                self.health_check_url, headers = self.headers, timeout = self.timeout
             )
 
             response_time = (time.time() - start_time) * 1000
@@ -469,11 +483,11 @@ class ExternalAPIHealthChecker(HealthChecker):
             metrics.append(
                 self._create_metric(
                     "response_time",
-                    response_time,
-                    "ms",
-                    warning_threshold=2000,
-                    critical_threshold=10000,
-                )
+                        response_time,
+                        "ms",
+                        warning_threshold = 2000,
+                        critical_threshold = 10000,
+                        )
             )
 
             metrics.append(
@@ -504,22 +518,23 @@ class ExternalAPIHealthChecker(HealthChecker):
             response_time = (time.time() - start_time) * 1000
 
         return ComponentHealth(
-            component_id=self.component_id,
-            component_type=self.component_type,
-            status=status,
-            metrics=metrics,
-            response_time_ms=response_time,
-            error_count=error_count,
-            success_count=1 if error_count == 0 else 0,
-            metadata={"api_name": self.api_name, "url": self.health_check_url},
-        )
+            component_id = self.component_id,
+                component_type = self.component_type,
+                status = status,
+                metrics = metrics,
+                response_time_ms = response_time,
+                error_count = error_count,
+                success_count = 1 if error_count == 0 else 0,
+                metadata={"api_name": self.api_name, "url": self.health_check_url},
+                )
 
 
 class ComprehensiveHealthMonitor:
     """Main health monitoring system"""
 
+
     def __init__(
-        self, db_path: str = "data/health_monitor.db", check_interval: int = 30
+        self, db_path: str = "data / health_monitor.db", check_interval: int = 30
     ):
         self.db_path = db_path
         self.check_interval = check_interval
@@ -528,7 +543,7 @@ class ComprehensiveHealthMonitor:
         self.active_alerts: Dict[str, HealthAlert] = {}
         self.alert_handlers: List[Callable[[HealthAlert], None]] = []
         self.monitoring_active = False
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = ThreadPoolExecutor(max_workers = 10)
         self.lock = threading.RLock()
 
         # Initialize database
@@ -541,9 +556,10 @@ class ComprehensiveHealthMonitor:
             f"ComprehensiveHealthMonitor initialized with {len(self.health_checkers)} checkers"
         )
 
+
     def _init_database(self):
         """Initialize health monitoring database"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -553,14 +569,14 @@ class ComprehensiveHealthMonitor:
                 """
                 CREATE TABLE IF NOT EXISTS component_health (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    component_id TEXT NOT NULL,
-                    component_type TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    response_time_ms REAL,
-                    error_count INTEGER DEFAULT 0,
-                    success_count INTEGER DEFAULT 0,
-                    check_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    metadata TEXT
+                        component_id TEXT NOT NULL,
+                        component_type TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        response_time_ms REAL,
+                        error_count INTEGER DEFAULT 0,
+                        success_count INTEGER DEFAULT 0,
+                        check_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        metadata TEXT
                 )
             """
             )
@@ -570,13 +586,13 @@ class ComprehensiveHealthMonitor:
                 """
                 CREATE TABLE IF NOT EXISTS health_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    component_id TEXT NOT NULL,
-                    metric_name TEXT NOT NULL,
-                    metric_value REAL NOT NULL,
-                    metric_unit TEXT,
-                    threshold_warning REAL,
-                    threshold_critical REAL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        component_id TEXT NOT NULL,
+                        metric_name TEXT NOT NULL,
+                        metric_value REAL NOT NULL,
+                        metric_unit TEXT,
+                        threshold_warning REAL,
+                        threshold_critical REAL,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """
             )
@@ -586,15 +602,15 @@ class ComprehensiveHealthMonitor:
                 """
                 CREATE TABLE IF NOT EXISTS health_alerts (
                     alert_id TEXT PRIMARY KEY,
-                    component_id TEXT NOT NULL,
-                    severity TEXT NOT NULL,
-                    message TEXT NOT NULL,
-                    metric_name TEXT,
-                    metric_value REAL,
-                    threshold_value REAL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    resolved_at TIMESTAMP,
-                    acknowledged BOOLEAN DEFAULT FALSE
+                        component_id TEXT NOT NULL,
+                        severity TEXT NOT NULL,
+                        message TEXT NOT NULL,
+                        metric_name TEXT,
+                        metric_value REAL,
+                        threshold_value REAL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        resolved_at TIMESTAMP,
+                        acknowledged BOOLEAN DEFAULT FALSE
                 )
             """
             )
@@ -611,24 +627,26 @@ class ComprehensiveHealthMonitor:
 
             conn.commit()
 
+
     def _setup_default_checkers(self):
         """Setup default health checkers"""
         # System resources
         self.add_health_checker(SystemResourceHealthChecker())
 
         # Database
-        self.add_health_checker(DatabaseHealthChecker("data/model_generator.db"))
+        self.add_health_checker(DatabaseHealthChecker("data / model_generator.db"))
 
         # External APIs (if configured)
         if os.getenv("OPENAI_API_KEY"):
             self.add_health_checker(
                 ExternalAPIHealthChecker(
                     "openai",
-                    "https://api.openai.com/v1/models",
-                    headers={"Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}"},
-                    timeout=10,
-                )
+                        "https://api.openai.com / v1 / models",
+                        headers={"Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}"},
+                        timeout = 10,
+                        )
             )
+
 
     def add_health_checker(self, checker: HealthChecker):
         """Add a health checker"""
@@ -636,9 +654,11 @@ class ComprehensiveHealthMonitor:
             self.health_checkers.append(checker)
             logger.info(f"Added health checker for {checker.component_id}")
 
+
     def add_alert_handler(self, handler: Callable[[HealthAlert], None]):
         """Add an alert handler function"""
         self.alert_handlers.append(handler)
+
 
     def start_monitoring(self):
         """Start health monitoring"""
@@ -647,6 +667,7 @@ class ComprehensiveHealthMonitor:
             return
 
         self.monitoring_active = True
+
 
         def monitoring_loop():
             while self.monitoring_active:
@@ -657,13 +678,15 @@ class ComprehensiveHealthMonitor:
                     logger.error(f"Health monitoring error: {e}")
                     time.sleep(60)  # Wait longer on error
 
-        threading.Thread(target=monitoring_loop, daemon=True).start()
+        threading.Thread(target = monitoring_loop, daemon = True).start()
         logger.info("Health monitoring started")
+
 
     def stop_monitoring(self):
         """Stop health monitoring"""
         self.monitoring_active = False
         logger.info("Health monitoring stopped")
+
 
     async def _check_all_components(self):
         """Check health of all components"""
@@ -674,7 +697,7 @@ class ComprehensiveHealthMonitor:
             tasks.append(task)
 
         # Wait for all health checks to complete
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        results = await asyncio.gather(*tasks, return_exceptions = True)
 
         # Process results
         for i, result in enumerate(results):
@@ -685,6 +708,7 @@ class ComprehensiveHealthMonitor:
             elif isinstance(result, ComponentHealth):
                 await self._process_health_result(result)
 
+
     async def _check_component_health(self, checker: HealthChecker) -> ComponentHealth:
         """Check health of a single component"""
         try:
@@ -694,12 +718,13 @@ class ComprehensiveHealthMonitor:
             logger.error(f"Health check failed for {checker.component_id}: {e}")
             # Return a failed health status
             return ComponentHealth(
-                component_id=checker.component_id,
-                component_type=checker.component_type,
-                status=HealthStatus.CRITICAL,
-                error_count=1,
-                metadata={"error": str(e)},
-            )
+                component_id = checker.component_id,
+                    component_type = checker.component_type,
+                    status = HealthStatus.CRITICAL,
+                    error_count = 1,
+                    metadata={"error": str(e)},
+                    )
+
 
     async def _process_health_result(self, health: ComponentHealth):
         """Process health check result"""
@@ -719,6 +744,7 @@ class ComprehensiveHealthMonitor:
             for metric in health.metrics:
                 await self._check_metric_thresholds(health.component_id, metric)
 
+
     def _log_health_result(self, health: ComponentHealth):
         """Log health result to database"""
         try:
@@ -728,45 +754,46 @@ class ComprehensiveHealthMonitor:
                 # Log component health
                 cursor.execute(
                     """
-                    INSERT INTO component_health 
-                    (component_id, component_type, status, response_time_ms, 
-                     error_count, success_count, metadata)
+                    INSERT INTO component_health
+                    (component_id, component_type, status, response_time_ms,
+                        error_count, success_count, metadata)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         health.component_id,
-                        health.component_type.value,
-                        health.status.value,
-                        health.response_time_ms,
-                        health.error_count,
-                        health.success_count,
-                        json.dumps(health.metadata),
-                    ),
-                )
+                            health.component_type.value,
+                            health.status.value,
+                            health.response_time_ms,
+                            health.error_count,
+                            health.success_count,
+                            json.dumps(health.metadata),
+                            ),
+                        )
 
                 # Log metrics
                 for metric in health.metrics:
                     cursor.execute(
                         """
-                        INSERT INTO health_metrics 
+                        INSERT INTO health_metrics
                         (component_id, metric_name, metric_value, metric_unit,
-                         threshold_warning, threshold_critical)
+                            threshold_warning, threshold_critical)
                         VALUES (?, ?, ?, ?, ?, ?)
                     """,
                         (
                             health.component_id,
-                            metric.name,
-                            metric.value,
-                            metric.unit,
-                            metric.threshold_warning,
-                            metric.threshold_critical,
-                        ),
-                    )
+                                metric.name,
+                                metric.value,
+                                metric.unit,
+                                metric.threshold_warning,
+                                metric.threshold_critical,
+                                ),
+                            )
 
                 conn.commit()
 
         except Exception as e:
             logger.error(f"Failed to log health result: {e}")
+
 
     async def _handle_status_change(
         self, previous: ComponentHealth, current: ComponentHealth
@@ -780,18 +807,19 @@ class ComprehensiveHealthMonitor:
             severity = AlertSeverity.INFO
 
         alert = HealthAlert(
-            alert_id=f"{current.component_id}_status_{int(time.time())}",
-            component_id=current.component_id,
-            severity=severity,
-            message=f"Component {current.component_id} status changed from {previous.status.value} to {current.status.value}",
-            metadata={
+            alert_id = f"{current.component_id}_status_{int(time.time())}",
+                component_id = current.component_id,
+                severity = severity,
+                message = f"Component {current.component_id} status changed from {previous.status.value} to {current.status.value}",
+                metadata={
                 "previous_status": previous.status.value,
-                "current_status": current.status.value,
-                "component_type": current.component_type.value,
-            },
-        )
+                    "current_status": current.status.value,
+                    "component_type": current.component_type.value,
+                    },
+                )
 
         await self._trigger_alert(alert)
+
 
     async def _check_metric_thresholds(self, component_id: str, metric: HealthMetric):
         """Check if metric exceeds thresholds"""
@@ -807,16 +835,17 @@ class ComprehensiveHealthMonitor:
 
         if alert_severity:
             alert = HealthAlert(
-                alert_id=f"{component_id}_{metric.name}_{int(time.time())}",
-                component_id=component_id,
-                severity=alert_severity,
-                message=f"Metric {metric.name} exceeded {alert_severity.value} threshold: {metric.value} {metric.unit} >= {threshold_exceeded} {metric.unit}",
-                metric_name=metric.name,
-                metric_value=metric.value,
-                threshold=threshold_exceeded,
-            )
+                alert_id = f"{component_id}_{metric.name}_{int(time.time())}",
+                    component_id = component_id,
+                    severity = alert_severity,
+                    message = f"Metric {metric.name} exceeded {alert_severity.value} threshold: {metric.value} {metric.unit} >= {threshold_exceeded} {metric.unit}",
+                    metric_name = metric.name,
+                    metric_value = metric.value,
+                    threshold = threshold_exceeded,
+                    )
 
             await self._trigger_alert(alert)
+
 
     async def _trigger_alert(self, alert: HealthAlert):
         """Trigger a health alert"""
@@ -830,21 +859,21 @@ class ComprehensiveHealthMonitor:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO health_alerts 
-                    (alert_id, component_id, severity, message, metric_name, 
-                     metric_value, threshold_value)
+                    INSERT INTO health_alerts
+                    (alert_id, component_id, severity, message, metric_name,
+                        metric_value, threshold_value)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         alert.alert_id,
-                        alert.component_id,
-                        alert.severity.value,
-                        alert.message,
-                        alert.metric_name,
-                        alert.metric_value,
-                        alert.threshold,
-                    ),
-                )
+                            alert.component_id,
+                            alert.severity.value,
+                            alert.message,
+                            alert.metric_name,
+                            alert.metric_value,
+                            alert.threshold,
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             logger.error(f"Failed to log alert: {e}")
@@ -858,6 +887,7 @@ class ComprehensiveHealthMonitor:
 
         logger.warning(f"ALERT [{alert.severity.value.upper()}] {alert.message}")
 
+
     def get_system_health_summary(self) -> Dict[str, Any]:
         """Get comprehensive system health summary"""
         with self.lock:
@@ -867,17 +897,17 @@ class ComprehensiveHealthMonitor:
             for component_id, health in self.current_health.items():
                 component_statuses[component_id] = {
                     "status": health.status.value,
-                    "type": health.component_type.value,
-                    "response_time_ms": health.response_time_ms,
-                    "error_count": health.error_count,
-                    "success_count": health.success_count,
-                    "last_check": health.last_check.isoformat(),
-                    "metrics": [
+                        "type": health.component_type.value,
+                        "response_time_ms": health.response_time_ms,
+                        "error_count": health.error_count,
+                        "success_count": health.success_count,
+                        "last_check": health.last_check.isoformat(),
+                        "metrics": [
                         {
                             "name": m.name,
-                            "value": m.value,
-                            "unit": m.unit,
-                            "status": (
+                                "value": m.value,
+                                "unit": m.unit,
+                                "status": (
                                 "critical"
                                 if m.threshold_critical
                                 and m.value >= m.threshold_critical
@@ -888,10 +918,10 @@ class ComprehensiveHealthMonitor:
                                     else "normal"
                                 )
                             ),
-                        }
+                                }
                         for m in health.metrics
                     ],
-                }
+                        }
 
                 # Determine overall status
                 if health.status == HealthStatus.CRITICAL:
@@ -905,38 +935,39 @@ class ComprehensiveHealthMonitor:
             active_alerts = [
                 {
                     "alert_id": alert.alert_id,
-                    "component_id": alert.component_id,
-                    "severity": alert.severity.value,
-                    "message": alert.message,
-                    "created_at": alert.created_at.isoformat(),
-                    "acknowledged": alert.acknowledged,
-                }
+                        "component_id": alert.component_id,
+                        "severity": alert.severity.value,
+                        "message": alert.message,
+                        "created_at": alert.created_at.isoformat(),
+                        "acknowledged": alert.acknowledged,
+                        }
                 for alert in self.active_alerts.values()
                 if not alert.resolved_at
             ]
 
             return {
                 "overall_status": overall_status.value,
-                "monitoring_active": self.monitoring_active,
-                "total_components": len(self.current_health),
-                "healthy_components": sum(
+                    "monitoring_active": self.monitoring_active,
+                    "total_components": len(self.current_health),
+                    "healthy_components": sum(
                     1
                     for h in self.current_health.values()
                     if h.status == HealthStatus.HEALTHY
                 ),
-                "components": component_statuses,
-                "active_alerts": active_alerts,
-                "alert_counts": {
+                    "components": component_statuses,
+                    "active_alerts": active_alerts,
+                    "alert_counts": {
                     "critical": sum(
                         1 for a in active_alerts if a["severity"] == "critical"
                     ),
-                    "warning": sum(
+                        "warning": sum(
                         1 for a in active_alerts if a["severity"] == "warning"
                     ),
-                    "info": sum(1 for a in active_alerts if a["severity"] == "info"),
-                },
-                "last_update": datetime.now().isoformat(),
-            }
+                        "info": sum(1 for a in active_alerts if a["severity"] == "info"),
+                        },
+                    "last_update": datetime.now().isoformat(),
+                    }
+
 
     def acknowledge_alert(self, alert_id: str):
         """Acknowledge an alert"""
@@ -950,11 +981,12 @@ class ComprehensiveHealthMonitor:
                         cursor = conn.cursor()
                         cursor.execute(
                             "UPDATE health_alerts SET acknowledged = TRUE WHERE alert_id = ?",
-                            (alert_id,),
-                        )
+                                (alert_id,),
+                                )
                         conn.commit()
                 except Exception as e:
                     logger.error(f"Failed to acknowledge alert: {e}")
+
 
     def resolve_alert(self, alert_id: str):
         """Resolve an alert"""
@@ -968,19 +1000,19 @@ class ComprehensiveHealthMonitor:
                         cursor = conn.cursor()
                         cursor.execute(
                             "UPDATE health_alerts SET resolved_at = CURRENT_TIMESTAMP WHERE alert_id = ?",
-                            (alert_id,),
-                        )
+                                (alert_id,),
+                                )
                         conn.commit()
                 except Exception as e:
                     logger.error(f"Failed to resolve alert: {e}")
+
 
     def shutdown(self):
         """Shutdown health monitoring"""
         logger.info("Shutting down health monitoring...")
         self.stop_monitoring()
-        self.executor.shutdown(wait=True)
+        self.executor.shutdown(wait = True)
         logger.info("Health monitoring shutdown complete")
-
 
 # Global instance
 _global_monitor = None
@@ -989,12 +1021,13 @@ _global_monitor = None
 def get_health_monitor() -> ComprehensiveHealthMonitor:
     """Get global health monitor instance"""
     global _global_monitor
-    if _global_monitor is None:
+        if _global_monitor is None:
         _global_monitor = ComprehensiveHealthMonitor()
     return _global_monitor
 
-
 # Alert handler examples
+
+
 def console_alert_handler(alert: HealthAlert):
     """Simple console alert handler"""
     print(f"\n🚨 HEALTH ALERT [{alert.severity.value.upper()}] 🚨")
@@ -1005,14 +1038,15 @@ def console_alert_handler(alert: HealthAlert):
 
 
 def log_alert_handler(alert: HealthAlert):
-    """Log-based alert handler"""
+    """Log - based alert handler"""
     logger.warning(
         f"HEALTH_ALERT: [{alert.severity.value}] {alert.component_id}: {alert.message}"
     )
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         monitor = ComprehensiveHealthMonitor()
 
@@ -1028,7 +1062,7 @@ if __name__ == "__main__":
 
         # Get health summary
         summary = monitor.get_system_health_summary()
-        print(json.dumps(summary, indent=2))
+        print(json.dumps(summary, indent = 2))
 
         # Shutdown
         monitor.shutdown()

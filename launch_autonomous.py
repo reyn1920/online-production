@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Autonomous System Launcher
 
 The main entry point for the fully autonomous TRAE.AI system.
 This script is designed to be managed by launchd for bulletproof persistence
-and self-healing capabilities on macOS.
+and self - healing capabilities on macOS.
 
 Key Features:
 - Initializes all autonomous agents
@@ -12,7 +12,7 @@ Key Features:
 - Implements system health monitoring
 - Provides graceful shutdown handling
 - Integrates with the Total Access dashboard
-- Implements the closed-loop feedback system
+- Implements the closed - loop feedback system
 """
 
 import json
@@ -42,6 +42,7 @@ from backend.core.task_queue import TaskPriority, TaskQueue
 class AutonomousSystemLauncher:
     """Main launcher for the TRAE.AI autonomous system"""
 
+
     def __init__(self):
         self.setup_logging()
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -66,21 +67,22 @@ class AutonomousSystemLauncher:
 
         self.logger.info("TRAE.AI Autonomous System Launcher initialized")
 
+
     def setup_logging(self):
         """Setup comprehensive logging system"""
         # Create logs directory
         logs_dir = project_root / "logs"
-        logs_dir.mkdir(exist_ok=True)
+        logs_dir.mkdir(exist_ok = True)
 
         # Configure logging
         logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[
+            level = logging.INFO,
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                handlers=[
                 logging.FileHandler(logs_dir / "autonomous_system.log"),
-                logging.StreamHandler(sys.stdout),
-            ],
-        )
+                    logging.StreamHandler(sys.stdout),
+                    ],
+                )
 
         # Set specific log levels for components
         logging.getLogger("TaskQueue").setLevel(logging.INFO)
@@ -90,10 +92,12 @@ class AutonomousSystemLauncher:
         logging.getLogger("MarketingAgent").setLevel(logging.INFO)
         logging.getLogger("ContentAgent").setLevel(logging.INFO)
 
+
     def signal_handler(self, signum, frame):
         """Handle shutdown signals gracefully"""
         self.logger.info(f"Received signal {signum}, initiating graceful shutdown...")
         self.shutdown()
+
 
     def initialize_system(self):
         """Initialize all system components"""
@@ -130,6 +134,7 @@ class AutonomousSystemLauncher:
             self.logger.error(f"Failed to initialize system: {e}")
             return False
 
+
     def initialize_agents(self):
         """Initialize all autonomous agents"""
         try:
@@ -159,71 +164,72 @@ class AutonomousSystemLauncher:
             self.logger.error(f"Failed to initialize agents: {e}")
             raise
 
+
     def register_agents_with_queue(self):
         """Register all agents with the task queue"""
         try:
             # Register System Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type="SystemAgent",
-                agent_instance=self.agents["system"],
-                capabilities=["system_health", "diagnostics", "repair", "monitoring"],
-                max_concurrent_tasks=8,
-            )
+                    agent_instance = self.agents["system"],
+                    capabilities=["system_health", "diagnostics", "repair", "monitoring"],
+                    max_concurrent_tasks = 8,
+                    )
             self.agent_workers["system"] = worker_id
 
             # Register Planner Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type="PlannerAgent",
-                agent_instance=self.agents["planner"],
-                capabilities=[
+                    agent_instance = self.agents["planner"],
+                    capabilities=[
                     "strategy",
-                    "planning",
-                    "optimization",
-                    "feedback_processing",
-                ],
-                max_concurrent_tasks=4,
-            )
+                        "planning",
+                        "optimization",
+                        "feedback_processing",
+                        ],
+                    max_concurrent_tasks = 4,
+                    )
             self.agent_workers["planner"] = worker_id
 
             # Register Research Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type="ResearchAgent",
-                agent_instance=self.agents["research"],
-                capabilities=[
+                    agent_instance = self.agents["research"],
+                    capabilities=[
                     "trend_analysis",
-                    "api_discovery",
-                    "hypocrisy_detection",
-                    "market_intelligence",
-                ],
-                max_concurrent_tasks=12,
-            )
+                        "api_discovery",
+                        "hypocrisy_detection",
+                        "market_intelligence",
+                        ],
+                    max_concurrent_tasks = 12,
+                    )
             self.agent_workers["research"] = worker_id
 
             # Register Marketing Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type="MarketingAgent",
-                agent_instance=self.agents["marketing"],
-                capabilities=[
+                    agent_instance = self.agents["marketing"],
+                    capabilities=[
                     "campaign_management",
-                    "seo_optimization",
-                    "affiliate_monitoring",
-                    "content_promotion",
-                ],
-                max_concurrent_tasks=8,
-            )
+                        "seo_optimization",
+                        "affiliate_monitoring",
+                        "content_promotion",
+                        ],
+                    max_concurrent_tasks = 8,
+                    )
             self.agent_workers["marketing"] = worker_id
 
             # Register Content Agent - MAXED OUT
             worker_id = self.task_queue.register_agent(
                 agent_type="ContentAgent",
-                agent_instance=self.agents["content"],
-                capabilities=[
+                    agent_instance = self.agents["content"],
+                    capabilities=[
                     "video_creation",
-                    "voice_synthesis",
-                    "avatar_generation",
-                    "graphics_creation",
-                ],
-                max_concurrent_tasks=4,  # Resource-intensive tasks but maxed out
+                        "voice_synthesis",
+                        "avatar_generation",
+                        "graphics_creation",
+                        ],
+                    max_concurrent_tasks = 4,  # Resource - intensive tasks but maxed out
             )
             self.agent_workers["content"] = worker_id
 
@@ -235,53 +241,54 @@ class AutonomousSystemLauncher:
             self.logger.error(f"Failed to register agents with queue: {e}")
             raise
 
+
     def setup_initial_tasks(self):
         """Setup initial autonomous tasks"""
         try:
             # System health check task (recurring)
             self.task_queue.submit_task(
                 task_type="system_health_check",
-                agent_type="SystemAgent",
-                payload={"check_type": "full_system_scan"},
-                priority=TaskPriority.HIGH,
-                metadata={"recurring": True, "interval": 300},  # Every 5 minutes
+                    agent_type="SystemAgent",
+                    payload={"check_type": "full_system_scan"},
+                    priority = TaskPriority.HIGH,
+                    metadata={"recurring": True, "interval": 300},  # Every 5 minutes
             )
 
             # Initial strategy planning task
             self.task_queue.submit_task(
                 task_type="create_initial_strategy",
-                agent_type="PlannerAgent",
-                payload={"strategy_type": "bootstrap_autonomous_operation"},
-                priority=TaskPriority.URGENT,
-                metadata={"bootstrap": True},
-            )
+                    agent_type="PlannerAgent",
+                    payload={"strategy_type": "bootstrap_autonomous_operation"},
+                    priority = TaskPriority.URGENT,
+                    metadata={"bootstrap": True},
+                    )
 
             # Market research initialization
             self.task_queue.submit_task(
                 task_type="initialize_market_research",
-                agent_type="ResearchAgent",
-                payload={"research_scope": "ai_automation_trends"},
-                priority=TaskPriority.HIGH,
-                metadata={"initialization": True},
-            )
+                    agent_type="ResearchAgent",
+                    payload={"research_scope": "ai_automation_trends"},
+                    priority = TaskPriority.HIGH,
+                    metadata={"initialization": True},
+                    )
 
             # Marketing system initialization
             self.task_queue.submit_task(
                 task_type="initialize_marketing_system",
-                agent_type="MarketingAgent",
-                payload={"setup_type": "autonomous_marketing_layer"},
-                priority=TaskPriority.HIGH,
-                metadata={"initialization": True},
-            )
+                    agent_type="MarketingAgent",
+                    payload={"setup_type": "autonomous_marketing_layer"},
+                    priority = TaskPriority.HIGH,
+                    metadata={"initialization": True},
+                    )
 
             # Content pipeline initialization
             self.task_queue.submit_task(
                 task_type="initialize_content_pipeline",
-                agent_type="ContentAgent",
-                payload={"pipeline_type": "api_first_automation"},
-                priority=TaskPriority.MEDIUM,
-                metadata={"initialization": True},
-            )
+                    agent_type="ContentAgent",
+                    payload={"pipeline_type": "api_first_automation"},
+                    priority = TaskPriority.MEDIUM,
+                    metadata={"initialization": True},
+                    )
 
             self.logger.info("Initial autonomous tasks scheduled")
 
@@ -289,13 +296,15 @@ class AutonomousSystemLauncher:
             self.logger.error(f"Failed to setup initial tasks: {e}")
             raise
 
+
     def start_health_monitoring(self):
         """Start system health monitoring thread"""
         self.health_monitor_thread = threading.Thread(
-            target=self.health_monitor_loop, daemon=True
+            target = self.health_monitor_loop, daemon = True
         )
         self.health_monitor_thread.start()
         self.logger.info("Health monitoring started")
+
 
     def health_monitor_loop(self):
         """Main health monitoring loop"""
@@ -320,20 +329,21 @@ class AutonomousSystemLauncher:
                 self.logger.error(f"Health monitoring error: {e}")
                 self.shutdown_event.wait(60)
 
+
     def perform_health_check(self):
         """Perform comprehensive system health check"""
         try:
             # Check critical directories
             critical_paths = [
                 project_root / "data",
-                project_root / "backend",
-                project_root / "logs",
-            ]
+                    project_root / "backend",
+                    project_root / "logs",
+                    ]
 
             for path in critical_paths:
                 if not path.exists():
                     self.logger.error(f"Critical path missing: {path}")
-                    path.mkdir(parents=True, exist_ok=True)
+                    path.mkdir(parents = True, exist_ok = True)
                     self.logger.info(f"Recreated critical path: {path}")
 
             # Check database connectivity
@@ -350,6 +360,7 @@ class AutonomousSystemLauncher:
 
         except Exception as e:
             self.logger.error(f"Health check failed: {e}")
+
 
     def check_agent_health(self):
         """Check health of all agents"""
@@ -373,6 +384,7 @@ class AutonomousSystemLauncher:
 
         except Exception as e:
             self.logger.error(f"Agent health check failed: {e}")
+
 
     def check_task_queue_health(self):
         """Check task queue health"""
@@ -405,6 +417,7 @@ class AutonomousSystemLauncher:
         except Exception as e:
             self.logger.error(f"Task queue health check failed: {e}")
 
+
     def run(self):
         """Main run loop for the autonomous system"""
         try:
@@ -425,7 +438,7 @@ class AutonomousSystemLauncher:
                     # Check if we need to schedule recurring tasks
                     self.schedule_recurring_tasks()
 
-                    # Process any system-level events
+                    # Process any system - level events
                     self.process_system_events()
 
                     # Brief sleep to prevent busy waiting
@@ -446,6 +459,7 @@ class AutonomousSystemLauncher:
         finally:
             self.shutdown()
 
+
     def schedule_recurring_tasks(self):
         """Schedule recurring system tasks"""
         try:
@@ -455,37 +469,38 @@ class AutonomousSystemLauncher:
             if current_time.minute == 0:  # Top of the hour
                 self.task_queue.submit_task(
                     task_type="strategy_review",
-                    agent_type="PlannerAgent",
-                    payload={"review_type": "hourly_optimization"},
-                    priority=TaskPriority.MEDIUM,
-                    metadata={"recurring": True, "interval": 3600},
-                )
+                        agent_type="PlannerAgent",
+                        payload={"review_type": "hourly_optimization"},
+                        priority = TaskPriority.MEDIUM,
+                        metadata={"recurring": True, "interval": 3600},
+                        )
 
             # Schedule daily market research
             if current_time.hour == 6 and current_time.minute == 0:  # 6 AM daily
                 self.task_queue.submit_task(
                     task_type="daily_market_research",
-                    agent_type="ResearchAgent",
-                    payload={"research_type": "comprehensive_market_scan"},
-                    priority=TaskPriority.HIGH,
-                    metadata={"recurring": True, "interval": 86400},
-                )
+                        agent_type="ResearchAgent",
+                        payload={"research_type": "comprehensive_market_scan"},
+                        priority = TaskPriority.HIGH,
+                        metadata={"recurring": True, "interval": 86400},
+                        )
 
             # Schedule marketing optimization
             if current_time.hour == 9 and current_time.minute == 0:  # 9 AM daily
                 self.task_queue.submit_task(
                     task_type="marketing_optimization",
-                    agent_type="MarketingAgent",
-                    payload={"optimization_type": "daily_campaign_review"},
-                    priority=TaskPriority.MEDIUM,
-                    metadata={"recurring": True, "interval": 86400},
-                )
+                        agent_type="MarketingAgent",
+                        payload={"optimization_type": "daily_campaign_review"},
+                        priority = TaskPriority.MEDIUM,
+                        metadata={"recurring": True, "interval": 86400},
+                        )
 
         except Exception as e:
             self.logger.error(f"Failed to schedule recurring tasks: {e}")
 
+
     def process_system_events(self):
-        """Process system-level events and notifications"""
+        """Process system - level events and notifications"""
         try:
             # Check for critical system alerts
             if self.task_queue:
@@ -500,32 +515,34 @@ class AutonomousSystemLauncher:
                     # Submit diagnostic task
                     self.task_queue.submit_task(
                         task_type="system_diagnostics",
-                        agent_type="SystemAgent",
-                        payload={"diagnostic_type": "performance_degradation"},
-                        priority=TaskPriority.URGENT,
-                    )
+                            agent_type="SystemAgent",
+                            payload={"diagnostic_type": "performance_degradation"},
+                            priority = TaskPriority.URGENT,
+                            )
 
         except Exception as e:
             self.logger.error(f"Failed to process system events: {e}")
+
 
     def log_startup_metrics(self):
         """Log system startup metrics"""
         try:
             startup_info = {
                 "timestamp": datetime.now().isoformat(),
-                "agents_initialized": len(self.agents),
-                "workers_registered": len(self.agent_workers),
-                "system_mode": "autonomous",
-                "python_version": sys.version,
-                "working_directory": str(project_root),
-            }
+                    "agents_initialized": len(self.agents),
+                    "workers_registered": len(self.agent_workers),
+                    "system_mode": "autonomous",
+                    "python_version": sys.version,
+                    "working_directory": str(project_root),
+                    }
 
             self.logger.info(
-                f"System startup metrics: {json.dumps(startup_info, indent=2)}"
+                f"System startup metrics: {json.dumps(startup_info, indent = 2)}"
             )
 
         except Exception as e:
             self.logger.error(f"Failed to log startup metrics: {e}")
+
 
     def shutdown(self):
         """Graceful system shutdown"""
@@ -553,7 +570,7 @@ class AutonomousSystemLauncher:
 
             # Wait for health monitor to stop
             if self.health_monitor_thread and self.health_monitor_thread.is_alive():
-                self.health_monitor_thread.join(timeout=5)
+                self.health_monitor_thread.join(timeout = 5)
 
             self.logger.info("TRAE.AI Autonomous System shutdown complete")
 
@@ -573,7 +590,6 @@ def main():
         exit_code = 1
 
     sys.exit(exit_code)
-
 
 if __name__ == "__main__":
     main()

@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Master Integration System
 
 This module provides a unified integration layer that connects all discovered components
-of the online production system while following zero-cost and no-delete rules.
+of the online production system while following zero - cost and no - delete rules.
 
 Components Integrated:
-- Backend Architecture (agents, orchestrator, content-agent)
+- Backend Architecture (agents, orchestrator, content - agent)
 - Frontend Components (dashboard, chat, diagnostics)
 - Data Storage (SQLite databases, content management)
 - Task Queue Management
@@ -42,7 +42,7 @@ try:
     from app.dashboard_integration import DashboardIntegration
     from app.websocket_manager import WebSocketManager
     from backend.api_orchestrator import APIOrchestrator
-    from backend.content_agent import AutomatedStudio
+        from backend.content_agent import AutomatedStudio
     from backend.core.database import DatabaseManager, get_db_connection
     from backend.specialized_agents import ContentAgent, ResearchAgent, SystemAgent
     from backend.task_queue_manager import TaskPriority, TaskQueueManager, TaskType
@@ -52,14 +52,15 @@ except ImportError as e:
     logging.warning(f"Some components not available: {e}")
     # Continue with available components
 
-
 @dataclass
+
+
 class IntegrationConfig:
     """Configuration for the master integration system"""
 
     # Database configuration
-    master_db_path: str = "data/trae_master.db"
-    content_db_path: str = "data/content_management.db"
+    master_db_path: str = "data / trae_master.db"
+    content_db_path: str = "data / content_management.db"
 
     # Server configuration
     host: str = "0.0.0.0"
@@ -76,13 +77,13 @@ class IntegrationConfig:
 
     # Content generation settings
     content_output_dir: str = "outputs"
-    content_templates_dir: str = "content/templates"
+    content_templates_dir: str = "content / templates"
 
     # Monitoring settings
     log_level: str = "INFO"
     metrics_enabled: bool = True
 
-    # Zero-cost compliance
+    # Zero - cost compliance
     use_local_models: bool = True
     avoid_paid_apis: bool = True
 
@@ -91,6 +92,7 @@ class MasterIntegration:
     """
     Master integration system that orchestrates all components
     """
+
 
     def __init__(self, config: Optional[IntegrationConfig] = None):
         self.config = config or IntegrationConfig()
@@ -115,17 +117,19 @@ class MasterIntegration:
         self.is_initialized = False
         self.running_components: Dict[str, bool] = {}
 
+
     def _setup_logging(self) -> logging.Logger:
         """Setup logging configuration"""
         logging.basicConfig(
-            level=getattr(logging, self.config.log_level),
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[
-                logging.FileHandler("logs/master_integration.log"),
-                logging.StreamHandler(),
-            ],
-        )
+            level = getattr(logging, self.config.log_level),
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                handlers=[
+                logging.FileHandler("logs / master_integration.log"),
+                    logging.StreamHandler(),
+                    ],
+                )
         return logging.getLogger(__name__)
+
 
     async def initialize(self) -> bool:
         """
@@ -152,7 +156,7 @@ class MasterIntegration:
                 await self._initialize_content_system()
 
             # Initialize API orchestrator
-            await self._initialize_api_orchestrator()
+                await self._initialize_api_orchestrator()
 
             # Initialize authentication
             if self.config.enable_auth:
@@ -178,26 +182,28 @@ class MasterIntegration:
             self.logger.error(f"Initialization failed: {e}")
             return False
 
+
     def _ensure_directories(self):
         """Ensure all required directories exist"""
         directories = [
             "data",
-            "logs",
-            "outputs",
-            "outputs/audio",
-            "outputs/videos",
-            "outputs/pdfs",
-            "content",
-            "content/templates",
-            "content/scripts",
-            "content/images",
-            "static",
-            "app/templates",
-            "monitoring",
-        ]
+                "logs",
+                "outputs",
+                "outputs / audio",
+                "outputs / videos",
+                "outputs / pdfs",
+                "content",
+                "content / templates",
+                "content / scripts",
+                "content / images",
+                "static",
+                "app / templates",
+                "monitoring",
+                ]
 
         for directory in directories:
-            Path(directory).mkdir(parents=True, exist_ok=True)
+            Path(directory).mkdir(parents = True, exist_ok = True)
+
 
     async def _initialize_database(self):
         """Initialize database management"""
@@ -209,6 +215,7 @@ class MasterIntegration:
             self.logger.error(f"Database initialization failed: {e}")
             raise
 
+
     async def _initialize_task_queue(self):
         """Initialize task queue management"""
         try:
@@ -218,6 +225,7 @@ class MasterIntegration:
         except Exception as e:
             self.logger.error(f"Task queue initialization failed: {e}")
             raise
+
 
     async def _initialize_agents(self):
         """Initialize specialized agents"""
@@ -237,6 +245,7 @@ class MasterIntegration:
             self.logger.error(f"Agents initialization failed: {e}")
             # Continue without agents if they fail
 
+
     async def _initialize_content_system(self):
         """Initialize content generation system"""
         try:
@@ -246,6 +255,7 @@ class MasterIntegration:
         except Exception as e:
             self.logger.error(f"Content system initialization failed: {e}")
             # Continue without content generation if it fails
+
 
     async def _initialize_api_orchestrator(self):
         """Initialize API orchestration"""
@@ -257,6 +267,7 @@ class MasterIntegration:
             self.logger.error(f"API orchestrator initialization failed: {e}")
             # Continue without API orchestrator if it fails
 
+
     async def _initialize_auth(self):
         """Initialize authentication system"""
         try:
@@ -266,6 +277,7 @@ class MasterIntegration:
         except Exception as e:
             self.logger.error(f"Authentication initialization failed: {e}")
             # Continue without auth if it fails
+
 
     async def _initialize_monitoring(self):
         """Initialize monitoring systems"""
@@ -278,6 +290,7 @@ class MasterIntegration:
             self.logger.error(f"Monitoring initialization failed: {e}")
             # Continue without monitoring if it fails
 
+
     async def _initialize_web_components(self):
         """Initialize web dashboard and bridge"""
         try:
@@ -289,6 +302,7 @@ class MasterIntegration:
             self.logger.error(f"Web components initialization failed: {e}")
             # Continue without web components if they fail
 
+
     async def _initialize_websockets(self):
         """Initialize WebSocket management"""
         try:
@@ -298,6 +312,7 @@ class MasterIntegration:
         except Exception as e:
             self.logger.error(f"WebSocket initialization failed: {e}")
             # Continue without WebSockets if they fail
+
 
     async def start_services(self):
         """Start all integrated services"""
@@ -323,6 +338,7 @@ class MasterIntegration:
 
         self.logger.info("All services started successfully")
 
+
     async def create_content_pipeline_task(
         self, content_type: str, parameters: Dict[str, Any]
     ) -> str:
@@ -331,33 +347,34 @@ class MasterIntegration:
             raise RuntimeError("Task queue not initialized")
 
         task_id = await self.task_queue.add_task(
-            task_type=TaskType.CONTENT,
-            payload={
+            task_type = TaskType.CONTENT,
+                payload={
                 "content_type": content_type,
-                "parameters": parameters,
-                "output_dir": self.config.content_output_dir,
-            },
-            priority=TaskPriority.MEDIUM,
-        )
+                    "parameters": parameters,
+                    "output_dir": self.config.content_output_dir,
+                    },
+                priority = TaskPriority.MEDIUM,
+                )
 
         self.logger.info(f"Created content pipeline task: {task_id}")
         return task_id
+
 
     async def get_system_status(self) -> Dict[str, Any]:
         """Get comprehensive system status"""
         status = {
             "initialized": self.is_initialized,
-            "components": self.running_components.copy(),
-            "timestamp": datetime.now().isoformat(),
-        }
+                "components": self.running_components.copy(),
+                "timestamp": datetime.now().isoformat(),
+                }
 
-        # Add component-specific status
+        # Add component - specific status
         if self.task_queue:
             try:
                 # Get task queue metrics if available
                 status["task_queue_stats"] = {
                     "pending_tasks": len(await self.task_queue.get_pending_tasks()),
-                    "total_tasks": "N/A",  # Would need additional method
+                        "total_tasks": "N / A",  # Would need additional method
                 }
             except Exception as e:
                 status["task_queue_stats"] = {"error": str(e)}
@@ -375,6 +392,7 @@ class MasterIntegration:
                 status["database_stats"] = {"error": str(e)}
 
         return status
+
 
     async def shutdown(self):
         """Gracefully shutdown all components"""
@@ -403,7 +421,6 @@ class MasterIntegration:
                 self.logger.error(f"Task queue shutdown error: {e}")
 
         self.logger.info("Graceful shutdown completed")
-
 
 # Global integration instance
 _master_integration: Optional[MasterIntegration] = None
@@ -437,10 +454,10 @@ async def main():
         # Print system status
         status = await integration.get_system_status()
         print("System Status:")
-        print(json.dumps(status, indent=2))
+        print(json.dumps(status, indent = 2))
 
         print("\nMaster integration system is running...")
-        print("Press Ctrl+C to shutdown")
+        print("Press Ctrl + C to shutdown")
 
         # Keep the system running
         try:
@@ -456,7 +473,6 @@ async def main():
         await integration.shutdown()
 
     return 0
-
 
 if __name__ == "__main__":
     exit_code = asyncio.run(main())

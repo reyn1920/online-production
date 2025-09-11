@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Check Channels Integration Status
 Verifies that all channels are properly integrated and accessible through the dashboard API
@@ -15,7 +15,7 @@ def check_dashboard_api():
     """Check channels through dashboard API"""
     try:
         print("🔍 Checking dashboard API...")
-        response = requests.get("http://localhost:8000/dashboard/api/system-info")
+        response = requests.get("http://localhost:8000 / dashboard / api / system - info")
         print(f"Status: {response.status_code}")
 
         if response.status_code == 200:
@@ -26,8 +26,8 @@ def check_dashboard_api():
             if channels:
                 print("Channel details from API:")
                 for name, info in channels.items():
-                    display_name = info.get("display_name", "N/A")
-                    category = info.get("category", "N/A")
+                    display_name = info.get("display_name", "N / A")
+                    category = info.get("category", "N / A")
                     print(f"  - {name}: {display_name} ({category})")
             else:
                 print("  No channels found in API response")
@@ -98,7 +98,6 @@ def main():
     else:
         print("\n⚠️  Channel integration may be incomplete")
         return False
-
 
 if __name__ == "__main__":
     success = main()

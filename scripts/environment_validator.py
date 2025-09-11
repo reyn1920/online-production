@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Conservative Research System - Environment Validator
 
@@ -26,12 +26,12 @@ from typing import Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
         logging.FileHandler("environment_validation.log"),
-        logging.StreamHandler(),
-    ],
+            logging.StreamHandler(),
+            ],
 )
 logger = logging.getLogger(__name__)
 
@@ -44,8 +44,9 @@ class ValidationStatus(Enum):
     WARNING = "warning"
     SKIPPED = "skipped"
 
-
 @dataclass
+
+
 class ValidationResult:
     """Validation result data structure"""
 
@@ -59,6 +60,7 @@ class ValidationResult:
 class EnvironmentValidator:
     """Comprehensive environment validation system"""
 
+
     def __init__(self, project_root: str = None):
         self.project_root = Path(project_root or os.getcwd())
         self.results: List[ValidationResult] = []
@@ -66,6 +68,7 @@ class EnvironmentValidator:
         self.required_npm_version = "8.0.0"
 
         logger.info(f"🔍 Initializing environment validator for: {self.project_root}")
+
 
     def validate_all(self) -> Dict[str, any]:
         """Run all validation checks"""
@@ -94,49 +97,51 @@ class EnvironmentValidator:
         # Generate summary report
         return self._generate_validation_report()
 
+
     def _validate_python_environment(self):
         """Validate Python environment"""
         try:
             python_version = sys.version_info
             version_str = f"{
                 python_version.major}.{
-                python_version.minor}.{
-                python_version.micro}"
+                    python_version.minor}.{
+                    python_version.micro}"
 
             if python_version.major >= 3 and python_version.minor >= 8:
                 self.results.append(
                     ValidationResult(
                         name="Python Environment",
-                        status=ValidationStatus.PASSED,
-                        message=f"Python {version_str} is compatible",
-                        details={"version": version_str, "executable": sys.executable},
-                    )
+                            status = ValidationStatus.PASSED,
+                            message = f"Python {version_str} is compatible",
+                            details={"version": version_str, "executable": sys.executable},
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Python Environment",
-                        status=ValidationStatus.FAILED,
-                        message=f"Python {version_str} is too old. Requires Python 3.8+",
-                        fix_command="Install Python 3.8 or higher",
-                    )
+                            status = ValidationStatus.FAILED,
+                            message = f"Python {version_str} is too old. Requires Python 3.8+",
+                            fix_command="Install Python 3.8 or higher",
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Python Environment",
-                    status=ValidationStatus.FAILED,
-                    message=f"Python validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Python validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_nodejs_environment(self):
         """Validate Node.js installation"""
         try:
             # Check if Node.js is installed
             result = subprocess.run(
-                ["node", "--version"], capture_output=True, text=True, timeout=10
+                ["node", "--version"], capture_output = True, text = True, timeout = 10
             )
 
             if result.returncode == 0:
@@ -148,54 +153,55 @@ class EnvironmentValidator:
                     self.results.append(
                         ValidationResult(
                             name="Node.js Environment",
-                            status=ValidationStatus.PASSED,
-                            message=f"Node.js v{version} is compatible",
-                            details={"version": version, "path": shutil.which("node")},
-                        )
+                                status = ValidationStatus.PASSED,
+                                message = f"Node.js v{version} is compatible",
+                                details={"version": version, "path": shutil.which("node")},
+                                )
                     )
                 else:
                     self.results.append(
                         ValidationResult(
                             name="Node.js Environment",
-                            status=ValidationStatus.FAILED,
-                            message=f"Node.js v{version} is too old. Requires v{
+                                status = ValidationStatus.FAILED,
+                                message = f"Node.js v{version} is too old. Requires v{
                                 self.required_node_version}+",
-                            fix_command="Install Node.js v18+ from https://nodejs.org",
-                        )
+                                    fix_command="Install Node.js v18+ from https://nodejs.org",
+                                )
                     )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Node.js Environment",
-                        status=ValidationStatus.FAILED,
-                        message="Node.js is not installed or not in PATH",
-                        fix_command="Install Node.js from https://nodejs.org",
-                    )
+                            status = ValidationStatus.FAILED,
+                            message="Node.js is not installed or not in PATH",
+                            fix_command="Install Node.js from https://nodejs.org",
+                            )
                 )
 
         except subprocess.TimeoutExpired:
             self.results.append(
                 ValidationResult(
                     name="Node.js Environment",
-                    status=ValidationStatus.FAILED,
-                    message="Node.js command timed out",
-                )
+                        status = ValidationStatus.FAILED,
+                        message="Node.js command timed out",
+                        )
             )
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Node.js Environment",
-                    status=ValidationStatus.FAILED,
-                    message=f"Node.js validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Node.js validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_npm_environment(self):
         """Validate npm installation"""
         try:
             # Check npm version
             result = subprocess.run(
-                ["npm", "--version"], capture_output=True, text=True, timeout=10
+                ["npm", "--version"], capture_output = True, text = True, timeout = 10
             )
 
             if result.returncode == 0:
@@ -207,58 +213,59 @@ class EnvironmentValidator:
                     # Check npm configuration
                     config_result = subprocess.run(
                         ["npm", "config", "list"],
-                        capture_output=True,
-                        text=True,
-                        timeout=10,
-                    )
+                            capture_output = True,
+                            text = True,
+                            timeout = 10,
+                            )
 
                     self.results.append(
                         ValidationResult(
                             name="npm Environment",
-                            status=ValidationStatus.PASSED,
-                            message=f"npm v{version} is compatible",
-                            details={
+                                status = ValidationStatus.PASSED,
+                                message = f"npm v{version} is compatible",
+                                details={
                                 "version": version,
-                                "path": shutil.which("npm"),
-                                "config_valid": config_result.returncode == 0,
-                            },
-                        )
+                                    "path": shutil.which("npm"),
+                                    "config_valid": config_result.returncode == 0,
+                                    },
+                                )
                     )
                 else:
                     self.results.append(
                         ValidationResult(
                             name="npm Environment",
-                            status=ValidationStatus.FAILED,
-                            message=f"npm v{version} is too old. Requires v{
+                                status = ValidationStatus.FAILED,
+                                message = f"npm v{version} is too old. Requires v{
                                 self.required_npm_version}+",
-                            fix_command="Update npm: npm install -g npm@latest",
-                        )
+                                    fix_command="Update npm: npm install -g npm@latest",
+                                )
                     )
             else:
                 self.results.append(
                     ValidationResult(
                         name="npm Environment",
-                        status=ValidationStatus.FAILED,
-                        message="npm is not installed or not in PATH",
-                        fix_command="Install Node.js (includes npm) from https://nodejs.org",
-                    )
+                            status = ValidationStatus.FAILED,
+                            message="npm is not installed or not in PATH",
+                            fix_command="Install Node.js (includes npm) from https://nodejs.org",
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="npm Environment",
-                    status=ValidationStatus.FAILED,
-                    message=f"npm validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"npm validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_netlify_cli(self):
         """Validate Netlify CLI installation"""
         try:
             # Check if Netlify CLI is installed
             result = subprocess.run(
-                ["netlify", "--version"], capture_output=True, text=True, timeout=10
+                ["netlify", "--version"], capture_output = True, text = True, timeout = 10
             )
 
             if result.returncode == 0:
@@ -266,46 +273,47 @@ class EnvironmentValidator:
 
                 # Check authentication status
                 auth_result = subprocess.run(
-                    ["netlify", "status"], capture_output=True, text=True, timeout=10
+                    ["netlify", "status"], capture_output = True, text = True, timeout = 10
                 )
 
                 if "Not logged in" in auth_result.stdout or auth_result.returncode != 0:
                     self.results.append(
                         ValidationResult(
                             name="Netlify CLI",
-                            status=ValidationStatus.WARNING,
-                            message=f"Netlify CLI {version} installed but not authenticated",
-                            details={"version": version, "authenticated": False},
-                            fix_command="Run: netlify login",
-                        )
+                                status = ValidationStatus.WARNING,
+                                message = f"Netlify CLI {version} installed but not authenticated",
+                                details={"version": version, "authenticated": False},
+                                fix_command="Run: netlify login",
+                                )
                     )
                 else:
                     self.results.append(
                         ValidationResult(
                             name="Netlify CLI",
-                            status=ValidationStatus.PASSED,
-                            message=f"Netlify CLI {version} installed and authenticated",
-                            details={"version": version, "authenticated": True},
-                        )
+                                status = ValidationStatus.PASSED,
+                                message = f"Netlify CLI {version} installed and authenticated",
+                                details={"version": version, "authenticated": True},
+                                )
                     )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Netlify CLI",
-                        status=ValidationStatus.FAILED,
-                        message="Netlify CLI is not installed",
-                        fix_command="Install: npm install -g netlify-cli",
-                    )
+                            status = ValidationStatus.FAILED,
+                            message="Netlify CLI is not installed",
+                            fix_command="Install: npm install -g netlify - cli",
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Netlify CLI",
-                    status=ValidationStatus.FAILED,
-                    message=f"Netlify CLI validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Netlify CLI validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_project_structure(self):
         """Validate project directory structure"""
@@ -326,33 +334,34 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Project Structure",
-                        status=ValidationStatus.PASSED,
-                        message="All required project files and directories exist",
-                        details={"existing_files": existing_files},
-                    )
+                            status = ValidationStatus.PASSED,
+                            message="All required project files and directories exist",
+                            details={"existing_files": existing_files},
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Project Structure",
-                        status=ValidationStatus.WARNING,
-                        message=f"Missing project files: {
+                            status = ValidationStatus.WARNING,
+                            message = f"Missing project files: {
                             ', '.join(missing_files)}",
-                        details={
+                                details={
                             "missing_files": missing_files,
-                            "existing_files": existing_files,
-                        },
-                    )
+                                "existing_files": existing_files,
+                                },
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Project Structure",
-                    status=ValidationStatus.FAILED,
-                    message=f"Project structure validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Project structure validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_package_json(self):
         """Validate package.json configuration"""
@@ -363,10 +372,10 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="package.json",
-                        status=ValidationStatus.FAILED,
-                        message="package.json not found",
-                        fix_command="Run: npm init -y",
-                    )
+                            status = ValidationStatus.FAILED,
+                            message="package.json not found",
+                            fix_command="Run: npm init -y",
+                            )
                 )
                 return
 
@@ -386,14 +395,14 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="package.json",
-                        status=ValidationStatus.PASSED,
-                        message="package.json is properly configured",
-                        details={
+                            status = ValidationStatus.PASSED,
+                            message="package.json is properly configured",
+                            details={
                             "name": package_data.get("name"),
-                            "version": package_data.get("version"),
-                            "has_build_script": has_build_script,
-                        },
-                    )
+                                "version": package_data.get("version"),
+                                "has_build_script": has_build_script,
+                                },
+                            )
                 )
             else:
                 issues = []
@@ -405,28 +414,29 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="package.json",
-                        status=ValidationStatus.WARNING,
-                        message=f"package.json issues: {'; '.join(issues)}",
-                        details={"issues": issues},
-                    )
+                            status = ValidationStatus.WARNING,
+                            message = f"package.json issues: {'; '.join(issues)}",
+                            details={"issues": issues},
+                            )
                 )
 
         except json.JSONDecodeError as e:
             self.results.append(
                 ValidationResult(
                     name="package.json",
-                    status=ValidationStatus.FAILED,
-                    message=f"package.json is not valid JSON: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"package.json is not valid JSON: {str(e)}",
+                        )
             )
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="package.json",
-                    status=ValidationStatus.FAILED,
-                    message=f"package.json validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"package.json validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_environment_files(self):
         """Validate environment configuration files"""
@@ -444,30 +454,31 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Environment Files",
-                        status=ValidationStatus.PASSED,
-                        message="Environment configuration files found",
-                        details={"found_files": found_files},
-                    )
+                            status = ValidationStatus.PASSED,
+                            message="Environment configuration files found",
+                            details={"found_files": found_files},
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Environment Files",
-                        status=ValidationStatus.WARNING,
-                        message="No .env.example template found",
-                        details={"found_files": found_files},
-                        fix_command="Create .env.example with required environment variables",
-                    )
+                            status = ValidationStatus.WARNING,
+                            message="No .env.example template found",
+                            details={"found_files": found_files},
+                            fix_command="Create .env.example with required environment variables",
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Environment Files",
-                    status=ValidationStatus.FAILED,
-                    message=f"Environment files validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Environment files validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_file_permissions(self):
         """Validate file permissions for security"""
@@ -490,29 +501,30 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="File Permissions",
-                        status=ValidationStatus.PASSED,
-                        message="Sensitive files have secure permissions",
-                    )
+                            status = ValidationStatus.PASSED,
+                            message="Sensitive files have secure permissions",
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="File Permissions",
-                        status=ValidationStatus.WARNING,
-                        message=f"Insecure file permissions: {
+                            status = ValidationStatus.WARNING,
+                            message = f"Insecure file permissions: {
                             ', '.join(permission_issues)}",
-                        fix_command="Run: chmod 600 .env*",
-                    )
+                                fix_command="Run: chmod 600 .env*",
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="File Permissions",
-                    status=ValidationStatus.FAILED,
-                    message=f"File permissions validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"File permissions validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_git_configuration(self):
         """Validate Git configuration"""
@@ -524,10 +536,10 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Git Configuration",
-                        status=ValidationStatus.WARNING,
-                        message="No .gitignore file found",
-                        fix_command="Create .gitignore file",
-                    )
+                            status = ValidationStatus.WARNING,
+                            message="No .gitignore file found",
+                            fix_command="Create .gitignore file",
+                            )
                 )
                 return
 
@@ -546,29 +558,30 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Git Configuration",
-                        status=ValidationStatus.PASSED,
-                        message="Git configuration is secure",
-                    )
+                            status = ValidationStatus.PASSED,
+                            message="Git configuration is secure",
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Git Configuration",
-                        status=ValidationStatus.WARNING,
-                        message=f"Missing .gitignore patterns: {
+                            status = ValidationStatus.WARNING,
+                            message = f"Missing .gitignore patterns: {
                             ', '.join(missing_patterns)}",
-                        details={"missing_patterns": missing_patterns},
-                    )
+                                details={"missing_patterns": missing_patterns},
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Git Configuration",
-                    status=ValidationStatus.FAILED,
-                    message=f"Git configuration validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Git configuration validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_environment_variables(self):
         """Validate required environment variables"""
@@ -595,36 +608,37 @@ class EnvironmentValidator:
                     "Environment variables configured"
                     if not missing_vars
                     else f"Some environment variables missing: {
-                    ', '.join(missing_vars)}"
+                        ', '.join(missing_vars)}"
                 )
 
                 self.results.append(
                     ValidationResult(
                         name="Environment Variables",
-                        status=status,
-                        message=message,
-                        details={"present": present_vars, "missing": missing_vars},
-                    )
+                            status = status,
+                            message = message,
+                            details={"present": present_vars, "missing": missing_vars},
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Environment Variables",
-                        status=ValidationStatus.FAILED,
-                        message=f"Critical environment variables missing: {
+                            status = ValidationStatus.FAILED,
+                            message = f"Critical environment variables missing: {
                             ', '.join(missing_vars)}",
-                        details={"missing": missing_vars},
-                    )
+                                details={"missing": missing_vars},
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Environment Variables",
-                    status=ValidationStatus.FAILED,
-                    message=f"Environment variables validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Environment variables validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_dependencies(self):
         """Validate project dependencies"""
@@ -635,9 +649,9 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Dependencies",
-                        status=ValidationStatus.SKIPPED,
-                        message="No package.json found, skipping dependency validation",
-                    )
+                            status = ValidationStatus.SKIPPED,
+                            message="No package.json found, skipping dependency validation",
+                            )
                 )
                 return
 
@@ -648,44 +662,45 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Dependencies",
-                        status=ValidationStatus.FAILED,
-                        message="Dependencies not installed",
-                        fix_command="Run: npm install",
-                    )
+                            status = ValidationStatus.FAILED,
+                            message="Dependencies not installed",
+                            fix_command="Run: npm install",
+                            )
                 )
                 return
 
-            # Check for package-lock.json (security)
-            package_lock_path = self.project_root / "package-lock.json"
+            # Check for package - lock.json (security)
+            package_lock_path = self.project_root / "package - lock.json"
 
             if package_lock_path.exists():
                 self.results.append(
                     ValidationResult(
                         name="Dependencies",
-                        status=ValidationStatus.PASSED,
-                        message="Dependencies installed with lock file",
-                        details={"has_lock_file": True},
-                    )
+                            status = ValidationStatus.PASSED,
+                            message="Dependencies installed with lock file",
+                            details={"has_lock_file": True},
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Dependencies",
-                        status=ValidationStatus.WARNING,
-                        message="Dependencies installed but no lock file found",
-                        details={"has_lock_file": False},
-                        fix_command="Run: npm install to generate package-lock.json",
-                    )
+                            status = ValidationStatus.WARNING,
+                            message="Dependencies installed but no lock file found",
+                            details={"has_lock_file": False},
+                            fix_command="Run: npm install to generate package - lock.json",
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Dependencies",
-                    status=ValidationStatus.FAILED,
-                    message=f"Dependencies validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Dependencies validation failed: {str(e)}",
+                        )
             )
+
 
     def _validate_build_tools(self):
         """Validate build tools and configuration"""
@@ -693,10 +708,10 @@ class EnvironmentValidator:
             # Check for common build tool configurations
             build_configs = [
                 "vite.config.js",
-                "vite.config.ts",
-                "webpack.config.js",
-                "rollup.config.js",
-            ]
+                    "vite.config.ts",
+                    "webpack.config.js",
+                    "rollup.config.js",
+                    ]
 
             found_configs = []
             for config in build_configs:
@@ -708,29 +723,30 @@ class EnvironmentValidator:
                 self.results.append(
                     ValidationResult(
                         name="Build Tools",
-                        status=ValidationStatus.PASSED,
-                        message=f"Build configuration found: {', '.join(found_configs)}",
-                        details={"configs": found_configs},
-                    )
+                            status = ValidationStatus.PASSED,
+                            message = f"Build configuration found: {', '.join(found_configs)}",
+                            details={"configs": found_configs},
+                            )
                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Build Tools",
-                        status=ValidationStatus.WARNING,
-                        message="No build tool configuration found",
-                        details={"configs": []},
-                    )
+                            status = ValidationStatus.WARNING,
+                            message="No build tool configuration found",
+                            details={"configs": []},
+                            )
                 )
 
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Build Tools",
-                    status=ValidationStatus.FAILED,
-                    message=f"Build tools validation failed: {str(e)}",
-                )
+                        status = ValidationStatus.FAILED,
+                        message = f"Build tools validation failed: {str(e)}",
+                        )
             )
+
 
     def _generate_validation_report(self) -> Dict[str, any]:
         """Generate comprehensive validation report"""
@@ -752,32 +768,33 @@ class EnvironmentValidator:
 
         report = {
             "overall_status": overall_status,
-            "success_rate": round(success_rate, 2),
-            "summary": {
+                "success_rate": round(success_rate, 2),
+                "summary": {
                 "total_checks": total,
-                "passed": passed,
-                "failed": failed,
-                "warnings": warnings,
-                "skipped": skipped,
-            },
-            "results": [
+                    "passed": passed,
+                    "failed": failed,
+                    "warnings": warnings,
+                    "skipped": skipped,
+                    },
+                "results": [
                 {
                     "name": r.name,
-                    "status": r.status.value,
-                    "message": r.message,
-                    "details": r.details,
-                    "fix_command": r.fix_command,
-                }
+                        "status": r.status.value,
+                        "message": r.message,
+                        "details": r.details,
+                        "fix_command": r.fix_command,
+                        }
                 for r in self.results
             ],
-            "recommendations": self._generate_recommendations(),
-        }
+                "recommendations": self._generate_recommendations(),
+                }
 
         logger.info(
             f"✅ Environment validation completed: {overall_status} ({
                 success_rate:.1f}% success rate)"
         )
         return report
+
 
     def _generate_recommendations(self) -> List[str]:
         """Generate recommendations based on validation results"""
@@ -811,6 +828,7 @@ class EnvironmentValidator:
 
         return recommendations
 
+
     def fix_issues(self, auto_fix: bool = False) -> Dict[str, any]:
         """Attempt to automatically fix common issues"""
         logger.info("🔧 Attempting to fix environment issues...")
@@ -822,19 +840,19 @@ class EnvironmentValidator:
             if (
                 result.status in [ValidationStatus.FAILED, ValidationStatus.WARNING]
                 and result.fix_command
-            ):
+                    ):
                 try:
                     if auto_fix:
                         logger.info(f"Fixing: {result.name}")
                         # This would implement actual fixes
                         # For now, just log the command
-                        logger.info(f"Would run: {result.fix_command}")
+                            logger.info(f"Would run: {result.fix_command}")
                         fixed_issues.append(result.name)
                     else:
                         logger.info(
                             f"Fix available for {
                                 result.name}: {
-                                result.fix_command}"
+                                    result.fix_command}"
                         )
 
                 except Exception as e:
@@ -843,13 +861,12 @@ class EnvironmentValidator:
 
         return {
             "auto_fix_enabled": auto_fix,
-            "fixed_issues": fixed_issues,
-            "failed_fixes": failed_fixes,
-            "manual_fixes_required": len(
+                "fixed_issues": fixed_issues,
+                "failed_fixes": failed_fixes,
+                "manual_fixes_required": len(
                 [r for r in self.results if r.fix_command and not auto_fix]
             ),
-        }
-
+                }
 
 # CLI Interface
 if __name__ == "__main__":
@@ -858,11 +875,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Conservative Research System - Environment Validator"
     )
-    parser.add_argument("--project-root", default=".", help="Project root directory")
+    parser.add_argument("--project - root", default=".", help="Project root directory")
     parser.add_argument(
         "--output", choices=["json", "text"], default="text", help="Output format"
     )
-    parser.add_argument("--fix", action="store_true", help="Attempt to auto-fix issues")
+    parser.add_argument("--fix", action="store_true", help="Attempt to auto - fix issues")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
     args = parser.parse_args()
@@ -874,11 +891,11 @@ if __name__ == "__main__":
     report = validator.validate_all()
 
     if args.fix:
-        fix_report = validator.fix_issues(auto_fix=True)
+        fix_report = validator.fix_issues(auto_fix = True)
         report["fix_report"] = fix_report
 
     if args.output == "json":
-        print(json.dumps(report, indent=2))
+        print(json.dumps(report, indent = 2))
     else:
         # Text output
         print(f"\n🔍 Environment Validation Report")
@@ -896,10 +913,10 @@ if __name__ == "__main__":
         for result in report["results"]:
             status_emoji = {
                 "passed": "✅",
-                "failed": "❌",
-                "warning": "⚠️",
-                "skipped": "⏭️",
-            }.get(result["status"], "❓")
+                    "failed": "❌",
+                    "warning": "⚠️",
+                    "skipped": "⏭️",
+                    }.get(result["status"], "❓")
 
             print(f"  {status_emoji} {result['name']}: {result['message']}")
             if result.get("fix_command"):

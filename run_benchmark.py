@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 MacBook Air M1 Performance Benchmark Script
-Based on the Docker/System Tuning guide from paste_content.txt lines 1-345
+Based on the Docker / System Tuning guide from paste_content.txt lines 1 - 345
 """
 
 import asyncio
@@ -20,9 +20,12 @@ except ImportError:
 
 
 class AsyncBenchmark:
+
+
     def __init__(self, base_url: str = "http://localhost"):
         self.base_url = base_url
         self.results = []
+
 
     async def single_request(
         self, client: httpx.AsyncClient, endpoint: str
@@ -35,19 +38,20 @@ class AsyncBenchmark:
 
             return {
                 "status": response.status_code,
-                "duration": end_time - start_time,
-                "success": response.status_code == 200,
-                "size": len(response.content),
-            }
+                    "duration": end_time - start_time,
+                    "success": response.status_code == 200,
+                    "size": len(response.content),
+                    }
         except Exception as e:
             end_time = time.perf_counter()
             return {
                 "status": 0,
-                "duration": end_time - start_time,
-                "success": False,
-                "error": str(e),
-                "size": 0,
-            }
+                    "duration": end_time - start_time,
+                    "success": False,
+                    "error": str(e),
+                    "size": 0,
+                    }
+
 
     async def run_concurrent_test(
         self, endpoint: str, concurrent_users: int = 50, duration_seconds: int = 30
@@ -62,11 +66,11 @@ class AsyncBenchmark:
         print()
 
         # Use connection pooling for efficiency
-        limits = httpx.Limits(max_keepalive_connections=100, max_connections=200)
+        limits = httpx.Limits(max_keepalive_connections = 100, max_connections = 200)
         timeout = httpx.Timeout(10.0)
 
         async with httpx.AsyncClient(
-            limits=limits, timeout=timeout, verify=False
+            limits = limits, timeout = timeout, verify = False
         ) as client:
             start_time = time.perf_counter()
             end_time = start_time + duration_seconds
@@ -93,7 +97,7 @@ class AsyncBenchmark:
 
             # Wait for remaining tasks
             if tasks:
-                remaining_results = await asyncio.gather(*tasks, return_exceptions=True)
+                remaining_results = await asyncio.gather(*tasks, return_exceptions = True)
                 for result in remaining_results:
                     if isinstance(result, dict):
                         results.append(result)
@@ -101,6 +105,7 @@ class AsyncBenchmark:
             actual_duration = time.perf_counter() - start_time
 
             return self.analyze_results(results, actual_duration)
+
 
     def analyze_results(self, results: List[Dict], duration: float) -> Dict[str, Any]:
         """Analyze benchmark results and return stats"""
@@ -111,43 +116,44 @@ class AsyncBenchmark:
         if not successful_requests:
             return {
                 "error": "No successful requests",
-                "total_requests": len(results),
-                "failed_requests": len(failed_requests),
-            }
+                    "total_requests": len(results),
+                    "failed_requests": len(failed_requests),
+                    }
 
         durations = [r["duration"] for r in successful_requests]
         sizes = [r["size"] for r in successful_requests]
 
         stats = {
             "duration_seconds": round(duration, 2),
-            "total_requests": len(results),
-            "successful_requests": len(successful_requests),
-            "failed_requests": len(failed_requests),
-            "requests_per_second": round(len(successful_requests) / duration, 2),
-            "success_rate": round(len(successful_requests) / len(results) * 100, 2),
-            # Latency stats (in milliseconds)
+                "total_requests": len(results),
+                "successful_requests": len(successful_requests),
+                "failed_requests": len(failed_requests),
+                "requests_per_second": round(len(successful_requests) / duration, 2),
+                "success_rate": round(len(successful_requests) / len(results) * 100, 2),
+                # Latency stats (in milliseconds)
             "latency_ms": {
                 "min": round(min(durations) * 1000, 2),
-                "max": round(max(durations) * 1000, 2),
-                "mean": round(statistics.mean(durations) * 1000, 2),
-                "median": round(statistics.median(durations) * 1000, 2),
-                "p95": (
-                    round(statistics.quantiles(durations, n=20)[18] * 1000, 2)
+                    "max": round(max(durations) * 1000, 2),
+                    "mean": round(statistics.mean(durations) * 1000, 2),
+                    "median": round(statistics.median(durations) * 1000, 2),
+                    "p95": (
+                    round(statistics.quantiles(durations, n = 20)[18] * 1000, 2)
                     if len(durations) > 20
                     else 0
                 ),
-                "p99": (
-                    round(statistics.quantiles(durations, n=100)[98] * 1000, 2)
+                    "p99": (
+                    round(statistics.quantiles(durations, n = 100)[98] * 1000, 2)
                     if len(durations) > 100
                     else 0
                 ),
-            },
-            # Data transfer
+                    },
+                # Data transfer
             "total_bytes": sum(sizes),
-            "avg_response_size": round(statistics.mean(sizes), 2) if sizes else 0,
-        }
+                "avg_response_size": round(statistics.mean(sizes), 2) if sizes else 0,
+                }
 
         return stats
+
 
     def print_results(self, stats: Dict[str, Any]):
         """Pretty print benchmark results"""
@@ -163,7 +169,7 @@ class AsyncBenchmark:
         print(f"Successful:         {stats['successful_requests']:,}")
         print(f"Failed:             {stats['failed_requests']:,}")
         print(f"Success rate:       {stats['success_rate']}%")
-        print(f"Requests/sec:       {stats['requests_per_second']:,}")
+        print(f"Requests / sec:       {stats['requests_per_second']:,}")
         print()
 
         print("⏱️  LATENCY (milliseconds)")
@@ -194,10 +200,10 @@ async def main():
 
     scenarios = [
         # (endpoint, concurrent_users, duration_seconds, description)
-        ("/api/status", 25, 20, "FastAPI Health Check via Nginx (light)"),
-        ("/paste/", 20, 15, "Flask Paste App via Nginx (medium)"),
-        ("/", 30, 25, "Root endpoint via Nginx (static)"),
-    ]
+        ("/api / status", 25, 20, "FastAPI Health Check via Nginx (light)"),
+            ("/paste/", 20, 15, "Flask Paste App via Nginx (medium)"),
+            ("/", 30, 25, "Root endpoint via Nginx (static)"),
+            ]
 
     print("🔥 MacBook Air M1 Performance Benchmark")
     print("🐳 Testing Docker + Nginx + FastAPI + Flask Stack")
@@ -216,10 +222,9 @@ async def main():
     print("✅ All benchmarks complete!")
     print("\n📋 MacBook Air M1 Tuning Summary:")
     print("- Nginx: 2 workers, 1024 connections each")
-    print("- FastAPI: 2-4 workers recommended")
-    print("- Expected: 2-4k concurrent connections")
+    print("- FastAPI: 2 - 4 workers recommended")
+    print("- Expected: 2 - 4k concurrent connections")
     print("- Memory: <8GB total for all containers")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

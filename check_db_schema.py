@@ -27,6 +27,5 @@ def check_affiliate_programs_table():
     conn.close()
     print("\nDatabase schema check completed")
 
-
 if __name__ == "__main__":
     check_affiliate_programs_table()

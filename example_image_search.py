@@ -22,6 +22,7 @@ async def get_images_for_query(query: str):
         JSON response from the first successful provider
     """
 
+
     async def do_request(client, prov):
         """Handle requests for different image providers."""
         if prov.id == "unsplash":
@@ -29,10 +30,10 @@ async def get_images_for_query(query: str):
             if not key:
                 raise RuntimeError("UNSPLASH_KEY not configured")
             r = await client.get(
-                "https://api.unsplash.com/search/photos",
-                headers={"Authorization": f"Client-ID {key}"},
-                params={"query": query, "per_page": 6},
-            )
+                "https://api.unsplash.com / search / photos",
+                    headers={"Authorization": f"Client - ID {key}"},
+                    params={"query": query, "per_page": 6},
+                    )
             r.raise_for_status()
             return r.json()
 
@@ -41,10 +42,10 @@ async def get_images_for_query(query: str):
             if not key:
                 raise RuntimeError("PEXELS_KEY not configured")
             r = await client.get(
-                "https://api.pexels.com/v1/search",
-                headers={"Authorization": key},
-                params={"query": query, "per_page": 6},
-            )
+                "https://api.pexels.com / v1 / search",
+                    headers={"Authorization": key},
+                    params={"query": query, "per_page": 6},
+                    )
             r.raise_for_status()
             return r.json()
 
@@ -53,9 +54,9 @@ async def get_images_for_query(query: str):
             if not key:
                 raise RuntimeError("PIXABAY_KEY not configured")
             r = await client.get(
-                "https://pixabay.com/api/",
-                params={"key": key, "q": query, "per_page": 6},
-            )
+                "https://pixabay.com / api/",
+                    params={"key": key, "q": query, "per_page": 6},
+                    )
             r.raise_for_status()
             return r.json()
 
@@ -66,7 +67,6 @@ async def get_images_for_query(query: str):
     return await http_with_fallback(
         "images", do_request, prefer=["unsplash", "pexels", "pixabay"]
     )
-
 
 # Example usage:
 # import asyncio

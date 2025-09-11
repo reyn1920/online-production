@@ -11,12 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 class ChatDatabase:
-    """SQLite-based chat persistence system"""
+    """SQLite - based chat persistence system"""
 
-    def __init__(self, db_path: str = "data/chat.db"):
+
+    def __init__(self, db_path: str = "data / chat.db"):
         self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
         self.init_database()
+
 
     def init_database(self):
         """Initialize the chat database with required tables"""
@@ -26,11 +28,11 @@ class ChatDatabase:
                     """
                     CREATE TABLE IF NOT EXISTS conversations (
                         id TEXT PRIMARY KEY,
-                        user_id TEXT,
-                        title TEXT,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        metadata TEXT
+                            user_id TEXT,
+                            title TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            metadata TEXT
                     )
                 """
                 )
@@ -39,27 +41,27 @@ class ChatDatabase:
                     """
                     CREATE TABLE IF NOT EXISTS messages (
                         id TEXT PRIMARY KEY,
-                        conversation_id TEXT,
-                        role TEXT CHECK(role IN ('user', 'assistant', 'system')),
-                        content TEXT,
-                        message_type TEXT DEFAULT 'text',
-                        metadata TEXT,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (conversation_id) REFERENCES conversations (id)
+                            conversation_id TEXT,
+                            role TEXT CHECK(role IN ('user', 'assistant', 'system')),
+                            content TEXT,
+                            message_type TEXT DEFAULT 'text',
+                            metadata TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (conversation_id) REFERENCES conversations (id)
                     )
                 """
                 )
 
                 conn.execute(
                     """
-                    CREATE INDEX IF NOT EXISTS idx_messages_conversation 
+                    CREATE INDEX IF NOT EXISTS idx_messages_conversation
                     ON messages(conversation_id, created_at)
                 """
                 )
 
                 conn.execute(
                     """
-                    CREATE INDEX IF NOT EXISTS idx_conversations_user 
+                    CREATE INDEX IF NOT EXISTS idx_conversations_user
                     ON conversations(user_id, updated_at DESC)
                 """
                 )
@@ -70,6 +72,7 @@ class ChatDatabase:
         except Exception as e:
             logger.error(f"Failed to initialize chat database: {e}")
             raise
+
 
     def create_conversation(self, user_id: str = "anonymous", title: str = None) -> str:
         """Create a new conversation and return its ID"""
@@ -82,8 +85,8 @@ class ChatDatabase:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     "INSERT INTO conversations (id, user_id, title) VALUES (?, ?, ?)",
-                    (conversation_id, user_id, title),
-                )
+                        (conversation_id, user_id, title),
+                        )
                 conn.commit()
 
             logger.info(f"Created conversation {conversation_id} for user {user_id}")
@@ -93,14 +96,15 @@ class ChatDatabase:
             logger.error(f"Failed to create conversation: {e}")
             raise
 
+
     def add_message(
         self,
-        conversation_id: str,
-        role: str,
-        content: str,
-        message_type: str = "text",
-        metadata: Dict = None,
-    ) -> str:
+            conversation_id: str,
+            role: str,
+            content: str,
+            message_type: str = "text",
+            metadata: Dict = None,
+            ) -> str:
         """Add a message to a conversation"""
         message_id = str(uuid.uuid4())
         metadata_json = json.dumps(metadata) if metadata else None
@@ -108,24 +112,24 @@ class ChatDatabase:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """INSERT INTO messages 
-                       (id, conversation_id, role, content, message_type, metadata) 
+                    """INSERT INTO messages
+                       (id, conversation_id, role, content, message_type, metadata)
                        VALUES (?, ?, ?, ?, ?, ?)""",
-                    (
+                           (
                         message_id,
-                        conversation_id,
-                        role,
-                        content,
-                        message_type,
-                        metadata_json,
-                    ),
-                )
+                            conversation_id,
+                            role,
+                            content,
+                            message_type,
+                            metadata_json,
+                            ),
+                        )
 
                 # Update conversation timestamp
                 conn.execute(
                     "UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-                    (conversation_id,),
-                )
+                        (conversation_id,),
+                        )
 
                 conn.commit()
 
@@ -138,6 +142,7 @@ class ChatDatabase:
             logger.error(f"Failed to add message: {e}")
             raise
 
+
     def get_conversation_messages(
         self, conversation_id: str, limit: int = 100
     ) -> List[Dict]:
@@ -146,13 +151,13 @@ class ChatDatabase:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute(
-                    """SELECT id, role, content, message_type, metadata, created_at 
-                       FROM messages 
-                       WHERE conversation_id = ? 
-                       ORDER BY created_at ASC 
+                    """SELECT id, role, content, message_type, metadata, created_at
+                       FROM messages
+                       WHERE conversation_id = ?
+                       ORDER BY created_at ASC
                        LIMIT ?""",
-                    (conversation_id, limit),
-                )
+                           (conversation_id, limit),
+                        )
 
                 messages = []
                 for row in cursor.fetchall():
@@ -167,19 +172,20 @@ class ChatDatabase:
             logger.error(f"Failed to get conversation messages: {e}")
             return []
 
+
     def get_user_conversations(self, user_id: str, limit: int = 50) -> List[Dict]:
         """Get conversations for a user"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute(
-                    """SELECT id, title, created_at, updated_at, metadata 
-                       FROM conversations 
-                       WHERE user_id = ? 
-                       ORDER BY updated_at DESC 
+                    """SELECT id, title, created_at, updated_at, metadata
+                       FROM conversations
+                       WHERE user_id = ?
+                       ORDER BY updated_at DESC
                        LIMIT ?""",
-                    (user_id, limit),
-                )
+                           (user_id, limit),
+                        )
 
                 conversations = []
                 for row in cursor.fetchall():
@@ -194,14 +200,15 @@ class ChatDatabase:
             logger.error(f"Failed to get user conversations: {e}")
             return []
 
+
     def update_conversation_title(self, conversation_id: str, title: str) -> bool:
         """Update conversation title"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "UPDATE conversations SET title = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-                    (title, conversation_id),
-                )
+                        (title, conversation_id),
+                        )
                 conn.commit()
 
                 return cursor.rowcount > 0
@@ -209,6 +216,7 @@ class ChatDatabase:
         except Exception as e:
             logger.error(f"Failed to update conversation title: {e}")
             return False
+
 
     def delete_conversation(self, conversation_id: str) -> bool:
         """Delete a conversation and all its messages"""
@@ -232,6 +240,7 @@ class ChatDatabase:
             logger.error(f"Failed to delete conversation: {e}")
             return False
 
+
     def search_messages(
         self, query: str, user_id: str = None, limit: int = 50
     ) -> List[Dict]:
@@ -242,26 +251,26 @@ class ChatDatabase:
 
                 if user_id:
                     cursor = conn.execute(
-                        """SELECT m.id, m.conversation_id, m.role, m.content, 
-                                  m.message_type, m.metadata, m.created_at, c.title
+                        """SELECT m.id, m.conversation_id, m.role, m.content,
+                            m.message_type, m.metadata, m.created_at, c.title
                            FROM messages m
                            JOIN conversations c ON m.conversation_id = c.id
                            WHERE m.content LIKE ? AND c.user_id = ?
                            ORDER BY m.created_at DESC
                            LIMIT ?""",
-                        (f"%{query}%", user_id, limit),
-                    )
+                               (f"%{query}%", user_id, limit),
+                            )
                 else:
                     cursor = conn.execute(
-                        """SELECT m.id, m.conversation_id, m.role, m.content, 
-                                  m.message_type, m.metadata, m.created_at, c.title
+                        """SELECT m.id, m.conversation_id, m.role, m.content,
+                            m.message_type, m.metadata, m.created_at, c.title
                            FROM messages m
                            JOIN conversations c ON m.conversation_id = c.id
                            WHERE m.content LIKE ?
                            ORDER BY m.created_at DESC
                            LIMIT ?""",
-                        (f"%{query}%", limit),
-                    )
+                               (f"%{query}%", limit),
+                            )
 
                 results = []
                 for row in cursor.fetchall():
@@ -275,6 +284,7 @@ class ChatDatabase:
         except Exception as e:
             logger.error(f"Failed to search messages: {e}")
             return []
+
 
     def get_stats(self) -> Dict:
         """Get database statistics"""
@@ -293,23 +303,23 @@ class ChatDatabase:
 
                 return {
                     "total_conversations": total_conversations,
-                    "total_messages": total_messages,
-                    "unique_users": unique_users,
-                    "database_size": (
+                        "total_messages": total_messages,
+                        "unique_users": unique_users,
+                        "database_size": (
                         self.db_path.stat().st_size if self.db_path.exists() else 0
                     ),
-                }
+                        }
 
         except Exception as e:
             logger.error(f"Failed to get database stats: {e}")
             return {}
 
-
 # Global database instance
 chat_db = ChatDatabase()
 
-
 # Utility functions for easy access
+
+
 def create_conversation(user_id: str = "anonymous", title: str = None) -> str:
     """Create a new conversation"""
     return chat_db.create_conversation(user_id, title)
@@ -317,10 +327,10 @@ def create_conversation(user_id: str = "anonymous", title: str = None) -> str:
 
 def add_message(
     conversation_id: str,
-    role: str,
-    content: str,
-    message_type: str = "text",
-    metadata: Dict = None,
+        role: str,
+        content: str,
+        message_type: str = "text",
+        metadata: Dict = None,
 ) -> str:
     """Add a message to conversation"""
     return chat_db.add_message(conversation_id, role, content, message_type, metadata)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Audacity Automation Integration
 
@@ -7,14 +7,14 @@ Supports batch processing, effect chains, noise reduction, and automated workflo
 for the AI CEO content production pipeline.
 
 Features:
-- Audacity scripting via mod-script-pipe
+- Audacity scripting via mod - script - pipe
 - Batch audio processing
 - Automated noise reduction and enhancement
 - Podcast production workflows
 - Voice cloning integration
-- Multi-track editing automation
+- Multi - track editing automation
 - Export format optimization
-- Real-time processing monitoring
+- Real - time processing monitoring
 - Integration with content pipeline
 
 Author: TRAE.AI System
@@ -77,7 +77,7 @@ class ProcessingQuality(Enum):
     """Audio processing quality levels."""
 
     DRAFT = "draft"  # Fast processing, lower quality
-    STANDARD = "standard"  # Balanced quality/speed
+    STANDARD = "standard"  # Balanced quality / speed
     HIGH = "high"  # High quality, slower processing
     BROADCAST = "broadcast"  # Broadcast quality, slowest
 
@@ -90,8 +90,9 @@ class NoiseReductionLevel(Enum):
     AGGRESSIVE = "aggressive"
     CUSTOM = "custom"
 
-
 @dataclass
+
+
 class AudioFile:
     """Audio file metadata."""
 
@@ -105,8 +106,9 @@ class AudioFile:
     created_at: str = ""
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class ProcessingTask:
     """Audio processing task definition."""
 
@@ -124,8 +126,9 @@ class ProcessingTask:
     error: Optional[str] = None
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class PodcastEpisode:
     """Podcast episode configuration."""
 
@@ -147,7 +150,8 @@ class AudacityAutomation:
     Integrates with TRAE.AI content pipeline for automated audio processing.
     """
 
-    def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
+
+    def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
         self.logger = setup_logger("audacity_automation")
         self.secret_store = SecretStore(secrets_db_path)
 
@@ -155,11 +159,11 @@ class AudacityAutomation:
         self.audacity_path = self._find_audacity_executable()
         self.pipe_path = self._get_pipe_path()
         self.temp_dir = Path(tempfile.gettempdir()) / "trae_audacity"
-        self.temp_dir.mkdir(exist_ok=True)
+        self.temp_dir.mkdir(exist_ok = True)
 
         # Processing configuration
         self.max_workers = 4
-        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
+        self.executor = ThreadPoolExecutor(max_workers = self.max_workers)
         self.processing_queue = []
         self.active_tasks = {}
 
@@ -177,27 +181,28 @@ class AudacityAutomation:
 
         self.logger.info("Audacity Automation initialized")
 
+
     def _find_audacity_executable(self) -> Optional[str]:
         """Find Audacity executable path."""
         system = platform.system().lower()
 
         if system == "darwin":  # macOS
             possible_paths = [
-                "/Applications/Audacity.app/Contents/MacOS/Audacity",
-                "/usr/local/bin/audacity",
-                "/opt/homebrew/bin/audacity",
-            ]
+                "/Applications / Audacity.app / Contents / MacOS / Audacity",
+                    "/usr / local / bin / audacity",
+                    "/opt / homebrew / bin / audacity",
+                    ]
         elif system == "windows":
             possible_paths = [
                 "C:\\Program Files\\Audacity\\Audacity.exe",
-                "C:\\Program Files (x86)\\Audacity\\Audacity.exe",
-                "audacity.exe",  # If in PATH
+                    "C:\\Program Files (x86)\\Audacity\\Audacity.exe",
+                    "audacity.exe",  # If in PATH
             ]
         else:  # Linux
             possible_paths = [
-                "/usr/bin/audacity",
-                "/usr/local/bin/audacity",
-                "audacity",  # If in PATH
+                "/usr / bin / audacity",
+                    "/usr / local / bin / audacity",
+                    "audacity",  # If in PATH
             ]
 
         for path in possible_paths:
@@ -208,56 +213,59 @@ class AudacityAutomation:
         self.logger.warning("Audacity executable not found")
         return None
 
+
     def _get_pipe_path(self) -> str:
         """Get Audacity pipe path for scripting."""
         system = platform.system().lower()
 
         if system == "darwin":  # macOS
-            return "/tmp/audacity_script_pipe.to.audacity"
+            return "/tmp / audacity_script_pipe.to.audacity"
         elif system == "windows":
             return "\\\\.\\pipe\\ToSrvPipe"
         else:  # Linux
-            return "/tmp/audacity_script_pipe.to.audacity"
+            return "/tmp / audacity_script_pipe.to.audacity"
+
 
     def _load_effect_presets(self) -> Dict[str, Dict]:
         """Load predefined effect presets."""
         return {
             "podcast_voice": {
                 "normalize": {"peak_level": -3.0},
-                "compressor": {
+                    "compressor": {
                     "threshold": -12.0,
-                    "ratio": 3.0,
-                    "attack": 0.2,
-                    "release": 1.0,
-                },
-                "eq": {
+                        "ratio": 3.0,
+                        "attack": 0.2,
+                        "release": 1.0,
+                        },
+                    "eq": {
                     "high_pass": 80,
-                    "low_pass": 15000,
-                    "presence_boost": {"freq": 3000, "gain": 2.0},
-                },
-            },
-            "music_master": {
+                        "low_pass": 15000,
+                        "presence_boost": {"freq": 3000, "gain": 2.0},
+                        },
+                    },
+                "music_master": {
                 "normalize": {"peak_level": -1.0},
-                "limiter": {"threshold": -2.0, "release": 10},
-                "eq": {
+                    "limiter": {"threshold": -2.0, "release": 10},
+                    "eq": {
                     "low_shelf": {"freq": 100, "gain": 1.0},
-                    "high_shelf": {"freq": 10000, "gain": 0.5},
-                },
-            },
-            "noise_reduction": {
+                        "high_shelf": {"freq": 10000, "gain": 0.5},
+                        },
+                    },
+                "noise_reduction": {
                 "noise_reduction": {
                     "sensitivity": 6.0,
-                    "frequency_smoothing": 0,
-                    "attack_decay_time": 0.15,
-                },
-                "click_removal": {"threshold": 200, "width": 20},
-            },
-            "voice_enhancement": {
+                        "frequency_smoothing": 0,
+                        "attack_decay_time": 0.15,
+                        },
+                    "click_removal": {"threshold": 200, "width": 20},
+                    },
+                "voice_enhancement": {
                 "de_esser": {"threshold": -20, "frequency": 6000},
-                "warmth": {"freq": 200, "gain": 1.5},
-                "clarity": {"freq": 5000, "gain": 2.0},
-            },
-        }
+                    "warmth": {"freq": 200, "gain": 1.5},
+                    "clarity": {"freq": 5000, "gain": 2.0},
+                    },
+                }
+
 
     async def initialize(self) -> bool:
         """Initialize Audacity automation system."""
@@ -278,7 +286,7 @@ class AudacityAutomation:
                 self.logger.info("Audacity scripting available")
             else:
                 self.logger.warning(
-                    "Audacity scripting not available. Enable mod-script-pipe in Audacity."
+                    "Audacity scripting not available. Enable mod - script - pipe in Audacity."
                 )
 
             # Load credentials
@@ -290,6 +298,7 @@ class AudacityAutomation:
         except Exception as e:
             self.logger.error(f"Failed to initialize Audacity automation: {e}")
             return False
+
 
     async def _load_credentials(self):
         """Load necessary credentials and configuration."""
@@ -305,19 +314,21 @@ class AudacityAutomation:
         except Exception as e:
             self.logger.warning(f"Could not load Audacity configuration: {e}")
 
+
     async def _test_audacity_scripting(self) -> bool:
         """Test if Audacity scripting is available."""
         try:
             # Try to connect to Audacity pipe
             if await self._connect_to_audacity():
                 # Send a simple command
-                response = await self._send_command("Help")
+                    response = await self._send_command("Help")
                 await self._disconnect_from_audacity()
                 return response is not None
             return False
         except Exception as e:
             self.logger.debug(f"Audacity scripting test failed: {e}")
             return False
+
 
     async def _connect_to_audacity(self) -> bool:
         """Connect to Audacity via named pipe."""
@@ -329,13 +340,13 @@ class AudacityAutomation:
 
                 self.pipe_socket = win32file.CreateFile(
                     self.pipe_path,
-                    win32file.GENERIC_READ | win32file.GENERIC_WRITE,
-                    0,
-                    None,
-                    win32file.OPEN_EXISTING,
-                    0,
-                    None,
-                )
+                        win32file.GENERIC_READ | win32file.GENERIC_WRITE,
+                        0,
+                        None,
+                        win32file.OPEN_EXISTING,
+                        0,
+                        None,
+                        )
             else:
                 # Unix domain socket or FIFO
                 if os.path.exists(self.pipe_path):
@@ -349,6 +360,7 @@ class AudacityAutomation:
         except Exception as e:
             self.logger.debug(f"Failed to connect to Audacity: {e}")
             return False
+
 
     async def _disconnect_from_audacity(self):
         """Disconnect from Audacity pipe."""
@@ -366,6 +378,7 @@ class AudacityAutomation:
 
         except Exception as e:
             self.logger.debug(f"Error disconnecting from Audacity: {e}")
+
 
     async def _send_command(self, command: str) -> Optional[str]:
         """Send command to Audacity via pipe."""
@@ -388,6 +401,7 @@ class AudacityAutomation:
             self.logger.error(f"Error sending command to Audacity: {e}")
             return None
 
+
     async def analyze_audio_file(self, file_path: str) -> AudioFile:
         """Analyze audio file and extract metadata."""
         try:
@@ -398,16 +412,16 @@ class AudacityAutomation:
             # Get basic file info
             stat = path.stat()
             audio_file = AudioFile(
-                path=str(path),
-                format=AudioFormat(path.suffix.lower().lstrip(".")),
-                size_bytes=stat.st_size,
-                created_at=datetime.fromtimestamp(stat.st_ctime).isoformat(),
-            )
+                path = str(path),
+                    format = AudioFormat(path.suffix.lower().lstrip(".")),
+                    size_bytes = stat.st_size,
+                    created_at = datetime.fromtimestamp(stat.st_ctime).isoformat(),
+                    )
 
             # Use librosa for detailed analysis if available
             if AUDIO_LIBS_AVAILABLE:
                 try:
-                    y, sr = librosa.load(file_path, sr=None)
+                    y, sr = librosa.load(file_path, sr = None)
                     audio_file.duration = len(y) / sr
                     audio_file.sample_rate = sr
                     audio_file.channels = 1 if len(y.shape) == 1 else y.shape[0]
@@ -415,14 +429,14 @@ class AudacityAutomation:
                     # Additional analysis
                     audio_file.metadata = {
                         "rms_energy": float(np.sqrt(np.mean(y**2))),
-                        "zero_crossing_rate": float(
+                            "zero_crossing_rate": float(
                             np.mean(librosa.feature.zero_crossing_rate(y))
                         ),
-                        "spectral_centroid": float(
-                            np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
+                            "spectral_centroid": float(
+                            np.mean(librosa.feature.spectral_centroid(y = y, sr = sr))
                         ),
-                        "tempo": float(librosa.beat.tempo(y=y, sr=sr)[0]),
-                    }
+                            "tempo": float(librosa.beat.tempo(y = y, sr = sr)[0]),
+                            }
 
                 except Exception as e:
                     self.logger.warning(f"Detailed audio analysis failed: {e}")
@@ -433,33 +447,35 @@ class AudacityAutomation:
             self.logger.error(f"Error analyzing audio file: {e}")
             raise
 
+
     async def create_processing_task(
         self,
-        input_files: List[str],
-        output_path: str,
-        operations: List[Dict[str, Any]],
-        quality: ProcessingQuality = ProcessingQuality.STANDARD,
-        priority: int = 5,
-    ) -> str:
+            input_files: List[str],
+            output_path: str,
+            operations: List[Dict[str, Any]],
+            quality: ProcessingQuality = ProcessingQuality.STANDARD,
+            priority: int = 5,
+            ) -> str:
         """Create a new audio processing task."""
         task_id = str(uuid.uuid4())
 
         task = ProcessingTask(
-            id=task_id,
-            input_files=input_files,
-            output_path=output_path,
-            operations=operations,
-            quality=quality,
-            priority=priority,
-            created_at=datetime.now().isoformat(),
-        )
+            id = task_id,
+                input_files = input_files,
+                output_path = output_path,
+                operations = operations,
+                quality = quality,
+                priority = priority,
+                created_at = datetime.now().isoformat(),
+                )
 
         # Add to queue (sorted by priority)
         self.processing_queue.append(task)
-        self.processing_queue.sort(key=lambda x: x.priority, reverse=True)
+        self.processing_queue.sort(key = lambda x: x.priority, reverse = True)
 
         self.logger.info(f"Created processing task: {task_id}")
         return task_id
+
 
     async def process_audio_batch(self, tasks: List[ProcessingTask]) -> Dict[str, Any]:
         """Process multiple audio tasks in batch."""
@@ -475,7 +491,7 @@ class AudacityAutomation:
             # Collect results
             for task_id, future in futures:
                 try:
-                    result = future.result(timeout=300)  # 5 minute timeout
+                    result = future.result(timeout = 300)  # 5 minute timeout
                     results[task_id] = result
                 except Exception as e:
                     results[task_id] = {"error": str(e), "status": "failed"}
@@ -485,6 +501,7 @@ class AudacityAutomation:
         except Exception as e:
             self.logger.error(f"Batch processing error: {e}")
             return {"error": str(e)}
+
 
     def _process_single_task(self, task: ProcessingTask) -> Dict[str, Any]:
         """Process a single audio task."""
@@ -498,7 +515,7 @@ class AudacityAutomation:
 
             for i, operation in enumerate(task.operations):
                 self.logger.info(
-                    f"Processing operation {i+1}/{len(task.operations)}: {operation.get('type')}"
+                    f"Processing operation {i + 1}/{len(task.operations)}: {operation.get('type')}"
                 )
 
                 # Update progress
@@ -519,7 +536,7 @@ class AudacityAutomation:
                 if temp_file != task.output_path and temp_file not in task.input_files:
                     try:
                         os.remove(temp_file)
-                    except:
+                    except Exception:
                         pass
 
             task.status = "completed"
@@ -528,12 +545,12 @@ class AudacityAutomation:
 
             return {
                 "status": "completed",
-                "output_path": task.output_path,
-                "duration": (
+                    "output_path": task.output_path,
+                    "duration": (
                     datetime.fromisoformat(task.completed_at)
                     - datetime.fromisoformat(task.started_at)
                 ).total_seconds(),
-            }
+                    }
 
         except Exception as e:
             task.status = "failed"
@@ -544,6 +561,7 @@ class AudacityAutomation:
         finally:
             if task.id in self.active_tasks:
                 del self.active_tasks[task.id]
+
 
     def _apply_operation(
         self, input_files: List[str], operation: Dict[str, Any], task: ProcessingTask
@@ -571,6 +589,7 @@ class AudacityAutomation:
             self.logger.warning(f"Unknown operation type: {op_type}")
             return input_files
 
+
     def _normalize_audio(
         self, input_files: List[str], params: Dict[str, Any]
     ) -> List[str]:
@@ -584,7 +603,7 @@ class AudacityAutomation:
             if AUDIO_LIBS_AVAILABLE:
                 try:
                     # Use librosa for normalization
-                    y, sr = librosa.load(input_file, sr=None)
+                    y, sr = librosa.load(input_file, sr = None)
 
                     # Calculate current peak
                     current_peak = np.max(np.abs(y))
@@ -603,12 +622,13 @@ class AudacityAutomation:
                 except Exception as e:
                     self.logger.error(f"Normalization failed: {e}")
                     output_files.append(input_file)  # Return original on error
-            else:
+                        else:
                 # Fallback: copy original file
                 shutil.copy2(input_file, output_file)
                 output_files.append(output_file)
 
         return output_files
+
 
     def _reduce_noise(
         self, input_files: List[str], params: Dict[str, Any]
@@ -623,7 +643,7 @@ class AudacityAutomation:
             if AUDIO_LIBS_AVAILABLE:
                 try:
                     # Simple noise reduction using spectral gating
-                    y, sr = librosa.load(input_file, sr=None)
+                    y, sr = librosa.load(input_file, sr = None)
 
                     # Compute spectral features
                     S = librosa.stft(y)
@@ -658,6 +678,7 @@ class AudacityAutomation:
 
         return output_files
 
+
     def _compress_audio(
         self, input_files: List[str], params: Dict[str, Any]
     ) -> List[str]:
@@ -671,7 +692,7 @@ class AudacityAutomation:
 
             if AUDIO_LIBS_AVAILABLE:
                 try:
-                    y, sr = librosa.load(input_file, sr=None)
+                    y, sr = librosa.load(input_file, sr = None)
 
                     # Simple compression algorithm
                     threshold_linear = 10 ** (threshold / 20.0)
@@ -699,6 +720,7 @@ class AudacityAutomation:
 
         return output_files
 
+
     def _apply_eq(self, input_files: List[str], params: Dict[str, Any]) -> List[str]:
         """Apply equalization."""
         output_files = []
@@ -712,8 +734,9 @@ class AudacityAutomation:
 
         return output_files
 
+
     def _apply_fade(self, input_files: List[str], params: Dict[str, Any]) -> List[str]:
-        """Apply fade in/out effects."""
+        """Apply fade in / out effects."""
         output_files = []
         fade_in = params.get("fade_in", 0.0)
         fade_out = params.get("fade_out", 0.0)
@@ -723,7 +746,7 @@ class AudacityAutomation:
 
             if AUDIO_LIBS_AVAILABLE and (fade_in > 0 or fade_out > 0):
                 try:
-                    y, sr = librosa.load(input_file, sr=None)
+                    y, sr = librosa.load(input_file, sr = None)
 
                     # Apply fade in
                     if fade_in > 0:
@@ -750,6 +773,7 @@ class AudacityAutomation:
 
         return output_files
 
+
     def _trim_audio(self, input_files: List[str], params: Dict[str, Any]) -> List[str]:
         """Trim audio to specified duration."""
         output_files = []
@@ -761,7 +785,7 @@ class AudacityAutomation:
 
             if AUDIO_LIBS_AVAILABLE:
                 try:
-                    y, sr = librosa.load(input_file, sr=None)
+                    y, sr = librosa.load(input_file, sr = None)
 
                     start_sample = int(start_time * sr)
                     end_sample = int(end_time * sr) if end_time else len(y)
@@ -781,6 +805,7 @@ class AudacityAutomation:
 
         return output_files
 
+
     def _merge_audio_files(self, input_files: List[str], output_path: str) -> str:
         """Merge multiple audio files into one."""
         if len(input_files) == 1:
@@ -794,12 +819,12 @@ class AudacityAutomation:
                 sample_rate = None
 
                 for file_path in input_files:
-                    y, sr = librosa.load(file_path, sr=None)
+                    y, sr = librosa.load(file_path, sr = None)
                     if sample_rate is None:
                         sample_rate = sr
                     elif sr != sample_rate:
                         # Resample if needed
-                        y = librosa.resample(y, orig_sr=sr, target_sr=sample_rate)
+                        y = librosa.resample(y, orig_sr = sr, target_sr = sample_rate)
 
                     audio_segments.append(y)
 
@@ -821,6 +846,7 @@ class AudacityAutomation:
             shutil.copy2(input_files[0], output_path)
             return output_path
 
+
     def _split_audio(self, input_file: str, params: Dict[str, Any]) -> List[str]:
         """Split audio file into segments."""
         segments = params.get("segments", [])
@@ -831,7 +857,7 @@ class AudacityAutomation:
 
         if AUDIO_LIBS_AVAILABLE:
             try:
-                y, sr = librosa.load(input_file, sr=None)
+                y, sr = librosa.load(input_file, sr = None)
 
                 for i, (start, end) in enumerate(segments):
                     start_sample = int(start * sr)
@@ -851,10 +877,12 @@ class AudacityAutomation:
         else:
             return [input_file]
 
+
     def _get_temp_file(self, suffix: str = ".wav") -> str:
         """Generate temporary file path."""
         temp_id = str(uuid.uuid4())[:8]
         return str(self.temp_dir / f"temp_{temp_id}{suffix}")
+
 
     async def create_podcast_episode(self, episode: PodcastEpisode) -> str:
         """Create a complete podcast episode from components."""
@@ -883,13 +911,13 @@ class AudacityAutomation:
             # Define processing operations
             operations = [
                 {"type": "normalize", "params": {"peak_level": -3.0}},
-                {
+                    {
                     "type": "noise_reduction",
-                    "params": {"level": NoiseReductionLevel.MODERATE},
-                },
-                {"type": "compress", "params": {"threshold": -12.0, "ratio": 3.0}},
-                {"type": "merge", "params": {}},
-            ]
+                        "params": {"level": NoiseReductionLevel.MODERATE},
+                        },
+                    {"type": "compress", "params": {"threshold": -12.0, "ratio": 3.0}},
+                    {"type": "merge", "params": {}},
+                    ]
 
             # Add fade effects
             if len(input_files) > 1:
@@ -907,11 +935,11 @@ class AudacityAutomation:
 
             # Create processing task
             task_id = await self.create_processing_task(
-                input_files=input_files,
-                output_path=output_path,
-                operations=operations,
-                quality=episode.quality,
-                priority=8,  # High priority for podcast production
+                input_files = input_files,
+                    output_path = output_path,
+                    operations = operations,
+                    quality = episode.quality,
+                    priority = 8,  # High priority for podcast production
             )
 
             # Process the task
@@ -931,6 +959,7 @@ class AudacityAutomation:
             self.logger.error(f"Error creating podcast episode: {e}")
             raise
 
+
     async def batch_process_voice_files(
         self, input_dir: str, output_dir: str, preset: str = "podcast_voice"
     ) -> Dict[str, Any]:
@@ -938,7 +967,7 @@ class AudacityAutomation:
         try:
             input_path = Path(input_dir)
             output_path = Path(output_dir)
-            output_path.mkdir(parents=True, exist_ok=True)
+            output_path.mkdir(parents = True, exist_ok = True)
 
             # Find all audio files
             audio_extensions = [".wav", ".mp3", ".flac", ".m4a", ".aiff"]
@@ -969,10 +998,10 @@ class AudacityAutomation:
 
                 task_id = await self.create_processing_task(
                     input_files=[str(audio_file)],
-                    output_path=str(output_file),
-                    operations=operations,
-                    quality=ProcessingQuality.HIGH,
-                )
+                        output_path = str(output_file),
+                        operations = operations,
+                        quality = ProcessingQuality.HIGH,
+                        )
 
                 task = next((t for t in self.processing_queue if t.id == task_id), None)
                 if task:
@@ -983,13 +1012,14 @@ class AudacityAutomation:
 
             return {
                 "processed_files": len(tasks),
-                "results": results,
-                "output_directory": str(output_path),
-            }
+                    "results": results,
+                    "output_directory": str(output_path),
+                    }
 
         except Exception as e:
             self.logger.error(f"Batch processing error: {e}")
             return {"error": str(e)}
+
 
     async def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
         """Get status of a processing task."""
@@ -998,60 +1028,62 @@ class AudacityAutomation:
             task = self.active_tasks[task_id]
             return {
                 "id": task.id,
-                "status": task.status,
-                "progress": task.progress,
-                "created_at": task.created_at,
-                "started_at": task.started_at,
-                "error": task.error,
-            }
+                    "status": task.status,
+                    "progress": task.progress,
+                    "created_at": task.created_at,
+                    "started_at": task.started_at,
+                    "error": task.error,
+                    }
 
         # Check queue
         for task in self.processing_queue:
             if task.id == task_id:
                 return {
                     "id": task.id,
-                    "status": task.status,
-                    "progress": task.progress,
-                    "created_at": task.created_at,
-                    "position_in_queue": self.processing_queue.index(task),
-                }
+                        "status": task.status,
+                        "progress": task.progress,
+                        "created_at": task.created_at,
+                        "position_in_queue": self.processing_queue.index(task),
+                        }
 
         return None
+
 
     async def health_check(self) -> Dict[str, Any]:
         """Perform health check of Audacity automation system."""
         health = {
             "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "components": {},
-        }
+                "timestamp": datetime.now().isoformat(),
+                "components": {},
+                }
 
         # Check Audacity availability
         health["components"]["audacity"] = {
             "available": bool(self.audacity_path),
-            "path": self.audacity_path,
-            "scripting": await self._test_audacity_scripting(),
-        }
+                "path": self.audacity_path,
+                "scripting": await self._test_audacity_scripting(),
+                }
 
         # Check audio libraries
         health["components"]["audio_libs"] = {
             "available": AUDIO_LIBS_AVAILABLE,
-            "librosa": "librosa" in sys.modules,
-            "soundfile": "soundfile" in sys.modules,
-        }
+                "librosa": "librosa" in sys.modules,
+                "soundfile": "soundfile" in sys.modules,
+                }
 
         # Check processing status
         health["components"]["processing"] = {
             "active_tasks": len(self.active_tasks),
-            "queued_tasks": len(self.processing_queue),
-            "max_workers": self.max_workers,
-        }
+                "queued_tasks": len(self.processing_queue),
+                "max_workers": self.max_workers,
+                }
 
         # Overall status
         if not health["components"]["audacity"]["available"]:
             health["status"] = "degraded"
 
         return health
+
 
     async def cleanup(self):
         """Cleanup resources and temporary files."""
@@ -1061,20 +1093,20 @@ class AudacityAutomation:
                 await self._disconnect_from_audacity()
 
             # Shutdown executor
-            self.executor.shutdown(wait=True)
+                self.executor.shutdown(wait = True)
 
             # Clean up temporary files
             if self.temp_dir.exists():
-                shutil.rmtree(self.temp_dir, ignore_errors=True)
+                shutil.rmtree(self.temp_dir, ignore_errors = True)
 
             self.logger.info("Audacity automation cleanup completed")
 
         except Exception as e:
             self.logger.error(f"Cleanup error: {e}")
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_audacity_automation():
         automation = AudacityAutomation()

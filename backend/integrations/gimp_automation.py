@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI GIMP Automation Integration
 
@@ -7,15 +7,15 @@ Supports batch processing, automated workflows, template generation, and
 integration with the AI CEO content production pipeline.
 
 Features:
-- GIMP scripting via Python-Fu and Script-Fu
+- GIMP scripting via Python - Fu and Script - Fu
 - Batch image processing
 - Automated graphic design workflows
-- Template-based content generation
+- Template - based content generation
 - Brand consistency automation
-- Multi-format export optimization
-- Real-time processing monitoring
+- Multi - format export optimization
+- Real - time processing monitoring
 - Integration with content pipeline
-- AI-powered design suggestions
+- AI - powered design suggestions
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -80,7 +80,7 @@ class ProcessingQuality(Enum):
     """Image processing quality levels."""
 
     DRAFT = "draft"  # Fast processing, lower quality
-    STANDARD = "standard"  # Balanced quality/speed
+    STANDARD = "standard"  # Balanced quality / speed
     HIGH = "high"  # High quality, slower processing
     PRINT = "print"  # Print quality, slowest
 
@@ -98,8 +98,9 @@ class DesignTemplate(Enum):
     PRODUCT_MOCKUP = "product_mockup"
     CUSTOM = "custom"
 
-
 @dataclass
+
+
 class ImageFile:
     """Image file metadata."""
 
@@ -114,8 +115,9 @@ class ImageFile:
     created_at: str = ""
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class ProcessingTask:
     """Image processing task definition."""
 
@@ -134,8 +136,9 @@ class ProcessingTask:
     error: Optional[str] = None
     metadata: Dict[str, Any] = None
 
-
 @dataclass
+
+
 class DesignSpec:
     """Design specification for automated creation."""
 
@@ -161,7 +164,8 @@ class GIMPAutomation:
     Integrates with TRAE.AI content pipeline for automated visual content creation.
     """
 
-    def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
+
+    def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
         self.logger = setup_logger("gimp_automation")
         self.secret_store = SecretStore(secrets_db_path)
 
@@ -169,11 +173,11 @@ class GIMPAutomation:
         self.gimp_path = self._find_gimp_executable()
         self.gimp_scripts_dir = self._get_gimp_scripts_dir()
         self.temp_dir = Path(tempfile.gettempdir()) / "trae_gimp"
-        self.temp_dir.mkdir(exist_ok=True)
+        self.temp_dir.mkdir(exist_ok = True)
 
         # Processing configuration
         self.max_workers = 4
-        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
+        self.executor = ThreadPoolExecutor(max_workers = self.max_workers)
         self.processing_queue = []
         self.active_tasks = {}
 
@@ -187,28 +191,29 @@ class GIMPAutomation:
 
         self.logger.info("GIMP Automation initialized")
 
+
     def _find_gimp_executable(self) -> Optional[str]:
         """Find GIMP executable path."""
         system = platform.system().lower()
 
         if system == "darwin":  # macOS
             possible_paths = [
-                "/Applications/GIMP-2.10.app/Contents/MacOS/gimp",
-                "/Applications/GIMP.app/Contents/MacOS/gimp",
-                "/usr/local/bin/gimp",
-                "/opt/homebrew/bin/gimp",
-            ]
+                "/Applications / GIMP - 2.10.app / Contents / MacOS / gimp",
+                    "/Applications / GIMP.app / Contents / MacOS / gimp",
+                    "/usr / local / bin / gimp",
+                    "/opt / homebrew / bin / gimp",
+                    ]
         elif system == "windows":
             possible_paths = [
-                "C:\\Program Files\\GIMP 2\\bin\\gimp-2.10.exe",
-                "C:\\Program Files (x86)\\GIMP 2\\bin\\gimp-2.10.exe",
-                "gimp.exe",  # If in PATH
+                "C:\\Program Files\\GIMP 2\\bin\\gimp - 2.10.exe",
+                    "C:\\Program Files (x86)\\GIMP 2\\bin\\gimp - 2.10.exe",
+                    "gimp.exe",  # If in PATH
             ]
         else:  # Linux
             possible_paths = [
-                "/usr/bin/gimp",
-                "/usr/local/bin/gimp",
-                "gimp",  # If in PATH
+                "/usr / bin / gimp",
+                    "/usr / local / bin / gimp",
+                    "gimp",  # If in PATH
             ]
 
         for path in possible_paths:
@@ -218,6 +223,7 @@ class GIMPAutomation:
 
         self.logger.warning("GIMP executable not found")
         return None
+
 
     def _get_gimp_scripts_dir(self) -> Path:
         """Get GIMP scripts directory."""
@@ -237,88 +243,91 @@ class GIMPAutomation:
         else:  # Linux
             base_dir = Path.home() / ".config" / "GIMP" / "2.10" / "scripts"
 
-        base_dir.mkdir(parents=True, exist_ok=True)
+        base_dir.mkdir(parents = True, exist_ok = True)
         return base_dir
+
 
     def _load_design_templates(self) -> Dict[str, Dict]:
         """Load predefined design templates."""
         return {
             DesignTemplate.SOCIAL_POST.value: {
                 "dimensions": (1080, 1080),
-                "dpi": 72,
-                "color_mode": "RGB",
-                "layout": {
+                    "dpi": 72,
+                    "color_mode": "RGB",
+                    "layout": {
                     "title_area": {"x": 50, "y": 50, "width": 980, "height": 200},
-                    "content_area": {"x": 50, "y": 300, "width": 980, "height": 600},
-                    "logo_area": {"x": 900, "y": 950, "width": 150, "height": 100},
-                },
-                "fonts": {
+                        "content_area": {"x": 50, "y": 300, "width": 980, "height": 600},
+                        "logo_area": {"x": 900, "y": 950, "width": 150, "height": 100},
+                        },
+                    "fonts": {
                     "title": {"family": "Arial Bold", "size": 48},
-                    "content": {"family": "Arial", "size": 24},
-                },
-            },
-            DesignTemplate.YOUTUBE_THUMBNAIL.value: {
+                        "content": {"family": "Arial", "size": 24},
+                        },
+                    },
+                DesignTemplate.YOUTUBE_THUMBNAIL.value: {
                 "dimensions": (1280, 720),
-                "dpi": 72,
-                "color_mode": "RGB",
-                "layout": {
+                    "dpi": 72,
+                    "color_mode": "RGB",
+                    "layout": {
                     "title_area": {"x": 50, "y": 50, "width": 800, "height": 150},
-                    "image_area": {"x": 50, "y": 220, "width": 600, "height": 400},
-                    "overlay_area": {"x": 700, "y": 220, "width": 530, "height": 400},
-                },
-                "fonts": {
+                        "image_area": {"x": 50, "y": 220, "width": 600, "height": 400},
+                        "overlay_area": {"x": 700, "y": 220, "width": 530, "height": 400},
+                        },
+                    "fonts": {
                     "title": {"family": "Arial Black", "size": 64},
-                    "subtitle": {"family": "Arial Bold", "size": 32},
-                },
-            },
-            DesignTemplate.BLOG_HEADER.value: {
+                        "subtitle": {"family": "Arial Bold", "size": 32},
+                        },
+                    },
+                DesignTemplate.BLOG_HEADER.value: {
                 "dimensions": (1200, 600),
-                "dpi": 72,
-                "color_mode": "RGB",
-                "layout": {
+                    "dpi": 72,
+                    "color_mode": "RGB",
+                    "layout": {
                     "title_area": {"x": 100, "y": 200, "width": 1000, "height": 200},
-                    "subtitle_area": {"x": 100, "y": 420, "width": 1000, "height": 80},
-                },
-                "fonts": {
+                        "subtitle_area": {"x": 100, "y": 420, "width": 1000, "height": 80},
+                        },
+                    "fonts": {
                     "title": {"family": "Arial Bold", "size": 56},
-                    "subtitle": {"family": "Arial", "size": 28},
-                },
-            },
-            DesignTemplate.LOGO.value: {
+                        "subtitle": {"family": "Arial", "size": 28},
+                        },
+                    },
+                DesignTemplate.LOGO.value: {
                 "dimensions": (512, 512),
-                "dpi": 300,
-                "color_mode": "RGB",
-                "layout": {
+                    "dpi": 300,
+                    "color_mode": "RGB",
+                    "layout": {
                     "icon_area": {"x": 50, "y": 50, "width": 200, "height": 200},
-                    "text_area": {"x": 270, "y": 100, "width": 200, "height": 100},
-                },
-                "fonts": {"brand": {"family": "Arial Bold", "size": 36}},
-            },
-        }
+                        "text_area": {"x": 270, "y": 100, "width": 200, "height": 100},
+                        },
+                    "fonts": {"brand": {"family": "Arial Bold", "size": 36}},
+                    },
+                }
+
 
     def _load_brand_assets(self) -> Dict[str, Any]:
         """Load brand assets and guidelines."""
         return {
             "colors": {
                 "primary": "#007ACC",
-                "secondary": "#FF6B35",
-                "accent": "#4ECDC4",
-                "neutral_dark": "#2C3E50",
-                "neutral_light": "#ECF0F1",
-                "white": "#FFFFFF",
-                "black": "#000000",
-            },
-            "fonts": {
+                    "secondary": "#FF6B35",
+                    "accent": "#4ECDC4",
+                    "neutral_dark": "#2C3E50",
+                    "neutral_light": "#ECF0F1",
+                    "white": "#FFFFFF",
+                    "black": "#000000",
+                    },
+                "fonts": {
                 "primary": "Arial",
-                "secondary": "Helvetica",
-                "accent": "Georgia",
-            },
-            "spacing": {"small": 8, "medium": 16, "large": 32, "xlarge": 64},
-            "effects": {
+                    "secondary": "Helvetica",
+                    "accent": "Georgia",
+                    },
+                "spacing": {"small": 8, "medium": 16, "large": 32, "xlarge": 64},
+                "effects": {
                 "shadow": {"offset": (2, 2), "blur": 4, "color": "rgba(0,0,0,0.3)"},
-                "glow": {"blur": 8, "color": "rgba(255,255,255,0.8)"},
-            },
-        }
+                    "glow": {"blur": 8, "color": "rgba(255,255,255,0.8)"},
+                    },
+                }
+
 
     async def initialize(self) -> bool:
         """Initialize GIMP automation system."""
@@ -353,6 +362,7 @@ class GIMPAutomation:
             self.logger.error(f"Failed to initialize GIMP automation: {e}")
             return False
 
+
     async def _load_credentials(self):
         """Load necessary credentials and configuration."""
         try:
@@ -369,34 +379,35 @@ class GIMPAutomation:
         except Exception as e:
             self.logger.warning(f"Could not load GIMP configuration: {e}")
 
+
     async def _install_custom_scripts(self):
         """Install custom GIMP scripts for automation."""
         try:
             # Create a simple batch processing script
             batch_script = """
-(define (trae-batch-process input-file output-file operations)
-  (let* ((image (car (gimp-file-load RUN-NONINTERACTIVE input-file input-file)))
-         (drawable (car (gimp-image-get-active-layer image))))
-    
+(define (trae - batch - process input - file output - file operations)
+  (let* ((image (car (gimp - file - load RUN - NONINTERACTIVE input - file input - file)))
+         (drawable (car (gimp - image - get - active - layer image))))
+
     ; Apply operations based on the operations list
     ; This is a simplified version - full implementation would parse operations
-    
-    ; Auto-levels
-    (gimp-levels-stretch drawable)
-    
-    ; Auto-color
-    (gimp-auto-stretch-hsv drawable)
-    
+
+    ; Auto - levels
+    (gimp - levels - stretch drawable)
+
+    ; Auto - color
+        (gimp - auto - stretch - hsv drawable)
+
     ; Export the result
-    (file-png-save RUN-NONINTERACTIVE image drawable output-file output-file 0 9 0 0 0 0 0)
-    
+    (file - png - save RUN - NONINTERACTIVE image drawable output - file output - file 0 9 0 0 0 0 0)
+
     ; Clean up
-    (gimp-image-delete image)
+    (gimp - image - delete image)
   )
 )
 """
 
-            script_path = self.gimp_scripts_dir / "trae-automation.scm"
+            script_path = self.gimp_scripts_dir / "trae - automation.scm"
             with open(script_path, "w") as f:
                 f.write(batch_script)
 
@@ -405,16 +416,17 @@ class GIMPAutomation:
         except Exception as e:
             self.logger.warning(f"Could not install custom scripts: {e}")
 
+
     async def _test_gimp_functionality(self) -> bool:
         """Test basic GIMP functionality."""
         try:
             # Test GIMP version
             result = subprocess.run(
                 [self.gimp_path, "--version"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+                    capture_output = True,
+                    text = True,
+                    timeout = 10,
+                    )
 
             if result.returncode == 0:
                 self.logger.info(f"GIMP version: {result.stdout.strip()}")
@@ -426,6 +438,7 @@ class GIMPAutomation:
             self.logger.debug(f"GIMP functionality test failed: {e}")
             return False
 
+
     async def analyze_image_file(self, file_path: str) -> ImageFile:
         """Analyze image file and extract metadata."""
         try:
@@ -436,11 +449,11 @@ class GIMPAutomation:
             # Get basic file info
             stat = path.stat()
             image_file = ImageFile(
-                path=str(path),
-                format=ImageFormat(path.suffix.lower().lstrip(".")),
-                size_bytes=stat.st_size,
-                created_at=datetime.fromtimestamp(stat.st_ctime).isoformat(),
-            )
+                path = str(path),
+                    format = ImageFormat(path.suffix.lower().lstrip(".")),
+                    size_bytes = stat.st_size,
+                    created_at = datetime.fromtimestamp(stat.st_ctime).isoformat(),
+                    )
 
             # Use PIL for detailed analysis if available
             if IMAGE_LIBS_AVAILABLE:
@@ -458,12 +471,12 @@ class GIMPAutomation:
                         image_file.metadata = {
                             "has_transparency": img.mode in ("RGBA", "LA")
                             or "transparency" in img.info,
-                            "is_animated": hasattr(img, "is_animated")
+                                "is_animated": hasattr(img, "is_animated")
                             and img.is_animated,
-                            "exif": (
+                                "exif": (
                                 dict(img.getexif()) if hasattr(img, "getexif") else {}
                             ),
-                        }
+                                }
 
                 except Exception as e:
                     self.logger.warning(f"Detailed image analysis failed: {e}")
@@ -474,35 +487,37 @@ class GIMPAutomation:
             self.logger.error(f"Error analyzing image file: {e}")
             raise
 
+
     async def create_processing_task(
         self,
-        input_files: List[str],
-        output_path: str,
-        operations: List[Dict[str, Any]],
-        template: Optional[DesignTemplate] = None,
-        quality: ProcessingQuality = ProcessingQuality.STANDARD,
-        priority: int = 5,
-    ) -> str:
+            input_files: List[str],
+            output_path: str,
+            operations: List[Dict[str, Any]],
+            template: Optional[DesignTemplate] = None,
+            quality: ProcessingQuality = ProcessingQuality.STANDARD,
+            priority: int = 5,
+            ) -> str:
         """Create a new image processing task."""
         task_id = str(uuid.uuid4())
 
         task = ProcessingTask(
-            id=task_id,
-            input_files=input_files,
-            output_path=output_path,
-            operations=operations,
-            template=template,
-            quality=quality,
-            priority=priority,
-            created_at=datetime.now().isoformat(),
-        )
+            id = task_id,
+                input_files = input_files,
+                output_path = output_path,
+                operations = operations,
+                template = template,
+                quality = quality,
+                priority = priority,
+                created_at = datetime.now().isoformat(),
+                )
 
         # Add to queue (sorted by priority)
         self.processing_queue.append(task)
-        self.processing_queue.sort(key=lambda x: x.priority, reverse=True)
+        self.processing_queue.sort(key = lambda x: x.priority, reverse = True)
 
         self.logger.info(f"Created processing task: {task_id}")
         return task_id
+
 
     async def process_image_batch(self, tasks: List[ProcessingTask]) -> Dict[str, Any]:
         """Process multiple image tasks in batch."""
@@ -518,7 +533,7 @@ class GIMPAutomation:
             # Collect results
             for task_id, future in futures:
                 try:
-                    result = future.result(timeout=300)  # 5 minute timeout
+                    result = future.result(timeout = 300)  # 5 minute timeout
                     results[task_id] = result
                 except Exception as e:
                     results[task_id] = {"error": str(e), "status": "failed"}
@@ -528,6 +543,7 @@ class GIMPAutomation:
         except Exception as e:
             self.logger.error(f"Batch processing error: {e}")
             return {"error": str(e)}
+
 
     def _process_single_task(self, task: ProcessingTask) -> Dict[str, Any]:
         """Process a single image task."""
@@ -541,7 +557,7 @@ class GIMPAutomation:
 
             for i, operation in enumerate(task.operations):
                 self.logger.info(
-                    f"Processing operation {i+1}/{len(task.operations)}: {operation.get('type')}"
+                    f"Processing operation {i + 1}/{len(task.operations)}: {operation.get('type')}"
                 )
 
                 # Update progress
@@ -562,7 +578,7 @@ class GIMPAutomation:
                 if temp_file != task.output_path and temp_file not in task.input_files:
                     try:
                         os.remove(temp_file)
-                    except:
+                    except Exception:
                         pass
 
             task.status = "completed"
@@ -571,12 +587,12 @@ class GIMPAutomation:
 
             return {
                 "status": "completed",
-                "output_path": task.output_path,
-                "duration": (
+                    "output_path": task.output_path,
+                    "duration": (
                     datetime.fromisoformat(task.completed_at)
                     - datetime.fromisoformat(task.started_at)
                 ).total_seconds(),
-            }
+                    }
 
         except Exception as e:
             task.status = "failed"
@@ -587,6 +603,7 @@ class GIMPAutomation:
         finally:
             if task.id in self.active_tasks:
                 del self.active_tasks[task.id]
+
 
     def _apply_operation(
         self, input_files: List[str], operation: Dict[str, Any], task: ProcessingTask
@@ -615,6 +632,7 @@ class GIMPAutomation:
         else:
             self.logger.warning(f"Unknown operation type: {op_type}")
             return input_files
+
 
     def _resize_images(
         self, input_files: List[str], params: Dict[str, Any]
@@ -649,6 +667,7 @@ class GIMPAutomation:
 
         return output_files
 
+
     def _crop_images(self, input_files: List[str], params: Dict[str, Any]) -> List[str]:
         """Crop images to specified area."""
         output_files = []
@@ -677,6 +696,7 @@ class GIMPAutomation:
 
         return output_files
 
+
     def _rotate_images(
         self, input_files: List[str], params: Dict[str, Any]
     ) -> List[str]:
@@ -690,7 +710,7 @@ class GIMPAutomation:
             if IMAGE_LIBS_AVAILABLE and angle != 0:
                 try:
                     with Image.open(input_file) as img:
-                        rotated = img.rotate(angle, expand=True)
+                        rotated = img.rotate(angle, expand = True)
                         rotated.save(output_file)
                         output_files.append(output_file)
 
@@ -703,6 +723,7 @@ class GIMPAutomation:
                 output_files.append(output_file)
 
         return output_files
+
 
     def _apply_filter(
         self, input_files: List[str], params: Dict[str, Any]
@@ -719,7 +740,7 @@ class GIMPAutomation:
                     with Image.open(input_file) as img:
                         if filter_type == "blur":
                             radius = params.get("radius", 2)
-                            img = img.filter(ImageFilter.GaussianBlur(radius=radius))
+                            img = img.filter(ImageFilter.GaussianBlur(radius = radius))
                         elif filter_type == "sharpen":
                             img = img.filter(ImageFilter.SHARPEN)
                         elif filter_type == "edge_enhance":
@@ -739,6 +760,7 @@ class GIMPAutomation:
                 output_files.append(output_file)
 
         return output_files
+
 
     def _adjust_images(
         self, input_files: List[str], params: Dict[str, Any]
@@ -785,6 +807,7 @@ class GIMPAutomation:
 
         return output_files
 
+
     def _composite_images(self, input_files: List[str], output_path: str) -> str:
         """Composite multiple images into one."""
         if len(input_files) == 1:
@@ -825,6 +848,7 @@ class GIMPAutomation:
             shutil.copy2(input_files[0], output_path)
             return output_path
 
+
     def _add_text_overlay(
         self, input_files: List[str], params: Dict[str, Any]
     ) -> List[str]:
@@ -851,11 +875,11 @@ class GIMPAutomation:
                         # Try to load font
                         try:
                             font = ImageFont.truetype("arial.ttf", font_size)
-                        except:
+                        except Exception:
                             font = ImageFont.load_default()
 
                         # Draw text
-                        draw.text(position, text, fill=color, font=font)
+                        draw.text(position, text, fill = color, font = font)
 
                         img.save(output_file)
                         output_files.append(output_file)
@@ -869,6 +893,7 @@ class GIMPAutomation:
                 output_files.append(output_file)
 
         return output_files
+
 
     def _add_watermark(
         self, input_files: List[str], params: Dict[str, Any]
@@ -929,6 +954,7 @@ class GIMPAutomation:
 
         return output_files
 
+
     def _convert_format(
         self, input_files: List[str], params: Dict[str, Any]
     ) -> List[str]:
@@ -948,26 +974,26 @@ class GIMPAutomation:
                         # Convert color mode if needed
                         if target_format.upper() == "JPEG" and img.mode in (
                             "RGBA",
-                            "LA",
-                        ):
+                                "LA",
+                                ):
                             # Convert to RGB for JPEG
                             background = Image.new("RGB", img.size, (255, 255, 255))
                             background.paste(
                                 img,
-                                mask=img.split()[-1] if img.mode == "RGBA" else None,
-                            )
+                                    mask = img.split()[-1] if img.mode == "RGBA" else None,
+                                    )
                             img = background
 
                         # Save with appropriate parameters
                         if target_format.upper() == "JPEG":
                             img.save(
                                 output_file,
-                                format=target_format,
-                                quality=quality,
-                                optimize=True,
-                            )
+                                    format = target_format,
+                                    quality = quality,
+                                    optimize = True,
+                                    )
                         else:
-                            img.save(output_file, format=target_format)
+                            img.save(output_file, format = target_format)
 
                         output_files.append(output_file)
 
@@ -981,10 +1007,12 @@ class GIMPAutomation:
 
         return output_files
 
+
     def _get_temp_file(self, suffix: str = ".png") -> str:
         """Generate temporary file path."""
         temp_id = str(uuid.uuid4())[:8]
         return str(self.temp_dir / f"temp_{temp_id}{suffix}")
+
 
     async def create_design_from_template(self, spec: DesignSpec) -> str:
         """Create a design from a template specification."""
@@ -1015,18 +1043,18 @@ class GIMPAutomation:
                     try:
                         font_size = font_config.get("size", 48)
                         font = ImageFont.truetype("arial.ttf", font_size)
-                    except:
+                    except Exception:
                         font = ImageFont.load_default()
 
                     # Calculate text position (centered in area)
-                    bbox = draw.textbbox((0, 0), spec.title, font=font)
+                    bbox = draw.textbbox((0, 0), spec.title, font = font)
                     text_width = bbox[2] - bbox[0]
                     text_height = bbox[3] - bbox[1]
 
                     x = title_area["x"] + (title_area["width"] - text_width) // 2
                     y = title_area["y"] + (title_area["height"] - text_height) // 2
 
-                    draw.text((x, y), spec.title, fill=spec.text_color, font=font)
+                    draw.text((x, y), spec.title, fill = spec.text_color, font = font)
 
                 # Add subtitle if provided
                 if spec.subtitle and "subtitle_area" in layout:
@@ -1036,10 +1064,10 @@ class GIMPAutomation:
                     try:
                         font_size = font_config.get("size", 24)
                         font = ImageFont.truetype("arial.ttf", font_size)
-                    except:
+                    except Exception:
                         font = ImageFont.load_default()
 
-                    bbox = draw.textbbox((0, 0), spec.subtitle, font=font)
+                    bbox = draw.textbbox((0, 0), spec.subtitle, font = font)
                     text_width = bbox[2] - bbox[0]
                     text_height = bbox[3] - bbox[1]
 
@@ -1049,7 +1077,7 @@ class GIMPAutomation:
                         + (subtitle_area["height"] - text_height) // 2
                     )
 
-                    draw.text((x, y), spec.subtitle, fill=spec.text_color, font=font)
+                    draw.text((x, y), spec.subtitle, fill = spec.text_color, font = font)
 
                 # Add logo if provided
                 if (
@@ -1063,8 +1091,8 @@ class GIMPAutomation:
                         # Resize logo to fit area
                         logo.thumbnail(
                             (logo_area["width"], logo_area["height"]),
-                            Image.Resampling.LANCZOS,
-                        )
+                                Image.Resampling.LANCZOS,
+                                )
 
                         # Center logo in area
                         x = logo_area["x"] + (logo_area["width"] - logo.width) // 2
@@ -1085,8 +1113,8 @@ class GIMPAutomation:
                                 # Resize to fit area
                                 bg_img = bg_img.resize(
                                     (image_area["width"], image_area["height"]),
-                                    Image.Resampling.LANCZOS,
-                                )
+                                        Image.Resampling.LANCZOS,
+                                        )
 
                                 img.paste(bg_img, (image_area["x"], image_area["y"]))
                             break  # Use first available image
@@ -1113,6 +1141,7 @@ class GIMPAutomation:
             self.logger.error(f"Error creating design from template: {e}")
             raise
 
+
     async def batch_process_images(
         self, input_dir: str, output_dir: str, operations: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
@@ -1120,18 +1149,18 @@ class GIMPAutomation:
         try:
             input_path = Path(input_dir)
             output_path = Path(output_dir)
-            output_path.mkdir(parents=True, exist_ok=True)
+            output_path.mkdir(parents = True, exist_ok = True)
 
             # Find all image files
             image_extensions = [
                 ".png",
-                ".jpg",
-                ".jpeg",
-                ".gif",
-                ".bmp",
-                ".tiff",
-                ".webp",
-            ]
+                    ".jpg",
+                    ".jpeg",
+                    ".gif",
+                    ".bmp",
+                    ".tiff",
+                    ".webp",
+                    ]
             image_files = []
 
             for ext in image_extensions:
@@ -1148,10 +1177,10 @@ class GIMPAutomation:
 
                 task_id = await self.create_processing_task(
                     input_files=[str(image_file)],
-                    output_path=str(output_file),
-                    operations=operations,
-                    quality=ProcessingQuality.HIGH,
-                )
+                        output_path = str(output_file),
+                        operations = operations,
+                        quality = ProcessingQuality.HIGH,
+                        )
 
                 task = next((t for t in self.processing_queue if t.id == task_id), None)
                 if task:
@@ -1162,13 +1191,14 @@ class GIMPAutomation:
 
             return {
                 "processed_files": len(tasks),
-                "results": results,
-                "output_directory": str(output_path),
-            }
+                    "results": results,
+                    "output_directory": str(output_path),
+                    }
 
         except Exception as e:
             self.logger.error(f"Batch processing error: {e}")
             return {"error": str(e)}
+
 
     async def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
         """Get status of a processing task."""
@@ -1177,54 +1207,55 @@ class GIMPAutomation:
             task = self.active_tasks[task_id]
             return {
                 "id": task.id,
-                "status": task.status,
-                "progress": task.progress,
-                "created_at": task.created_at,
-                "started_at": task.started_at,
-                "error": task.error,
-            }
+                    "status": task.status,
+                    "progress": task.progress,
+                    "created_at": task.created_at,
+                    "started_at": task.started_at,
+                    "error": task.error,
+                    }
 
         # Check queue
         for task in self.processing_queue:
             if task.id == task_id:
                 return {
                     "id": task.id,
-                    "status": task.status,
-                    "progress": task.progress,
-                    "created_at": task.created_at,
-                    "position_in_queue": self.processing_queue.index(task),
-                }
+                        "status": task.status,
+                        "progress": task.progress,
+                        "created_at": task.created_at,
+                        "position_in_queue": self.processing_queue.index(task),
+                        }
 
         return None
+
 
     async def health_check(self) -> Dict[str, Any]:
         """Perform health check of GIMP automation system."""
         health = {
             "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "components": {},
-        }
+                "timestamp": datetime.now().isoformat(),
+                "components": {},
+                }
 
         # Check GIMP availability
         health["components"]["gimp"] = {
             "available": bool(self.gimp_path),
-            "path": self.gimp_path,
-            "scripts_dir": str(self.gimp_scripts_dir),
-        }
+                "path": self.gimp_path,
+                "scripts_dir": str(self.gimp_scripts_dir),
+                }
 
         # Check image libraries
         health["components"]["image_libs"] = {
             "available": IMAGE_LIBS_AVAILABLE,
-            "pil": "PIL" in sys.modules,
-            "numpy": "numpy" in sys.modules,
-        }
+                "pil": "PIL" in sys.modules,
+                "numpy": "numpy" in sys.modules,
+                }
 
         # Check processing status
         health["components"]["processing"] = {
             "active_tasks": len(self.active_tasks),
-            "queued_tasks": len(self.processing_queue),
-            "max_workers": self.max_workers,
-        }
+                "queued_tasks": len(self.processing_queue),
+                "max_workers": self.max_workers,
+                }
 
         # Overall status
         if not health["components"]["gimp"]["available"]:
@@ -1232,24 +1263,25 @@ class GIMPAutomation:
 
         return health
 
+
     async def cleanup(self):
         """Cleanup resources and temporary files."""
         try:
             # Shutdown executor
-            self.executor.shutdown(wait=True)
+                self.executor.shutdown(wait = True)
 
             # Clean up temporary files
             if self.temp_dir.exists():
-                shutil.rmtree(self.temp_dir, ignore_errors=True)
+                shutil.rmtree(self.temp_dir, ignore_errors = True)
 
             self.logger.info("GIMP automation cleanup completed")
 
         except Exception as e:
             self.logger.error(f"Cleanup error: {e}")
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_gimp_automation():
         automation = GIMPAutomation()
@@ -1265,13 +1297,13 @@ if __name__ == "__main__":
 
             # Test design creation
             spec = DesignSpec(
-                template=DesignTemplate.SOCIAL_POST,
-                dimensions=(1080, 1080),
-                title="Test Post",
-                subtitle="Created with TRAE.AI",
-                background_color="#007ACC",
-                text_color="#FFFFFF",
-            )
+                template = DesignTemplate.SOCIAL_POST,
+                    dimensions=(1080, 1080),
+                    title="Test Post",
+                    subtitle="Created with TRAE.AI",
+                    background_color="#007ACC",
+                    text_color="#FFFFFF",
+                    )
 
             try:
                 design_path = await automation.create_design_from_template(spec)

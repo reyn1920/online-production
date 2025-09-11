@@ -5,25 +5,25 @@ import sys
 
 # --- Configuration ---
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
 
 VENV_PATH = "venv_creative"
 REQUIREMENTS_FILE = "requirements_creative.txt"
-HOMEBREW_URL = "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+HOMEBREW_URL = "https://raw.githubusercontent.com / Homebrew / install / HEAD / install.sh"
 
 # System dependencies required by Python packages (key: package name, value: brew formula)
 SYS_DEPS = {
     "py3exiv2": "boost",
-    # Add other known system dependencies here
+        # Add other known system dependencies here
 }
 
 # --- Doctor Script ---
 
 
 def check_command(command):
-    """Checks if a command-line tool is available."""
+    """Checks if a command - line tool is available."""
     return (
-        subprocess.run(["which", command], capture_output=True, text=True).returncode
+        subprocess.run(["which", command], capture_output = True, text = True).returncode
         == 0
     )
 
@@ -38,7 +38,7 @@ def check_prerequisites():
         logging.info(
             "Please install Homebrew by running the following command, then run this script again:"
         )
-        print(f'\n/bin/bash -c "$(curl -fsSL {HOMEBREW_URL})"\n')
+        print(f'\n / bin / bash -c "$(curl -fsSL {HOMEBREW_URL})"\n')
         return False
     logging.info("✅ Homebrew is installed.")
     return True
@@ -51,7 +51,7 @@ def check_system_libraries():
     for pkg, formula in SYS_DEPS.items():
         logging.info(f"-> Checking for '{formula}' (required by '{pkg}')...")
         result = subprocess.run(
-            ["brew", "list", formula], capture_output=True, text=True
+            ["brew", "list", formula], capture_output = True, text = True
         )
         if result.returncode != 0:
             missing_libs.append(formula)
@@ -73,7 +73,7 @@ def setup_venv():
     logging.info(f"Step 3: Setting up virtual environment at '{VENV_PATH}'...")
     if not os.path.exists(VENV_PATH):
         try:
-            subprocess.run([sys.executable, "-m", "venv", VENV_PATH], check=True)
+            subprocess.run([sys.executable, "-m", "venv", VENV_PATH], check = True)
             logging.info("✅ Virtual environment created successfully.")
         except subprocess.CalledProcessError as e:
             logging.error(f"Failed to create virtual environment: {e}")
@@ -91,15 +91,15 @@ def install_dependencies():
     pip_executable = os.path.join(VENV_PATH, "bin", "pip")
 
     # It is critical to first upgrade pip inside the new venv
-    subprocess.run([pip_executable, "install", "--upgrade", "pip"], check=True)
+    subprocess.run([pip_executable, "install", "--upgrade", "pip"], check = True)
 
     try:
         command = [pip_executable, "install", "-r", REQUIREMENTS_FILE]
         process = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True
         )
 
-        # Stream output in real-time
+        # Stream output in real - time
         for line in iter(process.stdout.readline, ""):
             print(line, end="")
         for line in iter(process.stderr.readline, ""):
@@ -141,7 +141,6 @@ def main():
 
     logging.info("\n--- ✅ Creative Environment is Ready! ---")
     logging.info("You can now test the video and avatar features.")
-
 
 if __name__ == "__main__":
     main()

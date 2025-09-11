@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Generate Test Video - Create Actual MP4 Using Simple ffmpeg Commands
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -26,20 +26,22 @@ logger = logging.getLogger(__name__)
 class SimpleVideoGenerator:
     """Simple video generator using basic ffmpeg commands."""
 
+
     def __init__(self):
         self.project_root = Path(__file__).parent
         self.output_dir = self.project_root / "output" / "test_videos"
 
         # Create output directory
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir.mkdir(parents = True, exist_ok = True)
 
         logger.info(f"Output directory: {self.output_dir}")
+
 
     def check_ffmpeg(self) -> bool:
         """Check if ffmpeg is available."""
         try:
             result = subprocess.run(
-                ["ffmpeg", "-version"], capture_output=True, text=True
+                ["ffmpeg", "-version"], capture_output = True, text = True
             )
             if result.returncode == 0:
                 logger.info("ffmpeg is available")
@@ -50,6 +52,7 @@ class SimpleVideoGenerator:
         except FileNotFoundError:
             logger.error("ffmpeg not installed")
             return False
+
 
     def create_basic_video(self, title: str, duration: int = 10) -> str:
         """Create a basic video with solid color background and simple text."""
@@ -63,24 +66,24 @@ class SimpleVideoGenerator:
             # Create simple video with color background and text
             cmd = [
                 "ffmpeg",
-                "-y",  # Overwrite output file
+                    "-y",  # Overwrite output file
                 "-f",
-                "lavfi",
-                "-i",
-                f"color=c=blue:size=1280x720:duration={duration}",
-                "-vf",
-                f"drawtext=text='{title}':fontcolor=white:fontsize=48:x=(w-text_w)/2:y=(h-text_h)/2",
-                "-c:v",
-                "libx264",
-                "-pix_fmt",
-                "yuv420p",
-                "-t",
-                str(duration),
-                str(video_path),
-            ]
+                    "lavfi",
+                    "-i",
+                    f"color = c=blue:size = 1280x720:duration={duration}",
+                    "-vf",
+                    f"drawtext = text='{title}':fontcolor = white:fontsize = 48:x=(w - text_w)/2:y=(h - text_h)/2",
+                    "-c:v",
+                    "libx264",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-t",
+                    str(duration),
+                    str(video_path),
+                    ]
 
             logger.info(f"Creating basic video: {video_path}")
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
                 logger.info(f"Video created successfully: {video_path}")
@@ -92,6 +95,7 @@ class SimpleVideoGenerator:
         except Exception as e:
             logger.error(f"Could not create video: {e}")
             return None
+
 
     def create_audio_video(self, title: str, duration: int = 10) -> str:
         """Create a video with both visual and audio components."""
@@ -105,31 +109,31 @@ class SimpleVideoGenerator:
             # Create video with audio
             cmd = [
                 "ffmpeg",
-                "-y",
-                "-f",
-                "lavfi",
-                "-i",
-                f"color=c=green:size=1280x720:duration={duration}",
-                "-f",
-                "lavfi",
-                "-i",
-                f"sine=frequency=440:duration={duration}",
-                "-vf",
-                f"drawtext=text='{title}':fontcolor=white:fontsize=36:x=(w-text_w)/2:y=(h-text_h)/2",
-                "-c:v",
-                "libx264",
-                "-c:a",
-                "aac",
-                "-pix_fmt",
-                "yuv420p",
-                "-t",
-                str(duration),
-                "-shortest",
-                str(video_path),
-            ]
+                    "-y",
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    f"color = c=green:size = 1280x720:duration={duration}",
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    f"sine = frequency = 440:duration={duration}",
+                    "-vf",
+                    f"drawtext = text='{title}':fontcolor = white:fontsize = 36:x=(w - text_w)/2:y=(h - text_h)/2",
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-t",
+                    str(duration),
+                    "-shortest",
+                    str(video_path),
+                    ]
 
             logger.info(f"Creating audio video: {video_path}")
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
                 logger.info(f"Audio video created successfully: {video_path}")
@@ -142,6 +146,7 @@ class SimpleVideoGenerator:
             logger.error(f"Could not create audio video: {e}")
             return None
 
+
     def create_demo_video(self) -> str:
         """Create a demo video showcasing the system."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -151,31 +156,31 @@ class SimpleVideoGenerator:
             # Create demo video
             cmd = [
                 "ffmpeg",
-                "-y",
-                "-f",
-                "lavfi",
-                "-i",
-                "color=c=red:size=1280x720:duration=15",
-                "-f",
-                "lavfi",
-                "-i",
-                "sine=frequency=523:duration=15",
-                "-vf",
-                "drawtext=text='TRAE.AI Production System':fontcolor=white:fontsize=42:x=(w-text_w)/2:y=(h-text_h)/2",
-                "-c:v",
-                "libx264",
-                "-c:a",
-                "aac",
-                "-pix_fmt",
-                "yuv420p",
-                "-t",
-                "15",
-                "-shortest",
-                str(video_path),
-            ]
+                    "-y",
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    "color = c=red:size = 1280x720:duration = 15",
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    "sine = frequency = 523:duration = 15",
+                    "-vf",
+                    "drawtext = text='TRAE.AI Production System':fontcolor = white:fontsize = 42:x=(w - text_w)/2:y=(h - text_h)/2",
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-t",
+                    "15",
+                    "-shortest",
+                    str(video_path),
+                    ]
 
             logger.info(f"Creating demo video: {video_path}")
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
                 logger.info(f"Demo video created successfully: {video_path}")
@@ -188,13 +193,14 @@ class SimpleVideoGenerator:
             logger.error(f"Could not create demo video: {e}")
             return None
 
+
     def generate_all_videos(self) -> dict:
         """Generate all test videos."""
         results = {
             "timestamp": datetime.now().isoformat(),
-            "videos_created": [],
-            "errors": [],
-        }
+                "videos_created": [],
+                "errors": [],
+                }
 
         # Check prerequisites
         if not self.check_ffmpeg():
@@ -204,11 +210,11 @@ class SimpleVideoGenerator:
         # Video generation tasks
         video_tasks = [
             ("create_basic_video", "AI Revolution 2024", 8),
-            ("create_basic_video", "TRAE.AI Platform", 8),
-            ("create_audio_video", "Future of Technology", 10),
-            ("create_audio_video", "Creative AI Systems", 10),
-            ("create_demo_video",),
-        ]
+                ("create_basic_video", "TRAE.AI Platform", 8),
+                ("create_audio_video", "Future of Technology", 10),
+                ("create_audio_video", "Creative AI Systems", 10),
+                ("create_demo_video",),
+                ]
 
         for task in video_tasks:
             try:
@@ -227,9 +233,9 @@ class SimpleVideoGenerator:
                     results["videos_created"].append(
                         {
                             "name": task_name,
-                            "path": video_path,
-                            "size_mb": round(file_size / (1024 * 1024), 2),
-                        }
+                                "path": video_path,
+                                "size_mb": round(file_size / (1024 * 1024), 2),
+                                }
                     )
                     logger.info(f"✓ Created: {task_name}")
                 else:
@@ -286,7 +292,6 @@ def main():
         print("   • Use videos for system demonstrations")
 
     print("=" * 70)
-
 
 if __name__ == "__main__":
     main()

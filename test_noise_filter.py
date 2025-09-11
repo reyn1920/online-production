@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Test script for the RegexNoiseFilter implementation.
 """
@@ -21,13 +21,13 @@ def test_noise_filter():
 
     # Setup logging with noise filter enabled
     logger_system = setup_logging(
-        log_dir="data/logs",
-        log_level="DEBUG",
-        enable_noise_filter=True,
-        noise_drop_patterns=[r".*heartbeat.*", r".*ping.*pong.*"],
-        noise_reduce_patterns=[r".*database.*query.*"],
-        noise_reduce_frequency=3,
-    )
+        log_dir="data / logs",
+            log_level="DEBUG",
+            enable_noise_filter = True,
+            noise_drop_patterns=[r".*heartbeat.*", r".*ping.*pong.*"],
+            noise_reduce_patterns=[r".*database.*query.*"],
+            noise_reduce_frequency = 3,
+            )
 
     logger = get_logger("test")
 
@@ -49,23 +49,22 @@ def test_noise_filter():
     print("\n4. Testing runtime configuration:")
     logger_system.configure_noise_filter(
         drop_patterns=[r".*test.*drop.*"],
-        reduce_patterns=[r".*test.*reduce.*"],
-        reduce_frequency=2,
-    )
+            reduce_patterns=[r".*test.*reduce.*"],
+            reduce_frequency = 2,
+            )
 
     for i in range(6):
         logger.info(f"Test drop message {i} - should be dropped")
         logger.info(f"Test reduce message {i} - should appear every 2nd time")
         logger.info(f"Regular message {i} - should always appear")
 
-    print("\nTest completed. Check the log files in data/logs/ to verify filtering.")
+    print("\nTest completed. Check the log files in data / logs/ to verify filtering.")
     print("Expected behavior:")
-    print("- Heartbeat and ping/pong messages should not appear")
+    print("- Heartbeat and ping / pong messages should not appear")
     print("- Database query messages should appear every 3rd time initially")
     print("- Test drop messages should not appear after reconfiguration")
     print("- Test reduce messages should appear every 2nd time after reconfiguration")
     print("- Regular messages should always appear")
-
 
 if __name__ == "__main__":
     test_noise_filter()

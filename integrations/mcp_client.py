@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 MCP Client for Puppeteer Integration
 Wrapper for communicating with MCP Puppeteer server
@@ -14,19 +14,21 @@ from typing import Any, Dict, Optional
 class MCPClient:
     """Client for MCP Puppeteer server communication"""
 
+
     def __init__(self):
         """Initialize MCP client"""
         self.logger = self._setup_logging()
         self.server_name = "mcp.config.usrlocalmcp.Puppeteer"
         self.available_tools = [
             "puppeteer_navigate",
-            "puppeteer_screenshot",
-            "puppeteer_click",
-            "puppeteer_fill",
-            "puppeteer_select",
-            "puppeteer_hover",
-            "puppeteer_evaluate",
-        ]
+                "puppeteer_screenshot",
+                "puppeteer_click",
+                "puppeteer_fill",
+                "puppeteer_select",
+                "puppeteer_hover",
+                "puppeteer_evaluate",
+                ]
+
 
     def _setup_logging(self) -> logging.Logger:
         """Setup logging"""
@@ -42,6 +44,7 @@ class MCPClient:
             logger.addHandler(handler)
 
         return logger
+
 
     async def call_tool(self, tool_name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -83,9 +86,10 @@ class MCPClient:
             self.logger.error(f"MCP tool call failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _simulate_navigate(self, args: Dict) -> Dict:
         """Simulate navigation (placeholder)"""
@@ -97,10 +101,11 @@ class MCPClient:
 
         return {
             "success": True,
-            "url": url,
-            "title": f"Page Title for {url}",
-            "timestamp": datetime.now().isoformat(),
-        }
+                "url": url,
+                "title": f"Page Title for {url}",
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def _simulate_screenshot(self, args: Dict) -> Dict:
         """Simulate screenshot (placeholder)"""
@@ -112,10 +117,11 @@ class MCPClient:
 
         return {
             "success": True,
-            "name": name,
-            "path": f"/tmp/{name}.png",
-            "timestamp": datetime.now().isoformat(),
-        }
+                "name": name,
+                "path": f"/tmp/{name}.png",
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def _simulate_click(self, args: Dict) -> Dict:
         """Simulate click (placeholder)"""
@@ -127,10 +133,11 @@ class MCPClient:
 
         return {
             "success": True,
-            "selector": selector,
-            "clicked": True,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "selector": selector,
+                "clicked": True,
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def _simulate_fill(self, args: Dict) -> Dict:
         """Simulate fill (placeholder)"""
@@ -143,11 +150,12 @@ class MCPClient:
 
         return {
             "success": True,
-            "selector": selector,
-            "value": value,
-            "filled": True,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "selector": selector,
+                "value": value,
+                "filled": True,
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def _simulate_evaluate(self, args: Dict) -> Dict:
         """Simulate JavaScript evaluation (placeholder)"""
@@ -167,10 +175,11 @@ class MCPClient:
 
         return {
             "success": True,
-            "script": script,
-            "result": result,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "script": script,
+                "result": result,
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def health_check(self) -> Dict:
         """Check MCP server health"""
@@ -182,19 +191,20 @@ class MCPClient:
 
             return {
                 "status": "healthy" if result.get("success") else "error",
-                "server": self.server_name,
-                "available_tools": self.available_tools,
-                "test_result": result,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "server": self.server_name,
+                    "available_tools": self.available_tools,
+                    "test_result": result,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             return {
                 "status": "error",
-                "server": self.server_name,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "server": self.server_name,
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     def get_available_tools(self) -> list:
         """Get list of available Puppeteer tools"""
@@ -204,10 +214,12 @@ class MCPClient:
 class RealMCPClient(MCPClient):
     """Real MCP client that uses the actual run_mcp tool"""
 
+
     def __init__(self, run_mcp_function):
         """Initialize with run_mcp function reference"""
         super().__init__()
         self.run_mcp = run_mcp_function
+
 
     async def call_tool(self, tool_name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -230,7 +242,7 @@ class RealMCPClient(MCPClient):
 
             # Call the actual MCP server
             result = await self.run_mcp(
-                server_name=self.server_name, tool_name=tool_name, args=args
+                server_name = self.server_name, tool_name = tool_name, args = args
             )
 
             return result
@@ -239,12 +251,12 @@ class RealMCPClient(MCPClient):
             self.logger.error(f"Real MCP tool call failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
-
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
 if __name__ == "__main__":
+
 
     async def test_mcp_client():
         """Test the MCP client"""
@@ -252,18 +264,18 @@ if __name__ == "__main__":
 
         # Health check
         health = await client.health_check()
-        print(f"Health: {json.dumps(health, indent=2)}")
+        print(f"Health: {json.dumps(health, indent = 2)}")
 
         # Test navigation
         nav_result = await client.call_tool(
             "puppeteer_navigate", {"url": "https://chat.openai.com"}
         )
-        print(f"Navigation: {json.dumps(nav_result, indent=2)}")
+        print(f"Navigation: {json.dumps(nav_result, indent = 2)}")
 
         # Test screenshot
         screenshot_result = await client.call_tool(
             "puppeteer_screenshot", {"name": "test_screenshot"}
         )
-        print(f"Screenshot: {json.dumps(screenshot_result, indent=2)}")
+        print(f"Screenshot: {json.dumps(screenshot_result, indent = 2)}")
 
     asyncio.run(test_mcp_client())

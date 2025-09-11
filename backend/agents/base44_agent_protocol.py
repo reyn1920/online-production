@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Base44 Agent Protocol Implementation
 
 This module implements the formal agentic protocol from the base44_agent_handbook.pdf,
 including:
-- Rephrase-and-Respond confirmation protocol
-- Intelligent Scraper/Coder mode switching
+- Rephrase - and - Respond confirmation protocol
+- Intelligent Scraper / Coder mode switching
 - Failsafe error prevention mechanisms
-- Production-grade agent behavior patterns
+- Production - grade agent behavior patterns
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -35,16 +35,17 @@ class AgentMode(Enum):
 
 
 class ConfirmationLevel(Enum):
-    """Rephrase-and-Respond confirmation levels."""
+    """Rephrase - and - Respond confirmation levels."""
 
     NONE = 0  # No confirmation required
     LOW = 1  # Simple acknowledgment
     MEDIUM = 2  # Rephrase key points
     HIGH = 3  # Full rephrase and confirmation
-    CRITICAL = 4  # Multi-step validation required
-
+    CRITICAL = 4  # Multi - step validation required
 
 @dataclass
+
+
 class TaskContext:
     """Context information for task processing."""
 
@@ -57,8 +58,9 @@ class TaskContext:
     constraints: Dict[str, Any]
     metadata: Dict[str, Any]
 
-
 @dataclass
+
+
 class FailsafeResult:
     """Result of failsafe validation."""
 
@@ -74,8 +76,9 @@ class Base44AgentProtocol(abc.ABC):
     Base44 Agent Protocol Implementation
 
     This class implements the formal agentic protocol from base44_agent_handbook.pdf,
-    providing structured agent behavior with built-in safety mechanisms.
+        providing structured agent behavior with built - in safety mechanisms.
     """
+
 
     def __init__(self, agent_id: str, protocol_config: Optional[Dict[str, Any]] = None):
         self.agent_id = agent_id
@@ -86,50 +89,52 @@ class Base44AgentProtocol(abc.ABC):
         # Protocol state tracking
         self.protocol_state = {
             "active_tasks": {},
-            "mode_history": [],
-            "confirmation_cache": {},
-            "failsafe_triggers": [],
-            "performance_metrics": {
+                "mode_history": [],
+                "confirmation_cache": {},
+                "failsafe_triggers": [],
+                "performance_metrics": {
                 "successful_confirmations": 0,
-                "failed_confirmations": 0,
-                "mode_switches": 0,
-                "failsafe_activations": 0,
-            },
-        }
+                    "failed_confirmations": 0,
+                    "mode_switches": 0,
+                    "failsafe_activations": 0,
+                    },
+                }
 
         self.logger.info(f"Base44 Agent Protocol initialized for {agent_id}")
+
 
     def _get_default_protocol_config(self) -> Dict[str, Any]:
         """Get default protocol configuration."""
         return {
             "rephrase_and_respond": {
                 "enabled": True,
-                "default_confirmation_level": ConfirmationLevel.MEDIUM,
-                "timeout_seconds": 30,
-                "max_rephrase_attempts": 3,
-            },
-            "mode_switching": {
+                    "default_confirmation_level": ConfirmationLevel.MEDIUM,
+                    "timeout_seconds": 30,
+                    "max_rephrase_attempts": 3,
+                    },
+                "mode_switching": {
                 "enabled": True,
-                "auto_switch_threshold": 0.7,
-                "mode_lock_duration": 300,  # 5 minutes
+                    "auto_switch_threshold": 0.7,
+                    "mode_lock_duration": 300,  # 5 minutes
                 "hybrid_mode_default": True,
-            },
-            "failsafe": {
+                    },
+                "failsafe": {
                 "enabled": True,
-                "risk_threshold": 0.8,
-                "auto_recovery": True,
-                "escalation_enabled": True,
-                "validation_steps": 3,
-            },
-            "protected_channels": {
+                    "risk_threshold": 0.8,
+                    "auto_recovery": True,
+                    "escalation_enabled": True,
+                    "validation_steps": 3,
+                    },
+                "protected_channels": {
                 "the_right_perspective": {
                     "enhanced_validation": True,
-                    "required_confirmation": ConfirmationLevel.HIGH,
-                    "mandatory_evidence_check": True,
-                    "humor_style_validation": True,
-                }
+                        "required_confirmation": ConfirmationLevel.HIGH,
+                        "mandatory_evidence_check": True,
+                        "humor_style_validation": True,
+                        }
             },
-        }
+                }
+
 
     async def process_with_protocol(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -139,7 +144,7 @@ class Base44AgentProtocol(abc.ABC):
             task: Task dictionary with requirements and context
 
         Returns:
-            Protocol-validated task result
+            Protocol - validated task result
         """
         task_id = task.get("id", f"task_{int(time.time())}")
 
@@ -148,7 +153,7 @@ class Base44AgentProtocol(abc.ABC):
             context = await self._analyze_task_context(task)
             self.protocol_state["active_tasks"][task_id] = context
 
-            # Step 2: Rephrase-and-Respond confirmation
+            # Step 2: Rephrase - and - Respond confirmation
             if self.protocol_config["rephrase_and_respond"]["enabled"]:
                 confirmation_result = await self._execute_rephrase_and_respond(
                     task, context
@@ -156,10 +161,10 @@ class Base44AgentProtocol(abc.ABC):
                 if not confirmation_result["confirmed"]:
                     return {
                         "success": False,
-                        "error": "Task confirmation failed",
-                        "protocol_step": "rephrase_and_respond",
-                        "details": confirmation_result,
-                    }
+                            "error": "Task confirmation failed",
+                            "protocol_step": "rephrase_and_respond",
+                            "details": confirmation_result,
+                            }
 
             # Step 3: Determine and switch to appropriate mode
             optimal_mode = await self._determine_optimal_mode(task, context)
@@ -175,7 +180,7 @@ class Base44AgentProtocol(abc.ABC):
             # Step 5: Execute task with protocol monitoring
             execution_result = await self._execute_with_monitoring(task, context)
 
-            # Step 6: Post-execution validation
+            # Step 6: Post - execution validation
             validation_result = await self._post_execution_validation(
                 execution_result, context
             )
@@ -185,12 +190,12 @@ class Base44AgentProtocol(abc.ABC):
 
             return {
                 "success": True,
-                "result": execution_result,
-                "validation": validation_result,
-                "protocol_context": context,
-                "mode_used": self.current_mode.value,
-                "agent_id": self.agent_id,
-            }
+                    "result": execution_result,
+                    "validation": validation_result,
+                    "protocol_context": context,
+                    "mode_used": self.current_mode.value,
+                    "agent_id": self.agent_id,
+                    }
 
         except Exception as e:
             self.logger.error(f"Protocol execution failed for task {task_id}: {str(e)}")
@@ -200,16 +205,17 @@ class Base44AgentProtocol(abc.ABC):
 
             return {
                 "success": False,
-                "error": str(e),
-                "protocol_step": "execution",
-                "failsafe_recovery": recovery_result,
-                "agent_id": self.agent_id,
-            }
+                    "error": str(e),
+                    "protocol_step": "execution",
+                    "failsafe_recovery": recovery_result,
+                    "agent_id": self.agent_id,
+                    }
 
         finally:
             # Clean up task context
             if task_id in self.protocol_state["active_tasks"]:
                 del self.protocol_state["active_tasks"][task_id]
+
 
     async def _analyze_task_context(self, task: Dict[str, Any]) -> TaskContext:
         """
@@ -246,31 +252,32 @@ class Base44AgentProtocol(abc.ABC):
             constraints.update(
                 {
                     "enhanced_validation": True,
-                    "evidence_required": True,
-                    "humor_style_check": True,
-                }
+                        "evidence_required": True,
+                        "humor_style_check": True,
+                        }
             )
 
         return TaskContext(
-            task_id=task.get("id", f"task_{int(time.time())}"),
-            complexity=complexity,
-            risk_level=risk_level,
-            mode_required=mode_required,
-            confirmation_level=confirmation_level,
-            dependencies=dependencies,
-            constraints=constraints,
-            metadata={
+            task_id = task.get("id", f"task_{int(time.time())}"),
+                complexity = complexity,
+                risk_level = risk_level,
+                mode_required = mode_required,
+                confirmation_level = confirmation_level,
+                dependencies = dependencies,
+                constraints = constraints,
+                metadata={
                 "created_at": datetime.now().isoformat(),
-                "task_type": task_type,
-                "agent_id": self.agent_id,
-            },
-        )
+                    "task_type": task_type,
+                    "agent_id": self.agent_id,
+                    },
+                )
+
 
     async def _execute_rephrase_and_respond(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
         """
-        Execute the Rephrase-and-Respond confirmation protocol.
+        Execute the Rephrase - and - Respond confirmation protocol.
 
         Args:
             task: Original task
@@ -299,28 +306,29 @@ class Base44AgentProtocol(abc.ABC):
                 ] += 1
                 return {
                     "confirmed": True,
-                    "method": "rephrase_validation",
-                    "rephrased_task": rephrased_task,
-                    "validation_score": validation_score,
-                    "confirmation_level": context.confirmation_level.name,
-                }
+                        "method": "rephrase_validation",
+                        "rephrased_task": rephrased_task,
+                        "validation_score": validation_score,
+                        "confirmation_level": context.confirmation_level.name,
+                        }
             else:
                 self.protocol_state["performance_metrics"]["failed_confirmations"] += 1
                 return {
                     "confirmed": False,
-                    "method": "rephrase_validation",
-                    "error": "Rephrase validation failed",
-                    "validation_score": validation_score,
-                    "threshold": threshold,
-                }
+                        "method": "rephrase_validation",
+                        "error": "Rephrase validation failed",
+                        "validation_score": validation_score,
+                        "threshold": threshold,
+                        }
 
         except Exception as e:
-            self.logger.error(f"Rephrase-and-Respond failed: {str(e)}")
+            self.logger.error(f"Rephrase - and - Respond failed: {str(e)}")
             return {
                 "confirmed": False,
-                "method": "rephrase_validation",
-                "error": str(e),
-            }
+                    "method": "rephrase_validation",
+                    "error": str(e),
+                    }
+
 
     async def _determine_optimal_mode(
         self, task: Dict[str, Any], context: TaskContext
@@ -343,24 +351,24 @@ class Base44AgentProtocol(abc.ABC):
             keyword in str(task).lower()
             for keyword in [
                 "research",
-                "analyze",
-                "investigate",
-                "gather",
-                "find",
-                "search",
-            ]
+                    "analyze",
+                    "investigate",
+                    "gather",
+                    "find",
+                    "search",
+                    ]
         )
 
         needs_implementation = any(
             keyword in str(task).lower()
             for keyword in [
                 "create",
-                "build",
-                "implement",
-                "generate",
-                "execute",
-                "deploy",
-            ]
+                    "build",
+                    "implement",
+                    "generate",
+                    "execute",
+                    "deploy",
+                    ]
         )
 
         # Mode determination logic
@@ -373,6 +381,7 @@ class Base44AgentProtocol(abc.ABC):
         else:
             # Default to hybrid for complex or unclear tasks
             return AgentMode.HYBRID
+
 
     async def _switch_agent_mode(self, target_mode: AgentMode, context: TaskContext):
         """
@@ -391,19 +400,20 @@ class Base44AgentProtocol(abc.ABC):
             self.protocol_state["mode_history"].append(
                 {
                     "from_mode": self.current_mode.value,
-                    "to_mode": target_mode.value,
-                    "timestamp": datetime.now().isoformat(),
-                    "task_id": context.task_id,
-                    "reason": "optimal_mode_determination",
-                }
+                        "to_mode": target_mode.value,
+                        "timestamp": datetime.now().isoformat(),
+                        "task_id": context.task_id,
+                        "reason": "optimal_mode_determination",
+                        }
             )
 
             # Update current mode
             self.current_mode = target_mode
             self.protocol_state["performance_metrics"]["mode_switches"] += 1
 
-            # Configure mode-specific settings
+            # Configure mode - specific settings
             await self._configure_mode_settings(target_mode)
+
 
     async def _execute_failsafe_validation(
         self, task: Dict[str, Any], context: TaskContext
@@ -461,25 +471,27 @@ class Base44AgentProtocol(abc.ABC):
                 self.protocol_state["performance_metrics"]["failsafe_activations"] += 1
 
             return FailsafeResult(
-                is_safe=is_safe,
-                risk_factors=risk_factors,
-                mitigation_actions=mitigation_actions,
-                confidence_score=confidence_score,
-                recommendations=self._generate_safety_recommendations(risk_factors),
-            )
+                is_safe = is_safe,
+                    risk_factors = risk_factors,
+                    mitigation_actions = mitigation_actions,
+                    confidence_score = confidence_score,
+                    recommendations = self._generate_safety_recommendations(risk_factors),
+                    )
 
         except Exception as e:
             self.logger.error(f"Failsafe validation error: {str(e)}")
             return FailsafeResult(
-                is_safe=False,
-                risk_factors=["failsafe_validation_error"],
-                mitigation_actions=["manual_review_required"],
-                confidence_score=0.0,
-                recommendations=["Immediate manual intervention required"],
-            )
+                is_safe = False,
+                    risk_factors=["failsafe_validation_error"],
+                    mitigation_actions=["manual_review_required"],
+                    confidence_score = 0.0,
+                    recommendations=["Immediate manual intervention required"],
+                    )
 
     # Abstract methods that must be implemented by concrete agents
     @abc.abstractmethod
+
+
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
@@ -487,6 +499,8 @@ class Base44AgentProtocol(abc.ABC):
         pass
 
     @abc.abstractmethod
+
+
     async def _rephrase_task(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
@@ -494,6 +508,8 @@ class Base44AgentProtocol(abc.ABC):
         pass
 
     @abc.abstractmethod
+
+
     async def _validate_rephrase_accuracy(
         self, original: Dict[str, Any], rephrased: Dict[str, Any]
     ) -> float:
@@ -501,6 +517,8 @@ class Base44AgentProtocol(abc.ABC):
         pass
 
     # Helper methods
+
+
     def _assess_task_complexity(self, task: Dict[str, Any]) -> str:
         """Assess task complexity level."""
         requirements = task.get("requirements", {})
@@ -516,20 +534,21 @@ class Base44AgentProtocol(abc.ABC):
         else:
             return "high"
 
+
     def _assess_risk_level(self, task: Dict[str, Any]) -> str:
         """Assess task risk level."""
         risk_indicators = [
             "delete",
-            "remove",
-            "destroy",
-            "overwrite",
-            "replace",
-            "production",
-            "live",
-            "critical",
-            "sensitive",
-            "private",
-        ]
+                "remove",
+                "destroy",
+                "overwrite",
+                "replace",
+                "production",
+                "live",
+                "critical",
+                "sensitive",
+                "private",
+                ]
 
         task_str = str(task).lower()
         risk_count = sum(1 for indicator in risk_indicators if indicator in task_str)
@@ -541,11 +560,13 @@ class Base44AgentProtocol(abc.ABC):
         else:
             return "high"
 
+
     def _determine_required_mode(self, task: Dict[str, Any]) -> AgentMode:
         """Determine the required agent mode based on task analysis."""
         return self._determine_optimal_mode(
             task, None
         )  # Simplified for context creation
+
 
     def _determine_confirmation_level(
         self, task: Dict[str, Any], risk_level: str
@@ -558,16 +579,18 @@ class Base44AgentProtocol(abc.ABC):
         else:
             return ConfirmationLevel.LOW
 
+
     def _is_protected_channel_task(self, task: Dict[str, Any]) -> bool:
         """Check if task involves protected channels."""
         task_str = str(task).lower()
         protected_keywords = [
             "right_perspective",
-            "the_right_perspective",
-            "political",
-            "news",
-        ]
+                "the_right_perspective",
+                "political",
+                "news",
+                ]
         return any(keyword in task_str for keyword in protected_keywords)
+
 
     async def _validate_protected_channel_requirements(
         self, task: Dict[str, Any]
@@ -588,9 +611,10 @@ class Base44AgentProtocol(abc.ABC):
 
         return {
             "valid": len(violations) == 0,
-            "violations": violations,
-            "required_actions": required_actions,
-        }
+                "violations": violations,
+                "required_actions": required_actions,
+                }
+
 
     async def _check_resource_availability(
         self, task: Dict[str, Any]
@@ -599,14 +623,16 @@ class Base44AgentProtocol(abc.ABC):
         # Simplified resource check - can be enhanced with actual resource monitoring
         return {"sufficient": True, "available_resources": ["cpu", "memory", "storage"]}
 
+
     async def _validate_dependencies(self, dependencies: List[str]) -> Dict[str, Any]:
         """Validate that all task dependencies are available."""
         # Simplified dependency check - can be enhanced with actual dependency validation
         return {
             "all_available": True,
-            "missing_dependencies": [],
-            "available_dependencies": dependencies,
-        }
+                "missing_dependencies": [],
+                "available_dependencies": dependencies,
+                }
+
 
     def _generate_safety_recommendations(self, risk_factors: List[str]) -> List[str]:
         """Generate safety recommendations based on identified risk factors."""
@@ -626,33 +652,35 @@ class Base44AgentProtocol(abc.ABC):
 
         return recommendations
 
+
     async def _configure_mode_settings(self, mode: AgentMode):
         """Configure agent settings for the specified mode."""
         mode_configs = {
             AgentMode.SCRAPER: {
                 "research_enabled": True,
-                "execution_limited": True,
-                "validation_enhanced": True,
-            },
-            AgentMode.CODER: {
+                    "execution_limited": True,
+                    "validation_enhanced": True,
+                    },
+                AgentMode.CODER: {
                 "research_limited": True,
-                "execution_enabled": True,
-                "code_validation": True,
-            },
-            AgentMode.HYBRID: {
+                    "execution_enabled": True,
+                    "code_validation": True,
+                    },
+                AgentMode.HYBRID: {
                 "research_enabled": True,
-                "execution_enabled": True,
-                "balanced_approach": True,
-            },
-            AgentMode.FAILSAFE: {
+                    "execution_enabled": True,
+                    "balanced_approach": True,
+                    },
+                AgentMode.FAILSAFE: {
                 "all_operations_limited": True,
-                "validation_maximum": True,
-                "manual_approval_required": True,
-            },
-        }
+                    "validation_maximum": True,
+                    "manual_approval_required": True,
+                    },
+                }
 
         config = mode_configs.get(mode, {})
         self.logger.info(f"Configured settings for {mode.value} mode: {config}")
+
 
     async def _post_execution_validation(
         self, result: Dict[str, Any], context: TaskContext
@@ -674,6 +702,7 @@ class Base44AgentProtocol(abc.ABC):
 
         return validation_result
 
+
     async def _validate_protected_channel_output(
         self, result: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -681,12 +710,13 @@ class Base44AgentProtocol(abc.ABC):
         # Placeholder for protected channel output validation
         return {"valid": True, "errors": []}
 
+
     async def _handle_failsafe_trigger(
         self,
-        task: Dict[str, Any],
-        context: TaskContext,
-        failsafe_result: FailsafeResult,
-    ) -> Dict[str, Any]:
+            task: Dict[str, Any],
+            context: TaskContext,
+            failsafe_result: FailsafeResult,
+            ) -> Dict[str, Any]:
         """Handle failsafe trigger with appropriate recovery actions."""
         self.logger.warning(
             f"Failsafe triggered for task {context.task_id}: {failsafe_result.risk_factors}"
@@ -697,14 +727,15 @@ class Base44AgentProtocol(abc.ABC):
 
         return {
             "success": False,
-            "error": "Failsafe validation failed",
-            "protocol_step": "failsafe_validation",
-            "risk_factors": failsafe_result.risk_factors,
-            "mitigation_actions": failsafe_result.mitigation_actions,
-            "confidence_score": failsafe_result.confidence_score,
-            "recommendations": failsafe_result.recommendations,
-            "requires_manual_review": True,
-        }
+                "error": "Failsafe validation failed",
+                "protocol_step": "failsafe_validation",
+                "risk_factors": failsafe_result.risk_factors,
+                "mitigation_actions": failsafe_result.mitigation_actions,
+                "confidence_score": failsafe_result.confidence_score,
+                "recommendations": failsafe_result.recommendations,
+                "requires_manual_review": True,
+                }
+
 
     async def _execute_failsafe_recovery(
         self, task: Dict[str, Any], error: str
@@ -712,17 +743,18 @@ class Base44AgentProtocol(abc.ABC):
         """Execute failsafe recovery procedures."""
         recovery_actions = [
             "logged_error_details",
-            "preserved_task_state",
-            "initiated_rollback_procedures",
-            "notified_monitoring_systems",
-        ]
+                "preserved_task_state",
+                "initiated_rollback_procedures",
+                "notified_monitoring_systems",
+                ]
 
         return {
             "recovery_initiated": True,
-            "actions_taken": recovery_actions,
-            "error_logged": True,
-            "manual_intervention_required": True,
-        }
+                "actions_taken": recovery_actions,
+                "error_logged": True,
+                "manual_intervention_required": True,
+                }
+
 
     def _update_protocol_metrics(self, outcome: str, context: TaskContext):
         """Update protocol performance metrics."""
@@ -733,21 +765,22 @@ class Base44AgentProtocol(abc.ABC):
         else:
             metrics["failed_tasks"] = metrics.get("failed_tasks", 0) + 1
 
-        # Update mode-specific metrics
+        # Update mode - specific metrics
         mode_key = f"{self.current_mode.value}_tasks"
         metrics[mode_key] = metrics.get(mode_key, 0) + 1
+
 
     def get_protocol_status(self) -> Dict[str, Any]:
         """Get current protocol status and metrics."""
         return {
             "agent_id": self.agent_id,
-            "current_mode": self.current_mode.value,
-            "active_tasks": len(self.protocol_state["active_tasks"]),
-            "performance_metrics": self.protocol_state["performance_metrics"],
-            "protocol_config": self.protocol_config,
-            "last_mode_switch": (
+                "current_mode": self.current_mode.value,
+                "active_tasks": len(self.protocol_state["active_tasks"]),
+                "performance_metrics": self.protocol_state["performance_metrics"],
+                "protocol_config": self.protocol_config,
+                "last_mode_switch": (
                 self.protocol_state["mode_history"][-1]
                 if self.protocol_state["mode_history"]
                 else None
             ),
-        }
+                }

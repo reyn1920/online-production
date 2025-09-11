@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 RSS Intelligence System Integration Test
 
-This script tests the end-to-end integration of the RSS intelligence system
+This script tests the end - to - end integration of the RSS intelligence system
 with the existing agent architecture, verifying all components work together.
 
 Author: TRAE.AI System
@@ -25,30 +25,33 @@ from backend.agents.base_agents import AuditorAgent, PlannerAgent
 from backend.agents.research_tools import BreakingNewsWatcher
 from backend.agents.specialized_agents import ContentAgent, ResearchAgent
 from backend.database.hypocrisy_db_manager import (HypocrisyDatabaseManager,
-                                                   HypocrisyFinding)
+    HypocrisyFinding)
 from backend.task_queue_manager import TaskQueueManager
 
 
 class RSSIntegrationTester:
     """Comprehensive tester for RSS intelligence system integration."""
 
+
     def __init__(self):
         self.test_results = []
         self.start_time = datetime.now()
+
 
     def log_test(self, test_name: str, success: bool, details: str = ""):
         """Log test result."""
         result = {
             "test_name": test_name,
-            "success": success,
-            "details": details,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "success": success,
+                "details": details,
+                "timestamp": datetime.now().isoformat(),
+                }
         self.test_results.append(result)
         status = "✓ PASS" if success else "✗ FAIL"
         print(f"{status}: {test_name}")
         if details:
             print(f"   Details: {details}")
+
 
     async def test_breaking_news_watcher(self):
         """Test BreakingNewsWatcher initialization and basic functionality."""
@@ -69,31 +72,32 @@ class RSSIntegrationTester:
             feeds = news_watcher.feeds
             self.log_test(
                 "RSS Feeds Configuration",
-                len(feeds) > 0,
-                f"Configured {len(feeds)} RSS feeds",
-            )
+                    len(feeds) > 0,
+                    f"Configured {len(feeds)} RSS feeds",
+                    )
 
             # Test trending topics retrieval
             trending_topics = news_watcher.get_trending_topics()
             self.log_test(
                 "Trending Topics Retrieval",
-                True,
-                f"Retrieved {len(trending_topics)} topics",
-            )
+                    True,
+                    f"Retrieved {len(trending_topics)} topics",
+                    )
 
             # Test intelligence briefing
             briefing = news_watcher.get_latest_intelligence_briefing()
             self.log_test(
                 "Intelligence Briefing",
-                briefing is not None,
-                "Generated intelligence briefing",
-            )
+                    briefing is not None,
+                    "Generated intelligence briefing",
+                    )
 
             return news_watcher
 
         except Exception as e:
             self.log_test("BreakingNewsWatcher Test", False, f"Error: {str(e)}")
             return None
+
 
     async def test_hypocrisy_database_integration(self):
         """Test hypocrisy database integration"""
@@ -102,9 +106,9 @@ class RSSIntegrationTester:
             hypocrisy_db = HypocrisyDatabaseManager()
             self.log_test(
                 "HypocrisyDatabaseManager Initialization",
-                True,
-                "Successfully initialized",
-            )
+                    True,
+                    "Successfully initialized",
+                    )
 
             # Test database schema creation
             hypocrisy_db._initialize_database()
@@ -121,42 +125,42 @@ class RSSIntegrationTester:
             # Test storing a sample finding
             sample_finding = HypocrisyFinding(
                 subject_name="Test Subject",
-                subject_type="politician",
-                statement_1="Statement A",
-                statement_2="Statement B",
-                context_1="Context A",
-                context_2="Context B",
-                date_1=datetime.now() - timedelta(days=30),
-                date_2=datetime.now(),
-                source_1="Test Source 1",
-                source_2="Test Source 2",
-                contradiction_type="direct",
-                severity_score=8,
-                confidence_score=0.9,
-                verification_status="verified",
-                evidence_links=["http://example.com/evidence1"],
-                tags=["test", "integration"],
-                analysis_notes="Test finding for integration",
-                public_impact_score=7,
-                media_coverage_count=5,
-                social_media_mentions=100,
-                fact_check_results={"status": "confirmed"},
-            )
+                    subject_type="politician",
+                    statement_1="Statement A",
+                    statement_2="Statement B",
+                    context_1="Context A",
+                    context_2="Context B",
+                    date_1 = datetime.now() - timedelta(days = 30),
+                    date_2 = datetime.now(),
+                    source_1="Test Source 1",
+                    source_2="Test Source 2",
+                    contradiction_type="direct",
+                    severity_score = 8,
+                    confidence_score = 0.9,
+                    verification_status="verified",
+                    evidence_links=["http://example.com / evidence1"],
+                    tags=["test", "integration"],
+                    analysis_notes="Test finding for integration",
+                    public_impact_score = 7,
+                    media_coverage_count = 5,
+                    social_media_mentions = 100,
+                    fact_check_results={"status": "confirmed"},
+                    )
 
             finding_id = hypocrisy_db.store_finding(sample_finding)
             self.log_test(
                 "Store Hypocrisy Finding",
-                finding_id is not None,
-                f"Stored finding with ID: {finding_id}",
-            )
+                    finding_id is not None,
+                    f"Stored finding with ID: {finding_id}",
+                    )
 
             # Test retrieving content opportunities
-            opportunities = hypocrisy_db.get_content_opportunities(limit=5)
+            opportunities = hypocrisy_db.get_content_opportunities(limit = 5)
             self.log_test(
                 "Retrieve Content Opportunities",
-                len(opportunities) > 0,
-                f"Retrieved {len(opportunities)} opportunities",
-            )
+                    len(opportunities) > 0,
+                    f"Retrieved {len(opportunities)} opportunities",
+                    )
 
             # Test statistics
             stats = hypocrisy_db.get_statistics()
@@ -168,48 +172,49 @@ class RSSIntegrationTester:
             self.log_test("Hypocrisy Database Integration", False, f"Error: {str(e)}")
             return None
 
+
     async def test_planner_agent_rss_integration(self):
         """Test PlannerAgent RSS intelligence integration."""
         try:
             # Initialize PlannerAgent
-            planner = PlannerAgent(agent_id="test-planner")
+            planner = PlannerAgent(agent_id="test - planner")
             self.log_test(
                 "PlannerAgent Initialization",
-                True,
-                "Successfully initialized with RSS intelligence",
-            )
+                    True,
+                    "Successfully initialized with RSS intelligence",
+                    )
 
             # Test RSS intelligence retrieval
             rss_intelligence = planner._get_rss_intelligence()
             self.log_test(
                 "RSS Intelligence Retrieval",
-                rss_intelligence is not None,
-                f"Retrieved intelligence: {list(rss_intelligence.keys())}",
-            )
+                    rss_intelligence is not None,
+                    f"Retrieved intelligence: {list(rss_intelligence.keys())}",
+                    )
 
             # Test trending topics integration
             trending_topics = rss_intelligence.get("trending_topics", [])
             self.log_test(
                 "Trending Topics Integration",
-                len(trending_topics) >= 0,
-                f"Found {len(trending_topics)} trending topics",
-            )
+                    len(trending_topics) >= 0,
+                    f"Found {len(trending_topics)} trending topics",
+                    )
 
             # Test content opportunities identification
             content_opportunities = rss_intelligence.get("content_opportunities", [])
             self.log_test(
                 "Content Opportunities",
-                len(content_opportunities) >= 0,
-                f"Identified {len(content_opportunities)} opportunities",
-            )
+                    len(content_opportunities) >= 0,
+                    f"Identified {len(content_opportunities)} opportunities",
+                    )
 
             # Test topic momentum calculation
             topic_momentum = rss_intelligence.get("topic_momentum", {})
             self.log_test(
                 "Topic Momentum Calculation",
-                isinstance(topic_momentum, dict),
-                f"Calculated momentum for {len(topic_momentum)} topics",
-            )
+                    isinstance(topic_momentum, dict),
+                    f"Calculated momentum for {len(topic_momentum)} topics",
+                    )
 
             return planner
 
@@ -217,11 +222,12 @@ class RSSIntegrationTester:
             self.log_test("PlannerAgent RSS Integration", False, f"Error: {str(e)}")
             return None
 
+
     async def test_research_agent_integration(self):
         """Test ResearchAgent integration with RSS intelligence."""
         try:
             # Initialize ResearchAgent
-            research_agent = ResearchAgent(agent_id="test-research")
+            research_agent = ResearchAgent(agent_id="test - research")
             self.log_test(
                 "ResearchAgent Initialization", True, "Successfully initialized"
             )
@@ -234,28 +240,29 @@ class RSSIntegrationTester:
                 news_watcher = research_agent.research_tools["news_watcher"]
                 if hasattr(news_watcher, "hypocrisy_db"):
                     self.log_test(
-                        "Research-Hypocrisy Integration",
-                        True,
-                        "Hypocrisy database integrated in research tools",
-                    )
+                        "Research - Hypocrisy Integration",
+                            True,
+                            "Hypocrisy database integrated in research tools",
+                            )
                 else:
                     self.log_test(
-                        "Research-Hypocrisy Integration",
-                        False,
-                        "Hypocrisy database not found in research tools",
-                    )
+                        "Research - Hypocrisy Integration",
+                            False,
+                            "Hypocrisy database not found in research tools",
+                            )
             else:
                 self.log_test(
-                    "Research-Hypocrisy Integration",
-                    False,
-                    "Breaking news watcher not found in research agent",
-                )
+                    "Research - Hypocrisy Integration",
+                        False,
+                        "Breaking news watcher not found in research agent",
+                        )
 
             return research_agent
 
         except Exception as e:
             self.log_test("ResearchAgent Integration", False, f"Error: {str(e)}")
             return None
+
 
     async def test_task_queue_integration(self):
         """Test task queue integration with RSS intelligence."""
@@ -266,36 +273,36 @@ class RSSIntegrationTester:
                 "TaskQueueManager Initialization", True, "Successfully initialized"
             )
 
-            # Test adding RSS-driven tasks
+            # Test adding RSS - driven tasks
             sample_task = {
                 "task_type": "content_creation",
-                "priority": "high",
-                "payload": {
+                    "priority": "high",
+                    "payload": {
                     "topic": "AI Trends",
-                    "source": "rss_intelligence",
-                    "urgency": "trending",
-                    "agent_type": "ContentAgent",
-                },
-                "metadata": {
+                        "source": "rss_intelligence",
+                        "urgency": "trending",
+                        "agent_type": "ContentAgent",
+                        },
+                    "metadata": {
                     "created_by": "rss_integration_test",
-                    "source_system": "breaking_news_watcher",
-                },
-            }
+                        "source_system": "breaking_news_watcher",
+                        },
+                    }
 
             task_id = task_queue.add_task(**sample_task)
             self.log_test(
-                "RSS-Driven Task Creation",
-                task_id is not None,
-                f"Created task with ID: {task_id}",
-            )
+                "RSS - Driven Task Creation",
+                    task_id is not None,
+                    f"Created task with ID: {task_id}",
+                    )
 
             # Test task retrieval
-            tasks = task_queue.get_tasks(status="pending", limit=10)
+            tasks = task_queue.get_tasks(status="pending", limit = 10)
             self.log_test(
                 "Task Queue Retrieval",
-                len(tasks) >= 0,
-                f"Retrieved {len(tasks)} pending tasks",
-            )
+                    len(tasks) >= 0,
+                    f"Retrieved {len(tasks)} pending tasks",
+                    )
 
             return task_queue
 
@@ -303,10 +310,11 @@ class RSSIntegrationTester:
             self.log_test("Task Queue Integration", False, f"Error: {str(e)}")
             return None
 
+
     async def test_end_to_end_workflow(self):
-        """Test complete end-to-end RSS intelligence workflow."""
+        """Test complete end - to - end RSS intelligence workflow."""
         try:
-            print("\n🔄 Testing End-to-End RSS Intelligence Workflow...")
+            print("\n🔄 Testing End - to - End RSS Intelligence Workflow...")
 
             # Step 1: Initialize all components
             news_watcher = await self.test_breaking_news_watcher()
@@ -317,7 +325,7 @@ class RSSIntegrationTester:
 
             if not all([news_watcher, hypocrisy_db, planner, task_queue]):
                 self.log_test(
-                    "End-to-End Workflow", False, "Component initialization failed"
+                    "End - to - End Workflow", False, "Component initialization failed"
                 )
                 return False
 
@@ -333,9 +341,9 @@ class RSSIntegrationTester:
 
             self.log_test(
                 "OODA Loop Integration",
-                "trending_topics" in market_conditions,
-                "RSS intelligence integrated in OODA loop",
-            )
+                    "trending_topics" in market_conditions,
+                    "RSS intelligence integrated in OODA loop",
+                    )
 
             # Step 3: Test dynamic content scheduling
             if hasattr(planner, "content_scheduling"):
@@ -344,31 +352,32 @@ class RSSIntegrationTester:
                 )
                 self.log_test(
                     "Dynamic Content Scheduling",
-                    len(scheduling_rules) > 0,
-                    f"Scheduling rules configured: {list(scheduling_rules.keys())}",
-                )
+                        len(scheduling_rules) > 0,
+                        f"Scheduling rules configured: {list(scheduling_rules.keys())}",
+                        )
 
             # Step 4: Test hypocrisy content opportunities
             if news_watcher and hasattr(
                 news_watcher, "get_hypocrisy_content_opportunities"
             ):
                 hypocrisy_opportunities = (
-                    news_watcher.get_hypocrisy_content_opportunities(limit=5)
+                    news_watcher.get_hypocrisy_content_opportunities(limit = 5)
                 )
                 self.log_test(
                     "Hypocrisy Content Integration",
-                    len(hypocrisy_opportunities) >= 0,
-                    f"Retrieved {len(hypocrisy_opportunities)} hypocrisy opportunities",
-                )
+                        len(hypocrisy_opportunities) >= 0,
+                        f"Retrieved {len(hypocrisy_opportunities)} hypocrisy opportunities",
+                        )
 
             self.log_test(
-                "End-to-End Workflow", True, "Complete workflow tested successfully"
+                "End - to - End Workflow", True, "Complete workflow tested successfully"
             )
             return True
 
         except Exception as e:
-            self.log_test("End-to-End Workflow", False, f"Error: {str(e)}")
+            self.log_test("End - to - End Workflow", False, f"Error: {str(e)}")
             return False
+
 
     def generate_test_report(self):
         """Generate comprehensive test report."""
@@ -386,7 +395,7 @@ class RSSIntegrationTester:
         print(f"Total Tests: {total_tests}")
         print(f"Passed: {passed_tests} ✓")
         print(f"Failed: {failed_tests} ✗")
-        print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
+        print(f"Success Rate: {(passed_tests / total_tests)*100:.1f}%")
 
         if failed_tests > 0:
             print("\n❌ FAILED TESTS:")
@@ -405,19 +414,19 @@ class RSSIntegrationTester:
         report_data = {
             "test_summary": {
                 "total_tests": total_tests,
-                "passed_tests": passed_tests,
-                "failed_tests": failed_tests,
-                "success_rate": (passed_tests / total_tests) * 100,
-                "duration_seconds": duration.total_seconds(),
-                "start_time": self.start_time.isoformat(),
-                "end_time": end_time.isoformat(),
-            },
-            "test_results": self.test_results,
-        }
+                    "passed_tests": passed_tests,
+                    "failed_tests": failed_tests,
+                    "success_rate": (passed_tests / total_tests) * 100,
+                    "duration_seconds": duration.total_seconds(),
+                    "start_time": self.start_time.isoformat(),
+                    "end_time": end_time.isoformat(),
+                    },
+                "test_results": self.test_results,
+                }
 
         report_file = f"rss_integration_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(report_file, "w") as f:
-            json.dump(report_data, f, indent=2)
+            json.dump(report_data, f, indent = 2)
 
         print(f"\n📄 Detailed report saved to: {report_file}")
         print("=" * 80)
@@ -450,7 +459,6 @@ async def main():
         print(f"\n💥 Test execution failed: {str(e)}")
         tester.generate_test_report()
         return 1
-
 
 if __name__ == "__main__":
     exit_code = asyncio.run(main())

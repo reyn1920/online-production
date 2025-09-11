@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Real MCP Puppeteer AI Assistant for Trae AI
 Actually uses the MCP Puppeteer server to interact with AI websites.
@@ -12,11 +12,12 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class AIServiceResponse:
     """Structure for AI service responses"""
 
@@ -33,38 +34,40 @@ class AIServiceResponse:
 class MCPPuppeteerAIAssistant:
     """Real browser automation using MCP Puppeteer server"""
 
+
     def __init__(self):
         self.services = {
             "abacus": {
-                "url": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
-                "name": "Abacus AI",
-                "selectors": {
-                    "input": 'textarea, input[type="text"], .chat-input, [contenteditable="true"]',
-                    "submit": 'button[type="submit"], .send-button, .submit-btn, button:contains("Send")',
-                    "response": ".response, .message, .chat-message, .output, .answer",
-                },
-            },
-            "gemini": {
-                "url": "https://gemini.google.com/app",
-                "name": "Google Gemini",
-                "selectors": {
-                    "input": 'div[contenteditable="true"], textarea, .input-area, .prompt-input',
-                    "submit": 'button[aria-label="Send"], .send-button, button[data-testid="send-button"]',
-                    "response": '.model-response, .response-text, .message-content, [data-message-author-role="assistant"]',
-                },
-            },
-            "chatgpt": {
+                "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
+                    "name": "Abacus AI",
+                    "selectors": {
+                    "input": 'textarea, input[type="text"], .chat - input, [contenteditable="true"]',
+                        "submit": 'button[type="submit"], .send - button, .submit - btn, button:contains("Send")',
+                        "response": ".response, .message, .chat - message, .output, .answer",
+                        },
+                    },
+                "gemini": {
+                "url": "https://gemini.google.com / app",
+                    "name": "Google Gemini",
+                    "selectors": {
+                    "input": 'div[contenteditable="true"], textarea, .input - area, .prompt - input',
+                        "submit": 'button[aria - label="Send"], .send - button, button[data - testid="send - button"]',
+                        "response": '.model - response, .response - text, .message - content, [data - message - author - role="assistant"]',
+                        },
+                    },
+                "chatgpt": {
                 "url": "https://chatgpt.com/",
-                "name": "ChatGPT",
-                "selectors": {
-                    "input": '#prompt-textarea, textarea[placeholder*="Message"], .ProseMirror',
-                    "submit": 'button[data-testid="send-button"], .send-button',
-                    "response": '.markdown, .message-content, [data-message-author-role="assistant"]',
-                },
-            },
-        }
+                    "name": "ChatGPT",
+                    "selectors": {
+                    "input": '#prompt - textarea, textarea[placeholder*="Message"], .ProseMirror',
+                        "submit": 'button[data - testid="send - button"], .send - button',
+                        "response": '.markdown, .message - content, [data - message - author - role="assistant"]',
+                        },
+                    },
+                }
         self.responses_cache = []
         self.browser_launched = False
+
 
     async def navigate_to_service(self, service: str) -> bool:
         """
@@ -90,16 +93,16 @@ class MCPPuppeteerAIAssistant:
             # This would be the actual MCP call in production
             navigation_result = {
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
-                "tool_name": "puppeteer_navigate",
-                "args": {
+                    "tool_name": "puppeteer_navigate",
+                    "args": {
                     "url": url,
-                    "launchOptions": {
+                        "launchOptions": {
                         "headless": False,  # Show browser for debugging
-                        "args": ["--no-sandbox", "--disable-setuid-sandbox"],
-                    },
-                    "allowDangerous": True,
-                },
-            }
+                        "args": ["--no - sandbox", "--disable - setuid - sandbox"],
+                            },
+                        "allowDangerous": True,
+                        },
+                    }
 
             # Simulate MCP call result
             logger.info(f"MCP Navigation call: {navigation_result}")
@@ -109,9 +112,9 @@ class MCPPuppeteerAIAssistant:
             screenshot_name = f"{service}_navigation_{int(time.time())}"
             screenshot_result = {
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
-                "tool_name": "puppeteer_screenshot",
-                "args": {"name": screenshot_name, "width": 1200, "height": 800},
-            }
+                    "tool_name": "puppeteer_screenshot",
+                    "args": {"name": screenshot_name, "width": 1200, "height": 800},
+                    }
 
             logger.info(f"Taking navigation screenshot: {screenshot_name}")
             logger.info(f"MCP Screenshot call: {screenshot_result}")
@@ -123,6 +126,7 @@ class MCPPuppeteerAIAssistant:
         except Exception as e:
             logger.error(f"Failed to navigate to {service}: {str(e)}")
             return False
+
 
     async def send_query_to_service(
         self, service: str, query: str
@@ -139,15 +143,15 @@ class MCPPuppeteerAIAssistant:
         """
         if service not in self.services:
             return AIServiceResponse(
-                service=service,
-                url="",
-                query=query,
-                response="",
-                screenshot_name=None,
-                timestamp=time.time(),
-                success=False,
-                error=f"Unknown service: {service}",
-            )
+                service = service,
+                    url="",
+                    query = query,
+                    response="",
+                    screenshot_name = None,
+                    timestamp = time.time(),
+                    success = False,
+                    error = f"Unknown service: {service}",
+                    )
 
         try:
             service_config = self.services[service]
@@ -164,9 +168,9 @@ class MCPPuppeteerAIAssistant:
             # Step 1: Find and fill the input field using MCP Puppeteer
             fill_result = {
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
-                "tool_name": "puppeteer_fill",
-                "args": {"selector": selectors["input"], "value": query},
-            }
+                    "tool_name": "puppeteer_fill",
+                    "args": {"selector": selectors["input"], "value": query},
+                    }
 
             logger.info(f"MCP Fill call: {fill_result}")
             await asyncio.sleep(1)  # Simulate typing time
@@ -174,9 +178,9 @@ class MCPPuppeteerAIAssistant:
             # Step 2: Click the submit button
             click_result = {
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
-                "tool_name": "puppeteer_click",
-                "args": {"selector": selectors["submit"]},
-            }
+                    "tool_name": "puppeteer_click",
+                    "args": {"selector": selectors["submit"]},
+                    }
 
             logger.info(f"MCP Click call: {click_result}")
             await asyncio.sleep(1)  # Simulate click
@@ -189,26 +193,26 @@ class MCPPuppeteerAIAssistant:
             screenshot_name = f"{service}_response_{int(time.time())}"
             screenshot_result = {
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
-                "tool_name": "puppeteer_screenshot",
-                "args": {"name": screenshot_name, "width": 1200, "height": 800},
-            }
+                    "tool_name": "puppeteer_screenshot",
+                    "args": {"name": screenshot_name, "width": 1200, "height": 800},
+                    }
 
             logger.info(f"MCP Screenshot call: {screenshot_result}")
 
             # Step 5: Extract the response text using JavaScript evaluation
             evaluate_result = {
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
-                "tool_name": "puppeteer_evaluate",
-                "args": {
+                    "tool_name": "puppeteer_evaluate",
+                    "args": {
                     "script": f"""
                     // Try multiple selectors to find the response
                     const selectors = [
                         "{selectors['response']}",
-                        ".message", ".response", ".chat-message",
-                        "[data-message-author-role='assistant']",
-                        ".markdown", ".model-response"
+                            ".message", ".response", ".chat - message",
+                            "[data - message - author - role='assistant']",
+                            ".markdown", ".model - response"
                     ];
-                    
+
                     let responseText = "";
                     for (const selector of selectors) {{
                         const elements = document.querySelectorAll(selector);
@@ -221,11 +225,11 @@ class MCPPuppeteerAIAssistant:
                             }}
                         }}
                     }}
-                    
+
                     return responseText || "No response found";
                     """
                 },
-            }
+                    }
 
             logger.info(f"MCP Evaluate call: {evaluate_result}")
 
@@ -233,14 +237,14 @@ class MCPPuppeteerAIAssistant:
             extracted_response = self._generate_realistic_response(service, query)
 
             response = AIServiceResponse(
-                service=service,
-                url=url,
-                query=query,
-                response=extracted_response,
-                screenshot_name=screenshot_name,
-                timestamp=time.time(),
-                success=True,
-            )
+                service = service,
+                    url = url,
+                    query = query,
+                    response = extracted_response,
+                    screenshot_name = screenshot_name,
+                    timestamp = time.time(),
+                    success = True,
+                    )
 
             self.responses_cache.append(response)
             logger.info(f"Successfully got response from {service_config['name']}")
@@ -249,15 +253,16 @@ class MCPPuppeteerAIAssistant:
         except Exception as e:
             logger.error(f"Error querying {service}: {str(e)}")
             return AIServiceResponse(
-                service=service,
-                url=service_config.get("url", ""),
-                query=query,
-                response="",
-                screenshot_name=None,
-                timestamp=time.time(),
-                success=False,
-                error=str(e),
-            )
+                service = service,
+                    url = service_config.get("url", ""),
+                    query = query,
+                    response="",
+                    screenshot_name = None,
+                    timestamp = time.time(),
+                    success = False,
+                    error = str(e),
+                    )
+
 
     def _generate_realistic_response(self, service: str, query: str) -> str:
         """
@@ -292,7 +297,7 @@ ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT;
 4. Consider using an ORM that handles schema validation
 
 **Prevention:**
-- Add database schema tests to your CI/CD pipeline
+- Add database schema tests to your CI / CD pipeline
 - Use database migration tools like Alembic (Python) or Flyway
 - Implement graceful degradation for missing columns"""
 
@@ -332,7 +337,7 @@ except sqlite3.OperationalError as e:
         # Optionally create the column automatically
 ```
 
-## Long-term Solution
+## Long - term Solution
 Implement a proper database migration system to manage schema changes systematically."""
 
             elif service == "chatgpt":
@@ -365,11 +370,12 @@ UPDATE api_discovery_tasks SET search_keywords = '[]' WHERE search_keywords IS N
 ```python
 import sqlite3
 
+
 def safe_query_with_keywords(cursor, keywords):
     try:
         return cursor.execute(
-            "SELECT * FROM api_discovery_tasks WHERE search_keywords LIKE ?", 
-            (f'%{keywords}%',)
+            "SELECT * FROM api_discovery_tasks WHERE search_keywords LIKE ?",
+                (f'%{keywords}%',)
         ).fetchall()
     except sqlite3.OperationalError as e:
         if "no such column: search_keywords" in str(e):
@@ -390,10 +396,11 @@ This approach ensures your application remains robust even when schema changes o
             # General coding assistance
             responses = {
                 "abacus": f"For your coding query about '{query[:50]}...', I recommend following data science best practices and implementing proper error handling.",
-                "gemini": f"I can help you with '{query[:50]}...'. Let me provide a structured approach to solve this problem.",
-                "chatgpt": f"Here's how to approach '{query[:50]}...': Start with understanding the requirements, then implement step by step.",
-            }
+                    "gemini": f"I can help you with '{query[:50]}...'. Let me provide a structured approach to solve this problem.",
+                    "chatgpt": f"Here's how to approach '{query[:50]}...': Start with understanding the requirements, then implement step by step.",
+                    }
             return responses.get(service, "AI service response not available")
+
 
     async def debug_with_multiple_services(
         self, error_message: str, code_context: str = "", services: List[str] = None
@@ -441,6 +448,7 @@ Please provide a comprehensive solution."""
 
         return responses
 
+
     def generate_debugging_report(
         self, responses: Dict[str, AIServiceResponse], error_message: str
     ) -> str:
@@ -454,7 +462,7 @@ Please provide a comprehensive solution."""
         Returns:
             Formatted debugging report
         """
-        report = f"🔍 AI-Powered Debugging Report\n"
+        report = f"🔍 AI - Powered Debugging Report\n"
         report += f"Error: {error_message}\n"
         report += "=" * 60 + "\n\n"
 
@@ -500,12 +508,13 @@ Please provide a comprehensive solution."""
 
         return report
 
+
     def export_debugging_session(self, filename: str = None) -> str:
         """
         Export the complete debugging session data
 
         Args:
-            filename: Output filename (auto-generated if None)
+            filename: Output filename (auto - generated if None)
 
         Returns:
             Path to exported file
@@ -517,34 +526,35 @@ Please provide a comprehensive solution."""
         export_data = {
             "session_metadata": {
                 "timestamp": time.time(),
-                "total_queries": len(self.responses_cache),
-                "services_used": list(set(r.service for r in self.responses_cache)),
-                "browser_launched": self.browser_launched,
-            },
-            "mcp_calls": [
+                    "total_queries": len(self.responses_cache),
+                    "services_used": list(set(r.service for r in self.responses_cache)),
+                    "browser_launched": self.browser_launched,
+                    },
+                "mcp_calls": [
                 {
                     "service": r.service,
-                    "service_name": self.services[r.service]["name"],
-                    "url": r.url,
-                    "query": r.query,
-                    "response": r.response,
-                    "screenshot_name": r.screenshot_name,
-                    "timestamp": r.timestamp,
-                    "success": r.success,
-                    "error": r.error,
-                }
+                        "service_name": self.services[r.service]["name"],
+                        "url": r.url,
+                        "query": r.query,
+                        "response": r.response,
+                        "screenshot_name": r.screenshot_name,
+                        "timestamp": r.timestamp,
+                        "success": r.success,
+                        "error": r.error,
+                        }
                 for r in self.responses_cache
             ],
-            "service_configurations": self.services,
-        }
+                "service_configurations": self.services,
+                }
 
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(export_data, f, indent=2, ensure_ascii=False)
+        with open(filename, "w", encoding="utf - 8") as f:
+            json.dump(export_data, f, indent = 2, ensure_ascii = False)
 
         return filename
 
-
 # Demo function
+
+
 async def demo_real_mcp_ai_assistant():
     """Demonstrate the real MCP Puppeteer AI assistant"""
     print("🤖 Real MCP Puppeteer AI Assistant Demo")
@@ -561,7 +571,7 @@ async def demo_real_mcp_ai_assistant():
 # Code that caused the error:
 cursor.execute(
     "SELECT task_id, search_keywords FROM api_discovery_tasks WHERE search_keywords LIKE ?",
-    ('%python%',)
+        ('%python%',)
 )
 
 # Full error traceback:
@@ -573,8 +583,8 @@ cursor.execute(
     print("\n🌐 Launching browsers and querying AI services...")
     responses = await ai_assistant.debug_with_multiple_services(
         error_message,
-        code_context,
-        services=["abacus", "gemini", "chatgpt"],  # Query all services
+            code_context,
+            services=["abacus", "gemini", "chatgpt"],  # Query all services
     )
 
     # Generate and display comprehensive debugging report
@@ -595,7 +605,6 @@ cursor.execute(
     print("- puppeteer_click: Click submit buttons")
     print("- puppeteer_screenshot: Capture response screenshots")
     print("- puppeteer_evaluate: Extract response text from pages")
-
 
 if __name__ == "__main__":
     asyncio.run(demo_real_mcp_ai_assistant())

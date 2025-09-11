@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Progressive Self-Repair System Agent
+Progressive Self - Repair System Agent
 
 Implements intelligent, tiered escalation for component failures:
 - Tier 1: Simple restart attempts
 - Tier 2: Dependency verification
-- Tier 3: AI-powered research and novel solution generation
+- Tier 3: AI - powered research and novel solution generation
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -49,8 +49,9 @@ class RepairOutcome(Enum):
     FAILURE = "failure"
     PARTIAL = "partial"
 
-
 @dataclass
+
+
 class RepairAttempt:
     component_name: str
     error_message: str
@@ -65,6 +66,7 @@ class RepairAttempt:
 
 class ProgressiveSelfRepairAgent(BaseAgent):
     """Autonomous system repair agent with progressive escalation."""
+
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()
@@ -84,14 +86,15 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         self.safe_mode = SafeModeManager(
             {
                 "db_path": self.db_path,
-                "snapshots_dir": config.get("snapshots_dir", "./snapshots"),
-                "venv_path": config.get("venv_path", "./venv"),
-                "project_root": config.get("project_root", "."),
-                "max_snapshots": config.get("max_snapshots", 10),
-            }
+                    "snapshots_dir": config.get("snapshots_dir", "./snapshots"),
+                    "venv_path": config.get("venv_path", "./venv"),
+                    "project_root": config.get("project_root", "."),
+                    "max_snapshots": config.get("max_snapshots", 10),
+                    }
         )
 
         self._init_database()
+
 
     def _init_database(self):
         """Initialize the repair log database using the master schema."""
@@ -105,14 +108,14 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS repair_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        component_name TEXT NOT NULL,
-                        error_message TEXT NOT NULL,
-                        repair_action TEXT NOT NULL,
-                        repair_tier INTEGER NOT NULL,
-                        outcome TEXT NOT NULL,
-                        execution_details TEXT,
-                        attempt_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        resolution_time_seconds INTEGER
+                            component_name TEXT NOT NULL,
+                            error_message TEXT NOT NULL,
+                            repair_action TEXT NOT NULL,
+                            repair_tier INTEGER NOT NULL,
+                            outcome TEXT NOT NULL,
+                            execution_details TEXT,
+                            attempt_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            resolution_time_seconds INTEGER
                     )
                 """
                 )
@@ -122,59 +125,60 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     """
                     CREATE TABLE IF NOT EXISTS component_health (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        component_name TEXT NOT NULL UNIQUE,
-                        status TEXT NOT NULL DEFAULT 'healthy',
-                        consecutive_failures INTEGER DEFAULT 0,
-                        total_failures INTEGER DEFAULT 0,
-                        last_check TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        last_failure_at TIMESTAMP,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            component_name TEXT NOT NULL UNIQUE,
+                            status TEXT NOT NULL DEFAULT 'healthy',
+                            consecutive_failures INTEGER DEFAULT 0,
+                            total_failures INTEGER DEFAULT 0,
+                            last_check TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            last_failure_at TIMESTAMP,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
 
                 conn.commit()
                 self.logger.info(
-                    "Progressive Self-Repair database initialized successfully"
+                    "Progressive Self - Repair database initialized successfully"
                 )
         except Exception as e:
             self.logger.error(f"Failed to initialize repair database: {e}")
             raise
 
+
     def handle_component_failure(
         self,
-        component_name: str,
-        error_message: str,
-        error_context: Optional[Dict] = None,
-    ) -> bool:
-        """Main entry point for handling component failures with enhanced pre-repair validation and Safe Mode protection."""
+            component_name: str,
+            error_message: str,
+            error_context: Optional[Dict] = None,
+            ) -> bool:
+        """Main entry point for handling component failures with enhanced pre - repair validation and Safe Mode protection."""
         snapshot = None
         try:
             self.logger.info(f"Handling failure for component: {component_name}")
 
-            # Enhanced pre-repair validation
+            # Enhanced pre - repair validation
             validation_result = self._perform_pre_repair_validation(
                 component_name, error_message
             )
             if not validation_result["can_proceed"]:
                 self.logger.error(
-                    f"Pre-repair validation failed: {validation_result['reason']}"
+                    f"Pre - repair validation failed: {validation_result['reason']}"
                 )
                 self._update_component_health(component_name, ComponentStatus.CRITICAL)
                 return False
 
             # Create environment snapshot before attempting repair
             snapshot = self.safe_mode.create_snapshot(
-                f"Pre-repair snapshot for {component_name} failure"
+                f"Pre - repair snapshot for {component_name} failure"
             )
 
             if not snapshot:
                 self.logger.warning(
-                    "Failed to create pre-repair snapshot - proceeding without Safe Mode"
+                    "Failed to create pre - repair snapshot - proceeding without Safe Mode"
                 )
             else:
-                self.logger.info(f"Created pre-repair snapshot: {snapshot.snapshot_id}")
+                self.logger.info(f"Created pre - repair snapshot: {snapshot.snapshot_id}")
 
             # Update component health status
             self._update_component_health(component_name, ComponentStatus.FAILING)
@@ -204,7 +208,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
 
             repair_duration = time.time() - repair_start_time
 
-            # Enhanced post-repair validation and stability verification
+            # Enhanced post - repair validation and stability verification
             if success:
                 post_repair_validation = self._perform_post_repair_validation(
                     component_name, repair_duration
@@ -212,7 +216,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
 
                 if not post_repair_validation["stable"]:
                     self.logger.warning(
-                        f"Post-repair validation failed: {post_repair_validation['issues']}"
+                        f"Post - repair validation failed: {post_repair_validation['issues']}"
                     )
 
                     if snapshot:
@@ -221,8 +225,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                         )
                         rollback_result = self.safe_mode.rollback_to_snapshot(
                             snapshot.snapshot_id,
-                            f"Post-repair validation failed for {component_name}: {post_repair_validation['issues']}",
-                        )
+                                f"Post - repair validation failed for {component_name}: {post_repair_validation['issues']}",
+                                )
 
                         if rollback_result.success:
                             success = False
@@ -231,9 +235,9 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                             )
                             self._log_rollback_event(
                                 component_name,
-                                snapshot.snapshot_id,
-                                "validation_failure",
-                            )
+                                    snapshot.snapshot_id,
+                                    "validation_failure",
+                                    )
                         else:
                             self.logger.error(
                                 f"Automatic rollback failed: {rollback_result.error_message}"
@@ -265,8 +269,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     self.logger.info("Initiating emergency rollback due to exception")
                     rollback_result = self.safe_mode.rollback_to_snapshot(
                         snapshot.snapshot_id,
-                        f"Emergency rollback - Exception during {component_name} repair: {str(e)}",
-                    )
+                            f"Emergency rollback - Exception during {component_name} repair: {str(e)}",
+                            )
                     if rollback_result.success:
                         self.logger.info("Emergency rollback completed successfully")
                         self._log_rollback_event(
@@ -284,6 +288,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             self._update_component_health(component_name, ComponentStatus.CRITICAL)
             return False
 
+
     def _determine_repair_tier(
         self, component_name: str, repair_history: List[Dict]
     ) -> RepairTier:
@@ -292,7 +297,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             return RepairTier.RESTART
 
         # Count recent attempts by tier
-        recent_cutoff = datetime.now() - timedelta(hours=1)
+        recent_cutoff = datetime.now() - timedelta(hours = 1)
         recent_attempts = [
             attempt
             for attempt in repair_history
@@ -308,6 +313,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             return RepairTier.DEPENDENCY_CHECK
         else:
             return RepairTier.AI_RESEARCH
+
 
     def _execute_tier1_repair(
         self, component_name: str, error_message: str, error_context: Optional[Dict]
@@ -331,19 +337,20 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         # Log the repair attempt
         self._log_repair_attempt(
             RepairAttempt(
-                component_name=component_name,
-                error_message=error_message,
-                error_type="component_failure",
-                repair_tier=RepairTier.RESTART,
-                repair_action=repair_action,
-                outcome=outcome,
-                execution_details=execution_details,
-                error_context=error_context,
-                duration=time.time() - start_time,
-            )
+                component_name = component_name,
+                    error_message = error_message,
+                    error_type="component_failure",
+                    repair_tier = RepairTier.RESTART,
+                    repair_action = repair_action,
+                    outcome = outcome,
+                    execution_details = execution_details,
+                    error_context = error_context,
+                    duration = time.time() - start_time,
+                    )
         )
 
         return success
+
 
     def _execute_tier2_repair(
         self, component_name: str, error_message: str, error_context: Optional[Dict]
@@ -383,30 +390,31 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         # Log the repair attempt
         self._log_repair_attempt(
             RepairAttempt(
-                component_name=component_name,
-                error_message=error_message,
-                error_type="dependency_failure",
-                repair_tier=RepairTier.DEPENDENCY_CHECK,
-                repair_action=repair_action,
-                outcome=outcome,
-                execution_details=execution_details,
-                error_context=error_context,
-                duration=time.time() - start_time,
-            )
+                component_name = component_name,
+                    error_message = error_message,
+                    error_type="dependency_failure",
+                    repair_tier = RepairTier.DEPENDENCY_CHECK,
+                    repair_action = repair_action,
+                    outcome = outcome,
+                    execution_details = execution_details,
+                    error_context = error_context,
+                    duration = time.time() - start_time,
+                    )
         )
 
         return success
 
+
     def _execute_tier3_repair(
         self,
-        component_name: str,
-        error_message: str,
-        error_context: Optional[Dict],
-        repair_history: List[Dict],
-    ) -> bool:
-        """Tier 3: AI-powered research and novel solution generation."""
+            component_name: str,
+            error_message: str,
+            error_context: Optional[Dict],
+            repair_history: List[Dict],
+            ) -> bool:
+        """Tier 3: AI - powered research and novel solution generation."""
         start_time = time.time()
-        repair_action = f"AI-powered repair research for: {component_name}"
+        repair_action = f"AI - powered repair research for: {component_name}"
 
         try:
             # Generate AI prompt using the repair history directly
@@ -414,7 +422,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 component_name, error_message, repair_history
             )
 
-            # Get AI-generated solution
+            # Get AI - generated solution
             ai_response = self.ollama_client.generate_completion(prompt)
 
             if ai_response and ai_response.get("response"):
@@ -424,7 +432,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 executable_code = self._extract_executable_code(solution)
 
                 if executable_code:
-                    # Execute the AI-generated solution
+                    # Execute the AI - generated solution
                     success = self._execute_ai_solution(component_name, executable_code)
                     execution_details = (
                         f"AI solution executed: {executable_code[:200]}..."
@@ -448,24 +456,25 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         # Log the repair attempt
         self._log_repair_attempt(
             RepairAttempt(
-                component_name=component_name,
-                error_message=error_message,
-                error_type="ai_research",
-                repair_tier=RepairTier.AI_RESEARCH,
-                repair_action=repair_action,
-                outcome=outcome,
-                execution_details=execution_details,
-                error_context=error_context,
-                duration=time.time() - start_time,
-            )
+                component_name = component_name,
+                    error_message = error_message,
+                    error_type="ai_research",
+                    repair_tier = RepairTier.AI_RESEARCH,
+                    repair_action = repair_action,
+                    outcome = outcome,
+                    execution_details = execution_details,
+                    error_context = error_context,
+                    duration = time.time() - start_time,
+                    )
         )
 
         return success
 
+
     def _generate_ai_repair_prompt(
         self, component_name: str, error_message: str, repair_history: List[Dict]
     ) -> str:
-        """Generate prompt for AI-powered repair research using the exact format specified in the Progressive Self-Repair Protocol."""
+        """Generate prompt for AI - powered repair research using the exact format specified in the Progressive Self - Repair Protocol."""
         # Format repair history as specified in the protocol
         if repair_history:
             failed_repairs = [
@@ -479,17 +488,17 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         # Check if this is a creative component
         is_creative = component_name in [
             "linly_talker",
-            "blender_compositor",
-            "creative_pipeline",
-        ]
+                "blender_compositor",
+                "creative_pipeline",
+                ]
 
         creative_context = ""
         if is_creative:
-            creative_context = " Note: This component uses an isolated Python virtual environment (venv_creative) with creative dependencies (torch, opencv-python, librosa, etc.). Use 'source activate_creative.sh' before executing Python commands."
+            creative_context = " Note: This component uses an isolated Python virtual environment (venv_creative) with creative dependencies (torch, opencv - python, librosa, etc.). Use 'source activate_creative.sh' before executing Python commands."
 
-        # Use the exact prompt format from the Progressive Self-Repair Protocol specification
+        # Use the exact prompt format from the Progressive Self - Repair Protocol specification
         return f"""
-I am an autonomous system. The component '[{component_name}]' is failing with the error: '[{error_message}]'. I have already tried the following repairs: [{history_summary}].{creative_context} Based on this error, research and suggest a new, different command-line or Python-based repair strategy. Formulate the solution as executable code.
+I am an autonomous system. The component '[{component_name}]' is failing with the error: '[{error_message}]'. I have already tried the following repairs: [{history_summary}].{creative_context} Based on this error, research and suggest a new, different command - line or Python - based repair strategy. Formulate the solution as executable code.
 
 Provide your response in this format:
 ```python
@@ -502,6 +511,7 @@ OR
 # Your shell commands here
 ```
 """
+
 
     def _extract_executable_code(self, ai_response: str) -> Optional[str]:
         """Extract executable code from AI response."""
@@ -518,17 +528,18 @@ OR
 
         return None
 
+
     def _execute_ai_solution(self, component_name: str, code: str) -> bool:
-        """Execute AI-generated repair solution."""
+        """Execute AI - generated repair solution."""
         import tempfile
 
         try:
             # Check if this is a creative component
             is_creative = component_name in [
                 "linly_talker",
-                "blender_compositor",
-                "creative_pipeline",
-            ]
+                    "blender_compositor",
+                    "creative_pipeline",
+                    ]
 
             # Determine if it's Python or shell code
             if any(
@@ -538,7 +549,7 @@ OR
                 if is_creative:
                     # Create a temporary file for the solution
                     with tempfile.NamedTemporaryFile(
-                        mode="w", suffix=".py", delete=False
+                        mode="w", suffix=".py", delete = False
                     ) as f:
                         f.write(code)
                         temp_file = f.name
@@ -547,16 +558,16 @@ OR
                         # Execute within creative environment
                         cmd = [
                             "bash",
-                            "-c",
-                            f"source activate_creative.sh && python {temp_file}",
-                        ]
+                                "-c",
+                                f"source activate_creative.sh && python {temp_file}",
+                                ]
                         result = subprocess.run(
                             cmd,
-                            capture_output=True,
-                            text=True,
-                            timeout=300,
-                            cwd=os.getcwd(),
-                        )
+                                capture_output = True,
+                                text = True,
+                                timeout = 300,
+                                cwd = os.getcwd(),
+                                )
                         os.unlink(temp_file)
                         return result.returncode == 0
                     except Exception:
@@ -569,29 +580,30 @@ OR
                     return True
             else:
                 # Execute as shell command
-                if is_creative and "python" in code:
+                    if is_creative and "python" in code:
                     # Wrap shell command with creative environment activation
                     code = f"source activate_creative.sh && {code}"
                 result = subprocess.run(
-                    code, shell=True, capture_output=True, text=True, timeout=60
+                    code, shell = True, capture_output = True, text = True, timeout = 60
                 )
                 return result.returncode == 0
         except Exception as e:
             self.logger.error(f"Failed to execute AI solution: {e}")
             return False
 
+
     def _restart_component(self, component_name: str) -> bool:
         """Restart a system component."""
-        # Component-specific restart logic
+        # Component - specific restart logic
         restart_commands = {
             "youtube_automation": "pkill -f youtube_automation && python -m backend.agents.youtube_automation &",
-            "content_generator": "pkill -f content_generator && python -m backend.content.automated_author &",
-            "ollama_service": "systemctl restart ollama || brew services restart ollama",
-            "database": 'sqlite3 right_perspective.db "PRAGMA integrity_check;"',
-            "linly_talker": "source activate_creative.sh && python -c \"from backend.content.animate_avatar import LinlyTalkerEngine; engine = LinlyTalkerEngine(); print('Linly-Talker restarted')\"",
-            "blender_compositor": "source activate_creative.sh && python -c \"from backend.content.blender_compositor import BlenderCompositor; compositor = BlenderCompositor(); print('Blender compositor restarted')\"",
-            "creative_pipeline": "source activate_creative.sh && python -c \"import torch, cv2, librosa; print('Creative pipeline dependencies verified')\"",
-        }
+                "content_generator": "pkill -f content_generator && python -m backend.content.automated_author &",
+                "ollama_service": "systemctl restart ollama || brew services restart ollama",
+                "database": 'sqlite3 right_perspective.db "PRAGMA integrity_check;"',
+                "linly_talker": "source activate_creative.sh && python -c \"from backend.content.animate_avatar import LinlyTalkerEngine; engine = LinlyTalkerEngine(); print('Linly - Talker restarted')\"",
+                "blender_compositor": "source activate_creative.sh && python -c \"from backend.content.blender_compositor import BlenderCompositor; compositor = BlenderCompositor(); print('Blender compositor restarted')\"",
+                "creative_pipeline": "source activate_creative.sh && python -c \"import torch, cv2, librosa; print('Creative pipeline dependencies verified')\"",
+                }
 
         command = restart_commands.get(component_name)
         if not command:
@@ -602,23 +614,24 @@ OR
 
         try:
             result = subprocess.run(
-                command, shell=True, capture_output=True, text=True, timeout=30
+                command, shell = True, capture_output = True, text = True, timeout = 30
             )
             return result.returncode == 0
         except Exception as e:
             self.logger.error(f"Failed to restart {component_name}: {e}")
             return False
 
+
     def _check_dependencies(self, component_name: str) -> List[str]:
         """Check component dependencies and return list of issues."""
         issues = []
 
-        # Component-specific dependency checks
+        # Component - specific dependency checks
         if component_name == "youtube_automation":
             # Check internet connectivity
             try:
-                requests.get("https://www.youtube.com", timeout=5)
-            except:
+                requests.get("https://www.youtube.com", timeout = 5)
+            except Exception:
                 issues.append("internet_connectivity")
 
             # Check YouTube API key
@@ -628,8 +641,8 @@ OR
         elif component_name == "ollama_service":
             # Check if Ollama is running
             try:
-                requests.get("http://localhost:11434/api/tags", timeout=5)
-            except:
+                requests.get("http://localhost:11434 / api / tags", timeout = 5)
+            except Exception:
                 issues.append("ollama_not_running")
 
         elif component_name == "database":
@@ -640,14 +653,14 @@ OR
                 try:
                     with sqlite3.connect(self.db_path) as conn:
                         conn.execute("SELECT 1")
-                except:
+                except Exception:
                     issues.append("database_corrupted")
 
         elif component_name in [
             "linly_talker",
-            "blender_compositor",
-            "creative_pipeline",
-        ]:
+                "blender_compositor",
+                "creative_pipeline",
+                ]:
             # Check creative environment
             creative_env_path = "venv_creative"
             if not os.path.exists(creative_env_path):
@@ -657,20 +670,21 @@ OR
                 try:
                     result = subprocess.run(
                         [
-                            f"{creative_env_path}/bin/python",
-                            "-c",
-                            'import torch, cv2, librosa; print("Creative dependencies OK")',
-                        ],
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                    )
+                            f"{creative_env_path}/bin / python",
+                                "-c",
+                                'import torch, cv2, librosa; print("Creative dependencies OK")',
+                                ],
+                            capture_output = True,
+                            text = True,
+                            timeout = 30,
+                            )
                     if result.returncode != 0:
                         issues.append("creative_dependencies_missing")
-                except:
+                except Exception:
                     issues.append("creative_environment_corrupted")
 
         return issues
+
 
     def _fix_dependencies(self, component_name: str, issues: List[str]) -> bool:
         """Attempt to fix dependency issues."""
@@ -679,7 +693,7 @@ OR
         for issue in issues:
             try:
                 if issue == "ollama_not_running":
-                    subprocess.run("brew services start ollama", shell=True, timeout=30)
+                    subprocess.run("brew services start ollama", shell = True, timeout = 30)
                 elif issue == "database_file_missing":
                     # Recreate database from schema
                     with open("schema.sql", "r") as f:
@@ -694,31 +708,32 @@ OR
                 elif issue == "creative_environment_missing":
                     # Recreate creative environment
                     result = subprocess.run(
-                        ["python", "scripts/setup_creative_environment.py"],
-                        check=True,
-                        timeout=300,
-                    )
+                        ["python", "scripts / setup_creative_environment.py"],
+                            check = True,
+                            timeout = 300,
+                            )
                 elif issue == "creative_dependencies_missing":
                     # Reinstall creative dependencies
                     result = subprocess.run(
-                        ["python", "scripts/setup_creative_environment.py", "--update"],
-                        check=True,
-                        timeout=300,
-                    )
+                        ["python", "scripts / setup_creative_environment.py", "--update"],
+                            check = True,
+                            timeout = 300,
+                            )
                 elif issue == "creative_environment_corrupted":
                     # Remove and recreate creative environment
-                    subprocess.run(["rm", "-rf", "venv_creative"], check=True)
+                    subprocess.run(["rm", "-rf", "venv_creative"], check = True)
                     result = subprocess.run(
-                        ["python", "scripts/setup_creative_environment.py"],
-                        check=True,
-                        timeout=300,
-                    )
+                        ["python", "scripts / setup_creative_environment.py"],
+                            check = True,
+                            timeout = 300,
+                            )
                 # Add more dependency fixes as needed
             except Exception as e:
                 self.logger.error(f"Failed to fix dependency {issue}: {e}")
                 success = False
 
         return success
+
 
     def _get_repair_history(self, component_name: str, limit: int = 50) -> List[Dict]:
         """Get repair history for a component from the master schema."""
@@ -728,17 +743,18 @@ OR
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    SELECT * FROM repair_log 
-                    WHERE component_name = ? 
-                    ORDER BY attempt_timestamp DESC 
+                    SELECT * FROM repair_log
+                    WHERE component_name = ?
+                    ORDER BY attempt_timestamp DESC
                     LIMIT ?
                 """,
                     (component_name, limit),
-                )
+                        )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get repair history: {e}")
             return []
+
 
     def _log_repair_attempt(
         self, attempt: RepairAttempt, snapshot_id: Optional[str] = None
@@ -759,36 +775,37 @@ OR
                     """
                     INSERT INTO repair_log (
                         component_name, error_message, repair_action, repair_tier,
-                        outcome, execution_details, resolution_time_seconds, snapshot_id
+                            outcome, execution_details, resolution_time_seconds, snapshot_id
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         attempt.component_name,
-                        attempt.error_message,
-                        attempt.repair_action,
-                        attempt.repair_tier.value,
-                        attempt.outcome.value if attempt.outcome else "pending",
-                        (
+                            attempt.error_message,
+                            attempt.repair_action,
+                            attempt.repair_tier.value,
+                            attempt.outcome.value if attempt.outcome else "pending",
+                            (
                             json.dumps(
                                 {
                                     "error_type": attempt.error_type,
-                                    "error_context": attempt.error_context,
-                                    "execution_details": attempt.execution_details,
-                                }
+                                        "error_context": attempt.error_context,
+                                        "execution_details": attempt.execution_details,
+                                        }
                             )
                             if attempt.execution_details or attempt.error_context
                             else None
                         ),
-                        int(attempt.duration) if attempt.duration else None,
-                        snapshot_id,
-                    ),
-                )
+                            int(attempt.duration) if attempt.duration else None,
+                            snapshot_id,
+                            ),
+                        )
                 conn.commit()
                 self.logger.info(
                     f"Logged repair attempt for {attempt.component_name}: {attempt.repair_action}"
                 )
         except Exception as e:
             self.logger.error(f"Failed to log repair attempt: {e}")
+
 
     def _update_component_health(self, component_name: str, status: ComponentStatus):
         """Update component health status."""
@@ -799,8 +816,8 @@ OR
                 # Check if component exists
                 cursor.execute(
                     "SELECT id, consecutive_failures, total_failures FROM component_health WHERE component_name = ?",
-                    (component_name,),
-                )
+                        (component_name,),
+                        )
                 existing = cursor.fetchone()
 
                 if existing:
@@ -815,46 +832,47 @@ OR
 
                     cursor.execute(
                         """
-                        UPDATE component_health 
+                        UPDATE component_health
                         SET status = ?, last_check = CURRENT_TIMESTAMP,
                             consecutive_failures = ?, total_failures = ?,
-                            last_failure_at = CASE WHEN ? != 'healthy' THEN CURRENT_TIMESTAMP ELSE last_failure_at END,
-                            updated_at = CURRENT_TIMESTAMP
+                                last_failure_at = CASE WHEN ? != 'healthy' THEN CURRENT_TIMESTAMP ELSE last_failure_at END,
+                                updated_at = CURRENT_TIMESTAMP
                         WHERE component_name = ?
                     """,
                         (
                             status.value,
-                            consecutive_failures,
-                            total_failures,
-                            status.value,
-                            component_name,
-                        ),
-                    )
+                                consecutive_failures,
+                                total_failures,
+                                status.value,
+                                component_name,
+                                ),
+                            )
                 else:
                     # Insert new record
                     cursor.execute(
                         """
                         INSERT INTO component_health (
                             component_name, status, consecutive_failures, total_failures,
-                            last_failure_at
+                                last_failure_at
                         ) VALUES (?, ?, ?, ?, ?)
                     """,
                         (
                             component_name,
-                            status.value,
-                            0 if status == ComponentStatus.HEALTHY else 1,
-                            0 if status == ComponentStatus.HEALTHY else 1,
-                            (
+                                status.value,
+                                0 if status == ComponentStatus.HEALTHY else 1,
+                                0 if status == ComponentStatus.HEALTHY else 1,
+                                (
                                 datetime.now().isoformat()
                                 if status != ComponentStatus.HEALTHY
                                 else None
                             ),
-                        ),
-                    )
+                                ),
+                            )
 
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to update component health: {e}")
+
 
     def get_system_health_report(self) -> Dict[str, Any]:
         """Generate comprehensive system health report."""
@@ -900,35 +918,36 @@ OR
 
                 return {
                     "timestamp": datetime.now().isoformat(),
-                    "health_summary": health_summary,
-                    "repair_activity_24h": repair_activity,
-                    "problematic_components": problematic_components,
-                    "system_status": (
+                        "health_summary": health_summary,
+                        "repair_activity_24h": repair_activity,
+                        "problematic_components": problematic_components,
+                        "system_status": (
                         "healthy"
                         if health_summary.get("critical", 0) == 0
                         else "degraded"
                     ),
-                }
+                        }
         except Exception as e:
             self.logger.error(f"Failed to generate health report: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
 
+
     def _perform_pre_repair_validation(
         self, component_name: str, error_message: str
     ) -> Dict[str, Any]:
-        """Enhanced pre-repair validation to ensure repair safety."""
+        """Enhanced pre - repair validation to ensure repair safety."""
         validation_result = {
             "can_proceed": True,
-            "reason": None,
-            "risk_level": "low",
-            "recommendations": [],
-        }
+                "reason": None,
+                "risk_level": "low",
+                "recommendations": [],
+                }
 
         try:
             # Check system resources
             memory_usage = psutil.virtual_memory().percent
             disk_usage = psutil.disk_usage("/").percent
-            cpu_usage = psutil.cpu_percent(interval=1)
+            cpu_usage = psutil.cpu_percent(interval = 1)
 
             if memory_usage > 90:
                 validation_result["can_proceed"] = False
@@ -943,14 +962,14 @@ OR
                 return validation_result
 
             # Check for concurrent repair operations
-            recent_repairs = self._get_recent_repair_attempts(minutes=5)
+            recent_repairs = self._get_recent_repair_attempts(minutes = 5)
             if len(recent_repairs) > 3:
                 validation_result["can_proceed"] = False
                 validation_result["reason"] = "Too many concurrent repair attempts"
                 validation_result["risk_level"] = "high"
                 return validation_result
 
-            # Component-specific pre-repair checks
+            # Component - specific pre - repair checks
             if component_name in ["database", "ollama_service"]:
                 # Critical components require extra validation
                 if self._is_component_in_use(component_name):
@@ -964,30 +983,31 @@ OR
             if any(pattern in error_message.lower() for pattern in dangerous_patterns):
                 validation_result["risk_level"] = "high"
                 validation_result["recommendations"].append(
-                    "High-risk error detected - proceed with caution"
+                    "High - risk error detected - proceed with caution"
                 )
 
             self.logger.info(
-                f"Pre-repair validation for {component_name}: {validation_result['risk_level']} risk"
+                f"Pre - repair validation for {component_name}: {validation_result['risk_level']} risk"
             )
             return validation_result
 
         except Exception as e:
-            self.logger.error(f"Pre-repair validation failed: {e}")
+            self.logger.error(f"Pre - repair validation failed: {e}")
             validation_result["can_proceed"] = False
             validation_result["reason"] = f"Validation error: {str(e)}"
             return validation_result
 
+
     def _perform_post_repair_validation(
         self, component_name: str, repair_duration: float
     ) -> Dict[str, Any]:
-        """Enhanced post-repair validation to ensure system stability."""
+        """Enhanced post - repair validation to ensure system stability."""
         validation_result = {
             "stable": True,
-            "issues": [],
-            "performance_impact": "none",
-            "recommendations": [],
-        }
+                "issues": [],
+                "performance_impact": "none",
+                "recommendations": [],
+                }
 
         try:
             # Basic system stability checks
@@ -1007,11 +1027,11 @@ OR
                     f"Database integrity compromised: {str(db_error)}"
                 )
 
-            # Component-specific post-repair validation
+            # Component - specific post - repair validation
             if component_name == "ollama_service":
                 try:
                     response = requests.get(
-                        "http://localhost:11434/api/tags", timeout=10
+                        "http://localhost:11434 / api / tags", timeout = 10
                     )
                     if response.status_code != 200:
                         validation_result["stable"] = False
@@ -1026,21 +1046,21 @@ OR
 
             elif component_name in [
                 "linly_talker",
-                "blender_compositor",
-                "creative_pipeline",
-            ]:
+                    "blender_compositor",
+                    "creative_pipeline",
+                    ]:
                 # Validate creative environment
                 try:
                     result = subprocess.run(
                         [
-                            "venv_creative/bin/python",
-                            "-c",
-                            'import torch, cv2, librosa; print("Creative environment OK")',
-                        ],
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                    )
+                            "venv_creative / bin / python",
+                                "-c",
+                                'import torch, cv2, librosa; print("Creative environment OK")',
+                                ],
+                            capture_output = True,
+                            text = True,
+                            timeout = 30,
+                            )
                     if result.returncode != 0:
                         validation_result["stable"] = False
                         validation_result["issues"].append(
@@ -1072,42 +1092,44 @@ OR
                 )
 
             # Check for new error patterns
-            time.sleep(2)  # Allow time for any immediate post-repair issues
+            time.sleep(2)  # Allow time for any immediate post - repair issues
             recent_errors = self._check_for_immediate_errors(component_name)
             if recent_errors:
                 validation_result["stable"] = False
                 validation_result["issues"].extend(recent_errors)
 
             self.logger.info(
-                f"Post-repair validation for {component_name}: {'STABLE' if validation_result['stable'] else 'UNSTABLE'}"
+                f"Post - repair validation for {component_name}: {'STABLE' if validation_result['stable'] else 'UNSTABLE'}"
             )
             return validation_result
 
         except Exception as e:
-            self.logger.error(f"Post-repair validation failed: {e}")
+            self.logger.error(f"Post - repair validation failed: {e}")
             validation_result["stable"] = False
             validation_result["issues"].append(f"Validation error: {str(e)}")
             return validation_result
 
+
     def _get_recent_repair_attempts(self, minutes: int = 5) -> List[Dict]:
         """Get repair attempts from the last N minutes."""
         try:
-            cutoff_time = datetime.now() - timedelta(minutes=minutes)
+            cutoff_time = datetime.now() - timedelta(minutes = minutes)
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    SELECT * FROM repair_log 
-                    WHERE attempt_timestamp > ? 
+                    SELECT * FROM repair_log
+                    WHERE attempt_timestamp > ?
                     ORDER BY attempt_timestamp DESC
                 """,
                     (cutoff_time.isoformat(),),
-                )
+                        )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get recent repair attempts: {e}")
             return []
+
 
     def _is_component_in_use(self, component_name: str) -> bool:
         """Check if a component is currently in active use."""
@@ -1115,7 +1137,7 @@ OR
             if component_name == "database":
                 # Check for active database connections
                 result = subprocess.run(
-                    ["lsof", self.db_path], capture_output=True, text=True
+                    ["lsof", self.db_path], capture_output = True, text = True
                 )
                 return len(result.stdout.strip()) > 0
             elif component_name == "ollama_service":
@@ -1127,15 +1149,16 @@ OR
         except Exception:
             return False
 
+
     def _check_for_immediate_errors(self, component_name: str) -> List[str]:
         """Check for immediate errors after repair."""
         errors = []
         try:
-            # Component-specific error checking
+            # Component - specific error checking
             if component_name == "ollama_service":
                 try:
                     response = requests.get(
-                        "http://localhost:11434/api/tags", timeout=5
+                        "http://localhost:11434 / api / tags", timeout = 5
                     )
                     if response.status_code >= 400:
                         errors.append(f"Ollama HTTP error: {response.status_code}")
@@ -1150,6 +1173,7 @@ OR
 
         return errors
 
+
     def _log_rollback_event(
         self, component_name: str, snapshot_id: str, rollback_reason: str
     ):
@@ -1163,10 +1187,10 @@ OR
                     """
                     CREATE TABLE IF NOT EXISTS rollback_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        component_name TEXT NOT NULL,
-                        snapshot_id TEXT NOT NULL,
-                        rollback_reason TEXT NOT NULL,
-                        rollback_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            component_name TEXT NOT NULL,
+                            snapshot_id TEXT NOT NULL,
+                            rollback_reason TEXT NOT NULL,
+                            rollback_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
@@ -1177,7 +1201,7 @@ OR
                     VALUES (?, ?, ?)
                 """,
                     (component_name, snapshot_id, rollback_reason),
-                )
+                        )
 
                 conn.commit()
                 self.logger.info(
@@ -1186,7 +1210,8 @@ OR
         except Exception as e:
             self.logger.error(f"Failed to log rollback event: {e}")
 
+
     def _verify_system_stability(self, component_name: str) -> bool:
-        """Legacy method - now redirects to enhanced post-repair validation."""
+        """Legacy method - now redirects to enhanced post - repair validation."""
         validation_result = self._perform_post_repair_validation(component_name, 0)
         return validation_result["stable"]

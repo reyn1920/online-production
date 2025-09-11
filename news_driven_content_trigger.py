@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-News-Driven Content Trigger Service
+News - Driven Content Trigger Service
 
 This service continuously monitors political RSS feeds and automatically triggers
 Right Perspective video content creation when breaking news or trending political
@@ -22,8 +22,9 @@ from breaking_news_watcher import NewsArticle, RSSIntelligenceEngine, TrendData
 
 logger = get_logger(__name__)
 
-
 @dataclass
+
+
 class ContentTrigger:
     """Represents a content creation trigger based on news events."""
 
@@ -42,50 +43,52 @@ class ContentTrigger:
 class NewsDrivenContentTrigger:
     """Service that monitors political news and triggers Right Perspective content creation."""
 
+
     def __init__(self, config_path: str = "rss_feeds_example.json"):
         self.config_path = config_path
-        self.rss_engine = RSSIntelligenceEngine(config_path=config_path)
+        self.rss_engine = RSSIntelligenceEngine(config_path = config_path)
         self.running = False
         self.monitoring_interval = 15  # Check every 15 minutes
         self.urgency_threshold = 0.7  # Minimum urgency score to trigger content
         self.political_keywords = [
             "biden",
-            "trump",
-            "congress",
-            "senate",
-            "house",
-            "election",
-            "vote",
-            "voting",
-            "democrat",
-            "republican",
-            "politics",
-            "political",
-            "government",
-            "federal",
-            "supreme court",
-            "legislation",
-            "bill",
-            "law",
-            "policy",
-            "campaign",
-            "scandal",
-            "investigation",
-            "impeachment",
-            "corruption",
-            "controversy",
-            "debate",
-            "primary",
-            "caucus",
-            "poll",
-            "polling",
-            "approval rating",
-        ]
+                "trump",
+                "congress",
+                "senate",
+                "house",
+                "election",
+                "vote",
+                "voting",
+                "democrat",
+                "republican",
+                "politics",
+                "political",
+                "government",
+                "federal",
+                "supreme court",
+                "legislation",
+                "bill",
+                "law",
+                "policy",
+                "campaign",
+                "scandal",
+                "investigation",
+                "impeachment",
+                "corruption",
+                "controversy",
+                "debate",
+                "primary",
+                "caucus",
+                "poll",
+                "polling",
+                "approval rating",
+                ]
 
         # Initialize trigger database
         self._init_trigger_database()
 
-        logger.info("News-Driven Content Trigger Service initialized")
+        logger.info("News - Driven Content Trigger Service initialized")
+
 
     def _init_trigger_database(self):
         """Initialize database tables for content triggers."""
@@ -96,18 +99,18 @@ class NewsDrivenContentTrigger:
             """
             CREATE TABLE IF NOT EXISTS content_triggers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                trigger_id TEXT UNIQUE NOT NULL,
-                topic TEXT NOT NULL,
-                urgency_score REAL NOT NULL,
-                article_count INTEGER NOT NULL,
-                trend_score REAL NOT NULL,
-                keywords TEXT NOT NULL,
-                sources TEXT NOT NULL,
-                content_type TEXT DEFAULT 'right_perspective_video',
-                status TEXT DEFAULT 'pending',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                processed_at TIMESTAMP,
-                video_created BOOLEAN DEFAULT FALSE
+                    trigger_id TEXT UNIQUE NOT NULL,
+                    topic TEXT NOT NULL,
+                    urgency_score REAL NOT NULL,
+                    article_count INTEGER NOT NULL,
+                    trend_score REAL NOT NULL,
+                    keywords TEXT NOT NULL,
+                    sources TEXT NOT NULL,
+                    content_type TEXT DEFAULT 'right_perspective_video',
+                    status TEXT DEFAULT 'pending',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    processed_at TIMESTAMP,
+                    video_created BOOLEAN DEFAULT FALSE
             )
         """
         )
@@ -116,10 +119,10 @@ class NewsDrivenContentTrigger:
             """
             CREATE TABLE IF NOT EXISTS trigger_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                trigger_id TEXT NOT NULL,
-                action TEXT NOT NULL,
-                details TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    trigger_id TEXT NOT NULL,
+                    action TEXT NOT NULL,
+                    details TEXT,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
@@ -128,6 +131,7 @@ class NewsDrivenContentTrigger:
         conn.close()
 
         logger.info("Content trigger database initialized")
+
 
     def _calculate_urgency_score(
         self, articles: List[NewsArticle], trend_data: Optional[TrendData]
@@ -138,11 +142,11 @@ class NewsDrivenContentTrigger:
 
         urgency_factors = {
             "recency": 0.0,
-            "volume": 0.0,
-            "sentiment": 0.0,
-            "trend": 0.0,
-            "political_relevance": 0.0,
-        }
+                "volume": 0.0,
+                "sentiment": 0.0,
+                "trend": 0.0,
+                "political_relevance": 0.0,
+                }
 
         # Recency factor (newer articles get higher scores)
         now = datetime.now()
@@ -163,11 +167,11 @@ class NewsDrivenContentTrigger:
         urgency_factors["sentiment"] = min(1.0, avg_sentiment)
 
         # Trend factor
-        if trend_data:
+            if trend_data:
             urgency_factors["trend"] = min(1.0, trend_data.trend_score / 100)
 
         # Political relevance factor
-        political_keyword_count = 0
+            political_keyword_count = 0
         total_content = " ".join(
             [f"{article.title} {article.content}" for article in articles]
         ).lower()
@@ -182,11 +186,11 @@ class NewsDrivenContentTrigger:
         # Weighted average
         weights = {
             "recency": 0.3,
-            "volume": 0.2,
-            "sentiment": 0.2,
-            "trend": 0.15,
-            "political_relevance": 0.15,
-        }
+                "volume": 0.2,
+                "sentiment": 0.2,
+                "trend": 0.15,
+                "political_relevance": 0.15,
+                }
 
         urgency_score = sum(
             [urgency_factors[factor] * weights[factor] for factor in urgency_factors]
@@ -194,6 +198,7 @@ class NewsDrivenContentTrigger:
 
         logger.debug(f"Urgency calculation: {urgency_factors} -> {urgency_score:.3f}")
         return urgency_score
+
 
     def _extract_topic_from_articles(self, articles: List[NewsArticle]) -> str:
         """Extract main topic from a collection of articles."""
@@ -215,12 +220,13 @@ class NewsDrivenContentTrigger:
             keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
 
         # Get top keywords
-        top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[
+        top_keywords = sorted(keyword_counts.items(), key = lambda x: x[1], reverse = True)[
             :3
         ]
         topic = ", ".join([kw[0] for kw in top_keywords])
 
         return topic if topic else articles[0].title[:50] + "..."
+
 
     def _create_content_trigger(
         self, articles: List[NewsArticle], trend_data: Optional[TrendData]
@@ -240,17 +246,18 @@ class NewsDrivenContentTrigger:
         trigger_id = f"trigger_{int(time.time())}_{hash(topic) % 10000}"
 
         trigger = ContentTrigger(
-            trigger_id=trigger_id,
-            topic=topic,
-            urgency_score=urgency_score,
-            article_count=len(articles),
-            trend_score=trend_data.trend_score if trend_data else 0.0,
-            keywords=list(all_keywords)[:10],  # Limit to top 10 keywords
-            sources=list(all_sources),
-            created_at=datetime.now(),
-        )
+            trigger_id = trigger_id,
+                topic = topic,
+                urgency_score = urgency_score,
+                article_count = len(articles),
+                trend_score = trend_data.trend_score if trend_data else 0.0,
+                keywords = list(all_keywords)[:10],  # Limit to top 10 keywords
+            sources = list(all_sources),
+                created_at = datetime.now(),
+                )
 
         return trigger
+
 
     def _store_trigger(self, trigger: ContentTrigger) -> bool:
         """Store content trigger in database."""
@@ -260,23 +267,23 @@ class NewsDrivenContentTrigger:
 
             cursor.execute(
                 """
-                INSERT INTO content_triggers 
-                (trigger_id, topic, urgency_score, article_count, trend_score, 
-                 keywords, sources, content_type, status)
+                INSERT INTO content_triggers
+                (trigger_id, topic, urgency_score, article_count, trend_score,
+                    keywords, sources, content_type, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     trigger.trigger_id,
-                    trigger.topic,
-                    trigger.urgency_score,
-                    trigger.article_count,
-                    trigger.trend_score,
-                    json.dumps(trigger.keywords),
-                    json.dumps(trigger.sources),
-                    trigger.content_type,
-                    trigger.status,
-                ),
-            )
+                        trigger.topic,
+                        trigger.urgency_score,
+                        trigger.article_count,
+                        trigger.trend_score,
+                        json.dumps(trigger.keywords),
+                        json.dumps(trigger.sources),
+                        trigger.content_type,
+                        trigger.status,
+                        ),
+                    )
 
             # Log trigger creation
             cursor.execute(
@@ -286,10 +293,10 @@ class NewsDrivenContentTrigger:
             """,
                 (
                     trigger.trigger_id,
-                    "created",
-                    f"Urgency: {trigger.urgency_score:.3f}, Articles: {trigger.article_count}",
-                ),
-            )
+                        "created",
+                        f"Urgency: {trigger.urgency_score:.3f}, Articles: {trigger.article_count}",
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -303,6 +310,7 @@ class NewsDrivenContentTrigger:
             logger.error(f"Error storing content trigger: {e}")
             return False
 
+
     async def _trigger_content_creation(self, trigger: ContentTrigger) -> bool:
         """Trigger Right Perspective video content creation."""
         try:
@@ -315,14 +323,14 @@ class NewsDrivenContentTrigger:
             # Create content requirements
             requirements = {
                 "content_type": "right_perspective_video",
-                "topic": trigger.topic,
-                "urgency_score": trigger.urgency_score,
-                "keywords": trigger.keywords,
-                "sources": trigger.sources,
-                "trigger_id": trigger.trigger_id,
-                "breaking_news": True,
-                "political_content": True,
-            }
+                    "topic": trigger.topic,
+                    "urgency_score": trigger.urgency_score,
+                    "keywords": trigger.keywords,
+                    "sources": trigger.sources,
+                    "trigger_id": trigger.trigger_id,
+                    "breaking_news": True,
+                    "political_content": True,
+                    }
 
             # Initialize agents
             planner = PlannerAgent()
@@ -330,7 +338,7 @@ class NewsDrivenContentTrigger:
 
             # Create protected Right Perspective plan
             plan = await planner._create_protected_right_perspective_plan(
-                requirements=requirements, priority=planner.TaskPriority.HIGH
+                requirements = requirements, priority = planner.TaskPriority.HIGH
             )
 
             # Execute the plan
@@ -343,12 +351,12 @@ class NewsDrivenContentTrigger:
 
                 cursor.execute(
                     """
-                    UPDATE content_triggers 
+                    UPDATE content_triggers
                     SET status = 'completed', processed_at = CURRENT_TIMESTAMP, video_created = TRUE
                     WHERE trigger_id = ?
                 """,
                     (trigger.trigger_id,),
-                )
+                        )
 
                 cursor.execute(
                     """
@@ -357,10 +365,10 @@ class NewsDrivenContentTrigger:
                 """,
                     (
                         trigger.trigger_id,
-                        "content_created",
-                        f"Video creation successful: {result.get('video_id', 'unknown')}",
-                    ),
-                )
+                            "content_created",
+                            f"Video creation successful: {result.get('video_id', 'unknown')}",
+                            ),
+                        )
 
                 conn.commit()
                 conn.close()
@@ -378,6 +386,7 @@ class NewsDrivenContentTrigger:
         except Exception as e:
             logger.error(f"Error triggering content creation: {e}")
             return False
+
 
     async def _monitor_political_news(self):
         """Monitor political news feeds and create triggers."""
@@ -406,7 +415,7 @@ class NewsDrivenContentTrigger:
             # Update trend analysis
             self.rss_engine._update_trend_analysis(all_articles)
 
-            # Group articles by topic/keywords for trigger creation
+            # Group articles by topic / keywords for trigger creation
             topic_groups = self._group_articles_by_topic(all_articles)
 
             for topic, articles in topic_groups.items():
@@ -433,10 +442,11 @@ class NewsDrivenContentTrigger:
         except Exception as e:
             logger.error(f"Error monitoring political news: {e}")
 
+
     def _group_articles_by_topic(
         self, articles: List[NewsArticle]
     ) -> Dict[str, List[NewsArticle]]:
-        """Group articles by similar topics/keywords."""
+        """Group articles by similar topics / keywords."""
         topic_groups = {}
 
         for article in articles:
@@ -457,6 +467,7 @@ class NewsDrivenContentTrigger:
 
         return topic_groups
 
+
     def _get_trend_data_for_topic(self, topic: str) -> Optional[TrendData]:
         """Get trend data for a specific topic."""
         try:
@@ -472,27 +483,28 @@ class NewsDrivenContentTrigger:
                 LIMIT 1
             """,
                 (f"%{topic}%",),
-            )
+                    )
 
             result = cursor.fetchone()
             conn.close()
 
             if result:
                 return TrendData(
-                    keyword=result[0],
-                    frequency=result[1],
-                    trend_score=result[2],
-                    first_seen=datetime.fromisoformat(result[3]),
-                    last_seen=datetime.fromisoformat(result[4]),
-                    sources=json.loads(result[5]) if result[5] else [],
-                    related_articles=json.loads(result[6]) if result[6] else [],
-                )
+                    keyword = result[0],
+                        frequency = result[1],
+                        trend_score = result[2],
+                        first_seen = datetime.fromisoformat(result[3]),
+                        last_seen = datetime.fromisoformat(result[4]),
+                        sources = json.loads(result[5]) if result[5] else [],
+                        related_articles = json.loads(result[6]) if result[6] else [],
+                        )
 
             return None
 
         except Exception as e:
             logger.error(f"Error getting trend data for topic '{topic}': {e}")
             return None
+
 
     async def run_continuous_monitoring(self):
         """Run continuous political news monitoring and content triggering."""
@@ -512,10 +524,12 @@ class NewsDrivenContentTrigger:
                 logger.error(f"Error in monitoring cycle: {e}")
                 await asyncio.sleep(60)  # Wait 1 minute before retrying
 
+
     def stop_monitoring(self):
         """Stop continuous monitoring."""
         self.running = False
         logger.info("Political news monitoring stopped")
+
 
     def get_pending_triggers(self) -> List[Dict[str, Any]]:
         """Get all pending content triggers."""
@@ -525,8 +539,8 @@ class NewsDrivenContentTrigger:
 
             cursor.execute(
                 """
-                SELECT trigger_id, topic, urgency_score, article_count, trend_score, 
-                       keywords, sources, created_at, status
+                SELECT trigger_id, topic, urgency_score, article_count, trend_score,
+                    keywords, sources, created_at, status
                 FROM content_triggers
                 WHERE status = 'pending'
                 ORDER BY urgency_score DESC, created_at DESC
@@ -541,15 +555,15 @@ class NewsDrivenContentTrigger:
                 triggers.append(
                     {
                         "trigger_id": result[0],
-                        "topic": result[1],
-                        "urgency_score": result[2],
-                        "article_count": result[3],
-                        "trend_score": result[4],
-                        "keywords": json.loads(result[5]) if result[5] else [],
-                        "sources": json.loads(result[6]) if result[6] else [],
-                        "created_at": result[7],
-                        "status": result[8],
-                    }
+                            "topic": result[1],
+                            "urgency_score": result[2],
+                            "article_count": result[3],
+                            "trend_score": result[4],
+                            "keywords": json.loads(result[5]) if result[5] else [],
+                            "sources": json.loads(result[6]) if result[6] else [],
+                            "created_at": result[7],
+                            "status": result[8],
+                            }
                 )
 
             return triggers
@@ -558,9 +572,10 @@ class NewsDrivenContentTrigger:
             logger.error(f"Error getting pending triggers: {e}")
             return []
 
-
 if __name__ == "__main__":
     # Example usage
+
+
     async def main():
         trigger_service = NewsDrivenContentTrigger()
 

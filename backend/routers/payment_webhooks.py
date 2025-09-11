@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 router = APIRouter(prefix="/webhooks", tags=["webhooks"])
 
-# Simple file-based storage for processed webhook IDs (idempotency)
+# Simple file - based storage for processed webhook IDs (idempotency)
 PROCESSED_WEBHOOKS_FILE = "processed_webhooks.json"
 
 
@@ -30,7 +30,7 @@ def save_processed_webhooks(processed: Dict[str, float]):
     cleaned = {k: v for k, v in processed.items() if v > cutoff}
 
     with open(PROCESSED_WEBHOOKS_FILE, "w") as f:
-        json.dump(cleaned, f, indent=2)
+        json.dump(cleaned, f, indent = 2)
 
 
 def is_webhook_processed(webhook_id: str) -> bool:
@@ -72,9 +72,9 @@ def verify_stripe_signature(payload: bytes, signature: str, secret: str) -> bool
             return False
 
         # Verify signature
-        signed_payload = f"{timestamp}.{payload.decode('utf-8')}"
+        signed_payload = f"{timestamp}.{payload.decode('utf - 8')}"
         expected_signature = hmac.new(
-            secret.encode("utf-8"), signed_payload.encode("utf-8"), hashlib.sha256
+            secret.encode("utf - 8"), signed_payload.encode("utf - 8"), hashlib.sha256
         ).hexdigest()
 
         return hmac.compare_digest(v1_signature, expected_signature)
@@ -88,20 +88,21 @@ def verify_paypal_signature(payload: bytes, headers: Dict[str, str]) -> bool:
     # In production, implement full PayPal webhook verification
     # This is a placeholder that checks for required headers
     required_headers = [
-        "paypal-transmission-id",
-        "paypal-cert-id",
-        "paypal-transmission-sig",
-    ]
+        "paypal - transmission - id",
+            "paypal - cert - id",
+            "paypal - transmission - sig",
+            ]
     return all(
         header.lower() in [h.lower() for h in headers.keys()]
         for header in required_headers
     )
 
-
 @router.post("/stripe")
+
+
 async def stripe_webhook(
     request: Request,
-    stripe_signature: Optional[str] = Header(None, alias="stripe-signature"),
+        stripe_signature: Optional[str] = Header(None, alias="stripe - signature"),
 ):
     """Handle Stripe webhook events with signature verification and idempotency"""
     try:
@@ -113,15 +114,15 @@ async def stripe_webhook(
         if stripe_secret and not verify_stripe_signature(
             payload, stripe_signature or "", stripe_secret
         ):
-            raise HTTPException(status_code=400, detail="Invalid signature")
+            raise HTTPException(status_code = 400, detail="Invalid signature")
 
         # Parse event
-        event = json.loads(payload.decode("utf-8"))
+        event = json.loads(payload.decode("utf - 8"))
         event_id = event.get("id")
         event_type = event.get("type")
 
         if not event_id:
-            raise HTTPException(status_code=400, detail="Missing event ID")
+            raise HTTPException(status_code = 400, detail="Missing event ID")
 
         # Check idempotency
         if is_webhook_processed(f"stripe_{event_id}"):
@@ -135,20 +136,21 @@ async def stripe_webhook(
 
         return {
             "status": "success",
-            "event_id": event_id,
-            "event_type": event_type,
-            "result": result,
-        }
+                "event_id": event_id,
+                "event_type": event_type,
+                "result": result,
+                }
 
     except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON payload")
+        raise HTTPException(status_code = 400, detail="Invalid JSON payload")
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Webhook processing failed: {str(e)}"
+            status_code = 500, detail = f"Webhook processing failed: {str(e)}"
         )
 
-
 @router.post("/paypal")
+
+
 async def paypal_webhook(request: Request):
     """Handle PayPal webhook events with signature verification and idempotency"""
     try:
@@ -158,15 +160,15 @@ async def paypal_webhook(request: Request):
 
         # Verify signature (simplified)
         if not verify_paypal_signature(payload, headers):
-            raise HTTPException(status_code=400, detail="Invalid signature")
+            raise HTTPException(status_code = 400, detail="Invalid signature")
 
         # Parse event
-        event = json.loads(payload.decode("utf-8"))
+        event = json.loads(payload.decode("utf - 8"))
         event_id = event.get("id")
         event_type = event.get("event_type")
 
         if not event_id:
-            raise HTTPException(status_code=400, detail="Missing event ID")
+            raise HTTPException(status_code = 400, detail="Missing event ID")
 
         # Check idempotency
         if is_webhook_processed(f"paypal_{event_id}"):
@@ -180,16 +182,16 @@ async def paypal_webhook(request: Request):
 
         return {
             "status": "success",
-            "event_id": event_id,
-            "event_type": event_type,
-            "result": result,
-        }
+                "event_id": event_id,
+                "event_type": event_type,
+                "result": result,
+                }
 
     except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON payload")
+        raise HTTPException(status_code = 400, detail="Invalid JSON payload")
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Webhook processing failed: {str(e)}"
+            status_code = 500, detail = f"Webhook processing failed: {str(e)}"
         )
 
 
@@ -234,8 +236,9 @@ async def process_paypal_event(
     else:
         return {"message": f"Unhandled event type: {event_type}"}
 
-
 # Business logic handlers (stubs)
+
+
 async def handle_successful_payment(
     provider: str, payment_data: Dict[str, Any]
 ) -> Dict[str, Any]:
@@ -246,14 +249,14 @@ async def handle_successful_payment(
     # - Log transaction
     return {
         "action": "payment_success",
-        "provider": provider,
-        "payment_id": payment_data.get("id"),
-        "amount": payment_data.get("amount")
+            "provider": provider,
+            "payment_id": payment_data.get("id"),
+            "amount": payment_data.get("amount")
         or payment_data.get("amount_with_breakdown", {})
         .get("gross_amount", {})
         .get("value"),
-        "processed_at": datetime.now().isoformat(),
-    }
+            "processed_at": datetime.now().isoformat(),
+            }
 
 
 async def handle_failed_payment(
@@ -266,10 +269,10 @@ async def handle_failed_payment(
     # - Update subscription status if needed
     return {
         "action": "payment_failed",
-        "provider": provider,
-        "payment_id": payment_data.get("id"),
-        "processed_at": datetime.now().isoformat(),
-    }
+            "provider": provider,
+            "payment_id": payment_data.get("id"),
+            "processed_at": datetime.now().isoformat(),
+            }
 
 
 async def handle_subscription_created(
@@ -282,10 +285,10 @@ async def handle_subscription_created(
     # - Set up user permissions
     return {
         "action": "subscription_created",
-        "provider": provider,
-        "subscription_id": subscription_data.get("id"),
-        "processed_at": datetime.now().isoformat(),
-    }
+            "provider": provider,
+            "subscription_id": subscription_data.get("id"),
+            "processed_at": datetime.now().isoformat(),
+            }
 
 
 async def handle_subscription_cancelled(
@@ -298,17 +301,18 @@ async def handle_subscription_cancelled(
     # - Schedule data retention cleanup
     return {
         "action": "subscription_cancelled",
-        "provider": provider,
-        "subscription_id": subscription_data.get("id"),
-        "processed_at": datetime.now().isoformat(),
-    }
-
+            "provider": provider,
+            "subscription_id": subscription_data.get("id"),
+            "processed_at": datetime.now().isoformat(),
+            }
 
 @router.get("/health")
+
+
 async def webhook_health():
     """Health check endpoint for webhook service"""
     return {
         "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "processed_webhooks_count": len(load_processed_webhooks()),
-    }
+            "timestamp": datetime.now().isoformat(),
+            "processed_webhooks_count": len(load_processed_webhooks()),
+            }

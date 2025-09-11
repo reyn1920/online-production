@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI YouTube Scheduling System
 
@@ -8,16 +8,16 @@ Intelligent video scheduling system that optimizes upload timing based on:
 - Global timezone optimization
 - Content type and performance correlation
 - Seasonal trends and events
-- A/B testing for optimal timing
+- A / B testing for optimal timing
 
 Features:
-- AI-powered optimal timing prediction
-- Multi-timezone audience optimization
+- AI - powered optimal timing prediction
+- Multi - timezone audience optimization
 - Automated queue management
-- Performance-based schedule adjustment
+- Performance - based schedule adjustment
 - Conflict resolution and load balancing
 - Integration with content pipeline
-- Real-time schedule optimization
+- Real - time schedule optimization
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -97,14 +97,15 @@ class ContentType(Enum):
     EDUCATIONAL = "educational"
     PROMOTIONAL = "promotional"
 
-
 @dataclass
+
+
 class AudienceInsight:
     """Audience analytics data for scheduling optimization."""
 
     timezone: str
-    peak_hours: List[int]  # Hours of day (0-23)
-    peak_days: List[int]  # Days of week (0-6, Monday=0)
+    peak_hours: List[int]  # Hours of day (0 - 23)
+    peak_days: List[int]  # Days of week (0 - 6, Monday = 0)
     audience_percentage: float  # Percentage of total audience
     engagement_rate: float
     avg_session_duration: float
@@ -112,8 +113,9 @@ class AudienceInsight:
     age_demographics: Dict[str, float]
     last_updated: datetime
 
-
 @dataclass
+
+
 class ScheduledVideo:
     """Scheduled video data structure."""
 
@@ -137,8 +139,9 @@ class ScheduledVideo:
     created_at: datetime
     updated_at: datetime
 
-
 @dataclass
+
+
 class ScheduleOptimization:
     """Schedule optimization results."""
 
@@ -156,17 +159,18 @@ class ScheduleOptimization:
 
 class YouTubeScheduler:
     """
-    Advanced YouTube video scheduling system with AI-powered optimization.
+    Advanced YouTube video scheduling system with AI - powered optimization.
     Handles intelligent timing, queue management, and performance optimization.
     """
 
-    def __init__(self, config_path: str = "config/scheduler_config.json"):
+
+    def __init__(self, config_path: str = "config / scheduler_config.json"):
         self.logger = setup_logger("youtube_scheduler")
         self.config_path = config_path
         self.config = self._load_config()
 
         # Initialize database
-        self.db_path = self.config.get("database_path", "data/youtube_scheduler.sqlite")
+        self.db_path = self.config.get("database_path", "data / youtube_scheduler.sqlite")
         self._init_database()
 
         # Initialize integrations
@@ -185,21 +189,22 @@ class YouTubeScheduler:
 
         # Timezone handling
         self.supported_timezones = [
-            "US/Eastern",
-            "US/Central",
-            "US/Mountain",
-            "US/Pacific",
-            "Europe/London",
-            "Europe/Paris",
-            "Europe/Berlin",
-            "Asia/Tokyo",
-            "Asia/Shanghai",
-            "Asia/Kolkata",
-            "Australia/Sydney",
-            "America/Sao_Paulo",
-        ]
+            "US / Eastern",
+                "US / Central",
+                "US / Mountain",
+                "US / Pacific",
+                "Europe / London",
+                "Europe / Paris",
+                "Europe / Berlin",
+                "Asia / Tokyo",
+                "Asia / Shanghai",
+                "Asia / Kolkata",
+                "Australia / Sydney",
+                "America / Sao_Paulo",
+                ]
 
         self.logger.info("YouTube Scheduler initialized")
+
 
     def _load_config(self) -> Dict[str, Any]:
         """Load scheduler configuration."""
@@ -211,39 +216,40 @@ class YouTubeScheduler:
             self.logger.error(f"Error loading scheduler config: {e}")
 
         return {
-            "database_path": "data/youtube_scheduler.sqlite",
-            "optimization": {
+            "database_path": "data / youtube_scheduler.sqlite",
+                "optimization": {
                 "strategy": "mixed_strategy",
-                "look_ahead_days": 7,
-                "min_gap_hours": 2,
-                "max_daily_uploads": 5,
-                "timezone_weight": 0.4,
-                "engagement_weight": 0.3,
-                "competition_weight": 0.3,
-            },
-            "scheduling": {
+                    "look_ahead_days": 7,
+                    "min_gap_hours": 2,
+                    "max_daily_uploads": 5,
+                    "timezone_weight": 0.4,
+                    "engagement_weight": 0.3,
+                    "competition_weight": 0.3,
+                    },
+                "scheduling": {
                 "auto_schedule": True,
-                "buffer_minutes": 15,
-                "retry_attempts": 3,
-                "batch_size": 10,
-                "queue_check_interval": 300,  # 5 minutes
+                    "buffer_minutes": 15,
+                    "retry_attempts": 3,
+                    "batch_size": 10,
+                    "queue_check_interval": 300,  # 5 minutes
             },
-            "analytics": {
+                "analytics": {
                 "track_performance": True,
-                "update_interval_hours": 6,
-                "min_data_points": 10,
-                "learning_enabled": True,
-            },
-            "notifications": {
+                    "update_interval_hours": 6,
+                    "min_data_points": 10,
+                    "learning_enabled": True,
+                    },
+                "notifications": {
                 "enabled": True,
-                "webhook_url": None,
-                "email_alerts": False,
-            },
-        }
+                    "webhook_url": None,
+                    "email_alerts": False,
+                    },
+                }
+
 
     def _init_database(self):
         """Initialize scheduler database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             # Scheduled videos table
@@ -251,24 +257,24 @@ class YouTubeScheduler:
                 """
                 CREATE TABLE IF NOT EXISTS scheduled_videos (
                     id TEXT PRIMARY KEY,
-                    channel_id TEXT,
-                    title TEXT,
-                    description TEXT,
-                    tags TEXT,
-                    video_path TEXT,
-                    thumbnail_path TEXT,
-                    content_type TEXT,
-                    priority TEXT,
-                    scheduled_time TIMESTAMP,
-                    optimal_score REAL,
-                    target_timezones TEXT,
-                    estimated_views INTEGER,
-                    estimated_engagement REAL,
-                    status TEXT,
-                    retry_count INTEGER,
-                    metadata TEXT,
-                    created_at TIMESTAMP,
-                    updated_at TIMESTAMP
+                        channel_id TEXT,
+                        title TEXT,
+                        description TEXT,
+                        tags TEXT,
+                        video_path TEXT,
+                        thumbnail_path TEXT,
+                        content_type TEXT,
+                        priority TEXT,
+                        scheduled_time TIMESTAMP,
+                        optimal_score REAL,
+                        target_timezones TEXT,
+                        estimated_views INTEGER,
+                        estimated_engagement REAL,
+                        status TEXT,
+                        retry_count INTEGER,
+                        metadata TEXT,
+                        created_at TIMESTAMP,
+                        updated_at TIMESTAMP
                 )
             """
             )
@@ -278,16 +284,16 @@ class YouTubeScheduler:
                 """
                 CREATE TABLE IF NOT EXISTS audience_insights (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    channel_id TEXT,
-                    timezone TEXT,
-                    peak_hours TEXT,
-                    peak_days TEXT,
-                    audience_percentage REAL,
-                    engagement_rate REAL,
-                    avg_session_duration REAL,
-                    device_preferences TEXT,
-                    age_demographics TEXT,
-                    last_updated TIMESTAMP
+                        channel_id TEXT,
+                        timezone TEXT,
+                        peak_hours TEXT,
+                        peak_days TEXT,
+                        audience_percentage REAL,
+                        engagement_rate REAL,
+                        avg_session_duration REAL,
+                        device_preferences TEXT,
+                        age_demographics TEXT,
+                        last_updated TIMESTAMP
                 )
             """
             )
@@ -297,21 +303,21 @@ class YouTubeScheduler:
                 """
                 CREATE TABLE IF NOT EXISTS performance_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    video_id TEXT,
-                    channel_id TEXT,
-                    published_time TIMESTAMP,
-                    content_type TEXT,
-                    views_24h INTEGER,
-                    views_7d INTEGER,
-                    likes INTEGER,
-                    comments INTEGER,
-                    shares INTEGER,
-                    engagement_rate REAL,
-                    click_through_rate REAL,
-                    audience_retention REAL,
-                    traffic_sources TEXT,
-                    demographics TEXT,
-                    recorded_at TIMESTAMP
+                        video_id TEXT,
+                        channel_id TEXT,
+                        published_time TIMESTAMP,
+                        content_type TEXT,
+                        views_24h INTEGER,
+                        views_7d INTEGER,
+                        likes INTEGER,
+                        comments INTEGER,
+                        shares INTEGER,
+                        engagement_rate REAL,
+                        click_through_rate REAL,
+                        audience_retention REAL,
+                        traffic_sources TEXT,
+                        demographics TEXT,
+                        recorded_at TIMESTAMP
                 )
             """
             )
@@ -321,22 +327,23 @@ class YouTubeScheduler:
                 """
                 CREATE TABLE IF NOT EXISTS schedule_optimizations (
                     id TEXT PRIMARY KEY,
-                    video_id TEXT,
-                    original_time TIMESTAMP,
-                    optimized_time TIMESTAMP,
-                    optimization_score REAL,
-                    audience_reach_increase REAL,
-                    engagement_boost REAL,
-                    reasoning TEXT,
-                    alternative_times TEXT,
-                    timezone_breakdown TEXT,
-                    competitor_analysis TEXT,
-                    optimization_timestamp TIMESTAMP
+                        video_id TEXT,
+                        original_time TIMESTAMP,
+                        optimized_time TIMESTAMP,
+                        optimization_score REAL,
+                        audience_reach_increase REAL,
+                        engagement_boost REAL,
+                        reasoning TEXT,
+                        alternative_times TEXT,
+                        timezone_breakdown TEXT,
+                        competitor_analysis TEXT,
+                        optimization_timestamp TIMESTAMP
                 )
             """
             )
 
             conn.commit()
+
 
     def _init_ml_models(self):
         """Initialize machine learning models for optimization."""
@@ -355,12 +362,13 @@ class YouTubeScheduler:
         except Exception as e:
             self.logger.error(f"Error initializing ML models: {e}")
 
+
     async def schedule_video(
         self,
-        video_data: Dict[str, Any],
-        preferred_time: Optional[datetime] = None,
-        priority: SchedulePriority = SchedulePriority.MEDIUM,
-    ) -> ScheduledVideo:
+            video_data: Dict[str, Any],
+            preferred_time: Optional[datetime] = None,
+            priority: SchedulePriority = SchedulePriority.MEDIUM,
+            ) -> ScheduledVideo:
         """Schedule a video for optimal upload timing."""
         try:
             self.logger.info(
@@ -369,26 +377,26 @@ class YouTubeScheduler:
 
             # Create scheduled video object
             scheduled_video = ScheduledVideo(
-                id=self._generate_video_id(),
-                channel_id=video_data.get("channel_id", "default"),
-                title=video_data.get("title", ""),
-                description=video_data.get("description", ""),
-                tags=video_data.get("tags", []),
-                video_path=video_data.get("video_path", ""),
-                thumbnail_path=video_data.get("thumbnail_path", ""),
-                content_type=ContentType(video_data.get("content_type", "educational")),
-                priority=priority,
-                scheduled_time=preferred_time or datetime.now(),
-                optimal_score=0.0,
-                target_timezones=video_data.get("target_timezones", ["US/Eastern"]),
-                estimated_views=0,
-                estimated_engagement=0.0,
-                status=ScheduleStatus.QUEUED,
-                retry_count=0,
-                metadata=video_data.get("metadata", {}),
-                created_at=datetime.now(),
-                updated_at=datetime.now(),
-            )
+                id = self._generate_video_id(),
+                    channel_id = video_data.get("channel_id", "default"),
+                    title = video_data.get("title", ""),
+                    description = video_data.get("description", ""),
+                    tags = video_data.get("tags", []),
+                    video_path = video_data.get("video_path", ""),
+                    thumbnail_path = video_data.get("thumbnail_path", ""),
+                    content_type = ContentType(video_data.get("content_type", "educational")),
+                    priority = priority,
+                    scheduled_time = preferred_time or datetime.now(),
+                    optimal_score = 0.0,
+                    target_timezones = video_data.get("target_timezones", ["US / Eastern"]),
+                    estimated_views = 0,
+                    estimated_engagement = 0.0,
+                    status = ScheduleStatus.QUEUED,
+                    retry_count = 0,
+                    metadata = video_data.get("metadata", {}),
+                    created_at = datetime.now(),
+                    updated_at = datetime.now(),
+                    )
 
             # Optimize scheduling time
             optimization = await self._optimize_schedule_time(scheduled_video)
@@ -415,6 +423,7 @@ class YouTubeScheduler:
             self.logger.error(f"Error scheduling video: {e}")
             raise
 
+
     async def _optimize_schedule_time(
         self, video: ScheduledVideo
     ) -> Optional[ScheduleOptimization]:
@@ -439,7 +448,7 @@ class YouTubeScheduler:
                 scored_times.append((candidate_time, score))
 
             # Sort by score and select best
-            scored_times.sort(key=lambda x: x[1], reverse=True)
+            scored_times.sort(key = lambda x: x[1], reverse = True)
             best_time, best_score = scored_times[0]
 
             # Calculate improvements
@@ -448,7 +457,7 @@ class YouTubeScheduler:
             )
 
             audience_reach_increase = (best_score - original_score) * 10  # Scale factor
-            engagement_boost = (
+                engagement_boost = (
                 audience_reach_increase * 0.8
             )  # Engagement correlates with reach
 
@@ -459,19 +468,19 @@ class YouTubeScheduler:
 
             # Create optimization result
             optimization = ScheduleOptimization(
-                original_time=video.scheduled_time,
-                optimized_time=best_time,
-                optimization_score=best_score,
-                audience_reach_increase=audience_reach_increase,
-                engagement_boost=engagement_boost,
-                reasoning=reasoning,
-                alternative_times=scored_times[1:6],  # Top 5 alternatives
-                timezone_breakdown=self._calculate_timezone_breakdown(
+                original_time = video.scheduled_time,
+                    optimized_time = best_time,
+                    optimization_score = best_score,
+                    audience_reach_increase = audience_reach_increase,
+                    engagement_boost = engagement_boost,
+                    reasoning = reasoning,
+                    alternative_times = scored_times[1:6],  # Top 5 alternatives
+                timezone_breakdown = self._calculate_timezone_breakdown(
                     best_time, audience_insights
                 ),
-                competitor_analysis={},  # Would be populated with competitor data
-                optimization_timestamp=datetime.now(),
-            )
+                    competitor_analysis={},  # Would be populated with competitor data
+                optimization_timestamp = datetime.now(),
+                    )
 
             # Store optimization
             await self._store_optimization(optimization, video.id)
@@ -482,26 +491,27 @@ class YouTubeScheduler:
             self.logger.error(f"Error optimizing schedule time: {e}")
             return None
 
+
     def _generate_candidate_times(
         self,
-        preferred_time: datetime,
-        priority: SchedulePriority,
-        content_type: ContentType,
-    ) -> List[datetime]:
+            preferred_time: datetime,
+            priority: SchedulePriority,
+            content_type: ContentType,
+            ) -> List[datetime]:
         """Generate candidate scheduling times based on various factors."""
         candidates = []
         base_time = preferred_time
 
-        # Priority-based time windows
+        # Priority - based time windows
         if priority == SchedulePriority.BREAKING_NEWS:
             # Immediate to 2 hours
             for minutes in [0, 30, 60, 120]:
-                candidates.append(base_time + timedelta(minutes=minutes))
+                candidates.append(base_time + timedelta(minutes = minutes))
 
         elif priority == SchedulePriority.URGENT:
             # Within 24 hours
             for hours in [0, 2, 4, 8, 12, 24]:
-                candidates.append(base_time + timedelta(hours=hours))
+                candidates.append(base_time + timedelta(hours = hours))
 
         else:
             # Standard scheduling window (up to 7 days)
@@ -509,14 +519,14 @@ class YouTubeScheduler:
 
             # Generate times for each day
             for day in range(look_ahead_days):
-                day_base = base_time + timedelta(days=day)
+                day_base = base_time + timedelta(days = day)
 
-                # Content-type specific optimal hours
+                # Content - type specific optimal hours
                 optimal_hours = self._get_content_type_optimal_hours(content_type)
 
                 for hour in optimal_hours:
                     candidate_time = day_base.replace(
-                        hour=hour, minute=0, second=0, microsecond=0
+                        hour = hour, minute = 0, second = 0, microsecond = 0
                     )
                     if candidate_time > datetime.now():
                         candidates.append(candidate_time)
@@ -527,6 +537,7 @@ class YouTubeScheduler:
 
         return candidates
 
+
     def _get_content_type_optimal_hours(self, content_type: ContentType) -> List[int]:
         """Get optimal hours for different content types."""
         # Based on general YouTube analytics patterns
@@ -534,7 +545,7 @@ class YouTubeScheduler:
             ContentType.TUTORIAL: [10, 14, 16, 20],  # Learning times
             ContentType.NEWS: [7, 12, 18, 21],  # News consumption times
             ContentType.ENTERTAINMENT: [19, 20, 21, 22],  # Evening entertainment
-            ContentType.REVIEW: [11, 15, 19],  # Decision-making times
+            ContentType.REVIEW: [11, 15, 19],  # Decision - making times
             ContentType.EDUCATIONAL: [9, 13, 16, 20],  # Study times
             ContentType.SHORT_FORM: [12, 17, 19, 21],  # Quick consumption
             ContentType.LIVE_STREAM: [19, 20, 21],  # Prime time
@@ -543,12 +554,13 @@ class YouTubeScheduler:
 
         return optimal_hours.get(content_type, [10, 14, 18, 20])  # Default hours
 
+
     async def _score_schedule_time(
         self,
-        schedule_time: datetime,
-        video: ScheduledVideo,
-        audience_insights: List[AudienceInsight],
-    ) -> float:
+            schedule_time: datetime,
+            video: ScheduledVideo,
+            audience_insights: List[AudienceInsight],
+            ) -> float:
         """Score a potential schedule time based on multiple factors."""
         try:
             total_score = 0.0
@@ -591,6 +603,7 @@ class YouTubeScheduler:
             self.logger.error(f"Error scoring schedule time: {e}")
             return 50.0  # Default score
 
+
     def _calculate_timezone_score(
         self, schedule_time: datetime, audience_insights: List[AudienceInsight]
     ) -> float:
@@ -630,6 +643,7 @@ class YouTubeScheduler:
 
         return total_score / total_weight if total_weight > 0 else 50.0
 
+
     def _predict_engagement_score(
         self, schedule_time: datetime, video: ScheduledVideo
     ) -> float:
@@ -647,12 +661,13 @@ class YouTubeScheduler:
             # Predict engagement
             prediction = self.engagement_model.predict(features_scaled)[0]
 
-            # Convert to 0-100 score
+            # Convert to 0 - 100 score
             return max(0.0, min(100.0, prediction * 100))
 
         except Exception as e:
             self.logger.error(f"Error predicting engagement score: {e}")
             return 50.0
+
 
     def _extract_time_features(
         self, schedule_time: datetime, video: ScheduledVideo
@@ -671,6 +686,7 @@ class YouTubeScheduler:
         ]
 
         return features
+
 
     async def _calculate_competition_score(
         self, schedule_time: datetime, channel_id: str
@@ -693,11 +709,12 @@ class YouTubeScheduler:
             self.logger.error(f"Error calculating competition score: {e}")
             return 50.0
 
+
     def _calculate_day_score(
         self, schedule_time: datetime, content_type: ContentType
     ) -> float:
         """Calculate score based on day of week and content type."""
-        day_of_week = schedule_time.weekday()  # 0=Monday, 6=Sunday
+        day_of_week = schedule_time.weekday()  # 0 = Monday, 6 = Sunday
 
         # General patterns (would be refined with actual data)
         if content_type in [ContentType.EDUCATIONAL, ContentType.TUTORIAL]:
@@ -712,6 +729,7 @@ class YouTubeScheduler:
         else:
             return 60.0  # Default
 
+
     async def _calculate_conflict_penalty(
         self, schedule_time: datetime, channel_id: str
     ) -> float:
@@ -724,13 +742,13 @@ class YouTubeScheduler:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
-                    SELECT COUNT(*) FROM scheduled_videos 
-                    WHERE channel_id = ? 
+                    SELECT COUNT(*) FROM scheduled_videos
+                    WHERE channel_id = ?
                     AND status IN ('queued', 'scheduled')
                     AND ABS(julianday(scheduled_time) - julianday(?)) * 24 < ?
                 """,
                     (channel_id, schedule_time.isoformat(), min_gap_hours),
-                )
+                        )
 
                 conflict_count = cursor.fetchone()[0]
 
@@ -740,6 +758,7 @@ class YouTubeScheduler:
         except Exception as e:
             self.logger.error(f"Error calculating conflict penalty: {e}")
             return 0.0
+
 
     async def process_schedule_queue(self):
         """Process the video scheduling queue."""
@@ -762,24 +781,25 @@ class YouTubeScheduler:
         except Exception as e:
             self.logger.error(f"Error processing schedule queue: {e}")
 
+
     async def _get_ready_videos(self) -> List[ScheduledVideo]:
         """Get videos ready for upload."""
         try:
             current_time = datetime.now()
             buffer_minutes = self.config["scheduling"]["buffer_minutes"]
-            upload_time = current_time + timedelta(minutes=buffer_minutes)
+            upload_time = current_time + timedelta(minutes = buffer_minutes)
 
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM scheduled_videos 
-                    WHERE status = 'scheduled' 
-                    AND scheduled_time <= ? 
+                    SELECT * FROM scheduled_videos
+                    WHERE status = 'scheduled'
+                    AND scheduled_time <= ?
                     ORDER BY priority DESC, scheduled_time ASC
                     LIMIT ?
                 """,
                     (upload_time.isoformat(), self.config["scheduling"]["batch_size"]),
-                )
+                        )
 
                 rows = cursor.fetchall()
                 columns = [desc[0] for desc in cursor.description]
@@ -796,6 +816,7 @@ class YouTubeScheduler:
             self.logger.error(f"Error getting ready videos: {e}")
             return []
 
+
     async def _upload_video(self, video: ScheduledVideo):
         """Upload video to YouTube."""
         try:
@@ -808,18 +829,18 @@ class YouTubeScheduler:
             # Prepare video metadata
             metadata = {
                 "title": video.title,
-                "description": video.description,
-                "tags": video.tags,
-                "category_id": "22",  # People & Blogs default
+                    "description": video.description,
+                    "tags": video.tags,
+                    "category_id": "22",  # People & Blogs default
                 "privacy_status": "public",
-            }
+                    }
 
             # Upload using YouTube integration
             result = await self.youtube_integration.upload_video(
-                video_path=video.video_path,
-                metadata=metadata,
-                thumbnail_path=video.thumbnail_path,
-            )
+                video_path = video.video_path,
+                    metadata = metadata,
+                    thumbnail_path = video.thumbnail_path,
+                    )
 
             if result and result.get("success"):
                 video.status = ScheduleStatus.PUBLISHED
@@ -838,6 +859,7 @@ class YouTubeScheduler:
             self.logger.error(f"Error uploading video: {e}")
             raise
 
+
     async def _handle_upload_failure(self, video: ScheduledVideo):
         """Handle video upload failure."""
         try:
@@ -848,7 +870,7 @@ class YouTubeScheduler:
                 # Reschedule for retry
                 video.status = ScheduleStatus.SCHEDULED
                 video.scheduled_time = datetime.now() + timedelta(
-                    minutes=30
+                    minutes = 30
                 )  # Retry in 30 minutes
                 self.logger.info(
                     f"Rescheduling video for retry {video.retry_count}/{max_retries}"
@@ -867,9 +889,11 @@ class YouTubeScheduler:
 
     # Additional helper methods...
 
+
     def _generate_video_id(self) -> str:
         """Generate unique video ID."""
         return f"vid_{int(time.time())}_{hashlib.md5(str(time.time()).encode()).hexdigest()[:8]}"
+
 
     async def _get_audience_insights(self, channel_id: str) -> List[AudienceInsight]:
         """Get audience insights for channel."""
@@ -877,26 +901,27 @@ class YouTubeScheduler:
         # For now, return sample data
         return [
             AudienceInsight(
-                timezone="US/Eastern",
-                peak_hours=[10, 14, 18, 20],
-                peak_days=[1, 2, 3, 4],  # Tue-Fri
-                audience_percentage=0.4,
-                engagement_rate=0.05,
-                avg_session_duration=180.0,
-                device_preferences={"mobile": 0.6, "desktop": 0.3, "tv": 0.1},
-                age_demographics={"18-24": 0.3, "25-34": 0.4, "35-44": 0.2, "45+": 0.1},
-                last_updated=datetime.now(),
-            )
+                timezone="US / Eastern",
+                    peak_hours=[10, 14, 18, 20],
+                    peak_days=[1, 2, 3, 4],  # Tue - Fri
+                audience_percentage = 0.4,
+                    engagement_rate = 0.05,
+                    avg_session_duration = 180.0,
+                    device_preferences={"mobile": 0.6, "desktop": 0.3, "tv": 0.1},
+                    age_demographics={"18 - 24": 0.3, "25 - 34": 0.4, "35 - 44": 0.2, "45+": 0.1},
+                    last_updated = datetime.now(),
+                    )
         ]
+
 
     def _generate_optimization_reasoning(
         self,
-        original_time: datetime,
-        optimized_time: datetime,
-        audience_insights: List[AudienceInsight],
-        content_type: ContentType,
-    ) -> List[str]:
-        """Generate human-readable optimization reasoning."""
+            original_time: datetime,
+            optimized_time: datetime,
+            audience_insights: List[AudienceInsight],
+            content_type: ContentType,
+            ) -> List[str]:
+        """Generate human - readable optimization reasoning."""
         reasoning = []
 
         time_diff = optimized_time - original_time
@@ -909,7 +934,7 @@ class YouTubeScheduler:
                 f"Moved {abs(time_diff.total_seconds()) / 3600:.1f} hours earlier to avoid competition"
             )
 
-        # Add audience-based reasoning
+        # Add audience - based reasoning
         if audience_insights:
             primary_tz = audience_insights[0].timezone
             local_time = optimized_time.astimezone(pytz.timezone(primary_tz))
@@ -917,12 +942,13 @@ class YouTubeScheduler:
                 f"Optimized for {primary_tz} audience at {local_time.strftime('%I:%M %p')}"
             )
 
-        # Add content-type reasoning
+        # Add content - type reasoning
         reasoning.append(
             f"Scheduled during optimal hours for {content_type.value} content"
         )
 
         return reasoning
+
 
     def _calculate_timezone_breakdown(
         self, schedule_time: datetime, audience_insights: List[AudienceInsight]
@@ -948,11 +974,13 @@ class YouTubeScheduler:
 
         return breakdown
 
+
     async def _add_to_queue(self, video: ScheduledVideo):
         """Add video to scheduling queue."""
         video.status = ScheduleStatus.SCHEDULED
         self.schedule_queue.append(video)
-        self.schedule_queue.sort(key=lambda v: (v.priority.value, v.scheduled_time))
+        self.schedule_queue.sort(key = lambda v: (v.priority.value, v.scheduled_time))
+
 
     async def _store_scheduled_video(self, video: ScheduledVideo):
         """Store scheduled video in database."""
@@ -960,38 +988,39 @@ class YouTubeScheduler:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO scheduled_videos 
+                    INSERT OR REPLACE INTO scheduled_videos
                     (id, channel_id, title, description, tags, video_path, thumbnail_path,
-                     content_type, priority, scheduled_time, optimal_score, target_timezones,
-                     estimated_views, estimated_engagement, status, retry_count, metadata,
-                     created_at, updated_at)
+                        content_type, priority, scheduled_time, optimal_score, target_timezones,
+                         estimated_views, estimated_engagement, status, retry_count, metadata,
+                         created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         video.id,
-                        video.channel_id,
-                        video.title,
-                        video.description,
-                        json.dumps(video.tags),
-                        video.video_path,
-                        video.thumbnail_path,
-                        video.content_type.value,
-                        video.priority.value,
-                        video.scheduled_time.isoformat(),
-                        video.optimal_score,
-                        json.dumps(video.target_timezones),
-                        video.estimated_views,
-                        video.estimated_engagement,
-                        video.status.value,
-                        video.retry_count,
-                        json.dumps(video.metadata),
-                        video.created_at.isoformat(),
-                        video.updated_at.isoformat(),
-                    ),
-                )
+                            video.channel_id,
+                            video.title,
+                            video.description,
+                            json.dumps(video.tags),
+                            video.video_path,
+                            video.thumbnail_path,
+                            video.content_type.value,
+                            video.priority.value,
+                            video.scheduled_time.isoformat(),
+                            video.optimal_score,
+                            json.dumps(video.target_timezones),
+                            video.estimated_views,
+                            video.estimated_engagement,
+                            video.status.value,
+                            video.retry_count,
+                            json.dumps(video.metadata),
+                            video.created_at.isoformat(),
+                            video.updated_at.isoformat(),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing scheduled video: {e}")
+
 
     async def _store_optimization(
         self, optimization: ScheduleOptimization, video_id: str
@@ -1000,6 +1029,7 @@ class YouTubeScheduler:
         # Implementation would store optimization data
         pass
 
+
     async def _update_video_status(self, video: ScheduledVideo):
         """Update video status in database."""
         try:
@@ -1007,59 +1037,63 @@ class YouTubeScheduler:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    UPDATE scheduled_videos 
+                    UPDATE scheduled_videos
                     SET status = ?, retry_count = ?, metadata = ?, updated_at = ?
                     WHERE id = ?
                 """,
                     (
                         video.status.value,
-                        video.retry_count,
-                        json.dumps(video.metadata),
-                        video.updated_at.isoformat(),
-                        video.id,
-                    ),
-                )
+                            video.retry_count,
+                            json.dumps(video.metadata),
+                            video.updated_at.isoformat(),
+                            video.id,
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error updating video status: {e}")
+
 
     async def _update_queue_status(self):
         """Update overall queue status."""
         # Implementation would update queue metrics
         pass
 
+
     def _row_to_scheduled_video(self, row_data: Dict[str, Any]) -> ScheduledVideo:
         """Convert database row to ScheduledVideo object."""
         return ScheduledVideo(
-            id=row_data["id"],
-            channel_id=row_data["channel_id"],
-            title=row_data["title"],
-            description=row_data["description"],
-            tags=json.loads(row_data["tags"]) if row_data["tags"] else [],
-            video_path=row_data["video_path"],
-            thumbnail_path=row_data["thumbnail_path"],
-            content_type=ContentType(row_data["content_type"]),
-            priority=SchedulePriority(row_data["priority"]),
-            scheduled_time=datetime.fromisoformat(row_data["scheduled_time"]),
-            optimal_score=row_data["optimal_score"],
-            target_timezones=(
+            id = row_data["id"],
+                channel_id = row_data["channel_id"],
+                title = row_data["title"],
+                description = row_data["description"],
+                tags = json.loads(row_data["tags"]) if row_data["tags"] else [],
+                video_path = row_data["video_path"],
+                thumbnail_path = row_data["thumbnail_path"],
+                content_type = ContentType(row_data["content_type"]),
+                priority = SchedulePriority(row_data["priority"]),
+                scheduled_time = datetime.fromisoformat(row_data["scheduled_time"]),
+                optimal_score = row_data["optimal_score"],
+                target_timezones=(
                 json.loads(row_data["target_timezones"])
                 if row_data["target_timezones"]
                 else []
             ),
-            estimated_views=row_data["estimated_views"],
-            estimated_engagement=row_data["estimated_engagement"],
-            status=ScheduleStatus(row_data["status"]),
-            retry_count=row_data["retry_count"],
-            metadata=json.loads(row_data["metadata"]) if row_data["metadata"] else {},
-            created_at=datetime.fromisoformat(row_data["created_at"]),
-            updated_at=datetime.fromisoformat(row_data["updated_at"]),
-        )
+                estimated_views = row_data["estimated_views"],
+                estimated_engagement = row_data["estimated_engagement"],
+                status = ScheduleStatus(row_data["status"]),
+                retry_count = row_data["retry_count"],
+                metadata = json.loads(row_data["metadata"]) if row_data["metadata"] else {},
+                created_at = datetime.fromisoformat(row_data["created_at"]),
+                updated_at = datetime.fromisoformat(row_data["updated_at"]),
+                )
+
 
     def _load_model_data(self):
         """Load existing ML model data."""
         # Implementation would load trained models from disk
         pass
+
 
     def get_schedule_status(self) -> Dict[str, Any]:
         """Get current scheduling status and metrics."""
@@ -1068,7 +1102,7 @@ class YouTubeScheduler:
                 # Count videos by status
                 cursor = conn.execute(
                     """
-                    SELECT status, COUNT(*) FROM scheduled_videos 
+                    SELECT status, COUNT(*) FROM scheduled_videos
                     GROUP BY status
                 """
                 )
@@ -1077,7 +1111,7 @@ class YouTubeScheduler:
                 # Get upcoming videos
                 cursor = conn.execute(
                     """
-                    SELECT COUNT(*) FROM scheduled_videos 
+                    SELECT COUNT(*) FROM scheduled_videos
                     WHERE status = 'scheduled' AND scheduled_time > datetime('now')
                 """
                 )
@@ -1085,27 +1119,27 @@ class YouTubeScheduler:
 
                 return {
                     "queue_size": len(self.schedule_queue),
-                    "status_counts": status_counts,
-                    "upcoming_videos": upcoming_count,
-                    "config": self.config,
-                }
+                        "status_counts": status_counts,
+                        "upcoming_videos": upcoming_count,
+                        "config": self.config,
+                        }
         except Exception as e:
             self.logger.error(f"Error getting schedule status: {e}")
             return {"error": str(e)}
 
-
 # Factory function
+
+
 def create_youtube_scheduler() -> YouTubeScheduler:
     """Create and return YouTube scheduler instance."""
     return YouTubeScheduler()
-
 
 # CLI interface for testing
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="YouTube Scheduler")
-    parser.add_argument("--schedule", type=str, help="Schedule video (provide title)")
+    parser.add_argument("--schedule", type = str, help="Schedule video (provide title)")
     parser.add_argument("--process", action="store_true", help="Process schedule queue")
     parser.add_argument("--status", action="store_true", help="Get schedule status")
 
@@ -1116,10 +1150,10 @@ if __name__ == "__main__":
     if args.schedule:
         video_data = {
             "title": args.schedule,
-            "description": f"Video about {args.schedule}",
-            "tags": ["tutorial", "guide"],
-            "content_type": "educational",
-        }
+                "description": f"Video about {args.schedule}",
+                "tags": ["tutorial", "guide"],
+                "content_type": "educational",
+                }
         result = asyncio.run(scheduler.schedule_video(video_data))
         print(f"Scheduled: {result.title} for {result.scheduled_time}")
 
@@ -1129,7 +1163,7 @@ if __name__ == "__main__":
 
     elif args.status:
         status = scheduler.get_schedule_status()
-        print(json.dumps(status, indent=2, default=str))
+        print(json.dumps(status, indent = 2, default = str))
 
     else:
         print("Use --schedule <title>, --process, or --status")

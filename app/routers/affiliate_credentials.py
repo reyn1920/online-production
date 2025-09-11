@@ -12,7 +12,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from backend.agents.stealth_automation_agent import AffiliateDashboard
 
-router = APIRouter(prefix="/api/affiliates", tags=["affiliate-credentials"])
+router = APIRouter(prefix="/api / affiliates", tags=["affiliate - credentials"])
 security = HTTPBearer()
 logger = logging.getLogger(__name__)
 
@@ -21,10 +21,13 @@ DB_PATH = Path("intelligence.db")
 
 
 class AffiliateCredentialsService:
+
+
     def __init__(self):
         self.db_path = DB_PATH
         self.encryption_key = self._get_encryption_key()
         self.cipher_suite = Fernet(self.encryption_key) if self.encryption_key else None
+
 
     def _get_encryption_key(self) -> Optional[bytes]:
         """Get encryption key from environment or generate one"""
@@ -38,6 +41,7 @@ class AffiliateCredentialsService:
         )
         return Fernet.generate_key()
 
+
     def _decrypt_password(self, encrypted_password: str) -> str:
         """Decrypt stored password"""
         if not self.cipher_suite:
@@ -49,6 +53,7 @@ class AffiliateCredentialsService:
             logger.error(f"Failed to decrypt password: {e}")
             return "[Decryption failed]"
 
+
     def get_all_credentials(self) -> Dict[str, Any]:
         """Retrieve all affiliate dashboard credentials"""
         try:
@@ -59,19 +64,19 @@ class AffiliateCredentialsService:
                 # Get all affiliate dashboards
                 cursor.execute(
                     """
-                    SELECT 
+                    SELECT
                         id,
-                        platform_name,
-                        login_url,
-                        username,
-                        encrypted_password,
-                        dashboard_url,
-                        last_login_attempt,
-                        login_success_rate,
-                        notes,
-                        created_at,
-                        updated_at,
-                        COALESCE(is_active, 1) as is_active
+                            platform_name,
+                            login_url,
+                            username,
+                            encrypted_password,
+                            dashboard_url,
+                            last_login_attempt,
+                            login_success_rate,
+                            notes,
+                            created_at,
+                            updated_at,
+                            COALESCE(is_active, 1) as is_active
                     FROM affiliate_dashboards
                     ORDER BY platform_name
                 """
@@ -93,19 +98,19 @@ class AffiliateCredentialsService:
 
                     credential = {
                         "id": row["id"],
-                        "programName": row["platform_name"],
-                        "category": self._get_program_category(row["platform_name"]),
-                        "dashboardUrl": row["dashboard_url"] or row["login_url"],
-                        "username": row["username"],
-                        "password": decrypted_password,
-                        "lastAccess": row["last_login_attempt"],
-                        "successRate": row["login_success_rate"] or 0,
-                        "status": status,
-                        "notes": row["notes"],
-                        "createdAt": row["created_at"],
-                        "updatedAt": row["updated_at"],
-                        "isActive": bool(row["is_active"]),
-                    }
+                            "programName": row["platform_name"],
+                            "category": self._get_program_category(row["platform_name"]),
+                            "dashboardUrl": row["dashboard_url"] or row["login_url"],
+                            "username": row["username"],
+                            "password": decrypted_password,
+                            "lastAccess": row["last_login_attempt"],
+                            "successRate": row["login_success_rate"] or 0,
+                            "status": status,
+                            "notes": row["notes"],
+                            "createdAt": row["created_at"],
+                            "updatedAt": row["updated_at"],
+                            "isActive": bool(row["is_active"]),
+                            }
                     credentials.append(credential)
 
                 # Calculate stats
@@ -113,16 +118,17 @@ class AffiliateCredentialsService:
 
                 return {
                     "credentials": credentials,
-                    "stats": stats,
-                    "total": len(credentials),
-                }
+                        "stats": stats,
+                        "total": len(credentials),
+                        }
 
         except sqlite3.Error as e:
             logger.error(f"Database error: {e}")
-            raise HTTPException(status_code=500, detail="Database error")
+            raise HTTPException(status_code = 500, detail="Database error")
         except Exception as e:
             logger.error(f"Unexpected error: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise HTTPException(status_code = 500, detail="Internal server error")
+
 
     def _determine_status(
         self, last_login: Optional[str], success_rate: Optional[float]
@@ -135,7 +141,7 @@ class AffiliateCredentialsService:
         try:
             last_login_date = datetime.fromisoformat(last_login.replace("Z", "+00:00"))
             days_since_login = (
-                datetime.now() - last_login_date.replace(tzinfo=None)
+                datetime.now() - last_login_date.replace(tzinfo = None)
             ).days
 
             if success_rate and success_rate >= 80 and days_since_login <= 30:
@@ -144,8 +150,9 @@ class AffiliateCredentialsService:
                 return "inactive"
             else:
                 return "pending"
-        except:
+        except Exception:
             return "pending"
+
 
     def _get_program_category(self, platform_name: str) -> str:
         """Categorize affiliate program"""
@@ -154,7 +161,7 @@ class AffiliateCredentialsService:
         if any(keyword in platform_lower for keyword in ["clickbank", "cb"]):
             return "Digital Products"
         elif any(keyword in platform_lower for keyword in ["amazon", "amzn"]):
-            return "E-commerce"
+            return "E - commerce"
         elif any(
             keyword in platform_lower for keyword in ["commission", "cj", "shareasale"]
         ):
@@ -167,6 +174,7 @@ class AffiliateCredentialsService:
             return "Finance"
         else:
             return "General"
+
 
     def _calculate_stats(self, credentials: List[Dict]) -> Dict[str, Any]:
         """Calculate summary statistics"""
@@ -184,7 +192,7 @@ class AffiliateCredentialsService:
                         most_recent.replace("Z", "+00:00")
                     )
                     last_access = last_access_date.strftime("%b %d, %Y")
-                except:
+                except Exception:
                     last_access = "Unknown"
 
         # Calculate security score (simplified)
@@ -214,12 +222,13 @@ class AffiliateCredentialsService:
 
         return {
             "total": total,
-            "active": active,
-            "inactive": sum(1 for c in credentials if c["status"] == "inactive"),
-            "pending": sum(1 for c in credentials if c["status"] == "pending"),
-            "lastAccess": last_access,
-            "securityScore": max(70, security_score),  # Minimum 70%
+                "active": active,
+                "inactive": sum(1 for c in credentials if c["status"] == "inactive"),
+                "pending": sum(1 for c in credentials if c["status"] == "pending"),
+                "lastAccess": last_access,
+                "securityScore": max(70, security_score),  # Minimum 70%
         }
+
 
     def test_credential_login(self, credential_id: str) -> Dict[str, Any]:
         """Test login for a specific credential"""
@@ -235,24 +244,25 @@ class AffiliateCredentialsService:
                     WHERE id = ?
                 """,
                     (credential_id,),
-                )
+                        )
 
                 row = cursor.fetchone()
                 if not row:
-                    raise HTTPException(status_code=404, detail="Credential not found")
+                    raise HTTPException(status_code = 404, detail="Credential not found")
 
                 # For now, return a simulated test result
                 # In production, this would use the stealth automation agent
                 return {
                     "success": True,
-                    "message": f"Login test for {row['platform_name']} completed successfully",
-                    "timestamp": datetime.now().isoformat(),
-                    "responseTime": 1.2,  # seconds
+                        "message": f"Login test for {row['platform_name']} completed successfully",
+                        "timestamp": datetime.now().isoformat(),
+                        "responseTime": 1.2,  # seconds
                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during login test: {e}")
-            raise HTTPException(status_code=500, detail="Database error")
+            raise HTTPException(status_code = 500, detail="Database error")
+
 
     def toggle_credential_active(
         self, credential_id: str, is_active: bool
@@ -265,28 +275,29 @@ class AffiliateCredentialsService:
                 # Update the is_active status
                 cursor.execute(
                     """
-                    UPDATE affiliate_dashboards 
+                    UPDATE affiliate_dashboards
                     SET is_active = ?, updated_at = ?
                     WHERE id = ?
                 """,
                     (is_active, datetime.now().isoformat(), credential_id),
-                )
+                        )
 
                 if cursor.rowcount == 0:
-                    raise HTTPException(status_code=404, detail="Credential not found")
+                    raise HTTPException(status_code = 404, detail="Credential not found")
 
                 conn.commit()
 
                 return {
                     "success": True,
-                    "message": f"Credential {'activated' if is_active else 'deactivated'} successfully",
-                    "credentialId": credential_id,
-                    "isActive": is_active,
-                }
+                        "message": f"Credential {'activated' if is_active else 'deactivated'} successfully",
+                        "credentialId": credential_id,
+                        "isActive": is_active,
+                        }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during toggle: {e}")
-            raise HTTPException(status_code=500, detail="Database error")
+            raise HTTPException(status_code = 500, detail="Database error")
+
 
     def delete_credential(self, credential_id: str) -> Dict[str, Any]:
         """Delete a credential from the database"""
@@ -297,12 +308,12 @@ class AffiliateCredentialsService:
                 # First check if credential exists
                 cursor.execute(
                     "SELECT platform_name FROM affiliate_dashboards WHERE id = ?",
-                    (credential_id,),
-                )
+                        (credential_id,),
+                        )
                 row = cursor.fetchone()
 
                 if not row:
-                    raise HTTPException(status_code=404, detail="Credential not found")
+                    raise HTTPException(status_code = 404, detail="Credential not found")
 
                 platform_name = row[0]
 
@@ -314,13 +325,14 @@ class AffiliateCredentialsService:
 
                 return {
                     "success": True,
-                    "message": f"Credential for {platform_name} deleted successfully",
-                    "credentialId": credential_id,
-                }
+                        "message": f"Credential for {platform_name} deleted successfully",
+                        "credentialId": credential_id,
+                        }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during deletion: {e}")
-            raise HTTPException(status_code=500, detail="Database error")
+            raise HTTPException(status_code = 500, detail="Database error")
+
 
     def export_credentials(self) -> Dict[str, Any]:
         """Export credentials in a secure format"""
@@ -329,84 +341,88 @@ class AffiliateCredentialsService:
         # Remove sensitive password data for export
         export_data = {
             "exportDate": datetime.now().isoformat(),
-            "totalPrograms": data["total"],
-            "stats": data["stats"],
-            "programs": [],
-        }
+                "totalPrograms": data["total"],
+                "stats": data["stats"],
+                "programs": [],
+                }
 
         for cred in data["credentials"]:
             export_cred = {
                 "programName": cred["programName"],
-                "category": cred["category"],
-                "dashboardUrl": cred["dashboardUrl"],
-                "username": cred["username"],
-                "status": cred["status"],
-                "successRate": cred["successRate"],
-                "lastAccess": cred["lastAccess"],
-                "createdAt": cred["createdAt"],
-                # Note: password is intentionally excluded for security
+                    "category": cred["category"],
+                    "dashboardUrl": cred["dashboardUrl"],
+                    "username": cred["username"],
+                    "status": cred["status"],
+                    "successRate": cred["successRate"],
+                    "lastAccess": cred["lastAccess"],
+                    "createdAt": cred["createdAt"],
+                    # Note: password is intentionally excluded for security
             }
             export_data["programs"].append(export_cred)
 
         return export_data
 
-
 # Initialize service
 credentials_service = AffiliateCredentialsService()
 
-
 # Authentication dependency (simplified)
+
+
 async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Verify API token - implement proper authentication in production"""
     # For development, accept any token
     # In production, implement proper JWT validation
     if not credentials.credentials:
-        raise HTTPException(status_code=401, detail="Invalid authentication")
+        raise HTTPException(status_code = 401, detail="Invalid authentication")
     return credentials.credentials
 
-
 @router.get("/credentials")
+
+
 async def get_affiliate_credentials(token: str = Depends(verify_token)):
     """Get all affiliate dashboard credentials"""
     try:
         return credentials_service.get_all_credentials()
     except Exception as e:
         logger.error(f"Error retrieving credentials: {e}")
-        raise HTTPException(status_code=500, detail="Failed to retrieve credentials")
-
+        raise HTTPException(status_code = 500, detail="Failed to retrieve credentials")
 
 @router.post("/credentials/{credential_id}/test")
+
+
 async def test_credential_login(credential_id: str, token: str = Depends(verify_token)):
     """Test login for a specific credential"""
     try:
         return credentials_service.test_credential_login(credential_id)
     except Exception as e:
         logger.error(f"Error testing credential login: {e}")
-        raise HTTPException(status_code=500, detail="Failed to test login")
+        raise HTTPException(status_code = 500, detail="Failed to test login")
+
+@router.get("/credentials / export")
 
 
-@router.get("/credentials/export")
 async def export_credentials(token: str = Depends(verify_token)):
     """Export affiliate credentials summary"""
     try:
         export_data = credentials_service.export_credentials()
 
         # Return as JSON response with appropriate headers
-        json_str = json.dumps(export_data, indent=2)
+        json_str = json.dumps(export_data, indent = 2)
 
         return Response(
-            content=json_str,
-            media_type="application/json",
-            headers={
-                "Content-Disposition": f"attachment; filename=affiliate_credentials_{datetime.now().strftime('%Y%m%d')}.json"
+            content = json_str,
+                media_type="application / json",
+                headers={
+                "Content - Disposition": f"attachment; filename = affiliate_credentials_{datetime.now().strftime('%Y%m%d')}.json"
             },
-        )
+                )
     except Exception as e:
         logger.error(f"Error exporting credentials: {e}")
-        raise HTTPException(status_code=500, detail="Failed to export credentials")
-
+        raise HTTPException(status_code = 500, detail="Failed to export credentials")
 
 @router.post("/credentials/{credential_id}/toggle")
+
+
 async def toggle_credential_active(
     credential_id: str, is_active: bool, token: str = Depends(verify_token)
 ):
@@ -415,20 +431,22 @@ async def toggle_credential_active(
         return credentials_service.toggle_credential_active(credential_id, is_active)
     except Exception as e:
         logger.error(f"Error toggling credential: {e}")
-        raise HTTPException(status_code=500, detail="Failed to toggle credential")
-
+        raise HTTPException(status_code = 500, detail="Failed to toggle credential")
 
 @router.delete("/credentials/{credential_id}")
+
+
 async def delete_credential(credential_id: str, token: str = Depends(verify_token)):
     """Delete a credential"""
     try:
         return credentials_service.delete_credential(credential_id)
     except Exception as e:
         logger.error(f"Error deleting credential: {e}")
-        raise HTTPException(status_code=500, detail="Failed to delete credential")
+        raise HTTPException(status_code = 500, detail="Failed to delete credential")
+
+@router.get("/credentials / stats")
 
 
-@router.get("/credentials/stats")
 async def get_credentials_stats(token: str = Depends(verify_token)):
     """Get affiliate credentials statistics"""
     try:
@@ -436,11 +454,12 @@ async def get_credentials_stats(token: str = Depends(verify_token)):
         return data["stats"]
     except Exception as e:
         logger.error(f"Error retrieving stats: {e}")
-        raise HTTPException(status_code=500, detail="Failed to retrieve statistics")
-
+        raise HTTPException(status_code = 500, detail="Failed to retrieve statistics")
 
 # Health check endpoint
 @router.get("/health")
+
+
 async def health_check():
     """Health check for affiliate credentials service"""
     try:
@@ -452,14 +471,14 @@ async def health_check():
 
         return {
             "status": "healthy",
-            "database": "connected",
-            "totalCredentials": count,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "database": "connected",
+                "totalCredentials": count,
+                "timestamp": datetime.now().isoformat(),
+                }
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         return {
             "status": "unhealthy",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat(),
-        }
+                "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+                }

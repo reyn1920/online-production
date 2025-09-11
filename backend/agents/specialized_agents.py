@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Specialized Agentic Framework
 
@@ -41,16 +41,16 @@ _last_health_err_at = 0.0
 # Import content creation tools
 try:
     from backend.content.ai_inpainting import (AIInpainting, InpaintingConfig,
-                                               InpaintingQuality)
+        InpaintingQuality)
     from backend.content.ai_video_editing import AIVideoEditor, CueType, EffectIntensity
     from backend.content.animate_avatar import (AnimateAvatar, AnimationConfig,
-                                                AnimationQuality)
+        AnimationQuality)
     from backend.content.audio_postprod import (AudioConfig, AudioPostProduction,
-                                                AudioQuality)
+        AudioQuality)
     from backend.content.automated_author import (AutomatedAuthor, ContentType,
-                                                  GhostwriterPersona)
+        GhostwriterPersona)
     from backend.content.blender_compositor import (BlenderCompositor, RenderConfig,
-                                                    RenderQuality)
+        RenderQuality)
     from backend.content.evidence_based_scripting import EvidenceBasedScripting
     from backend.content.relentless_optimization import RelentlessOptimizer
     from backend.content.vidscript_pro import VidScriptPro
@@ -58,19 +58,29 @@ except ImportError as e:
     print(f"Warning: Could not import content creation tools: {e}")
 
     # Define fallback classes
+
+
     class VidScriptPro:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def generate_full_script(self, *args, **kwargs):
             return {"script": "Fallback script"}
 
+
     class AutomatedAuthor:
+
+
         def __init__(self, *args, **kwargs):
             pass
 
+
         async def create_project(self, *args, **kwargs):
             return {"content": "Fallback content"}
+
 
         def _generate_script_content(
             self, topic: str, style: str = "professional", duration: int = 60
@@ -87,100 +97,145 @@ Let's dive into the main points:
 
 Thank you for your attention. We hope this information about {topic} has been valuable and informative."""
 
+
     class AnimateAvatar:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def create_animation_job(self, *args, **kwargs):
             return {"job_id": "fallback"}
 
+
     class AIInpainting:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def create_inpainting_job(self, *args, **kwargs):
             return {"job_id": "fallback"}
 
+
     class BlenderCompositor:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def create_composite_job(self, *args, **kwargs):
             return {"job_id": "fallback"}
 
+
     class AudioPostProduction:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def create_audio_job(self, *args, **kwargs):
             return {"job_id": "fallback"}
 
+
     class AIVideoEditor:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def create_editing_job(self, *args, **kwargs):
             return {"job_id": "fallback"}
 
+
     class EvidenceBasedScripting:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def generate_evidence_based_script(self, *args, **kwargs):
             return {"error": "EvidenceBasedScripting not available"}
 
+
     class RelentlessOptimizer:
+
+
         def __init__(self, *args, **kwargs):
             pass
+
 
         async def start_autonomous_optimization(self, *args, **kwargs):
             return False
 
     # Define fallback enums and configs
+
+
     class ScriptConfig:
         pass
+
 
     class ScriptGenre:
         pass
 
+
     class WritingConfig:
         pass
 
+
     class VideoEditingConfig:
         pass
+
 
     class ContentType:
         pass
 
+
     class GhostwriterPersona:
         pass
+
 
     class AnimationConfig:
         pass
 
+
     class AnimationQuality:
         pass
+
 
     class InpaintingConfig:
         pass
 
+
     class InpaintingQuality:
         pass
+
 
     class RenderConfig:
         pass
 
+
     class RenderQuality:
         pass
+
 
     class AudioConfig:
         pass
 
+
     class AudioQuality:
         pass
 
+
     class VideoEditingConfig:
         pass
+
 
     class EffectIntensity:
         pass
@@ -188,7 +243,7 @@ Thank you for your attention. We hope this information about {topic} has been va
 
 def _health_summary(report: dict) -> str:
     """
-    Create a short human-readable summary for UI/logs.
+    Create a short human - readable summary for UI / logs.
     Expected keys: {"healthy": int, "unhealthy": int, "notes": [..]} — missing keys default safely.
     """
     h = int(report.get("healthy", 0))
@@ -207,23 +262,25 @@ class SystemAgent(BaseAgent):
     Enhanced SystemAgent with Autonomous Diagnosis and Repair (ADR) protocol.
 
     This agent is responsible for:
-    - System health monitoring with real-time metrics
+    - System health monitoring with real - time metrics
     - Autonomous diagnosis and repair of system issues
     - Database maintenance and optimization
     - File system operations and cleanup
     - Configuration management and validation
     - Performance optimization and cost management
     - Proactive issue detection and prevention
-    - Self-healing capabilities with rollback protection
+    - Self - healing capabilities with rollback protection
     """
 
+
     def __init__(
-        self, agent_id: Optional[str] = None, name: Optional[str] = None, main_loop=None
+        self, agent_id: Optional[str] = None, name: Optional[str] = None, main_loop = None
     ):
         super().__init__(agent_id, name or "SystemAgent")
 
         # Store main event loop for async operations from threads
         self.main_loop = main_loop
+
 
     def _health_summary(self, report: dict) -> str:
         """
@@ -246,21 +303,23 @@ class SystemAgent(BaseAgent):
             return f"health summary unavailable ({type(e).__name__}: {e})"
 
     # Optional convenience alias used by older callers
+
+
     def health_summary(self, report: dict) -> str:
         return self._health_summary(report)
 
         # Enhanced system metrics with historical tracking
         self.system_metrics: Dict[str, Any] = {
             "cpu_usage": 0.0,
-            "memory_usage": 0.0,
-            "disk_usage": 0.0,
-            "network_status": "unknown",
-            "database_health": "unknown",
-            "service_status": {},
-            "error_rate": 0.0,
-            "response_time": 0.0,
-            "uptime": 0.0,
-        }
+                "memory_usage": 0.0,
+                "disk_usage": 0.0,
+                "network_status": "unknown",
+                "database_health": "unknown",
+                "service_status": {},
+                "error_rate": 0.0,
+                "response_time": 0.0,
+                "uptime": 0.0,
+                }
 
         # ADR Protocol components
         self.adr_enabled = True
@@ -270,10 +329,10 @@ class SystemAgent(BaseAgent):
         self.performance_baselines: Dict[str, float] = {}
         self.cost_thresholds: Dict[str, float] = {
             "cpu_cost_per_hour": 0.10,
-            "memory_cost_per_gb": 0.05,
-            "storage_cost_per_gb": 0.02,
-            "network_cost_per_gb": 0.01,
-        }
+                "memory_cost_per_gb": 0.05,
+                "storage_cost_per_gb": 0.02,
+                "network_cost_per_gb": 0.01,
+                }
 
         # Health monitoring system
         self.health_monitor = None
@@ -288,6 +347,7 @@ class SystemAgent(BaseAgent):
 
         # Start background monitoring
         self._start_background_monitoring()
+
 
     def _init_adr_system(self):
         """Initialize the Autonomous Diagnosis and Repair system."""
@@ -309,17 +369,18 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to initialize ADR system: {e}")
             self.adr_enabled = False
 
+
     def _init_repair_database(self):
         """Initialize the repair database for ADR system."""
         try:
             # Initialize repair database structure
             self.repair_database = {
                 "repair_history": [],
-                "known_issues": {},
-                "repair_patterns": {},
-                "success_rates": {},
-                "component_health": {},
-            }
+                    "known_issues": {},
+                    "repair_patterns": {},
+                    "success_rates": {},
+                    "component_health": {},
+                    }
 
             # Load existing repair data if available
             self._load_repair_history()
@@ -329,50 +390,54 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to initialize repair database: {e}")
             self.repair_database = {}
 
+
     def _load_performance_baselines(self):
         """Load performance baselines for system monitoring."""
         try:
             # Initialize performance baselines
             self.performance_baselines = {
                 "cpu_usage": 70.0,
-                "memory_usage": 80.0,
-                "disk_usage": 85.0,
-                "response_time": 2.0,
-                "error_rate": 0.05,
-            }
+                    "memory_usage": 80.0,
+                    "disk_usage": 85.0,
+                    "response_time": 2.0,
+                    "error_rate": 0.05,
+                    }
             self.logger.info("Performance baselines loaded successfully")
         except Exception as e:
             self.logger.error(f"Failed to load performance baselines: {e}")
             self.performance_baselines = {}
+
 
     def _init_component_health_tracking(self):
         """Initialize component health tracking system."""
         try:
             self.component_health = {
                 "agents": {},
-                "services": {},
-                "databases": {},
-                "external_apis": {},
-            }
+                    "services": {},
+                    "databases": {},
+                    "external_apis": {},
+                    }
             self.logger.info("Component health tracking initialized")
         except Exception as e:
             self.logger.error(f"Failed to initialize component health tracking: {e}")
             self.component_health = {}
+
 
     def _setup_monitoring_rules(self):
         """Set up proactive monitoring rules."""
         try:
             self.monitoring_rules = {
                 "cpu_threshold": 80.0,
-                "memory_threshold": 85.0,
-                "disk_threshold": 90.0,
-                "error_rate_threshold": 0.1,
-                "response_time_threshold": 5.0,
-            }
+                    "memory_threshold": 85.0,
+                    "disk_threshold": 90.0,
+                    "error_rate_threshold": 0.1,
+                    "response_time_threshold": 5.0,
+                    }
             self.logger.info("Monitoring rules configured")
         except Exception as e:
             self.logger.error(f"Failed to setup monitoring rules: {e}")
             self.monitoring_rules = {}
+
 
     def _load_repair_history(self):
         """Load repair history from persistent storage."""
@@ -385,6 +450,7 @@ class SystemAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Failed to load repair history: {e}")
 
+
     def _start_background_monitoring(self):
         """Start background system monitoring tasks."""
         if not self.adr_enabled:
@@ -392,7 +458,7 @@ class SystemAgent(BaseAgent):
 
         try:
             # Initialize health monitor
-            self._init_health_monitor()
+                self._init_health_monitor()
 
             # Start background health monitoring
             self.health_monitoring_active = True
@@ -401,6 +467,7 @@ class SystemAgent(BaseAgent):
             self.logger.info("Background monitoring initialized")
         except Exception as e:
             self.logger.error(f"Failed to start background monitoring: {e}")
+
 
     def _init_health_monitor(self):
         """Initialize the health monitoring system"""
@@ -414,10 +481,12 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Failed to initialize health monitor: {e}")
             self.health_monitor = None
 
+
     def _start_health_monitoring(self):
         """Start background health monitoring thread"""
         import threading
         import time
+
 
         def health_monitoring_loop():
             """Background health monitoring loop with proper async execution"""
@@ -428,7 +497,7 @@ class SystemAgent(BaseAgent):
                         current_time - self.last_health_check
                         >= self.health_check_interval
                     ):
-                        # Use asyncio.run_coroutine_threadsafe for thread-safe async execution
+                        # Use asyncio.run_coroutine_threadsafe for thread - safe async execution
                         if (
                             self.main_loop
                             and not self.main_loop.is_closed()
@@ -440,10 +509,10 @@ class SystemAgent(BaseAgent):
                                 )
                                 future = asyncio.run_coroutine_threadsafe(
                                     self._run_scheduled_health_checks_async(),
-                                    self.main_loop,
-                                )
+                                        self.main_loop,
+                                        )
                                 # Wait for completion with timeout
-                                future.result(timeout=30)
+                                future.result(timeout = 30)
                                 self.logger.debug("Health check completed successfully")
                             except Exception as health_error:
                                 self.logger.warning(
@@ -482,10 +551,11 @@ class SystemAgent(BaseAgent):
                     time.sleep(60)  # Wait longer on error
 
         health_thread = threading.Thread(
-            target=health_monitoring_loop, name="SystemAgent-HealthMonitor", daemon=True
+            target = health_monitoring_loop, name="SystemAgent - HealthMonitor", daemon = True
         )
         health_thread.start()
         self.logger.info("Health monitoring thread started")
+
 
     async def _run_scheduled_health_checks_async(self):
         """Run scheduled health checks asynchronously (called from thread via run_coroutine_threadsafe)"""
@@ -495,9 +565,9 @@ class SystemAgent(BaseAgent):
             # Perform comprehensive health check
             health_task = {
                 "task_type": "health_check",
-                "task_id": f"health_check_{int(time.time())}",
-                "parameters": {"check_type": "comprehensive"},
-            }
+                    "task_id": f"health_check_{int(time.time())}",
+                    "parameters": {"check_type": "comprehensive"},
+                    }
 
             result = await self._perform_comprehensive_health_check(health_task)
 
@@ -514,6 +584,7 @@ class SystemAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Error in async scheduled health checks: {e}")
 
+
     def _run_scheduled_health_checks(self):
         """Run scheduled health checks and update database (synchronous version - deprecated)"""
         try:
@@ -524,6 +595,7 @@ class SystemAgent(BaseAgent):
 
         except Exception as e:
             self.logger.error(f"Error in scheduled health checks: {e}")
+
 
     def _run_scheduled_health_checks_sync(self):
         """Run scheduled health checks synchronously (for thread safety)"""
@@ -536,15 +608,15 @@ class SystemAgent(BaseAgent):
             # Create a simple health summary
             summary = {
                 "healthy_count": 1 if memory_usage < 80 else 0,
-                "unhealthy_count": 0 if memory_usage < 80 else 1,
-                "results": [
+                    "unhealthy_count": 0 if memory_usage < 80 else 1,
+                    "results": [
                     {
                         "service_type": "system",
-                        "status": "healthy" if memory_usage < 80 else "unhealthy",
-                        "memory_usage": memory_usage,
-                    }
+                            "status": "healthy" if memory_usage < 80 else "unhealthy",
+                            "memory_usage": memory_usage,
+                            }
                 ],
-            }
+                    }
 
             # Update database synchronously
             self._update_service_health_status_sync(summary)
@@ -553,13 +625,13 @@ class SystemAgent(BaseAgent):
             summary_fn = (
                 getattr(self, "_health_summary", None)
                 or getattr(self, "health_summary", None)
-                or getattr(type(self), "_health_summary", None)  # class-level fallback
+                or getattr(type(self), "_health_summary", None)  # class - level fallback
             )
             if callable(summary_fn):
                 try:
                     health_text = summary_fn(summary)
                 except Exception as e:
-                    # Rate-limited error logging to prevent log DDOS
+                    # Rate - limited error logging to prevent log DDOS
                     if hasattr(self, "_log_health_error_once_per_min"):
                         self._log_health_error_once_per_min(
                             f"Health summary method failed: {e}, using inline fallback"
@@ -574,7 +646,7 @@ class SystemAgent(BaseAgent):
                     u = int(summary.get("unhealthy_count", 0))
                     health_text = f"{h} healthy, {u} unhealthy — method failed fallback"
             else:
-                # Rate-limited error logging to prevent log DDOS
+                # Rate - limited error logging to prevent log DDOS
                 if hasattr(self, "_log_health_error_once_per_min"):
                     self._log_health_error_once_per_min(
                         "Health summary method not found or not callable, using inline fallback"
@@ -594,6 +666,7 @@ class SystemAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Error in scheduled health checks (sync): {e}")
 
+
     def _get_memory_usage(self) -> float:
         """Get current memory usage percentage"""
         try:
@@ -606,8 +679,9 @@ class SystemAgent(BaseAgent):
         except Exception:
             return 50.0
 
+
     def _log_health_error_once_per_min(self, msg, *args):
-        """Rate-limit health error logging to prevent log DDOS"""
+        """Rate - limit health error logging to prevent log DDOS"""
         global _last_health_err_at
         now = monotonic()
         if now - _last_health_err_at > 60:
@@ -615,6 +689,7 @@ class SystemAgent(BaseAgent):
             self.logger.error(msg, *args)
         else:
             self.logger.debug("suppressed repeat health error")
+
 
     def _update_service_health_status_sync(self, health_summary: Dict[str, Any]):
         """Update service health status in database synchronously"""
@@ -630,23 +705,24 @@ class SystemAgent(BaseAgent):
                         # Update or insert system health status with correct schema
                         cursor.execute(
                             "INSERT INTO system_health (timestamp, cpu_usage, memory_usage, disk_usage, agent_status, service_status, error_count, uptime_seconds, health_score) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            (
+                                (
                                 datetime.now().isoformat(),
-                                result.get("cpu_usage", 0.0),
-                                result.get("memory_usage", 0.0),
-                                result.get("disk_usage", 0.0),
-                                result.get("status", "unknown"),
-                                result.get("service_status", "unknown"),
-                                result.get("error_count", 0),
-                                result.get("uptime_seconds", 0),
-                                result.get("health_score", 0.0),
-                            ),
-                        )
+                                    result.get("cpu_usage", 0.0),
+                                    result.get("memory_usage", 0.0),
+                                    result.get("disk_usage", 0.0),
+                                    result.get("status", "unknown"),
+                                    result.get("service_status", "unknown"),
+                                    result.get("error_count", 0),
+                                    result.get("uptime_seconds", 0),
+                                    result.get("health_score", 0.0),
+                                    ),
+                                )
 
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error updating service health status (sync): {e}")
+
 
     async def _update_service_health_status(self, health_summary: Dict[str, Any]):
         """Update service health status in database"""
@@ -661,13 +737,13 @@ class SystemAgent(BaseAgent):
                     if result.get("service_type") == "api":
                         cursor.execute(
                             "UPDATE api_registry SET last_health_status = ? WHERE id = ?",
-                            (result.get("status"), result.get("service_id")),
-                        )
+                                (result.get("status"), result.get("service_id")),
+                                )
                     elif result.get("service_type") == "affiliate":
                         cursor.execute(
                             "UPDATE affiliate_programs SET last_health_status = ? WHERE id = ?",
-                            (result.get("status"), result.get("service_id")),
-                        )
+                                (result.get("status"), result.get("service_id")),
+                                )
 
                 conn.commit()
                 self.logger.debug("Service health status updated in database")
@@ -675,14 +751,15 @@ class SystemAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Error updating service health status: {e}")
 
+
     async def perform_service_health_checks(self) -> Dict[str, Any]:
         """Perform health checks on all registered APIs and affiliate services"""
         if not self.health_monitor:
             return {
                 "success": False,
-                "error": "Health monitor not initialized",
-                "results": [],
-            }
+                    "error": "Health monitor not initialized",
+                    "results": [],
+                    }
 
         try:
             # Use the HealthMonitor to run comprehensive health checks
@@ -698,24 +775,27 @@ class SystemAgent(BaseAgent):
 
             return {
                 "success": True,
-                "total_services": summary.get("total_services", 0),
-                "healthy_services": summary.get("healthy_count", 0),
-                "unhealthy_services": summary.get("unhealthy_count", 0),
-                "results": summary.get("results", []),
-                "summary": summary,
-            }
+                    "total_services": summary.get("total_services", 0),
+                    "healthy_services": summary.get("healthy_count", 0),
+                    "unhealthy_services": summary.get("unhealthy_count", 0),
+                    "results": summary.get("results", []),
+                    "summary": summary,
+                    }
 
         except Exception as e:
             self.logger.error(f"Error performing health checks: {e}")
             return {"success": False, "error": str(e), "results": []}
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [
             AgentCapability.SYSTEM_MANAGEMENT,
-            AgentCapability.EXECUTION,
-            AgentCapability.ANALYSIS,  # Added for ADR capabilities
+                AgentCapability.EXECUTION,
+                AgentCapability.ANALYSIS,  # Added for ADR capabilities
         ]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -731,15 +811,15 @@ class SystemAgent(BaseAgent):
         if not getattr(self, "config", {}).get("system_management_enabled", False):
             return {
                 "success": False,
-                "status": "disabled",
-                "message": "System management is currently disabled in configuration",
-            }
+                    "status": "disabled",
+                    "message": "System management is currently disabled in configuration",
+                    }
 
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
         task_type = task.get("type", "generic")
 
-        # Pre-task ADR assessment
+        # Pre - task ADR assessment
         pre_task_health = (
             await self._perform_comprehensive_health_check() if self.adr_enabled else {}
         )
@@ -774,7 +854,7 @@ class SystemAgent(BaseAgent):
                 else:
                     result = await self._generic_system_task(task)
 
-                # Post-task ADR assessment
+                # Post - task ADR assessment
                 post_task_health = (
                     await self._perform_comprehensive_health_check()
                     if self.adr_enabled
@@ -792,18 +872,18 @@ class SystemAgent(BaseAgent):
 
                 response = {
                     "success": True,
-                    "task_type": task_type,
-                    "result": result,
-                    "execution_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                    "system_metrics": self.system_metrics.copy(),
-                    "adr_analysis": adr_analysis,
-                    "health_delta": (
+                        "task_type": task_type,
+                        "result": result,
+                        "execution_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        "system_metrics": self.system_metrics.copy(),
+                        "adr_analysis": adr_analysis,
+                        "health_delta": (
                         self._calculate_health_delta(pre_task_health, post_task_health)
                         if self.adr_enabled
                         else {}
                     ),
-                }
+                        }
 
                 # Trigger proactive repairs if issues detected
                 if self.adr_enabled and adr_analysis.get("issues_detected"):
@@ -825,12 +905,12 @@ class SystemAgent(BaseAgent):
 
             error_result = {
                 "success": False,
-                "task_type": task_type,
-                "error": str(e),
-                "execution_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-                "adr_intervention": self.adr_enabled,
-            }
+                    "task_type": task_type,
+                    "error": str(e),
+                    "execution_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    "adr_intervention": self.adr_enabled,
+                    }
 
             self.logger.error(f"System task {task_id} failed: {e}")
             self.update_status(AgentStatus.FAILED, f"System task failed: {e}")
@@ -839,6 +919,7 @@ class SystemAgent(BaseAgent):
             )
 
             return error_result
+
 
     async def _perform_health_check(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive system health check with real metrics."""
@@ -849,14 +930,14 @@ class SystemAgent(BaseAgent):
             import psutil
 
             # Get real system metrics
-            cpu_usage = psutil.cpu_percent(interval=1)
+            cpu_usage = psutil.cpu_percent(interval = 1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
 
             # Check network connectivity
             network_status = "healthy"
             try:
-                socket.create_connection(("8.8.8.8", 53), timeout=3)
+                socket.create_connection(("8.8.8.8", 53), timeout = 3)
             except OSError:
                 network_status = "degraded"
 
@@ -885,43 +966,44 @@ class SystemAgent(BaseAgent):
             self.system_metrics.update(
                 {
                     "cpu_usage": round(cpu_usage, 2),
-                    "memory_usage": round(memory_usage_percent, 2),
-                    "disk_usage": round(disk_usage_percent, 2),
-                    "network_status": network_status,
-                    "available_memory_gb": round(memory.available / (1024**3), 2),
-                    "total_memory_gb": round(memory.total / (1024**3), 2),
-                    "free_disk_gb": round(disk.free / (1024**3), 2),
-                    "total_disk_gb": round(disk.total / (1024**3), 2),
-                }
+                        "memory_usage": round(memory_usage_percent, 2),
+                        "disk_usage": round(disk_usage_percent, 2),
+                        "network_status": network_status,
+                        "available_memory_gb": round(memory.available / (1024**3), 2),
+                        "total_memory_gb": round(memory.total / (1024**3), 2),
+                        "free_disk_gb": round(disk.free / (1024**3), 2),
+                        "total_disk_gb": round(disk.total / (1024**3), 2),
+                        }
             )
 
             return {
                 "status": overall_status,
-                "metrics": self.system_metrics.copy(),
-                "health_issues": health_issues,
-                "recommendations": self._generate_health_recommendations(health_issues),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "metrics": self.system_metrics.copy(),
+                    "health_issues": health_issues,
+                    "recommendations": self._generate_health_recommendations(health_issues),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except ImportError:
             # Fallback if psutil is not available
             self.logger.warning("psutil not available, using basic health check")
             return {
                 "status": "unknown",
-                "metrics": {"note": "psutil required for detailed health metrics"},
-                "health_issues": ["Cannot perform detailed health check"],
-                "recommendations": ["Install psutil: pip install psutil"],
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "metrics": {"note": "psutil required for detailed health metrics"},
+                    "health_issues": ["Cannot perform detailed health check"],
+                    "recommendations": ["Install psutil: pip install psutil"],
+                    "timestamp": datetime.now().isoformat(),
+                    }
         except Exception as e:
             self.logger.error(f"Health check failed: {e}")
             return {
                 "status": "error",
-                "metrics": {},
-                "health_issues": [f"Health check error: {str(e)}"],
-                "recommendations": ["Check system configuration"],
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "metrics": {},
+                    "health_issues": [f"Health check error: {str(e)}"],
+                    "recommendations": ["Check system configuration"],
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     def _generate_health_recommendations(self, health_issues: List[str]) -> List[str]:
         """Generate actionable recommendations based on health issues."""
@@ -934,7 +1016,7 @@ class SystemAgent(BaseAgent):
                 )
             elif "memory" in issue:
                 recommendations.append(
-                    "Close memory-intensive applications or add more RAM"
+                    "Close memory - intensive applications or add more RAM"
                 )
             elif "disk" in issue:
                 recommendations.append(
@@ -950,6 +1032,7 @@ class SystemAgent(BaseAgent):
 
         return recommendations
 
+
     async def _perform_database_maintenance(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -959,13 +1042,13 @@ class SystemAgent(BaseAgent):
         from pathlib import Path
 
         operations = task.get("operations", ["vacuum", "analyze"])
-        db_path = task.get("database_path", "data/system.db")
+        db_path = task.get("database_path", "data / system.db")
         results = {}
         total_start_time = time.time()
 
         try:
             # Ensure database directory exists
-            Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+            Path(db_path).parent.mkdir(parents = True, exist_ok = True)
 
             # Connect to database
             conn = sqlite3.connect(db_path)
@@ -1029,10 +1112,10 @@ class SystemAgent(BaseAgent):
                 op_duration = time.time() - op_start_time
                 results[operation] = {
                     "success": success,
-                    "duration": round(op_duration, 3),
-                    "records_affected": records_affected,
-                    "error": error_message,
-                }
+                        "duration": round(op_duration, 3),
+                        "records_affected": records_affected,
+                        "error": error_message,
+                        }
 
             # Get database statistics
             try:
@@ -1058,25 +1141,26 @@ class SystemAgent(BaseAgent):
             self.logger.error(f"Database maintenance failed: {e}")
             return {
                 "operations_completed": [],
-                "results": {"error": str(e)},
-                "total_duration": time.time() - total_start_time,
-                "success": False,
-            }
+                    "results": {"error": str(e)},
+                    "total_duration": time.time() - total_start_time,
+                    "success": False,
+                    }
 
         total_duration = time.time() - total_start_time
         overall_success = all(r.get("success", False) for r in results.values())
 
         return {
             "operations_completed": operations,
-            "results": results,
-            "total_duration": round(total_duration, 3),
-            "success": overall_success,
-            "database_stats": {
+                "results": results,
+                "total_duration": round(total_duration, 3),
+                "success": overall_success,
+                "database_stats": {
                 "table_count": table_count,
-                "size_bytes": db_size,
-                "size_mb": round(db_size / (1024 * 1024), 2),
-            },
-        }
+                    "size_bytes": db_size,
+                    "size_mb": round(db_size / (1024 * 1024), 2),
+                    },
+                }
+
 
     async def _perform_file_operation(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform file system operations."""
@@ -1089,28 +1173,28 @@ class SystemAgent(BaseAgent):
                     items = os.listdir(path)
                     return {
                         "operation": operation,
-                        "path": path,
-                        "success": True,
-                        "items": items,
-                        "count": len(items),
-                        "message": f"Listed {len(items)} items in {path}",
-                    }
+                            "path": path,
+                            "success": True,
+                            "items": items,
+                            "count": len(items),
+                            "message": f"Listed {len(items)} items in {path}",
+                            }
                 else:
                     return {
                         "operation": operation,
-                        "path": path,
-                        "success": False,
-                        "error": f"Path {path} does not exist",
-                    }
+                            "path": path,
+                            "success": False,
+                            "error": f"Path {path} does not exist",
+                            }
 
             elif operation == "create_dir":
-                os.makedirs(path, exist_ok=True)
+                os.makedirs(path, exist_ok = True)
                 return {
                     "operation": operation,
-                    "path": path,
-                    "success": True,
-                    "message": f"Directory created: {path}",
-                }
+                        "path": path,
+                        "success": True,
+                        "message": f"Directory created: {path}",
+                        }
 
             elif operation == "delete":
                 if os.path.isfile(path):
@@ -1122,17 +1206,17 @@ class SystemAgent(BaseAgent):
                 else:
                     return {
                         "operation": operation,
-                        "path": path,
-                        "success": False,
-                        "error": f"Path {path} does not exist",
-                    }
+                            "path": path,
+                            "success": False,
+                            "error": f"Path {path} does not exist",
+                            }
 
                 return {
                     "operation": operation,
-                    "path": path,
-                    "success": True,
-                    "message": message,
-                }
+                        "path": path,
+                        "success": True,
+                        "message": message,
+                        }
 
             elif operation == "copy":
                 source = path
@@ -1140,52 +1224,53 @@ class SystemAgent(BaseAgent):
                 if not destination:
                     return {
                         "operation": operation,
-                        "path": path,
-                        "success": False,
-                        "error": "Destination path required for copy operation",
-                    }
+                            "path": path,
+                            "success": False,
+                            "error": "Destination path required for copy operation",
+                            }
 
                 if os.path.isfile(source):
                     shutil.copy2(source, destination)
                 elif os.path.isdir(source):
-                    shutil.copytree(source, destination, dirs_exist_ok=True)
+                    shutil.copytree(source, destination, dirs_exist_ok = True)
                 else:
                     return {
                         "operation": operation,
-                        "path": path,
-                        "success": False,
-                        "error": f"Source path {source} does not exist",
-                    }
+                            "path": path,
+                            "success": False,
+                            "error": f"Source path {source} does not exist",
+                            }
 
                 return {
                     "operation": operation,
-                    "path": path,
-                    "destination": destination,
-                    "success": True,
-                    "message": f"Copied {source} to {destination}",
-                }
+                        "path": path,
+                        "destination": destination,
+                        "success": True,
+                        "message": f"Copied {source} to {destination}",
+                        }
 
             else:
                 return {
                     "operation": operation,
-                    "path": path,
-                    "success": False,
-                    "error": f"Unsupported operation: {operation}",
-                }
+                        "path": path,
+                        "success": False,
+                        "error": f"Unsupported operation: {operation}",
+                        }
 
         except Exception as e:
             self.logger.error(f"File operation failed: {e}")
             return {
                 "operation": operation,
-                "path": path,
-                "success": False,
-                "error": str(e),
-            }
+                    "path": path,
+                    "success": False,
+                    "error": str(e),
+                    }
+
 
     async def _update_configuration(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Update system configuration."""
         config_updates = task.get("updates", {})
-        config_file = task.get("config_file", "config/system.json")
+        config_file = task.get("config_file", "config / system.json")
 
         try:
             # Load existing configuration
@@ -1210,30 +1295,31 @@ class SystemAgent(BaseAgent):
                 updated_keys.append(key)
 
             # Ensure config directory exists
-            os.makedirs(os.path.dirname(config_file), exist_ok=True)
+            os.makedirs(os.path.dirname(config_file), exist_ok = True)
 
             # Save updated configuration
             with open(config_file, "w") as f:
-                json.dump(current_config, f, indent=2)
+                json.dump(current_config, f, indent = 2)
 
             self.logger.info(f"Configuration updated: {updated_keys}")
 
             return {
                 "updates_applied": len(config_updates),
-                "updated_keys": updated_keys,
-                "config_file": config_file,
-                "success": True,
-                "message": f"Updated {len(config_updates)} configuration settings",
-            }
+                    "updated_keys": updated_keys,
+                    "config_file": config_file,
+                    "success": True,
+                    "message": f"Updated {len(config_updates)} configuration settings",
+                    }
 
         except Exception as e:
             self.logger.error(f"Configuration update failed: {e}")
             return {
                 "updates_applied": 0,
-                "config_file": config_file,
-                "success": False,
-                "error": str(e),
-            }
+                    "config_file": config_file,
+                    "success": False,
+                    "error": str(e),
+                    }
+
 
     async def _generic_system_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle generic system tasks."""
@@ -1260,35 +1346,35 @@ class SystemAgent(BaseAgent):
 
                     return {
                         "task_type": task_type,
-                        "success": True,
-                        "cleaned_files": cleaned_files,
-                        "message": f"Cleaned {len(cleaned_files)} old log files",
-                    }
+                            "success": True,
+                            "cleaned_files": cleaned_files,
+                            "message": f"Cleaned {len(cleaned_files)} old log files",
+                            }
 
             elif task_type == "system_info":
                 import psutil
 
                 return {
                     "task_type": task_type,
-                    "success": True,
-                    "system_info": {
-                        "cpu_percent": psutil.cpu_percent(interval=1),
-                        "memory_percent": psutil.virtual_memory().percent,
-                        "disk_usage": psutil.disk_usage("/").percent,
-                        "boot_time": psutil.boot_time(),
-                        "process_count": len(psutil.pids()),
-                    },
-                    "message": "System information collected",
-                }
+                        "success": True,
+                        "system_info": {
+                        "cpu_percent": psutil.cpu_percent(interval = 1),
+                            "memory_percent": psutil.virtual_memory().percent,
+                            "disk_usage": psutil.disk_usage("/").percent,
+                            "boot_time": psutil.boot_time(),
+                            "process_count": len(psutil.pids()),
+                            },
+                        "message": "System information collected",
+                        }
 
             elif task_type == "restart_service":
                 service_name = task_data.get("service_name")
                 if not service_name:
                     return {
                         "task_type": task_type,
-                        "success": False,
-                        "error": "Service name required",
-                    }
+                            "success": False,
+                            "error": "Service name required",
+                            }
 
                 # This would typically interface with systemctl or similar
                 # For now, we'll log the action
@@ -1296,26 +1382,27 @@ class SystemAgent(BaseAgent):
 
                 return {
                     "task_type": task_type,
-                    "service_name": service_name,
-                    "success": True,
-                    "message": f"Service restart initiated: {service_name}",
-                }
+                        "service_name": service_name,
+                        "success": True,
+                        "message": f"Service restart initiated: {service_name}",
+                        }
 
             else:
                 return {
                     "task_type": task_type,
-                    "success": False,
-                    "error": f"Unknown system task type: {task_type}",
-                    "supported_types": [
+                        "success": False,
+                        "error": f"Unknown system task type: {task_type}",
+                        "supported_types": [
                         "cleanup_logs",
-                        "system_info",
-                        "restart_service",
-                    ],
-                }
+                            "system_info",
+                            "restart_service",
+                            ],
+                        }
 
         except Exception as e:
             self.logger.error(f"System task failed: {e}")
             return {"task_type": task_type, "success": False, "error": str(e)}
+
 
     async def _perform_comprehensive_health_check(
         self, task: Dict[str, Any]
@@ -1325,7 +1412,7 @@ class SystemAgent(BaseAgent):
             import psutil
 
             # Collect comprehensive metrics
-            cpu_percent = psutil.cpu_percent(interval=2)
+            cpu_percent = psutil.cpu_percent(interval = 2)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
 
@@ -1333,7 +1420,7 @@ class SystemAgent(BaseAgent):
             network_io = psutil.net_io_counters()
             process_count = len(psutil.pids())
 
-            # ADR-specific health analysis
+            # ADR - specific health analysis
             health_score = 100
             issues = []
             recommendations = []
@@ -1365,51 +1452,52 @@ class SystemAgent(BaseAgent):
                             if cpu_percent < 70
                             else "warning" if cpu_percent < 85 else "critical"
                         ),
-                        "value": cpu_percent,
-                    },
-                    "memory": {
+                            "value": cpu_percent,
+                            },
+                        "memory": {
                         "status": (
                             "healthy"
                             if memory.percent < 70
                             else "warning" if memory.percent < 85 else "critical"
                         ),
-                        "value": memory.percent,
-                    },
-                    "disk": {
+                            "value": memory.percent,
+                            },
+                        "disk": {
                         "status": (
                             "healthy"
                             if disk.percent < 80
                             else "warning" if disk.percent < 90 else "critical"
                         ),
-                        "value": disk.percent,
-                    },
-                }
+                            "value": disk.percent,
+                            },
+                        }
             )
 
             return {
                 "task_type": "comprehensive_health_check",
-                "success": True,
-                "health_score": health_score,
-                "system_metrics": {
+                    "success": True,
+                    "health_score": health_score,
+                    "system_metrics": {
                     "cpu_percent": cpu_percent,
-                    "memory_percent": memory.percent,
-                    "disk_percent": disk.percent,
-                    "process_count": process_count,
-                    "network_bytes_sent": network_io.bytes_sent,
-                    "network_bytes_recv": network_io.bytes_recv,
-                },
-                "issues": issues,
-                "recommendations": recommendations,
-                "component_health": self.component_health,
-            }
+                        "memory_percent": memory.percent,
+                        "disk_percent": disk.percent,
+                        "process_count": process_count,
+                        "network_bytes_sent": network_io.bytes_sent,
+                        "network_bytes_recv": network_io.bytes_recv,
+                        },
+                    "issues": issues,
+                    "recommendations": recommendations,
+                    "component_health": self.component_health,
+                    }
 
         except Exception as e:
             self.logger.error(f"Comprehensive health check failed: {e}")
             return {
                 "task_type": "comprehensive_health_check",
-                "success": False,
-                "error": str(e),
-            }
+                    "success": False,
+                    "error": str(e),
+                    }
+
 
     async def _perform_adr_diagnosis(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform autonomous diagnosis of system issues."""
@@ -1421,16 +1509,16 @@ class SystemAgent(BaseAgent):
             # Analyze symptoms and determine root causes
             diagnosis_results = {
                 "component": component,
-                "symptoms": symptoms,
-                "root_causes": [],
-                "repair_actions": [],
-                "confidence_score": 0.0,
-                "estimated_cost": 0.0,
-            }
+                    "symptoms": symptoms,
+                    "root_causes": [],
+                    "repair_actions": [],
+                    "confidence_score": 0.0,
+                    "estimated_cost": 0.0,
+                    }
 
             # Symptom analysis logic
             if "high_cpu" in symptoms:
-                diagnosis_results["root_causes"].append("Resource-intensive processes")
+                diagnosis_results["root_causes"].append("Resource - intensive processes")
                 diagnosis_results["repair_actions"].append("Process optimization")
                 diagnosis_results["confidence_score"] += 0.3
                 diagnosis_results["estimated_cost"] += 50.0
@@ -1453,22 +1541,23 @@ class SystemAgent(BaseAgent):
             diagnosis_id = str(uuid.uuid4())
             self.repair_history[diagnosis_id] = {
                 "timestamp": datetime.now().isoformat(),
-                "type": "diagnosis",
-                "component": component,
-                "results": diagnosis_results,
-            }
+                    "type": "diagnosis",
+                    "component": component,
+                    "results": diagnosis_results,
+                    }
 
             return {
                 "task_type": "adr_diagnosis",
-                "success": True,
-                "diagnosis_id": diagnosis_id,
-                "diagnosis": diagnosis_results,
-                "message": f"Diagnosis completed for {component}",
-            }
+                    "success": True,
+                    "diagnosis_id": diagnosis_id,
+                    "diagnosis": diagnosis_results,
+                    "message": f"Diagnosis completed for {component}",
+                    }
 
         except Exception as e:
             self.logger.error(f"ADR diagnosis failed: {e}")
             return {"task_type": "adr_diagnosis", "success": False, "error": str(e)}
+
 
     async def _perform_autonomous_repair(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute autonomous repair actions based on diagnosis."""
@@ -1480,17 +1569,17 @@ class SystemAgent(BaseAgent):
             if not diagnosis_id or diagnosis_id not in self.repair_history:
                 return {
                     "task_type": "autonomous_repair",
-                    "success": False,
-                    "error": "Invalid or missing diagnosis ID",
-                }
+                        "success": False,
+                        "error": "Invalid or missing diagnosis ID",
+                        }
 
             repair_results = {
                 "diagnosis_id": diagnosis_id,
-                "actions_executed": [],
-                "actions_failed": [],
-                "total_cost": 0.0,
-                "repair_success": True,
-            }
+                    "actions_executed": [],
+                    "actions_failed": [],
+                    "total_cost": 0.0,
+                    "repair_success": True,
+                    }
 
             # Execute repair actions
             for action in repair_actions:
@@ -1529,22 +1618,23 @@ class SystemAgent(BaseAgent):
             repair_id = str(uuid.uuid4())
             self.repair_history[repair_id] = {
                 "timestamp": datetime.now().isoformat(),
-                "type": "repair",
-                "diagnosis_id": diagnosis_id,
-                "results": repair_results,
-            }
+                    "type": "repair",
+                    "diagnosis_id": diagnosis_id,
+                    "results": repair_results,
+                    }
 
             return {
                 "task_type": "autonomous_repair",
-                "success": repair_results["repair_success"],
-                "repair_id": repair_id,
-                "repair_results": repair_results,
-                "message": f"Repair completed with {len(repair_results['actions_executed'])} successful actions",
-            }
+                    "success": repair_results["repair_success"],
+                    "repair_id": repair_id,
+                    "repair_results": repair_results,
+                    "message": f"Repair completed with {len(repair_results['actions_executed'])} successful actions",
+                    }
 
         except Exception as e:
             self.logger.error(f"Autonomous repair failed: {e}")
             return {"task_type": "autonomous_repair", "success": False, "error": str(e)}
+
 
     async def _perform_cost_optimization(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze and optimize system costs."""
@@ -1572,11 +1662,11 @@ class SystemAgent(BaseAgent):
                 optimizations.append(
                     {
                         "category": "compute",
-                        "action": "Right-size instances and optimize workloads",
-                        "current_cost": current_costs["compute"],
-                        "potential_savings": compute_savings,
-                        "implementation_effort": "medium",
-                    }
+                            "action": "Right - size instances and optimize workloads",
+                            "current_cost": current_costs["compute"],
+                            "potential_savings": compute_savings,
+                            "implementation_effort": "medium",
+                            }
                 )
                 potential_savings += compute_savings
 
@@ -1586,11 +1676,11 @@ class SystemAgent(BaseAgent):
                 optimizations.append(
                     {
                         "category": "storage",
-                        "action": "Implement data lifecycle policies and compression",
-                        "current_cost": current_costs["storage"],
-                        "potential_savings": storage_savings,
-                        "implementation_effort": "low",
-                    }
+                            "action": "Implement data lifecycle policies and compression",
+                            "current_cost": current_costs["storage"],
+                            "potential_savings": storage_savings,
+                            "implementation_effort": "low",
+                            }
                 )
                 potential_savings += storage_savings
 
@@ -1600,11 +1690,11 @@ class SystemAgent(BaseAgent):
                 optimizations.append(
                     {
                         "category": "network",
-                        "action": "Optimize data transfer and caching",
-                        "current_cost": current_costs["network"],
-                        "potential_savings": network_savings,
-                        "implementation_effort": "medium",
-                    }
+                            "action": "Optimize data transfer and caching",
+                            "current_cost": current_costs["network"],
+                            "potential_savings": network_savings,
+                            "implementation_effort": "medium",
+                            }
                 )
                 potential_savings += network_savings
 
@@ -1612,19 +1702,20 @@ class SystemAgent(BaseAgent):
 
             return {
                 "task_type": "cost_optimization",
-                "success": True,
-                "current_costs": current_costs,
-                "total_current_cost": total_current_cost,
-                "optimizations": optimizations,
-                "potential_savings": potential_savings,
-                "savings_percentage": savings_percentage,
-                "meets_target": savings_percentage >= target_savings,
-                "message": f"Identified ${potential_savings:.2f} in potential savings ({savings_percentage:.1f}%)",
-            }
+                    "success": True,
+                    "current_costs": current_costs,
+                    "total_current_cost": total_current_cost,
+                    "optimizations": optimizations,
+                    "potential_savings": potential_savings,
+                    "savings_percentage": savings_percentage,
+                    "meets_target": savings_percentage >= target_savings,
+                    "message": f"Identified ${potential_savings:.2f} in potential savings ({savings_percentage:.1f}%)",
+                    }
 
         except Exception as e:
             self.logger.error(f"Cost optimization failed: {e}")
             return {"task_type": "cost_optimization", "success": False, "error": str(e)}
+
 
     async def _perform_performance_profiling(
         self, task: Dict[str, Any]
@@ -1650,13 +1741,13 @@ class SystemAgent(BaseAgent):
                 sample_time = time.time()
                 metrics = {
                     "timestamp": sample_time,
-                    "cpu_percent": psutil.cpu_percent(interval=1),
-                    "memory_percent": psutil.virtual_memory().percent,
-                    "disk_io_read": psutil.disk_io_counters().read_bytes,
-                    "disk_io_write": psutil.disk_io_counters().write_bytes,
-                    "network_bytes_sent": psutil.net_io_counters().bytes_sent,
-                    "network_bytes_recv": psutil.net_io_counters().bytes_recv,
-                }
+                        "cpu_percent": psutil.cpu_percent(interval = 1),
+                        "memory_percent": psutil.virtual_memory().percent,
+                        "disk_io_read": psutil.disk_io_counters().read_bytes,
+                        "disk_io_write": psutil.disk_io_counters().write_bytes,
+                        "network_bytes_sent": psutil.net_io_counters().bytes_sent,
+                        "network_bytes_recv": psutil.net_io_counters().bytes_recv,
+                        }
                 metrics_history.append(metrics)
 
                 if i < samples - 1:  # Don't sleep on the last iteration
@@ -1670,22 +1761,23 @@ class SystemAgent(BaseAgent):
 
             return {
                 "task_type": "performance_profiling",
-                "success": True,
-                "profiling_duration": duration,
-                "samples_collected": len(metrics_history),
-                "performance_analysis": analysis,
-                "baseline_comparison": baseline_comparison,
-                "bottlenecks_identified": analysis.get("bottlenecks", []),
-                "message": f"Performance profiling completed with {len(metrics_history)} samples",
-            }
+                    "success": True,
+                    "profiling_duration": duration,
+                    "samples_collected": len(metrics_history),
+                    "performance_analysis": analysis,
+                    "baseline_comparison": baseline_comparison,
+                    "bottlenecks_identified": analysis.get("bottlenecks", []),
+                    "message": f"Performance profiling completed with {len(metrics_history)} samples",
+                    }
 
         except Exception as e:
             self.logger.error(f"Performance profiling failed: {e}")
             return {
                 "task_type": "performance_profiling",
-                "success": False,
-                "error": str(e),
-            }
+                    "success": False,
+                    "error": str(e),
+                    }
+
 
     async def _perform_proactive_maintenance(
         self, task: Dict[str, Any]
@@ -1697,11 +1789,11 @@ class SystemAgent(BaseAgent):
 
             maintenance_results = {
                 "maintenance_type": maintenance_type,
-                "tasks_completed": [],
-                "tasks_failed": [],
-                "total_time": 0.0,
-                "issues_prevented": [],
-            }
+                    "tasks_completed": [],
+                    "tasks_failed": [],
+                    "total_time": 0.0,
+                    "issues_prevented": [],
+                    }
 
             start_time = time.time()
 
@@ -1769,28 +1861,31 @@ class SystemAgent(BaseAgent):
 
             return {
                 "task_type": "proactive_maintenance",
-                "success": len(maintenance_results["tasks_failed"]) == 0,
-                "maintenance_results": maintenance_results,
-                "message": f"Proactive maintenance completed: {len(maintenance_results['tasks_completed'])} tasks successful, {len(maintenance_results['tasks_failed'])} failed",
-            }
+                    "success": len(maintenance_results["tasks_failed"]) == 0,
+                    "maintenance_results": maintenance_results,
+                    "message": f"Proactive maintenance completed: {len(maintenance_results['tasks_completed'])} tasks successful, {len(maintenance_results['tasks_failed'])} failed",
+                    }
 
         except Exception as e:
             self.logger.error(f"Proactive maintenance failed: {e}")
             return {
                 "task_type": "proactive_maintenance",
-                "success": False,
-                "error": str(e),
-            }
+                    "success": False,
+                    "error": str(e),
+                    }
 
     # Helper methods for ADR functionality
+
+
     async def _optimize_processes(self) -> Dict[str, Any]:
         """Optimize running processes."""
         # Simulate process optimization
         return {
             "processes_optimized": 5,
-            "cpu_reduction": 15.0,
-            "memory_freed": 128,  # MB
+                "cpu_reduction": 15.0,
+                "memory_freed": 128,  # MB
         }
+
 
     async def _cleanup_memory(self) -> Dict[str, Any]:
         """Clean up memory usage."""
@@ -1800,23 +1895,26 @@ class SystemAgent(BaseAgent):
         gc.collect()
         return {"memory_freed": 256, "gc_collections": 3}  # MB
 
+
     async def _cleanup_disk(self) -> Dict[str, Any]:
         """Clean up disk space."""
         # Simulate disk cleanup
         return {
             "space_freed": 1024,  # MB
             "files_removed": 50,
-            "temp_files_cleaned": True,
-        }
+                "temp_files_cleaned": True,
+                }
+
 
     async def _cleanup_old_logs(self) -> Dict[str, Any]:
         """Clean up old log files."""
         # Simulate log cleanup
         return {
             "log_files_removed": 10,
-            "space_freed": 512,  # MB
-            "oldest_log_removed": "2024-01-01",
-        }
+                "space_freed": 512,  # MB
+            "oldest_log_removed": "2024 - 01 - 01",
+                }
+
 
     async def _update_performance_baselines(self) -> Dict[str, Any]:
         """Update performance baselines."""
@@ -1824,17 +1922,18 @@ class SystemAgent(BaseAgent):
         import psutil
 
         current_metrics = {
-            "cpu_baseline": psutil.cpu_percent(interval=1),
-            "memory_baseline": psutil.virtual_memory().percent,
-            "disk_baseline": psutil.disk_usage("/").percent,
-        }
+            "cpu_baseline": psutil.cpu_percent(interval = 1),
+                "memory_baseline": psutil.virtual_memory().percent,
+                "disk_baseline": psutil.disk_usage("/").percent,
+                }
 
         self.performance_baselines.update(current_metrics)
 
         return {
             "baselines_updated": len(current_metrics),
-            "new_baselines": current_metrics,
-        }
+                "new_baselines": current_metrics,
+                }
+
 
     def _analyze_performance_patterns(
         self, metrics_history: List[Dict[str, Any]]
@@ -1858,13 +1957,14 @@ class SystemAgent(BaseAgent):
 
         return {
             "bottlenecks": bottlenecks,
-            "trends": {
+                "trends": {
                 "avg_cpu": avg_cpu,
-                "avg_memory": avg_memory,
-                "peak_cpu": max(cpu_values),
-                "peak_memory": max(memory_values),
-            },
-        }
+                    "avg_memory": avg_memory,
+                    "peak_cpu": max(cpu_values),
+                    "peak_memory": max(memory_values),
+                    },
+                }
+
 
     def _compare_to_baselines(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
         """Compare current performance to established baselines."""
@@ -1875,10 +1975,10 @@ class SystemAgent(BaseAgent):
             cpu_diff = trends["avg_cpu"] - self.performance_baselines["cpu_baseline"]
             comparison["cpu_deviation"] = {
                 "current": trends["avg_cpu"],
-                "baseline": self.performance_baselines["cpu_baseline"],
-                "difference": cpu_diff,
-                "status": "normal" if abs(cpu_diff) < 10 else "elevated",
-            }
+                    "baseline": self.performance_baselines["cpu_baseline"],
+                    "difference": cpu_diff,
+                    "status": "normal" if abs(cpu_diff) < 10 else "elevated",
+                    }
 
         if "avg_memory" in trends and "memory_baseline" in self.performance_baselines:
             memory_diff = (
@@ -1886,14 +1986,16 @@ class SystemAgent(BaseAgent):
             )
             comparison["memory_deviation"] = {
                 "current": trends["avg_memory"],
-                "baseline": self.performance_baselines["memory_baseline"],
-                "difference": memory_diff,
-                "status": "normal" if abs(memory_diff) < 15 else "elevated",
-            }
+                    "baseline": self.performance_baselines["memory_baseline"],
+                    "difference": memory_diff,
+                    "status": "normal" if abs(memory_diff) < 15 else "elevated",
+                    }
 
         return comparison
 
     # Required abstract methods from BaseAgent
+
+
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context
     ) -> Dict[str, Any]:
@@ -1914,11 +2016,11 @@ class SystemAgent(BaseAgent):
         if not self.is_action_allowed("autonomous_system_operations"):
             return {
                 "success": False,
-                "error": "Autonomous system operations are disabled in configuration",
-                "execution_time": 0,
-                "agent_id": self.agent_id,
-                "task_id": task_id,
-            }
+                    "error": "Autonomous system operations are disabled in configuration",
+                    "execution_time": 0,
+                    "agent_id": self.agent_id,
+                    "task_id": task_id,
+                    }
 
         try:
             self.update_status(
@@ -1936,10 +2038,10 @@ class SystemAgent(BaseAgent):
                 # Record task completion
                 self.record_task_completion(
                     task_id,
-                    result.get("success", False),
-                    execution_time,
-                    {"task_type": task.get("type", "unknown")},
-                )
+                        result.get("success", False),
+                        execution_time,
+                        {"task_type": task.get("type", "unknown")},
+                        )
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"System task {task_id} completed"
@@ -1947,12 +2049,12 @@ class SystemAgent(BaseAgent):
 
                 return {
                     "success": result.get("success", False),
-                    "result": result,
-                    "execution_time": execution_time,
-                    "agent_id": self.agent_id,
-                    "task_id": task_id,
-                    "system_metrics": self.system_metrics,
-                }
+                        "result": result,
+                        "execution_time": execution_time,
+                        "agent_id": self.agent_id,
+                        "task_id": task_id,
+                        "system_metrics": self.system_metrics,
+                        }
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -1966,11 +2068,12 @@ class SystemAgent(BaseAgent):
 
             return {
                 "success": False,
-                "error": error_msg,
-                "execution_time": execution_time,
-                "agent_id": self.agent_id,
-                "task_id": task_id,
-            }
+                    "error": error_msg,
+                    "execution_time": execution_time,
+                    "agent_id": self.agent_id,
+                    "task_id": task_id,
+                    }
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
         """
@@ -1981,7 +2084,7 @@ class SystemAgent(BaseAgent):
             context: Task execution context
 
         Returns:
-            Human-readable rephrased task description
+            Human - readable rephrased task description
         """
         task_type = task.get("type", "system_operation")
         task_description = task.get("description", "")
@@ -2003,6 +2106,7 @@ class SystemAgent(BaseAgent):
             return "I will analyze system resource costs and implement optimization strategies to reduce operational expenses."
         else:
             return f"I will execute system operation: {task_type} - {task_description or 'maintaining system health and performance'}"
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
@@ -2028,28 +2132,28 @@ class SystemAgent(BaseAgent):
         # Verify task type or related keywords are mentioned
         task_type_keywords = {
             "health_check": ["health", "check", "monitoring", "system", "performance"],
-            "database_maintenance": [
+                "database_maintenance": [
                 "database",
-                "maintenance",
-                "optimization",
-                "cleanup",
-            ],
-            "file_operation": ["file", "operation", "system", "directories"],
-            "configuration_update": [
+                    "maintenance",
+                    "optimization",
+                    "cleanup",
+                    ],
+                "file_operation": ["file", "operation", "system", "directories"],
+                "configuration_update": [
                 "configuration",
-                "update",
-                "settings",
-                "parameters",
-            ],
-            "adr_diagnosis": ["diagnosis", "repair", "autonomous", "issues"],
-            "performance_profiling": [
+                    "update",
+                    "settings",
+                    "parameters",
+                    ],
+                "adr_diagnosis": ["diagnosis", "repair", "autonomous", "issues"],
+                "performance_profiling": [
                 "performance",
-                "profiling",
-                "resource",
-                "optimization",
-            ],
-            "cost_optimization": ["cost", "optimization", "resource", "expenses"],
-        }
+                    "profiling",
+                    "resource",
+                    "optimization",
+                    ],
+                "cost_optimization": ["cost", "optimization", "resource", "expenses"],
+                }
 
         # Check if relevant keywords are present
         keywords_present = False
@@ -2065,25 +2169,25 @@ class SystemAgent(BaseAgent):
             action in rephrased_lower
             for action in [
                 "perform",
-                "execute",
-                "run",
-                "conduct",
-                "analyze",
-                "implement",
-                "maintain",
-            ]
+                    "execute",
+                    "run",
+                    "conduct",
+                    "analyze",
+                    "implement",
+                    "maintain",
+                    ]
         )
 
-        # Verify system-related context
+        # Verify system - related context
         system_context = any(
             context_word in rephrased_lower
             for context_word in [
                 "system",
-                "service",
-                "resource",
-                "performance",
-                "operation",
-            ]
+                    "service",
+                    "resource",
+                    "performance",
+                    "operation",
+                    ]
         )
 
         # Calculate accuracy score
@@ -2105,17 +2209,18 @@ class ResearchAgent(BaseAgent):
     - Competitive intelligence
     """
 
+
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "ResearchAgent")
         self.research_sources: List[str] = [
             "web_search",
-            "academic_databases",
-            "news_feeds",
-            "social_media",
-            "industry_reports",
-            "breaking_news",
-            "hypocrisy_tracker",
-        ]
+                "academic_databases",
+                "news_feeds",
+                "social_media",
+                "industry_reports",
+                "breaking_news",
+                "hypocrisy_tracker",
+                ]
         self.research_cache: Dict[str, Any] = {}
 
         # Breaking news and intelligence tracking
@@ -2128,10 +2233,10 @@ class ResearchAgent(BaseAgent):
         self.partnership_opportunities = []
         self.community_engagement_metrics = {
             "outreach_attempts": 0,
-            "successful_connections": 0,
-            "partnership_proposals": 0,
-            "collaboration_requests": 0,
-        }
+                "successful_connections": 0,
+                "partnership_proposals": 0,
+                "collaboration_requests": 0,
+                }
 
         # API & Affiliate Opportunity Discovery
         self.api_opportunity_finder = None
@@ -2146,23 +2251,25 @@ class ResearchAgent(BaseAgent):
         self._initialize_research_tools()
         self._initialize_intelligence_systems()
 
+
     def _initialize_research_tools(self):
         """Initialize research tools for direct use."""
         try:
             from .research_tools import (BreakingNewsWatcher, CompetitorAnalyzer,
-                                         MarketValidator)
+                MarketValidator)
 
             self.research_tools = {
                 "news_watcher": BreakingNewsWatcher(),
-                "competitor_analyzer": CompetitorAnalyzer(),
-                "market_validator": MarketValidator(),
-            }
+                    "competitor_analyzer": CompetitorAnalyzer(),
+                    "market_validator": MarketValidator(),
+                    }
 
             self.logger.info("Research tools initialized successfully")
 
         except ImportError as e:
             self.logger.warning(f"Could not import research tools: {e}")
             self.research_tools = {}
+
 
     def _initialize_intelligence_systems(self):
         """Initialize breaking news watcher and hypocrisy engine"""
@@ -2198,9 +2305,11 @@ class ResearchAgent(BaseAgent):
             self.hypocrisy_monitoring_active = False
             self.research_validation_service = None
 
+
     def _start_intelligence_monitoring(self):
         """Start background monitoring for breaking news and hypocrisy detection"""
         import threading
+
 
         def monitor_feeds():
             while self.intelligence_feeds_active:
@@ -2220,9 +2329,10 @@ class ResearchAgent(BaseAgent):
                     time.sleep(60)  # Wait 1 minute before retry
 
         # Start monitoring thread
-        monitor_thread = threading.Thread(target=monitor_feeds, daemon=True)
+        monitor_thread = threading.Thread(target = monitor_feeds, daemon = True)
         monitor_thread.start()
         self.logger.info("Intelligence monitoring started")
+
 
     def _initialize_opportunity_discovery(self):
         """Initialize API and affiliate opportunity discovery systems"""
@@ -2241,9 +2351,11 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Failed to initialize opportunity discovery: {e}")
             self.opportunity_discovery_active = False
 
+
     def _start_opportunity_discovery(self):
         """Start background opportunity discovery for APIs and affiliates"""
         import threading
+
 
         def discover_opportunities():
             while self.opportunity_discovery_active:
@@ -2278,9 +2390,10 @@ class ResearchAgent(BaseAgent):
                     time.sleep(300)  # Wait 5 minutes before retry
 
         # Start discovery thread
-        discovery_thread = threading.Thread(target=discover_opportunities, daemon=True)
+        discovery_thread = threading.Thread(target = discover_opportunities, daemon = True)
         discovery_thread.start()
         self.logger.info("Opportunity discovery monitoring started")
+
 
     def _discover_api_opportunities(self):
         """Discover new API opportunities"""
@@ -2289,21 +2402,21 @@ class ResearchAgent(BaseAgent):
                 # Create a discovery task for API opportunities
                 task_id = self.api_opportunity_finder.create_discovery_task(
                     task_name="api_discovery",
-                    capability_gap="Automated API opportunity discovery",
-                    search_keywords=[
+                        capability_gap="Automated API opportunity discovery",
+                        search_keywords=[
                         "content creation",
-                        "social media",
-                        "analytics",
-                        "automation",
-                        "free api",
-                    ],
-                    target_domains=[
+                            "social media",
+                            "analytics",
+                            "automation",
+                            "free api",
+                            ],
+                        target_domains=[
                         "api.github.com",
-                        "rapidapi.com",
-                        "programmableweb.com",
-                    ],
-                    priority=5,
-                )
+                            "rapidapi.com",
+                            "programmableweb.com",
+                            ],
+                        priority = 5,
+                        )
 
                 # Execute the discovery task
                 asyncio.create_task(
@@ -2314,16 +2427,17 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"API opportunity discovery failed: {e}")
 
+
     def _discover_affiliate_opportunities(self):
         """Discover new affiliate program opportunities"""
         try:
             # Use web search to find affiliate opportunities
             search_queries = [
                 "free affiliate programs content creators 2024",
-                "zero cost affiliate marketing programs",
-                "content creator affiliate opportunities",
-                "social media affiliate programs free signup",
-            ]
+                    "zero cost affiliate marketing programs",
+                    "content creator affiliate opportunities",
+                    "social media affiliate programs free signup",
+                    ]
 
             for query in search_queries:
                 # This would integrate with web search functionality
@@ -2340,8 +2454,11 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Affiliate opportunity discovery failed: {e}")
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [AgentCapability.RESEARCH, AgentCapability.EXECUTION]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -2357,8 +2474,8 @@ class ResearchAgent(BaseAgent):
         if not self.is_action_allowed("research"):
             return {
                 "success": False,
-                "error": "Research actions are currently disabled by configuration",
-            }
+                    "error": "Research actions are currently disabled by configuration",
+                    }
 
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
@@ -2393,12 +2510,12 @@ class ResearchAgent(BaseAgent):
 
                 response = {
                     "success": True,
-                    "research_type": research_type,
-                    "result": result,
-                    "execution_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                    "sources_used": result.get("sources", []),
-                }
+                        "research_type": research_type,
+                        "result": result,
+                        "execution_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        "sources_used": result.get("sources", []),
+                        }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Research task {task_id} completed"
@@ -2412,11 +2529,11 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "research_type": research_type,
-                "error": str(e),
-                "execution_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-            }
+                    "research_type": research_type,
+                    "error": str(e),
+                    "execution_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    }
 
             self.logger.error(f"Research task {task_id} failed: {e}")
             self.update_status(AgentStatus.FAILED, f"Research task failed: {e}")
@@ -2425,6 +2542,7 @@ class ResearchAgent(BaseAgent):
             )
 
             return error_result
+
 
     async def _perform_web_search(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform web search research."""
@@ -2444,21 +2562,21 @@ class ResearchAgent(BaseAgent):
                     formatted_results.append(
                         {
                             "title": article.get("title", ""),
-                            "url": article.get("url", ""),
-                            "snippet": article.get("description", ""),
-                            "relevance_score": article.get("relevance", 0.8),
-                            "source": article.get("source", "news"),
-                        }
+                                "url": article.get("url", ""),
+                                "snippet": article.get("description", ""),
+                                "relevance_score": article.get("relevance", 0.8),
+                                "source": article.get("source", "news"),
+                                }
                     )
 
                 return {
                     "query": query,
-                    "results": formatted_results,
-                    "total_results": len(formatted_results),
-                    "sources": ["breaking_news", "web_search"],
-                    "tool_used": "BreakingNewsWatcher",
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "results": formatted_results,
+                        "total_results": len(formatted_results),
+                        "sources": ["breaking_news", "web_search"],
+                        "tool_used": "BreakingNewsWatcher",
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
             except Exception as e:
                 self.logger.warning(f"News watcher failed, using fallback: {e}")
@@ -2469,21 +2587,22 @@ class ResearchAgent(BaseAgent):
         # Simulate search results
         results = [
             {
-                "title": f"Search result {i+1} for '{query}'",
-                "url": f"https://example.com/result-{i+1}",
-                "snippet": f"This is a sample snippet for result {i+1}",
-                "relevance_score": 0.9 - (i * 0.1),
-            }
+                "title": f"Search result {i + 1} for '{query}'",
+                    "url": f"https://example.com / result-{i + 1}",
+                    "snippet": f"This is a sample snippet for result {i + 1}",
+                    "relevance_score": 0.9 - (i * 0.1),
+                    }
             for i in range(min(max_results, 5))
         ]
 
         return {
             "query": query,
-            "results": results,
-            "total_results": len(results),
-            "sources": ["web_search"],
-            "timestamp": datetime.now().isoformat(),
-        }
+                "results": results,
+                "total_results": len(results),
+                "sources": ["web_search"],
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def _perform_competitive_analysis(
         self, task: Dict[str, Any]
@@ -2499,19 +2618,19 @@ class ResearchAgent(BaseAgent):
 
                 # Perform competitive analysis using the tool
                 analysis_results = await analyzer.analyze_competitors(
-                    competitors=competitors,
-                    analysis_type=analysis_type,
-                    depth="comprehensive",
-                )
+                    competitors = competitors,
+                        analysis_type = analysis_type,
+                        depth="comprehensive",
+                        )
 
                 return {
                     "competitors_analyzed": competitors,
-                    "analysis_type": analysis_type,
-                    "findings": analysis_results.get("analysis", {}),
-                    "tool_used": "CompetitorAnalyzer",
-                    "sources": ["competitor_analysis"],
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "analysis_type": analysis_type,
+                        "findings": analysis_results.get("analysis", {}),
+                        "tool_used": "CompetitorAnalyzer",
+                        "sources": ["competitor_analysis"],
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
             except Exception as e:
                 self.logger.warning(
@@ -2523,15 +2642,16 @@ class ResearchAgent(BaseAgent):
 
         return {
             "competitors_analyzed": competitors,
-            "analysis_type": analysis_type,
-            "findings": {
+                "analysis_type": analysis_type,
+                "findings": {
                 "market_position": "competitive",
-                "strengths": ["innovation", "customer_service"],
-                "weaknesses": ["pricing", "market_reach"],
-                "opportunities": ["emerging_markets", "new_technologies"],
-            },
-            "sources": ["industry_reports", "web_search"],
-        }
+                    "strengths": ["innovation", "customer_service"],
+                    "weaknesses": ["pricing", "market_reach"],
+                    "opportunities": ["emerging_markets", "new_technologies"],
+                    },
+                "sources": ["industry_reports", "web_search"],
+                }
+
 
     async def _perform_trend_analysis(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform trend analysis."""
@@ -2543,15 +2663,16 @@ class ResearchAgent(BaseAgent):
 
         return {
             "topic": topic,
-            "timeframe": timeframe,
-            "trends": {
+                "timeframe": timeframe,
+                "trends": {
                 "trending_up": ["AI technology", "remote work"],
-                "trending_down": ["traditional retail", "print media"],
-                "stable": ["healthcare", "education"],
-            },
-            "confidence_score": 0.85,
-            "sources": ["social_media", "news_feeds"],
-        }
+                    "trending_down": ["traditional retail", "print media"],
+                    "stable": ["healthcare", "education"],
+                    },
+                "confidence_score": 0.85,
+                "sources": ["social_media", "news_feeds"],
+                }
+
 
     async def _perform_fact_check(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform fact checking."""
@@ -2565,17 +2686,18 @@ class ResearchAgent(BaseAgent):
             verified_claims.append(
                 {
                     "claim": claim,
-                    "verified": True,
-                    "confidence": 0.9,
-                    "sources": ["academic_databases", "news_feeds"],
-                }
+                        "verified": True,
+                        "confidence": 0.9,
+                        "sources": ["academic_databases", "news_feeds"],
+                        }
             )
 
         return {
             "claims_checked": len(claims),
-            "verified_claims": verified_claims,
-            "overall_accuracy": 0.9,
-        }
+                "verified_claims": verified_claims,
+                "overall_accuracy": 0.9,
+                }
+
 
     async def _generic_research(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle generic research tasks with comprehensive analysis."""
@@ -2601,138 +2723,143 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "topic": topic,
-                "research_type": research_type,
-                "depth": depth,
-                "research_summary": summary,
-                "key_findings": findings.get("key_points", []),
-                "sources": findings.get("sources", []),
-                "confidence_score": findings.get("confidence", 0.8),
-                "recommendations": findings.get("recommendations", []),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "research_type": research_type,
+                    "depth": depth,
+                    "research_summary": summary,
+                    "key_findings": findings.get("key_points", []),
+                    "sources": findings.get("sources", []),
+                    "confidence_score": findings.get("confidence", 0.8),
+                    "recommendations": findings.get("recommendations", []),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Research task failed: {str(e)}")
             return {
                 "topic": topic,
-                "research_type": research_type,
-                "error": str(e),
-                "research_summary": f"Research on {topic} encountered an error",
-                "key_findings": [],
-                "sources": [],
-                "confidence_score": 0.0,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "research_type": research_type,
+                    "error": str(e),
+                    "research_summary": f"Research on {topic} encountered an error",
+                    "key_findings": [],
+                    "sources": [],
+                    "confidence_score": 0.0,
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _perform_market_research(self, topic: str, depth: str) -> Dict[str, Any]:
-        """Perform market-focused research analysis."""
+        """Perform market - focused research analysis."""
         # Simulate comprehensive market analysis
         await asyncio.sleep(0.3)
 
         market_size_ranges = {
             "small": "$1M - $10M",
-            "medium": "$10M - $100M",
-            "large": "$100M - $1B",
-            "enterprise": "$1B+",
-        }
+                "medium": "$10M - $100M",
+                "large": "$100M - $1B",
+                "enterprise": "$1B+",
+                }
 
-        growth_rates = ["5-10%", "10-15%", "15-25%", "25%+"]
+        growth_rates = ["5 - 10%", "10 - 15%", "15 - 25%", "25%+"]
 
         return {
             "key_points": [
                 f"Market size estimated at {market_size_ranges.get('medium', '$10M - $100M')}",
-                f"Expected growth rate: {growth_rates[1]}",
-                "Key market drivers identified",
-                "Competitive landscape analyzed",
-            ],
-            "sources": [
+                    f"Expected growth rate: {growth_rates[1]}",
+                    "Key market drivers identified",
+                    "Competitive landscape analyzed",
+                    ],
+                "sources": [
                 f"Industry reports on {topic}",
-                "Market research databases",
-                "Competitor financial filings",
-            ],
-            "confidence": 0.85,
-            "recommendations": [
+                    "Market research databases",
+                    "Competitor financial filings",
+                    ],
+                "confidence": 0.85,
+                "recommendations": [
                 "Focus on emerging market segments",
-                "Monitor competitor pricing strategies",
-                "Invest in market differentiation",
-            ],
-        }
+                    "Monitor competitor pricing strategies",
+                    "Invest in market differentiation",
+                    ],
+                }
+
 
     async def _perform_competitor_research(
         self, topic: str, depth: str
     ) -> Dict[str, Any]:
-        """Perform competitor-focused research analysis."""
+        """Perform competitor - focused research analysis."""
         await asyncio.sleep(0.25)
 
         return {
             "key_points": [
                 "Top 5 competitors identified",
-                "Competitive positioning analyzed",
-                "Pricing strategies compared",
-                "Market share distribution mapped",
-            ],
-            "sources": [
+                    "Competitive positioning analyzed",
+                    "Pricing strategies compared",
+                    "Market share distribution mapped",
+                    ],
+                "sources": [
                 "Competitor websites and marketing materials",
-                "Industry analyst reports",
-                "Customer review platforms",
-            ],
-            "confidence": 0.8,
-            "recommendations": [
+                    "Industry analyst reports",
+                    "Customer review platforms",
+                    ],
+                "confidence": 0.8,
+                "recommendations": [
                 "Identify competitive gaps for differentiation",
-                "Monitor competitor product launches",
-                "Analyze competitor customer feedback",
-            ],
-        }
+                    "Monitor competitor product launches",
+                    "Analyze competitor customer feedback",
+                    ],
+                }
+
 
     async def _perform_trend_research(self, topic: str, depth: str) -> Dict[str, Any]:
-        """Perform trend-focused research analysis."""
+        """Perform trend - focused research analysis."""
         await asyncio.sleep(0.2)
 
         return {
             "key_points": [
                 "Emerging trends identified",
-                "Technology adoption patterns analyzed",
-                "Consumer behavior shifts noted",
-                "Future market predictions generated",
-            ],
-            "sources": [
+                    "Technology adoption patterns analyzed",
+                    "Consumer behavior shifts noted",
+                    "Future market predictions generated",
+                    ],
+                "sources": [
                 "Trend analysis platforms",
-                "Social media sentiment analysis",
-                "Industry thought leader content",
-            ],
-            "confidence": 0.75,
-            "recommendations": [
+                    "Social media sentiment analysis",
+                    "Industry thought leader content",
+                    ],
+                "confidence": 0.75,
+                "recommendations": [
                 "Align product roadmap with emerging trends",
-                "Invest in trend-aligned capabilities",
-                "Monitor trend sustainability indicators",
-            ],
-        }
+                    "Invest in trend - aligned capabilities",
+                    "Monitor trend sustainability indicators",
+                    ],
+                }
+
 
     async def _perform_technical_research(
         self, topic: str, depth: str
     ) -> Dict[str, Any]:
-        """Perform technical-focused research analysis."""
+        """Perform technical - focused research analysis."""
         await asyncio.sleep(0.35)
 
         return {
             "key_points": [
                 "Technical specifications analyzed",
-                "Implementation approaches compared",
-                "Performance benchmarks established",
-                "Technical risks assessed",
-            ],
-            "sources": [
+                    "Implementation approaches compared",
+                    "Performance benchmarks established",
+                    "Technical risks assessed",
+                    ],
+                "sources": [
                 "Technical documentation",
-                "Developer community forums",
-                "Academic research papers",
-            ],
-            "confidence": 0.9,
-            "recommendations": [
+                    "Developer community forums",
+                    "Academic research papers",
+                    ],
+                "confidence": 0.9,
+                "recommendations": [
                 "Adopt proven technical approaches",
-                "Mitigate identified technical risks",
-                "Leverage community best practices",
-            ],
-        }
+                    "Mitigate identified technical risks",
+                    "Leverage community best practices",
+                    ],
+                }
+
 
     async def _perform_general_research(self, topic: str, depth: str) -> Dict[str, Any]:
         """Perform general research analysis."""
@@ -2744,22 +2871,23 @@ class ResearchAgent(BaseAgent):
         return {
             "key_points": [
                 f"Comprehensive overview of {topic} completed",
-                "Key concepts and definitions identified",
-                "Current state of field analyzed",
-                "Future opportunities highlighted",
-            ][:num_findings],
-            "sources": [
+                    "Key concepts and definitions identified",
+                    "Current state of field analyzed",
+                    "Future opportunities highlighted",
+                    ][:num_findings],
+                "sources": [
                 "Academic and industry publications",
-                "Expert interviews and opinions",
-                "Statistical databases",
-            ],
-            "confidence": 0.8,
-            "recommendations": [
+                    "Expert interviews and opinions",
+                    "Statistical databases",
+                    ],
+                "confidence": 0.8,
+                "recommendations": [
                 "Deepen understanding in key areas",
-                "Engage with domain experts",
-                "Monitor ongoing developments",
-            ],
-        }
+                    "Engage with domain experts",
+                    "Monitor ongoing developments",
+                    ],
+                }
+
 
     def _generate_research_summary(
         self, findings: Dict[str, Any], topic: str, research_type: str
@@ -2770,8 +2898,8 @@ class ResearchAgent(BaseAgent):
 
         summary_parts = [
             f"Research on '{topic}' ({research_type}) completed with {confidence:.0%} confidence.",
-            f"Key findings include: {', '.join(key_points[:3])}.",
-        ]
+                f"Key findings include: {', '.join(key_points[:3])}.",
+                ]
 
         if len(key_points) > 3:
             summary_parts.append(f"Additional insights: {', '.join(key_points[3:])}")
@@ -2784,6 +2912,7 @@ class ResearchAgent(BaseAgent):
 
         return " ".join(summary_parts)
 
+
     async def _perform_breaking_news_analysis(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -2792,8 +2921,8 @@ class ResearchAgent(BaseAgent):
             if not self.intelligence_feeds_active:
                 return {
                     "success": False,
-                    "error": "Breaking news monitoring is not active",
-                }
+                        "error": "Breaking news monitoring is not active",
+                        }
 
             # Get latest news from RSS feeds
             news_data = self.rss_intelligence.get_latest_news()
@@ -2801,10 +2930,10 @@ class ResearchAgent(BaseAgent):
             # Analyze news for trends
             analysis = {
                 "trending_topics": [],
-                "sentiment_analysis": {},
-                "opportunity_assessment": {},
-                "content_opportunities": [],
-            }
+                    "sentiment_analysis": {},
+                    "opportunity_assessment": {},
+                    "content_opportunities": [],
+                    }
 
             if news_data:
                 # Extract trending topics
@@ -2821,14 +2950,15 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "success": True,
-                "analysis": analysis,
-                "news_count": len(news_data) if news_data else 0,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "analysis": analysis,
+                    "news_count": len(news_data) if news_data else 0,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Breaking news analysis failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     async def _perform_hypocrisy_detection(
         self, task: Dict[str, Any]
@@ -2843,27 +2973,28 @@ class ResearchAgent(BaseAgent):
 
             # Get hypocrisy findings from database
             findings = self.hypocrisy_db.get_hypocrisy_findings(
-                target=target, timeframe=timeframe
+                target = target, timeframe = timeframe
             )
 
             # Analyze patterns
             analysis = {
                 "contradiction_count": len(findings),
-                "severity_distribution": self._analyze_severity_distribution(findings),
-                "topic_patterns": self._analyze_topic_patterns(findings),
-                "credibility_impact": self._assess_credibility_impact(findings),
-            }
+                    "severity_distribution": self._analyze_severity_distribution(findings),
+                    "topic_patterns": self._analyze_topic_patterns(findings),
+                    "credibility_impact": self._assess_credibility_impact(findings),
+                    }
 
             return {
                 "success": True,
-                "findings": findings,
-                "analysis": analysis,
-                "recommendations": self._generate_hypocrisy_recommendations(analysis),
-            }
+                    "findings": findings,
+                    "analysis": analysis,
+                    "recommendations": self._generate_hypocrisy_recommendations(analysis),
+                    }
 
         except Exception as e:
             self.logger.error(f"Hypocrisy detection failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     def _process_breaking_news(self, news_updates: List[Dict[str, Any]]) -> None:
         """Process breaking news updates for analysis"""
@@ -2872,9 +3003,9 @@ class ResearchAgent(BaseAgent):
                 # Store news item for analysis
                 self.research_cache[f"news_{news_item.get('id', uuid.uuid4().hex)}"] = {
                     "content": news_item,
-                    "timestamp": datetime.now().isoformat(),
-                    "processed": False,
-                }
+                        "timestamp": datetime.now().isoformat(),
+                        "processed": False,
+                        }
 
                 # Trigger content opportunity analysis
                 self._analyze_news_for_opportunities(news_item)
@@ -2883,12 +3014,13 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Failed to process breaking news: {e}")
 
+
     def _analyze_hypocrisy_patterns(self) -> None:
         """Analyze patterns in hypocrisy database"""
         try:
             if self.hypocrisy_db:
                 # Get recent hypocrisy findings
-                recent_findings = self.hypocrisy_db.get_recent_findings(hours=24)
+                recent_findings = self.hypocrisy_db.get_recent_findings(hours = 24)
 
                 if recent_findings:
                     # Analyze patterns and update tracking
@@ -2897,15 +3029,16 @@ class ResearchAgent(BaseAgent):
                     # Store pattern analysis
                     self.research_cache["hypocrisy_patterns"] = {
                         "patterns": patterns,
-                        "timestamp": datetime.now().isoformat(),
-                        "finding_count": len(recent_findings),
-                    }
+                            "timestamp": datetime.now().isoformat(),
+                            "finding_count": len(recent_findings),
+                            }
 
                     self.logger.info(
                         f"Analyzed {len(recent_findings)} hypocrisy findings"
                     )
         except Exception as e:
             self.logger.error(f"Hypocrisy pattern analysis failed: {e}")
+
 
     def _extract_trending_topics(
         self, news_data: List[Dict[str, Any]]
@@ -2928,22 +3061,23 @@ class ResearchAgent(BaseAgent):
 
             # Sort by frequency and return top topics
             sorted_topics = sorted(
-                topic_counts.items(), key=lambda x: x[1], reverse=True
+                topic_counts.items(), key = lambda x: x[1], reverse = True
             )
 
             for topic, count in sorted_topics[:10]:  # Top 10 topics
                 trending_topics.append(
                     {
                         "topic": topic,
-                        "mention_count": count,
-                        "trend_score": count / len(news_data) if news_data else 0,
-                    }
+                            "mention_count": count,
+                            "trend_score": count / len(news_data) if news_data else 0,
+                            }
                 )
 
             return trending_topics
         except Exception as e:
             self.logger.error(f"Topic extraction failed: {e}")
             return []
+
 
     def _analyze_news_sentiment(
         self, news_data: List[Dict[str, Any]]
@@ -2965,22 +3099,23 @@ class ResearchAgent(BaseAgent):
                 "positive_ratio": (
                     sentiment_scores["positive"] / total if total > 0 else 0
                 ),
-                "negative_ratio": (
+                    "negative_ratio": (
                     sentiment_scores["negative"] / total if total > 0 else 0
                 ),
-                "neutral_ratio": (
+                    "neutral_ratio": (
                     sentiment_scores["neutral"] / total if total > 0 else 0
                 ),
-                "overall_sentiment": max(sentiment_scores, key=sentiment_scores.get),
-            }
+                    "overall_sentiment": max(sentiment_scores, key = sentiment_scores.get),
+                    }
         except Exception as e:
             self.logger.error(f"Sentiment analysis failed: {e}")
             return {
                 "positive_ratio": 0,
-                "negative_ratio": 0,
-                "neutral_ratio": 1,
-                "overall_sentiment": "neutral",
-            }
+                    "negative_ratio": 0,
+                    "neutral_ratio": 1,
+                    "overall_sentiment": "neutral",
+                    }
+
 
     def _identify_content_opportunities(
         self, news_data: List[Dict[str, Any]]
@@ -2996,11 +3131,12 @@ class ResearchAgent(BaseAgent):
                     opportunities.append(opportunity)
 
             # Sort by potential score
-            opportunities.sort(key=lambda x: x["score"], reverse=True)
+            opportunities.sort(key = lambda x: x["score"], reverse = True)
             return opportunities[:5]  # Top 5 opportunities
         except Exception as e:
             self.logger.error(f"Content opportunity identification failed: {e}")
             return []
+
 
     def _analyze_severity_distribution(
         self, findings: List[Dict[str, Any]]
@@ -3019,6 +3155,7 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Severity analysis failed: {e}")
             return {"low": 0, "medium": 0, "high": 0, "critical": 0}
 
+
     def _analyze_topic_patterns(self, findings: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Analyze topic patterns in hypocrisy findings"""
         try:
@@ -3030,14 +3167,15 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "most_common_topics": sorted(
-                    topic_counts.items(), key=lambda x: x[1], reverse=True
+                    topic_counts.items(), key = lambda x: x[1], reverse = True
                 )[:5],
-                "topic_diversity": len(topic_counts),
-                "total_topics": sum(topic_counts.values()),
-            }
+                    "topic_diversity": len(topic_counts),
+                    "total_topics": sum(topic_counts.values()),
+                    }
         except Exception as e:
             self.logger.error(f"Topic pattern analysis failed: {e}")
             return {"most_common_topics": [], "topic_diversity": 0, "total_topics": 0}
+
 
     def _assess_credibility_impact(
         self, findings: List[Dict[str, Any]]
@@ -3053,22 +3191,23 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "impact_score": impact_score,
-                "high_impact_findings": high_impact_count,
-                "total_findings": total_count,
-                "credibility_risk": (
+                    "high_impact_findings": high_impact_count,
+                    "total_findings": total_count,
+                    "credibility_risk": (
                     "high"
                     if impact_score > 0.3
                     else "medium" if impact_score > 0.1 else "low"
                 ),
-            }
+                    }
         except Exception as e:
             self.logger.error(f"Credibility impact assessment failed: {e}")
             return {
                 "impact_score": 0,
-                "high_impact_findings": 0,
-                "total_findings": 0,
-                "credibility_risk": "low",
-            }
+                    "high_impact_findings": 0,
+                    "total_findings": 0,
+                    "credibility_risk": "low",
+                    }
+
 
     def _generate_hypocrisy_recommendations(
         self, analysis: Dict[str, Any]
@@ -3084,21 +3223,21 @@ class ResearchAgent(BaseAgent):
                 recommendations.extend(
                     [
                         "Immediate review of public statements required",
-                        "Consider issuing clarification or correction",
-                        "Implement stricter message consistency protocols",
-                    ]
+                            "Consider issuing clarification or correction",
+                            "Implement stricter message consistency protocols",
+                            ]
                 )
             elif risk_level == "medium":
                 recommendations.extend(
                     [
                         "Monitor for additional contradictions",
-                        "Review messaging strategy for consistency",
-                    ]
+                            "Review messaging strategy for consistency",
+                            ]
                 )
             else:
                 recommendations.append("Continue current monitoring protocols")
 
-            # Add topic-specific recommendations
+            # Add topic - specific recommendations
             topic_patterns = analysis.get("topic_patterns", {})
             common_topics = topic_patterns.get("most_common_topics", [])
 
@@ -3113,6 +3252,7 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Recommendation generation failed: {e}")
             return ["Unable to generate recommendations due to analysis error"]
 
+
     def _extract_keywords(self, text: str) -> List[str]:
         """Extract keywords from text (simplified implementation)"""
         try:
@@ -3122,24 +3262,24 @@ class ResearchAgent(BaseAgent):
             # Remove common words and extract meaningful terms
             stop_words = {
                 "the",
-                "a",
-                "an",
-                "and",
-                "or",
-                "but",
-                "in",
-                "on",
-                "at",
-                "to",
-                "for",
-                "of",
-                "with",
-                "by",
-                "is",
-                "are",
-                "was",
-                "were",
-            }
+                    "a",
+                    "an",
+                    "and",
+                    "or",
+                    "but",
+                    "in",
+                    "on",
+                    "at",
+                    "to",
+                    "for",
+                    "of",
+                    "with",
+                    "by",
+                    "is",
+                    "are",
+                    "was",
+                    "were",
+                    }
 
             words = re.findall(r"\b\w+\b", text.lower())
             keywords = [
@@ -3152,30 +3292,31 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Keyword extraction failed: {e}")
             return []
 
+
     def _calculate_sentiment(self, text: str) -> str:
         """Calculate sentiment of text (simplified implementation)"""
         try:
             # Simple sentiment analysis - in production use proper NLP
             positive_words = [
                 "good",
-                "great",
-                "excellent",
-                "positive",
-                "success",
-                "win",
-                "growth",
-                "improvement",
-            ]
+                    "great",
+                    "excellent",
+                    "positive",
+                    "success",
+                    "win",
+                    "growth",
+                    "improvement",
+                    ]
             negative_words = [
                 "bad",
-                "terrible",
-                "negative",
-                "failure",
-                "loss",
-                "decline",
-                "problem",
-                "crisis",
-            ]
+                    "terrible",
+                    "negative",
+                    "failure",
+                    "loss",
+                    "decline",
+                    "problem",
+                    "crisis",
+                    ]
 
             text_lower = text.lower()
             positive_count = sum(1 for word in positive_words if word in text_lower)
@@ -3191,6 +3332,7 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Sentiment calculation failed: {e}")
             return "neutral"
 
+
     def _assess_content_potential(self, news_item: Dict[str, Any]) -> Dict[str, Any]:
         """Assess content creation potential of news item"""
         try:
@@ -3203,12 +3345,12 @@ class ResearchAgent(BaseAgent):
             # Check for trending keywords
             trending_keywords = [
                 "AI",
-                "technology",
-                "innovation",
-                "breakthrough",
-                "viral",
-                "trending",
-            ]
+                    "technology",
+                    "innovation",
+                    "breakthrough",
+                    "viral",
+                    "trending",
+                    ]
             for keyword in trending_keywords:
                 if keyword.lower() in (title + content).lower():
                     score += 0.2
@@ -3220,11 +3362,11 @@ class ResearchAgent(BaseAgent):
             # Check for controversy or debate potential
             debate_keywords = [
                 "controversy",
-                "debate",
-                "opinion",
-                "analysis",
-                "perspective",
-            ]
+                    "debate",
+                    "opinion",
+                    "analysis",
+                    "perspective",
+                    ]
             for keyword in debate_keywords:
                 if keyword.lower() in (title + content).lower():
                     score += 0.15
@@ -3234,24 +3376,25 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "news_id": news_item.get("id", "unknown"),
-                "title": title,
-                "score": score,
-                "content_type_suggestions": self._suggest_content_types(
+                    "title": title,
+                    "score": score,
+                    "content_type_suggestions": self._suggest_content_types(
                     news_item, score
                 ),
-                "urgency": (
+                    "urgency": (
                     "high" if score > 0.8 else "medium" if score > 0.5 else "low"
                 ),
-            }
+                    }
         except Exception as e:
             self.logger.error(f"Content potential assessment failed: {e}")
             return {
                 "news_id": "unknown",
-                "title": "",
-                "score": 0.0,
-                "content_type_suggestions": [],
-                "urgency": "low",
-            }
+                    "title": "",
+                    "score": 0.0,
+                    "content_type_suggestions": [],
+                    "urgency": "low",
+                    }
+
 
     def _suggest_content_types(
         self, news_item: Dict[str, Any], score: float
@@ -3274,26 +3417,28 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Content type suggestion failed: {e}")
             return ["social_media_mention"]
 
+
     def _analyze_news_for_opportunities(self, news_item: Dict[str, Any]) -> None:
         """Analyze individual news item for opportunities"""
         try:
             opportunity = self._assess_content_potential(news_item)
 
             if opportunity["score"] > 0.6:
-                # Store high-potential opportunity
+                # Store high - potential opportunity
                 self.research_cache[
                     f"opportunity_{news_item.get('id', uuid.uuid4().hex)}"
                 ] = {
                     "opportunity": opportunity,
-                    "timestamp": datetime.now().isoformat(),
-                    "status": "identified",
-                }
+                        "timestamp": datetime.now().isoformat(),
+                        "status": "identified",
+                        }
 
                 self.logger.info(
-                    f"High-potential content opportunity identified: {opportunity['title']}"
+                    f"High - potential content opportunity identified: {opportunity['title']}"
                 )
         except Exception as e:
             self.logger.error(f"News opportunity analysis failed: {e}")
+
 
     def _identify_hypocrisy_patterns(
         self, findings: List[Dict[str, Any]]
@@ -3302,9 +3447,9 @@ class ResearchAgent(BaseAgent):
         try:
             patterns = {
                 "recurring_themes": {},
-                "temporal_patterns": {},
-                "severity_trends": [],
-            }
+                    "temporal_patterns": {},
+                    "severity_trends": [],
+                    }
 
             # Analyze recurring themes
             for finding in findings:
@@ -3323,7 +3468,7 @@ class ResearchAgent(BaseAgent):
                         patterns["temporal_patterns"][hour] = (
                             patterns["temporal_patterns"].get(hour, 0) + 1
                         )
-                    except:
+                    except Exception:
                         pass
 
             # Track severity trends
@@ -3337,9 +3482,10 @@ class ResearchAgent(BaseAgent):
             self.logger.error(f"Pattern identification failed: {e}")
             return {
                 "recurring_themes": {},
-                "temporal_patterns": {},
-                "severity_trends": [],
-            }
+                    "temporal_patterns": {},
+                    "severity_trends": [],
+                    }
+
 
     async def _perform_community_engagement(
         self, task: Dict[str, Any]
@@ -3351,10 +3497,10 @@ class ResearchAgent(BaseAgent):
 
             results = {
                 "engagements_made": 0,
-                "responses_received": 0,
-                "community_feedback": [],
-                "engagement_metrics": {},
-            }
+                    "responses_received": 0,
+                    "community_feedback": [],
+                    "engagement_metrics": {},
+                    }
 
             for community in target_communities:
                 # Engage with community based on type
@@ -3369,13 +3515,14 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "success": True,
-                "results": results,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "results": results,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Community engagement failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     async def _perform_partnership_outreach(
         self, task: Dict[str, Any]
@@ -3387,10 +3534,10 @@ class ResearchAgent(BaseAgent):
 
             results = {
                 "outreach_sent": 0,
-                "responses_received": 0,
-                "partnerships_initiated": 0,
-                "follow_up_scheduled": [],
-            }
+                    "responses_received": 0,
+                    "partnerships_initiated": 0,
+                    "follow_up_scheduled": [],
+                    }
 
             for partner in target_partners:
                 # Perform outreach based on type
@@ -3411,17 +3558,18 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "success": True,
-                "results": results,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "results": results,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Partnership outreach failed: {e}")
             return {"success": False, "error": str(e)}
 
+
     def _extract_trending_topics(self, news_data: List[Dict[str, Any]]) -> List[str]:
         """Extract trending topics from news data"""
-        # Placeholder implementation - would use NLP/ML for real analysis
+        # Placeholder implementation - would use NLP / ML for real analysis
         topics = []
         for article in news_data[:10]:  # Analyze top 10 articles
             title = article.get("title", "")
@@ -3435,6 +3583,7 @@ class ResearchAgent(BaseAgent):
         topic_counts = Counter(topics)
         return [topic for topic, count in topic_counts.most_common(5)]
 
+
     def _analyze_news_sentiment(
         self, news_data: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
@@ -3442,10 +3591,11 @@ class ResearchAgent(BaseAgent):
         # Placeholder implementation - would use sentiment analysis library
         return {
             "overall_sentiment": "neutral",
-            "positive_articles": len(news_data) // 3,
-            "negative_articles": len(news_data) // 3,
-            "neutral_articles": len(news_data) // 3,
-        }
+                "positive_articles": len(news_data) // 3,
+                "negative_articles": len(news_data) // 3,
+                "neutral_articles": len(news_data) // 3,
+                }
+
 
     def _identify_content_opportunities(
         self, news_data: List[Dict[str, Any]]
@@ -3457,6 +3607,7 @@ class ResearchAgent(BaseAgent):
             opportunities.append(f"Create content about: {title}")
         return opportunities
 
+
     def _analyze_severity_distribution(
         self, findings: List[Dict[str, Any]]
     ) -> Dict[str, int]:
@@ -3467,6 +3618,7 @@ class ResearchAgent(BaseAgent):
             distribution[severity] = distribution.get(severity, 0) + 1
         return distribution
 
+
     def _analyze_topic_patterns(self, findings: List[Dict[str, Any]]) -> Dict[str, int]:
         """Analyze topic patterns in hypocrisy findings"""
         topics = {}
@@ -3474,6 +3626,7 @@ class ResearchAgent(BaseAgent):
             topic = finding.get("topic", "unknown")
             topics[topic] = topics.get(topic, 0) + 1
         return topics
+
 
     def _assess_credibility_impact(
         self, findings: List[Dict[str, Any]]
@@ -3486,12 +3639,13 @@ class ResearchAgent(BaseAgent):
 
         return {
             "total_contradictions": total_findings,
-            "high_impact_count": high_impact,
-            "credibility_score": max(0, 100 - (high_impact * 10)),
-            "impact_level": (
+                "high_impact_count": high_impact,
+                "credibility_score": max(0, 100 - (high_impact * 10)),
+                "impact_level": (
                 "high" if high_impact > 5 else "medium" if high_impact > 2 else "low"
             ),
-        }
+                }
+
 
     def _generate_hypocrisy_recommendations(
         self, analysis: Dict[str, Any]
@@ -3508,6 +3662,7 @@ class ResearchAgent(BaseAgent):
         recommendations.append("Monitor ongoing statements for consistency")
         return recommendations
 
+
     async def _engage_with_community(
         self, community: str, engagement_type: str
     ) -> Dict[str, Any]:
@@ -3515,21 +3670,23 @@ class ResearchAgent(BaseAgent):
         # Placeholder implementation - would integrate with community platforms
         return {
             "count": 1,
-            "feedback": [f"Engaged with {community} on {engagement_type}"],
-        }
+                "feedback": [f"Engaged with {community} on {engagement_type}"],
+                }
+
 
     async def _reach_out_to_partner(
         self, partner: str, outreach_type: str
     ) -> Dict[str, Any]:
         """Reach out to a potential partner"""
-        # Placeholder implementation - would integrate with email/communication systems
+        # Placeholder implementation - would integrate with email / communication systems
         return {
             "sent": True,
-            "response": False,
-            "follow_up": (
+                "response": False,
+                "follow_up": (
                 datetime.now().timestamp() + 86400 * 7
             ),  # Follow up in 7 days
         }
+
 
     async def _perform_seo_audit(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive SEO audit for a website"""
@@ -3541,9 +3698,9 @@ class ResearchAgent(BaseAgent):
             if not website_url:
                 return {
                     "success": False,
-                    "error": "Website URL is required for SEO audit",
-                    "audit_id": None,
-                }
+                        "error": "Website URL is required for SEO audit",
+                        "audit_id": None,
+                        }
 
             # Generate unique audit ID
             audit_id = (
@@ -3555,10 +3712,10 @@ class ResearchAgent(BaseAgent):
                 # Submit audit request to service
                 audit_request = {
                     "website_url": website_url,
-                    "user_email": user_email,
-                    "audit_type": audit_type,
-                    "requested_at": datetime.now().isoformat(),
-                }
+                        "user_email": user_email,
+                        "audit_type": audit_type,
+                        "requested_at": datetime.now().isoformat(),
+                        }
 
                 service_result = await self.seo_audit_service.submit_audit_request(
                     audit_id, audit_request
@@ -3567,12 +3724,12 @@ class ResearchAgent(BaseAgent):
                 if service_result.get("success"):
                     return {
                         "success": True,
-                        "audit_id": audit_id,
-                        "status": "processing",
-                        "message": f"SEO audit initiated for {website_url}",
-                        "estimated_completion": "15-30 minutes",
-                        "email_notification": bool(user_email),
-                    }
+                            "audit_id": audit_id,
+                            "status": "processing",
+                            "message": f"SEO audit initiated for {website_url}",
+                            "estimated_completion": "15 - 30 minutes",
+                            "email_notification": bool(user_email),
+                            }
 
             # Fallback: Perform basic SEO analysis
             audit_results = await self._perform_basic_seo_analysis(website_url)
@@ -3589,63 +3746,65 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "success": True,
-                "audit_id": audit_id,
-                "status": "completed",
-                "results": audit_results,
-                "message": f"SEO audit completed for {website_url}",
-            }
+                    "audit_id": audit_id,
+                    "status": "completed",
+                    "results": audit_results,
+                    "message": f"SEO audit completed for {website_url}",
+                    }
 
         except Exception as e:
             self.logger.error(f"Error performing SEO audit: {str(e)}")
             return {
                 "success": False,
-                "error": f"SEO audit failed: {str(e)}",
-                "audit_id": audit_id if "audit_id" in locals() else None,
-            }
+                    "error": f"SEO audit failed: {str(e)}",
+                    "audit_id": audit_id if "audit_id" in locals() else None,
+                    }
+
 
     async def _perform_basic_seo_analysis(self, website_url: str) -> Dict[str, Any]:
         """Perform basic SEO analysis of a website"""
         # Mock implementation - in production would use actual SEO analysis tools
         analysis_results = {
             "url": website_url,
-            "analysis_date": datetime.now().isoformat(),
-            "technical_seo": {
+                "analysis_date": datetime.now().isoformat(),
+                "technical_seo": {
                 "page_speed_score": 85,
-                "mobile_friendly": True,
-                "ssl_certificate": True,
-                "meta_tags_present": True,
-                "structured_data": False,
-                "sitemap_found": True,
-            },
-            "content_analysis": {
+                    "mobile_friendly": True,
+                    "ssl_certificate": True,
+                    "meta_tags_present": True,
+                    "structured_data": False,
+                    "sitemap_found": True,
+                    },
+                "content_analysis": {
                 "title_optimization": "Good",
-                "meta_descriptions": "Needs improvement",
-                "heading_structure": "Good",
-                "keyword_density": "Optimal",
-                "content_length": "Adequate",
-                "internal_linking": "Good",
-            },
-            "performance_metrics": {
+                    "meta_descriptions": "Needs improvement",
+                    "heading_structure": "Good",
+                    "keyword_density": "Optimal",
+                    "content_length": "Adequate",
+                    "internal_linking": "Good",
+                    },
+                "performance_metrics": {
                 "load_time": "2.3s",
-                "first_contentful_paint": "1.2s",
-                "largest_contentful_paint": "2.1s",
-                "cumulative_layout_shift": 0.05,
-            },
-            "recommendations": [
-                "Improve meta descriptions for better click-through rates",
-                "Add structured data markup for rich snippets",
-                "Optimize images for faster loading",
-                "Implement lazy loading for below-fold content",
-                "Consider adding more internal links to important pages",
-            ],
-            "overall_score": 78,
-            "priority_issues": [
+                    "first_contentful_paint": "1.2s",
+                    "largest_contentful_paint": "2.1s",
+                    "cumulative_layout_shift": 0.05,
+                    },
+                "recommendations": [
+                "Improve meta descriptions for better click - through rates",
+                    "Add structured data markup for rich snippets",
+                    "Optimize images for faster loading",
+                    "Implement lazy loading for below - fold content",
+                    "Consider adding more internal links to important pages",
+                    ],
+                "overall_score": 78,
+                "priority_issues": [
                 "Missing structured data markup",
-                "Some meta descriptions are too short",
-            ],
-        }
+                    "Some meta descriptions are too short",
+                    ],
+                }
 
         return analysis_results
+
 
     async def _generate_seo_report(
         self, audit_results: Dict[str, Any], audit_id: str
@@ -3661,6 +3820,7 @@ class ResearchAgent(BaseAgent):
 
         return report_path
 
+
     async def _send_seo_audit_email(
         self, user_email: str, audit_results: Dict[str, Any], audit_id: str
     ) -> bool:
@@ -3668,28 +3828,28 @@ class ResearchAgent(BaseAgent):
         try:
             # Mock implementation - would integrate with email service
             email_content = f"""
-            Subject: Your SEO Audit Results - Score: {audit_results.get('overall_score', 'N/A')}/100
-            
+            Subject: Your SEO Audit Results - Score: {audit_results.get('overall_score', 'N / A')}/100
+
             Dear User,
-            
+
             Your SEO audit (ID: {audit_id}) has been completed for {audit_results.get('url', 'your website')}.
-            
-            Overall SEO Score: {audit_results.get('overall_score', 'N/A')}/100
-            
+
+            Overall SEO Score: {audit_results.get('overall_score', 'N / A')}/100
+
             Key Findings:
             - Technical SEO: {'✓' if audit_results.get('technical_seo', {}).get('ssl_certificate') else '✗'} SSL Certificate
-            - Performance: {audit_results.get('performance_metrics', {}).get('load_time', 'N/A')} load time
+            - Performance: {audit_results.get('performance_metrics', {}).get('load_time', 'N / A')} load time
             - Mobile Friendly: {'Yes' if audit_results.get('technical_seo', {}).get('mobile_friendly') else 'No'}
-            
+
             Priority Recommendations:
             {chr(10).join(f'• {rec}' for rec in audit_results.get('recommendations', [])[:3])}
-            
+
             For the complete analysis and actionable recommendations, please find the detailed report attached.
-            
+
             Ready to improve your SEO? Check out our optimization services and digital products.
-            
+
             Best regards,
-            TRAE.AI SEO Team
+                TRAE.AI SEO Team
             """
 
             self.logger.info(f"SEO audit email sent to {user_email}")
@@ -3698,6 +3858,7 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Failed to send SEO audit email: {str(e)}")
             return False
+
 
     async def _perform_predictive_analytics(
         self, task: Dict[str, Any]
@@ -3718,9 +3879,9 @@ class ResearchAgent(BaseAgent):
 
             result = {
                 "success": True,
-                "analysis_type": analysis_type,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "analysis_type": analysis_type,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
             if analysis_type == "content_prediction":
                 # Predict content performance
@@ -3758,9 +3919,10 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             return {
                 "success": False,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _predict_content_success(
         self, analytics_agent, content_data: Dict[str, Any]
@@ -3777,18 +3939,19 @@ class ResearchAgent(BaseAgent):
 
             # Use analytics agent to predict performance
             prediction = await analytics_agent.predict_content_performance(
-                title=title, description=description, tags=tags, duration=duration
+                title = title, description = description, tags = tags, duration = duration
             )
 
             return {
                 "prediction": prediction,
-                "success_score": prediction.confidence_score,
-                "predicted_views": prediction.predicted_value,
-                "recommendations": self._generate_content_recommendations(prediction),
-            }
+                    "success_score": prediction.confidence_score,
+                    "predicted_views": prediction.predicted_value,
+                    "recommendations": self._generate_content_recommendations(prediction),
+                    }
 
         except Exception as e:
             return {"prediction_error": str(e)}
+
 
     async def _analyze_performance_trends(
         self, analytics_agent, content_data: Dict[str, Any]
@@ -3799,20 +3962,21 @@ class ResearchAgent(BaseAgent):
         try:
             # Get trend analysis from analytics agent
             trends = await analytics_agent.analyze_performance_trends(
-                time_period=content_data.get("time_period", 30),
-                content_type=content_data.get("content_type", "video"),
-            )
+                time_period = content_data.get("time_period", 30),
+                    content_type = content_data.get("content_type", "video"),
+                    )
 
             return {
                 "trends": trends,
-                "trend_insights": self._extract_trend_insights(trends),
-                "optimization_suggestions": self._generate_optimization_suggestions(
+                    "trend_insights": self._extract_trend_insights(trends),
+                    "optimization_suggestions": self._generate_optimization_suggestions(
                     trends
                 ),
-            }
+                    }
 
         except Exception as e:
             return {"trend_error": str(e)}
+
 
     async def _generate_success_scores(
         self, analytics_agent, content_data: Dict[str, Any]
@@ -3826,34 +3990,35 @@ class ResearchAgent(BaseAgent):
 
             for idea in content_ideas:
                 prediction = await analytics_agent.predict_content_performance(
-                    title=idea.get("title", ""),
-                    description=idea.get("description", ""),
-                    tags=idea.get("tags", []),
-                    duration=idea.get("duration", 0),
-                )
+                    title = idea.get("title", ""),
+                        description = idea.get("description", ""),
+                        tags = idea.get("tags", []),
+                        duration = idea.get("duration", 0),
+                        )
 
                 scored_ideas.append(
                     {
                         "idea": idea,
-                        "success_score": prediction.confidence_score,
-                        "predicted_performance": prediction.predicted_value,
-                        "ranking": 0,  # Will be set after sorting
+                            "success_score": prediction.confidence_score,
+                            "predicted_performance": prediction.predicted_value,
+                            "ranking": 0,  # Will be set after sorting
                     }
                 )
 
             # Sort by success score and assign rankings
-            scored_ideas.sort(key=lambda x: x["success_score"], reverse=True)
+            scored_ideas.sort(key = lambda x: x["success_score"], reverse = True)
             for i, idea in enumerate(scored_ideas):
                 idea["ranking"] = i + 1
 
             return {
                 "scored_ideas": scored_ideas,
-                "top_recommendation": scored_ideas[0] if scored_ideas else None,
-                "total_analyzed": len(scored_ideas),
-            }
+                    "top_recommendation": scored_ideas[0] if scored_ideas else None,
+                    "total_analyzed": len(scored_ideas),
+                    }
 
         except Exception as e:
             return {"scoring_error": str(e)}
+
 
     async def _comprehensive_analytics(
         self, analytics_agent, content_data: Dict[str, Any]
@@ -3864,20 +4029,21 @@ class ResearchAgent(BaseAgent):
         try:
             # Get performance insights
             insights = await analytics_agent.generate_performance_insights(
-                content_type=content_data.get("content_type", "video"),
-                time_period=content_data.get("time_period", 30),
-            )
+                content_type = content_data.get("content_type", "video"),
+                    time_period = content_data.get("time_period", 30),
+                    )
 
             return {
                 "insights": insights,
-                "key_metrics": self._extract_key_metrics(insights),
-                "actionable_recommendations": self._generate_actionable_recommendations(
+                    "key_metrics": self._extract_key_metrics(insights),
+                    "actionable_recommendations": self._generate_actionable_recommendations(
                     insights
                 ),
-            }
+                    }
 
         except Exception as e:
             return {"comprehensive_error": str(e)}
+
 
     def _generate_content_recommendations(self, prediction) -> List[str]:
         """
@@ -3892,10 +4058,11 @@ class ResearchAgent(BaseAgent):
         if prediction.predicted_value < 1000:
             recommendations.append("Focus on trending topics in your niche")
             recommendations.append(
-                "Optimize thumbnail design for higher click-through rates"
+                "Optimize thumbnail design for higher click - through rates"
             )
 
         return recommendations
+
 
     def _extract_trend_insights(self, trends) -> List[str]:
         """
@@ -3906,9 +4073,10 @@ class ResearchAgent(BaseAgent):
         # Mock trend insights - replace with actual analysis
         insights.append("Video content performs 40% better on weekends")
         insights.append("Titles with questions generate 25% more engagement")
-        insights.append("Content length of 8-12 minutes shows optimal retention")
+        insights.append("Content length of 8 - 12 minutes shows optimal retention")
 
         return insights
+
 
     def _generate_optimization_suggestions(self, trends) -> List[str]:
         """
@@ -3917,13 +4085,14 @@ class ResearchAgent(BaseAgent):
         suggestions = []
 
         suggestions.append(
-            "Schedule content releases for Friday-Sunday for maximum reach"
+            "Schedule content releases for Friday - Sunday for maximum reach"
         )
         suggestions.append("Include compelling questions in titles and thumbnails")
-        suggestions.append("Aim for 8-12 minute content duration for better retention")
+        suggestions.append("Aim for 8 - 12 minute content duration for better retention")
         suggestions.append("Use trending hashtags and keywords in descriptions")
 
         return suggestions
+
 
     def _extract_key_metrics(self, insights) -> Dict[str, Any]:
         """
@@ -3931,22 +4100,24 @@ class ResearchAgent(BaseAgent):
         """
         return {
             "average_engagement_rate": 0.045,
-            "top_performing_content_type": "tutorial",
-            "optimal_posting_time": "18:00-20:00",
-            "trending_topics": ["AI", "productivity", "automation"],
-        }
+                "top_performing_content_type": "tutorial",
+                "optimal_posting_time": "18:00 - 20:00",
+                "trending_topics": ["AI", "productivity", "automation"],
+                }
+
 
     def _generate_actionable_recommendations(self, insights) -> List[str]:
         """
         Generate actionable recommendations from comprehensive insights
         """
         return [
-            "Create more tutorial-style content for higher engagement",
-            "Post content between 6-8 PM for optimal reach",
-            "Focus on AI and productivity topics for trending relevance",
-            "Implement A/B testing for thumbnail designs",
-            "Develop content series to improve subscriber retention",
-        ]
+            "Create more tutorial - style content for higher engagement",
+                "Post content between 6 - 8 PM for optimal reach",
+                "Focus on AI and productivity topics for trending relevance",
+                "Implement A / B testing for thumbnail designs",
+                "Develop content series to improve subscriber retention",
+                ]
+
 
     async def _store_analytics_results(self, results: Dict[str, Any]) -> bool:
         """
@@ -3955,7 +4126,7 @@ class ResearchAgent(BaseAgent):
         try:
             # Mock database storage - replace with actual database integration
             print(f"Storing analytics results: {results.get('analysis_type')}")
-            print(f"Success score: {results.get('success_score', 'N/A')}")
+            print(f"Success score: {results.get('success_score', 'N / A')}")
 
             # In production, store in database:
             # await self.db.store_analytics_results(results)
@@ -3964,6 +4135,7 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             print(f"Error storing analytics results: {e}")
             return False
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -3992,10 +4164,10 @@ class ResearchAgent(BaseAgent):
             # Add monitoring metadata
             result["monitoring"] = {
                 "task_id": task_id,
-                "execution_time": execution_time,
-                "status": "completed",
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "execution_time": execution_time,
+                    "status": "completed",
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
             return result
 
@@ -4008,14 +4180,15 @@ class ResearchAgent(BaseAgent):
 
             return {
                 "success": False,
-                "error": str(e),
-                "monitoring": {
+                    "error": str(e),
+                    "monitoring": {
                     "task_id": task_id,
-                    "execution_time": execution_time,
-                    "status": "failed",
-                    "timestamp": datetime.now().isoformat(),
-                },
-            }
+                        "execution_time": execution_time,
+                        "status": "failed",
+                        "timestamp": datetime.now().isoformat(),
+                        },
+                    }
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
         """Rephrase research task for user confirmation."""
@@ -4032,9 +4205,10 @@ class ResearchAgent(BaseAgent):
         elif task_type == "trend_analysis":
             return f"I will analyze current trends related to '{topic}' and provide insights on future directions."
         elif task_type == "fact_check":
-            return f"I will fact-check the information about '{topic}' using multiple reliable sources."
+            return f"I will fact - check the information about '{topic}' using multiple reliable sources."
         else:
             return f"I will conduct {depth} research on '{topic}' to gather comprehensive insights and analysis."
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
@@ -4052,7 +4226,7 @@ class ResearchAgent(BaseAgent):
             # Check if key elements are present in rephrased version
             type_match = original_type in rephrased_lower or any(
                 keyword in rephrased_lower
-                for keyword in ["search", "analysis", "research", "fact-check"]
+                for keyword in ["search", "analysis", "research", "fact - check"]
             )
 
             topic_match = original_topic in rephrased_lower if original_topic else True
@@ -4074,14 +4248,15 @@ class ContentAgent(BaseAgent):
 
     This agent is responsible for:
     - Advanced scriptwriting with VidScriptPro Framework
-    - Long-form content creation with Automated Author
-    - Avatar animation and video generation
-    - AI-powered inpainting and visual effects
+    - Long - form content creation with Automated Author
+        - Avatar animation and video generation
+    - AI - powered inpainting and visual effects
     - Blender compositing and rendering
-    - Audio post-production and mastering
-    - AI-driven video editing with script cue parsing
+    - Audio post - production and mastering
+    - AI - driven video editing with script cue parsing
     - Traditional content creation (blogs, social media, emails)
     """
+
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "ContentAgent")
@@ -4105,7 +4280,7 @@ class ContentAgent(BaseAgent):
             self.avatar_pipeline = AvatarPipeline()
             self.davinci_resolve = DaVinciResolveIntegration()
 
-            # Initialize evidence-based scripting for Right Perspective content
+            # Initialize evidence - based scripting for Right Perspective content
             from backend.content.evidence_based_scripting import EvidenceBasedScripting
 
             self.evidence_based_scripting = EvidenceBasedScripting()
@@ -4138,38 +4313,40 @@ class ContentAgent(BaseAgent):
         # Traditional content templates
         self.content_templates: Dict[str, str] = {
             "blog_post": "blog_template",
-            "social_media": "social_template",
-            "email": "email_template",
-            "video_script": "video_template",
-        }
+                "social_media": "social_template",
+                "email": "email_template",
+                "video_script": "video_template",
+                }
 
         # Content history and job tracking
         self.content_history: List[Dict[str, Any]] = []
         self.active_jobs: Dict[str, Dict[str, Any]] = {}
+
 
     def _initialize_protected_channel_protocol(self):
         """Initialize Protected Channel Protocol for The Right Perspective."""
         self.protected_channels = {
             "The Right Perspective": {
                 "persona_locked": True,
-                "style_locked": True,
-                "modification_blocked": True,
-                "required_persona": "The Right Perspective Host",
-                "protection_level": "MAXIMUM",
-            }
+                    "style_locked": True,
+                    "modification_blocked": True,
+                    "required_persona": "The Right Perspective Host",
+                    "protection_level": "MAXIMUM",
+                    }
         }
 
         # Initialize database connection for protected channel validation
         try:
             import sqlite3
 
-            self.right_perspective_db = sqlite3.connect("data/right_perspective.db")
+            self.right_perspective_db = sqlite3.connect("data / right_perspective.db")
             self.logger.info(
                 "Protected Channel Protocol initialized for The Right Perspective"
             )
         except Exception as e:
             self.logger.error(f"Failed to initialize protected channel database: {e}")
             self.right_perspective_db = None
+
 
     def _validate_right_perspective_protection(
         self, task: Dict[str, Any]
@@ -4178,33 +4355,34 @@ class ContentAgent(BaseAgent):
         channel_name = task.get("channel", "")
 
         if channel_name == "The Right Perspective":
-            # Enforce read-only persona requirement
+            # Enforce read - only persona requirement
             if not self._is_using_protected_persona(task):
                 return {
                     "protected": True,
-                    "error": "PROTECTION_VIOLATION: The Right Perspective requires read-only persona",
-                    "required_persona": "The Right Perspective Host",
-                    "action": "BLOCK_MODIFICATION",
-                }
+                        "error": "PROTECTION_VIOLATION: The Right Perspective requires read - only persona",
+                        "required_persona": "The Right Perspective Host",
+                        "action": "BLOCK_MODIFICATION",
+                        }
 
             # Block any style modifications
             if self._is_attempting_style_modification(task):
                 return {
                     "protected": True,
-                    "error": "PROTECTION_VIOLATION: Style modifications blocked for The Right Perspective",
-                    "action": "BLOCK_MODIFICATION",
-                }
+                        "error": "PROTECTION_VIOLATION: Style modifications blocked for The Right Perspective",
+                        "action": "BLOCK_MODIFICATION",
+                        }
 
             # Validate required workflow sequence
             if not self._validate_protected_workflow(task):
                 return {
                     "protected": True,
-                    "error": "PROTECTION_VIOLATION: Must use locked workflow sequence",
-                    "required_sequence": "breaking_news_watcher -> evidence_table -> humor_style_db",
-                    "action": "ENFORCE_WORKFLOW",
-                }
+                        "error": "PROTECTION_VIOLATION: Must use locked workflow sequence",
+                        "required_sequence": "breaking_news_watcher -> evidence_table -> humor_style_db",
+                        "action": "ENFORCE_WORKFLOW",
+                        }
 
         return {"protected": False}
+
 
     def _is_using_protected_persona(self, task: Dict[str, Any]) -> bool:
         """Check if task is using the required protected persona."""
@@ -4215,29 +4393,31 @@ class ContentAgent(BaseAgent):
             cursor = self.right_perspective_db.cursor()
             cursor.execute(
                 "SELECT persona_name FROM author_personas WHERE channel_name = ? AND persona_name = ?",
-                ("The Right Perspective", "The Right Perspective Host"),
-            )
+                    ("The Right Perspective", "The Right Perspective Host"),
+                    )
             result = cursor.fetchone()
             return result is not None
         except Exception as e:
             self.logger.error(f"Failed to validate protected persona: {e}")
             return False
 
+
     def _is_attempting_style_modification(self, task: Dict[str, Any]) -> bool:
         """Check if task is attempting to modify The Right Perspective's style."""
         modification_indicators = [
             "style_override",
-            "persona_change",
-            "tone_modification",
-            "humor_style_change",
-            "writing_style_update",
-        ]
+                "persona_change",
+                "tone_modification",
+                "humor_style_change",
+                "writing_style_update",
+                ]
 
         for indicator in modification_indicators:
             if indicator in task:
                 return True
 
         return False
+
 
     def _validate_protected_workflow(self, task: Dict[str, Any]) -> bool:
         """Validate that The Right Perspective uses the required workflow sequence."""
@@ -4250,6 +4430,7 @@ class ContentAgent(BaseAgent):
                 return False
 
         return True
+
 
     def _initialize_universal_channel_protocol(self):
         """Initialize Universal Channel Protocol system for all channels."""
@@ -4271,7 +4452,7 @@ class ContentAgent(BaseAgent):
             # Initialize the protocol system before other components
             self.universal_protocol.initialize_protocol()
 
-            # Initialize channel-specific systems after protocol is ready
+            # Initialize channel - specific systems after protocol is ready
             self.channel_intelligence = ChannelIntelligenceFeeds()
             self.channel_personas = ChannelPersonas()
             self.knowledge_bases = DedicatedKnowledgeBases()
@@ -4297,44 +4478,47 @@ class ContentAgent(BaseAgent):
         self.supported_types = {
             # Advanced content creation
             "video_script_pro": self._create_video_script_pro,
-            "long_form_content": self._create_long_form_content,
-            "avatar_animation": self._create_avatar_animation,
-            "avatar_inpainting": self._create_avatar_inpainting,
-            "video_composite": self._create_video_composite,
-            "audio_postproduction": self._create_audio_postproduction,
-            "ai_video_editing": self._create_ai_video_editing,
-            # New production pipeline tools
+                "long_form_content": self._create_long_form_content,
+                "avatar_animation": self._create_avatar_animation,
+                "avatar_inpainting": self._create_avatar_inpainting,
+                "video_composite": self._create_video_composite,
+                "audio_postproduction": self._create_audio_postproduction,
+                "ai_video_editing": self._create_ai_video_editing,
+                # New production pipeline tools
             "tts_synthesis": self._create_tts_synthesis,
-            "avatar_pipeline": self._create_avatar_pipeline,
-            "davinci_resolve_edit": self._create_davinci_resolve_edit,
-            "gimp_graphics": self._create_gimp_graphics,
-            "inkscape_vector_art": self._create_inkscape_vector_art,
-            "base_model": self._create_base_model,
-            "rig_and_animate": self._rig_and_animate,
-            "rig_and_animate_model": self._rig_and_animate_model,
-            "composite_avatar_blender": self._composite_avatar_blender,
-            # Traditional content creation
+                "avatar_pipeline": self._create_avatar_pipeline,
+                "davinci_resolve_edit": self._create_davinci_resolve_edit,
+                "gimp_graphics": self._create_gimp_graphics,
+                "inkscape_vector_art": self._create_inkscape_vector_art,
+                "base_model": self._create_base_model,
+                "rig_and_animate": self._rig_and_animate,
+                "rig_and_animate_model": self._rig_and_animate_model,
+                "composite_avatar_blender": self._composite_avatar_blender,
+                # Traditional content creation
             "blog_post": self._create_blog_post,
-            "social_media": self._create_social_media_content,
-            "social_media_graphics": self._create_social_media_graphics,
-            "email": self._create_email_content,
-            "video_script": self._create_video_script,
-            "generic": self._create_generic_content,
-            # Hollywood-Level Creative Pipeline
+                "social_media": self._create_social_media_content,
+                "social_media_graphics": self._create_social_media_graphics,
+                "email": self._create_email_content,
+                "video_script": self._create_video_script,
+                "generic": self._create_generic_content,
+                # Hollywood - Level Creative Pipeline
             "hollywood_pipeline_video": self._create_hollywood_pipeline_video,
-            "hollywood_production": self._create_hollywood_production,
-            "cinematic_sequence": self._create_cinematic_sequence,
-            "motion_capture_integration": self._create_motion_capture_integration,
-            "vfx_pipeline": self._create_vfx_pipeline,
-            "color_grading_suite": self._create_color_grading_suite,
-            "sound_design_mastery": self._create_sound_design_mastery,
-            "multi_camera_edit": self._create_multi_camera_edit,
-            "advanced_3d_avatar": self._create_advanced_3d_avatar,
-        }
+                "hollywood_production": self._create_hollywood_production,
+                "cinematic_sequence": self._create_cinematic_sequence,
+                "motion_capture_integration": self._create_motion_capture_integration,
+                "vfx_pipeline": self._create_vfx_pipeline,
+                "color_grading_suite": self._create_color_grading_suite,
+                "sound_design_mastery": self._create_sound_design_mastery,
+                "multi_camera_edit": self._create_multi_camera_edit,
+                "advanced_3d_avatar": self._create_advanced_3d_avatar,
+                }
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [AgentCapability.CONTENT_CREATION, AgentCapability.EXECUTION]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -4350,8 +4534,8 @@ class ContentAgent(BaseAgent):
         if not self.is_action_allowed("content_creation"):
             return {
                 "success": False,
-                "error": "Content creation actions are currently disabled by configuration",
-            }
+                    "error": "Content creation actions are currently disabled by configuration",
+                    }
 
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
@@ -4360,8 +4544,8 @@ class ContentAgent(BaseAgent):
         try:
             self.update_status(
                 AgentStatus.EXECUTING,
-                f"Creating {content_type} content for task {task_id}",
-            )
+                    f"Creating {content_type} content for task {task_id}",
+                    )
 
             with PerformanceTimer(
                 f"content_task_{task.get('type', 'unknown')}"
@@ -4378,35 +4562,35 @@ class ContentAgent(BaseAgent):
                 # Store content in history
                 content_record = {
                     "task_id": task_id,
-                    "content_type": content_type,
-                    "content": result,
-                    "timestamp": datetime.now().isoformat(),
-                    "agent_id": self.agent_id,
-                    "tools_available": self.tools_available,
-                }
+                        "content_type": content_type,
+                        "content": result,
+                        "timestamp": datetime.now().isoformat(),
+                        "agent_id": self.agent_id,
+                        "tools_available": self.tools_available,
+                        }
                 self.content_history.append(content_record)
 
                 # Track active jobs for async operations
                 if "job_id" in result:
                     self.active_jobs[result["job_id"]] = {
                         "task_id": task_id,
-                        "content_type": content_type,
-                        "started_at": datetime.now().isoformat(),
-                        "status": "processing",
-                    }
+                            "content_type": content_type,
+                            "started_at": datetime.now().isoformat(),
+                            "status": "processing",
+                            }
 
                 response = {
                     "success": True,
-                    "content_type": content_type,
-                    "content": result,
-                    "execution_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                    "tools_available": self.tools_available,
-                    "word_count": (
+                        "content_type": content_type,
+                        "content": result,
+                        "execution_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        "tools_available": self.tools_available,
+                        "word_count": (
                         len(result.get("text", "").split()) if "text" in result else 0
                     ),
-                    "has_async_job": "job_id" in result,
-                }
+                        "has_async_job": "job_id" in result,
+                        }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Content creation task {task_id} completed"
@@ -4420,12 +4604,12 @@ class ContentAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "content_type": content_type,
-                "error": str(e),
-                "execution_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-                "tools_available": self.tools_available,
-            }
+                    "content_type": content_type,
+                    "error": str(e),
+                    "execution_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    "tools_available": self.tools_available,
+                    }
 
             self.logger.error(f"Content creation task {task_id} failed: {e}")
             self.update_status(AgentStatus.FAILED, f"Content creation failed: {e}")
@@ -4436,6 +4620,7 @@ class ContentAgent(BaseAgent):
             return error_result
 
     # Job Management Methods
+
 
     def get_job_status(self, job_id: str) -> Dict[str, Any]:
         """
@@ -4454,8 +4639,8 @@ class ContentAgent(BaseAgent):
                     # Job was processed through API Orchestrator, status is already final
                     status = {
                         "status": job_info.get("status", "unknown"),
-                        "progress": 100 if job_info.get("status") == "completed" else 0,
-                    }
+                            "progress": 100 if job_info.get("status") == "completed" else 0,
+                            }
                 else:
                     # Legacy job using direct AnimateAvatar tool
                     status = (
@@ -4483,15 +4668,16 @@ class ContentAgent(BaseAgent):
 
             return {
                 "job_id": job_id,
-                "task_id": job_info["task_id"],
-                "content_type": job_info["content_type"],
-                "started_at": job_info["started_at"],
-                **status,
-            }
+                    "task_id": job_info["task_id"],
+                    "content_type": job_info["content_type"],
+                    "started_at": job_info["started_at"],
+                    **status,
+                    }
 
         except Exception as e:
             self.logger.error(f"Failed to get job status for {job_id}: {e}")
             return {"error": str(e), "job_id": job_id}
+
 
     def get_active_jobs(self) -> List[Dict[str, Any]]:
         """
@@ -4501,10 +4687,11 @@ class ContentAgent(BaseAgent):
 
     # Advanced Content Creation Methods
 
+
     async def _create_video_script_pro(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         Create a professional video script using VidScriptPro Framework.
-        Enhanced with evidence-based scripting for Right Perspective content.
+        Enhanced with evidence - based scripting for Right Perspective content.
         """
         if not self.tools_available:
             return await self._create_video_script(task)  # Fallback to basic script
@@ -4540,17 +4727,17 @@ class ContentAgent(BaseAgent):
 
             # Configure script generation
             config = ScriptConfig(
-                genre=getattr(ScriptGenre, genre.upper(), ScriptGenre.EDUCATIONAL),
-                target_duration=duration,
-                target_audience=target_audience,
-                tone=tone,
-                include_stage_directions=True,
-                include_visual_cues=True,
-            )
+                genre = getattr(ScriptGenre, genre.upper(), ScriptGenre.EDUCATIONAL),
+                    target_duration = duration,
+                    target_audience = target_audience,
+                    tone = tone,
+                    include_stage_directions = True,
+                    include_visual_cues = True,
+                    )
 
             # Generate full script
             script_output = await self.vidscript_pro.generate_full_script(
-                topic=topic, config=config
+                topic = topic, config = config
             )
 
             # Enhance script with evidence if available
@@ -4582,15 +4769,15 @@ class ContentAgent(BaseAgent):
                         else "breaking_news_analysis"
                     )
                     humor_content = await self.humor_style_db.generate_humor_content(
-                        topic=topic,
-                        style=humor_style,
-                        tone="sarcastic",
-                        target_phrases=[
+                        topic = topic,
+                            style = humor_style,
+                            tone="sarcastic",
+                            target_phrases=[
                             "politicians",
-                            "mainstream media",
-                            "establishment",
-                        ],
-                    )
+                                "mainstream media",
+                                "establishment",
+                                ],
+                            )
 
                     # Inject humor into script at strategic points
                     if humor_content and humor_content.get("success"):
@@ -4608,42 +4795,43 @@ class ContentAgent(BaseAgent):
             # Generate video ID for optimization tracking
             video_id = f"rp_{int(time.time())}_{topic.replace(' ', '_')[:20]}"
 
-            # Start post-creation optimization
+            # Start post - creation optimization
             optimization_started = await self._start_post_creation_optimization(
                 video_id, content_type, genre
             )
 
             return {
                 "type": "video_script_pro",
-                "title": script_output.title,
-                "logline": script_output.logline,
-                "synopsis": script_output.synopsis,
-                "characters": [char.__dict__ for char in script_output.characters],
-                "scenes": [scene.__dict__ for scene in script_output.scenes],
-                "full_script": enhanced_script,
-                "estimated_duration": script_output.estimated_duration,
-                "word_count": (
+                    "title": script_output.title,
+                    "logline": script_output.logline,
+                    "synopsis": script_output.synopsis,
+                    "characters": [char.__dict__ for char in script_output.characters],
+                    "scenes": [scene.__dict__ for scene in script_output.scenes],
+                    "full_script": enhanced_script,
+                    "estimated_duration": script_output.estimated_duration,
+                    "word_count": (
                     len(enhanced_script.split())
                     if enhanced_script
                     else script_output.word_count
                 ),
-                "genre": genre,
-                "tone": tone,
-                "evidence_used": evidence_data is not None,
-                "evidence_count": (
+                    "genre": genre,
+                    "tone": tone,
+                    "evidence_used": evidence_data is not None,
+                    "evidence_count": (
                     len(evidence_data.get("facts", [])) if evidence_data else 0
                 ),
-                "humor_injected": humor_content is not None
+                    "humor_injected": humor_content is not None
                 and humor_content.get("success", False),
-                "humor_style": humor_content.get("style") if humor_content else None,
-                "video_id": video_id,
-                "optimization_started": optimization_started,
-                "created_with": "VidScriptPro Framework + Evidence-Based Scripting + Humor Injection + Relentless Optimization",
-            }
+                    "humor_style": humor_content.get("style") if humor_content else None,
+                    "video_id": video_id,
+                    "optimization_started": optimization_started,
+                    "created_with": "VidScriptPro Framework + Evidence - Based Scripting + Humor Injection + Relentless Optimization",
+                    }
 
         except Exception as e:
             self.logger.error(f"VidScriptPro generation failed: {e}")
             return await self._create_video_script(task)  # Fallback
+
 
     def _inject_humor_into_script(
         self, script: str, humor_content: Dict[str, Any]
@@ -4667,12 +4855,12 @@ class ContentAgent(BaseAgent):
 
                 # Inject humor after key statements (look for periods or exclamation marks)
                 if line.strip().endswith((".", "!")) and len(line.strip()) > 20:
-                    # Add sarcastic comment occasionally (every 4-5 statements)
+                    # Add sarcastic comment occasionally (every 4 - 5 statements)
                     if i % 4 == 0 and sarcastic_comments:
                         comment = sarcastic_comments[i % len(sarcastic_comments)]
                         enhanced_lines.append(f"\n[Sarcastic tone] {comment}\n")
 
-                    # Add humor phrase occasionally (every 6-7 statements)
+                    # Add humor phrase occasionally (every 6 - 7 statements)
                     elif i % 6 == 0 and humor_phrases:
                         phrase = humor_phrases[i % len(humor_phrases)]
                         enhanced_lines.append(f"\n[Witty aside] {phrase}\n")
@@ -4683,15 +4871,16 @@ class ContentAgent(BaseAgent):
             self.logger.warning(f"Humor injection processing failed: {e}")
             return script
 
+
     async def _start_post_creation_optimization(
         self,
-        video_id: str,
-        content_type: str,
-        script_content: str,
-        metadata: Dict[str, Any],
-    ) -> Dict[str, Any]:
+            video_id: str,
+            content_type: str,
+            script_content: str,
+            metadata: Dict[str, Any],
+            ) -> Dict[str, Any]:
         """
-        Handle post-video creation optimization tasks including A/B testing and retention analysis.
+        Handle post - video creation optimization tasks including A / B testing and retention analysis.
         """
         try:
             optimization_results = {}
@@ -4702,34 +4891,34 @@ class ContentAgent(BaseAgent):
                     f"Starting autonomous optimization for {content_type} video: {video_id}"
                 )
 
-                # Initialize thumbnail A/B testing
+                # Initialize thumbnail A / B testing
                 thumbnail_test = await self.relentless_optimizer.create_thumbnail_test(
-                    video_id=video_id,
-                    base_title=metadata.get("title", "Right Perspective Video"),
-                    content_summary=script_content[:500],  # First 500 chars as summary
+                    video_id = video_id,
+                        base_title = metadata.get("title", "Right Perspective Video"),
+                        content_summary = script_content[:500],  # First 500 chars as summary
                 )
 
-                # Initialize title A/B testing
+                # Initialize title A / B testing
                 title_test = await self.relentless_optimizer.create_title_test(
-                    video_id=video_id,
-                    base_title=metadata.get("title", "Right Perspective Video"),
-                    content_summary=script_content[:500],
-                )
+                    video_id = video_id,
+                        base_title = metadata.get("title", "Right Perspective Video"),
+                        content_summary = script_content[:500],
+                        )
 
                 # Start audience retention analysis
                 retention_analysis = (
                     await self.relentless_optimizer.start_retention_analysis(
-                        video_id=video_id, content_type=content_type
+                        video_id = video_id, content_type = content_type
                     )
                 )
 
                 optimization_results = {
                     "thumbnail_test_id": thumbnail_test.get("test_id"),
-                    "title_test_id": title_test.get("test_id"),
-                    "retention_analysis_id": retention_analysis.get("analysis_id"),
-                    "optimization_status": "active",
-                    "started_at": datetime.now().isoformat(),
-                }
+                        "title_test_id": title_test.get("test_id"),
+                        "retention_analysis_id": retention_analysis.get("analysis_id"),
+                        "optimization_status": "active",
+                        "started_at": datetime.now().isoformat(),
+                        }
 
                 self.logger.info(
                     f"Autonomous optimization started for video {video_id}: {optimization_results}"
@@ -4737,20 +4926,21 @@ class ContentAgent(BaseAgent):
 
             return {
                 "success": True,
-                "video_id": video_id,
-                "optimization_results": optimization_results,
-                "message": f"Post-creation optimization initiated for {content_type} content",
-            }
+                    "video_id": video_id,
+                    "optimization_results": optimization_results,
+                    "message": f"Post - creation optimization initiated for {content_type} content",
+                    }
 
         except Exception as e:
             self.logger.error(
-                f"Post-creation optimization failed for video {video_id}: {e}"
+                f"Post - creation optimization failed for video {video_id}: {e}"
             )
             return {
                 "success": False,
-                "error": f"Optimization initialization failed: {str(e)}",
-                "video_id": video_id,
-            }
+                    "error": f"Optimization initialization failed: {str(e)}",
+                    "video_id": video_id,
+                    }
+
 
     async def _create_hollywood_pipeline_video(
         self, task: Dict[str, Any]
@@ -4760,11 +4950,11 @@ class ContentAgent(BaseAgent):
             # Phase 1: Script Generation with VidScriptPro
             script_task = {
                 "topic": task.get("topic", "General Topic"),
-                "genre": task.get("genre", "EDUCATIONAL"),
-                "duration": task.get("duration", 300),
-                "target_audience": task.get("target_audience", "general"),
-                "tone": task.get("tone", "professional"),
-            }
+                    "genre": task.get("genre", "EDUCATIONAL"),
+                    "duration": task.get("duration", 300),
+                    "target_audience": task.get("target_audience", "general"),
+                    "tone": task.get("tone", "professional"),
+                    }
 
             script_result = await self._create_video_script_pro(script_task)
             if "error" in script_result:
@@ -4777,42 +4967,42 @@ class ContentAgent(BaseAgent):
             # Phase 2: TTS Synthesis with Coqui TTS
             tts_task = {
                 "text": script_text,
-                "voice_config": task.get(
+                    "voice_config": task.get(
                     "voice_config",
-                    {
+                        {
                         "voice_model": "default",
-                        "emotion": "neutral",
-                        "speed": 1.0,
-                        "language": "en",
-                    },
-                ),
-            }
+                            "emotion": "neutral",
+                            "speed": 1.0,
+                            "language": "en",
+                            },
+                        ),
+                    }
 
             tts_result = await self._create_tts_synthesis(tts_task)
             if "error" in tts_result:
                 return tts_result
 
-            # Phase 3: 3D Avatar Creation with MakeHuman/Daz3D/Blender Pipeline
+            # Phase 3: 3D Avatar Creation with MakeHuman / Daz3D / Blender Pipeline
             avatar_task = {
                 "character_config": task.get(
                     "character_config",
-                    {
+                        {
                         "type": "humanoid",
-                        "gender": "neutral",
-                        "style": "professional",
-                        "clothing": "business_casual",
-                    },
-                ),
-                "animation_config": {
+                            "gender": "neutral",
+                            "style": "professional",
+                            "clothing": "business_casual",
+                            },
+                        ),
+                    "animation_config": {
                     "lip_sync": True,
-                    "audio_file": tts_result.get("audio_file"),
-                    "gestures": task.get("gestures", "moderate"),
-                    "expression": task.get("expression", "engaging"),
-                    "camera_angles": task.get(
+                        "audio_file": tts_result.get("audio_file"),
+                        "gestures": task.get("gestures", "moderate"),
+                        "expression": task.get("expression", "engaging"),
+                        "camera_angles": task.get(
                         "camera_angles", ["medium_shot", "close_up"]
                     ),
-                },
-            }
+                        },
+                    }
 
             avatar_result = await self._create_avatar_pipeline(avatar_task)
             if "error" in avatar_result:
@@ -4822,25 +5012,25 @@ class ContentAgent(BaseAgent):
             davinci_task = {
                 "project_config": {
                     "name": f"Hollywood_Pipeline_{task.get('topic', 'Video').replace(' ', '_')}",
-                    "resolution": task.get("resolution", "1920x1080"),
-                    "frame_rate": task.get("frame_rate", 30),
-                    "color_space": task.get("color_space", "Rec.709"),
-                },
-                "media_files": [
+                        "resolution": task.get("resolution", "1920x1080"),
+                        "frame_rate": task.get("frame_rate", 30),
+                        "color_space": task.get("color_space", "Rec.709"),
+                        },
+                    "media_files": [
                     tts_result.get("audio_file"),
-                    avatar_result.get("animation_file"),
-                    *task.get("additional_media", []),
-                ],
-                "edit_config": {
+                        avatar_result.get("animation_file"),
+                        *task.get("additional_media", []),
+                        ],
+                    "edit_config": {
                     "style": task.get("edit_style", "professional"),
-                    "color_grading": task.get("color_grading", "cinematic"),
-                    "transitions": task.get("transitions", "smooth"),
-                    "effects": task.get("effects", "subtle"),
-                    "music": task.get("background_music", True),
-                    "titles": task.get("include_titles", True),
-                    "lower_thirds": task.get("lower_thirds", []),
-                },
-            }
+                        "color_grading": task.get("color_grading", "cinematic"),
+                        "transitions": task.get("transitions", "smooth"),
+                        "effects": task.get("effects", "subtle"),
+                        "music": task.get("background_music", True),
+                        "titles": task.get("include_titles", True),
+                        "lower_thirds": task.get("lower_thirds", []),
+                        },
+                    }
 
             final_result = await self._create_davinci_resolve_edit(davinci_task)
             if "error" in final_result:
@@ -4851,84 +5041,85 @@ class ContentAgent(BaseAgent):
             # Compile complete Hollywood pipeline result
             pipeline_result = {
                 "script": script_result,
-                "audio": tts_result,
-                "avatar": avatar_result,
-                "final_video": final_result,
-                "pipeline_metadata": {
+                    "audio": tts_result,
+                    "avatar": avatar_result,
+                    "final_video": final_result,
+                    "pipeline_metadata": {
                     "total_duration": final_result.get("metadata", {}).get("duration"),
-                    "resolution": final_result.get("metadata", {}).get("resolution"),
-                    "components_used": [
+                        "resolution": final_result.get("metadata", {}).get("resolution"),
+                        "components_used": [
                         "VidScriptPro",
-                        "Coqui TTS",
-                        "Avatar Pipeline",
-                        "DaVinci Resolve",
-                    ],
-                    "workflow_type": "hollywood_pipeline",
-                    "created_at": datetime.now().isoformat(),
-                    "estimated_render_time": final_result.get("estimated_render_time"),
-                    "quality_score": self._calculate_pipeline_quality_score(
+                            "Coqui TTS",
+                            "Avatar Pipeline",
+                            "DaVinci Resolve",
+                            ],
+                        "workflow_type": "hollywood_pipeline",
+                        "created_at": datetime.now().isoformat(),
+                        "estimated_render_time": final_result.get("estimated_render_time"),
+                        "quality_score": self._calculate_pipeline_quality_score(
                         script_result, tts_result, avatar_result, final_result
                     ),
-                },
-            }
+                        },
+                    }
 
             # Store complete job information
             self.active_jobs[job_id] = {
                 "type": "hollywood_pipeline_video",
-                "status": "completed",
-                "created_at": datetime.now().isoformat(),
-                "result": pipeline_result,
-            }
+                    "status": "completed",
+                    "created_at": datetime.now().isoformat(),
+                    "result": pipeline_result,
+                    }
 
             return {
                 "type": "hollywood_pipeline_video",
-                "status": "completed",
-                "job_id": job_id,
-                "final_video": final_result.get("rendered_video"),
-                "project_file": final_result.get("project_file"),
-                "pipeline_components": pipeline_result,
-                "metadata": pipeline_result["pipeline_metadata"],
-                "created_with": "Hollywood Pipeline Integration",
-            }
+                    "status": "completed",
+                    "job_id": job_id,
+                    "final_video": final_result.get("rendered_video"),
+                    "project_file": final_result.get("project_file"),
+                    "pipeline_components": pipeline_result,
+                    "metadata": pipeline_result["pipeline_metadata"],
+                    "created_with": "Hollywood Pipeline Integration",
+                    }
 
         except Exception as e:
             self.logger.error(f"Hollywood pipeline video creation failed: {e}")
             return {
                 "type": "hollywood_pipeline_video",
-                "status": "failed",
-                "error": str(e),
-                "phase": "hollywood_pipeline_integration",
-            }
+                    "status": "failed",
+                    "error": str(e),
+                    "phase": "hollywood_pipeline_integration",
+                    }
+
 
     def _calculate_pipeline_quality_score(
         self,
-        script_result: Dict,
-        tts_result: Dict,
-        avatar_result: Dict,
-        final_result: Dict,
-    ) -> float:
+            script_result: Dict,
+            tts_result: Dict,
+            avatar_result: Dict,
+            final_result: Dict,
+            ) -> float:
         """Calculate overall quality score for Hollywood pipeline output."""
         try:
             scores = []
 
-            # Script quality (0-1)
+            # Script quality (0 - 1)
             if "word_count" in script_result and script_result["word_count"] > 0:
                 script_score = min(
                     script_result["word_count"] / 1000, 1.0
                 )  # Normalize to 1000 words
                 scores.append(script_score * 0.3)  # 30% weight
 
-            # Audio quality (0-1)
+            # Audio quality (0 - 1)
             if "quality_metrics" in tts_result:
                 audio_score = tts_result["quality_metrics"].get("overall_score", 0.8)
                 scores.append(audio_score * 0.25)  # 25% weight
 
-            # Avatar quality (0-1)
+            # Avatar quality (0 - 1)
             if "render_quality" in avatar_result:
                 avatar_score = avatar_result["render_quality"].get("overall_score", 0.8)
                 scores.append(avatar_score * 0.25)  # 25% weight
 
-            # Final edit quality (0-1)
+            # Final edit quality (0 - 1)
             if "quality_metrics" in final_result:
                 edit_score = final_result["quality_metrics"].get("overall_score", 0.8)
                 scores.append(edit_score * 0.2)  # 20% weight
@@ -4939,9 +5130,10 @@ class ContentAgent(BaseAgent):
             self.logger.warning(f"Quality score calculation failed: {e}")
             return 0.8  # Default fallback score
 
+
     async def _create_long_form_content(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Create long-form content using Automated Author with Ghostwriter Persona.
+        Create long - form content using Automated Author with Ghostwriter Persona.
         """
         if not self.tools_available:
             return await self._create_generic_content(task)
@@ -4957,21 +5149,21 @@ class ContentAgent(BaseAgent):
 
             # Configure writing project
             config = WritingConfig(
-                content_type=getattr(
+                content_type = getattr(
                     ContentType, content_type.upper(), ContentType.GUIDE
                 ),
-                target_word_count=word_count,
-                persona=getattr(
+                    target_word_count = word_count,
+                    persona = getattr(
                     GhostwriterPersona, persona_type.upper(), GhostwriterPersona.EXPERT
                 ),
-                enable_checkpointing=True,
-                auto_save_interval=1000,
-                research_depth="medium",
-            )
+                    enable_checkpointing = True,
+                    auto_save_interval = 1000,
+                    research_depth="medium",
+                    )
 
             # Create writing project
             project = await self.automated_author.create_project(
-                title=title, topic=topic, target_audience=target_audience, config=config
+                title = title, topic = topic, target_audience = target_audience, config = config
             )
 
             # Generate content
@@ -4979,21 +5171,22 @@ class ContentAgent(BaseAgent):
 
             return {
                 "type": "long_form_content",
-                "title": title,
-                "content": result.get("content", ""),
-                "word_count": result.get("word_count", 0),
-                "chapters": result.get("chapters", []),
-                "progress": result.get("progress", 0),
-                "persona": persona_type,
-                "content_type": content_type,
-                "project_id": result.get("project_id"),
-                "checkpoint_available": True,
-                "created_with": "Automated Author",
-            }
+                    "title": title,
+                    "content": result.get("content", ""),
+                    "word_count": result.get("word_count", 0),
+                    "chapters": result.get("chapters", []),
+                    "progress": result.get("progress", 0),
+                    "persona": persona_type,
+                    "content_type": content_type,
+                    "project_id": result.get("project_id"),
+                    "checkpoint_available": True,
+                    "created_with": "Automated Author",
+                    }
 
         except Exception as e:
             self.logger.error(f"Automated Author generation failed: {e}")
             return await self._create_generic_content(task)
+
 
     async def _create_avatar_animation(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -5001,7 +5194,7 @@ class ContentAgent(BaseAgent):
         """
         try:
             from backend.api_orchestrator_enhanced import (EnhancedAPIOrchestrator,
-                                                           OrchestrationRequest)
+                OrchestrationRequest)
 
             # Extract parameters
             source_image = task.get("source_image")
@@ -5013,29 +5206,29 @@ class ContentAgent(BaseAgent):
             if not source_image or not audio_file:
                 return {
                     "error": "Source image and audio file are required",
-                    "type": "avatar_animation",
-                }
+                        "type": "avatar_animation",
+                        }
 
             # Prepare payload for avatar generation
             payload = {
                 "source_image": source_image,
-                "audio_file": audio_file,
-                "text": text,
-                "quality": quality,
-                "engine_preference": engine_preference,
-            }
+                    "audio_file": audio_file,
+                    "text": text,
+                    "quality": quality,
+                    "engine_preference": engine_preference,
+                    }
 
             # Create orchestration request
             orchestrator = EnhancedAPIOrchestrator()
             request = OrchestrationRequest(
-                capability="avatar-generation",
-                payload=payload,
-                timeout=300,  # 5 minutes for avatar generation
-                max_retries=2,
-            )
+                capability="avatar - generation",
+                    payload = payload,
+                    timeout = 300,  # 5 minutes for avatar generation
+                max_retries = 2,
+                    )
 
             # Execute request through orchestrator
-            result = await orchestrator.execute_request(request)
+                result = await orchestrator.execute_request(request)
 
             if result.success:
                 # Generate unique job ID for tracking
@@ -5044,36 +5237,37 @@ class ContentAgent(BaseAgent):
                 # Track job with orchestration info
                 self.active_jobs[job_id] = {
                     "task_id": task.get("task_id"),
-                    "content_type": "avatar_animation",
-                    "started_at": datetime.now().isoformat(),
-                    "status": "completed",
-                    "orchestration_request_id": request.request_id,
-                    "engine_used": result.metadata.get("engine_used", "unknown"),
-                }
+                        "content_type": "avatar_animation",
+                        "started_at": datetime.now().isoformat(),
+                        "status": "completed",
+                        "orchestration_request_id": request.request_id,
+                        "engine_used": result.metadata.get("engine_used", "unknown"),
+                        }
 
                 return {
                     "type": "avatar_animation",
-                    "job_id": job_id,
-                    "status": "completed",
-                    "source_image": source_image,
-                    "audio_file": audio_file,
-                    "output_file": result.result.get("output_file"),
-                    "quality": quality,
-                    "engine_used": result.metadata.get("engine_used", "unknown"),
-                    "created_with": "API Orchestrator",
-                }
+                        "job_id": job_id,
+                        "status": "completed",
+                        "source_image": source_image,
+                        "audio_file": audio_file,
+                        "output_file": result.result.get("output_file"),
+                        "quality": quality,
+                        "engine_used": result.metadata.get("engine_used", "unknown"),
+                        "created_with": "API Orchestrator",
+                        }
             else:
                 return {
                     "error": f"Avatar generation failed: {result.error_message}",
-                    "type": "avatar_animation",
-                    "engine_attempted": result.metadata.get(
+                        "type": "avatar_animation",
+                        "engine_attempted": result.metadata.get(
                         "engine_attempted", "unknown"
                     ),
-                }
+                        }
 
         except Exception as e:
             self.logger.error(f"Avatar animation creation failed: {e}")
             return {"error": str(e), "type": "avatar_animation"}
+
 
     async def _create_avatar_inpainting(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -5082,8 +5276,8 @@ class ContentAgent(BaseAgent):
         if not self.tools_available:
             return {
                 "error": "AI Inpainting tools not available",
-                "type": "avatar_inpainting",
-            }
+                    "type": "avatar_inpainting",
+                    }
 
         try:
             # Extract parameters
@@ -5095,49 +5289,50 @@ class ContentAgent(BaseAgent):
             if not source_image:
                 return {
                     "error": "Source image is required",
-                    "type": "avatar_inpainting",
-                }
+                        "type": "avatar_inpainting",
+                        }
 
             # Configure inpainting
             config = InpaintingConfig(
-                quality=getattr(
+                quality = getattr(
                     InpaintingQuality, quality.upper(), InpaintingQuality.MEDIUM
                 ),
-                guidance_scale=7.5,
-                num_inference_steps=50,
-                strength=0.8,
-            )
+                    guidance_scale = 7.5,
+                    num_inference_steps = 50,
+                    strength = 0.8,
+                    )
 
             # Create inpainting job
             job = await self.ai_inpainting.create_inpainting_job(
-                source_image=source_image,
-                prompt=prompt,
-                mask_mode=mask_mode,
-                config=config,
-            )
+                source_image = source_image,
+                    prompt = prompt,
+                    mask_mode = mask_mode,
+                    config = config,
+                    )
 
             # Track job
             self.active_jobs[job.job_id] = {
                 "task_id": task.get("task_id"),
-                "content_type": "avatar_inpainting",
-                "started_at": job.created_at,
-                "status": job.status,
-            }
+                    "content_type": "avatar_inpainting",
+                    "started_at": job.created_at,
+                    "status": job.status,
+                    }
 
             return {
                 "type": "avatar_inpainting",
-                "job_id": job.job_id,
-                "status": job.status,
-                "source_image": source_image,
-                "prompt": prompt,
-                "mask_mode": mask_mode,
-                "quality": quality,
-                "created_with": "AI Inpainting",
-            }
+                    "job_id": job.job_id,
+                    "status": job.status,
+                    "source_image": source_image,
+                    "prompt": prompt,
+                    "mask_mode": mask_mode,
+                    "quality": quality,
+                    "created_with": "AI Inpainting",
+                    }
 
         except Exception as e:
             self.logger.error(f"Avatar inpainting creation failed: {e}")
             return {"error": str(e), "type": "avatar_inpainting"}
+
 
     async def _create_video_composite(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -5146,8 +5341,8 @@ class ContentAgent(BaseAgent):
         if not self.tools_available:
             return {
                 "error": "Blender Compositor tools not available",
-                "type": "video_composite",
-            }
+                    "type": "video_composite",
+                    }
 
         try:
             # Extract parameters
@@ -5161,55 +5356,56 @@ class ContentAgent(BaseAgent):
 
             # Configure rendering
             config = RenderConfig(
-                quality=getattr(RenderQuality, quality.upper(), RenderQuality.MEDIUM),
-                fps=30,
-                resolution=(1920, 1080),
-                enable_checkpointing=True,
-                checkpoint_interval=100,
-            )
+                quality = getattr(RenderQuality, quality.upper(), RenderQuality.MEDIUM),
+                    fps = 30,
+                    resolution=(1920, 1080),
+                    enable_checkpointing = True,
+                    checkpoint_interval = 100,
+                    )
 
             # Create composite job
             job = await self.blender_compositor.create_composite_job(
-                avatar_video=avatar_video,
-                background_video=background_video,
-                config=config,
-            )
+                avatar_video = avatar_video,
+                    background_video = background_video,
+                    config = config,
+                    )
 
             # Track job
             self.active_jobs[job.job_id] = {
                 "task_id": task.get("task_id"),
-                "content_type": "video_composite",
-                "started_at": job.created_at,
-                "status": job.status,
-            }
+                    "content_type": "video_composite",
+                    "started_at": job.created_at,
+                    "status": job.status,
+                    }
 
             return {
                 "type": "video_composite",
-                "job_id": job.job_id,
-                "status": job.status,
-                "avatar_video": avatar_video,
-                "background_video": background_video,
-                "quality": quality,
-                "composite_mode": composite_mode,
-                "checkpointing_enabled": True,
-                "created_with": "Blender Compositor",
-            }
+                    "job_id": job.job_id,
+                    "status": job.status,
+                    "avatar_video": avatar_video,
+                    "background_video": background_video,
+                    "quality": quality,
+                    "composite_mode": composite_mode,
+                    "checkpointing_enabled": True,
+                    "created_with": "Blender Compositor",
+                    }
 
         except Exception as e:
             self.logger.error(f"Video composite creation failed: {e}")
             return {"error": str(e), "type": "video_composite"}
 
+
     async def _create_audio_postproduction(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        Create audio post-production using Audio Post-Production tool.
+        Create audio post - production using Audio Post - Production tool.
         """
         if not self.tools_available:
             return {
-                "error": "Audio Post-Production tools not available",
-                "type": "audio_postproduction",
-            }
+                "error": "Audio Post - Production tools not available",
+                    "type": "audio_postproduction",
+                    }
 
         try:
             # Extract parameters
@@ -5221,58 +5417,59 @@ class ContentAgent(BaseAgent):
             if not voice_track:
                 return {
                     "error": "Voice track is required",
-                    "type": "audio_postproduction",
-                }
+                        "type": "audio_postproduction",
+                        }
 
             # Configure audio processing
             config = AudioConfig(
-                quality=getattr(AudioQuality, quality.upper(), AudioQuality.MEDIUM),
-                sample_rate=48000,
-                bit_depth=24,
-                enable_noise_reduction=True,
-                enable_normalization=True,
-            )
+                quality = getattr(AudioQuality, quality.upper(), AudioQuality.MEDIUM),
+                    sample_rate = 48000,
+                    bit_depth = 24,
+                    enable_noise_reduction = True,
+                    enable_normalization = True,
+                    )
 
             # Create audio job
             job = await self.audio_postprod.create_audio_job(
-                voice_track=voice_track,
-                background_music=background_music,
-                config=config,
-                enable_ducking=enable_ducking,
-            )
+                voice_track = voice_track,
+                    background_music = background_music,
+                    config = config,
+                    enable_ducking = enable_ducking,
+                    )
 
             # Track job
             self.active_jobs[job.job_id] = {
                 "task_id": task.get("task_id"),
-                "content_type": "audio_postproduction",
-                "started_at": job.created_at,
-                "status": job.status,
-            }
+                    "content_type": "audio_postproduction",
+                    "started_at": job.created_at,
+                    "status": job.status,
+                    }
 
             return {
                 "type": "audio_postproduction",
-                "job_id": job.job_id,
-                "status": job.status,
-                "voice_track": voice_track,
-                "background_music": background_music,
-                "quality": quality,
-                "ducking_enabled": enable_ducking,
-                "created_with": "Audio Post-Production",
-            }
+                    "job_id": job.job_id,
+                    "status": job.status,
+                    "voice_track": voice_track,
+                    "background_music": background_music,
+                    "quality": quality,
+                    "ducking_enabled": enable_ducking,
+                    "created_with": "Audio Post - Production",
+                    }
 
         except Exception as e:
-            self.logger.error(f"Audio post-production creation failed: {e}")
+            self.logger.error(f"Audio post - production creation failed: {e}")
             return {"error": str(e), "type": "audio_postproduction"}
+
 
     async def _create_ai_video_editing(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Create AI-driven video editing using AI Video Editor.
+        Create AI - driven video editing using AI Video Editor.
         """
         if not self.tools_available:
             return {
                 "error": "AI Video Editor tools not available",
-                "type": "ai_video_editing",
-            }
+                    "type": "ai_video_editing",
+                    }
 
         try:
             # Extract parameters
@@ -5283,52 +5480,53 @@ class ContentAgent(BaseAgent):
             if not script_content or not video_file:
                 return {
                     "error": "Script content and video file are required",
-                    "type": "ai_video_editing",
-                }
+                        "type": "ai_video_editing",
+                        }
 
             # Configure video editing
             config = VideoEditingConfig(
-                effect_intensity=getattr(
+                effect_intensity = getattr(
                     EffectIntensity, effect_intensity.upper(), EffectIntensity.MEDIUM
                 ),
-                fps=30,
-                resolution=(1920, 1080),
-                enable_audio_sync=True,
-            )
+                    fps = 30,
+                    resolution=(1920, 1080),
+                    enable_audio_sync = True,
+                    )
 
             # Create editing job
             job = await self.ai_video_editor.create_editing_job(
-                script_content=script_content, video_file=video_file, config=config
+                script_content = script_content, video_file = video_file, config = config
             )
 
             # Track job
             self.active_jobs[job.job_id] = {
                 "task_id": task.get("task_id"),
-                "content_type": "ai_video_editing",
-                "started_at": job.created_at,
-                "status": job.status,
-            }
+                    "content_type": "ai_video_editing",
+                    "started_at": job.created_at,
+                    "status": job.status,
+                    }
 
             return {
                 "type": "ai_video_editing",
-                "job_id": job.job_id,
-                "status": job.status,
-                "script_content": (
+                    "job_id": job.job_id,
+                    "status": job.status,
+                    "script_content": (
                     script_content[:200] + "..."
                     if len(script_content) > 200
                     else script_content
                 ),
-                "video_file": video_file,
-                "effect_intensity": effect_intensity,
-                "detected_cues": (
+                    "video_file": video_file,
+                    "effect_intensity": effect_intensity,
+                    "detected_cues": (
                     job.detected_cues if hasattr(job, "detected_cues") else []
                 ),
-                "created_with": "AI Video Editor",
-            }
+                    "created_with": "AI Video Editor",
+                    }
 
         except Exception as e:
             self.logger.error(f"AI video editing creation failed: {e}")
             return {"error": str(e), "type": "ai_video_editing"}
+
 
     async def _create_generic_content(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -5339,12 +5537,13 @@ class ContentAgent(BaseAgent):
 
         return {
             "type": content_type,
-            "content": f"Generic content for {topic}",
-            "status": "completed",
-            "created_with": "Fallback Generator",
-        }
+                "content": f"Generic content for {topic}",
+                "status": "completed",
+                "created_with": "Fallback Generator",
+                }
 
     # Traditional Content Creation Methods (Enhanced)
+
 
     async def _create_blog_post(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create a blog post using AI content generation."""
@@ -5360,28 +5559,28 @@ class ContentAgent(BaseAgent):
                 Write a comprehensive {target_length}-word blog post about {topic}.
                 Target audience: {target_audience}
                 Tone: {tone}
-                
+
                 Include:
                 - Engaging introduction with hook
-                - Well-structured main content with subheadings
+                - Well - structured main content with subheadings
                 - Practical examples, tips, or case studies
-                - Strong conclusion with clear call-to-action
-                - SEO-optimized title and meta description
-                
+                - Strong conclusion with clear call - to - action
+                - SEO - optimized title and meta description
+
                 Format as markdown with proper headings.
                 """
 
                 # Add political neutrality guardrail for non-"The Right Perspective" channels
                 channel = task.get("channel", "")
                 if channel and channel.lower() != "the right perspective":
-                    prompt += "\n\nIMPORTANT: This content must be 100% politically neutral. Do not mention political parties, partisan figures, electoral issues, or take any political stance. Focus on factual, educational, and non-partisan information only."
+                    prompt += "\n\nIMPORTANT: This content must be 100% politically neutral. Do not mention political parties, partisan figures, electoral issues, or take any political stance. Focus on factual, educational, and non - partisan information only."
 
                 try:
                     response = await self.ollama_client.generate(
                         model="llama3.1",
-                        prompt=prompt,
-                        options={"temperature": 0.7, "max_tokens": target_length * 2},
-                    )
+                            prompt = prompt,
+                            options={"temperature": 0.7, "max_tokens": target_length * 2},
+                            )
 
                     content = response.get("response", "")
 
@@ -5398,113 +5597,114 @@ class ContentAgent(BaseAgent):
 
                     return {
                         "title": title,
-                        "text": content,
-                        "meta_description": meta_description,
-                        "tags": [
+                            "text": content,
+                            "meta_description": meta_description,
+                            "tags": [
                             topic.lower().replace(" ", "-"),
-                            "guide",
-                            "tutorial",
-                            target_audience,
-                        ],
-                        "seo_score": 0.92,
-                        "readability_score": 0.85,
-                        "word_count": len(content.split()),
-                        "generation_method": "ollama_ai",
-                        "created_at": datetime.now().isoformat(),
-                    }
+                                "guide",
+                                "tutorial",
+                                target_audience,
+                                ],
+                            "seo_score": 0.92,
+                            "readability_score": 0.85,
+                            "word_count": len(content.split()),
+                            "generation_method": "ollama_ai",
+                            "created_at": datetime.now().isoformat(),
+                            }
                 except Exception as e:
                     self.logger.warning(
                         f"Ollama generation failed: {e}, falling back to template"
                     )
 
-            # Fallback to structured template-based generation
+            # Fallback to structured template - based generation
             sections = [
                 f"# {topic}: Complete Guide",
-                f"\n## Introduction\n\nIn today's rapidly evolving landscape, understanding {topic} has become essential for {target_audience}. This comprehensive guide provides you with the knowledge and practical insights needed to master this subject.",
-                f"\n## Understanding {topic}\n\n{topic} represents a fundamental concept that impacts various aspects of modern applications. Let's explore its core principles and practical applications.",
-                f"\n## Key Benefits and Applications\n\nThe practical applications of {topic} include:\n\n- **Enhanced Efficiency**: Streamlined processes and improved productivity\n- **Better Decision Making**: Data-driven insights for informed choices\n- **Resource Optimization**: Maximizing value from available resources\n- **Competitive Advantage**: Staying ahead in the market",
-                f"\n## Best Practices and Implementation\n\nTo successfully implement {topic} strategies:\n\n1. **Assessment**: Start with a thorough analysis of current state\n2. **Planning**: Develop a structured implementation roadmap\n3. **Execution**: Follow proven methodologies and frameworks\n4. **Monitoring**: Track progress and measure success metrics\n5. **Optimization**: Continuously improve based on results",
-                f"\n## Common Challenges and Solutions\n\nWhile working with {topic}, organizations often face several challenges:\n\n- **Challenge 1**: Resource constraints\n  - *Solution*: Prioritize high-impact initiatives\n- **Challenge 2**: Technical complexity\n  - *Solution*: Invest in training and expert consultation\n- **Challenge 3**: Change resistance\n  - *Solution*: Implement gradual change management",
-                f"\n## Future Trends and Considerations\n\nThe landscape of {topic} continues to evolve. Key trends to watch include emerging technologies, changing user expectations, and evolving industry standards.",
-                f"\n## Conclusion\n\nMastering {topic} requires a combination of theoretical understanding and practical application. By following the strategies and best practices outlined in this guide, you'll be well-positioned to achieve success.\n\n**Ready to get started?** Begin implementing these strategies today and take your {topic} expertise to the next level.",
-            ]
+                    f"\n## Introduction\n\nIn today's rapidly evolving landscape, understanding {topic} has become essential for {target_audience}. This comprehensive guide provides you with the knowledge and practical insights needed to master this subject.",
+                    f"\n## Understanding {topic}\n\n{topic} represents a fundamental concept that impacts various aspects of modern applications. Let's explore its core principles and practical applications.",
+                    f"\n## Key Benefits and Applications\n\nThe practical applications of {topic} include:\n\n- **Enhanced Efficiency**: Streamlined processes and improved productivity\n- **Better Decision Making**: Data - driven insights for informed choices\n- **Resource Optimization**: Maximizing value from available resources\n- **Competitive Advantage**: Staying ahead in the market",
+                    f"\n## Best Practices and Implementation\n\nTo successfully implement {topic} strategies:\n\n1. **Assessment**: Start with a thorough analysis of current state\n2. **Planning**: Develop a structured implementation roadmap\n3. **Execution**: Follow proven methodologies and frameworks\n4. **Monitoring**: Track progress and measure success metrics\n5. **Optimization**: Continuously improve based on results",
+                    f"\n## Common Challenges and Solutions\n\nWhile working with {topic}, organizations often face several challenges:\n\n- **Challenge 1**: Resource constraints\n  - *Solution*: Prioritize high - impact initiatives\n- **Challenge 2**: Technical complexity\n  - *Solution*: Invest in training and expert consultation\n- **Challenge 3**: Change resistance\n  - *Solution*: Implement gradual change management",
+                    f"\n## Future Trends and Considerations\n\nThe landscape of {topic} continues to evolve. Key trends to watch include emerging technologies, changing user expectations, and evolving industry standards.",
+                    f"\n## Conclusion\n\nMastering {topic} requires a combination of theoretical understanding and practical application. By following the strategies and best practices outlined in this guide, you'll be well - positioned to achieve success.\n\n**Ready to get started?** Begin implementing these strategies today and take your {topic} expertise to the next level.",
+                    ]
 
             content = "\n".join(sections)
 
             return {
                 "title": f"{topic}: Complete Guide",
-                "text": content,
-                "meta_description": f"Master {topic} with this comprehensive guide. Expert insights, practical strategies, and actionable tips for {target_audience}.",
-                "tags": [
+                    "text": content,
+                    "meta_description": f"Master {topic} with this comprehensive guide. Expert insights, practical strategies, and actionable tips for {target_audience}.",
+                    "tags": [
                     topic.lower().replace(" ", "-"),
-                    "guide",
-                    "tutorial",
-                    "best-practices",
-                    target_audience,
-                ],
-                "seo_score": 0.88,
-                "readability_score": 0.82,
-                "word_count": len(content.split()),
-                "generation_method": "template_based",
-                "created_at": datetime.now().isoformat(),
-            }
+                        "guide",
+                        "tutorial",
+                        "best - practices",
+                        target_audience,
+                        ],
+                    "seo_score": 0.88,
+                    "readability_score": 0.82,
+                    "word_count": len(content.split()),
+                    "generation_method": "template_based",
+                    "created_at": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Error creating blog post: {e}")
             return {
                 "title": f"Error: {topic}",
-                "text": f"An error occurred while generating content about {topic}.",
-                "error": str(e),
-                "status": "failed",
-                "created_at": datetime.now().isoformat(),
-            }
+                    "text": f"An error occurred while generating content about {topic}.",
+                    "error": str(e),
+                    "status": "failed",
+                    "created_at": datetime.now().isoformat(),
+                    }
+
 
     async def _create_social_media_content(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Create social media content using AI or template-based generation."""
+        """Create social media content using AI or template - based generation."""
         platform = task.get("platform", "twitter")
         topic = task.get("topic", "General")
         tone = task.get("tone", "professional")
         target_audience = task.get("target_audience", "general")
 
-        # Try AI-powered content generation first
+        # Try AI - powered content generation first
         try:
             import json
 
             import requests
 
             # Attempt to use Ollama for content generation
-            ollama_url = "http://localhost:11434/api/generate"
+            ollama_url = "http://localhost:11434 / api / generate"
 
             platform_guidelines = {
                 "twitter": "Keep it under 280 characters, use relevant hashtags, be engaging",
-                "linkedin": "Professional tone, industry insights, thought leadership",
-                "instagram": "Visual-friendly, use emojis, inspiring and engaging",
-                "facebook": "Conversational, community-focused, shareable content",
-            }
+                    "linkedin": "Professional tone, industry insights, thought leadership",
+                    "instagram": "Visual - friendly, use emojis, inspiring and engaging",
+                    "facebook": "Conversational, community - focused, shareable content",
+                    }
 
             prompt = f"""Create engaging {platform} content about {topic}.
-            
+
 Guidelines: {platform_guidelines.get(platform, 'Be engaging and relevant')}
 Tone: {tone}
 Target audience: {target_audience}
-            
-Generate only the post text, no explanations. Make it compelling and platform-appropriate."""
+
+Generate only the post text, no explanations. Make it compelling and platform - appropriate."""
 
             # Add political neutrality guardrail for non-"The Right Perspective" channels
             channel = task.get("channel", "")
             if channel and channel.lower() != "the right perspective":
-                prompt += "\n\nIMPORTANT: This content must be 100% politically neutral. Do not mention political parties, partisan figures, electoral issues, or take any political stance. Focus on factual, educational, and non-partisan information only."
+                prompt += "\n\nIMPORTANT: This content must be 100% politically neutral. Do not mention political parties, partisan figures, electoral issues, or take any political stance. Focus on factual, educational, and non - partisan information only."
 
             payload = {
                 "model": "llama3.2",
-                "prompt": prompt,
-                "stream": False,
-                "options": {"temperature": 0.7, "max_tokens": 200},
-            }
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {"temperature": 0.7, "max_tokens": 200},
+                    }
 
-            response = requests.post(ollama_url, json=payload, timeout=30)
+            response = requests.post(ollama_url, json = payload, timeout = 30)
 
             if response.status_code == 200:
                 result = response.json()
@@ -5518,48 +5718,48 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
                         if word.startswith("#"):
                             hashtags.append(word)
 
-                    # Add topic-based hashtags if none found
+                    # Add topic - based hashtags if none found
                     if not hashtags:
                         hashtags = [f"#{topic.lower().replace(' ', '')}", "#content"]
 
                     return {
                         "platform": platform,
-                        "text": ai_content,
-                        "hashtags": hashtags,
-                        "engagement_prediction": 0.8,
-                        "optimal_post_time": self._get_optimal_post_time(platform),
-                        "generation_method": "ai_powered",
-                        "character_count": len(ai_content),
-                    }
+                            "text": ai_content,
+                            "hashtags": hashtags,
+                            "engagement_prediction": 0.8,
+                            "optimal_post_time": self._get_optimal_post_time(platform),
+                            "generation_method": "ai_powered",
+                            "character_count": len(ai_content),
+                            }
 
         except Exception as e:
             self.logger.warning(
                 f"AI content generation failed: {e}. Falling back to template."
             )
 
-        # Fallback to template-based generation
+        # Fallback to template - based generation
         platform_templates = {
             "twitter": [
                 f"🚀 Exciting developments in {topic}! Here's what you need to know: [key insight] #{topic.lower().replace(' ', '')} #trending",
-                f"💡 {topic} insights that will change your perspective. Thread below 👇 #{topic.lower().replace(' ', '')} #insights",
-                f"🔥 Hot take on {topic}: [your perspective] What do you think? #{topic.lower().replace(' ', '')} #discussion",
-            ],
-            "linkedin": [
+                    f"💡 {topic} insights that will change your perspective. Thread below 👇 #{topic.lower().replace(' ', '')} #insights",
+                    f"🔥 Hot take on {topic}: [your perspective] What do you think? #{topic.lower().replace(' ', '')} #discussion",
+                    ],
+                "linkedin": [
                 f"Professional insights on {topic}: As industry leaders, we need to understand [key point]. Here's my analysis...",
-                f"The future of {topic} is here. After analyzing recent trends, I've identified 3 key opportunities...",
-                f"Lessons learned from {topic}: What every professional should know about [specific aspect]...",
-            ],
-            "instagram": [
+                    f"The future of {topic} is here. After analyzing recent trends, I've identified 3 key opportunities...",
+                    f"Lessons learned from {topic}: What every professional should know about [specific aspect]...",
+                    ],
+                "instagram": [
                 f"✨ {topic} inspiration for your feed! 📸 Swipe for amazing insights ➡️ #{topic.lower().replace(' ', '')} #inspiration",
-                f"🌟 Transform your understanding of {topic} with these game-changing tips! 💫 #{topic.lower().replace(' ', '')} #transformation",
-                f"💎 {topic} gems you didn't know you needed! Save this post for later 📌 #{topic.lower().replace(' ', '')} #tips",
-            ],
-            "facebook": [
+                    f"🌟 Transform your understanding of {topic} with these game - changing tips! 💫 #{topic.lower().replace(' ', '')} #transformation",
+                    f"💎 {topic} gems you didn't know you needed! Save this post for later 📌 #{topic.lower().replace(' ', '')} #tips",
+                    ],
+                "facebook": [
                 f"Let's talk about {topic}! 💬 I've been exploring this topic and wanted to share some insights with our community...",
-                f"Community question: What's your experience with {topic}? Share your thoughts below! 👇",
-                f"Sharing some valuable insights about {topic} that I think you'll find interesting...",
-            ],
-        }
+                    f"Community question: What's your experience with {topic}? Share your thoughts below! 👇",
+                    f"Sharing some valuable insights about {topic} that I think you'll find interesting...",
+                    ],
+                }
 
         import random
 
@@ -5577,23 +5777,25 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
 
         return {
             "platform": platform,
-            "text": selected_template,
-            "hashtags": base_hashtags[:5],  # Limit to 5 hashtags
+                "text": selected_template,
+                "hashtags": base_hashtags[:5],  # Limit to 5 hashtags
             "engagement_prediction": 0.75,
-            "optimal_post_time": self._get_optimal_post_time(platform),
-            "generation_method": "template_based",
-            "character_count": len(selected_template),
-        }
+                "optimal_post_time": self._get_optimal_post_time(platform),
+                "generation_method": "template_based",
+                "character_count": len(selected_template),
+                }
+
 
     def _get_optimal_post_time(self, platform: str) -> str:
         """Get optimal posting time for each platform."""
         optimal_times = {
             "twitter": "9:00 AM",
-            "linkedin": "8:00 AM",
-            "instagram": "11:00 AM",
-            "facebook": "1:00 PM",
-        }
+                "linkedin": "8:00 AM",
+                "instagram": "11:00 AM",
+                "facebook": "1:00 PM",
+                }
         return optimal_times.get(platform, "2:00 PM")
+
 
     async def _create_social_media_graphics(
         self, task: Dict[str, Any]
@@ -5620,36 +5822,36 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
             # Generate graphics for each platform
             graphics_package = {
                 "package_id": str(uuid.uuid4()),
-                "package_type": package_type,
-                "prompt": prompt,
-                "graphics": [],
-                "total_files": 0,
-                "creation_timestamp": datetime.now().isoformat(),
-            }
+                    "package_type": package_type,
+                    "prompt": prompt,
+                    "graphics": [],
+                    "total_files": 0,
+                    "creation_timestamp": datetime.now().isoformat(),
+                    }
 
-            # Platform-specific dimensions and requirements
+            # Platform - specific dimensions and requirements
             platform_specs = {
                 "instagram": {
                     "post": {"width": 1080, "height": 1080, "format": "square"},
-                    "story": {"width": 1080, "height": 1920, "format": "vertical"},
-                    "reel": {"width": 1080, "height": 1920, "format": "vertical"},
-                },
-                "facebook": {
+                        "story": {"width": 1080, "height": 1920, "format": "vertical"},
+                        "reel": {"width": 1080, "height": 1920, "format": "vertical"},
+                        },
+                    "facebook": {
                     "post": {"width": 1200, "height": 630, "format": "landscape"},
-                    "cover": {"width": 1640, "height": 859, "format": "landscape"},
-                    "story": {"width": 1080, "height": 1920, "format": "vertical"},
-                },
-                "twitter": {
+                        "cover": {"width": 1640, "height": 859, "format": "landscape"},
+                        "story": {"width": 1080, "height": 1920, "format": "vertical"},
+                        },
+                    "twitter": {
                     "post": {"width": 1200, "height": 675, "format": "landscape"},
-                    "header": {"width": 1500, "height": 500, "format": "landscape"},
-                    "card": {"width": 800, "height": 418, "format": "landscape"},
-                },
-                "linkedin": {
+                        "header": {"width": 1500, "height": 500, "format": "landscape"},
+                        "card": {"width": 800, "height": 418, "format": "landscape"},
+                        },
+                    "linkedin": {
                     "post": {"width": 1200, "height": 627, "format": "landscape"},
-                    "article": {"width": 1200, "height": 627, "format": "landscape"},
-                    "company": {"width": 1536, "height": 768, "format": "landscape"},
-                },
-            }
+                        "article": {"width": 1200, "height": 627, "format": "landscape"},
+                        "company": {"width": 1536, "height": 768, "format": "landscape"},
+                        },
+                    }
 
             # Generate graphics for each requested platform
             for platform in platforms:
@@ -5661,30 +5863,30 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
                         # Mock graphic generation (in production, this would use actual image generation)
                         graphic_info = {
                             "platform": platform,
-                            "type": graphic_type,
-                            "dimensions": dimensions,
-                            "filename": f"{platform}_{graphic_type}_{graphics_package['package_id'][:8]}.png",
-                            "file_size": "2.3 MB",  # Mock file size
-                            "download_url": f"/api/graphics/download/{graphics_package['package_id']}/{platform}_{graphic_type}.png",
-                            "preview_url": f"/api/graphics/preview/{graphics_package['package_id']}/{platform}_{graphic_type}.png",
-                            "created_at": datetime.now().isoformat(),
-                        }
+                                "type": graphic_type,
+                                "dimensions": dimensions,
+                                "filename": f"{platform}_{graphic_type}_{graphics_package['package_id'][:8]}.png",
+                                "file_size": "2.3 MB",  # Mock file size
+                            "download_url": f"/api / graphics / download/{graphics_package['package_id']}/{platform}_{graphic_type}.png",
+                                "preview_url": f"/api / graphics / preview/{graphics_package['package_id']}/{platform}_{graphic_type}.png",
+                                "created_at": datetime.now().isoformat(),
+                                }
 
                         # Add design elements based on prompt and brand guidelines
                         graphic_info["design_elements"] = {
                             "primary_color": (
                                 brand_colors[0] if brand_colors else "#1DA1F2"
                             ),
-                            "secondary_color": (
+                                "secondary_color": (
                                 brand_colors[1] if len(brand_colors) > 1 else "#FFFFFF"
                             ),
-                            "font_family": brand_fonts[0] if brand_fonts else "Arial",
-                            "includes_logo": include_logo,
-                            "style": self._determine_graphic_style(prompt),
-                            "text_overlay": self._generate_text_overlay(
+                                "font_family": brand_fonts[0] if brand_fonts else "Arial",
+                                "includes_logo": include_logo,
+                                "style": self._determine_graphic_style(prompt),
+                                "text_overlay": self._generate_text_overlay(
                                 prompt, platform, graphic_type
                             ),
-                        }
+                                }
 
                         platform_graphics.append(graphic_info)
                         graphics_package["total_files"] += 1
@@ -5694,17 +5896,17 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
             # Generate package summary and delivery information
             package_summary = {
                 "total_graphics": graphics_package["total_files"],
-                "platforms_covered": len(platforms),
-                "package_size": f"{graphics_package['total_files'] * 2.3:.1f} MB",
-                "estimated_delivery": "5-10 minutes",
-                "download_expires": (datetime.now().timestamp() + 86400 * 7),  # 7 days
+                    "platforms_covered": len(platforms),
+                    "package_size": f"{graphics_package['total_files'] * 2.3:.1f} MB",
+                    "estimated_delivery": "5 - 10 minutes",
+                    "download_expires": (datetime.now().timestamp() + 86400 * 7),  # 7 days
                 "usage_rights": "Commercial use allowed",
-                "formats_included": (
+                    "formats_included": (
                     ["PNG", "JPG", "SVG"]
                     if package_type == "premium"
                     else ["PNG", "JPG"]
                 ),
-            }
+                    }
 
             # If user email provided, send notification
             if user_email:
@@ -5719,20 +5921,21 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
 
             return {
                 "success": True,
-                "package": graphics_package,
-                "summary": package_summary,
-                "download_link": f"/api/graphics/package/{graphics_package['package_id']}",
-                "preview_gallery": f"/api/graphics/gallery/{graphics_package['package_id']}",
-                "message": f"Successfully created {graphics_package['total_files']} social media graphics for {len(platforms)} platforms",
-            }
+                    "package": graphics_package,
+                    "summary": package_summary,
+                    "download_link": f"/api / graphics / package/{graphics_package['package_id']}",
+                    "preview_gallery": f"/api / graphics / gallery/{graphics_package['package_id']}",
+                    "message": f"Successfully created {graphics_package['total_files']} social media graphics for {len(platforms)} platforms",
+                    }
 
         except Exception as e:
             self.logger.error(f"Error creating social media graphics: {e}")
             return {
                 "success": False,
-                "error": f"Failed to create social media graphics: {str(e)}",
-                "fallback_message": "Please try again with a simpler prompt or contact support",
-            }
+                    "error": f"Failed to create social media graphics: {str(e)}",
+                    "fallback_message": "Please try again with a simpler prompt or contact support",
+                    }
+
 
     def _determine_graphic_style(self, prompt: str) -> str:
         """Determine the visual style based on the prompt."""
@@ -5752,6 +5955,7 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
             return "bold"
         else:
             return "modern"
+
 
     def _generate_text_overlay(
         self, prompt: str, platform: str, graphic_type: str
@@ -5773,16 +5977,17 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
         else:
             return f"{platform.title()} Post"
 
+
     async def _generate_graphics_files(
         self,
-        graphics_package: Dict[str, Any],
-        prompt: str,
-        brand_colors: List[str],
-        brand_fonts: List[str],
-    ) -> None:
+            graphics_package: Dict[str, Any],
+            prompt: str,
+            brand_colors: List[str],
+            brand_fonts: List[str],
+            ) -> None:
         """Mock graphics file generation process."""
         # In production, this would integrate with actual image generation APIs
-        # like DALL-E, Midjourney, or Stable Diffusion
+        # like DALL - E, Midjourney, or Stable Diffusion
 
         self.logger.info(
             f"Generating {graphics_package['total_files']} graphics files..."
@@ -5800,28 +6005,29 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
 
         self.logger.info("Graphics package generation completed")
 
+
     async def _send_graphics_package_email(
         self,
-        user_email: str,
-        graphics_package: Dict[str, Any],
-        package_summary: Dict[str, Any],
-    ) -> None:
+            user_email: str,
+            graphics_package: Dict[str, Any],
+            package_summary: Dict[str, Any],
+            ) -> None:
         """Send email notification with graphics package details."""
         try:
             # Mock email sending (in production, integrate with email service)
             email_content = f"""
             Your Social Media Graphics Package is Ready!
-            
+
             Package ID: {graphics_package['package_id']}
             Total Graphics: {package_summary['total_graphics']}
             Platforms: {package_summary['platforms_covered']}
             Package Size: {package_summary['package_size']}
-            
+
             Download your graphics package here:
-            /api/graphics/package/{graphics_package['package_id']}
-            
+            /api / graphics / package/{graphics_package['package_id']}
+
             Your download link expires in 7 days.
-            
+
             Thank you for using our automated graphics service!
             """
 
@@ -5832,8 +6038,9 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
         except Exception as e:
             self.logger.error(f"Failed to send graphics package email: {e}")
 
+
     async def _create_email_content(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create email content using AI or template-based generation."""
+        """Create email content using AI or template - based generation."""
         email_type = task.get("email_type", "newsletter")
         subject = task.get("subject", "Important Update")
         topic = task.get("topic", subject)
@@ -5841,53 +6048,53 @@ Generate only the post text, no explanations. Make it compelling and platform-ap
         target_audience = task.get("target_audience", "subscribers")
         call_to_action = task.get("call_to_action", "Learn more")
 
-        # Try AI-powered email generation first
+        # Try AI - powered email generation first
         try:
             import json
 
             import requests
 
             # Attempt to use Ollama for email generation
-            ollama_url = "http://localhost:11434/api/generate"
+            ollama_url = "http://localhost:11434 / api / generate"
 
             email_guidelines = {
                 "newsletter": "Informative, engaging, with clear sections and valuable content",
-                "promotional": "Persuasive, benefit-focused, with strong call-to-action",
-                "welcome": "Warm, welcoming, set expectations, introduce value proposition",
-                "announcement": "Clear, direct, important information delivery",
-                "follow_up": "Personal, relationship-building, provide additional value",
-            }
+                    "promotional": "Persuasive, benefit - focused, with strong call - to - action",
+                    "welcome": "Warm, welcoming, set expectations, introduce value proposition",
+                    "announcement": "Clear, direct, important information delivery",
+                    "follow_up": "Personal, relationship - building, provide additional value",
+                    }
 
-            # Add political neutrality guardrail for non-Right Perspective channels
+            # Add political neutrality guardrail for non - Right Perspective channels
             channel_name = task.get("channel_name", "")
             political_neutrality_instruction = ""
             if channel_name != "The Right Perspective":
-                political_neutrality_instruction = "\n\nIMPORTANT: This email must be 100% politically neutral. Do not mention political parties, partisan figures, electoral issues, or take any political stance. Focus solely on factual, educational, and non-partisan information."
+                political_neutrality_instruction = "\n\nIMPORTANT: This email must be 100% politically neutral. Do not mention political parties, partisan figures, electoral issues, or take any political stance. Focus solely on factual, educational, and non - partisan information."
 
             prompt = f"""Create a {email_type} email about {topic}.
-            
+
 Guidelines: {email_guidelines.get(email_type, 'Professional and engaging')}
 Tone: {tone}
 Target audience: {target_audience}
 Call to action: {call_to_action}
-            
+
 Generate:
 1. Subject line (compelling and clear)
-2. Email body (well-structured with greeting, main content, and closing)
+2. Email body (well - structured with greeting, main content, and closing)
 3. Make it engaging and actionable{political_neutrality_instruction}
-            
+
 Format as:
 SUBJECT: [subject line]
 BODY: [email body]"""
 
             payload = {
                 "model": "llama3.2",
-                "prompt": prompt,
-                "stream": False,
-                "options": {"temperature": 0.7, "max_tokens": 500},
-            }
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {"temperature": 0.7, "max_tokens": 500},
+                    }
 
-            response = requests.post(ollama_url, json=payload, timeout=30)
+            response = requests.post(ollama_url, json = payload, timeout = 30)
 
             if response.status_code == 200:
                 result = response.json()
@@ -5916,30 +6123,30 @@ BODY: [email body]"""
 
                         return {
                             "subject": ai_subject,
-                            "body": ai_body.strip(),
-                            "html_body": html_body,
-                            "email_type": email_type,
-                            "open_rate_prediction": 0.35,
-                            "click_rate_prediction": 0.08,
-                            "generation_method": "ai_powered",
-                            "word_count": len(ai_body.split()),
-                            "estimated_read_time": f"{max(1, len(ai_body.split()) // 200)} min",
-                        }
+                                "body": ai_body.strip(),
+                                "html_body": html_body,
+                                "email_type": email_type,
+                                "open_rate_prediction": 0.35,
+                                "click_rate_prediction": 0.08,
+                                "generation_method": "ai_powered",
+                                "word_count": len(ai_body.split()),
+                                "estimated_read_time": f"{max(1, len(ai_body.split()) // 200)} min",
+                                }
 
         except Exception as e:
             self.logger.warning(
                 f"AI email generation failed: {e}. Falling back to template."
             )
 
-        # Fallback to template-based generation
+        # Fallback to template - based generation
         email_templates = {
             "newsletter": {
                 "subject_templates": [
                     f"Weekly Insights: {topic}",
-                    f"Your {topic} Update - Week of {datetime.now().strftime('%B %d')}",
-                    f"Don't Miss: Latest {topic} Developments",
-                ],
-                "body_template": f"""Dear {{name}},
+                        f"Your {topic} Update - Week of {datetime.now().strftime('%B %d')}",
+                        f"Don't Miss: Latest {topic} Developments",
+                        ],
+                    "body_template": f"""Dear {{name}},
 
 Welcome to this week's newsletter! We're excited to share the latest insights about {topic}.
 
@@ -5957,14 +6164,14 @@ Best regards,
 The Team
 
 P.S. Have questions? Reply to this email - we read every response!""",
-            },
-            "promotional": {
+    },
+                "promotional": {
                 "subject_templates": [
                     f"🚀 Exclusive: {topic} Opportunity",
-                    f"Limited Time: {topic} Special Offer",
-                    f"Don't Wait: {topic} Ends Soon",
-                ],
-                "body_template": f"""Hi {{name}},
+                        f"Limited Time: {topic} Special Offer",
+                        f"Don't Wait: {topic} Ends Soon",
+                        ],
+                    "body_template": f"""Hi {{name}},
 
 We have something special for you regarding {topic}.
 
@@ -5983,14 +6190,14 @@ Questions? Just reply to this email.
 
 Best,
 The Team""",
-            },
-            "welcome": {
+    },
+                "welcome": {
                 "subject_templates": [
                     f"Welcome! Your {topic} journey starts here",
-                    f"You're in! Next steps for {topic}",
-                    f"Welcome aboard - {topic} awaits",
-                ],
-                "body_template": f"""Welcome {{name}}!
+                        f"You're in! Next steps for {topic}",
+                        f"Welcome aboard - {topic} awaits",
+                        ],
+                    "body_template": f"""Welcome {{name}}!
 
 We're thrilled you've joined us for {topic}.
 
@@ -6011,8 +6218,8 @@ Welcome to the community!
 The Team
 
 P.S. Need help? We're here for you - just reply to this email.""",
-            },
-        }
+    },
+                }
 
         # Get template for email type
         template_data = email_templates.get(email_type, email_templates["newsletter"])
@@ -6027,15 +6234,16 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
         return {
             "subject": selected_subject,
-            "body": body_content,
-            "html_body": html_body,
-            "email_type": email_type,
-            "open_rate_prediction": 0.28,
-            "click_rate_prediction": 0.06,
-            "generation_method": "template_based",
-            "word_count": len(body_content.split()),
-            "estimated_read_time": f"{max(1, len(body_content.split()) // 200)} min",
-        }
+                "body": body_content,
+                "html_body": html_body,
+                "email_type": email_type,
+                "open_rate_prediction": 0.28,
+                "click_rate_prediction": 0.06,
+                "generation_method": "template_based",
+                "word_count": len(body_content.split()),
+                "estimated_read_time": f"{max(1, len(body_content.split()) // 200)} min",
+                }
+
 
     def _convert_to_html(self, text_content: str) -> str:
         """Convert plain text email to HTML format."""
@@ -6051,14 +6259,14 @@ P.S. Need help? We're here for you - just reply to this email.""",
         html_body = f"""<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email</title>
+    <meta charset="UTF - 8">
+    <meta name="viewport" content="width = device - width, initial - scale = 1.0">
+    <title > Email</title>
     <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }}
-        p {{ margin-bottom: 15px; }}
-        li {{ margin-bottom: 5px; }}
-        .cta-button {{ background-color: #007cba; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 15px 0; }}
+        body {{ font - family: Arial, sans - serif; line - height: 1.6; color: #333; max - width: 600px; margin: 0 auto; padding: 20px; }}
+        p {{ margin - bottom: 15px; }}
+        li {{ margin - bottom: 5px; }}
+        .cta - button {{ background - color: #007cba; color: white; padding: 12px 24px; text - decoration: none; border - radius: 5px; display: inline - block; margin: 15px 0; }}
     </style>
 </head>
 <body>
@@ -6067,6 +6275,7 @@ P.S. Need help? We're here for you - just reply to this email.""",
 </html>"""
 
         return html_body
+
 
     async def _create_video_script(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create video script."""
@@ -6078,84 +6287,86 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
         return {
             "title": f"Video Script: {topic}",
-            "script": f"[INTRO]\nWelcome to our video about {topic}.\n\n[MAIN CONTENT]\nLet's dive into the key points...\n\n[OUTRO]\nThanks for watching!",
-            "estimated_duration": duration,
-            "scene_count": 3,
-            "word_count": 150,
-            "tone": "professional",
-        }
+                "script": f"[INTRO]\nWelcome to our video about {topic}.\n\n[MAIN CONTENT]\nLet's dive into the key points...\n\n[OUTRO]\nThanks for watching!",
+                "estimated_duration": duration,
+                "scene_count": 3,
+                "word_count": 150,
+                "tone": "professional",
+                }
+
 
     async def _create_tts_synthesis(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create Hollywood-level TTS synthesis with advanced voice control."""
+        """Create Hollywood - level TTS synthesis with advanced voice control."""
         try:
             text = task.get("text", "")
             voice_config = task.get("voice_config", {})
 
-            # Enhanced voice configuration for Hollywood-level production
+            # Enhanced voice configuration for Hollywood - level production
             from backend.tts_engine import VoiceConfig
 
             # Set up professional voice configuration
             config = VoiceConfig(
-                model_name=voice_config.get(
-                    "model_name", "tts_models/en/ljspeech/tacotron2-DDC"
+                model_name = voice_config.get(
+                    "model_name", "tts_models / en / ljspeech / tacotron2 - DDC"
                 ),
-                language=voice_config.get("language", "en"),
-                speaker=voice_config.get("speaker"),
-                emotion=voice_config.get("emotion", "neutral"),
-                speed=voice_config.get("speed", 1.0),
-                pitch=voice_config.get("pitch", 1.0),
-                volume=voice_config.get("volume", 1.0),
-                sample_rate=voice_config.get(
+                    language = voice_config.get("language", "en"),
+                    speaker = voice_config.get("speaker"),
+                    emotion = voice_config.get("emotion", "neutral"),
+                    speed = voice_config.get("speed", 1.0),
+                    pitch = voice_config.get("pitch", 1.0),
+                    volume = voice_config.get("volume", 1.0),
+                    sample_rate = voice_config.get(
                     "sample_rate", 44100
                 ),  # Professional quality
-                format=voice_config.get("format", "wav"),
-            )
+                format = voice_config.get("format", "wav"),
+                    )
 
             # Professional TTS synthesis with enhanced features
             result = self.tts_engine.synthesize_text(
-                text=text, voice_config=config, output_path=task.get("output_path")
+                text = text, voice_config = config, output_path = task.get("output_path")
             )
 
-            # Hollywood-level post-processing
+            # Hollywood - level post - processing
             enhanced_result = await self._enhance_audio_for_production(result, task)
 
             return {
                 "status": "completed",
-                "audio_file": enhanced_result.audio_path,
-                "duration": enhanced_result.duration,
-                "voice_used": enhanced_result.voice_config.model_name,
-                "speaker": enhanced_result.voice_config.speaker,
-                "emotion": enhanced_result.voice_config.emotion,
-                "quality_metrics": {
+                    "audio_file": enhanced_result.audio_path,
+                    "duration": enhanced_result.duration,
+                    "voice_used": enhanced_result.voice_config.model_name,
+                    "speaker": enhanced_result.voice_config.speaker,
+                    "emotion": enhanced_result.voice_config.emotion,
+                    "quality_metrics": {
                     "sample_rate": enhanced_result.sample_rate,
-                    "synthesis_time": enhanced_result.metadata.get("synthesis_time"),
-                    "gpu_accelerated": enhanced_result.metadata.get("gpu_used", False),
-                    "post_processing_applied": True,
-                    "professional_grade": True,
-                },
-                "metadata": {
+                        "synthesis_time": enhanced_result.metadata.get("synthesis_time"),
+                        "gpu_accelerated": enhanced_result.metadata.get("gpu_used", False),
+                        "post_processing_applied": True,
+                        "professional_grade": True,
+                        },
+                    "metadata": {
                     "text_length": len(text),
-                    "words_count": len(text.split()),
-                    "synthesis_time": enhanced_result.metadata.get("synthesis_time"),
-                    "model_info": enhanced_result.metadata,
-                    "created_at": enhanced_result.created_at.isoformat(),
-                    "hollywood_pipeline": True,
-                    "production_ready": True,
-                },
-            }
+                        "words_count": len(text.split()),
+                        "synthesis_time": enhanced_result.metadata.get("synthesis_time"),
+                        "model_info": enhanced_result.metadata,
+                        "created_at": enhanced_result.created_at.isoformat(),
+                        "hollywood_pipeline": True,
+                        "production_ready": True,
+                        },
+                    }
         except Exception as e:
-            self.logger.error(f"Hollywood-level TTS synthesis failed: {e}")
+            self.logger.error(f"Hollywood - level TTS synthesis failed: {e}")
             return {
                 "status": "failed",
-                "error": str(e),
-                "fallback_audio": None,
-                "hollywood_pipeline": False,
-            }
+                    "error": str(e),
+                    "fallback_audio": None,
+                    "hollywood_pipeline": False,
+                    }
+
 
     async def _enhance_audio_for_production(
         self, synthesis_result, task: Dict[str, Any]
     ):
-        """Apply Hollywood-level audio enhancement and post-processing."""
+        """Apply Hollywood - level audio enhancement and post - processing."""
         try:
             # Professional audio enhancement features
             enhancement_config = task.get("audio_enhancement", {})
@@ -6168,7 +6379,7 @@ P.S. Need help? We're here for you - just reply to this email.""",
             if enhancement_config.get("mastering", True):
                 synthesis_result = await self._apply_audio_mastering(synthesis_result)
 
-            # Apply reverb/ambience if specified
+            # Apply reverb / ambience if specified
             if enhancement_config.get("reverb"):
                 synthesis_result = await self._apply_reverb(
                     synthesis_result, enhancement_config["reverb"]
@@ -6180,11 +6391,13 @@ P.S. Need help? We're here for you - just reply to this email.""",
             self.logger.error(f"Audio enhancement failed: {e}")
             return synthesis_result  # Return original if enhancement fails
 
+
     async def _apply_noise_reduction(self, synthesis_result):
         """Apply professional noise reduction."""
         # Placeholder for noise reduction implementation
         # In production, this would use libraries like noisereduce or spectral_subtraction
         return synthesis_result
+
 
     async def _apply_audio_mastering(self, synthesis_result):
         """Apply professional audio mastering (EQ, compression, limiting)."""
@@ -6192,14 +6405,16 @@ P.S. Need help? We're here for you - just reply to this email.""",
         # In production, this would use libraries like pedalboard or pydub with professional effects
         return synthesis_result
 
+
     async def _apply_reverb(self, synthesis_result, reverb_config):
-        """Apply reverb/ambience effects."""
+        """Apply reverb / ambience effects."""
         # Placeholder for reverb implementation
         # In production, this would use convolution reverb or algorithmic reverb
         return synthesis_result
 
+
     async def _create_avatar_pipeline(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create Hollywood-level 3D avatar using the full pipeline."""
+        """Create Hollywood - level 3D avatar using the full pipeline."""
         try:
             from backend.avatar_pipeline import AnimationSpec, CharacterSpec
 
@@ -6209,153 +6424,154 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             # Create professional character specification
             character_spec = CharacterSpec(
-                name=character_config.get(
+                name = character_config.get(
                     "name", f"Avatar_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
                 ),
-                gender=character_config.get("gender", "neutral"),
-                age_range=character_config.get("age_range", "adult"),
-                body_type=character_config.get("body_type", "average"),
-                ethnicity=character_config.get("ethnicity", "mixed"),
-                hair_style=character_config.get("hair_style", "medium"),
-                hair_color=character_config.get("hair_color", "brown"),
-                eye_color=character_config.get("eye_color", "brown"),
-                clothing_style=character_config.get("clothing_style", "professional"),
-                personality_traits=character_config.get(
+                    gender = character_config.get("gender", "neutral"),
+                    age_range = character_config.get("age_range", "adult"),
+                    body_type = character_config.get("body_type", "average"),
+                    ethnicity = character_config.get("ethnicity", "mixed"),
+                    hair_style = character_config.get("hair_style", "medium"),
+                    hair_color = character_config.get("hair_color", "brown"),
+                    eye_color = character_config.get("eye_color", "brown"),
+                    clothing_style = character_config.get("clothing_style", "professional"),
+                    personality_traits = character_config.get(
                     "personality_traits", ["confident", "professional"]
                 ),
-                animation_style=character_config.get("animation_style", "realistic"),
-                target_use=character_config.get("target_use", "video"),
-            )
+                    animation_style = character_config.get("animation_style", "realistic"),
+                    target_use = character_config.get("target_use", "video"),
+                    )
 
             # Create professional animation specification if provided
             animation_spec = None
             if animation_config:
                 animation_spec = AnimationSpec(
-                    animation_type=animation_config.get("animation_type", "talking"),
-                    duration=animation_config.get("duration", 10.0),
-                    emotion=animation_config.get("emotion", "neutral"),
-                    intensity=animation_config.get("intensity", 0.7),
-                    loop=animation_config.get("loop", True),
-                    facial_animation=animation_config.get("facial_animation", True),
-                    lip_sync_text=animation_config.get("lip_sync_text"),
-                    custom_keyframes=animation_config.get("custom_keyframes"),
-                )
+                    animation_type = animation_config.get("animation_type", "talking"),
+                        duration = animation_config.get("duration", 10.0),
+                        emotion = animation_config.get("emotion", "neutral"),
+                        intensity = animation_config.get("intensity", 0.7),
+                        loop = animation_config.get("loop", True),
+                        facial_animation = animation_config.get("facial_animation", True),
+                        lip_sync_text = animation_config.get("lip_sync_text"),
+                        custom_keyframes = animation_config.get("custom_keyframes"),
+                        )
 
-            # Professional render settings for Hollywood-level output
+            # Professional render settings for Hollywood - level output
             professional_render_settings = {
                 "resolution": render_settings.get("resolution", [1920, 1080]),
-                "quality": render_settings.get("quality", "high"),
-                "samples": render_settings.get("samples", 128),
-                "lighting": render_settings.get("lighting", "studio"),
-                "background": render_settings.get("background", "neutral"),
-                "camera_angle": render_settings.get("camera_angle", "medium_shot"),
-                "post_processing": render_settings.get("post_processing", True),
-                "motion_blur": render_settings.get("motion_blur", False),
-                "depth_of_field": render_settings.get("depth_of_field", True),
-            }
+                    "quality": render_settings.get("quality", "high"),
+                    "samples": render_settings.get("samples", 128),
+                    "lighting": render_settings.get("lighting", "studio"),
+                    "background": render_settings.get("background", "neutral"),
+                    "camera_angle": render_settings.get("camera_angle", "medium_shot"),
+                    "post_processing": render_settings.get("post_processing", True),
+                    "motion_blur": render_settings.get("motion_blur", False),
+                    "depth_of_field": render_settings.get("depth_of_field", True),
+                    }
 
-            # Create full Hollywood-level avatar
-            self.logger.info(f"Creating Hollywood-level avatar: {character_spec.name}")
+            # Create full Hollywood - level avatar
+            self.logger.info(f"Creating Hollywood - level avatar: {character_spec.name}")
             result = self.avatar_pipeline.create_full_avatar(
-                spec=character_spec,
-                animation_spec=animation_spec,
-                render_settings=professional_render_settings,
-            )
+                spec = character_spec,
+                    animation_spec = animation_spec,
+                    render_settings = professional_render_settings,
+                    )
 
             return {
                 "status": "completed",
-                "character_name": result.character_name,
-                "base_model_path": result.base_model_path,
-                "rigged_model_path": result.rigged_model_path,
-                "animated_model_path": result.animated_model_path,
-                "final_render_path": result.final_render_path,
-                "character_spec": {
+                    "character_name": result.character_name,
+                    "base_model_path": result.base_model_path,
+                    "rigged_model_path": result.rigged_model_path,
+                    "animated_model_path": result.animated_model_path,
+                    "final_render_path": result.final_render_path,
+                    "character_spec": {
                     "name": result.character_spec.name,
-                    "gender": result.character_spec.gender,
-                    "age_range": result.character_spec.age_range,
-                    "body_type": result.character_spec.body_type,
-                    "ethnicity": result.character_spec.ethnicity,
-                    "animation_style": result.character_spec.animation_style,
-                    "target_use": result.character_spec.target_use,
-                },
-                "animation_spec": (
+                        "gender": result.character_spec.gender,
+                        "age_range": result.character_spec.age_range,
+                        "body_type": result.character_spec.body_type,
+                        "ethnicity": result.character_spec.ethnicity,
+                        "animation_style": result.character_spec.animation_style,
+                        "target_use": result.character_spec.target_use,
+                        },
+                    "animation_spec": (
                     {
                         "animation_type": (
                             result.animation_spec.animation_type
                             if result.animation_spec
                             else None
                         ),
-                        "duration": (
+                            "duration": (
                             result.animation_spec.duration
                             if result.animation_spec
                             else None
                         ),
-                        "emotion": (
+                            "emotion": (
                             result.animation_spec.emotion
                             if result.animation_spec
                             else None
                         ),
-                        "facial_animation": (
+                            "facial_animation": (
                             result.animation_spec.facial_animation
                             if result.animation_spec
                             else None
                         ),
-                    }
+                            }
                     if result.animation_spec
                     else None
                 ),
-                "quality_metrics": {
+                    "quality_metrics": {
                     "pipeline_version": result.metadata.get("pipeline_version"),
-                    "creation_time": result.metadata.get("creation_time"),
-                    "tools_used": result.metadata.get("tools_used", {}),
-                    "hollywood_pipeline": True,
-                    "professional_grade": True,
-                    "makehuman_used": result.metadata.get("tools_used", {}).get(
+                        "creation_time": result.metadata.get("creation_time"),
+                        "tools_used": result.metadata.get("tools_used", {}),
+                        "hollywood_pipeline": True,
+                        "professional_grade": True,
+                        "makehuman_used": result.metadata.get("tools_used", {}).get(
                         "makehuman", False
                     ),
-                    "mixamo_used": result.metadata.get("tools_used", {}).get(
+                        "mixamo_used": result.metadata.get("tools_used", {}).get(
                         "mixamo", False
                     ),
-                    "blender_used": result.metadata.get("tools_used", {}).get(
+                        "blender_used": result.metadata.get("tools_used", {}).get(
                         "blender", False
                     ),
-                },
-                "metadata": {
+                        },
+                    "metadata": {
                     "created_at": result.created_at.isoformat(),
-                    "pipeline_type": "hollywood_avatar_pipeline",
-                    "production_ready": True,
-                    "export_formats": ["obj", "fbx", "blend", "mp4"],
-                    "render_settings": professional_render_settings,
-                },
-            }
+                        "pipeline_type": "hollywood_avatar_pipeline",
+                        "production_ready": True,
+                        "export_formats": ["obj", "fbx", "blend", "mp4"],
+                        "render_settings": professional_render_settings,
+                        },
+                    }
         except Exception as e:
-            self.logger.error(f"Hollywood-level avatar pipeline failed: {e}")
+            self.logger.error(f"Hollywood - level avatar pipeline failed: {e}")
             return {
                 "status": "failed",
-                "error": str(e),
-                "fallback_avatar": None,
-                "hollywood_pipeline": False,
-            }
+                    "error": str(e),
+                    "fallback_avatar": None,
+                    "hollywood_pipeline": False,
+                    }
+
 
     async def _create_davinci_resolve_edit(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Create Hollywood-level professional video edit using DaVinci Resolve integration.
+        """Create Hollywood - level professional video edit using DaVinci Resolve integration.
 
         Features:
-        - Professional timeline assembly with multi-track editing
+        - Professional timeline assembly with multi - track editing
         - Advanced color grading with cinematic LUTs
-        - High-quality rendering with multiple format support
+        - High - quality rendering with multiple format support
         - Automated project management and asset organization
-        - Integration with Blender 3D/VFX pipeline
+        - Integration with Blender 3D / VFX pipeline
         - Professional audio mixing and mastering
         """
         try:
             from backend.davinci_resolve_integration import (
                 DaVinciResolveIntegration, ProjectSettings, RenderSettings, VideoAsset,
-                integrate_with_blender_pipeline)
+                    integrate_with_blender_pipeline)
 
-            # Extract Hollywood-level configuration
+            # Extract Hollywood - level configuration
             project_name = task.get("project_name", f"TRAE_Project_{int(time.time())}")
             media_files = task.get("media_files", [])
             edit_config = task.get("edit_config", {})
@@ -6372,25 +6588,25 @@ P.S. Need help? We're here for you - just reply to this email.""",
             for i, media_file in enumerate(media_files):
                 if isinstance(media_file, dict):
                     asset = VideoAsset(
-                        name=media_file.get("name", f"asset_{i}"),
-                        file_path=media_file.get("path", ""),
-                        duration=media_file.get("duration", 10.0),
-                        start_time=media_file.get("start_time", i * 10.0),
-                        asset_type=media_file.get("type", "video"),
-                        track_index=media_file.get("track", 1),
-                        effects=media_file.get("effects", []),
-                        metadata=media_file.get("metadata", {}),
-                    )
+                        name = media_file.get("name", f"asset_{i}"),
+                            file_path = media_file.get("path", ""),
+                            duration = media_file.get("duration", 10.0),
+                            start_time = media_file.get("start_time", i * 10.0),
+                            asset_type = media_file.get("type", "video"),
+                            track_index = media_file.get("track", 1),
+                            effects = media_file.get("effects", []),
+                            metadata = media_file.get("metadata", {}),
+                            )
                 else:
                     # Simple file path
                     asset = VideoAsset(
-                        name=f"asset_{i}",
-                        file_path=str(media_file),
-                        duration=10.0,
-                        start_time=i * 10.0,
-                        asset_type="video",
-                        track_index=1,
-                    )
+                        name = f"asset_{i}",
+                            file_path = str(media_file),
+                            duration = 10.0,
+                            start_time = i * 10.0,
+                            asset_type="video",
+                            track_index = 1,
+                            )
                 video_assets.append(asset)
 
             # Integrate with Blender pipeline if requested
@@ -6406,121 +6622,122 @@ P.S. Need help? We're here for you - just reply to this email.""",
                 if asset.asset_type == "video":
                     color_grades[asset.name] = color_grading_preset
 
-            # Set up Hollywood-level render settings
+            # Set up Hollywood - level render settings
             render_settings = RenderSettings(
-                format=output_format,
-                codec="H.265" if render_quality == "best" else "H.264",
-                resolution=(
+                format = output_format,
+                    codec="H.265" if render_quality == "best" else "H.264",
+                    resolution=(
                     edit_config.get("resolution", (3840, 2160))
                     if render_quality == "best"
                     else (1920, 1080)
                 ),
-                frame_rate=edit_config.get("frame_rate", 24.0),
-                quality=render_quality,
-                bitrate=50 if render_quality == "best" else 25,  # Mbps
+                    frame_rate = edit_config.get("frame_rate", 24.0),
+                    quality = render_quality,
+                    bitrate = 50 if render_quality == "best" else 25,  # Mbps
                 audio_codec="AAC",
-                audio_bitrate=320 if render_quality == "best" else 192,
-                output_path=task.get(
+                    audio_bitrate = 320 if render_quality == "best" else 192,
+                    output_path = task.get(
                     "output_path", f"/tmp/{project_name}_final.{output_format}"
                 ),
-                render_preset=(
+                    render_preset=(
                     "cinema_4k" if render_quality == "best" else "broadcast_hd"
                 ),
-            )
+                    )
 
             # Create professional video project
             self.logger.info(
-                f"Creating Hollywood-level DaVinci Resolve project: {project_name}"
+                f"Creating Hollywood - level DaVinci Resolve project: {project_name}"
             )
 
             rendered_output = resolve_integration.create_video_project(
-                project_name=project_name,
-                assets=video_assets,
-                color_grades=color_grades,
-                render_settings=render_settings,
-            )
+                project_name = project_name,
+                    assets = video_assets,
+                    color_grades = color_grades,
+                    render_settings = render_settings,
+                    )
 
             # Get project metadata
             project_metadata = {
                 "project_name": project_name,
-                "total_assets": len(video_assets),
-                "color_grading_preset": color_grading_preset,
-                "render_quality": render_quality,
-                "output_format": output_format,
-                "resolution": render_settings.resolution,
-                "frame_rate": render_settings.frame_rate,
-                "codec": render_settings.codec,
-                "audio_codec": render_settings.audio_codec,
-                "blender_integration": blender_integration,
-                "created_at": datetime.now().isoformat(),
-                "processing_time": time.time() - task.get("start_time", time.time()),
-            }
+                    "total_assets": len(video_assets),
+                    "color_grading_preset": color_grading_preset,
+                    "render_quality": render_quality,
+                    "output_format": output_format,
+                    "resolution": render_settings.resolution,
+                    "frame_rate": render_settings.frame_rate,
+                    "codec": render_settings.codec,
+                    "audio_codec": render_settings.audio_codec,
+                    "blender_integration": blender_integration,
+                    "created_at": datetime.now().isoformat(),
+                    "processing_time": time.time() - task.get("start_time", time.time()),
+                    }
 
             return {
                 "status": "completed",
-                "type": "davinci_resolve_edit",
-                "project_name": project_name,
-                "rendered_video": rendered_output,
-                "project_file": f"{resolve_integration.projects_dir}/{project_name}.drp",
-                "assets_used": [asset.name for asset in video_assets],
-                "color_grading": {
+                    "type": "davinci_resolve_edit",
+                    "project_name": project_name,
+                    "rendered_video": rendered_output,
+                    "project_file": f"{resolve_integration.projects_dir}/{project_name}.drp",
+                    "assets_used": [asset.name for asset in video_assets],
+                    "color_grading": {
                     "preset": color_grading_preset,
-                    "applied_to": list(color_grades.keys()),
-                },
-                "render_settings": {
+                        "applied_to": list(color_grades.keys()),
+                        },
+                    "render_settings": {
                     "format": render_settings.format,
-                    "codec": render_settings.codec,
-                    "resolution": render_settings.resolution,
-                    "frame_rate": render_settings.frame_rate,
-                    "quality": render_settings.quality,
-                    "bitrate": render_settings.bitrate,
-                },
-                "timeline_data": {
+                        "codec": render_settings.codec,
+                        "resolution": render_settings.resolution,
+                        "frame_rate": render_settings.frame_rate,
+                        "quality": render_settings.quality,
+                        "bitrate": render_settings.bitrate,
+                        },
+                    "timeline_data": {
                     "total_duration": sum(asset.duration for asset in video_assets),
-                    "video_tracks": len(
+                        "video_tracks": len(
                         set(
                             asset.track_index
                             for asset in video_assets
                             if asset.asset_type == "video"
                         )
                     ),
-                    "audio_tracks": len(
+                        "audio_tracks": len(
                         set(
                             asset.track_index
                             for asset in video_assets
                             if asset.asset_type == "audio"
                         )
                     ),
-                },
-                "metadata": project_metadata,
-                "quality_metrics": {
+                        },
+                    "metadata": project_metadata,
+                    "quality_metrics": {
                     "video_quality": render_quality,
-                    "color_accuracy": "professional",
-                    "audio_quality": "broadcast",
-                    "format_compatibility": "universal",
-                },
-            }
+                        "color_accuracy": "professional",
+                        "audio_quality": "broadcast",
+                        "format_compatibility": "universal",
+                        },
+                    }
 
         except ImportError as e:
             self.logger.error(f"DaVinci Resolve integration not available: {e}")
             return {
                 "status": "failed",
-                "error": f"DaVinci Resolve integration not available: {str(e)}",
-                "fallback_suggestion": "Use Blender video editing or install DaVinci Resolve",
-            }
+                    "error": f"DaVinci Resolve integration not available: {str(e)}",
+                    "fallback_suggestion": "Use Blender video editing or install DaVinci Resolve",
+                    }
         except Exception as e:
             self.logger.error(f"DaVinci Resolve edit failed: {e}")
             return {
                 "status": "failed",
-                "error": str(e),
-                "project_name": task.get("project_name", "unknown"),
-                "fallback_edit": None,
-                "troubleshooting": {
+                    "error": str(e),
+                    "project_name": task.get("project_name", "unknown"),
+                    "fallback_edit": None,
+                    "troubleshooting": {
                     "check_resolve_installation": True,
-                    "verify_media_files": True,
-                    "check_system_resources": True,
-                },
-            }
+                        "verify_media_files": True,
+                        "check_system_resources": True,
+                        },
+                    }
+
 
     async def _create_gimp_graphics(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create graphics using GIMP automation."""
@@ -6530,23 +6747,24 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             # Use GIMP for graphics creation
             result = await self.gimp_automation.create_graphics(
-                image_config=image_config, effects=effects
+                image_config = image_config, effects = effects
             )
 
             return {
                 "status": "completed",
-                "image_file": result.get("image_file"),
-                "layers": result.get("layers", []),
-                "effects_applied": result.get("effects_applied", []),
-                "metadata": {
+                    "image_file": result.get("image_file"),
+                    "layers": result.get("layers", []),
+                    "effects_applied": result.get("effects_applied", []),
+                    "metadata": {
                     "dimensions": result.get("dimensions"),
-                    "color_mode": result.get("color_mode"),
-                    "created_at": datetime.now().isoformat(),
-                },
-            }
+                        "color_mode": result.get("color_mode"),
+                        "created_at": datetime.now().isoformat(),
+                        },
+                    }
         except Exception as e:
             self.logger.error(f"GIMP graphics creation failed: {e}")
             return {"status": "failed", "error": str(e), "fallback_image": None}
+
 
     async def _create_inkscape_vector_art(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create vector art using Inkscape automation."""
@@ -6556,48 +6774,50 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             # Use Inkscape for vector art creation
             result = await self.inkscape_automation.create_vector_art(
-                vector_config=vector_config, elements=elements
+                vector_config = vector_config, elements = elements
             )
 
             return {
                 "status": "completed",
-                "svg_file": result.get("svg_file"),
-                "elements": result.get("elements", []),
-                "styles": result.get("styles", {}),
-                "metadata": {
+                    "svg_file": result.get("svg_file"),
+                    "elements": result.get("elements", []),
+                    "styles": result.get("styles", {}),
+                    "metadata": {
                     "canvas_size": result.get("canvas_size"),
-                    "element_count": len(result.get("elements", [])),
-                    "created_at": datetime.now().isoformat(),
-                },
-            }
+                        "element_count": len(result.get("elements", [])),
+                        "created_at": datetime.now().isoformat(),
+                        },
+                    }
         except Exception as e:
             self.logger.error(f"Inkscape vector art creation failed: {e}")
             return {"status": "failed", "error": str(e), "fallback_vector": None}
 
+
     async def _create_base_model(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create base 3D model using MakeHuman/Daz3D."""
+        """Create base 3D model using MakeHuman / Daz3D."""
         try:
             model_config = task.get("model_config", {})
 
             # Use avatar pipeline for base model creation
             result = await self.avatar_pipeline.create_base_model(
-                model_config=model_config
+                model_config = model_config
             )
 
             return {
                 "status": "completed",
-                "model_file": result.get("model_file"),
-                "textures": result.get("textures", []),
-                "morphs": result.get("morphs", {}),
-                "metadata": {
+                    "model_file": result.get("model_file"),
+                    "textures": result.get("textures", []),
+                    "morphs": result.get("morphs", {}),
+                    "metadata": {
                     "model_type": model_config.get("type", "human"),
-                    "polygon_count": result.get("polygon_count"),
-                    "created_at": datetime.now().isoformat(),
-                },
-            }
+                        "polygon_count": result.get("polygon_count"),
+                        "created_at": datetime.now().isoformat(),
+                        },
+                    }
         except Exception as e:
             self.logger.error(f"Base model creation failed: {e}")
             return {"status": "failed", "error": str(e), "fallback_model": None}
+
 
     async def _rig_and_animate(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Rig and animate 3D model using Mixamo integration."""
@@ -6607,23 +6827,24 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             # Use avatar pipeline for rigging and animation
             result = await self.avatar_pipeline.rig_and_animate(
-                model_file=model_file, animation_config=animation_config
+                model_file = model_file, animation_config = animation_config
             )
 
             return {
                 "status": "completed",
-                "rigged_model": result.get("rigged_model"),
-                "animations": result.get("animations", []),
-                "rig_data": result.get("rig_data"),
-                "metadata": {
+                    "rigged_model": result.get("rigged_model"),
+                    "animations": result.get("animations", []),
+                    "rig_data": result.get("rig_data"),
+                    "metadata": {
                     "bone_count": result.get("bone_count"),
-                    "animation_count": len(result.get("animations", [])),
-                    "created_at": datetime.now().isoformat(),
-                },
-            }
+                        "animation_count": len(result.get("animations", [])),
+                        "created_at": datetime.now().isoformat(),
+                        },
+                    }
         except Exception as e:
             self.logger.error(f"Rigging and animation failed: {e}")
             return {"status": "failed", "error": str(e), "fallback_animation": None}
+
 
     async def _rig_and_animate_model(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Rig and animate 3D character model using Mixamo."""
@@ -6640,28 +6861,28 @@ P.S. Need help? We're here for you - just reply to this email.""",
                 self.logger.warning("Avatar pipeline not available, using fallback")
                 return {
                     "type": "rigged_animated_model",
-                    "status": "completed",
-                    "rigged_model": base_model_path,
-                    "animated_model": base_model_path,
-                    "animation_config": animation_config,
-                    "created_with": "Fallback (Avatar Pipeline unavailable)",
-                }
+                        "status": "completed",
+                        "rigged_model": base_model_path,
+                        "animated_model": base_model_path,
+                        "animation_config": animation_config,
+                        "created_with": "Fallback (Avatar Pipeline unavailable)",
+                        }
 
             spec = CharacterSpec(
-                gender=character_config.get("gender", "male"),
-                age_group=character_config.get("age_group", "adult"),
-                ethnicity=character_config.get("ethnicity", "caucasian"),
-                body_type=character_config.get("body_type", "average"),
-                clothing_style=character_config.get("clothing_style", "casual"),
-                facial_features=character_config.get("facial_features", {}),
-            )
+                gender = character_config.get("gender", "male"),
+                    age_group = character_config.get("age_group", "adult"),
+                    ethnicity = character_config.get("ethnicity", "caucasian"),
+                    body_type = character_config.get("body_type", "average"),
+                    clothing_style = character_config.get("clothing_style", "casual"),
+                    facial_features = character_config.get("facial_features", {}),
+                    )
 
             animation = AnimationConfig(
-                animation_type=animation_config.get("type", "talking"),
-                duration=animation_config.get("duration", 10.0),
-                intensity=animation_config.get("intensity", "medium"),
-                audio_file=animation_config.get("audio_file"),
-            )
+                animation_type = animation_config.get("type", "talking"),
+                    duration = animation_config.get("duration", 10.0),
+                    intensity = animation_config.get("intensity", "medium"),
+                    audio_file = animation_config.get("audio_file"),
+                    )
 
             rigged_path, animated_path = (
                 await self.avatar_pipeline.rig_and_animate_model(
@@ -6671,19 +6892,20 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "type": "rigged_animated_model",
-                "status": "completed",
-                "rigged_model": rigged_path,
-                "animated_model": animated_path,
-                "animation_config": animation_config,
-                "created_with": "Avatar Pipeline (Mixamo)",
-            }
+                    "status": "completed",
+                    "rigged_model": rigged_path,
+                    "animated_model": animated_path,
+                    "animation_config": animation_config,
+                    "created_with": "Avatar Pipeline (Mixamo)",
+                    }
         except Exception as e:
             return {
                 "type": "rigged_animated_model",
-                "status": "failed",
-                "error": str(e),
-                "created_with": "Avatar Pipeline",
-            }
+                    "status": "failed",
+                    "error": str(e),
+                    "created_with": "Avatar Pipeline",
+                    }
+
 
     async def _composite_avatar_blender(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Composite avatar in Blender for final rendering."""
@@ -6694,26 +6916,27 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             # Use Blender compositor for final avatar compositing
             result = await self.blender_compositor.composite_avatar(
-                avatar_data=avatar_data,
-                scene_config=scene_config,
-                render_config=render_config,
-            )
+                avatar_data = avatar_data,
+                    scene_config = scene_config,
+                    render_config = render_config,
+                    )
 
             return {
                 "status": "completed",
-                "rendered_video": result.get("rendered_video"),
-                "scene_file": result.get("scene_file"),
-                "render_layers": result.get("render_layers", []),
-                "metadata": {
+                    "rendered_video": result.get("rendered_video"),
+                    "scene_file": result.get("scene_file"),
+                    "render_layers": result.get("render_layers", []),
+                    "metadata": {
                     "render_time": result.get("render_time"),
-                    "frame_count": result.get("frame_count"),
-                    "resolution": result.get("resolution"),
-                    "created_at": datetime.now().isoformat(),
-                },
-            }
+                        "frame_count": result.get("frame_count"),
+                        "resolution": result.get("resolution"),
+                        "created_at": datetime.now().isoformat(),
+                        },
+                    }
         except Exception as e:
             self.logger.error(f"Avatar compositing failed: {e}")
             return {"status": "failed", "error": str(e), "fallback_render": None}
+
 
     async def _create_generic_content(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create generic content."""
@@ -6724,31 +6947,32 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
         return {
             "text": f"This is generic content about {topic}.",
-            "format": "text",
-            "length": 50,
-            "quality_score": 0.8,
-        }
+                "format": "text",
+                "length": 50,
+                "quality_score": 0.8,
+                }
 
-    # Hollywood-Level Creative Pipeline Methods
+    # Hollywood - Level Creative Pipeline Methods
+
 
     async def _create_hollywood_production(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Create a full Hollywood-level production with multi-stage pipeline"""
+        """Create a full Hollywood - level production with multi - stage pipeline"""
         try:
             production_type = task.get("production_type", "feature")
             script = task.get("script", "")
             budget_tier = task.get("budget_tier", "indie")
 
-            # Pre-production phase
+            # Pre - production phase
             pre_production = await self._execute_pre_production(script, production_type)
 
-            # Production phase with multi-camera setup
+            # Production phase with multi - camera setup
             production = await self._execute_production_phase(
                 pre_production, budget_tier
             )
 
-            # Post-production with Hollywood-grade finishing
+            # Post - production with Hollywood - grade finishing
             post_production = await self._execute_post_production(production)
 
             # Final delivery and distribution
@@ -6756,27 +6980,28 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "production_id": f"hollywood_{task.get('id', 'unknown')}",
-                "phases": {
+                    "production_id": f"hollywood_{task.get('id', 'unknown')}",
+                    "phases": {
                     "pre_production": pre_production,
-                    "production": production,
-                    "post_production": post_production,
-                    "delivery": delivery,
-                },
-                "timeline": await self._calculate_production_timeline(
+                        "production": production,
+                        "post_production": post_production,
+                        "delivery": delivery,
+                        },
+                    "timeline": await self._calculate_production_timeline(
                     production_type, budget_tier
                 ),
-                "deliverables": await self._generate_deliverables_list(production_type),
-            }
+                    "deliverables": await self._generate_deliverables_list(production_type),
+                    }
 
         except Exception as e:
             self.logger.error(f"Hollywood production failed: {e}")
             return {"success": False, "error": f"Hollywood production failed: {str(e)}"}
 
+
     async def _execute_pre_production(
         self, script: str, production_type: str
     ) -> Dict[str, Any]:
-        """Execute comprehensive pre-production phase with Hollywood standards"""
+        """Execute comprehensive pre - production phase with Hollywood standards"""
         try:
             # Script analysis and breakdown
             script_breakdown = await self._analyze_script_breakdown(script)
@@ -6801,27 +7026,28 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "script_breakdown": script_breakdown,
-                "casting_plan": casting_plan,
-                "locations": locations,
-                "production_design": production_design,
-                "camera_plan": camera_plan,
-                "lighting_design": lighting_design,
-                "shooting_schedule": shooting_schedule,
-                "budget_allocation": await self._allocate_pre_production_budget(
+                    "casting_plan": casting_plan,
+                    "locations": locations,
+                    "production_design": production_design,
+                    "camera_plan": camera_plan,
+                    "lighting_design": lighting_design,
+                    "shooting_schedule": shooting_schedule,
+                    "budget_allocation": await self._allocate_pre_production_budget(
                     production_type
                 ),
-            }
+                    }
 
         except Exception as e:
-            self.logger.error(f"Pre-production failed: {e}")
+            self.logger.error(f"Pre - production failed: {e}")
             return {"success": False, "error": str(e)}
+
 
     async def _execute_production_phase(
         self, pre_production: Dict[str, Any], budget_tier: str
     ) -> Dict[str, Any]:
-        """Execute production phase with multi-camera Hollywood setup"""
+        """Execute production phase with multi - camera Hollywood setup"""
         try:
-            # Multi-camera configuration
+            # Multi - camera configuration
             camera_setup = await self._configure_multi_camera_rig(budget_tier)
 
             # Professional lighting setup
@@ -6845,23 +7071,24 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "camera_setup": camera_setup,
-                "lighting_rig": lighting_rig,
-                "audio_setup": audio_setup,
-                "monitoring_system": monitoring_system,
-                "dailies_workflow": dailies_workflow,
-                "mocap_data": mocap_data,
-                "production_notes": await self._generate_production_notes(),
-                "quality_metrics": await self._track_production_quality(),
-            }
+                    "lighting_rig": lighting_rig,
+                    "audio_setup": audio_setup,
+                    "monitoring_system": monitoring_system,
+                    "dailies_workflow": dailies_workflow,
+                    "mocap_data": mocap_data,
+                    "production_notes": await self._generate_production_notes(),
+                    "quality_metrics": await self._track_production_quality(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Production phase failed: {e}")
             return {"success": False, "error": str(e)}
 
+
     async def _execute_post_production(
         self, production: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Execute Hollywood-grade post-production pipeline"""
+        """Execute Hollywood - grade post - production pipeline"""
         try:
             # Editorial workflow
             rough_cut = await self._create_rough_cut(production)
@@ -6873,7 +7100,7 @@ P.S. Need help? We're here for you - just reply to this email.""",
             # Color grading with DaVinci Resolve
             color_grade = await self._execute_professional_color_grade(vfx_shots)
 
-            # Audio post-production
+            # Audio post - production
             audio_mix = await self._create_professional_audio_mix(fine_cut)
 
             # Final conform and mastering
@@ -6884,30 +7111,33 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "rough_cut": rough_cut,
-                "fine_cut": fine_cut,
-                "vfx_shots": vfx_shots,
-                "color_grade": color_grade,
-                "audio_mix": audio_mix,
-                "final_master": final_master,
-                "qc_report": qc_report,
-                "deliverables": await self._prepare_final_deliverables(final_master),
-            }
+                    "fine_cut": fine_cut,
+                    "vfx_shots": vfx_shots,
+                    "color_grade": color_grade,
+                    "audio_mix": audio_mix,
+                    "final_master": final_master,
+                    "qc_report": qc_report,
+                    "deliverables": await self._prepare_final_deliverables(final_master),
+                    }
 
         except Exception as e:
-            self.logger.error(f"Post-production failed: {e}")
+            self.logger.error(f"Post - production failed: {e}")
             return {"success": False, "error": str(e)}
 
     # Hollywood Production Pipeline Helper Methods
+
+
     async def _analyze_script_breakdown(self, script: str) -> Dict[str, Any]:
         """Analyze script for production breakdown"""
         return {
             "scenes": await self._extract_scenes(script),
-            "characters": await self._identify_characters(script),
-            "locations": await self._extract_locations(script),
-            "props": await self._identify_props(script),
-            "special_effects": await self._identify_vfx_needs(script),
-            "technical_requirements": await self._assess_technical_needs(script),
-        }
+                "characters": await self._identify_characters(script),
+                "locations": await self._extract_locations(script),
+                "props": await self._identify_props(script),
+                "special_effects": await self._identify_vfx_needs(script),
+                "technical_requirements": await self._assess_technical_needs(script),
+                }
+
 
     async def _develop_casting_strategy(
         self, breakdown: Dict[str, Any], production_type: str
@@ -6915,21 +7145,23 @@ P.S. Need help? We're here for you - just reply to this email.""",
         """Develop casting strategy based on script breakdown"""
         return {
             "lead_roles": breakdown.get("characters", {}).get("leads", []),
-            "supporting_roles": breakdown.get("characters", {}).get("supporting", []),
-            "background_talent": breakdown.get("characters", {}).get("background", []),
-            "casting_timeline": await self._create_casting_timeline(production_type),
-            "audition_process": await self._design_audition_process(breakdown),
-        }
+                "supporting_roles": breakdown.get("characters", {}).get("supporting", []),
+                "background_talent": breakdown.get("characters", {}).get("background", []),
+                "casting_timeline": await self._create_casting_timeline(production_type),
+                "audition_process": await self._design_audition_process(breakdown),
+                }
+
 
     async def _scout_locations(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         """Scout and secure filming locations"""
         return {
             "primary_locations": breakdown.get("locations", {}).get("primary", []),
-            "secondary_locations": breakdown.get("locations", {}).get("secondary", []),
-            "studio_requirements": await self._assess_studio_needs(breakdown),
-            "location_permits": await self._plan_permit_acquisition(),
-            "logistics": await self._plan_location_logistics(breakdown),
-        }
+                "secondary_locations": breakdown.get("locations", {}).get("secondary", []),
+                "studio_requirements": await self._assess_studio_needs(breakdown),
+                "location_permits": await self._plan_permit_acquisition(),
+                "logistics": await self._plan_location_logistics(breakdown),
+                }
+
 
     async def _create_production_design(
         self, breakdown: Dict[str, Any]
@@ -6937,29 +7169,31 @@ P.S. Need help? We're here for you - just reply to this email.""",
         """Create comprehensive production design"""
         return {
             "visual_style": await self._develop_visual_style(breakdown),
-            "set_design": await self._design_sets(breakdown),
-            "costume_design": await self._design_costumes(breakdown),
-            "makeup_design": await self._design_makeup_looks(breakdown),
-            "props_design": await self._design_props(breakdown),
-        }
+                "set_design": await self._design_sets(breakdown),
+                "costume_design": await self._design_costumes(breakdown),
+                "makeup_design": await self._design_makeup_looks(breakdown),
+                "props_design": await self._design_props(breakdown),
+                }
+
 
     async def _configure_multi_camera_rig(self, budget_tier: str) -> Dict[str, Any]:
-        """Configure professional multi-camera setup"""
+        """Configure professional multi - camera setup"""
         camera_configs = {
             "indie": {"cameras": 2, "quality": "4K", "lenses": "prime_set"},
-            "mid_budget": {"cameras": 4, "quality": "6K", "lenses": "zoom_prime_combo"},
-            "studio": {"cameras": 8, "quality": "8K", "lenses": "full_cinema_set"},
-        }
+                "mid_budget": {"cameras": 4, "quality": "6K", "lenses": "zoom_prime_combo"},
+                "studio": {"cameras": 8, "quality": "8K", "lenses": "full_cinema_set"},
+                }
 
         config = camera_configs.get(budget_tier, camera_configs["indie"])
         return {
             "camera_count": config["cameras"],
-            "resolution": config["quality"],
-            "lens_package": config["lenses"],
-            "stabilization": "gimbal_steadicam_combo",
-            "monitoring": "wireless_hd_feeds",
-            "recording": "raw_prores_combo",
-        }
+                "resolution": config["quality"],
+                "lens_package": config["lenses"],
+                "stabilization": "gimbal_steadicam_combo",
+                "monitoring": "wireless_hd_feeds",
+                "recording": "raw_prores_combo",
+                }
+
 
     async def _setup_professional_lighting(
         self, lighting_design: Dict[str, Any]
@@ -6967,22 +7201,24 @@ P.S. Need help? We're here for you - just reply to this email.""",
         """Setup professional lighting rig"""
         return {
             "key_lights": "led_panel_array",
-            "fill_lights": "softbox_diffusion",
-            "background_lights": "color_changing_led",
-            "practical_lights": "dimmable_tungsten",
-            "control_system": "dmx_wireless_control",
-            "color_temperature": "variable_3200k_5600k",
-        }
+                "fill_lights": "softbox_diffusion",
+                "background_lights": "color_changing_led",
+                "practical_lights": "dimmable_tungsten",
+                "control_system": "dmx_wireless_control",
+                "color_temperature": "variable_3200k_5600k",
+                }
+
 
     async def _create_rough_cut(self, production: Dict[str, Any]) -> Dict[str, Any]:
         """Create initial rough cut from production footage"""
         return {
             "timeline": "avid_media_composer",
-            "footage_organization": "scene_based_bins",
-            "sync_method": "timecode_audio_sync",
-            "proxy_workflow": "dnxhd_proxies",
-            "rough_cut_length": "120_minutes_initial",
-        }
+                "footage_organization": "scene_based_bins",
+                "sync_method": "timecode_audio_sync",
+                "proxy_workflow": "dnxhd_proxies",
+                "rough_cut_length": "120_minutes_initial",
+                }
+
 
     async def _execute_professional_color_grade(
         self, vfx_shots: Dict[str, Any]
@@ -6990,11 +7226,12 @@ P.S. Need help? We're here for you - just reply to this email.""",
         """Execute professional color grading workflow"""
         return {
             "primary_correction": "exposure_contrast_saturation",
-            "secondary_correction": "selective_color_keying",
-            "look_development": "cinematic_lut_application",
-            "shot_matching": "scene_consistency_grading",
-            "delivery_formats": "rec709_p3_hdr10_dolby_vision",
-        }
+                "secondary_correction": "selective_color_keying",
+                "look_development": "cinematic_lut_application",
+                "shot_matching": "scene_consistency_grading",
+                "delivery_formats": "rec709_p3_hdr10_dolby_vision",
+                }
+
 
     async def _create_professional_audio_mix(
         self, fine_cut: Dict[str, Any]
@@ -7002,178 +7239,208 @@ P.S. Need help? We're here for you - just reply to this email.""",
         """Create professional audio mix"""
         return {
             "dialogue_editing": "pro_tools_hd",
-            "sound_effects": "layered_foley_design",
-            "music_scoring": "orchestral_electronic_hybrid",
-            "mixing_format": "7_1_surround_atmos",
-            "mastering": "theatrical_streaming_broadcast",
-        }
+                "sound_effects": "layered_foley_design",
+                "music_scoring": "orchestral_electronic_hybrid",
+                "mixing_format": "7_1_surround_atmos",
+                "mastering": "theatrical_streaming_broadcast",
+                }
 
     # Placeholder implementations for remaining helper methods
+
+
     async def _extract_scenes(self, script: str) -> List[Dict[str, Any]]:
         return [{"scene_number": 1, "location": "INT. OFFICE", "time": "DAY"}]
+
 
     async def _identify_characters(self, script: str) -> Dict[str, List[str]]:
         return {
             "leads": ["PROTAGONIST"],
-            "supporting": ["MENTOR"],
-            "background": ["OFFICE_WORKERS"],
-        }
+                "supporting": ["MENTOR"],
+                "background": ["OFFICE_WORKERS"],
+                }
+
 
     async def _extract_locations(self, script: str) -> Dict[str, List[str]]:
         return {"primary": ["OFFICE_BUILDING"], "secondary": ["PARKING_GARAGE"]}
 
+
     async def _identify_props(self, script: str) -> List[str]:
         return ["LAPTOP", "COFFEE_CUP", "DOCUMENTS"]
+
 
     async def _identify_vfx_needs(self, script: str) -> List[str]:
         return ["SCREEN_REPLACEMENTS", "ENVIRONMENT_EXTENSIONS"]
 
+
     async def _assess_technical_needs(self, script: str) -> Dict[str, Any]:
         return {"camera_moves": "dolly_crane", "special_equipment": "steadicam"}
+
 
     async def _create_casting_timeline(self, production_type: str) -> Dict[str, str]:
         return {
             "pre_production": "8_weeks",
-            "callbacks": "2_weeks",
-            "final_selection": "1_week",
-        }
+                "callbacks": "2_weeks",
+                "final_selection": "1_week",
+                }
+
 
     async def _design_audition_process(
         self, breakdown: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "initial_auditions": "self_tape",
-            "callbacks": "in_person",
-            "chemistry_reads": "final_pairs",
-        }
+                "callbacks": "in_person",
+                "chemistry_reads": "final_pairs",
+                }
+
 
     async def _assess_studio_needs(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         return {"sound_stages": 2, "green_screen": True, "practical_sets": 3}
 
+
     async def _plan_permit_acquisition(self) -> Dict[str, Any]:
         return {"filming_permits": "city_county_state", "timeline": "4_weeks_advance"}
+
 
     async def _plan_location_logistics(
         self, breakdown: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "base_camp": "equipment_staging",
-            "catering": "on_location",
-            "security": "24_hour",
-        }
+                "catering": "on_location",
+                "security": "24_hour",
+                }
+
 
     async def _develop_visual_style(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "color_palette": "warm_earth_tones",
-            "lighting_style": "naturalistic_dramatic",
-        }
+                "lighting_style": "naturalistic_dramatic",
+                }
+
 
     async def _design_sets(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         return {"office_set": "modular_walls", "apartment_set": "practical_location"}
 
+
     async def _design_costumes(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "period": "contemporary",
-            "style": "business_casual",
-            "budget": "mid_range",
-        }
+                "style": "business_casual",
+                "budget": "mid_range",
+                }
+
 
     async def _design_makeup_looks(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "natural_looks": "hd_makeup",
-            "special_effects": "prosthetics_if_needed",
-        }
+                "special_effects": "prosthetics_if_needed",
+                }
+
 
     async def _design_props(self, breakdown: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "hero_props": "custom_fabricated",
-            "background_props": "rented_purchased",
-        }
+                "background_props": "rented_purchased",
+                }
+
 
     async def _configure_professional_audio(self, budget_tier: str) -> Dict[str, Any]:
         return {
             "boom_mics": "shotgun_array",
-            "wireless_lavs": "digital_transmission",
-            "recording": "32_bit_float",
-        }
+                "wireless_lavs": "digital_transmission",
+                "recording": "32_bit_float",
+                }
+
 
     async def _setup_live_monitoring(
         self, camera_setup: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "video_village": "director_monitors",
-            "client_monitors": "wireless_feeds",
-        }
+                "client_monitors": "wireless_feeds",
+                }
+
 
     async def _establish_dailies_workflow(self) -> Dict[str, Any]:
         return {
             "sync_dailies": "same_day_delivery",
-            "review_platform": "frame_io_integration",
-        }
+                "review_platform": "frame_io_integration",
+                }
+
 
     async def _capture_performance_data(
         self, script_breakdown: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {"mocap_required": False, "facial_capture": "if_vfx_heavy"}
 
+
     async def _generate_production_notes(self) -> Dict[str, Any]:
         return {
             "script_supervisor": "detailed_continuity",
-            "director_notes": "creative_decisions",
-        }
+                "director_notes": "creative_decisions",
+                }
+
 
     async def _track_production_quality(self) -> Dict[str, Any]:
         return {
             "technical_qc": "real_time_monitoring",
-            "creative_review": "daily_director_approval",
-        }
+                "creative_review": "daily_director_approval",
+                }
+
 
     async def _refine_editorial_cut(self, rough_cut: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "fine_cut": "director_approved",
-            "pacing": "optimized",
-            "transitions": "polished",
-        }
+                "pacing": "optimized",
+                "transitions": "polished",
+                }
+
 
     async def _process_vfx_pipeline(self, fine_cut: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "vfx_shots": "composited",
-            "cgi_elements": "integrated",
-            "quality": "theatrical_grade",
-        }
+                "cgi_elements": "integrated",
+                "quality": "theatrical_grade",
+                }
+
 
     async def _create_final_master(
         self, color_grade: Dict[str, Any], audio_mix: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {"master_file": "uncompressed_4k", "backup_copies": "multiple_formats"}
 
+
     async def _perform_technical_qc(
         self, final_master: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "video_qc": "broadcast_standards",
-            "audio_qc": "theatrical_standards",
-            "delivery_qc": "platform_specs",
-        }
+                "audio_qc": "theatrical_standards",
+                "delivery_qc": "platform_specs",
+                }
+
 
     async def _prepare_final_deliverables(
         self, final_master: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "theatrical": "2k_4k_masters",
-            "streaming": "platform_optimized",
-            "broadcast": "standard_compliant",
-        }
+                "streaming": "platform_optimized",
+                "broadcast": "standard_compliant",
+                }
+
 
     async def _allocate_pre_production_budget(
         self, production_type: str
     ) -> Dict[str, Any]:
         return {
             "script_development": "10_percent",
-            "casting": "15_percent",
-            "locations": "20_percent",
-            "design": "25_percent",
-        }
+                "casting": "15_percent",
+                "locations": "20_percent",
+                "design": "25_percent",
+                }
+
 
     async def _create_cinematic_sequence(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create cinematic sequences with advanced camera work and lighting"""
@@ -7203,23 +7470,24 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "sequence_id": f"cinematic_{task.get('id', 'unknown')}",
-                "shot_list": shot_list,
-                "lighting_setup": lighting_setup,
-                "camera_work": camera_work,
-                "visual_style": visual_style,
-                "resolve_project": resolve_project,
-                "estimated_render_time": await self._calculate_render_time(
+                    "sequence_id": f"cinematic_{task.get('id', 'unknown')}",
+                    "shot_list": shot_list,
+                    "lighting_setup": lighting_setup,
+                    "camera_work": camera_work,
+                    "visual_style": visual_style,
+                    "resolve_project": resolve_project,
+                    "estimated_render_time": await self._calculate_render_time(
                     duration, "cinematic"
                 ),
-            }
+                    }
 
         except Exception as e:
             self.logger.error(f"Cinematic sequence creation failed: {e}")
             return {
                 "success": False,
-                "error": f"Cinematic sequence creation failed: {str(e)}",
-            }
+                    "error": f"Cinematic sequence creation failed: {str(e)}",
+                    }
+
 
     async def _create_motion_capture_integration(
         self, task: Dict[str, Any]
@@ -7235,9 +7503,9 @@ P.S. Need help? We're here for you - just reply to this email.""",
                 performance_data, motion_style
             )
 
-            # Create high-quality 3D avatar using MakeHuman/Daz3D pipeline
+            # Create high - quality 3D avatar using MakeHuman / Daz3D pipeline
             avatar = await self.avatar_pipeline.create_hollywood_avatar(
-                avatar_type, quality="ultra_high", facial_rig=True, body_rig=True
+                avatar_type, quality="ultra_high", facial_rig = True, body_rig = True
             )
 
             # Apply motion data using Mixamo integration
@@ -7250,31 +7518,32 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "mocap_id": f"mocap_{task.get('id', 'unknown')}",
-                "avatar": avatar,
-                "motion_data": mocap_data,
-                "rigged_avatar": rigged_avatar,
-                "final_render": final_render,
-                "technical_specs": await self._generate_mocap_specs(
+                    "mocap_id": f"mocap_{task.get('id', 'unknown')}",
+                    "avatar": avatar,
+                    "motion_data": mocap_data,
+                    "rigged_avatar": rigged_avatar,
+                    "final_render": final_render,
+                    "technical_specs": await self._generate_mocap_specs(
                     avatar_type, motion_style
                 ),
-            }
+                    }
 
         except Exception as e:
             self.logger.error(f"Motion capture integration failed: {e}")
             return {
                 "success": False,
-                "error": f"Motion capture integration failed: {str(e)}",
-            }
+                    "error": f"Motion capture integration failed: {str(e)}",
+                    }
+
 
     async def _create_vfx_pipeline(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create advanced VFX pipeline with industry-standard techniques"""
+        """Create advanced VFX pipeline with industry - standard techniques"""
         try:
             vfx_type = task.get("vfx_type", "compositing")
             complexity = task.get("complexity", "medium")
             source_footage = task.get("source_footage", {})
 
-            # VFX pre-visualization and planning
+            # VFX pre - visualization and planning
             previz = await self._create_vfx_previs(vfx_type, complexity)
 
             # Advanced compositing with multiple layers
@@ -7295,21 +7564,22 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "vfx_id": f"vfx_{task.get('id', 'unknown')}",
-                "previz": previz,
-                "compositing": compositing,
-                "simulations": simulations,
-                "color_work": color_work,
-                "final_render": final_render,
-                "render_stats": await self._generate_vfx_stats(complexity),
-            }
+                    "vfx_id": f"vfx_{task.get('id', 'unknown')}",
+                    "previz": previz,
+                    "compositing": compositing,
+                    "simulations": simulations,
+                    "color_work": color_work,
+                    "final_render": final_render,
+                    "render_stats": await self._generate_vfx_stats(complexity),
+                    }
 
         except Exception as e:
             self.logger.error(f"VFX pipeline creation failed: {e}")
             return {
                 "success": False,
-                "error": f"VFX pipeline creation failed: {str(e)}",
-            }
+                    "error": f"VFX pipeline creation failed: {str(e)}",
+                    }
+
 
     async def _create_color_grading_suite(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create professional color grading with DaVinci Resolve integration"""
@@ -7342,24 +7612,25 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "grade_id": f"grade_{task.get('id', 'unknown')}",
-                "color_analysis": color_analysis,
-                "custom_luts": custom_luts,
-                "corrections": {
+                    "grade_id": f"grade_{task.get('id', 'unknown')}",
+                    "color_analysis": color_analysis,
+                    "custom_luts": custom_luts,
+                    "corrections": {
                     "primary": primary_correction,
-                    "secondary": secondary_correction,
-                },
-                "power_windows": power_windows,
-                "final_grade": final_grade,
-                "technical_specs": await self._generate_color_specs(target_format),
-            }
+                        "secondary": secondary_correction,
+                        },
+                    "power_windows": power_windows,
+                    "final_grade": final_grade,
+                    "technical_specs": await self._generate_color_specs(target_format),
+                    }
 
         except Exception as e:
             self.logger.error(f"Color grading suite creation failed: {e}")
             return {
                 "success": False,
-                "error": f"Color grading suite creation failed: {str(e)}",
-            }
+                    "error": f"Color grading suite creation failed: {str(e)}",
+                    }
+
 
     async def _create_sound_design_mastery(
         self, task: Dict[str, Any]
@@ -7389,30 +7660,31 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "sound_id": f"sound_{task.get('id', 'unknown')}",
-                "sound_design": sound_design,
-                "foley_work": foley_work,
-                "atmospherics": atmospherics,
-                "mixed_audio": mixed_audio,
-                "spatial_audio": spatial_audio,
-                "audio_specs": await self._generate_audio_specs(audio_type),
-            }
+                    "sound_id": f"sound_{task.get('id', 'unknown')}",
+                    "sound_design": sound_design,
+                    "foley_work": foley_work,
+                    "atmospherics": atmospherics,
+                    "mixed_audio": mixed_audio,
+                    "spatial_audio": spatial_audio,
+                    "audio_specs": await self._generate_audio_specs(audio_type),
+                    }
 
         except Exception as e:
             self.logger.error(f"Sound design mastery creation failed: {e}")
             return {
                 "success": False,
-                "error": f"Sound design mastery creation failed: {str(e)}",
-            }
+                    "error": f"Sound design mastery creation failed: {str(e)}",
+                    }
+
 
     async def _create_multi_camera_edit(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create professional multi-camera editing workflow"""
+        """Create professional multi - camera editing workflow"""
         try:
             camera_count = task.get("camera_count", 4)
             sync_method = task.get("sync_method", "timecode")
             edit_style = task.get("edit_style", "dynamic")
 
-            # Multi-camera synchronization
+            # Multi - camera synchronization
             sync_result = await self._synchronize_multicam_footage(
                 camera_count, sync_method
             )
@@ -7432,29 +7704,30 @@ P.S. Need help? We're here for you - just reply to this email.""",
 
             return {
                 "success": True,
-                "edit_id": f"multicam_{task.get('id', 'unknown')}",
-                "sync_result": sync_result,
-                "edit_sequence": edit_sequence,
-                "camera_switching": camera_switching,
-                "final_edit": final_edit,
-                "technical_info": await self._generate_multicam_specs(camera_count),
-            }
+                    "edit_id": f"multicam_{task.get('id', 'unknown')}",
+                    "sync_result": sync_result,
+                    "edit_sequence": edit_sequence,
+                    "camera_switching": camera_switching,
+                    "final_edit": final_edit,
+                    "technical_info": await self._generate_multicam_specs(camera_count),
+                    }
 
         except Exception as e:
-            self.logger.error(f"Multi-camera edit creation failed: {e}")
+            self.logger.error(f"Multi - camera edit creation failed: {e}")
             return {
                 "success": False,
-                "error": f"Multi-camera edit creation failed: {str(e)}",
-            }
+                    "error": f"Multi - camera edit creation failed: {str(e)}",
+                    }
+
 
     async def _create_advanced_3d_avatar(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create advanced 3D avatar with Hollywood-level quality and integration"""
+        """Create advanced 3D avatar with Hollywood - level quality and integration"""
         try:
             avatar_spec = task.get("avatar_spec", {})
             quality_level = task.get("quality_level", "ultra_high")
             animation_type = task.get("animation_type", "performance")
 
-            # Advanced avatar creation using MakeHuman/Daz3D
+            # Advanced avatar creation using MakeHuman / Daz3D
             base_avatar = await self._create_base_avatar_advanced(
                 avatar_spec, quality_level
             )
@@ -7475,123 +7748,128 @@ P.S. Need help? We're here for you - just reply to this email.""",
                 advanced_rig, facial_system, body_animation, quality_level
             )
 
-            # Real-time optimization for interactive use
+            # Real - time optimization for interactive use
             optimized_avatar = await self._optimize_avatar_for_realtime(final_avatar)
 
             return {
                 "success": True,
-                "avatar_id": f"avatar_3d_{task.get('id', 'unknown')}",
-                "base_avatar": base_avatar,
-                "advanced_rig": advanced_rig,
-                "facial_system": facial_system,
-                "body_animation": body_animation,
-                "final_avatar": final_avatar,
-                "optimized_avatar": optimized_avatar,
-                "performance_metrics": await self._generate_avatar_performance_metrics(
+                    "avatar_id": f"avatar_3d_{task.get('id', 'unknown')}",
+                    "base_avatar": base_avatar,
+                    "advanced_rig": advanced_rig,
+                    "facial_system": facial_system,
+                    "body_animation": body_animation,
+                    "final_avatar": final_avatar,
+                    "optimized_avatar": optimized_avatar,
+                    "performance_metrics": await self._generate_avatar_performance_metrics(
                     quality_level
                 ),
-            }
+                    }
 
         except Exception as e:
             self.logger.error(f"Advanced 3D avatar creation failed: {e}")
             return {
                 "success": False,
-                "error": f"Advanced 3D avatar creation failed: {str(e)}",
-            }
+                    "error": f"Advanced 3D avatar creation failed: {str(e)}",
+                    }
 
-    # Hollywood-Level Creative Pipeline Helper Methods
+    # Hollywood - Level Creative Pipeline Helper Methods
+
+
     async def _generate_pre_production_plan(
         self, project_type: str, requirements: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Generate comprehensive pre-production plan for Hollywood-level content."""
+        """Generate comprehensive pre - production plan for Hollywood - level content."""
         return {
             "concept_development": {
                 "creative_brief": f"Professional {project_type} production brief",
-                "visual_style_guide": "Cinematic visual guidelines and references",
-                "technical_specifications": "4K/8K production standards",
-                "color_palette": "Professional color grading scheme",
-            },
-            "production_schedule": {
-                "pre_production": "2-3 weeks planning and preparation",
-                "principal_photography": "1-2 weeks filming/creation",
-                "post_production": "3-4 weeks editing and finishing",
-                "delivery": "Final deliverables and distribution",
-            },
-            "resource_requirements": {
+                    "visual_style_guide": "Cinematic visual guidelines and references",
+                    "technical_specifications": "4K / 8K production standards",
+                    "color_palette": "Professional color grading scheme",
+                    },
+                "production_schedule": {
+                "pre_production": "2 - 3 weeks planning and preparation",
+                    "principal_photography": "1 - 2 weeks filming / creation",
+                    "post_production": "3 - 4 weeks editing and finishing",
+                    "delivery": "Final deliverables and distribution",
+                    },
+                "resource_requirements": {
                 "equipment": "Professional cameras, lighting, audio equipment",
-                "software": "DaVinci Resolve, Blender, After Effects",
-                "personnel": "Director, cinematographer, editor, sound designer",
-                "locations": "Studio spaces and on-location requirements",
-            },
-            "budget_breakdown": {
+                    "software": "DaVinci Resolve, Blender, After Effects",
+                    "personnel": "Director, cinematographer, editor, sound designer",
+                    "locations": "Studio spaces and on - location requirements",
+                    },
+                "budget_breakdown": {
                 "equipment_rental": "30% of budget",
-                "personnel": "40% of budget",
-                "post_production": "20% of budget",
-                "contingency": "10% of budget",
-            },
-        }
+                    "personnel": "40% of budget",
+                    "post_production": "20% of budget",
+                    "contingency": "10% of budget",
+                    },
+                }
+
 
     async def _execute_production_pipeline(
         self, project_data: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Execute Hollywood-level production pipeline with professional workflows."""
+        """Execute Hollywood - level production pipeline with professional workflows."""
         return {
             "camera_work": {
                 "shot_list": "Comprehensive shot breakdown with camera angles",
-                "lighting_setup": "Three-point lighting with professional modifiers",
-                "camera_movement": "Smooth tracking, dollying, and crane movements",
-                "lens_selection": "Prime lenses for cinematic depth of field",
-            },
-            "audio_capture": {
+                    "lighting_setup": "Three - point lighting with professional modifiers",
+                    "camera_movement": "Smooth tracking, dollying, and crane movements",
+                    "lens_selection": "Prime lenses for cinematic depth of field",
+                    },
+                "audio_capture": {
                 "dialogue_recording": "Boom mic and lavalier setup",
-                "ambient_sound": "Room tone and environmental audio",
-                "music_scoring": "Original composition or licensed tracks",
-                "sound_effects": "Foley and atmospheric sound design",
-            },
-            "performance_direction": {
+                    "ambient_sound": "Room tone and environmental audio",
+                    "music_scoring": "Original composition or licensed tracks",
+                    "sound_effects": "Foley and atmospheric sound design",
+                    },
+                "performance_direction": {
                 "talent_coaching": "Professional direction for natural performances",
-                "continuity_management": "Script supervision and shot matching",
-                "multiple_takes": "Coverage options for editorial flexibility",
-                "improvisation_capture": "Spontaneous moments and alternatives",
-            },
-            "technical_execution": {
+                    "continuity_management": "Script supervision and shot matching",
+                    "multiple_takes": "Coverage options for editorial flexibility",
+                    "improvisation_capture": "Spontaneous moments and alternatives",
+                    },
+                "technical_execution": {
                 "color_temperature": "Consistent 5600K daylight or 3200K tungsten",
-                "exposure_control": "Proper histogram and zebra monitoring",
-                "focus_pulling": "Rack focus and depth of field control",
-                "stabilization": "Gimbal and tripod work for smooth footage",
-            },
-        }
+                    "exposure_control": "Proper histogram and zebra monitoring",
+                    "focus_pulling": "Rack focus and depth of field control",
+                    "stabilization": "Gimbal and tripod work for smooth footage",
+                    },
+                }
+
 
     async def _manage_post_production_workflow(
         self, footage_data: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Manage professional post-production workflow with industry standards."""
+        """Manage professional post - production workflow with industry standards."""
         return {
             "editorial_process": {
                 "rough_cut": "Initial assembly edit with basic timing",
-                "fine_cut": "Detailed editing with precise timing and pacing",
-                "picture_lock": "Final edit approval before post-production",
-                "conform": "High-resolution finishing and color correction",
-            },
-            "color_grading": {
+                    "fine_cut": "Detailed editing with precise timing and pacing",
+                    "picture_lock": "Final edit approval before post - production",
+                    "conform": "High - resolution finishing and color correction",
+                    },
+                "color_grading": {
                 "primary_correction": "Exposure, contrast, and white balance",
-                "secondary_grading": "Selective color enhancement and mood",
-                "look_development": "Cinematic color palette and style",
-                "delivery_formats": "Multiple output formats for distribution",
-            },
-            "audio_post": {
+                    "secondary_grading": "Selective color enhancement and mood",
+                    "look_development": "Cinematic color palette and style",
+                    "delivery_formats": "Multiple output formats for distribution",
+                    },
+                "audio_post": {
                 "dialogue_editing": "Clean up and sync dialogue tracks",
-                "music_mixing": "Score integration and level balancing",
-                "sound_design": "Foley, atmospheres, and sound effects",
-                "final_mix": "Stereo and surround sound delivery",
-            },
-            "visual_effects": {
+                    "music_mixing": "Score integration and level balancing",
+                    "sound_design": "Foley, atmospheres, and sound effects",
+                    "final_mix": "Stereo and surround sound delivery",
+                    },
+                "visual_effects": {
                 "compositing": "Green screen and element integration",
-                "motion_graphics": "Titles, lower thirds, and animations",
-                "cleanup": "Wire removal and unwanted object elimination",
-                "enhancement": "Digital makeup and environment extensions",
-            },
-        }
+                    "motion_graphics": "Titles, lower thirds, and animations",
+                    "cleanup": "Wire removal and unwanted object elimination",
+                    "enhancement": "Digital makeup and environment extensions",
+                    },
+                }
+
 
     async def _prepare_distribution_package(
         self, final_content: Dict[str, Any]
@@ -7600,29 +7878,30 @@ P.S. Need help? We're here for you - just reply to this email.""",
         return {
             "master_files": {
                 "uncompressed_master": "ProRes 4444 or DNxHR 444 master file",
-                "archive_copy": "Uncompressed backup for long-term storage",
-                "project_files": "Native editing project with all assets",
-                "audio_stems": "Separate dialogue, music, and effects tracks",
-            },
-            "delivery_formats": {
-                "broadcast_quality": "1080p/4K H.264 for television broadcast",
-                "streaming_optimized": "Multiple bitrates for adaptive streaming",
-                "social_media": "Square, vertical, and horizontal formats",
-                "theatrical": "DCP package for cinema projection",
-            },
-            "metadata_package": {
+                    "archive_copy": "Uncompressed backup for long - term storage",
+                    "project_files": "Native editing project with all assets",
+                    "audio_stems": "Separate dialogue, music, and effects tracks",
+                    },
+                "delivery_formats": {
+                "broadcast_quality": "1080p / 4K H.264 for television broadcast",
+                    "streaming_optimized": "Multiple bitrates for adaptive streaming",
+                    "social_media": "Square, vertical, and horizontal formats",
+                    "theatrical": "DCP package for cinema projection",
+                    },
+                "metadata_package": {
                 "technical_specs": "Frame rate, resolution, color space details",
-                "content_description": "Synopsis, keywords, and categorization",
-                "rights_information": "Usage rights and licensing details",
-                "accessibility": "Closed captions and audio descriptions",
-            },
-            "quality_assurance": {
+                    "content_description": "Synopsis, keywords, and categorization",
+                    "rights_information": "Usage rights and licensing details",
+                    "accessibility": "Closed captions and audio descriptions",
+                    },
+                "quality_assurance": {
                 "technical_review": "Automated QC checks for technical issues",
-                "content_review": "Editorial review for content accuracy",
-                "compliance_check": "Broadcast standards and platform requirements",
-                "delivery_verification": "Successful upload and playback testing",
-            },
-        }
+                    "content_review": "Editorial review for content accuracy",
+                    "compliance_check": "Broadcast standards and platform requirements",
+                    "delivery_verification": "Successful upload and playback testing",
+                    },
+                }
+
 
     async def _calculate_production_timeline(
         self, project_scope: str, complexity: str
@@ -7630,45 +7909,46 @@ P.S. Need help? We're here for you - just reply to this email.""",
         """Calculate realistic production timeline based on Hollywood standards."""
         base_timeline = {
             "simple": {"pre": 7, "production": 3, "post": 14},
-            "moderate": {"pre": 14, "production": 7, "post": 21},
-            "complex": {"pre": 21, "production": 14, "post": 35},
-        }
+                "moderate": {"pre": 14, "production": 7, "post": 21},
+                "complex": {"pre": 21, "production": 14, "post": 35},
+                }
 
         timeline = base_timeline.get(complexity, base_timeline["moderate"])
 
         return {
             "pre_production": {
                 "duration_days": timeline["pre"],
-                "key_milestones": [
+                    "key_milestones": [
                     "Concept development and scripting",
-                    "Storyboarding and shot planning",
-                    "Casting and location scouting",
-                    "Equipment prep and crew briefing",
-                ],
-            },
-            "production": {
+                        "Storyboarding and shot planning",
+                        "Casting and location scouting",
+                        "Equipment prep and crew briefing",
+                        ],
+                    },
+                "production": {
                 "duration_days": timeline["production"],
-                "key_milestones": [
-                    "Principal photography/content creation",
-                    "B-roll and supplementary footage",
-                    "Audio recording and capture",
-                    "Backup and data management",
-                ],
-            },
-            "post_production": {
+                    "key_milestones": [
+                    "Principal photography / content creation",
+                        "B - roll and supplementary footage",
+                        "Audio recording and capture",
+                        "Backup and data management",
+                        ],
+                    },
+                "post_production": {
                 "duration_days": timeline["post"],
-                "key_milestones": [
+                    "key_milestones": [
                     "Rough cut and initial assembly",
-                    "Fine cut and picture lock",
-                    "Color grading and audio mixing",
-                    "Final delivery and distribution prep",
-                ],
-            },
-            "total_timeline": timeline["pre"]
+                        "Fine cut and picture lock",
+                        "Color grading and audio mixing",
+                        "Final delivery and distribution prep",
+                        ],
+                    },
+                "total_timeline": timeline["pre"]
             + timeline["production"]
             + timeline["post"],
-            "buffer_recommendation": "15-20% additional time for revisions and unexpected challenges",
-        }
+                "buffer_recommendation": "15 - 20% additional time for revisions and unexpected challenges",
+                }
+
 
     async def _generate_deliverables_list(
         self, project_type: str, distribution_channels: List[str]
@@ -7677,35 +7957,35 @@ P.S. Need help? We're here for you - just reply to this email.""",
         return {
             "primary_deliverables": {
                 "master_content": f"Final {project_type} in highest quality format",
-                "compressed_versions": "Web-optimized versions for online distribution",
-                "mobile_optimized": "Versions optimized for mobile viewing",
-                "thumbnail_package": "High-quality thumbnails and preview images",
-            },
-            "technical_deliverables": {
+                    "compressed_versions": "Web - optimized versions for online distribution",
+                    "mobile_optimized": "Versions optimized for mobile viewing",
+                    "thumbnail_package": "High - quality thumbnails and preview images",
+                    },
+                "technical_deliverables": {
                 "project_files": "Native editing project with all source materials",
-                "asset_library": "All graphics, music, and supplementary content",
-                "color_grading_files": "LUTs and color correction data",
-                "audio_stems": "Separate audio tracks for future editing",
-            },
-            "distribution_specific": {
-                "youtube": "1080p/4K H.264, custom thumbnails, end screens",
-                "instagram": "Square and story formats, multiple aspect ratios",
-                "tiktok": "Vertical 9:16 format, optimized for mobile",
-                "broadcast": "Broadcast-safe colors and audio levels",
-            },
-            "documentation": {
+                    "asset_library": "All graphics, music, and supplementary content",
+                    "color_grading_files": "LUTs and color correction data",
+                    "audio_stems": "Separate audio tracks for future editing",
+                    },
+                "distribution_specific": {
+                "youtube": "1080p / 4K H.264, custom thumbnails, end screens",
+                    "instagram": "Square and story formats, multiple aspect ratios",
+                    "tiktok": "Vertical 9:16 format, optimized for mobile",
+                    "broadcast": "Broadcast - safe colors and audio levels",
+                    },
+                "documentation": {
                 "production_notes": "Detailed notes on creative decisions and technical specs",
-                "asset_manifest": "Complete list of all files and their purposes",
-                "usage_guidelines": "Brand guidelines and approved usage scenarios",
-                "technical_specifications": "Complete technical documentation for future reference",
-            },
-            "quality_metrics": {
+                    "asset_manifest": "Complete list of all files and their purposes",
+                    "usage_guidelines": "Brand guidelines and approved usage scenarios",
+                    "technical_specifications": "Complete technical documentation for future reference",
+                    },
+                "quality_metrics": {
                 "resolution_standards": "4K master with 1080p distribution copies",
-                "color_accuracy": "Rec. 709 color space for broadcast compatibility",
-                "audio_standards": "-23 LUFS for broadcast, -16 LUFS for streaming",
-                "file_integrity": "Checksums and verification data for all deliverables",
-            },
-        }
+                    "color_accuracy": "Rec. 709 color space for broadcast compatibility",
+                    "audio_standards": "-23 LUFS for broadcast, -16 LUFS for streaming",
+                    "file_integrity": "Checksums and verification data for all deliverables",
+                    },
+                }
 
 
 class MarketingAgent(BaseAgent):
@@ -7720,6 +8000,7 @@ class MarketingAgent(BaseAgent):
     - Lead generation
     """
 
+
     def __init__(
         self, agent_id: Optional[str] = None, name: Optional[str] = None, **kwargs
     ):
@@ -7727,15 +8008,15 @@ class MarketingAgent(BaseAgent):
         self.campaigns: List[Dict[str, Any]] = []
         self.marketing_channels: List[str] = [
             "social_media",
-            "twitter",
-            "email",
-            "content_marketing",
-            "paid_advertising",
-            "seo",
-            "ecommerce_marketing",  # Added for autonomous product marketing
+                "twitter",
+                "email",
+                "content_marketing",
+                "paid_advertising",
+                "seo",
+                "ecommerce_marketing",  # Added for autonomous product marketing
             "workflow_automation",  # Added for bridge system integration
             "email_drip_campaigns",  # Advanced email automation
-            "seo_content_assets",  # SEO-optimized content generation
+            "seo_content_assets",  # SEO - optimized content generation
             "marketing_assets",  # Visual and content asset creation
         ]
         self.twitter_queue: List[Dict[str, Any]] = []
@@ -7756,6 +8037,7 @@ class MarketingAgent(BaseAgent):
         # Initialize legacy marketing tools
         self._initialize_marketing_tools()
 
+
     def _initialize_ecommerce_layer(self):
         """Initialize EcommerceMarketingLayer as primary tool."""
         try:
@@ -7773,25 +8055,31 @@ class MarketingAgent(BaseAgent):
             )
 
             # Create a simple shim that provides basic functionality
+
+
             class EcommerceMarketingShim:
+
+
                 def __init__(self):
                     pass
+
 
                 async def make_publish_package(self, *args, **kwargs):
                     return {
                         "success": False,
-                        "message": "EcommerceMarketingLayer not available - using basic marketing functions",
-                        "fallback": True,
-                    }
+                            "message": "EcommerceMarketingLayer not available - using basic marketing functions",
+                            "fallback": True,
+                            }
 
             self.ecommerce_layer = EcommerceMarketingShim()
             self.ecommerce_marketing = self.ecommerce_layer
+
 
     def _initialize_bridge_system(self):
         """Initialize bridge system functions as secondary tools."""
         try:
             from app.bridge_to_system import (MonetizationFeature, SystemBridge,
-                                              WorkflowType)
+                WorkflowType)
 
             self.system_bridge = SystemBridge()
             self.workflow_types = WorkflowType
@@ -7803,26 +8091,27 @@ class MarketingAgent(BaseAgent):
             self.logger.warning(f"Bridge system functions could not be imported: {e}")
             self.system_bridge = None
 
+
     def _initialize_marketing_tools(self):
         """Initialize legacy marketing tools for direct use."""
         try:
             from .marketing_tools import (AffiliateManager, DayOneBlitzStrategy,
-                                          RelentlessOptimizationLoop)
+                RelentlessOptimizationLoop)
             from .twitter_engagement_agent import TwitterEngagementAgent
             from .twitter_promotion_agent import TwitterPromotionAgent
             from .web_automation_tools import (AffiliateSignupAutomator,
-                                               WebAutomationAgent)
+                WebAutomationAgent)
 
             self.marketing_tools = {
                 "affiliate_bot": AffiliateSignupAutomator(
                     WebAutomationAgent().stealth_ops
                 ),
-                "blitz_strategy": DayOneBlitzStrategy(),
-                "optimization_loop": RelentlessOptimizationLoop(),
-                "affiliate_manager": AffiliateManager(),
-                "twitter_promotion": TwitterPromotionAgent(),
-                "twitter_engagement": TwitterEngagementAgent(),
-            }
+                    "blitz_strategy": DayOneBlitzStrategy(),
+                    "optimization_loop": RelentlessOptimizationLoop(),
+                    "affiliate_manager": AffiliateManager(),
+                    "twitter_promotion": TwitterPromotionAgent(),
+                    "twitter_engagement": TwitterEngagementAgent(),
+                    }
 
             self.logger.info("Legacy marketing tools initialized successfully")
 
@@ -7831,8 +8120,11 @@ class MarketingAgent(BaseAgent):
             self.marketing_tools = {}
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [AgentCapability.MARKETING, AgentCapability.EXECUTION]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -7848,8 +8140,8 @@ class MarketingAgent(BaseAgent):
         if not self.is_action_allowed("marketing"):
             return {
                 "success": False,
-                "error": "Marketing actions are currently disabled by configuration",
-            }
+                    "error": "Marketing actions are currently disabled by configuration",
+                    }
 
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
@@ -7919,23 +8211,23 @@ class MarketingAgent(BaseAgent):
 
                 response = {
                     "success": task_success,
-                    "marketing_type": marketing_type,
-                    "result": result,
-                    "execution_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                    "channels_used": result.get("channels", []),
-                }
+                        "marketing_type": marketing_type,
+                        "result": result,
+                        "execution_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        "channels_used": result.get("channels", []),
+                        }
 
                 if task_success:
                     self.update_status(
                         AgentStatus.COMPLETED,
-                        f"Marketing task {task_id} completed successfully",
-                    )
+                            f"Marketing task {task_id} completed successfully",
+                            )
                 else:
                     self.update_status(
                         AgentStatus.FAILED,
-                        f"Marketing task {task_id} completed with issues",
-                    )
+                            f"Marketing task {task_id} completed with issues",
+                            )
 
                 self.record_task_completion(
                     task_id, task_success, time.time() - start_time, response
@@ -7946,11 +8238,11 @@ class MarketingAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "marketing_type": marketing_type,
-                "error": str(e),
-                "execution_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-            }
+                    "marketing_type": marketing_type,
+                    "error": str(e),
+                    "execution_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    }
 
             self.logger.error(f"Marketing task {task_id} failed: {e}")
             self.update_status(AgentStatus.FAILED, f"Marketing task failed: {e}")
@@ -7959,6 +8251,7 @@ class MarketingAgent(BaseAgent):
             )
 
             return error_result
+
 
     async def _create_campaign(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Create a marketing campaign."""
@@ -7977,17 +8270,17 @@ class MarketingAgent(BaseAgent):
                     )
                     campaign = {
                         "id": str(uuid.uuid4()),
-                        "name": task.get("name", "Affiliate Campaign"),
-                        "campaign_type": campaign_type,
-                        "affiliate_result": affiliate_result,
-                        "status": "created",
-                        "created_at": datetime.now().isoformat(),
-                    }
+                            "name": task.get("name", "Affiliate Campaign"),
+                            "campaign_type": campaign_type,
+                            "affiliate_result": affiliate_result,
+                            "status": "created",
+                            "created_at": datetime.now().isoformat(),
+                            }
                     self.campaigns.append(campaign)
                     return {
                         "campaign": campaign,
-                        "message": f"Affiliate campaign created successfully",
-                    }
+                            "message": f"Affiliate campaign created successfully",
+                            }
             except Exception as e:
                 self.logger.warning(f"Failed to use affiliate signup bot: {e}")
 
@@ -8000,23 +8293,24 @@ class MarketingAgent(BaseAgent):
 
         campaign = {
             "id": str(uuid.uuid4()),
-            "name": campaign_name,
-            "budget": budget,
-            "target_audience": target_audience,
-            "channels": ["social_media", "email"],
-            "status": "created",
-            "created_at": datetime.now().isoformat(),
-            "estimated_reach": budget * 10,  # Simple calculation
+                "name": campaign_name,
+                "budget": budget,
+                "target_audience": target_audience,
+                "channels": ["social_media", "email"],
+                "status": "created",
+                "created_at": datetime.now().isoformat(),
+                "estimated_reach": budget * 10,  # Simple calculation
             "expected_roi": 2.5,
-        }
+                }
 
         self.campaigns.append(campaign)
 
         return {
             "campaign": campaign,
-            "channels": campaign["channels"],
-            "message": f"Campaign '{campaign_name}' created successfully",
-        }
+                "channels": campaign["channels"],
+                "message": f"Campaign '{campaign_name}' created successfully",
+                }
+
 
     async def _handle_ecommerce_marketing(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle ecommerce marketing tasks using EcommerceMarketingLayer."""
@@ -8024,9 +8318,9 @@ class MarketingAgent(BaseAgent):
             if not hasattr(self, "ecommerce_marketing") or not self.ecommerce_marketing:
                 return {
                     "success": False,
-                    "error": "EcommerceMarketingLayer not available",
-                    "message": "Ecommerce marketing functionality is not initialized",
-                }
+                        "error": "EcommerceMarketingLayer not available",
+                        "message": "Ecommerce marketing functionality is not initialized",
+                        }
 
             action = task.get("action", "make_publish_package")
 
@@ -8034,17 +8328,17 @@ class MarketingAgent(BaseAgent):
                 # Extract product information from task
                 product_info = {
                     "name": task.get("product_name", "New Digital Product"),
-                    "description": task.get(
-                        "product_description", "A high-quality digital product"
+                        "description": task.get(
+                        "product_description", "A high - quality digital product"
                     ),
-                    "price": task.get("product_price", 29.99),
-                    "category": task.get("product_category", "digital"),
-                    "target_audience": task.get("target_audience", "professionals"),
-                    "unique_selling_points": task.get(
+                        "price": task.get("product_price", 29.99),
+                        "category": task.get("product_category", "digital"),
+                        "target_audience": task.get("target_audience", "professionals"),
+                        "unique_selling_points": task.get(
                         "unique_selling_points",
-                        ["High quality", "Expert content", "Immediate access"],
-                    ),
-                }
+                            ["High quality", "Expert content", "Immediate access"],
+                            ),
+                        }
 
                 # Generate complete marketing package
                 marketing_package = await self.ecommerce_marketing.make_publish_package(
@@ -8058,19 +8352,19 @@ class MarketingAgent(BaseAgent):
 
                 self.marketing_packages[package_id] = {
                     "id": package_id,
-                    "product_info": product_info,
-                    "package": marketing_package,
-                    "created_at": datetime.now().isoformat(),
-                    "status": "ready_for_deployment",
-                }
+                        "product_info": product_info,
+                        "package": marketing_package,
+                        "created_at": datetime.now().isoformat(),
+                        "status": "ready_for_deployment",
+                        }
 
                 return {
                     "success": True,
-                    "package_id": package_id,
-                    "marketing_package": marketing_package,
-                    "message": f"Complete marketing package generated for '{product_info['name']}'",
-                    "components": list(marketing_package.keys()),
-                }
+                        "package_id": package_id,
+                        "marketing_package": marketing_package,
+                        "message": f"Complete marketing package generated for '{product_info['name']}'",
+                        "components": list(marketing_package.keys()),
+                        }
 
             elif action == "deploy_package":
                 # Deploy an existing marketing package
@@ -8082,9 +8376,9 @@ class MarketingAgent(BaseAgent):
                 ):
                     return {
                         "success": False,
-                        "error": "Package not found",
-                        "message": "Marketing package not found or invalid package ID",
-                    }
+                            "error": "Package not found",
+                            "message": "Marketing package not found or invalid package ID",
+                            }
 
                 package = self.marketing_packages[package_id]
 
@@ -8094,22 +8388,22 @@ class MarketingAgent(BaseAgent):
                         # Trigger workflow automation for deployment
                         deployment_result = await self.system_bridge.trigger_workflow(
                             self.workflow_types.MARKETING_CAMPAIGN,
-                            {
+                                {
                                 "package_id": package_id,
-                                "product_name": package["product_info"]["name"],
-                                "marketing_assets": package["package"],
-                            },
-                        )
+                                    "product_name": package["product_info"]["name"],
+                                    "marketing_assets": package["package"],
+                                    },
+                                )
 
                         package["status"] = "deployed"
                         package["deployed_at"] = datetime.now().isoformat()
 
                         return {
                             "success": True,
-                            "package_id": package_id,
-                            "deployment_result": deployment_result,
-                            "message": f"Marketing package deployed successfully",
-                        }
+                                "package_id": package_id,
+                                "deployment_result": deployment_result,
+                                "message": f"Marketing package deployed successfully",
+                                }
                     except Exception as e:
                         self.logger.warning(f"Bridge deployment failed: {e}")
 
@@ -8119,29 +8413,30 @@ class MarketingAgent(BaseAgent):
 
                 return {
                     "success": True,
-                    "package_id": package_id,
-                    "message": f"Marketing package deployed (simulated)",
-                    "deployment_channels": [
+                        "package_id": package_id,
+                        "message": f"Marketing package deployed (simulated)",
+                        "deployment_channels": [
                         "landing_page",
-                        "social_media",
-                        "email_campaign",
-                    ],
-                }
+                            "social_media",
+                            "email_campaign",
+                            ],
+                        }
 
             else:
                 return {
                     "success": False,
-                    "error": "Unknown action",
-                    "message": f"Action '{action}' is not supported",
-                }
+                        "error": "Unknown action",
+                        "message": f"Action '{action}' is not supported",
+                        }
 
         except Exception as e:
             self.logger.error(f"Ecommerce marketing task failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Ecommerce marketing task failed",
-            }
+                    "error": str(e),
+                    "message": "Ecommerce marketing task failed",
+                    }
+
 
     async def _handle_email_drip_campaigns(
         self, task: Dict[str, Any]
@@ -8151,9 +8446,9 @@ class MarketingAgent(BaseAgent):
             if not self.ecommerce_marketing:
                 return {
                     "success": False,
-                    "error": "EcommerceMarketingLayer not available",
-                    "message": "Email drip campaigns require EcommerceMarketingLayer",
-                }
+                        "error": "EcommerceMarketingLayer not available",
+                        "message": "Email drip campaigns require EcommerceMarketingLayer",
+                        }
 
             # Extract campaign parameters
             product_info = task.get("product_info", {})
@@ -8163,26 +8458,27 @@ class MarketingAgent(BaseAgent):
             # Generate email drip campaign
             campaign_result = (
                 await self.ecommerce_marketing.generate_email_drip_campaign(
-                    product_info=product_info,
-                    campaign_type=campaign_type,
-                    target_audience=target_audience,
-                )
+                    product_info = product_info,
+                        campaign_type = campaign_type,
+                        target_audience = target_audience,
+                        )
             )
 
             return {
                 "success": True,
-                "campaign_type": "email_drip_campaigns",
-                "result": campaign_result,
-                "message": "Email drip campaign generated successfully",
-            }
+                    "campaign_type": "email_drip_campaigns",
+                    "result": campaign_result,
+                    "message": "Email drip campaign generated successfully",
+                    }
 
         except Exception as e:
             self.logger.error(f"Email drip campaign generation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Email drip campaign generation failed",
-            }
+                    "error": str(e),
+                    "message": "Email drip campaign generation failed",
+                    }
+
 
     async def _handle_seo_content_assets(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle SEO content asset generation using EcommerceMarketingLayer."""
@@ -8190,9 +8486,9 @@ class MarketingAgent(BaseAgent):
             if not self.ecommerce_marketing:
                 return {
                     "success": False,
-                    "error": "EcommerceMarketingLayer not available",
-                    "message": "SEO content assets require EcommerceMarketingLayer",
-                }
+                        "error": "EcommerceMarketingLayer not available",
+                        "message": "SEO content assets require EcommerceMarketingLayer",
+                        }
 
             # Extract SEO parameters
             product_info = task.get("product_info", {})
@@ -8203,25 +8499,26 @@ class MarketingAgent(BaseAgent):
 
             # Generate SEO content assets
             seo_result = await self.ecommerce_marketing.generate_seo_content_assets(
-                product_info=product_info,
-                target_keywords=target_keywords,
-                content_types=content_types,
-            )
+                product_info = product_info,
+                    target_keywords = target_keywords,
+                    content_types = content_types,
+                    )
 
             return {
                 "success": True,
-                "campaign_type": "seo_content_assets",
-                "result": seo_result,
-                "message": "SEO content assets generated successfully",
-            }
+                    "campaign_type": "seo_content_assets",
+                    "result": seo_result,
+                    "message": "SEO content assets generated successfully",
+                    }
 
         except Exception as e:
             self.logger.error(f"SEO content asset generation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "SEO content asset generation failed",
-            }
+                    "error": str(e),
+                    "message": "SEO content asset generation failed",
+                    }
+
 
     async def _handle_marketing_assets(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle marketing asset generation using EcommerceMarketingLayer."""
@@ -8229,9 +8526,9 @@ class MarketingAgent(BaseAgent):
             if not self.ecommerce_marketing:
                 return {
                     "success": False,
-                    "error": "EcommerceMarketingLayer not available",
-                    "message": "Marketing assets require EcommerceMarketingLayer",
-                }
+                        "error": "EcommerceMarketingLayer not available",
+                        "message": "Marketing assets require EcommerceMarketingLayer",
+                        }
 
             # Extract asset parameters
             product_info = task.get("product_info", {})
@@ -8242,25 +8539,26 @@ class MarketingAgent(BaseAgent):
 
             # Generate marketing assets
             assets_result = await self.ecommerce_marketing.generate_marketing_assets(
-                product_info=product_info,
-                asset_types=asset_types,
-                brand_guidelines=brand_guidelines,
-            )
+                product_info = product_info,
+                    asset_types = asset_types,
+                    brand_guidelines = brand_guidelines,
+                    )
 
             return {
                 "success": True,
-                "campaign_type": "marketing_assets",
-                "result": assets_result,
-                "message": "Marketing assets generated successfully",
-            }
+                    "campaign_type": "marketing_assets",
+                    "result": assets_result,
+                    "message": "Marketing assets generated successfully",
+                    }
 
         except Exception as e:
             self.logger.error(f"Marketing asset generation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Marketing asset generation failed",
-            }
+                    "error": str(e),
+                    "message": "Marketing asset generation failed",
+                    }
+
 
     async def _manage_social_media(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Manage social media activities."""
@@ -8273,15 +8571,15 @@ class MarketingAgent(BaseAgent):
                     automation_result = (
                         await self.content_tool_automator.automate_content_tools(
                             task.get("tools", ["social_scheduler", "analytics"]),
-                            task.get("schedule", "daily"),
-                        )
+                                task.get("schedule", "daily"),
+                                )
                     )
                     return {
                         "action": action,
-                        "automation_result": automation_result,
-                        "success": True,
-                        "channels": ["social_media"],
-                    }
+                            "automation_result": automation_result,
+                            "success": True,
+                            "channels": ["social_media"],
+                            }
             except Exception as e:
                 self.logger.warning(f"Failed to use content tool automator: {e}")
 
@@ -8295,18 +8593,19 @@ class MarketingAgent(BaseAgent):
         for platform in platforms:
             results[platform] = {
                 "action": action,
-                "success": True,
-                "engagement_rate": 0.05,
-                "reach": 1000,
-            }
+                    "success": True,
+                    "engagement_rate": 0.05,
+                    "reach": 1000,
+                    }
 
         return {
             "platforms": platforms,
-            "action": action,
-            "results": results,
-            "total_reach": sum(r["reach"] for r in results.values()),
-            "channels": ["social_media"],
-        }
+                "action": action,
+                "results": results,
+                "total_reach": sum(r["reach"] for r in results.values()),
+                "channels": ["social_media"],
+                }
+
 
     async def _execute_email_marketing(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute email marketing campaign."""
@@ -8318,13 +8617,14 @@ class MarketingAgent(BaseAgent):
 
         return {
             "email_type": email_type,
-            "recipients": recipient_count,
-            "sent": recipient_count,
-            "delivered": int(recipient_count * 0.95),
-            "opened": int(recipient_count * 0.25),
-            "clicked": int(recipient_count * 0.05),
-            "channels": ["email"],
-        }
+                "recipients": recipient_count,
+                "sent": recipient_count,
+                "delivered": int(recipient_count * 0.95),
+                "opened": int(recipient_count * 0.25),
+                "clicked": int(recipient_count * 0.05),
+                "channels": ["email"],
+                }
+
 
     async def _generate_analytics(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Generate marketing analytics."""
@@ -8338,16 +8638,17 @@ class MarketingAgent(BaseAgent):
         for metric in metrics:
             analytics[metric] = {
                 "value": 1000 if metric == "reach" else 50,
-                "change": "+15%",
-                "trend": "up",
-            }
+                    "change": "+15%",
+                    "trend": "up",
+                    }
 
         return {
             "timeframe": timeframe,
-            "metrics": analytics,
-            "summary": "Marketing performance is trending upward",
-            "channels": self.marketing_channels,
-        }
+                "metrics": analytics,
+                "summary": "Marketing performance is trending upward",
+                "channels": self.marketing_channels,
+                }
+
 
     async def _handle_twitter_promotion(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle Twitter promotion tasks."""
@@ -8359,17 +8660,17 @@ class MarketingAgent(BaseAgent):
                 if task.get("action") == "promote_youtube_video":
                     video_data = task.get("video_data", {})
                     result = await twitter_agent.promote_youtube_video(
-                        video_title=video_data.get("title", ""),
-                        video_url=video_data.get("url", ""),
-                        description=video_data.get("description", ""),
-                        thumbnail_url=video_data.get("thumbnail_url"),
-                    )
+                        video_title = video_data.get("title", ""),
+                            video_url = video_data.get("url", ""),
+                            description = video_data.get("description", ""),
+                            thumbnail_url = video_data.get("thumbnail_url"),
+                            )
                     return {
                         "action": "promote_youtube_video",
-                        "result": result,
-                        "channels": ["twitter"],
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": ["twitter"],
+                            "success": result.get("success", False),
+                            }
 
                 # Handle scheduled promotion
                 elif task.get("action") == "schedule_promotion":
@@ -8380,22 +8681,23 @@ class MarketingAgent(BaseAgent):
                     )
                     return {
                         "action": "schedule_promotion",
-                        "result": result,
-                        "channels": ["twitter"],
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": ["twitter"],
+                            "success": result.get("success", False),
+                            }
 
             # Fallback implementation
             await asyncio.sleep(0.3)
             return {
                 "message": "Twitter promotion task completed",
-                "channels": ["twitter"],
-                "success": True,
-            }
+                    "channels": ["twitter"],
+                    "success": True,
+                    }
 
         except Exception as e:
             self.logger.error(f"Twitter promotion failed: {e}")
             return {"error": str(e), "channels": ["twitter"], "success": False}
+
 
     async def _handle_twitter_engagement(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle Twitter engagement tasks."""
@@ -8408,14 +8710,14 @@ class MarketingAgent(BaseAgent):
                     keywords = task.get("keywords", [])
                     max_engagements = task.get("max_engagements", 5)
                     result = await twitter_agent.search_and_engage(
-                        keywords=keywords, max_engagements=max_engagements
+                        keywords = keywords, max_engagements = max_engagements
                     )
                     return {
                         "action": "engage_conversations",
-                        "result": result,
-                        "channels": ["twitter"],
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": ["twitter"],
+                            "success": result.get("success", False),
+                            }
 
                 # Handle topic monitoring
                 elif task.get("action") == "monitor_topics":
@@ -8423,22 +8725,23 @@ class MarketingAgent(BaseAgent):
                     result = await twitter_agent.monitor_topics(topics)
                     return {
                         "action": "monitor_topics",
-                        "result": result,
-                        "channels": ["twitter"],
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": ["twitter"],
+                            "success": result.get("success", False),
+                            }
 
             # Fallback implementation
             await asyncio.sleep(0.3)
             return {
                 "message": "Twitter engagement task completed",
-                "channels": ["twitter"],
-                "success": True,
-            }
+                    "channels": ["twitter"],
+                    "success": True,
+                    }
 
         except Exception as e:
             self.logger.error(f"Twitter engagement failed: {e}")
             return {"error": str(e), "channels": ["twitter"], "success": False}
+
 
     async def _handle_community_engagement(
         self, task: Dict[str, Any]
@@ -8460,10 +8763,10 @@ class MarketingAgent(BaseAgent):
                         )
                         return {
                             "action": "analyze_comments",
-                            "result": result,
-                            "channels": ["youtube"],
-                            "success": result.get("success", False),
-                        }
+                                "result": result,
+                                "channels": ["youtube"],
+                                "success": result.get("success", False),
+                                }
 
                 elif action == "respond_to_comments":
                     # Generate and post responses to comments
@@ -8471,10 +8774,10 @@ class MarketingAgent(BaseAgent):
                     result = await community_manager.respond_to_comments(comments)
                     return {
                         "action": "respond_to_comments",
-                        "result": result,
-                        "channels": platforms,
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": platforms,
+                            "success": result.get("success", False),
+                            }
 
                 elif action == "monitor_communities":
                     # Monitor Reddit and Twitter for relevant discussions
@@ -8483,14 +8786,14 @@ class MarketingAgent(BaseAgent):
                     hashtags = task.get("hashtags", [])
 
                     result = await community_manager.monitor_communities(
-                        keywords=keywords, subreddits=subreddits, hashtags=hashtags
+                        keywords = keywords, subreddits = subreddits, hashtags = hashtags
                     )
                     return {
                         "action": "monitor_communities",
-                        "result": result,
-                        "channels": platforms,
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": platforms,
+                            "success": result.get("success", False),
+                            }
 
                 elif action == "engage_discussions":
                     # Participate in relevant discussions
@@ -8498,14 +8801,14 @@ class MarketingAgent(BaseAgent):
                     content_links = task.get("content_links", [])
 
                     result = await community_manager.engage_discussions(
-                        discussions=discussions, content_links=content_links
+                        discussions = discussions, content_links = content_links
                     )
                     return {
                         "action": "engage_discussions",
-                        "result": result,
-                        "channels": platforms,
-                        "success": result.get("success", False),
-                    }
+                            "result": result,
+                            "channels": platforms,
+                            "success": result.get("success", False),
+                            }
 
             # Fallback implementation for community engagement
             await asyncio.sleep(0.5)
@@ -8513,41 +8816,43 @@ class MarketingAgent(BaseAgent):
             # Simulate community engagement activities
             engagement_stats = {
                 "comments_analyzed": task.get("max_comments", 10),
-                "responses_generated": task.get("max_responses", 5),
-                "discussions_monitored": len(task.get("keywords", [])),
-                "communities_engaged": len(platforms),
-            }
+                    "responses_generated": task.get("max_responses", 5),
+                    "discussions_monitored": len(task.get("keywords", [])),
+                    "communities_engaged": len(platforms),
+                    }
 
             return {
                 "message": f"Community engagement completed across {len(platforms)} platforms",
-                "action": action,
-                "platforms": platforms,
-                "engagement_stats": engagement_stats,
-                "channels": platforms,
-                "success": True,
-            }
+                    "action": action,
+                    "platforms": platforms,
+                    "engagement_stats": engagement_stats,
+                    "channels": platforms,
+                    "success": True,
+                    }
 
         except Exception as e:
             self.logger.error(f"Community engagement failed: {e}")
             return {
                 "error": str(e),
-                "action": action,
-                "channels": platforms,
-                "success": False,
-            }
+                    "action": action,
+                    "channels": platforms,
+                    "success": False,
+                    }
+
 
     def add_to_twitter_queue(self, task: Dict[str, Any]) -> str:
         """Add a task to the Twitter queue for processing."""
         task_id = str(uuid.uuid4())
         queued_task = {
             "id": task_id,
-            "task": task,
-            "created_at": datetime.now().isoformat(),
-            "status": "queued",
-        }
+                "task": task,
+                "created_at": datetime.now().isoformat(),
+                "status": "queued",
+                }
         self.twitter_queue.append(queued_task)
         self.logger.info(f"Added task {task_id} to Twitter queue")
         return task_id
+
 
     async def process_twitter_queue(self) -> List[Dict[str, Any]]:
         """Process all queued Twitter tasks."""
@@ -8579,10 +8884,11 @@ class MarketingAgent(BaseAgent):
                         f"Failed to process queued task {queued_task['id']}: {e}"
                     )
 
-        # Remove completed/failed tasks from queue
+        # Remove completed / failed tasks from queue
         self.twitter_queue = [t for t in self.twitter_queue if t["status"] == "queued"]
 
         return results
+
 
     async def _generic_marketing_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle generic marketing tasks."""
@@ -8614,48 +8920,50 @@ class MarketingAgent(BaseAgent):
             self.logger.error(f"Marketing task failed: {str(e)}")
             return {
                 "success": False,
-                "error": str(e),
-                "task_type": task_type,
-                "message": f"Marketing task '{task_type}' failed",
-            }
+                    "error": str(e),
+                    "task_type": task_type,
+                    "message": f"Marketing task '{task_type}' failed",
+                    }
+
 
     async def _perform_audience_analysis(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze target audience demographics and behavior."""
         target_market = data.get("target_market", "general")
-        platform = data.get("platform", "multi-platform")
+        platform = data.get("platform", "multi - platform")
 
         # Simulate audience analysis
         await asyncio.sleep(0.3)
 
         demographics = {
             "age_groups": {
-                "18-24": 15,
-                "25-34": 35,
-                "35-44": 25,
-                "45-54": 15,
-                "55+": 10,
-            },
-            "gender_split": {"male": 52, "female": 46, "other": 2},
-            "interests": ["technology", "business", "lifestyle", "education"],
-            "engagement_patterns": {
-                "peak_hours": ["9-11 AM", "2-4 PM", "7-9 PM"],
-                "best_days": ["Tuesday", "Wednesday", "Thursday"],
-                "content_preferences": ["video", "infographics", "articles"],
-            },
-        }
+                "18 - 24": 15,
+                    "25 - 34": 35,
+                    "35 - 44": 25,
+                    "45 - 54": 15,
+                    "55+": 10,
+                    },
+                "gender_split": {"male": 52, "female": 46, "other": 2},
+                "interests": ["technology", "business", "lifestyle", "education"],
+                "engagement_patterns": {
+                "peak_hours": ["9 - 11 AM", "2 - 4 PM", "7 - 9 PM"],
+                    "best_days": ["Tuesday", "Wednesday", "Thursday"],
+                    "content_preferences": ["video", "infographics", "articles"],
+                    },
+                }
 
         return {
             "success": True,
-            "audience_analysis": demographics,
-            "recommendations": [
-                f"Focus on {target_market} audience aged 25-44",
-                f"Optimize content for {platform} platform",
-                "Post during peak engagement hours",
-                "Prioritize video and visual content",
-            ],
-            "confidence_score": 0.85,
-            "message": "Audience analysis completed successfully",
-        }
+                "audience_analysis": demographics,
+                "recommendations": [
+                f"Focus on {target_market} audience aged 25 - 44",
+                    f"Optimize content for {platform} platform",
+                    "Post during peak engagement hours",
+                    "Prioritize video and visual content",
+                    ],
+                "confidence_score": 0.85,
+                "message": "Audience analysis completed successfully",
+                }
+
 
     async def _perform_competitor_research(
         self, data: Dict[str, Any]
@@ -8672,39 +8980,40 @@ class MarketingAgent(BaseAgent):
                 if competitors
                 else ["Competitor A", "Competitor B", "Competitor C"]
             ),
-            "content_strategies": {
-                "posting_frequency": "3-5 posts/week",
-                "content_types": ["educational", "promotional", "behind-the-scenes"],
-                "engagement_tactics": ["polls", "Q&A", "user-generated content"],
-            },
-            "pricing_analysis": {
-                "average_price_point": "$99-299",
-                "pricing_models": ["subscription", "one-time", "freemium"],
-            },
-            "strengths_weaknesses": {
+                "content_strategies": {
+                "posting_frequency": "3 - 5 posts / week",
+                    "content_types": ["educational", "promotional", "behind - the - scenes"],
+                    "engagement_tactics": ["polls", "Q&A", "user - generated content"],
+                    },
+                "pricing_analysis": {
+                "average_price_point": "$99 - 299",
+                    "pricing_models": ["subscription", "one - time", "freemium"],
+                    },
+                "strengths_weaknesses": {
                 "common_strengths": ["strong brand presence", "consistent messaging"],
-                "common_weaknesses": [
+                    "common_weaknesses": [
                     "limited video content",
-                    "poor mobile optimization",
-                ],
-            },
-        }
+                        "poor mobile optimization",
+                        ],
+                    },
+                }
 
         return {
             "success": True,
-            "competitor_analysis": competitor_analysis,
-            "opportunities": [
+                "competitor_analysis": competitor_analysis,
+                "opportunities": [
                 "Increase video content production",
-                "Improve mobile user experience",
-                "Develop unique value proposition",
-                "Focus on underserved market segments",
-            ],
-            "threats": [
+                    "Improve mobile user experience",
+                    "Develop unique value proposition",
+                    "Focus on underserved market segments",
+                    ],
+                "threats": [
                 "Established competitor brand loyalty",
-                "Price competition in market",
-            ],
-            "message": f"Competitor research for {industry} industry completed",
-        }
+                    "Price competition in market",
+                    ],
+                "message": f"Competitor research for {industry} industry completed",
+                }
+
 
     async def _create_content_strategy(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create comprehensive content marketing strategy."""
@@ -8717,42 +9026,43 @@ class MarketingAgent(BaseAgent):
         content_calendar = {
             "weekly_themes": {
                 "Monday": "Motivation Monday - Inspirational content",
-                "Tuesday": "Tutorial Tuesday - Educational content",
-                "Wednesday": "Wisdom Wednesday - Industry insights",
-                "Thursday": "Throwback Thursday - Company culture",
-                "Friday": "Feature Friday - Product highlights",
-            },
-            "content_mix": {
+                    "Tuesday": "Tutorial Tuesday - Educational content",
+                    "Wednesday": "Wisdom Wednesday - Industry insights",
+                    "Thursday": "Throwback Thursday - Company culture",
+                    "Friday": "Feature Friday - Product highlights",
+                    },
+                "content_mix": {
                 "educational": 40,
-                "promotional": 20,
-                "entertaining": 25,
-                "user_generated": 15,
-            },
-            "platforms": {
+                    "promotional": 20,
+                    "entertaining": 25,
+                    "user_generated": 15,
+                    },
+                "platforms": {
                 "LinkedIn": "Professional content, industry insights",
-                "Twitter": "Quick updates, news, engagement",
-                "Instagram": "Visual content, behind-the-scenes",
-                "YouTube": "Long-form educational content",
-            },
-        }
+                    "Twitter": "Quick updates, news, engagement",
+                    "Instagram": "Visual content, behind - the - scenes",
+                    "YouTube": "Long - form educational content",
+                    },
+                }
 
         return {
             "success": True,
-            "content_strategy": content_calendar,
-            "kpis": {
-                "engagement_rate": "Target: 3-5%",
-                "reach": "Target: 10K monthly",
-                "conversions": "Target: 2-3%",
-                "brand_mentions": "Target: 50+ monthly",
-            },
-            "budget_allocation": {
+                "content_strategy": content_calendar,
+                "kpis": {
+                "engagement_rate": "Target: 3 - 5%",
+                    "reach": "Target: 10K monthly",
+                    "conversions": "Target: 2 - 3%",
+                    "brand_mentions": "Target: 50+ monthly",
+                    },
+                "budget_allocation": {
                 "content_creation": "60%",
-                "paid_promotion": "25%",
-                "tools_software": "10%",
-                "analytics_reporting": "5%",
-            },
-            "message": f"Content strategy created for {target_audience} audience",
-        }
+                    "paid_promotion": "25%",
+                    "tools_software": "10%",
+                    "analytics_reporting": "5%",
+                    },
+                "message": f"Content strategy created for {target_audience} audience",
+                }
+
 
     async def _optimize_campaign(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Optimize existing marketing campaign performance."""
@@ -8763,46 +9073,47 @@ class MarketingAgent(BaseAgent):
 
         optimization_recommendations = {
             "targeting": [
-                "Narrow age range to 25-45 for better conversion",
-                "Add interest-based targeting for technology enthusiasts",
-                "Exclude low-performing geographic regions",
-            ],
-            "creative": [
+                "Narrow age range to 25 - 45 for better conversion",
+                    "Add interest - based targeting for technology enthusiasts",
+                    "Exclude low - performing geographic regions",
+                    ],
+                "creative": [
                 "Test video ads vs. static images",
-                "A/B test different call-to-action buttons",
-                "Update ad copy to include social proof",
-            ],
-            "bidding": [
+                    "A / B test different call - to - action buttons",
+                    "Update ad copy to include social proof",
+                    ],
+                "bidding": [
                 "Switch to target CPA bidding strategy",
-                "Increase budget for high-performing ad sets",
-                "Pause underperforming keywords",
-            ],
-            "timing": [
-                "Increase budget during peak hours (2-4 PM)",
-                "Reduce spend on weekends",
-                "Test different time zones",
-            ],
-        }
+                    "Increase budget for high - performing ad sets",
+                    "Pause underperforming keywords",
+                    ],
+                "timing": [
+                "Increase budget during peak hours (2 - 4 PM)",
+                    "Reduce spend on weekends",
+                    "Test different time zones",
+                    ],
+                }
 
         projected_improvements = {
-            "ctr_improvement": "+15-25%",
-            "conversion_rate_improvement": "+10-20%",
-            "cost_reduction": "-20-30%",
-            "roi_improvement": "+25-40%",
-        }
+            "ctr_improvement": "+15 - 25%",
+                "conversion_rate_improvement": "+10 - 20%",
+                "cost_reduction": "-20 - 30%",
+                "roi_improvement": "+25 - 40%",
+                }
 
         return {
             "success": True,
-            "campaign_id": campaign_id,
-            "optimizations": optimization_recommendations,
-            "projected_results": projected_improvements,
-            "priority_actions": [
-                "Implement A/B testing for ad creatives",
-                "Adjust targeting parameters",
-                "Optimize bidding strategy",
-            ],
-            "message": f"Campaign optimization plan created for {campaign_id}",
-        }
+                "campaign_id": campaign_id,
+                "optimizations": optimization_recommendations,
+                "projected_results": projected_improvements,
+                "priority_actions": [
+                "Implement A / B testing for ad creatives",
+                    "Adjust targeting parameters",
+                    "Optimize bidding strategy",
+                    ],
+                "message": f"Campaign optimization plan created for {campaign_id}",
+                }
+
 
     async def _conduct_market_research(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Conduct comprehensive market research."""
@@ -8814,48 +9125,49 @@ class MarketingAgent(BaseAgent):
         market_insights = {
             "market_size": {
                 "total_addressable_market": "$2.5B",
-                "serviceable_addressable_market": "$500M",
-                "serviceable_obtainable_market": "$50M",
-            },
-            "growth_trends": {
+                    "serviceable_addressable_market": "$500M",
+                    "serviceable_obtainable_market": "$50M",
+                    },
+                "growth_trends": {
                 "annual_growth_rate": "12%",
-                "emerging_trends": [
+                    "emerging_trends": [
                     "AI integration in workflows",
-                    "Remote work solutions",
-                    "Sustainability focus",
-                    "Personalization demands",
-                ],
-            },
-            "customer_segments": {
+                        "Remote work solutions",
+                        "Sustainability focus",
+                        "Personalization demands",
+                        ],
+                    },
+                "customer_segments": {
                 "early_adopters": "15%",
-                "mainstream_market": "70%",
-                "laggards": "15%",
-            },
-            "barriers_to_entry": [
+                    "mainstream_market": "70%",
+                    "laggards": "15%",
+                    },
+                "barriers_to_entry": [
                 "High customer acquisition costs",
-                "Established competitor presence",
-                "Regulatory requirements",
-                "Technology infrastructure needs",
-            ],
-        }
+                    "Established competitor presence",
+                    "Regulatory requirements",
+                    "Technology infrastructure needs",
+                    ],
+                }
 
         return {
             "success": True,
-            "market_research": market_insights,
-            "opportunities": [
+                "market_research": market_insights,
+                "opportunities": [
                 f"Growing demand in {market_segment} segment",
-                "Underserved niche markets available",
-                "Technology disruption creating new needs",
-            ],
-            "recommendations": [
+                    "Underserved niche markets available",
+                    "Technology disruption creating new needs",
+                    ],
+                "recommendations": [
                 "Focus on early adopter segment initially",
-                "Develop unique value proposition",
-                "Build strategic partnerships",
-                "Invest in customer education",
-            ],
-            "confidence_level": 0.82,
-            "message": f"Market research completed for {market_segment} segment",
-        }
+                    "Develop unique value proposition",
+                    "Build strategic partnerships",
+                    "Invest in customer education",
+                    ],
+                "confidence_level": 0.82,
+                "message": f"Market research completed for {market_segment} segment",
+                }
+
 
     async def _analyze_brand_performance(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze brand performance and reputation."""
@@ -8867,97 +9179,99 @@ class MarketingAgent(BaseAgent):
         brand_metrics = {
             "brand_awareness": {
                 "aided_awareness": "45%",
-                "unaided_awareness": "12%",
-                "brand_recall": "28%",
-            },
-            "sentiment_analysis": {
+                    "unaided_awareness": "12%",
+                    "brand_recall": "28%",
+                    },
+                "sentiment_analysis": {
                 "positive": 65,
-                "neutral": 25,
-                "negative": 10,
-                "overall_score": 7.2,
-            },
-            "share_of_voice": {
+                    "neutral": 25,
+                    "negative": 10,
+                    "overall_score": 7.2,
+                    },
+                "share_of_voice": {
                 "industry_percentage": "8%",
-                "vs_competitors": {
+                    "vs_competitors": {
                     "Competitor A": "15%",
-                    "Competitor B": "12%",
-                    "Our Brand": "8%",
-                },
-            },
-            "engagement_metrics": {
+                        "Competitor B": "12%",
+                        "Our Brand": "8%",
+                        },
+                    },
+                "engagement_metrics": {
                 "social_mentions": 1250,
-                "engagement_rate": "4.2%",
-                "reach": 85000,
-                "impressions": 320000,
-            },
-        }
+                    "engagement_rate": "4.2%",
+                    "reach": 85000,
+                    "impressions": 320000,
+                    },
+                }
 
         return {
             "success": True,
-            "brand_analysis": brand_metrics,
-            "strengths": [
+                "brand_analysis": brand_metrics,
+                "strengths": [
                 "Strong positive sentiment",
-                "Growing social media presence",
-                "High customer loyalty",
-            ],
-            "areas_for_improvement": [
+                    "Growing social media presence",
+                    "High customer loyalty",
+                    ],
+                "areas_for_improvement": [
                 "Increase unaided brand awareness",
-                "Expand share of voice",
-                "Improve competitor positioning",
-            ],
-            "action_items": [
+                    "Expand share of voice",
+                    "Improve competitor positioning",
+                    ],
+                "action_items": [
                 "Launch brand awareness campaign",
-                "Increase content marketing efforts",
-                "Monitor competitor activities",
-                "Engage with brand mentions",
-            ],
-            "message": f"Brand performance analysis completed for {brand_name}",
-        }
+                    "Increase content marketing efforts",
+                    "Monitor competitor activities",
+                    "Engage with brand mentions",
+                    ],
+                "message": f"Brand performance analysis completed for {brand_name}",
+                }
+
 
     async def _generate_leads(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate and qualify marketing leads."""
         target_count = data.get("target_count", 100)
-        lead_source = data.get("source", "multi-channel")
+        lead_source = data.get("source", "multi - channel")
 
         await asyncio.sleep(0.4)
 
         lead_generation_results = {
             "leads_generated": min(target_count, 150),
-            "lead_quality_distribution": {
+                "lead_quality_distribution": {
                 "hot_leads": 15,
-                "warm_leads": 45,
-                "cold_leads": 40,
-            },
-            "source_breakdown": {
+                    "warm_leads": 45,
+                    "cold_leads": 40,
+                    },
+                "source_breakdown": {
                 "organic_search": 30,
-                "social_media": 25,
-                "email_marketing": 20,
-                "paid_advertising": 15,
-                "referrals": 10,
-            },
-            "lead_scoring": {
+                    "social_media": 25,
+                    "email_marketing": 20,
+                    "paid_advertising": 15,
+                    "referrals": 10,
+                    },
+                "lead_scoring": {
                 "average_score": 72,
-                "qualification_rate": "35%",
-                "conversion_potential": "Medium-High",
-            },
-        }
+                    "qualification_rate": "35%",
+                    "conversion_potential": "Medium - High",
+                    },
+                }
 
         return {
             "success": True,
-            "lead_generation": lead_generation_results,
-            "next_steps": [
-                "Prioritize hot leads for immediate follow-up",
-                "Nurture warm leads with targeted content",
-                "Develop re-engagement strategy for cold leads",
-            ],
-            "recommendations": [
-                "Increase investment in top-performing channels",
-                "Improve lead qualification process",
-                "Implement lead scoring automation",
-            ],
-            "estimated_revenue": f"${target_count * 150:,}",
-            "message": f"Generated {lead_generation_results['leads_generated']} leads from {lead_source}",
-        }
+                "lead_generation": lead_generation_results,
+                "next_steps": [
+                "Prioritize hot leads for immediate follow - up",
+                    "Nurture warm leads with targeted content",
+                    "Develop re - engagement strategy for cold leads",
+                    ],
+                "recommendations": [
+                "Increase investment in top - performing channels",
+                    "Improve lead qualification process",
+                    "Implement lead scoring automation",
+                    ],
+                "estimated_revenue": f"${target_count * 150:,}",
+                "message": f"Generated {lead_generation_results['leads_generated']} leads from {lead_source}",
+                }
+
 
     async def _optimize_conversions(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Optimize conversion rates and funnel performance."""
@@ -8969,57 +9283,58 @@ class MarketingAgent(BaseAgent):
         conversion_analysis = {
             "current_performance": {
                 "conversion_rate": f"{current_rate}%",
-                "drop_off_points": [
-                    "Landing page to signup: 65% drop-off",
-                    "Signup to trial: 40% drop-off",
-                    "Trial to purchase: 70% drop-off",
-                ],
-            },
-            "optimization_opportunities": {
+                    "drop_off_points": [
+                    "Landing page to signup: 65% drop - off",
+                        "Signup to trial: 40% drop - off",
+                        "Trial to purchase: 70% drop - off",
+                        ],
+                    },
+                "optimization_opportunities": {
                 "landing_page": [
                     "Simplify form fields",
-                    "Add social proof elements",
-                    "Improve page load speed",
-                    "A/B test headlines",
-                ],
-                "checkout_process": [
+                        "Add social proof elements",
+                        "Improve page load speed",
+                        "A / B test headlines",
+                        ],
+                    "checkout_process": [
                     "Reduce checkout steps",
-                    "Add multiple payment options",
-                    "Display security badges",
-                    "Offer guest checkout",
-                ],
-                "email_sequences": [
-                    "Personalize follow-up emails",
-                    "Add urgency elements",
-                    "Include customer testimonials",
-                    "Optimize send times",
-                ],
-            },
-            "projected_improvements": {
+                        "Add multiple payment options",
+                        "Display security badges",
+                        "Offer guest checkout",
+                        ],
+                    "email_sequences": [
+                    "Personalize follow - up emails",
+                        "Add urgency elements",
+                        "Include customer testimonials",
+                        "Optimize send times",
+                        ],
+                    },
+                "projected_improvements": {
                 "landing_page_optimization": "+25% conversion lift",
-                "checkout_optimization": "+15% conversion lift",
-                "email_optimization": "+20% conversion lift",
-                "overall_potential": f"{current_rate * 1.4:.1f}% conversion rate",
-            },
-        }
+                    "checkout_optimization": "+15% conversion lift",
+                    "email_optimization": "+20% conversion lift",
+                    "overall_potential": f"{current_rate * 1.4:.1f}% conversion rate",
+                    },
+                }
 
         return {
             "success": True,
-            "conversion_optimization": conversion_analysis,
-            "priority_tests": [
-                "Landing page headline A/B test",
-                "Checkout flow simplification",
-                "Email sequence personalization",
-            ],
-            "implementation_timeline": {
+                "conversion_optimization": conversion_analysis,
+                "priority_tests": [
+                "Landing page headline A / B test",
+                    "Checkout flow simplification",
+                    "Email sequence personalization",
+                    ],
+                "implementation_timeline": {
                 "week_1": "Landing page tests",
-                "week_2": "Checkout optimization",
-                "week_3": "Email sequence updates",
-                "week_4": "Results analysis",
-            },
-            "expected_roi": "+40-60% revenue increase",
-            "message": f"Conversion optimization plan created for {funnel_stage} stage",
-        }
+                    "week_2": "Checkout optimization",
+                    "week_3": "Email sequence updates",
+                    "week_4": "Results analysis",
+                    },
+                "expected_roi": "+40 - 60% revenue increase",
+                "message": f"Conversion optimization plan created for {funnel_stage} stage",
+                }
+
 
     async def _handle_generic_marketing(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Handle general marketing tasks."""
@@ -9029,26 +9344,27 @@ class MarketingAgent(BaseAgent):
 
         return {
             "success": True,
-            "task_completed": task_description,
-            "actions_taken": [
+                "task_completed": task_description,
+                "actions_taken": [
                 "Analyzed current marketing performance",
-                "Identified optimization opportunities",
-                "Created action plan",
-                "Set up tracking metrics",
-            ],
-            "recommendations": [
+                    "Identified optimization opportunities",
+                    "Created action plan",
+                    "Set up tracking metrics",
+                    ],
+                "recommendations": [
                 "Monitor key performance indicators",
-                "Test different marketing channels",
-                "Optimize based on data insights",
-                "Scale successful campaigns",
-            ],
-            "next_steps": [
+                    "Test different marketing channels",
+                    "Optimize based on data insights",
+                    "Scale successful campaigns",
+                    ],
+                "next_steps": [
                 "Implement recommended changes",
-                "Track performance metrics",
-                "Schedule regular reviews",
-            ],
-            "message": "Generic marketing task completed successfully",
-        }
+                    "Track performance metrics",
+                    "Schedule regular reviews",
+                    ],
+                "message": "Generic marketing task completed successfully",
+                }
+
 
     def _determine_task_success(self, result: Dict[str, Any]) -> bool:
         """Determine if a marketing task was successful based on its result."""
@@ -9063,7 +9379,7 @@ class MarketingAgent(BaseAgent):
         if result.get("success") is True or result.get("status") == "success":
             return True
 
-        # Check for meaningful content/data
+        # Check for meaningful content / data
         if result.get("campaign_id") or result.get("post_id") or result.get("email_id"):
             return True
 
@@ -9082,6 +9398,7 @@ class MarketingAgent(BaseAgent):
         # Default to False if no clear success indicators
         return False
 
+
     async def _handle_partnership_outreach(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -9099,9 +9416,9 @@ class MarketingAgent(BaseAgent):
             except ImportError:
                 return {
                     "success": False,
-                    "error": "CollaborationOutreachAgent not available",
-                    "message": "Partnership outreach requires CollaborationOutreachAgent module",
-                }
+                        "error": "CollaborationOutreachAgent not available",
+                        "message": "Partnership outreach requires CollaborationOutreachAgent module",
+                        }
 
             # Initialize collaboration agent
             collab_agent = CollaborationOutreachAgent()
@@ -9129,21 +9446,22 @@ class MarketingAgent(BaseAgent):
 
             return {
                 "success": True,
-                "outreach_type": outreach_type,
-                "result": result,
-                "target_niche": target_niche,
-                "collaboration_type": collaboration_type,
-                "platforms": platform_focus,
-                "message": f"Partnership outreach {outreach_type} completed successfully",
-            }
+                    "outreach_type": outreach_type,
+                    "result": result,
+                    "target_niche": target_niche,
+                    "collaboration_type": collaboration_type,
+                    "platforms": platform_focus,
+                    "message": f"Partnership outreach {outreach_type} completed successfully",
+                    }
 
         except Exception as e:
             self.logger.error(f"Partnership outreach failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Partnership outreach task failed",
-            }
+                    "error": str(e),
+                    "message": "Partnership outreach task failed",
+                    }
+
 
     async def _discover_creators(
         self, collab_agent, target_niche: str, platforms: List[str], budget_range: str
@@ -9155,11 +9473,11 @@ class MarketingAgent(BaseAgent):
             # Use CollaborationOutreachAgent to discover creators
             discovery_task = {
                 "type": "creator_discovery",
-                "niche": target_niche,
-                "platforms": platforms,
-                "budget_range": budget_range,
-                "min_followers": self._get_min_followers_for_budget(budget_range),
-                "engagement_threshold": 0.02,  # 2% minimum engagement rate
+                    "niche": target_niche,
+                    "platforms": platforms,
+                    "budget_range": budget_range,
+                    "min_followers": self._get_min_followers_for_budget(budget_range),
+                    "engagement_threshold": 0.02,  # 2% minimum engagement rate
             }
 
             discovery_result = await collab_agent.process_task(discovery_task)
@@ -9172,33 +9490,34 @@ class MarketingAgent(BaseAgent):
             for creator in creators[:10]:  # Limit to top 10
                 enhanced_creator = {
                     **creator,
-                    "partnership_score": self._calculate_partnership_score(creator),
-                    "outreach_priority": self._determine_outreach_priority(creator),
-                    "collaboration_suggestions": self._suggest_collaboration_types(
+                        "partnership_score": self._calculate_partnership_score(creator),
+                        "outreach_priority": self._determine_outreach_priority(creator),
+                        "collaboration_suggestions": self._suggest_collaboration_types(
                         creator, target_niche
                     ),
-                }
+                        }
                 enhanced_creators.append(enhanced_creator)
 
             return {
                 "creators_found": len(enhanced_creators),
-                "creators": enhanced_creators,
-                "search_criteria": {
+                    "creators": enhanced_creators,
+                    "search_criteria": {
                     "niche": target_niche,
-                    "platforms": platforms,
-                    "budget_range": budget_range,
-                },
-                "recommendations": self._generate_creator_recommendations(
+                        "platforms": platforms,
+                        "budget_range": budget_range,
+                        },
+                    "recommendations": self._generate_creator_recommendations(
                     enhanced_creators
                 ),
-            }
+                    }
 
         except Exception as e:
             return {
                 "error": f"Creator discovery failed: {str(e)}",
-                "creators_found": 0,
-                "creators": [],
-            }
+                    "creators_found": 0,
+                    "creators": [],
+                    }
+
 
     async def _create_outreach_campaign(
         self, collab_agent, task: Dict[str, Any]
@@ -9209,38 +9528,39 @@ class MarketingAgent(BaseAgent):
         try:
             campaign_task = {
                 "type": "campaign_creation",
-                "campaign_name": task.get(
+                    "campaign_name": task.get(
                     "campaign_name",
-                    f'Partnership Campaign {datetime.now().strftime("%Y%m%d")}',
-                ),
-                "target_creators": task.get("target_creators", []),
-                "collaboration_type": task.get(
+                        f'Partnership Campaign {datetime.now().strftime("%Y%m%d")}',
+                        ),
+                    "target_creators": task.get("target_creators", []),
+                    "collaboration_type": task.get(
                     "collaboration_type", "content_collaboration"
                 ),
-                "budget": task.get("budget", 1000),
-                "timeline": task.get("timeline", "30_days"),
-                "brand_info": task.get("brand_info", {}),
-            }
+                    "budget": task.get("budget", 1000),
+                    "timeline": task.get("timeline", "30_days"),
+                    "brand_info": task.get("brand_info", {}),
+                    }
 
             campaign_result = await collab_agent.process_task(campaign_task)
 
             # Enhance campaign with marketing insights
             enhanced_campaign = {
                 **campaign_result,
-                "marketing_strategy": self._develop_campaign_marketing_strategy(
+                    "marketing_strategy": self._develop_campaign_marketing_strategy(
                     campaign_task
                 ),
-                "success_metrics": self._define_campaign_success_metrics(campaign_task),
-                "follow_up_schedule": self._create_follow_up_schedule(campaign_task),
-            }
+                    "success_metrics": self._define_campaign_success_metrics(campaign_task),
+                    "follow_up_schedule": self._create_follow_up_schedule(campaign_task),
+                    }
 
             return enhanced_campaign
 
         except Exception as e:
             return {
                 "error": f"Campaign creation failed: {str(e)}",
-                "campaign_created": False,
-            }
+                    "campaign_created": False,
+                    }
+
 
     async def _send_partnership_outreach(
         self, collab_agent, task: Dict[str, Any]
@@ -9251,28 +9571,29 @@ class MarketingAgent(BaseAgent):
         try:
             outreach_task = {
                 "type": "send_outreach",
-                "campaign_id": task.get("campaign_id"),
-                "creator_ids": task.get("creator_ids", []),
-                "personalization_data": task.get("personalization_data", {}),
-                "send_immediately": task.get("send_immediately", False),
-            }
+                    "campaign_id": task.get("campaign_id"),
+                    "creator_ids": task.get("creator_ids", []),
+                    "personalization_data": task.get("personalization_data", {}),
+                    "send_immediately": task.get("send_immediately", False),
+                    }
 
             outreach_result = await collab_agent.process_task(outreach_task)
 
             # Add marketing tracking and analytics
             enhanced_result = {
                 **outreach_result,
-                "tracking_setup": self._setup_outreach_tracking(outreach_task),
-                "expected_response_rate": self._estimate_response_rate(outreach_task),
-                "optimization_suggestions": self._generate_outreach_optimizations(
+                    "tracking_setup": self._setup_outreach_tracking(outreach_task),
+                    "expected_response_rate": self._estimate_response_rate(outreach_task),
+                    "optimization_suggestions": self._generate_outreach_optimizations(
                     outreach_task
                 ),
-            }
+                    }
 
             return enhanced_result
 
         except Exception as e:
             return {"error": f"Outreach sending failed: {str(e)}", "emails_sent": 0}
+
 
     async def _track_partnership_metrics(
         self, collab_agent, task: Dict[str, Any]
@@ -9283,35 +9604,36 @@ class MarketingAgent(BaseAgent):
         try:
             metrics_task = {
                 "type": "get_metrics",
-                "campaign_id": task.get("campaign_id"),
-                "time_range": task.get("time_range", "30_days"),
-                "include_detailed_analytics": True,
-            }
+                    "campaign_id": task.get("campaign_id"),
+                    "time_range": task.get("time_range", "30_days"),
+                    "include_detailed_analytics": True,
+                    }
 
             metrics_result = await collab_agent.process_task(metrics_task)
 
             # Add marketing analysis and insights
             enhanced_metrics = {
                 **metrics_result,
-                "performance_analysis": self._analyze_campaign_performance(
+                    "performance_analysis": self._analyze_campaign_performance(
                     metrics_result
                 ),
-                "roi_calculation": self._calculate_partnership_roi(
+                    "roi_calculation": self._calculate_partnership_roi(
                     metrics_result, task
                 ),
-                "optimization_recommendations": self._generate_performance_recommendations(
+                    "optimization_recommendations": self._generate_performance_recommendations(
                     metrics_result
                 ),
-                "next_steps": self._suggest_campaign_next_steps(metrics_result),
-            }
+                    "next_steps": self._suggest_campaign_next_steps(metrics_result),
+                    }
 
             return enhanced_metrics
 
         except Exception as e:
             return {
                 "error": f"Metrics tracking failed: {str(e)}",
-                "metrics_available": False,
-            }
+                    "metrics_available": False,
+                    }
+
 
     async def _generic_partnership_outreach(
         self, collab_agent, task: Dict[str, Any]
@@ -9326,31 +9648,33 @@ class MarketingAgent(BaseAgent):
             # Add marketing context and enhancements
             enhanced_result = {
                 **result,
-                "marketing_context": self._add_marketing_context(task, result),
-                "integration_opportunities": self._identify_integration_opportunities(
+                    "marketing_context": self._add_marketing_context(task, result),
+                    "integration_opportunities": self._identify_integration_opportunities(
                     result
                 ),
-                "scaling_suggestions": self._suggest_scaling_strategies(result),
-            }
+                    "scaling_suggestions": self._suggest_scaling_strategies(result),
+                    }
 
             return enhanced_result
 
         except Exception as e:
             return {
                 "error": f"Generic partnership outreach failed: {str(e)}",
-                "task_completed": False,
-            }
+                    "task_completed": False,
+                    }
+
 
     def _get_min_followers_for_budget(self, budget_range: str) -> int:
         """Get minimum follower count based on budget range."""
         budget_mapping = {
-            "nano": 1000,  # 1K-10K followers
-            "micro": 10000,  # 10K-100K followers
-            "mid": 100000,  # 100K-1M followers
+            "nano": 1000,  # 1K - 10K followers
+            "micro": 10000,  # 10K - 100K followers
+            "mid": 100000,  # 100K - 1M followers
             "macro": 1000000,  # 1M+ followers
             "mega": 5000000,  # 5M+ followers
         }
         return budget_mapping.get(budget_range, 10000)
+
 
     def _calculate_partnership_score(self, creator: Dict[str, Any]) -> float:
         """Calculate partnership potential score for a creator."""
@@ -9383,6 +9707,7 @@ class MarketingAgent(BaseAgent):
 
         return min(score, 100)  # Cap at 100
 
+
     def _determine_outreach_priority(self, creator: Dict[str, Any]) -> str:
         """Determine outreach priority based on creator metrics."""
         score = self._calculate_partnership_score(creator)
@@ -9393,6 +9718,7 @@ class MarketingAgent(BaseAgent):
             return "medium"
         else:
             return "low"
+
 
     def _suggest_collaboration_types(
         self, creator: Dict[str, Any], niche: str
@@ -9424,6 +9750,7 @@ class MarketingAgent(BaseAgent):
 
         return list(set(suggestions))  # Remove duplicates
 
+
     def _generate_creator_recommendations(
         self, creators: List[Dict[str, Any]]
     ) -> List[str]:
@@ -9433,9 +9760,9 @@ class MarketingAgent(BaseAgent):
         if not creators:
             return [
                 "Expand search criteria",
-                "Consider different niches",
-                "Adjust budget range",
-            ]
+                    "Consider different niches",
+                    "Adjust budget range",
+                    ]
 
         high_priority = [c for c in creators if c.get("outreach_priority") == "high"]
         medium_priority = [
@@ -9444,15 +9771,15 @@ class MarketingAgent(BaseAgent):
 
         if high_priority:
             recommendations.append(
-                f"Prioritize outreach to {len(high_priority)} high-potential creators"
+                f"Prioritize outreach to {len(high_priority)} high - potential creators"
             )
 
         if medium_priority:
             recommendations.append(
-                f"Consider {len(medium_priority)} medium-priority creators for bulk outreach"
+                f"Consider {len(medium_priority)} medium - priority creators for bulk outreach"
             )
 
-        # Platform-specific recommendations
+        # Platform - specific recommendations
         platforms = set()
         for creator in creators:
             platforms.update(creator.get("platforms", []))
@@ -9468,63 +9795,69 @@ class MarketingAgent(BaseAgent):
 
         return recommendations
 
+
     def _develop_campaign_marketing_strategy(
         self, campaign_task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Develop marketing strategy for the outreach campaign."""
         return {
             "content_themes": self._suggest_content_themes(campaign_task),
-            "posting_schedule": self._optimize_posting_schedule(campaign_task),
-            "cross_promotion": self._plan_cross_promotion(campaign_task),
-            "hashtag_strategy": self._develop_hashtag_strategy(campaign_task),
-        }
+                "posting_schedule": self._optimize_posting_schedule(campaign_task),
+                "cross_promotion": self._plan_cross_promotion(campaign_task),
+                "hashtag_strategy": self._develop_hashtag_strategy(campaign_task),
+                }
+
 
     def _define_campaign_success_metrics(
         self, campaign_task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Define success metrics for the campaign."""
         return {
-            "response_rate_target": "15-25%",
-            "conversion_rate_target": "5-10%",
-            "engagement_lift_target": "+30%",
-            "brand_mention_target": "+50%",
-            "roi_target": "3:1 minimum",
-        }
+            "response_rate_target": "15 - 25%",
+                "conversion_rate_target": "5 - 10%",
+                "engagement_lift_target": "+30%",
+                "brand_mention_target": "+50%",
+                "roi_target": "3:1 minimum",
+                }
+
 
     def _create_follow_up_schedule(
         self, campaign_task: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """Create automated follow-up schedule."""
+        """Create automated follow - up schedule."""
         return [
             {"day": 3, "action": "Send gentle reminder", "type": "email"},
-            {"day": 7, "action": "Share additional brand info", "type": "email"},
-            {"day": 14, "action": "Offer alternative collaboration", "type": "email"},
-            {
+                {"day": 7, "action": "Share additional brand info", "type": "email"},
+                {"day": 14, "action": "Offer alternative collaboration", "type": "email"},
+                {
                 "day": 21,
-                "action": "Final follow-up with special offer",
-                "type": "email",
-            },
-        ]
+                    "action": "Final follow - up with special offer",
+                    "type": "email",
+                    },
+                ]
+
 
     def _setup_outreach_tracking(self, outreach_task: Dict[str, Any]) -> Dict[str, Any]:
         """Setup tracking for outreach campaigns."""
         return {
             "email_tracking": "enabled",
-            "link_tracking": "enabled",
-            "response_tracking": "enabled",
-            "conversion_tracking": "enabled",
-            "utm_parameters": self._generate_utm_parameters(outreach_task),
-        }
+                "link_tracking": "enabled",
+                "response_tracking": "enabled",
+                "conversion_tracking": "enabled",
+                "utm_parameters": self._generate_utm_parameters(outreach_task),
+                }
+
 
     def _estimate_response_rate(self, outreach_task: Dict[str, Any]) -> Dict[str, Any]:
         """Estimate expected response rates."""
         return {
-            "industry_average": "10-15%",
-            "personalized_outreach": "20-30%",
-            "cold_outreach": "5-10%",
-            "warm_outreach": "25-40%",
-            "estimated_for_campaign": "15-25%",
-        }
+            "industry_average": "10 - 15%",
+                "personalized_outreach": "20 - 30%",
+                "cold_outreach": "5 - 10%",
+                "warm_outreach": "25 - 40%",
+                "estimated_for_campaign": "15 - 25%",
+                }
+
 
     def _generate_outreach_optimizations(
         self, outreach_task: Dict[str, Any]
@@ -9532,11 +9865,12 @@ class MarketingAgent(BaseAgent):
         """Generate optimization suggestions for outreach."""
         return [
             "Personalize subject lines with creator names",
-            "Include specific content examples in proposals",
-            "Mention mutual connections or collaborations",
-            "Offer flexible collaboration terms",
-            "Include clear next steps and timeline",
-        ]
+                "Include specific content examples in proposals",
+                "Mention mutual connections or collaborations",
+                "Offer flexible collaboration terms",
+                "Include clear next steps and timeline",
+                ]
+
 
     def _analyze_campaign_performance(
         self, metrics_result: Dict[str, Any]
@@ -9544,10 +9878,11 @@ class MarketingAgent(BaseAgent):
         """Analyze campaign performance metrics."""
         return {
             "performance_summary": "Campaign performing above industry average",
-            "top_performing_creators": metrics_result.get("top_creators", [])[:3],
-            "engagement_trends": "Steady growth in engagement rates",
-            "conversion_analysis": "Strong conversion from awareness to consideration",
-        }
+                "top_performing_creators": metrics_result.get("top_creators", [])[:3],
+                "engagement_trends": "Steady growth in engagement rates",
+                "conversion_analysis": "Strong conversion from awareness to consideration",
+                }
+
 
     def _calculate_partnership_roi(
         self, metrics_result: Dict[str, Any], task: Dict[str, Any]
@@ -9555,35 +9890,38 @@ class MarketingAgent(BaseAgent):
         """Calculate ROI for partnership campaigns."""
         return {
             "investment": task.get("budget", 1000),
-            "estimated_reach": metrics_result.get("total_reach", 50000),
-            "engagement_value": metrics_result.get("total_engagement", 2500)
+                "estimated_reach": metrics_result.get("total_reach", 50000),
+                "engagement_value": metrics_result.get("total_engagement", 2500)
             * 0.1,  # $0.10 per engagement
             "conversion_value": metrics_result.get("conversions", 25)
             * 50,  # $50 per conversion
             "estimated_roi": "3.2:1",
-        }
+                }
+
 
     def _generate_performance_recommendations(
         self, metrics_result: Dict[str, Any]
     ) -> List[str]:
-        """Generate performance-based recommendations."""
+        """Generate performance - based recommendations."""
         return [
             "Scale successful creator partnerships",
-            "Replicate high-performing content formats",
-            "Increase budget for top-performing platforms",
-            "Optimize posting times based on engagement data",
-            "Expand to similar creator profiles",
-        ]
+                "Replicate high - performing content formats",
+                "Increase budget for top - performing platforms",
+                "Optimize posting times based on engagement data",
+                "Expand to similar creator profiles",
+                ]
+
 
     def _suggest_campaign_next_steps(self, metrics_result: Dict[str, Any]) -> List[str]:
         """Suggest next steps based on campaign performance."""
         return [
-            "Launch follow-up campaign with successful creators",
-            "Expand to new creator segments",
-            "Develop long-term partnership agreements",
-            "Create creator ambassador program",
-            "Implement performance-based compensation",
-        ]
+            "Launch follow - up campaign with successful creators",
+                "Expand to new creator segments",
+                "Develop long - term partnership agreements",
+                "Create creator ambassador program",
+                "Implement performance - based compensation",
+                ]
+
 
     def _add_marketing_context(
         self, task: Dict[str, Any], result: Dict[str, Any]
@@ -9591,38 +9929,42 @@ class MarketingAgent(BaseAgent):
         """Add marketing context to results."""
         return {
             "campaign_integration": "Results can be integrated with existing marketing campaigns",
-            "brand_alignment": "Partnerships align with brand values and messaging",
-            "audience_overlap": "Creator audiences show strong overlap with target demographics",
-        }
+                "brand_alignment": "Partnerships align with brand values and messaging",
+                "audience_overlap": "Creator audiences show strong overlap with target demographics",
+                }
+
 
     def _identify_integration_opportunities(self, result: Dict[str, Any]) -> List[str]:
         """Identify opportunities for marketing integration."""
         return [
-            "Cross-promote on owned social channels",
-            "Feature partnerships in email newsletters",
-            "Include in paid advertising campaigns",
-            "Leverage for SEO and content marketing",
-            "Use for customer testimonials and case studies",
-        ]
+            "Cross - promote on owned social channels",
+                "Feature partnerships in email newsletters",
+                "Include in paid advertising campaigns",
+                "Leverage for SEO and content marketing",
+                "Use for customer testimonials and case studies",
+                ]
+
 
     def _suggest_scaling_strategies(self, result: Dict[str, Any]) -> List[str]:
         """Suggest strategies for scaling partnerships."""
         return [
             "Develop tiered partnership programs",
-            "Create automated onboarding processes",
-            "Implement performance tracking dashboards",
-            "Build creator community platforms",
-            "Establish referral programs for creators",
-        ]
+                "Create automated onboarding processes",
+                "Implement performance tracking dashboards",
+                "Build creator community platforms",
+                "Establish referral programs for creators",
+                ]
+
 
     def _suggest_content_themes(self, campaign_task: Dict[str, Any]) -> List[str]:
         """Suggest content themes for campaigns."""
         return [
             "behind_the_scenes",
-            "user_generated_content",
-            "product_demonstrations",
-            "lifestyle_integration",
-        ]
+                "user_generated_content",
+                "product_demonstrations",
+                "lifestyle_integration",
+                ]
+
 
     def _optimize_posting_schedule(
         self, campaign_task: Dict[str, Any]
@@ -9630,19 +9972,21 @@ class MarketingAgent(BaseAgent):
         """Optimize posting schedule for campaigns."""
         return {
             "monday": "9:00 AM, 7:00 PM",
-            "tuesday": "10:00 AM, 6:00 PM",
-            "wednesday": "11:00 AM, 8:00 PM",
-            "thursday": "9:00 AM, 7:00 PM",
-            "friday": "10:00 AM, 5:00 PM",
-        }
+                "tuesday": "10:00 AM, 6:00 PM",
+                "wednesday": "11:00 AM, 8:00 PM",
+                "thursday": "9:00 AM, 7:00 PM",
+                "friday": "10:00 AM, 5:00 PM",
+                }
+
 
     def _plan_cross_promotion(self, campaign_task: Dict[str, Any]) -> List[str]:
-        """Plan cross-promotion strategies."""
+        """Plan cross - promotion strategies."""
         return [
             "creator_story_takeovers",
-            "joint_live_sessions",
-            "collaborative_content_series",
-        ]
+                "joint_live_sessions",
+                "collaborative_content_series",
+                ]
+
 
     def _develop_hashtag_strategy(
         self, campaign_task: Dict[str, Any]
@@ -9650,29 +9994,32 @@ class MarketingAgent(BaseAgent):
         """Develop hashtag strategy for campaigns."""
         return {
             "brand_hashtags": ["#YourBrand", "#BrandPartnership"],
-            "campaign_hashtags": ["#CreatorCollab", "#Partnership2024"],
-            "trending_hashtags": ["#ContentCreator", "#Collaboration"],
-        }
+                "campaign_hashtags": ["#CreatorCollab", "#Partnership2024"],
+                "trending_hashtags": ["#ContentCreator", "#Collaboration"],
+                }
+
 
     def _generate_utm_parameters(self, outreach_task: Dict[str, Any]) -> Dict[str, str]:
         """Generate UTM parameters for tracking."""
         campaign_id = outreach_task.get("campaign_id", "partnership")
         return {
             "utm_source": "creator_outreach",
-            "utm_medium": "partnership",
-            "utm_campaign": campaign_id,
-            "utm_content": "outreach_email",
-        }
+                "utm_medium": "partnership",
+                "utm_campaign": campaign_id,
+                "utm_content": "outreach_email",
+                }
 
-    # Can't-Fail Marketing Plan Implementation
+    # Can't - Fail Marketing Plan Implementation
+
+
     async def _execute_cant_fail_marketing_plan(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        Execute the comprehensive Can't-Fail Marketing Plan.
+        Execute the comprehensive Can't - Fail Marketing Plan.
 
-        This method implements a multi-phase marketing strategy that combines
-        viral launch tactics, zero-budget marketing, and influencer outreach.
+        This method implements a multi - phase marketing strategy that combines
+        viral launch tactics, zero - budget marketing, and influencer outreach.
         """
         try:
             product_info = task.get("product_info", {})
@@ -9690,7 +10037,7 @@ class MarketingAgent(BaseAgent):
                 product_info, market_analysis
             )
 
-            # Phase 3: Multi-Channel Launch Strategy
+            # Phase 3: Multi - Channel Launch Strategy
             launch_strategy = await self._design_multi_channel_launch(
                 product_info, budget, timeline
             )
@@ -9708,20 +10055,20 @@ class MarketingAgent(BaseAgent):
             # Compile comprehensive marketing plan
             marketing_plan = {
                 "plan_id": str(uuid.uuid4()),
-                "product_name": product_info.get("name", "Product"),
-                "created_at": datetime.now().isoformat(),
-                "phases": {
+                    "product_name": product_info.get("name", "Product"),
+                    "created_at": datetime.now().isoformat(),
+                    "phases": {
                     "market_intelligence": market_analysis,
-                    "content_strategy": content_strategy,
-                    "launch_strategy": launch_strategy,
-                    "influencer_network": influencer_strategy,
-                    "conversion_optimization": conversion_strategy,
-                },
-                "timeline": timeline,
-                "budget_allocation": self._calculate_budget_allocation(budget),
-                "success_metrics": self._define_success_metrics(product_info),
-                "risk_mitigation": self._identify_risk_factors(market_analysis),
-            }
+                        "content_strategy": content_strategy,
+                        "launch_strategy": launch_strategy,
+                        "influencer_network": influencer_strategy,
+                        "conversion_optimization": conversion_strategy,
+                        },
+                    "timeline": timeline,
+                    "budget_allocation": self._calculate_budget_allocation(budget),
+                    "success_metrics": self._define_success_metrics(product_info),
+                    "risk_mitigation": self._identify_risk_factors(market_analysis),
+                    }
 
             # Store plan for execution tracking
             if not hasattr(self, "marketing_plans"):
@@ -9731,21 +10078,22 @@ class MarketingAgent(BaseAgent):
 
             return {
                 "success": True,
-                "plan_id": marketing_plan["plan_id"],
-                "marketing_plan": marketing_plan,
-                "message": f"Can't-Fail Marketing Plan created for '{product_info.get('name', 'Product')}'",
-                "next_steps": self._generate_action_plan(marketing_plan),
-                "estimated_reach": market_analysis.get("potential_reach", "TBD"),
-                "confidence_score": 0.95,  # Can't-Fail confidence level
+                    "plan_id": marketing_plan["plan_id"],
+                    "marketing_plan": marketing_plan,
+                    "message": f"Can't - Fail Marketing Plan created for '{product_info.get('name', 'Product')}'",
+                    "next_steps": self._generate_action_plan(marketing_plan),
+                    "estimated_reach": market_analysis.get("potential_reach", "TBD"),
+                    "confidence_score": 0.95,  # Can't - Fail confidence level
             }
 
         except Exception as e:
-            self.logger.error(f"Can't-Fail Marketing Plan execution failed: {e}")
+            self.logger.error(f"Can't - Fail Marketing Plan execution failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to create Can't-Fail Marketing Plan",
-            }
+                    "error": str(e),
+                    "message": "Failed to create Can't - Fail Marketing Plan",
+                    }
+
 
     async def _execute_viral_launch_strategy(
         self, task: Dict[str, Any]
@@ -9760,48 +10108,49 @@ class MarketingAgent(BaseAgent):
             # Viral mechanics implementation
             viral_elements = {
                 "scarcity_triggers": self._create_scarcity_campaigns(product_info),
-                "social_proof_engine": self._build_social_proof_system(product_info),
-                "referral_mechanics": self._design_referral_system(product_info),
-                "community_building": self._create_community_strategy(product_info),
-                "content_amplification": self._design_content_amplification(
+                    "social_proof_engine": self._build_social_proof_system(product_info),
+                    "referral_mechanics": self._design_referral_system(product_info),
+                    "community_building": self._create_community_strategy(product_info),
+                    "content_amplification": self._design_content_amplification(
                     product_info
                 ),
-            }
+                    }
 
             # Launch sequence orchestration
             launch_sequence = {
                 "pre_launch": self._create_pre_launch_buzz(product_info, launch_date),
-                "launch_day": self._orchestrate_launch_day(
+                    "launch_day": self._orchestrate_launch_day(
                     product_info, viral_elements
                 ),
-                "post_launch": self._sustain_momentum(product_info, viral_elements),
-            }
+                    "post_launch": self._sustain_momentum(product_info, viral_elements),
+                    }
 
             return {
                 "success": True,
-                "viral_strategy": {
+                    "viral_strategy": {
                     "viral_elements": viral_elements,
-                    "launch_sequence": launch_sequence,
-                    "viral_coefficient_target": 1.5,  # Each user brings 1.5 new users
+                        "launch_sequence": launch_sequence,
+                        "viral_coefficient_target": 1.5,  # Each user brings 1.5 new users
                     "projected_growth_rate": "300% in first 30 days",
-                },
-                "message": "Viral launch strategy activated",
-                "activation_timeline": self._generate_viral_timeline(launch_date),
-            }
+                        },
+                    "message": "Viral launch strategy activated",
+                    "activation_timeline": self._generate_viral_timeline(launch_date),
+                    }
 
         except Exception as e:
             self.logger.error(f"Viral launch strategy failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute viral launch strategy",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute viral launch strategy",
+                    }
+
 
     async def _execute_zero_budget_marketing(
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        Execute zero-budget marketing strategy using organic growth tactics.
+        Execute zero - budget marketing strategy using organic growth tactics.
         """
         try:
             product_info = task.get("product_info", {})
@@ -9809,57 +10158,58 @@ class MarketingAgent(BaseAgent):
             zero_budget_tactics = {
                 "content_marketing": {
                     "blog_strategy": self._create_seo_blog_strategy(product_info),
-                    "social_content": self._generate_viral_social_content(product_info),
-                    "video_content": self._create_youtube_strategy(product_info),
-                    "podcast_outreach": self._identify_podcast_opportunities(
+                        "social_content": self._generate_viral_social_content(product_info),
+                        "video_content": self._create_youtube_strategy(product_info),
+                        "podcast_outreach": self._identify_podcast_opportunities(
                         product_info
                     ),
-                },
-                "community_building": {
+                        },
+                    "community_building": {
                     "reddit_strategy": self._create_reddit_engagement_plan(
                         product_info
                     ),
-                    "discord_communities": self._identify_discord_targets(product_info),
-                    "facebook_groups": self._map_facebook_communities(product_info),
-                    "linkedin_networking": self._create_linkedin_strategy(product_info),
-                },
-                "partnership_tactics": {
+                        "discord_communities": self._identify_discord_targets(product_info),
+                        "facebook_groups": self._map_facebook_communities(product_info),
+                        "linkedin_networking": self._create_linkedin_strategy(product_info),
+                        },
+                    "partnership_tactics": {
                     "cross_promotion": self._identify_cross_promotion_partners(
                         product_info
                     ),
-                    "guest_posting": self._create_guest_posting_strategy(product_info),
-                    "collaboration_opportunities": self._find_collaboration_partners(
+                        "guest_posting": self._create_guest_posting_strategy(product_info),
+                        "collaboration_opportunities": self._find_collaboration_partners(
                         product_info
                     ),
-                    "affiliate_recruitment": self._design_affiliate_program(
+                        "affiliate_recruitment": self._design_affiliate_program(
                         product_info
                     ),
-                },
-                "pr_and_outreach": {
+                        },
+                    "pr_and_outreach": {
                     "press_release_strategy": self._create_press_release_plan(
                         product_info
                     ),
-                    "journalist_outreach": self._identify_media_contacts(product_info),
-                    "influencer_gifting": self._create_gifting_strategy(product_info),
-                    "community_events": self._plan_virtual_events(product_info),
-                },
-            }
+                        "journalist_outreach": self._identify_media_contacts(product_info),
+                        "influencer_gifting": self._create_gifting_strategy(product_info),
+                        "community_events": self._plan_virtual_events(product_info),
+                        },
+                    }
 
             return {
                 "success": True,
-                "zero_budget_strategy": zero_budget_tactics,
-                "implementation_timeline": self._create_zero_budget_timeline(),
-                "expected_roi": "Infinite (zero investment)",
-                "message": "Zero-budget marketing strategy activated",
-            }
+                    "zero_budget_strategy": zero_budget_tactics,
+                    "implementation_timeline": self._create_zero_budget_timeline(),
+                    "expected_roi": "Infinite (zero investment)",
+                    "message": "Zero - budget marketing strategy activated",
+                    }
 
         except Exception as e:
-            self.logger.error(f"Zero-budget marketing failed: {e}")
+            self.logger.error(f"Zero - budget marketing failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute zero-budget marketing",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute zero - budget marketing",
+                    }
+
 
     async def _execute_influencer_outreach(
         self, task: Dict[str, Any]
@@ -9876,58 +10226,61 @@ class MarketingAgent(BaseAgent):
                 "micro_influencers": self._identify_micro_influencers(
                     target_audience, budget
                 ),
-                "macro_influencers": self._identify_macro_influencers(
+                    "macro_influencers": self._identify_macro_influencers(
                     target_audience, budget
                 ),
-                "nano_influencers": self._identify_nano_influencers(target_audience),
-                "celebrity_partnerships": self._assess_celebrity_opportunities(
+                    "nano_influencers": self._identify_nano_influencers(target_audience),
+                    "celebrity_partnerships": self._assess_celebrity_opportunities(
                     product_info, budget
                 ),
-                "brand_ambassadors": self._create_ambassador_program(product_info),
-                "user_generated_content": self._design_ugc_campaigns(product_info),
-            }
+                    "brand_ambassadors": self._create_ambassador_program(product_info),
+                    "user_generated_content": self._design_ugc_campaigns(product_info),
+                    }
 
             outreach_plan = {
                 "contact_strategy": self._create_outreach_templates(product_info),
-                "negotiation_framework": self._define_partnership_terms(budget),
-                "content_guidelines": self._create_content_briefs(product_info),
-                "performance_tracking": self._setup_influencer_analytics(),
-                "relationship_management": self._create_crm_system(),
-            }
+                    "negotiation_framework": self._define_partnership_terms(budget),
+                    "content_guidelines": self._create_content_briefs(product_info),
+                    "performance_tracking": self._setup_influencer_analytics(),
+                    "relationship_management": self._create_crm_system(),
+                    }
 
             return {
                 "success": True,
-                "influencer_strategy": influencer_strategy,
-                "outreach_plan": outreach_plan,
-                "projected_reach": self._calculate_influencer_reach(
+                    "influencer_strategy": influencer_strategy,
+                    "outreach_plan": outreach_plan,
+                    "projected_reach": self._calculate_influencer_reach(
                     influencer_strategy
                 ),
-                "estimated_engagement": self._estimate_engagement_rates(
+                    "estimated_engagement": self._estimate_engagement_rates(
                     influencer_strategy
                 ),
-                "message": "Influencer outreach strategy activated",
-            }
+                    "message": "Influencer outreach strategy activated",
+                    }
 
         except Exception as e:
             self.logger.error(f"Influencer outreach failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute influencer outreach",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute influencer outreach",
+                    }
 
-    # Helper methods for Can't-Fail Marketing Plan
+    # Helper methods for Can't - Fail Marketing Plan
+
+
     async def _analyze_market_opportunity(
         self, product_info: Dict, target_audience: str
     ) -> Dict:
         """Analyze market opportunity and competitive landscape."""
         return {
             "market_size": "Large addressable market identified",
-            "competition_level": "Moderate with differentiation opportunities",
-            "target_segments": [target_audience, "early_adopters", "tech_enthusiasts"],
-            "potential_reach": "100K+ users in first 90 days",
-            "market_trends": ["Growing demand", "Underserved niche", "Viral potential"],
-        }
+                "competition_level": "Moderate with differentiation opportunities",
+                "target_segments": [target_audience, "early_adopters", "tech_enthusiasts"],
+                "potential_reach": "100K+ users in first 90 days",
+                "market_trends": ["Growing demand", "Underserved niche", "Viral potential"],
+                }
+
 
     async def _create_viral_content_strategy(
         self, product_info: Dict, market_analysis: Dict
@@ -9936,56 +10289,59 @@ class MarketingAgent(BaseAgent):
         return {
             "content_pillars": [
                 "Educational",
-                "Entertainment",
-                "Inspirational",
-                "Behind-the-scenes",
-            ],
-            "viral_formats": [
-                "Short-form video",
-                "Memes",
-                "Challenges",
-                "User stories",
-            ],
-            "posting_schedule": "3x daily across all platforms",
-            "engagement_tactics": [
+                    "Entertainment",
+                    "Inspirational",
+                    "Behind - the - scenes",
+                    ],
+                "viral_formats": [
+                "Short - form video",
+                    "Memes",
+                    "Challenges",
+                    "User stories",
+                    ],
+                "posting_schedule": "3x daily across all platforms",
+                "engagement_tactics": [
                 "Ask questions",
-                "Create polls",
-                "Share user content",
-                "Live sessions",
-            ],
-        }
+                    "Create polls",
+                    "Share user content",
+                    "Live sessions",
+                    ],
+                }
+
 
     async def _design_multi_channel_launch(
         self, product_info: Dict, budget: int, timeline: str
     ) -> Dict:
-        """Design multi-channel launch strategy."""
+        """Design multi - channel launch strategy."""
         channels = {
             "social_media": ["TikTok", "Instagram", "Twitter", "LinkedIn", "YouTube"],
-            "content_platforms": ["Medium", "Substack", "Reddit", "Hacker News"],
-            "community_platforms": ["Discord", "Slack communities", "Facebook groups"],
-            "pr_channels": ["Product Hunt", "Tech blogs", "Podcasts", "Press releases"],
-        }
+                "content_platforms": ["Medium", "Substack", "Reddit", "Hacker News"],
+                "community_platforms": ["Discord", "Slack communities", "Facebook groups"],
+                "pr_channels": ["Product Hunt", "Tech blogs", "Podcasts", "Press releases"],
+                }
 
         return {
             "channels": channels,
-            "launch_sequence": "Coordinated simultaneous launch across all channels",
-            "timeline": timeline,
-            "budget_per_channel": (
+                "launch_sequence": "Coordinated simultaneous launch across all channels",
+                "timeline": timeline,
+                "budget_per_channel": (
                 budget // len(channels["social_media"]) if budget > 0 else 0
             ),
-        }
+                }
+
 
     async def _build_influencer_network(
         self, product_info: Dict, target_audience: str
     ) -> Dict:
         """Build strategic influencer network."""
         return {
-            "micro_influencers": "50+ influencers (1K-100K followers)",
-            "nano_influencers": "200+ influencers (1K-10K followers)",
-            "industry_experts": "10+ thought leaders in relevant space",
-            "user_advocates": "Convert early users into brand ambassadors",
-            "partnership_strategy": "Value-first approach with long-term relationships",
-        }
+            "micro_influencers": "50+ influencers (1K - 100K followers)",
+                "nano_influencers": "200+ influencers (1K - 10K followers)",
+                "industry_experts": "10+ thought leaders in relevant space",
+                "user_advocates": "Convert early users into brand ambassadors",
+                "partnership_strategy": "Value - first approach with long - term relationships",
+                }
+
 
     async def _optimize_conversion_funnel(
         self, product_info: Dict, market_analysis: Dict
@@ -9993,89 +10349,94 @@ class MarketingAgent(BaseAgent):
         """Optimize conversion funnel for maximum ROI."""
         return {
             "awareness_stage": "Viral content + influencer partnerships",
-            "interest_stage": "Educational content + free resources",
-            "consideration_stage": "Social proof + user testimonials",
-            "conversion_stage": "Limited-time offers + scarcity tactics",
-            "retention_stage": "Community building + continuous value",
-            "advocacy_stage": "Referral programs + user-generated content",
-        }
+                "interest_stage": "Educational content + free resources",
+                "consideration_stage": "Social proof + user testimonials",
+                "conversion_stage": "Limited - time offers + scarcity tactics",
+                "retention_stage": "Community building + continuous value",
+                "advocacy_stage": "Referral programs + user - generated content",
+                }
+
 
     def _calculate_budget_allocation(self, budget: int) -> Dict:
         """Calculate optimal budget allocation across marketing channels."""
         if budget == 0:
-            return {"strategy": "Zero-budget organic growth tactics"}
+            return {"strategy": "Zero - budget organic growth tactics"}
 
         return {
             "content_creation": f"${budget * 0.3:.0f} (30%)",
-            "paid_advertising": f"${budget * 0.25:.0f} (25%)",
-            "influencer_partnerships": f"${budget * 0.20:.0f} (20%)",
-            "tools_and_software": f"${budget * 0.15:.0f} (15%)",
-            "contingency_fund": f"${budget * 0.10:.0f} (10%)",
-        }
+                "paid_advertising": f"${budget * 0.25:.0f} (25%)",
+                "influencer_partnerships": f"${budget * 0.20:.0f} (20%)",
+                "tools_and_software": f"${budget * 0.15:.0f} (15%)",
+                "contingency_fund": f"${budget * 0.10:.0f} (10%)",
+                }
+
 
     def _define_success_metrics(self, product_info: Dict) -> Dict:
         """Define key success metrics for marketing campaign."""
         return {
             "reach_metrics": ["Impressions", "Unique users reached", "Share of voice"],
-            "engagement_metrics": [
+                "engagement_metrics": [
                 "Likes",
-                "Comments",
-                "Shares",
-                "Saves",
-                "Click-through rate",
-            ],
-            "conversion_metrics": [
-                "Sign-ups",
-                "Downloads",
-                "Purchases",
-                "Trial activations",
-            ],
-            "retention_metrics": [
+                    "Comments",
+                    "Shares",
+                    "Saves",
+                    "Click - through rate",
+                    ],
+                "conversion_metrics": [
+                "Sign - ups",
+                    "Downloads",
+                    "Purchases",
+                    "Trial activations",
+                    ],
+                "retention_metrics": [
                 "User retention rate",
-                "Repeat purchases",
-                "Referral rate",
-            ],
-            "viral_metrics": [
+                    "Repeat purchases",
+                    "Referral rate",
+                    ],
+                "viral_metrics": [
                 "Viral coefficient",
-                "Organic share rate",
-                "User-generated content",
-            ],
-        }
+                    "Organic share rate",
+                    "User - generated content",
+                    ],
+                }
+
 
     def _identify_risk_factors(self, market_analysis: Dict) -> Dict:
         """Identify and mitigate potential risk factors."""
         return {
             "market_risks": [
                 "Competitor response",
-                "Market saturation",
-                "Economic downturn",
-            ],
-            "execution_risks": [
+                    "Market saturation",
+                    "Economic downturn",
+                    ],
+                "execution_risks": [
                 "Content quality",
-                "Timing issues",
-                "Resource constraints",
-            ],
-            "mitigation_strategies": [
+                    "Timing issues",
+                    "Resource constraints",
+                    ],
+                "mitigation_strategies": [
                 "Diversify marketing channels",
-                "Build strong community before launch",
-                "Create evergreen content",
-                "Maintain flexible budget allocation",
-            ],
-        }
+                    "Build strong community before launch",
+                    "Create evergreen content",
+                    "Maintain flexible budget allocation",
+                    ],
+                }
+
 
     def _generate_action_plan(self, marketing_plan: Dict) -> List[str]:
         """Generate actionable next steps for marketing plan execution."""
         return [
             "1. Set up analytics and tracking systems",
-            "2. Create content calendar for next 30 days",
-            "3. Reach out to identified influencers",
-            "4. Launch community building initiatives",
-            "5. Begin pre-launch buzz campaign",
-            "6. Prepare launch day coordination",
-            "7. Set up automated follow-up sequences",
-        ]
+                "2. Create content calendar for next 30 days",
+                "3. Reach out to identified influencers",
+                "4. Launch community building initiatives",
+                "5. Begin pre - launch buzz campaign",
+                "6. Prepare launch day coordination",
+                "7. Set up automated follow - up sequences",
+                ]
 
-    # Core Marketing Automation Methods - The 11 "Can't-Fail" Marketing Automations
+    # Core Marketing Automation Methods - The 11 "Can't - Fail" Marketing Automations
+
 
     async def _execute_content_marketing(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute comprehensive content marketing automation."""
@@ -10091,68 +10452,69 @@ class MarketingAgent(BaseAgent):
                 "content_pillars": self._define_content_pillars(
                     product_info, target_audience
                 ),
-                "content_calendar": self._create_content_calendar(
+                    "content_calendar": self._create_content_calendar(
                     product_info, 90
-                ),  # 90-day calendar
+                ),  # 90 - day calendar
                 "content_formats": self._select_content_formats(target_audience),
-                "distribution_channels": self._map_distribution_channels(
+                    "distribution_channels": self._map_distribution_channels(
                     target_audience
                 ),
-                "seo_strategy": self._develop_seo_content_strategy(product_info),
-            }
+                    "seo_strategy": self._develop_seo_content_strategy(product_info),
+                    }
 
             # Content production automation
             content_production = {
                 "blog_posts": await self._generate_blog_content_series(
                     product_info, content_strategy
                 ),
-                "social_content": await self._generate_social_content_batch(
+                    "social_content": await self._generate_social_content_batch(
                     product_info, content_strategy
                 ),
-                "video_scripts": await self._generate_video_content_scripts(
+                    "video_scripts": await self._generate_video_content_scripts(
                     product_info, content_strategy
                 ),
-                "email_sequences": await self._generate_email_content_series(
+                    "email_sequences": await self._generate_email_content_series(
                     product_info, content_strategy
                 ),
-                "lead_magnets": await self._create_lead_magnet_content(
+                    "lead_magnets": await self._create_lead_magnet_content(
                     product_info, content_strategy
                 ),
-            }
+                    }
 
             # Content optimization and analytics
             content_optimization = {
                 "performance_tracking": self._setup_content_analytics(content_strategy),
-                "a_b_testing": self._design_content_ab_tests(content_production),
-                "optimization_schedule": self._create_optimization_timeline(),
-                "repurposing_strategy": self._design_content_repurposing(
+                    "a_b_testing": self._design_content_ab_tests(content_production),
+                    "optimization_schedule": self._create_optimization_timeline(),
+                    "repurposing_strategy": self._design_content_repurposing(
                     content_production
                 ),
-            }
+                    }
 
             return {
                 "success": True,
-                "content_marketing": {
+                    "content_marketing": {
                     "strategy": content_strategy,
-                    "production": content_production,
-                    "optimization": content_optimization,
-                    "projected_reach": "500K+ impressions in 90 days",
-                    "expected_leads": "2,500+ qualified leads",
-                },
-                "message": "Content marketing automation activated",
-                "next_actions": self._generate_content_action_plan(content_strategy),
-            }
+                        "production": content_production,
+                        "optimization": content_optimization,
+                        "projected_reach": "500K+ impressions in 90 days",
+                        "expected_leads": "2,500+ qualified leads",
+                        },
+                    "message": "Content marketing automation activated",
+                    "next_actions": self._generate_content_action_plan(content_strategy),
+                    }
 
         except Exception as e:
             self.logger.error(f"Content marketing automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute content marketing automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute content marketing automation",
+                    }
+
 
     async def _execute_paid_advertising(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute multi-platform paid advertising automation."""
+        """Execute multi - platform paid advertising automation."""
         try:
             product_info = task.get("product_info", {})
             budget = task.get("budget", 1000)
@@ -10166,69 +10528,70 @@ class MarketingAgent(BaseAgent):
                 "google_ads": self._design_google_ads_strategy(
                     product_info, budget * 0.4, target_audience
                 ),
-                "facebook_ads": self._design_facebook_ads_strategy(
+                    "facebook_ads": self._design_facebook_ads_strategy(
                     product_info, budget * 0.3, target_audience
                 ),
-                "linkedin_ads": self._design_linkedin_ads_strategy(
+                    "linkedin_ads": self._design_linkedin_ads_strategy(
                     product_info, budget * 0.15, target_audience
                 ),
-                "youtube_ads": self._design_youtube_ads_strategy(
+                    "youtube_ads": self._design_youtube_ads_strategy(
                     product_info, budget * 0.15, target_audience
                 ),
-            }
+                    }
 
             # Campaign creation and optimization
             campaign_management = {
                 "campaign_structure": self._create_campaign_structure(
                     platform_strategy
                 ),
-                "ad_creative_variants": await self._generate_ad_creatives(
+                    "ad_creative_variants": await self._generate_ad_creatives(
                     product_info, platform_strategy
                 ),
-                "targeting_optimization": self._optimize_audience_targeting(
+                    "targeting_optimization": self._optimize_audience_targeting(
                     target_audience, platform_strategy
                 ),
-                "bidding_strategy": self._design_bidding_strategies(
+                    "bidding_strategy": self._design_bidding_strategies(
                     budget, campaign_objectives
                 ),
-                "conversion_tracking": self._setup_conversion_tracking(
+                    "conversion_tracking": self._setup_conversion_tracking(
                     platform_strategy
                 ),
-            }
+                    }
 
             # Performance monitoring and optimization
             performance_optimization = {
                 "real_time_monitoring": self._setup_ad_performance_monitoring(),
-                "automated_bidding": self._configure_automated_bidding(
+                    "automated_bidding": self._configure_automated_bidding(
                     campaign_management
                 ),
-                "creative_rotation": self._setup_creative_rotation_testing(),
-                "budget_optimization": self._implement_budget_optimization(
+                    "creative_rotation": self._setup_creative_rotation_testing(),
+                    "budget_optimization": self._implement_budget_optimization(
                     budget, platform_strategy
                 ),
-                "roi_tracking": self._setup_roi_tracking_system(),
-            }
+                    "roi_tracking": self._setup_roi_tracking_system(),
+                    }
 
             return {
                 "success": True,
-                "paid_advertising": {
+                    "paid_advertising": {
                     "platform_strategy": platform_strategy,
-                    "campaign_management": campaign_management,
-                    "performance_optimization": performance_optimization,
-                    "projected_roas": "4:1 return on ad spend",
-                    "expected_conversions": f"{int(budget * 0.05)} conversions",
-                },
-                "message": "Paid advertising automation activated",
-                "budget_allocation": self._calculate_budget_allocation(budget),
-            }
+                        "campaign_management": campaign_management,
+                        "performance_optimization": performance_optimization,
+                        "projected_roas": "4:1 return on ad spend",
+                        "expected_conversions": f"{int(budget * 0.05)} conversions",
+                        },
+                    "message": "Paid advertising automation activated",
+                    "budget_allocation": self._calculate_budget_allocation(budget),
+                    }
 
         except Exception as e:
             self.logger.error(f"Paid advertising automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute paid advertising automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute paid advertising automation",
+                    }
+
 
     async def _execute_seo_optimization(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute comprehensive SEO optimization automation."""
@@ -10240,58 +10603,59 @@ class MarketingAgent(BaseAgent):
             # Technical SEO audit and optimization
             technical_seo = {
                 "site_audit": self._perform_technical_seo_audit(product_info),
-                "page_speed_optimization": self._optimize_page_speed(),
-                "mobile_optimization": self._optimize_mobile_experience(),
-                "schema_markup": self._implement_schema_markup(product_info),
-                "sitemap_optimization": self._optimize_sitemap_structure(),
-            }
+                    "page_speed_optimization": self._optimize_page_speed(),
+                    "mobile_optimization": self._optimize_mobile_experience(),
+                    "schema_markup": self._implement_schema_markup(product_info),
+                    "sitemap_optimization": self._optimize_sitemap_structure(),
+                    }
 
             # Content SEO strategy
             content_seo = {
                 "keyword_research": await self._conduct_keyword_research(
                     product_info, target_keywords
                 ),
-                "content_optimization": await self._optimize_existing_content(
+                    "content_optimization": await self._optimize_existing_content(
                     product_info
                 ),
-                "new_content_strategy": await self._develop_seo_content_strategy(
+                    "new_content_strategy": await self._develop_seo_content_strategy(
                     product_info
                 ),
-                "internal_linking": self._optimize_internal_linking_structure(),
-                "meta_optimization": self._optimize_meta_tags_and_descriptions(),
-            }
+                    "internal_linking": self._optimize_internal_linking_structure(),
+                    "meta_optimization": self._optimize_meta_tags_and_descriptions(),
+                    }
 
-            # Off-page SEO and link building
+            # Off - page SEO and link building
             offpage_seo = {
                 "backlink_strategy": self._develop_backlink_strategy(
                     competitor_analysis
                 ),
-                "local_seo": self._optimize_local_seo(product_info),
-                "social_signals": self._optimize_social_signals(),
-                "brand_mentions": self._monitor_brand_mentions(),
-                "authority_building": self._develop_authority_building_strategy(),
-            }
+                    "local_seo": self._optimize_local_seo(product_info),
+                    "social_signals": self._optimize_social_signals(),
+                    "brand_mentions": self._monitor_brand_mentions(),
+                    "authority_building": self._develop_authority_building_strategy(),
+                    }
 
             return {
                 "success": True,
-                "seo_optimization": {
+                    "seo_optimization": {
                     "technical_seo": technical_seo,
-                    "content_seo": content_seo,
-                    "offpage_seo": offpage_seo,
-                    "projected_traffic_increase": "300% organic traffic growth in 6 months",
-                    "target_rankings": "Top 3 positions for primary keywords",
-                },
-                "message": "SEO optimization automation activated",
-                "optimization_timeline": self._create_seo_timeline(),
-            }
+                        "content_seo": content_seo,
+                        "offpage_seo": offpage_seo,
+                        "projected_traffic_increase": "300% organic traffic growth in 6 months",
+                        "target_rankings": "Top 3 positions for primary keywords",
+                        },
+                    "message": "SEO optimization automation activated",
+                    "optimization_timeline": self._create_seo_timeline(),
+                    }
 
         except Exception as e:
             self.logger.error(f"SEO optimization automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute SEO optimization automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute SEO optimization automation",
+                    }
+
 
     async def _execute_affiliate_marketing(
         self, task: Dict[str, Any]
@@ -10309,56 +10673,57 @@ class MarketingAgent(BaseAgent):
                 "program_structure": self._design_affiliate_program_structure(
                     commission_structure
                 ),
-                "tracking_system": self._setup_affiliate_tracking_system(),
-                "payment_processing": self._configure_affiliate_payments(),
-                "terms_and_conditions": self._create_affiliate_terms(),
-                "onboarding_process": self._design_affiliate_onboarding(),
-            }
+                    "tracking_system": self._setup_affiliate_tracking_system(),
+                    "payment_processing": self._configure_affiliate_payments(),
+                    "terms_and_conditions": self._create_affiliate_terms(),
+                    "onboarding_process": self._design_affiliate_onboarding(),
+                    }
 
             # Affiliate recruitment and management
             affiliate_management = {
                 "recruitment_strategy": await self._develop_affiliate_recruitment_strategy(
                     target_affiliates
                 ),
-                "affiliate_discovery": await self._discover_potential_affiliates(
+                    "affiliate_discovery": await self._discover_potential_affiliates(
                     product_info
                 ),
-                "outreach_campaigns": await self._create_affiliate_outreach_campaigns(),
-                "relationship_management": self._setup_affiliate_relationship_management(),
-                "performance_monitoring": self._implement_affiliate_performance_tracking(),
-            }
+                    "outreach_campaigns": await self._create_affiliate_outreach_campaigns(),
+                    "relationship_management": self._setup_affiliate_relationship_management(),
+                    "performance_monitoring": self._implement_affiliate_performance_tracking(),
+                    }
 
             # Marketing materials and support
             marketing_support = {
                 "promotional_materials": await self._create_affiliate_marketing_materials(
                     product_info
                 ),
-                "training_resources": await self._develop_affiliate_training_program(),
-                "communication_system": self._setup_affiliate_communication_system(),
-                "incentive_programs": self._design_affiliate_incentive_programs(),
-                "performance_analytics": self._create_affiliate_analytics_dashboard(),
-            }
+                    "training_resources": await self._develop_affiliate_training_program(),
+                    "communication_system": self._setup_affiliate_communication_system(),
+                    "incentive_programs": self._design_affiliate_incentive_programs(),
+                    "performance_analytics": self._create_affiliate_analytics_dashboard(),
+                    }
 
             return {
                 "success": True,
-                "affiliate_marketing": {
+                    "affiliate_marketing": {
                     "program_setup": program_setup,
-                    "affiliate_management": affiliate_management,
-                    "marketing_support": marketing_support,
-                    "projected_affiliates": "500+ active affiliates in 90 days",
-                    "expected_revenue": f'{commission_structure["rate"]}% revenue increase through affiliates',
-                },
-                "message": "Affiliate marketing automation activated",
-                "recruitment_plan": self._generate_affiliate_recruitment_plan(),
-            }
+                        "affiliate_management": affiliate_management,
+                        "marketing_support": marketing_support,
+                        "projected_affiliates": "500+ active affiliates in 90 days",
+                        "expected_revenue": f'{commission_structure["rate"]}% revenue increase through affiliates',
+                        },
+                    "message": "Affiliate marketing automation activated",
+                    "recruitment_plan": self._generate_affiliate_recruitment_plan(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Affiliate marketing automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute affiliate marketing automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute affiliate marketing automation",
+                    }
+
 
     async def _execute_social_media_automation(
         self, task: Dict[str, Any]
@@ -10371,77 +10736,78 @@ class MarketingAgent(BaseAgent):
             )
             posting_frequency = task.get("posting_frequency", "daily")
 
-            # Platform-specific strategies
+            # Platform - specific strategies
             platform_strategies = {
                 "twitter": self._develop_twitter_strategy(
                     product_info, posting_frequency
                 ),
-                "linkedin": self._develop_linkedin_strategy(
+                    "linkedin": self._develop_linkedin_strategy(
                     product_info, posting_frequency
                 ),
-                "instagram": self._develop_instagram_strategy(
+                    "instagram": self._develop_instagram_strategy(
                     product_info, posting_frequency
                 ),
-                "facebook": self._develop_facebook_strategy(
+                    "facebook": self._develop_facebook_strategy(
                     product_info, posting_frequency
                 ),
-                "tiktok": self._develop_tiktok_strategy(
+                    "tiktok": self._develop_tiktok_strategy(
                     product_info, posting_frequency
                 ),
-            }
+                    }
 
             # Content automation and scheduling
             content_automation = {
                 "content_calendar": await self._create_social_media_calendar(
                     product_info, 90
                 ),
-                "automated_posting": self._setup_automated_posting_system(
+                    "automated_posting": self._setup_automated_posting_system(
                     platform_strategies
                 ),
-                "content_generation": await self._generate_social_media_content_batch(
+                    "content_generation": await self._generate_social_media_content_batch(
                     product_info
                 ),
-                "hashtag_optimization": self._optimize_hashtag_strategies(
+                    "hashtag_optimization": self._optimize_hashtag_strategies(
                     platform_strategies
                 ),
-                "visual_content": await self._generate_visual_content_library(
+                    "visual_content": await self._generate_visual_content_library(
                     product_info
                 ),
-            }
+                    }
 
             # Engagement and community management
             engagement_automation = {
                 "automated_responses": self._setup_automated_response_system(),
-                "community_monitoring": self._implement_social_listening(),
-                "influencer_engagement": self._automate_influencer_outreach(),
-                "user_generated_content": self._encourage_ugc_campaigns(),
-                "crisis_management": self._setup_social_crisis_management(),
-            }
+                    "community_monitoring": self._implement_social_listening(),
+                    "influencer_engagement": self._automate_influencer_outreach(),
+                    "user_generated_content": self._encourage_ugc_campaigns(),
+                    "crisis_management": self._setup_social_crisis_management(),
+                    }
 
             return {
                 "success": True,
-                "social_media_automation": {
+                    "social_media_automation": {
                     "platform_strategies": {
                         k: v
                         for k, v in platform_strategies.items()
                         if k in target_platforms
                     },
-                    "content_automation": content_automation,
-                    "engagement_automation": engagement_automation,
-                    "projected_growth": "1000% follower growth in 6 months",
-                    "expected_engagement": "25% average engagement rate",
-                },
-                "message": "Social media automation activated",
-                "content_schedule": self._generate_posting_schedule(posting_frequency),
-            }
+                        "content_automation": content_automation,
+                        "engagement_automation": engagement_automation,
+                        "projected_growth": "1000% follower growth in 6 months",
+                        "expected_engagement": "25% average engagement rate",
+                        },
+                    "message": "Social media automation activated",
+                    "content_schedule": self._generate_posting_schedule(posting_frequency),
+                    }
 
         except Exception as e:
             self.logger.error(f"Social media automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute social media automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute social media automation",
+                    }
+
 
     async def _execute_lead_generation(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute comprehensive lead generation automation."""
@@ -10455,56 +10821,57 @@ class MarketingAgent(BaseAgent):
                 "content_offers": await self._create_lead_magnet_content_offers(
                     product_info
                 ),
-                "free_tools": await self._develop_free_tool_lead_magnets(product_info),
-                "webinars": await self._create_webinar_lead_magnets(product_info),
-                "email_courses": await self._develop_email_course_lead_magnets(
+                    "free_tools": await self._develop_free_tool_lead_magnets(product_info),
+                    "webinars": await self._create_webinar_lead_magnets(product_info),
+                    "email_courses": await self._develop_email_course_lead_magnets(
                     product_info
                 ),
-                "templates": await self._create_template_lead_magnets(product_info),
-            }
+                    "templates": await self._create_template_lead_magnets(product_info),
+                    }
 
-            # Multi-channel lead capture strategy
+            # Multi - channel lead capture strategy
             lead_capture = {
                 "landing_pages": await self._create_lead_capture_landing_pages(
                     product_info, lead_magnets
                 ),
-                "popup_campaigns": self._design_popup_lead_capture_campaigns(),
-                "social_media_capture": self._setup_social_media_lead_capture(),
-                "content_upgrades": self._create_content_upgrade_lead_capture(),
-                "exit_intent_campaigns": self._setup_exit_intent_lead_capture(),
-            }
+                    "popup_campaigns": self._design_popup_lead_capture_campaigns(),
+                    "social_media_capture": self._setup_social_media_lead_capture(),
+                    "content_upgrades": self._create_content_upgrade_lead_capture(),
+                    "exit_intent_campaigns": self._setup_exit_intent_lead_capture(),
+                    }
 
             # Lead nurturing and qualification
             lead_nurturing = {
                 "email_sequences": await self._create_lead_nurturing_sequences(
                     product_info
                 ),
-                "lead_scoring": self._implement_lead_scoring_system(target_audience),
-                "behavioral_triggers": self._setup_behavioral_trigger_campaigns(),
-                "personalization": self._implement_lead_personalization_system(),
-                "qualification_process": self._design_lead_qualification_workflow(),
-            }
+                    "lead_scoring": self._implement_lead_scoring_system(target_audience),
+                    "behavioral_triggers": self._setup_behavioral_trigger_campaigns(),
+                    "personalization": self._implement_lead_personalization_system(),
+                    "qualification_process": self._design_lead_qualification_workflow(),
+                    }
 
             return {
                 "success": True,
-                "lead_generation": {
+                    "lead_generation": {
                     "lead_magnets": lead_magnets,
-                    "lead_capture": lead_capture,
-                    "lead_nurturing": lead_nurturing,
-                    "projected_leads": f'{lead_goals["quantity"]}+ qualified leads per month',
-                    "conversion_rate": "15% lead-to-customer conversion rate",
-                },
-                "message": "Lead generation automation activated",
-                "optimization_plan": self._create_lead_generation_optimization_plan(),
-            }
+                        "lead_capture": lead_capture,
+                        "lead_nurturing": lead_nurturing,
+                        "projected_leads": f'{lead_goals["quantity"]}+ qualified leads per month',
+                        "conversion_rate": "15% lead - to - customer conversion rate",
+                        },
+                    "message": "Lead generation automation activated",
+                    "optimization_plan": self._create_lead_generation_optimization_plan(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Lead generation automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute lead generation automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute lead generation automation",
+                    }
+
 
     async def _execute_conversion_optimization(
         self, task: Dict[str, Any]
@@ -10520,54 +10887,55 @@ class MarketingAgent(BaseAgent):
             # Conversion funnel analysis and optimization
             funnel_optimization = {
                 "funnel_analysis": self._analyze_conversion_funnel(product_info),
-                "bottleneck_identification": self._identify_conversion_bottlenecks(),
-                "user_journey_mapping": self._map_user_conversion_journey(),
-                "drop_off_analysis": self._analyze_funnel_drop_off_points(),
-                "optimization_opportunities": self._identify_optimization_opportunities(),
-            }
+                    "bottleneck_identification": self._identify_conversion_bottlenecks(),
+                    "user_journey_mapping": self._map_user_conversion_journey(),
+                    "drop_off_analysis": self._analyze_funnel_drop_off_points(),
+                    "optimization_opportunities": self._identify_optimization_opportunities(),
+                    }
 
-            # A/B testing and experimentation
+            # A / B testing and experimentation
             ab_testing = {
                 "test_strategy": self._develop_ab_testing_strategy(optimization_goals),
-                "landing_page_tests": await self._create_landing_page_ab_tests(
+                    "landing_page_tests": await self._create_landing_page_ab_tests(
                     product_info
                 ),
-                "checkout_optimization": self._design_checkout_optimization_tests(),
-                "pricing_tests": self._create_pricing_optimization_tests(),
-                "copy_optimization": await self._generate_copy_optimization_tests(
+                    "checkout_optimization": self._design_checkout_optimization_tests(),
+                    "pricing_tests": self._create_pricing_optimization_tests(),
+                    "copy_optimization": await self._generate_copy_optimization_tests(
                     product_info
                 ),
-            }
+                    }
 
             # Personalization and dynamic optimization
             personalization = {
                 "dynamic_content": self._implement_dynamic_content_optimization(),
-                "behavioral_targeting": self._setup_behavioral_targeting_system(),
-                "geo_targeting": self._implement_geo_based_optimization(),
-                "device_optimization": self._optimize_for_device_types(),
-                "real_time_optimization": self._setup_real_time_conversion_optimization(),
-            }
+                    "behavioral_targeting": self._setup_behavioral_targeting_system(),
+                    "geo_targeting": self._implement_geo_based_optimization(),
+                    "device_optimization": self._optimize_for_device_types(),
+                    "real_time_optimization": self._setup_real_time_conversion_optimization(),
+                    }
 
             return {
                 "success": True,
-                "conversion_optimization": {
+                    "conversion_optimization": {
                     "funnel_optimization": funnel_optimization,
-                    "ab_testing": ab_testing,
-                    "personalization": personalization,
-                    "projected_improvement": f'{(optimization_goals["target_rate"] / current_conversion_rate - 1) * 100:.1f}% conversion rate increase',
-                    "expected_revenue_impact": f'{((optimization_goals["target_rate"] / current_conversion_rate - 1) * 100):.0f}% revenue increase',
-                },
-                "message": "Conversion optimization automation activated",
-                "testing_roadmap": self._create_conversion_testing_roadmap(),
-            }
+                        "ab_testing": ab_testing,
+                        "personalization": personalization,
+                        "projected_improvement": f'{(optimization_goals["target_rate"] / current_conversion_rate - 1) * 100:.1f}% conversion rate increase',
+                        "expected_revenue_impact": f'{((optimization_goals["target_rate"] / current_conversion_rate - 1) * 100):.0f}% revenue increase',
+                        },
+                    "message": "Conversion optimization automation activated",
+                    "testing_roadmap": self._create_conversion_testing_roadmap(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Conversion optimization automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute conversion optimization automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute conversion optimization automation",
+                    }
+
 
     async def _execute_retention_marketing(
         self, task: Dict[str, Any]
@@ -10587,451 +10955,498 @@ class MarketingAgent(BaseAgent):
                 "onboarding_automation": await self._create_customer_onboarding_automation(
                     product_info
                 ),
-                "engagement_campaigns": await self._develop_engagement_campaigns(
+                    "engagement_campaigns": await self._develop_engagement_campaigns(
                     customer_segments
                 ),
-                "milestone_celebrations": self._create_milestone_celebration_campaigns(),
-                "reactivation_campaigns": await self._design_customer_reactivation_campaigns(),
-                "loyalty_programs": self._develop_customer_loyalty_programs(),
-            }
+                    "milestone_celebrations": self._create_milestone_celebration_campaigns(),
+                    "reactivation_campaigns": await self._design_customer_reactivation_campaigns(),
+                    "loyalty_programs": self._develop_customer_loyalty_programs(),
+                    }
 
             # Personalized retention strategies
             personalized_retention = {
                 "behavioral_segmentation": self._implement_behavioral_customer_segmentation(),
-                "predictive_churn_modeling": self._setup_churn_prediction_system(),
-                "personalized_offers": await self._create_personalized_retention_offers(
+                    "predictive_churn_modeling": self._setup_churn_prediction_system(),
+                    "personalized_offers": await self._create_personalized_retention_offers(
                     product_info
                 ),
-                "dynamic_pricing": self._implement_dynamic_retention_pricing(),
-                "content_personalization": await self._personalize_retention_content(
+                    "dynamic_pricing": self._implement_dynamic_retention_pricing(),
+                    "content_personalization": await self._personalize_retention_content(
                     customer_segments
                 ),
-            }
+                    }
 
-            # Multi-channel retention campaigns
+            # Multi - channel retention campaigns
             multichannel_retention = {
                 "email_retention": await self._create_email_retention_campaigns(
                     product_info
                 ),
-                "sms_campaigns": self._setup_sms_retention_campaigns(),
-                "push_notifications": self._design_push_notification_retention(),
-                "in_app_messaging": self._create_in_app_retention_messaging(),
-                "social_media_retention": self._develop_social_retention_campaigns(),
-            }
+                    "sms_campaigns": self._setup_sms_retention_campaigns(),
+                    "push_notifications": self._design_push_notification_retention(),
+                    "in_app_messaging": self._create_in_app_retention_messaging(),
+                    "social_media_retention": self._develop_social_retention_campaigns(),
+                    }
 
             return {
                 "success": True,
-                "retention_marketing": {
+                    "retention_marketing": {
                     "lifecycle_management": lifecycle_management,
-                    "personalized_retention": personalized_retention,
-                    "multichannel_retention": multichannel_retention,
-                    "projected_churn_reduction": f'{retention_goals["churn_reduction"]}% reduction in customer churn',
-                    "expected_ltv_increase": f'{retention_goals["ltv_increase"]}% increase in customer lifetime value',
-                },
-                "message": "Retention marketing automation activated",
-                "retention_strategy": self._create_comprehensive_retention_strategy(),
-            }
+                        "personalized_retention": personalized_retention,
+                        "multichannel_retention": multichannel_retention,
+                        "projected_churn_reduction": f'{retention_goals["churn_reduction"]}% reduction in customer churn',
+                        "expected_ltv_increase": f'{retention_goals["ltv_increase"]}% increase in customer lifetime value',
+                        },
+                    "message": "Retention marketing automation activated",
+                    "retention_strategy": self._create_comprehensive_retention_strategy(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Retention marketing automation failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "message": "Failed to execute retention marketing automation",
-            }
+                    "error": str(e),
+                    "message": "Failed to execute retention marketing automation",
+                    }
 
-    # Additional helper methods for viral and zero-budget strategies
+    # Additional helper methods for viral and zero - budget strategies
+
+
     def _create_scarcity_campaigns(self, product_info: Dict) -> Dict:
-        """Create scarcity-based marketing campaigns."""
+        """Create scarcity - based marketing campaigns."""
         return {
             "limited_time_offers": "Early bird pricing for first 48 hours",
-            "exclusive_access": "VIP beta access for first 100 users",
-            "countdown_timers": "Launch countdown across all platforms",
-            "stock_limitations": "Limited edition features or bonuses",
-        }
+                "exclusive_access": "VIP beta access for first 100 users",
+                "countdown_timers": "Launch countdown across all platforms",
+                "stock_limitations": "Limited edition features or bonuses",
+                }
+
 
     def _build_social_proof_system(self, product_info: Dict) -> Dict:
         """Build comprehensive social proof system."""
         return {
             "testimonial_collection": "Automated testimonial gathering from beta users",
-            "case_studies": "Detailed success stories from early adopters",
-            "social_counters": "Real-time user count and activity displays",
-            "media_mentions": "Press coverage and industry recognition",
-            "expert_endorsements": "Quotes from industry thought leaders",
-        }
+                "case_studies": "Detailed success stories from early adopters",
+                "social_counters": "Real - time user count and activity displays",
+                "media_mentions": "Press coverage and industry recognition",
+                "expert_endorsements": "Quotes from industry thought leaders",
+                }
+
 
     def _design_referral_system(self, product_info: Dict) -> Dict:
         """Design viral referral mechanics."""
         return {
-            "referral_rewards": "Double-sided incentives for referrer and referee",
-            "sharing_mechanics": "One-click sharing with personalized codes",
-            "gamification": "Leaderboards and achievement badges",
-            "viral_loops": "Multi-level referral bonuses",
-            "social_integration": "Native sharing to all major platforms",
-        }
+            "referral_rewards": "Double - sided incentives for referrer and referee",
+                "sharing_mechanics": "One - click sharing with personalized codes",
+                "gamification": "Leaderboards and achievement badges",
+                "viral_loops": "Multi - level referral bonuses",
+                "social_integration": "Native sharing to all major platforms",
+                }
+
 
     def _create_community_strategy(self, product_info: Dict) -> Dict:
         """Create community building strategy."""
         return {
             "platform_selection": "Discord + Reddit + Facebook Groups",
-            "content_strategy": "Daily value-driven posts and discussions",
-            "moderation_guidelines": "Community-first approach with clear rules",
-            "engagement_tactics": "AMAs, contests, and collaborative projects",
-            "growth_mechanics": "Invite-only periods and exclusive content",
-        }
+                "content_strategy": "Daily value - driven posts and discussions",
+                "moderation_guidelines": "Community - first approach with clear rules",
+                "engagement_tactics": "AMAs, contests, and collaborative projects",
+                "growth_mechanics": "Invite - only periods and exclusive content",
+                }
+
 
     def _design_content_amplification(self, product_info: Dict) -> Dict:
         """Design content amplification strategy."""
         return {
             "cross_platform_posting": "Adapted content for each platform",
-            "influencer_collaboration": "Co-created content with key influencers",
-            "user_generated_content": "Hashtag campaigns and user challenges",
-            "content_repurposing": "Single content piece across multiple formats",
-            "trending_hijacking": "Real-time trend participation",
-        }
+                "influencer_collaboration": "Co - created content with key influencers",
+                "user_generated_content": "Hashtag campaigns and user challenges",
+                "content_repurposing": "Single content piece across multiple formats",
+                "trending_hijacking": "Real - time trend participation",
+                }
+
 
     def _create_pre_launch_buzz(self, product_info: Dict, launch_date: str) -> Dict:
-        """Create pre-launch buzz campaign."""
+        """Create pre - launch buzz campaign."""
         return {
-            "teaser_campaign": "30-day countdown with daily reveals",
-            "beta_program": "Exclusive early access for select users",
-            "behind_scenes": "Development journey and founder story",
-            "partnerships": "Strategic collaborations announced weekly",
-            "media_outreach": "Press kit distribution to tech journalists",
-        }
+            "teaser_campaign": "30 - day countdown with daily reveals",
+                "beta_program": "Exclusive early access for select users",
+                "behind_scenes": "Development journey and founder story",
+                "partnerships": "Strategic collaborations announced weekly",
+                "media_outreach": "Press kit distribution to tech journalists",
+                }
+
 
     def _orchestrate_launch_day(self, product_info: Dict, viral_elements: Dict) -> Dict:
         """Orchestrate coordinated launch day activities."""
         return {
-            "timeline": "Hour-by-hour coordinated posting schedule",
-            "live_events": "Launch livestream with Q&A session",
-            "social_storm": "Coordinated posting across all channels",
-            "influencer_activation": "Synchronized influencer content drops",
-            "community_celebration": "Launch party in community spaces",
-        }
+            "timeline": "Hour - by - hour coordinated posting schedule",
+                "live_events": "Launch livestream with Q&A session",
+                "social_storm": "Coordinated posting across all channels",
+                "influencer_activation": "Synchronized influencer content drops",
+                "community_celebration": "Launch party in community spaces",
+                }
+
 
     def _sustain_momentum(self, product_info: Dict, viral_elements: Dict) -> Dict:
-        """Sustain post-launch momentum."""
+        """Sustain post - launch momentum."""
         return {
-            "content_calendar": "Daily content for first 30 days post-launch",
-            "user_onboarding": "Exceptional first-user experience",
-            "feedback_loops": "Rapid iteration based on user feedback",
-            "success_stories": "Highlight early user wins and achievements",
-            "feature_updates": "Regular updates to maintain engagement",
-        }
+            "content_calendar": "Daily content for first 30 days post - launch",
+                "user_onboarding": "Exceptional first - user experience",
+                "feedback_loops": "Rapid iteration based on user feedback",
+                "success_stories": "Highlight early user wins and achievements",
+                "feature_updates": "Regular updates to maintain engagement",
+                }
+
 
     def _generate_viral_timeline(self, launch_date: str) -> Dict:
         """Generate viral campaign timeline."""
         return {
             "pre_launch": "30 days of building anticipation",
-            "launch_week": "Intensive 7-day activation campaign",
-            "post_launch": "90 days of momentum sustaining activities",
-            "milestones": "Weekly goals and celebration points",
-            "pivot_points": "Planned optimization moments based on data",
-        }
+                "launch_week": "Intensive 7 - day activation campaign",
+                "post_launch": "90 days of momentum sustaining activities",
+                "milestones": "Weekly goals and celebration points",
+                "pivot_points": "Planned optimization moments based on data",
+                }
 
-    # Zero-budget marketing helper methods
+    # Zero - budget marketing helper methods
+
+
     def _create_seo_blog_strategy(self, product_info: Dict) -> Dict:
-        """Create SEO-optimized blog strategy."""
+        """Create SEO - optimized blog strategy."""
         return {
-            "keyword_targets": "Long-tail keywords with low competition",
-            "content_pillars": "Educational, how-to, and industry insights",
-            "publishing_schedule": "3 posts per week with consistent timing",
-            "internal_linking": "Strategic linking to product pages",
-            "guest_posting": "Contribute to high-authority industry blogs",
-        }
+            "keyword_targets": "Long - tail keywords with low competition",
+                "content_pillars": "Educational, how - to, and industry insights",
+                "publishing_schedule": "3 posts per week with consistent timing",
+                "internal_linking": "Strategic linking to product pages",
+                "guest_posting": "Contribute to high - authority industry blogs",
+                }
+
 
     def _generate_viral_social_content(self, product_info: Dict) -> Dict:
         """Generate viral social media content strategy."""
         return {
-            "content_types": "Memes, tutorials, behind-scenes, user stories",
-            "posting_frequency": "5-7 posts per day across all platforms",
-            "engagement_tactics": "Questions, polls, challenges, live sessions",
-            "hashtag_strategy": "Mix of trending and niche hashtags",
-            "cross_promotion": "Content adapted for each platform",
-        }
+            "content_types": "Memes, tutorials, behind - scenes, user stories",
+                "posting_frequency": "5 - 7 posts per day across all platforms",
+                "engagement_tactics": "Questions, polls, challenges, live sessions",
+                "hashtag_strategy": "Mix of trending and niche hashtags",
+                "cross_promotion": "Content adapted for each platform",
+                }
+
 
     def _create_youtube_strategy(self, product_info: Dict) -> Dict:
         """Create YouTube content strategy."""
         return {
             "channel_focus": "Educational content and product tutorials",
-            "video_types": "How-tos, reviews, behind-scenes, live streams",
-            "seo_optimization": "Keyword-rich titles and descriptions",
-            "collaboration": "Guest appearances and channel partnerships",
-            "community_building": "Regular interaction with comments and community tab",
-        }
+                "video_types": "How - tos, reviews, behind - scenes, live streams",
+                "seo_optimization": "Keyword - rich titles and descriptions",
+                "collaboration": "Guest appearances and channel partnerships",
+                "community_building": "Regular interaction with comments and community tab",
+                }
+
 
     def _identify_podcast_opportunities(self, product_info: Dict) -> List[str]:
         """Identify relevant podcast opportunities."""
         return [
-            "Industry-specific podcasts in target niche",
-            "Entrepreneur and startup-focused shows",
-            "Tech and innovation podcasts",
-            "Local business and community podcasts",
-            "Niche hobby and interest-based shows",
-        ]
+            "Industry - specific podcasts in target niche",
+                "Entrepreneur and startup - focused shows",
+                "Tech and innovation podcasts",
+                "Local business and community podcasts",
+                "Niche hobby and interest - based shows",
+                ]
 
     # Community engagement helper methods
+
+
     def _create_reddit_engagement_plan(self, product_info: Dict) -> Dict:
         """Create Reddit engagement strategy."""
         return {
-            "target_subreddits": "Identify 10-15 relevant communities",
-            "value_first_approach": "Helpful comments before any promotion",
-            "content_strategy": "Educational posts and genuine discussions",
-            "ama_planning": "Regular Ask Me Anything sessions",
-            "community_rules": "Strict adherence to each subreddit's guidelines",
-        }
+            "target_subreddits": "Identify 10 - 15 relevant communities",
+                "value_first_approach": "Helpful comments before any promotion",
+                "content_strategy": "Educational posts and genuine discussions",
+                "ama_planning": "Regular Ask Me Anything sessions",
+                "community_rules": "Strict adherence to each subreddit's guidelines",
+                }
+
 
     def _identify_discord_targets(self, product_info: Dict) -> List[str]:
         """Identify target Discord communities."""
         return [
-            "Industry-specific Discord servers",
-            "Entrepreneur and startup communities",
-            "Tech and developer communities",
-            "Product feedback and beta testing groups",
-            "Niche interest and hobby servers",
-        ]
+            "Industry - specific Discord servers",
+                "Entrepreneur and startup communities",
+                "Tech and developer communities",
+                "Product feedback and beta testing groups",
+                "Niche interest and hobby servers",
+                ]
+
 
     def _map_facebook_communities(self, product_info: Dict) -> Dict:
         """Map relevant Facebook communities."""
         return {
             "business_groups": "Entrepreneur and small business groups",
-            "industry_groups": "Niche-specific professional groups",
-            "local_groups": "Geographic and local business communities",
-            "interest_groups": "Hobby and interest-based communities",
-            "engagement_strategy": "Value-first participation with genuine help",
-        }
+                "industry_groups": "Niche - specific professional groups",
+                "local_groups": "Geographic and local business communities",
+                "interest_groups": "Hobby and interest - based communities",
+                "engagement_strategy": "Value - first participation with genuine help",
+                }
+
 
     def _create_linkedin_strategy(self, product_info: Dict) -> Dict:
         """Create LinkedIn networking strategy."""
         return {
             "content_strategy": "Professional insights and industry commentary",
-            "networking_approach": "Connect with industry professionals",
-            "group_participation": "Active participation in relevant groups",
-            "thought_leadership": "Regular posts establishing expertise",
-            "direct_outreach": "Personalized messages to potential partners",
-        }
+                "networking_approach": "Connect with industry professionals",
+                "group_participation": "Active participation in relevant groups",
+                "thought_leadership": "Regular posts establishing expertise",
+                "direct_outreach": "Personalized messages to potential partners",
+                }
 
     # Partnership and PR helper methods
+
+
     def _identify_cross_promotion_partners(self, product_info: Dict) -> List[str]:
-        """Identify potential cross-promotion partners."""
+        """Identify potential cross - promotion partners."""
         return [
             "Complementary product companies",
-            "Non-competing businesses with similar audiences",
-            "Industry influencers and thought leaders",
-            "Content creators in related niches",
-            "Service providers targeting same demographics",
-        ]
+                "Non - competing businesses with similar audiences",
+                "Industry influencers and thought leaders",
+                "Content creators in related niches",
+                "Service providers targeting same demographics",
+                ]
+
 
     def _create_guest_posting_strategy(self, product_info: Dict) -> Dict:
         """Create guest posting strategy."""
         return {
-            "target_publications": "High-authority blogs in target niche",
-            "content_angles": "Educational, thought leadership, case studies",
-            "pitch_templates": "Personalized outreach for each publication",
-            "content_calendar": "One guest post per week minimum",
-            "follow_up_strategy": "Build relationships with editors and writers",
-        }
+            "target_publications": "High - authority blogs in target niche",
+                "content_angles": "Educational, thought leadership, case studies",
+                "pitch_templates": "Personalized outreach for each publication",
+                "content_calendar": "One guest post per week minimum",
+                "follow_up_strategy": "Build relationships with editors and writers",
+                }
+
 
     def _find_collaboration_partners(self, product_info: Dict) -> Dict:
         """Find strategic collaboration opportunities."""
         return {
             "joint_ventures": "Complementary businesses for mutual benefit",
-            "content_collaborations": "Co-created content with industry peers",
-            "event_partnerships": "Joint webinars, workshops, and conferences",
-            "product_integrations": "Technical partnerships and API integrations",
-            "community_partnerships": "Cross-community engagement and sharing",
-        }
+                "content_collaborations": "Co - created content with industry peers",
+                "event_partnerships": "Joint webinars, workshops, and conferences",
+                "product_integrations": "Technical partnerships and API integrations",
+                "community_partnerships": "Cross - community engagement and sharing",
+                }
+
 
     def _design_affiliate_program(self, product_info: Dict) -> Dict:
         """Design comprehensive affiliate program."""
         return {
             "commission_structure": "Tiered commissions based on performance",
-            "recruitment_strategy": "Target existing customers and industry contacts",
-            "marketing_materials": "Banners, email templates, and social assets",
-            "tracking_system": "Robust attribution and payment processing",
-            "support_system": "Dedicated affiliate manager and resources",
-        }
+                "recruitment_strategy": "Target existing customers and industry contacts",
+                "marketing_materials": "Banners, email templates, and social assets",
+                "tracking_system": "Robust attribution and payment processing",
+                "support_system": "Dedicated affiliate manager and resources",
+                }
+
 
     def _create_press_release_plan(self, product_info: Dict) -> Dict:
         """Create press release strategy."""
         return {
             "newsworthy_angles": "Product launch, funding, partnerships, milestones",
-            "distribution_channels": "PR Newswire, industry publications, local media",
-            "media_kit": "High-res images, founder bios, company backgrounder",
-            "follow_up_strategy": "Personal outreach to key journalists",
-            "timing_strategy": "Coordinate with industry events and news cycles",
-        }
+                "distribution_channels": "PR Newswire, industry publications, local media",
+                "media_kit": "High - res images, founder bios, company backgrounder",
+                "follow_up_strategy": "Personal outreach to key journalists",
+                "timing_strategy": "Coordinate with industry events and news cycles",
+                }
+
 
     def _identify_media_contacts(self, product_info: Dict) -> Dict:
         """Identify relevant media contacts."""
         return {
             "tech_journalists": "Writers covering industry and product category",
-            "podcast_hosts": "Hosts of relevant business and tech podcasts",
-            "youtube_creators": "Reviewers and educators in target niche",
-            "newsletter_writers": "Curators of industry newsletters",
-            "conference_organizers": "Speaking opportunity coordinators",
-        }
+                "podcast_hosts": "Hosts of relevant business and tech podcasts",
+                "youtube_creators": "Reviewers and educators in target niche",
+                "newsletter_writers": "Curators of industry newsletters",
+                "conference_organizers": "Speaking opportunity coordinators",
+                }
+
 
     def _create_gifting_strategy(self, product_info: Dict) -> Dict:
         """Create influencer gifting strategy."""
         return {
-            "target_selection": "Micro and nano-influencers with engaged audiences",
-            "gift_packages": "Product samples with personalized notes",
-            "follow_up_approach": "No-pressure relationship building",
-            "content_encouragement": "Gentle suggestions for authentic reviews",
-            "relationship_nurturing": "Long-term engagement beyond initial gift",
-        }
+            "target_selection": "Micro and nano - influencers with engaged audiences",
+                "gift_packages": "Product samples with personalized notes",
+                "follow_up_approach": "No - pressure relationship building",
+                "content_encouragement": "Gentle suggestions for authentic reviews",
+                "relationship_nurturing": "Long - term engagement beyond initial gift",
+                }
+
 
     def _plan_virtual_events(self, product_info: Dict) -> Dict:
         """Plan virtual events and webinars."""
         return {
             "event_types": "Product demos, educational webinars, Q&A sessions",
-            "platform_selection": "Zoom, YouTube Live, LinkedIn Live",
-            "promotion_strategy": "Multi-channel promotion with early bird incentives",
-            "content_strategy": "Value-first educational content",
-            "follow_up_plan": "Recording distribution and lead nurturing",
-        }
+                "platform_selection": "Zoom, YouTube Live, LinkedIn Live",
+                "promotion_strategy": "Multi - channel promotion with early bird incentives",
+                "content_strategy": "Value - first educational content",
+                "follow_up_plan": "Recording distribution and lead nurturing",
+                }
+
 
     def _create_zero_budget_timeline(self) -> Dict:
-        """Create timeline for zero-budget marketing implementation."""
+        """Create timeline for zero - budget marketing implementation."""
         return {
             "week_1": "Set up social profiles and content calendar",
-            "week_2": "Begin community engagement and relationship building",
-            "week_3": "Launch content marketing and SEO efforts",
-            "week_4": "Initiate partnership outreach and collaborations",
-            "ongoing": "Consistent daily engagement and content creation",
-        }
+                "week_2": "Begin community engagement and relationship building",
+                "week_3": "Launch content marketing and SEO efforts",
+                "week_4": "Initiate partnership outreach and collaborations",
+                "ongoing": "Consistent daily engagement and content creation",
+                }
 
     # Influencer identification helper methods
+
+
     def _identify_micro_influencers(self, target_audience: str, budget: int) -> Dict:
-        """Identify micro-influencers (1K-100K followers)."""
+        """Identify micro - influencers (1K - 100K followers)."""
         return {
-            "target_count": "50-100 micro-influencers",
-            "follower_range": "1,000 - 100,000 followers",
-            "engagement_rate": "Minimum 3% engagement rate",
-            "audience_alignment": f"Strong alignment with {target_audience}",
-            "budget_per_influencer": (
+            "target_count": "50 - 100 micro - influencers",
+                "follower_range": "1,000 - 100,000 followers",
+                "engagement_rate": "Minimum 3% engagement rate",
+                "audience_alignment": f"Strong alignment with {target_audience}",
+                "budget_per_influencer": (
                 f"${budget // 50:.0f}" if budget > 0 else "Product gifting"
             ),
-        }
+                }
+
 
     def _identify_macro_influencers(self, target_audience: str, budget: int) -> Dict:
-        """Identify macro-influencers (100K+ followers)."""
+        """Identify macro - influencers (100K+ followers)."""
         return {
-            "target_count": "5-10 macro-influencers",
-            "follower_range": "100,000+ followers",
-            "engagement_rate": "Minimum 2% engagement rate",
-            "audience_alignment": f"Perfect alignment with {target_audience}",
-            "budget_per_influencer": (
+            "target_count": "5 - 10 macro - influencers",
+                "follower_range": "100,000+ followers",
+                "engagement_rate": "Minimum 2% engagement rate",
+                "audience_alignment": f"Perfect alignment with {target_audience}",
+                "budget_per_influencer": (
                 f"${budget // 5:.0f}" if budget > 0 else "Partnership deals"
             ),
-        }
+                }
+
 
     def _identify_nano_influencers(self, target_audience: str) -> Dict:
-        """Identify nano-influencers (1K-10K followers)."""
+        """Identify nano - influencers (1K - 10K followers)."""
         return {
-            "target_count": "200+ nano-influencers",
-            "follower_range": "1,000 - 10,000 followers",
-            "engagement_rate": "Minimum 5% engagement rate",
-            "audience_alignment": f"Strong community connection with {target_audience}",
-            "compensation": "Product gifting and exclusive access",
-        }
+            "target_count": "200+ nano - influencers",
+                "follower_range": "1,000 - 10,000 followers",
+                "engagement_rate": "Minimum 5% engagement rate",
+                "audience_alignment": f"Strong community connection with {target_audience}",
+                "compensation": "Product gifting and exclusive access",
+                }
+
 
     def _assess_celebrity_opportunities(self, product_info: Dict, budget: int) -> Dict:
         """Assess celebrity partnership opportunities."""
         if budget < 10000:
             return {
-                "recommendation": "Focus on micro and nano-influencers for better ROI"
+                "recommendation": "Focus on micro and nano - influencers for better ROI"
             }
 
         return {
-            "target_celebrities": "Industry-relevant celebrities and public figures",
-            "partnership_types": "Endorsements, collaborations, event appearances",
-            "budget_requirement": "Minimum $10,000 for meaningful celebrity partnerships",
-            "roi_expectations": "High reach but lower engagement than micro-influencers",
-        }
+            "target_celebrities": "Industry - relevant celebrities and public figures",
+                "partnership_types": "Endorsements, collaborations, event appearances",
+                "budget_requirement": "Minimum $10,000 for meaningful celebrity partnerships",
+                "roi_expectations": "High reach but lower engagement than micro - influencers",
+                }
+
 
     def _create_ambassador_program(self, product_info: Dict) -> Dict:
         """Create brand ambassador program."""
         return {
             "selection_criteria": "Existing customers with high engagement",
-            "benefits_package": "Exclusive access, discounts, and recognition",
-            "responsibilities": "Regular content creation and community engagement",
-            "support_provided": "Marketing materials and dedicated support",
-            "performance_tracking": "Engagement metrics and conversion attribution",
-        }
+                "benefits_package": "Exclusive access, discounts, and recognition",
+                "responsibilities": "Regular content creation and community engagement",
+                "support_provided": "Marketing materials and dedicated support",
+                "performance_tracking": "Engagement metrics and conversion attribution",
+                }
+
 
     def _design_ugc_campaigns(self, product_info: Dict) -> Dict:
-        """Design user-generated content campaigns."""
+        """Design user - generated content campaigns."""
         return {
             "campaign_hashtags": "Branded hashtags for content discovery",
-            "content_prompts": "Creative challenges and photo contests",
-            "incentive_structure": "Prizes, features, and recognition rewards",
-            "moderation_guidelines": "Content quality and brand alignment standards",
-            "amplification_strategy": "Resharing and featuring best user content",
-        }
+                "content_prompts": "Creative challenges and photo contests",
+                "incentive_structure": "Prizes, features, and recognition rewards",
+                "moderation_guidelines": "Content quality and brand alignment standards",
+                "amplification_strategy": "Resharing and featuring best user content",
+                }
 
     # Analytics and tracking helper methods
+
+
     def _create_outreach_templates(self, product_info: Dict) -> Dict:
         """Create influencer outreach templates."""
         return {
             "initial_contact": "Personalized introduction and value proposition",
-            "follow_up_sequence": "Three-touch follow-up campaign",
-            "collaboration_proposal": "Detailed partnership terms and expectations",
-            "content_brief": "Guidelines for authentic content creation",
-            "relationship_maintenance": "Ongoing communication templates",
-        }
+                "follow_up_sequence": "Three - touch follow - up campaign",
+                "collaboration_proposal": "Detailed partnership terms and expectations",
+                "content_brief": "Guidelines for authentic content creation",
+                "relationship_maintenance": "Ongoing communication templates",
+                }
+
 
     def _define_partnership_terms(self, budget: int) -> Dict:
         """Define influencer partnership terms."""
         return {
             "compensation_models": "Flat fee, commission, or hybrid arrangements",
-            "content_requirements": "Number of posts, stories, and engagement expectations",
-            "usage_rights": "Permissions for content repurposing and advertising",
-            "exclusivity_clauses": "Non-compete agreements for direct competitors",
-            "performance_metrics": "Reach, engagement, and conversion tracking",
-        }
+                "content_requirements": "Number of posts, stories, and engagement expectations",
+                "usage_rights": "Permissions for content repurposing and advertising",
+                "exclusivity_clauses": "Non - compete agreements for direct competitors",
+                "performance_metrics": "Reach, engagement, and conversion tracking",
+                }
+
 
     def _create_content_briefs(self, product_info: Dict) -> Dict:
         """Create content briefs for influencers."""
         return {
             "brand_guidelines": "Visual identity and messaging standards",
-            "content_themes": "Key messages and value propositions",
-            "creative_freedom": "Balance between brand consistency and authenticity",
-            "hashtag_requirements": "Mandatory and suggested hashtag usage",
-            "disclosure_requirements": "FTC compliance and transparency standards",
-        }
+                "content_themes": "Key messages and value propositions",
+                "creative_freedom": "Balance between brand consistency and authenticity",
+                "hashtag_requirements": "Mandatory and suggested hashtag usage",
+                "disclosure_requirements": "FTC compliance and transparency standards",
+                }
+
 
     def _setup_influencer_analytics(self) -> Dict:
         """Set up influencer campaign analytics."""
         return {
             "tracking_tools": "UTM codes, affiliate links, and promo codes",
-            "key_metrics": "Reach, engagement, clicks, conversions, ROI",
-            "reporting_frequency": "Weekly performance reports and monthly analysis",
-            "optimization_triggers": "Performance thresholds for campaign adjustments",
-            "attribution_model": "Multi-touch attribution for accurate measurement",
-        }
+                "key_metrics": "Reach, engagement, clicks, conversions, ROI",
+                "reporting_frequency": "Weekly performance reports and monthly analysis",
+                "optimization_triggers": "Performance thresholds for campaign adjustments",
+                "attribution_model": "Multi - touch attribution for accurate measurement",
+                }
+
 
     def _create_crm_system(self) -> Dict:
         """Create influencer relationship management system."""
         return {
             "contact_database": "Comprehensive influencer profiles and history",
-            "communication_tracking": "All interactions and collaboration history",
-            "performance_records": "Campaign results and ROI data",
-            "relationship_scoring": "Influence level and partnership potential",
-            "automation_workflows": "Follow-up sequences and relationship nurturing",
-        }
+                "communication_tracking": "All interactions and collaboration history",
+                "performance_records": "Campaign results and ROI data",
+                "relationship_scoring": "Influence level and partnership potential",
+                "automation_workflows": "Follow - up sequences and relationship nurturing",
+                }
+
 
     def _calculate_influencer_reach(self, influencer_strategy: Dict) -> str:
         """Calculate projected influencer reach."""
-        return "Estimated 500K-2M total reach across all influencer partnerships"
+        return "Estimated 500K - 2M total reach across all influencer partnerships"
+
 
     def _estimate_engagement_rates(self, influencer_strategy: Dict) -> str:
         """Estimate engagement rates for influencer campaigns."""
-        return "Projected 3-7% average engagement rate across all partnerships"
+        return "Projected 3 - 7% average engagement rate across all partnerships"
 
     # Abstract methods implementation from BaseAgent
+
+
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
@@ -11053,14 +11468,14 @@ class MarketingAgent(BaseAgent):
             result.update(
                 {
                     "execution_time": execution_time,
-                    "task_id": task_id,
-                    "agent_type": "MarketingAgent",
-                    "monitoring_data": {
+                        "task_id": task_id,
+                        "agent_type": "MarketingAgent",
+                        "monitoring_data": {
                         "start_time": start_time,
-                        "end_time": time.time(),
-                        "context": context or {},
-                    },
-                }
+                            "end_time": time.time(),
+                            "context": context or {},
+                            },
+                        }
             )
 
             self.logger.info(
@@ -11072,10 +11487,11 @@ class MarketingAgent(BaseAgent):
             self.logger.error(f"Marketing task execution failed: {str(e)}")
             return {
                 "success": False,
-                "error": str(e),
-                "task_id": task.get("id", "unknown"),
-                "agent_type": "MarketingAgent",
-            }
+                    "error": str(e),
+                    "task_id": task.get("id", "unknown"),
+                    "agent_type": "MarketingAgent",
+                    }
+
 
     async def _rephrase_task(
         self, task: Dict[str, Any], context: Optional[Dict[str, Any]] = None
@@ -11085,7 +11501,7 @@ class MarketingAgent(BaseAgent):
             original_description = task.get("description", "")
             task_type = task.get("type", "generic_marketing")
 
-            # Marketing-specific rephrasing logic
+            # Marketing - specific rephrasing logic
             if "campaign" in original_description.lower():
                 rephrased = (
                     f"Execute comprehensive marketing campaign: {original_description}"
@@ -11114,36 +11530,37 @@ class MarketingAgent(BaseAgent):
 
             return {
                 "success": True,
-                "rephrased_task": rephrased_task,
-                "original_task": task,
-                "rephrase_reason": "Marketing task clarity enhancement",
-            }
+                    "rephrased_task": rephrased_task,
+                    "original_task": task,
+                    "rephrase_reason": "Marketing task clarity enhancement",
+                    }
 
         except Exception as e:
             self.logger.error(f"Marketing task rephrasing failed: {str(e)}")
             return {"success": False, "error": str(e), "original_task": task}
 
+
     async def _validate_rephrase_accuracy(
         self,
-        original_task: Dict[str, Any],
-        rephrased_task: Dict[str, Any],
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+            original_task: Dict[str, Any],
+            rephrased_task: Dict[str, Any],
+            context: Optional[Dict[str, Any]] = None,
+            ) -> Dict[str, Any]:
         """Validate that the rephrased marketing task maintains original intent."""
         try:
             original_desc = original_task.get("description", "").lower()
             rephrased_desc = rephrased_task.get("description", "").lower()
 
-            # Marketing-specific validation criteria
+            # Marketing - specific validation criteria
             marketing_keywords = [
                 "campaign",
-                "social",
-                "content",
-                "seo",
-                "marketing",
-                "promotion",
-                "advertising",
-            ]
+                    "social",
+                    "content",
+                    "seo",
+                    "marketing",
+                    "promotion",
+                    "advertising",
+                    ]
 
             # Check if marketing context is preserved
             original_has_marketing = any(
@@ -11197,21 +11614,21 @@ class MarketingAgent(BaseAgent):
 
             return {
                 "success": True,
-                "is_valid": is_valid,
-                "accuracy_score": accuracy_score,
-                "validation_details": validation_details,
-                "original_task": original_task,
-                "rephrased_task": rephrased_task,
-            }
+                    "is_valid": is_valid,
+                    "accuracy_score": accuracy_score,
+                    "validation_details": validation_details,
+                    "original_task": original_task,
+                    "rephrased_task": rephrased_task,
+                    }
 
         except Exception as e:
             self.logger.error(f"Marketing task rephrase validation failed: {str(e)}")
             return {
                 "success": False,
-                "error": str(e),
-                "is_valid": False,
-                "accuracy_score": 0.0,
-            }
+                    "error": str(e),
+                    "is_valid": False,
+                    "accuracy_score": 0.0,
+                    }
 
 
 class QAAgent(BaseAgent):
@@ -11219,13 +11636,14 @@ class QAAgent(BaseAgent):
     QAAgent handles comprehensive quality assurance and automated content validation.
 
     This agent is responsible for:
-    - Pre-publication content quality checks
+    - Pre - publication content quality checks
     - Automated content validation and scoring
     - SEO optimization verification
     - Brand consistency enforcement
     - Performance and compliance testing
-    - Multi-dimensional content analysis
+    - Multi - dimensional content analysis
     """
+
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "QAAgent")
@@ -11233,16 +11651,16 @@ class QAAgent(BaseAgent):
         # Enhanced quality standards for production content
         self.quality_standards: Dict[str, float] = {
             "accuracy": 0.95,
-            "completeness": 0.90,
-            "readability": 0.80,
-            "performance": 0.85,
-            "compliance": 0.98,
-            "content_score_threshold": 0.85,
-            "readability_score_min": 60,  # Flesch Reading Ease
+                "completeness": 0.90,
+                "readability": 0.80,
+                "performance": 0.85,
+                "compliance": 0.98,
+                "content_score_threshold": 0.85,
+                "readability_score_min": 60,  # Flesch Reading Ease
             "seo_score_min": 0.8,
-            "brand_consistency_min": 0.9,
-            "grammar_error_max": 2,
-            "plagiarism_threshold": 0.15,  # Max 15% similarity
+                "brand_consistency_min": 0.9,
+                "grammar_error_max": 2,
+                "plagiarism_threshold": 0.15,  # Max 15% similarity
             "sentiment_neutrality_min": 0.3,  # Avoid extreme negative sentiment
         }
 
@@ -11252,65 +11670,65 @@ class QAAgent(BaseAgent):
         # Content validation rules
         self.validation_rules = {
             "required_elements": ["title", "content", "meta_description"],
-            "forbidden_words": [
+                "forbidden_words": [
                 "placeholder",
-                "lorem ipsum",
-                "test content",
-                "TODO",
-                "FIXME",
-            ],
-            "min_word_count": {
+                    "lorem ipsum",
+                    "test content",
+                    "TODO",
+                    "FIXME",
+                    ],
+                "min_word_count": {
                 "blog_post": 800,
-                "social_media": 50,
-                "email": 200,
-                "video_script": 300,
-            },
-            "max_word_count": {
+                    "social_media": 50,
+                    "email": 200,
+                    "video_script": 300,
+                    },
+                "max_word_count": {
                 "blog_post": 3000,
-                "social_media": 280,
-                "email": 1000,
-                "video_script": 2000,
-            },
-            "image_requirements": {
+                    "social_media": 280,
+                    "email": 1000,
+                    "video_script": 2000,
+                    },
+                "image_requirements": {
                 "min_resolution": (800, 600),
-                "max_file_size": 2048000,
-            },
-            "link_validation": True,
-            "spell_check": True,
-            "fact_check": True,
-            "duplicate_detection": True,
-        }
+                    "max_file_size": 2048000,
+                    },
+                "link_validation": True,
+                "spell_check": True,
+                "fact_check": True,
+                "duplicate_detection": True,
+                }
 
         # Brand guidelines enforcement
         self.brand_guidelines = {
             "tone": "professional_friendly",
-            "voice": "authoritative_approachable",
-            "prohibited_terms": ["cheap", "free", "guaranteed", "miracle"],
-            "required_disclaimers": [],
-            "style_guide": "ap_style",
-            "target_audience": "general_professional",
-            "brand_voice_keywords": ["innovative", "reliable", "expert", "trusted"],
-        }
+                "voice": "authoritative_approachable",
+                "prohibited_terms": ["cheap", "free", "guaranteed", "miracle"],
+                "required_disclaimers": [],
+                "style_guide": "ap_style",
+                "target_audience": "general_professional",
+                "brand_voice_keywords": ["innovative", "reliable", "expert", "trusted"],
+                }
 
         # SEO validation criteria
         self.seo_criteria = {
             "title_length": {"min": 30, "max": 60},
-            "meta_description_length": {"min": 120, "max": 160},
-            "keyword_density": {"min": 0.01, "max": 0.03},
-            "header_structure": True,
-            "alt_text_required": True,
-            "internal_links_min": 2,
-            "external_links_max": 5,
-        }
+                "meta_description_length": {"min": 120, "max": 160},
+                "keyword_density": {"min": 0.01, "max": 0.03},
+                "header_structure": True,
+                "alt_text_required": True,
+                "internal_links_min": 2,
+                "external_links_max": 5,
+                }
 
         # Initialize Ollama integration for political neutrality scanning
         try:
             self.ollama = OllamaIntegration(
                 endpoint="http://localhost:11434",
-                default_model="llama2:7b",
-                max_requests_per_minute=30,
-                enable_caching=True,
-            )
+                    default_model="llama2:7b",
+                    max_requests_per_minute = 30,
+                    enable_caching = True,
+                    )
             self.logger.info(
                 "Ollama integration initialized for QA Agent political neutrality scanning"
             )
@@ -11319,12 +11737,15 @@ class QAAgent(BaseAgent):
             self.ollama = None
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [
             AgentCapability.QUALITY_ASSURANCE,
-            AgentCapability.AUDITING,
-            AgentCapability.CONTENT_VALIDATION,
-        ]
+                AgentCapability.AUDITING,
+                AgentCapability.CONTENT_VALIDATION,
+                ]
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -11340,8 +11761,8 @@ class QAAgent(BaseAgent):
         if not self.is_action_allowed("quality_assurance"):
             return {
                 "success": False,
-                "error": "Quality assurance actions are currently disabled by configuration",
-            }
+                    "error": "Quality assurance actions are currently disabled by configuration",
+                    }
 
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
@@ -11375,21 +11796,21 @@ class QAAgent(BaseAgent):
                 # Store test results
                 test_record = {
                     "task_id": task_id,
-                    "qa_type": qa_type,
-                    "result": result,
-                    "timestamp": datetime.now().isoformat(),
-                    "agent_id": self.agent_id,
-                }
+                        "qa_type": qa_type,
+                        "result": result,
+                        "timestamp": datetime.now().isoformat(),
+                        "agent_id": self.agent_id,
+                        }
                 self.test_results.append(test_record)
 
                 response = {
                     "success": True,
-                    "qa_type": qa_type,
-                    "result": result,
-                    "execution_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                    "quality_score": result.get("overall_score", 0.0),
-                }
+                        "qa_type": qa_type,
+                        "result": result,
+                        "execution_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        "quality_score": result.get("overall_score", 0.0),
+                        }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"QA task {task_id} completed"
@@ -11403,11 +11824,11 @@ class QAAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "qa_type": qa_type,
-                "error": str(e),
-                "execution_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-            }
+                    "qa_type": qa_type,
+                    "error": str(e),
+                    "execution_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    }
 
             self.logger.error(f"QA task {task_id} failed: {e}")
             self.update_status(AgentStatus.FAILED, f"QA task failed: {e}")
@@ -11416,6 +11837,7 @@ class QAAgent(BaseAgent):
             )
 
             return error_result
+
 
     async def _validate_content_comprehensive(
         self, task: Dict[str, Any]
@@ -11431,13 +11853,13 @@ class QAAgent(BaseAgent):
             # Initialize validation results
             validation_results = {
                 "content_type": content_type,
-                "timestamp": datetime.now().isoformat(),
-                "scores": {},
-                "issues": [],
-                "recommendations": [],
-                "passed": False,
-                "validation_details": {},
-            }
+                    "timestamp": datetime.now().isoformat(),
+                    "scores": {},
+                    "issues": [],
+                    "recommendations": [],
+                    "passed": False,
+                    "validation_details": {},
+                    }
 
             # Content quality scoring
             scores = await self._calculate_content_scores(content_text, content_type)
@@ -11472,18 +11894,18 @@ class QAAgent(BaseAgent):
             # Compile issues and recommendations
             all_checks = [
                 brand_check,
-                seo_check,
-                structure_check,
-                originality_check,
-                political_scan,
-            ]
+                    seo_check,
+                    structure_check,
+                    originality_check,
+                    political_scan,
+                    ]
             for check in all_checks:
                 validation_results["issues"].extend(check.get("issues", []))
                 validation_results["recommendations"].extend(
                     check.get("recommendations", [])
                 )
 
-            # Calculate overall score and pass/fail
+            # Calculate overall score and pass / fail
             overall_score = sum(scores.values()) / len(scores) if scores else 0
             validation_results["overall_score"] = overall_score
             validation_results["passed"] = (
@@ -11500,10 +11922,11 @@ class QAAgent(BaseAgent):
             self.logger.error(f"Content validation failed: {str(e)}")
             return {
                 "content_type": content_type,
-                "error": str(e),
-                "passed": False,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "passed": False,
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _pre_publication_validation(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Final validation before content publication."""
@@ -11517,18 +11940,18 @@ class QAAgent(BaseAgent):
             if not validation_results["passed"]:
                 return {
                     "pre_publication_status": "FAILED",
-                    "reason": "Content failed comprehensive validation",
-                    "validation_results": validation_results,
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "reason": "Content failed comprehensive validation",
+                        "validation_results": validation_results,
+                        "timestamp": datetime.now().isoformat(),
+                        }
 
-            # Additional pre-publication checks
+            # Additional pre - publication checks
             publication_checks = {
                 "metadata_complete": await self._check_metadata_completeness(content),
-                "legal_compliance": await self._check_legal_compliance(content),
-                "accessibility": await self._check_accessibility_standards(content),
-                "final_review": await self._perform_final_editorial_review(content),
-            }
+                    "legal_compliance": await self._check_legal_compliance(content),
+                    "accessibility": await self._check_accessibility_standards(content),
+                    "final_review": await self._perform_final_editorial_review(content),
+                    }
 
             # Determine publication readiness
             all_passed = all(
@@ -11539,19 +11962,20 @@ class QAAgent(BaseAgent):
                 "pre_publication_status": (
                     "APPROVED" if all_passed else "REQUIRES_REVISION"
                 ),
-                "publication_checks": publication_checks,
-                "validation_results": validation_results,
-                "ready_for_publication": all_passed,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "publication_checks": publication_checks,
+                    "validation_results": validation_results,
+                    "ready_for_publication": all_passed,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
-            self.logger.error(f"Pre-publication validation failed: {str(e)}")
+            self.logger.error(f"Pre - publication validation failed: {str(e)}")
             return {
                 "pre_publication_status": "ERROR",
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _validate_seo_optimization(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Validate SEO optimization of content."""
@@ -11563,18 +11987,19 @@ class QAAgent(BaseAgent):
 
             return {
                 "seo_validation": seo_results,
-                "seo_score": seo_results.get("score", 0),
-                "seo_passed": seo_results.get("passed", False),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "seo_score": seo_results.get("score", 0),
+                    "seo_passed": seo_results.get("passed", False),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"SEO validation failed: {str(e)}")
             return {
                 "seo_validation": {"error": str(e)},
-                "seo_passed": False,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "seo_passed": False,
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _validate_brand_consistency(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Validate brand consistency of content."""
@@ -11588,18 +12013,19 @@ class QAAgent(BaseAgent):
 
             return {
                 "brand_validation": brand_results,
-                "brand_score": brand_results.get("score", 0),
-                "brand_passed": brand_results.get("passed", False),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "brand_score": brand_results.get("score", 0),
+                    "brand_passed": brand_results.get("passed", False),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"Brand validation failed: {str(e)}")
             return {
                 "brand_validation": {"error": str(e)},
-                "brand_passed": False,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "brand_passed": False,
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     async def _review_content(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Enhanced content review with comprehensive quality assessment."""
@@ -11613,41 +12039,41 @@ class QAAgent(BaseAgent):
             # Perform comprehensive validation
             validation_results = await self._validate_content_comprehensive(task)
 
-            # Additional review-specific checks
+            # Additional review - specific checks
             review_checks = {
                 "editorial_quality": await self._assess_editorial_quality(content_text),
-                "audience_alignment": await self._check_audience_alignment(
+                    "audience_alignment": await self._check_audience_alignment(
                     content_text, content_type
                 ),
-                "engagement_potential": await self._assess_engagement_potential(
+                    "engagement_potential": await self._assess_engagement_potential(
                     content_text, content_type
                 ),
-                "competitive_analysis": await self._perform_content_competitive_analysis(
+                    "competitive_analysis": await self._perform_content_competitive_analysis(
                     content_text
                 ),
-            }
+                    }
 
             # Compile final review results
             review_results = {
                 "content_type": content_type,
-                "validation_results": validation_results,
-                "review_checks": review_checks,
-                "overall_recommendation": self._generate_review_recommendation(
+                    "validation_results": validation_results,
+                    "review_checks": review_checks,
+                    "overall_recommendation": self._generate_review_recommendation(
                     validation_results, review_checks
                 ),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
             # Record in test results for tracking
             self.test_results.append(
                 {
                     "test_type": "content_review",
-                    "content_type": content_type,
-                    "passed": validation_results.get("passed", False),
-                    "score": validation_results.get("overall_score", 0),
-                    "timestamp": datetime.now().isoformat(),
-                    "details": review_results,
-                }
+                        "content_type": content_type,
+                        "passed": validation_results.get("passed", False),
+                        "score": validation_results.get("overall_score", 0),
+                        "timestamp": datetime.now().isoformat(),
+                        "details": review_results,
+                        }
             )
 
             return review_results
@@ -11656,22 +12082,23 @@ class QAAgent(BaseAgent):
             self.logger.error(f"Content review failed: {str(e)}")
             error_result = {
                 "content_type": content_type,
-                "error": str(e),
-                "passed": False,
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "passed": False,
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
             self.test_results.append(
                 {
                     "test_type": "content_review",
-                    "content_type": content_type,
-                    "passed": False,
-                    "error": str(e),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "content_type": content_type,
+                        "passed": False,
+                        "error": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                        }
             )
 
             return error_result
+
 
     async def _performance_test(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform performance testing."""
@@ -11683,15 +12110,16 @@ class QAAgent(BaseAgent):
 
         return {
             "test_type": test_type,
-            "target_url": target_url,
-            "response_time": 250,  # ms
-            "throughput": 1000,  # requests/second
+                "target_url": target_url,
+                "response_time": 250,  # ms
+            "throughput": 1000,  # requests / second
             "error_rate": 0.01,  # 1%
             "cpu_usage": 45.5,  # %
             "memory_usage": 60.2,  # %
             "overall_score": 0.88,
-            "passed": True,
-        }
+                "passed": True,
+                }
+
 
     async def _compliance_check(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform compliance checking."""
@@ -11703,22 +12131,23 @@ class QAAgent(BaseAgent):
 
         checks = {
             "privacy_policy": True,
-            "terms_of_service": True,
-            "accessibility": True,
-            "data_protection": True,
-            "content_guidelines": True,
-        }
+                "terms_of_service": True,
+                "accessibility": True,
+                "data_protection": True,
+                "content_guidelines": True,
+                }
 
         overall_score = sum(checks.values()) / len(checks)
 
         return {
             "compliance_type": compliance_type,
-            "checks": checks,
-            "overall_score": overall_score,
-            "passed": overall_score >= self.quality_standards["compliance"],
-            "violations": [],
-            "recommendations": [],
-        }
+                "checks": checks,
+                "overall_score": overall_score,
+                "passed": overall_score >= self.quality_standards["compliance"],
+                "violations": [],
+                "recommendations": [],
+                }
+
 
     async def _user_acceptance_test(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform user acceptance testing."""
@@ -11732,10 +12161,10 @@ class QAAgent(BaseAgent):
             results.append(
                 {
                     "scenario": scenario,
-                    "passed": True,
-                    "execution_time": 2.5,
-                    "notes": f"Scenario {i+1} executed successfully",
-                }
+                        "passed": True,
+                        "execution_time": 2.5,
+                        "notes": f"Scenario {i + 1} executed successfully",
+                        }
             )
 
         overall_score = (
@@ -11744,11 +12173,12 @@ class QAAgent(BaseAgent):
 
         return {
             "scenarios_tested": len(test_scenarios),
-            "results": results,
-            "overall_score": overall_score,
-            "passed": overall_score >= 0.90,
-            "user_satisfaction": 0.85,
-        }
+                "results": results,
+                "overall_score": overall_score,
+                "passed": overall_score >= 0.90,
+                "user_satisfaction": 0.85,
+                }
+
 
     async def _generic_qa_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle generic QA tasks."""
@@ -11757,10 +12187,11 @@ class QAAgent(BaseAgent):
 
         return {
             "message": "Generic QA task completed",
-            "overall_score": 0.85,
-            "passed": True,
-            "task_data": task.get("data", {}),
-        }
+                "overall_score": 0.85,
+                "passed": True,
+                "task_data": task.get("data", {}),
+                }
+
 
     def get_test_history(self, limit: int = 10) -> List[Dict[str, Any]]:
         """
@@ -11776,6 +12207,7 @@ class QAAgent(BaseAgent):
 
     # Supporting helper methods for comprehensive content validation
 
+
     async def _calculate_content_scores(
         self, content_text: str, content_type: str
     ) -> Dict[str, float]:
@@ -11788,14 +12220,15 @@ class QAAgent(BaseAgent):
 
         scores = {
             "readability": min(0.95, 0.6 + (0.4 * min(word_count / 300, 1))),
-            "grammar": 0.85 + (0.15 * (1 - min(sentence_count / 20, 1))),
-            "completeness": min(0.95, 0.5 + (0.5 * min(word_count / 200, 1))),
-            "accuracy": 0.88,
-            "engagement": 0.82,
-            "seo_optimization": 0.75,
-        }
+                "grammar": 0.85 + (0.15 * (1 - min(sentence_count / 20, 1))),
+                "completeness": min(0.95, 0.5 + (0.5 * min(word_count / 200, 1))),
+                "accuracy": 0.88,
+                "engagement": 0.82,
+                "seo_optimization": 0.75,
+                }
 
         return scores
+
 
     async def _check_brand_consistency(self, content_text: str) -> Dict[str, Any]:
         """Check content against brand guidelines."""
@@ -11809,7 +12242,7 @@ class QAAgent(BaseAgent):
             if term.lower() in content_text.lower():
                 issues.append(f"Contains prohibited term: '{term}'")
                 recommendations.append(
-                    f"Remove or replace '{term}' with brand-appropriate alternative"
+                    f"Remove or replace '{term}' with brand - appropriate alternative"
                 )
 
         # Check tone alignment
@@ -11822,11 +12255,12 @@ class QAAgent(BaseAgent):
 
         return {
             "score": tone_score,
-            "passed": len(issues) == 0,
-            "issues": issues,
-            "recommendations": recommendations,
-            "tone_alignment": tone_score,
-        }
+                "passed": len(issues) == 0,
+                "issues": issues,
+                "recommendations": recommendations,
+                "tone_alignment": tone_score,
+                }
+
 
     async def _check_seo_optimization(
         self, content: Dict[str, Any], content_type: str
@@ -11868,18 +12302,19 @@ class QAAgent(BaseAgent):
 
         return {
             "score": seo_score,
-            "passed": len(issues) == 0,
-            "issues": issues,
-            "recommendations": recommendations,
-            "title_analysis": {
+                "passed": len(issues) == 0,
+                "issues": issues,
+                "recommendations": recommendations,
+                "title_analysis": {
                 "length": len(title),
-                "optimized": 30 <= len(title) <= 60,
-            },
-            "meta_description_analysis": {
+                    "optimized": 30 <= len(title) <= 60,
+                    },
+                "meta_description_analysis": {
                 "length": len(meta_desc),
-                "optimized": 120 <= len(meta_desc) <= 160,
-            },
-        }
+                    "optimized": 120 <= len(meta_desc) <= 160,
+                    },
+                }
+
 
     async def _validate_content_structure(
         self, content: Dict[str, Any], content_type: str
@@ -11922,12 +12357,13 @@ class QAAgent(BaseAgent):
 
         return {
             "score": 0.9 if len(issues) == 0 else 0.6,
-            "passed": len(issues) == 0,
-            "issues": issues,
-            "recommendations": recommendations,
-            "word_count": word_count,
-            "structure_complete": len(issues) == 0,
-        }
+                "passed": len(issues) == 0,
+                "issues": issues,
+                "recommendations": recommendations,
+                "word_count": word_count,
+                "structure_complete": len(issues) == 0,
+                }
+
 
     async def _check_content_originality(self, content_text: str) -> Dict[str, Any]:
         """Check content originality and potential plagiarism."""
@@ -11945,13 +12381,14 @@ class QAAgent(BaseAgent):
 
         return {
             "score": originality_score,
-            "passed": originality_score
+                "passed": originality_score
             >= self.quality_standards["plagiarism_threshold"],
-            "issues": issues,
-            "recommendations": recommendations,
-            "originality_score": originality_score,
-            "potential_matches": [],  # Would contain actual matches in real implementation
+                "issues": issues,
+                "recommendations": recommendations,
+                "originality_score": originality_score,
+                "potential_matches": [],  # Would contain actual matches in real implementation
         }
+
 
     async def _check_metadata_completeness(
         self, content: Dict[str, Any]
@@ -11964,10 +12401,11 @@ class QAAgent(BaseAgent):
 
         return {
             "passed": len(missing_metadata) == 0,
-            "missing_fields": missing_metadata,
-            "completeness_score": (len(required_metadata) - len(missing_metadata))
+                "missing_fields": missing_metadata,
+                "completeness_score": (len(required_metadata) - len(missing_metadata))
             / len(required_metadata),
-        }
+                }
+
 
     async def _check_legal_compliance(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Check content for legal compliance issues."""
@@ -11976,10 +12414,11 @@ class QAAgent(BaseAgent):
         # Simulate legal compliance check
         return {
             "passed": True,
-            "compliance_score": 0.95,
-            "issues": [],
-            "recommendations": [],
-        }
+                "compliance_score": 0.95,
+                "issues": [],
+                "recommendations": [],
+                }
+
 
     async def _check_accessibility_standards(
         self, content: Dict[str, Any]
@@ -11994,15 +12433,16 @@ class QAAgent(BaseAgent):
         if "images" in content:
             for i, image in enumerate(content["images"]):
                 if not image.get("alt_text"):
-                    issues.append(f"Image {i+1} missing alt text")
-                    recommendations.append(f"Add descriptive alt text for image {i+1}")
+                    issues.append(f"Image {i + 1} missing alt text")
+                    recommendations.append(f"Add descriptive alt text for image {i + 1}")
 
         return {
             "passed": len(issues) == 0,
-            "accessibility_score": 0.9 if len(issues) == 0 else 0.7,
-            "issues": issues,
-            "recommendations": recommendations,
-        }
+                "accessibility_score": 0.9 if len(issues) == 0 else 0.7,
+                "issues": issues,
+                "recommendations": recommendations,
+                }
+
 
     async def _perform_final_editorial_review(
         self, content: Dict[str, Any]
@@ -12012,10 +12452,11 @@ class QAAgent(BaseAgent):
 
         return {
             "passed": True,
-            "editorial_score": 0.88,
-            "reviewer_notes": ["Content meets editorial standards"],
-            "final_approval": True,
-        }
+                "editorial_score": 0.88,
+                "reviewer_notes": ["Content meets editorial standards"],
+                "final_approval": True,
+                }
+
 
     async def _assess_editorial_quality(self, content_text: str) -> Dict[str, Any]:
         """Assess editorial quality of content."""
@@ -12023,11 +12464,12 @@ class QAAgent(BaseAgent):
 
         return {
             "score": 0.87,
-            "clarity": 0.9,
-            "coherence": 0.85,
-            "flow": 0.86,
-            "style_consistency": 0.88,
-        }
+                "clarity": 0.9,
+                "coherence": 0.85,
+                "flow": 0.86,
+                "style_consistency": 0.88,
+                }
+
 
     async def _check_audience_alignment(
         self, content_text: str, content_type: str
@@ -12037,10 +12479,11 @@ class QAAgent(BaseAgent):
 
         return {
             "alignment_score": 0.83,
-            "target_audience_match": True,
-            "tone_appropriateness": 0.85,
-            "complexity_level": "appropriate",
-        }
+                "target_audience_match": True,
+                "tone_appropriateness": 0.85,
+                "complexity_level": "appropriate",
+                }
+
 
     async def _assess_engagement_potential(
         self, content_text: str, content_type: str
@@ -12050,10 +12493,11 @@ class QAAgent(BaseAgent):
 
         return {
             "engagement_score": 0.79,
-            "hook_strength": 0.82,
-            "call_to_action_present": True,
-            "shareability": 0.76,
-        }
+                "hook_strength": 0.82,
+                "call_to_action_present": True,
+                "shareability": 0.76,
+                }
+
 
     async def _perform_content_competitive_analysis(
         self, content_text: str
@@ -12063,10 +12507,11 @@ class QAAgent(BaseAgent):
 
         return {
             "competitive_score": 0.81,
-            "uniqueness": 0.84,
-            "market_differentiation": 0.78,
-            "competitive_advantages": ["Unique perspective", "Comprehensive coverage"],
-        }
+                "uniqueness": 0.84,
+                "market_differentiation": 0.78,
+                "competitive_advantages": ["Unique perspective", "Comprehensive coverage"],
+                }
+
 
     async def _scan_political_neutrality(
         self, content_text: str, channel_name: str = None
@@ -12077,44 +12522,44 @@ class QAAgent(BaseAgent):
             if channel_name and "right perspective" in channel_name.lower():
                 return {
                     "is_neutral": True,
-                    "political_score": 1.0,
-                    "flagged_terms": [],
-                    "sentiment_analysis": {
+                        "political_score": 1.0,
+                        "flagged_terms": [],
+                        "sentiment_analysis": {
                         "political_lean": "allowed",
-                        "confidence": 1.0,
-                    },
-                    "recommendation": "APPROVED - Political content allowed for this channel",
-                }
+                            "confidence": 1.0,
+                            },
+                        "recommendation": "APPROVED - Political content allowed for this channel",
+                        }
 
-            # Political keywords that indicate non-neutral content
+            # Political keywords that indicate non - neutral content
             political_keywords = [
                 "democrat",
-                "republican",
-                "liberal",
-                "conservative",
-                "biden",
-                "trump",
-                "election",
-                "vote",
-                "voting",
-                "campaign",
-                "political party",
-                "politics",
-                "partisan",
-                "left-wing",
-                "right-wing",
-                "progressive",
-                "maga",
-                "gop",
-                "congress",
-                "senate",
-                "house of representatives",
-                "politician",
-                "political agenda",
-                "policy debate",
-                "electoral",
-                "candidate",
-            ]
+                    "republican",
+                    "liberal",
+                    "conservative",
+                    "biden",
+                    "trump",
+                    "election",
+                    "vote",
+                    "voting",
+                    "campaign",
+                    "political party",
+                    "politics",
+                    "partisan",
+                    "left - wing",
+                    "right - wing",
+                    "progressive",
+                    "maga",
+                    "gop",
+                    "congress",
+                    "senate",
+                    "house of representatives",
+                    "politician",
+                    "political agenda",
+                    "policy debate",
+                    "electoral",
+                    "candidate",
+                    ]
 
             # Check for political keywords
             content_lower = content_text.lower()
@@ -12126,29 +12571,29 @@ class QAAgent(BaseAgent):
             political_sentiment = None
             if flagged_terms and self.ollama_integration:
                 try:
-                    prompt = f"""Analyze the following content for political bias or partisan sentiment. 
+                    prompt = f"""Analyze the following content for political bias or partisan sentiment.
                     Respond with only 'NEUTRAL', 'POLITICAL_LEAN', or 'STRONGLY_POLITICAL':
-                    
+
                     Content: {content_text[:1000]}..."""
 
                     response = await self.ollama_integration.generate(
-                        model="llama3.2", prompt=prompt, max_tokens=50
+                        model="llama3.2", prompt = prompt, max_tokens = 50
                     )
 
                     if response and "response" in response:
                         sentiment_result = response["response"].strip().upper()
                         political_sentiment = {
                             "political_lean": sentiment_result,
-                            "confidence": 0.8 if sentiment_result != "NEUTRAL" else 0.9,
-                        }
+                                "confidence": 0.8 if sentiment_result != "NEUTRAL" else 0.9,
+                                }
                 except Exception as e:
                     self.logger.warning(
                         f"Ollama political sentiment analysis failed: {e}"
                     )
                     political_sentiment = {
                         "political_lean": "UNKNOWN",
-                        "confidence": 0.5,
-                    }
+                            "confidence": 0.5,
+                            }
 
             # Calculate political neutrality score
             keyword_penalty = min(len(flagged_terms) * 0.2, 0.8)
@@ -12170,22 +12615,23 @@ class QAAgent(BaseAgent):
 
             return {
                 "is_neutral": is_neutral,
-                "political_score": political_score,
-                "flagged_terms": flagged_terms,
-                "sentiment_analysis": political_sentiment
+                    "political_score": political_score,
+                    "flagged_terms": flagged_terms,
+                    "sentiment_analysis": political_sentiment
                 or {"political_lean": "NEUTRAL", "confidence": 1.0},
-                "recommendation": recommendation,
-            }
+                    "recommendation": recommendation,
+                    }
 
         except Exception as e:
             self.logger.error(f"Political neutrality scan failed: {e}")
             return {
                 "is_neutral": False,
-                "political_score": 0.0,
-                "flagged_terms": [],
-                "sentiment_analysis": {"political_lean": "ERROR", "confidence": 0.0},
-                "recommendation": "ERROR - Political neutrality scan failed",
-            }
+                    "political_score": 0.0,
+                    "flagged_terms": [],
+                    "sentiment_analysis": {"political_lean": "ERROR", "confidence": 0.0},
+                    "recommendation": "ERROR - Political neutrality scan failed",
+                    }
+
 
     def _generate_review_recommendation(
         self, validation_results: Dict[str, Any], review_checks: Dict[str, Any]
@@ -12203,6 +12649,7 @@ class QAAgent(BaseAgent):
                 return "REQUIRES_REVISION - Content needs significant improvements"
         else:
             return "REJECT - Content fails validation standards"
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -12224,24 +12671,26 @@ class QAAgent(BaseAgent):
 
             return {
                 "success": True,
-                "result": result,
-                "execution_time": execution_time,
-                "agent_id": self.agent_id,
-                "task_type": task.get("type", "unknown"),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "result": result,
+                    "execution_time": execution_time,
+                    "agent_id": self.agent_id,
+                    "task_type": task.get("type", "unknown"),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             self.logger.error(f"ContentAgent task execution failed: {str(e)}")
             return {
                 "success": False,
-                "error": str(e),
-                "agent_id": self.agent_id,
-                "task_type": task.get("type", "unknown"),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "error": str(e),
+                    "agent_id": self.agent_id,
+                    "task_type": task.get("type", "unknown"),
+                    "timestamp": datetime.now().isoformat(),
+                    }
 
     # Required abstract methods from BaseAgent
+
+
     async def _execute_with_monitoring(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute task with monitoring and error handling."""
         try:
@@ -12251,24 +12700,25 @@ class QAAgent(BaseAgent):
             # Add monitoring metadata
             result["monitoring"] = {
                 "execution_time": time.time(),
-                "agent_id": self.agent_id,
-                "task_type": task.get("type", "unknown"),
-                "success": result.get("success", False),
-            }
+                    "agent_id": self.agent_id,
+                    "task_type": task.get("type", "unknown"),
+                    "success": result.get("success", False),
+                    }
 
             return result
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "monitoring": {
+                    "error": str(e),
+                    "monitoring": {
                     "execution_time": time.time(),
-                    "agent_id": self.agent_id,
-                    "task_type": task.get("type", "unknown"),
-                    "success": False,
-                },
-            }
+                        "agent_id": self.agent_id,
+                        "task_type": task.get("type", "unknown"),
+                        "success": False,
+                        },
+                    }
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
         """Rephrase task for user confirmation in content creation context."""
@@ -12277,13 +12727,14 @@ class QAAgent(BaseAgent):
         if task_type == "create_video_script_pro":
             return f"Create a professional video script about '{task.get('topic', 'the specified topic')}' with {task.get('duration', 'default')} duration?"
         elif task_type == "create_long_form_content":
-            return f"Generate long-form content of type '{task.get('content_type', 'article')}' about '{task.get('topic', 'the specified topic')}'?"
+            return f"Generate long - form content of type '{task.get('content_type', 'article')}' about '{task.get('topic', 'the specified topic')}'?"
         elif task_type == "create_avatar_animation":
             return f"Create avatar animation with '{task.get('animation_type', 'default')}' style for the content?"
         elif task_type == "create_social_media_content":
             return f"Generate social media content for {task.get('platform', 'multiple platforms')} about '{task.get('topic', 'the specified topic')}'?"
         else:
             return f"Execute content creation task of type '{task_type}' with the provided parameters?"
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
@@ -12300,10 +12751,10 @@ class QAAgent(BaseAgent):
             # Validate task type is represented
             type_keywords = {
                 "video_script": ["video", "script"],
-                "long_form": ["long-form", "content", "article"],
-                "avatar": ["avatar", "animation"],
-                "social_media": ["social", "media"],
-            }
+                    "long_form": ["long - form", "content", "article"],
+                    "avatar": ["avatar", "animation"],
+                    "social_media": ["social", "media"],
+                    }
 
             type_match = False
             for task_key, keywords in type_keywords.items():

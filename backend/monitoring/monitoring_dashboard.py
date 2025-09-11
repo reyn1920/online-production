@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Monitoring Dashboard - Web Interface for System Monitoring
-Provides real-time monitoring, alerting, and system status visualization
+Provides real - time monitoring, alerting, and system status visualization
 """
 
 import asyncio
@@ -26,7 +26,8 @@ from health_monitor import HealthStatus, health_monitor
 
 
 class MonitoringDashboard:
-    """Web-based monitoring dashboard"""
+    """Web - based monitoring dashboard"""
+
 
     def __init__(self, host: str = "0.0.0.0", port: int = 8080, debug: bool = False):
         self.host = host
@@ -36,13 +37,13 @@ class MonitoringDashboard:
         # Initialize Flask app
         self.app = Flask(__name__, template_folder="templates", static_folder="static")
         self.app.config["SECRET_KEY"] = os.getenv(
-            "DASHBOARD_SECRET_KEY", "monitoring-dashboard-secret"
+            "DASHBOARD_SECRET_KEY", "monitoring - dashboard - secret"
         )
 
         # Enable CORS
         CORS(self.app)
 
-        # Initialize SocketIO for real-time updates
+        # Initialize SocketIO for real - time updates
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
 
         # Setup logging
@@ -61,26 +62,33 @@ class MonitoringDashboard:
         # Start background tasks
         self._start_background_tasks()
 
+
     def _setup_routes(self):
         """Setup Flask routes"""
 
         @self.app.route("/")
+
+
         def dashboard():
             """Main dashboard page"""
             return self._render_dashboard_template()
 
-        @self.app.route("/api/health")
+        @self.app.route("/api / health")
+
+
         def api_health():
             """Health check endpoint"""
             return jsonify(
                 {
                     "status": "healthy",
-                    "timestamp": datetime.now().isoformat(),
-                    "version": "1.0.0",
-                }
+                        "timestamp": datetime.now().isoformat(),
+                        "version": "1.0.0",
+                        }
             )
 
-        @self.app.route("/api/alerts")
+        @self.app.route("/api / alerts")
+
+
         def api_alerts():
             """Get alerts"""
             status_filter = request.args.get("status", "active")
@@ -99,12 +107,14 @@ class MonitoringDashboard:
             return jsonify(
                 {
                     "alerts": [self._serialize_alert(alert) for alert in alerts],
-                    "total": len(alerts),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "total": len(alerts),
+                        "timestamp": datetime.now().isoformat(),
+                        }
             )
 
-        @self.app.route("/api/alerts/<alert_id>/acknowledge", methods=["POST"])
+        @self.app.route("/api / alerts/<alert_id>/acknowledge", methods=["POST"])
+
+
         def api_acknowledge_alert(alert_id):
             """Acknowledge an alert"""
             data = request.get_json() or {}
@@ -115,12 +125,14 @@ class MonitoringDashboard:
             return jsonify(
                 {
                     "success": success,
-                    "message": "Alert acknowledged" if success else "Alert not found",
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "message": "Alert acknowledged" if success else "Alert not found",
+                        "timestamp": datetime.now().isoformat(),
+                        }
             )
 
-        @self.app.route("/api/metrics")
+        @self.app.route("/api / metrics")
+
+
         def api_metrics():
             """Get system metrics"""
             metric_name = request.args.get("metric")
@@ -135,12 +147,16 @@ class MonitoringDashboard:
                 {"metrics": metrics, "timestamp": datetime.now().isoformat()}
             )
 
-        @self.app.route("/api/system-status")
+        @self.app.route("/api / system - status")
+
+
         def api_system_status():
             """Get system status"""
             return jsonify(self._get_system_status())
 
-        @self.app.route("/api/compliance")
+        @self.app.route("/api / compliance")
+
+
         def api_compliance():
             """Get compliance status"""
             report = compliance_monitor.get_compliance_report()
@@ -148,13 +164,17 @@ class MonitoringDashboard:
                 {"compliance": report, "timestamp": datetime.now().isoformat()}
             )
 
-        @self.app.route("/api/monitoring-report")
+        @self.app.route("/api / monitoring - report")
+
+
         def api_monitoring_report():
             """Get comprehensive monitoring report"""
             report = alert_manager.get_monitoring_report()
             return jsonify(report)
 
-        @self.app.route("/api/alert-rules")
+        @self.app.route("/api / alert - rules")
+
+
         def api_alert_rules():
             """Get alert rules"""
             rules = []
@@ -162,27 +182,29 @@ class MonitoringDashboard:
                 rules.append(
                     {
                         "rule_id": rule_id,
-                        "name": rule.name,
-                        "description": rule.description,
-                        "category": rule.category.value,
-                        "severity": rule.severity.value,
-                        "enabled": rule.enabled,
-                        "threshold": rule.threshold,
-                        "duration_seconds": rule.duration_seconds,
-                        "cooldown_seconds": rule.cooldown_seconds,
-                        "tags": rule.tags,
-                    }
+                            "name": rule.name,
+                            "description": rule.description,
+                            "category": rule.category.value,
+                            "severity": rule.severity.value,
+                            "enabled": rule.enabled,
+                            "threshold": rule.threshold,
+                            "duration_seconds": rule.duration_seconds,
+                            "cooldown_seconds": rule.cooldown_seconds,
+                            "tags": rule.tags,
+                            }
                 )
 
             return jsonify(
                 {
                     "rules": rules,
-                    "total": len(rules),
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "total": len(rules),
+                        "timestamp": datetime.now().isoformat(),
+                        }
             )
 
-        @self.app.route("/api/create-test-alert", methods=["POST"])
+        @self.app.route("/api / create - test - alert", methods=["POST"])
+
+
         def api_create_test_alert():
             """Create a test alert for demonstration"""
             data = request.get_json() or {}
@@ -190,61 +212,66 @@ class MonitoringDashboard:
             from alert_manager import create_custom_alert
 
             alert_id = create_custom_alert(
-                title=data.get("title", "Test Alert"),
-                description=data.get(
+                title = data.get("title", "Test Alert"),
+                    description = data.get(
                     "description", "This is a test alert created from the dashboard"
                 ),
-                severity=AlertSeverity(data.get("severity", "warning")),
-                category=AlertCategory(data.get("category", "application")),
-            )
+                    severity = AlertSeverity(data.get("severity", "warning")),
+                    category = AlertCategory(data.get("category", "application")),
+                    )
 
             return jsonify(
                 {
                     "success": True,
-                    "alert_id": alert_id,
-                    "message": "Test alert created successfully",
-                    "timestamp": datetime.now().isoformat(),
-                }
+                        "alert_id": alert_id,
+                        "message": "Test alert created successfully",
+                        "timestamp": datetime.now().isoformat(),
+                        }
             )
 
-        @self.app.route("/api/export-data")
+        @self.app.route("/api / export - data")
+
+
         def api_export_data():
             """Export monitoring data"""
             export_type = request.args.get("type", "json")
 
             data = {
                 "export_timestamp": datetime.now().isoformat(),
-                "system_status": self._get_system_status(),
-                "active_alerts": [
+                    "system_status": self._get_system_status(),
+                    "active_alerts": [
                     self._serialize_alert(alert)
                     for alert in alert_manager.get_active_alerts()
                 ],
-                "alert_history": [
+                    "alert_history": [
                     self._serialize_alert(alert)
                     for alert in alert_manager.get_alert_history(1000)
                 ],
-                "compliance_report": compliance_monitor.get_compliance_report(),
-                "monitoring_report": alert_manager.get_monitoring_report(),
-            }
+                    "compliance_report": compliance_monitor.get_compliance_report(),
+                    "monitoring_report": alert_manager.get_monitoring_report(),
+                    }
 
             if export_type == "json":
                 response = Response(
-                    json.dumps(data, indent=2),
-                    mimetype="application/json",
-                    headers={
-                        "Content-Disposition": f'attachment; filename=monitoring_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+                    json.dumps(data, indent = 2),
+                        mimetype="application / json",
+                        headers={
+                        "Content - Disposition": f'attachment; filename = monitoring_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
                     },
-                )
+                        )
             else:
                 # Could add CSV export here
                 response = jsonify({"error": "Unsupported export type"})
 
             return response
 
+
     def _setup_socketio_events(self):
-        """Setup SocketIO events for real-time updates"""
+        """Setup SocketIO events for real - time updates"""
 
         @self.socketio.on("connect")
+
+
         def handle_connect():
             """Handle client connection"""
             self.connected_clients.add(request.sid)
@@ -254,22 +281,26 @@ class MonitoringDashboard:
             emit("system_status", self._get_system_status())
             emit(
                 "alerts_update",
-                {
+                    {
                     "active_alerts": [
                         self._serialize_alert(alert)
                         for alert in alert_manager.get_active_alerts()
                     ],
-                    "timestamp": datetime.now().isoformat(),
-                },
-            )
+                        "timestamp": datetime.now().isoformat(),
+                        },
+                    )
 
         @self.socketio.on("disconnect")
+
+
         def handle_disconnect():
             """Handle client disconnection"""
             self.connected_clients.discard(request.sid)
             self.logger.info(f"Client disconnected: {request.sid}")
 
         @self.socketio.on("subscribe_metrics")
+
+
         def handle_subscribe_metrics(data):
             """Handle metrics subscription"""
             metric_names = data.get("metrics", [])
@@ -278,6 +309,8 @@ class MonitoringDashboard:
             emit("metrics_update", self._get_all_current_metrics())
 
         @self.socketio.on("acknowledge_alert")
+
+
         def handle_acknowledge_alert(data):
             """Handle alert acknowledgment via WebSocket"""
             alert_id = data.get("alert_id")
@@ -287,18 +320,20 @@ class MonitoringDashboard:
                 success = alert_manager.acknowledge_alert(alert_id, acknowledged_by)
                 emit(
                     "alert_acknowledged",
-                    {
+                        {
                         "alert_id": alert_id,
-                        "success": success,
-                        "timestamp": datetime.now().isoformat(),
-                    },
-                )
+                            "success": success,
+                            "timestamp": datetime.now().isoformat(),
+                            },
+                        )
 
                 # Broadcast update to all clients
                 self._broadcast_alerts_update()
 
+
     def _start_background_tasks(self):
-        """Start background tasks for real-time updates"""
+        """Start background tasks for real - time updates"""
+
 
         def broadcast_loop():
             """Background task to broadcast updates to connected clients"""
@@ -318,8 +353,9 @@ class MonitoringDashboard:
                     time.sleep(5)
 
         # Start broadcast thread
-        broadcast_thread = threading.Thread(target=broadcast_loop, daemon=True)
+        broadcast_thread = threading.Thread(target = broadcast_loop, daemon = True)
         broadcast_thread.start()
+
 
     def _broadcast_system_updates(self):
         """Broadcast system updates to all connected clients"""
@@ -339,21 +375,23 @@ class MonitoringDashboard:
         except Exception as e:
             self.logger.error(f"Error broadcasting updates: {str(e)}")
 
+
     def _broadcast_alerts_update(self):
         """Broadcast alerts update"""
         try:
             self.socketio.emit(
                 "alerts_update",
-                {
+                    {
                     "active_alerts": [
                         self._serialize_alert(alert)
                         for alert in alert_manager.get_active_alerts()
                     ],
-                    "timestamp": datetime.now().isoformat(),
-                },
-            )
+                        "timestamp": datetime.now().isoformat(),
+                        },
+                    )
         except Exception as e:
             self.logger.error(f"Error broadcasting alerts update: {str(e)}")
+
 
     def _render_dashboard_template(self) -> str:
         """Render dashboard HTML template"""
@@ -363,33 +401,33 @@ class MonitoringDashboard:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Monitoring Dashboard</title>
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF - 8">
+    <meta name="viewport" content="width = device - width, initial - scale = 1.0">
+    <title > System Monitoring Dashboard</title>
+    <script src="https://cdn.socket.io / 4.0.0 / socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net / npm / chart.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
-        .header { background: #2c3e50; color: white; padding: 1rem; text-align: center; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        .card { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .card h3 { margin-bottom: 1rem; color: #2c3e50; }
-        .metric { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-        .metric-value { font-weight: bold; }
-        .alert { padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; }
-        .alert-critical { background: #ffebee; border-left: 4px solid #f44336; }
-        .alert-warning { background: #fff3e0; border-left: 4px solid #ff9800; }
-        .alert-info { background: #e3f2fd; border-left: 4px solid #2196f3; }
-        .status-indicator { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
-        .status-healthy { background: #4caf50; }
-        .status-warning { background: #ff9800; }
-        .status-critical { background: #f44336; }
-        .btn { background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+        * { margin: 0; padding: 0; box - sizing: border - box; }
+        body { font - family: -apple - system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans - serif; background: #f5f5f5; }
+        .header { background: #2c3e50; color: white; padding: 1rem; text - align: center; }
+        .container { max - width: 1200px; margin: 0 auto; padding: 2rem; }
+        .grid { display: grid; grid - template - columns: repeat(auto - fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .card { background: white; border - radius: 8px; padding: 1.5rem; box - shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card h3 { margin - bottom: 1rem; color: #2c3e50; }
+        .metric { display: flex; justify - content: space - between; margin - bottom: 0.5rem; }
+        .metric - value { font - weight: bold; }
+        .alert { padding: 0.75rem; margin - bottom: 0.5rem; border - radius: 4px; }
+        .alert - critical { background: #ffebee; border - left: 4px solid #f44336; }
+        .alert - warning { background: #fff3e0; border - left: 4px solid #ff9800; }
+        .alert - info { background: #e3f2fd; border - left: 4px solid #2196f3; }
+        .status - indicator { display: inline - block; width: 12px; height: 12px; border - radius: 50%; margin - right: 8px; }
+        .status - healthy { background: #4caf50; }
+        .status - warning { background: #ff9800; }
+        .status - critical { background: #f44336; }
+        .btn { background: #3498db; color: white; border: none; padding: 0.5rem 1rem; border - radius: 4px; cursor: pointer; }
         .btn:hover { background: #2980b9; }
-        .chart-container { position: relative; height: 300px; margin-top: 1rem; }
-        #connection-status { position: fixed; top: 10px; right: 10px; padding: 0.5rem; border-radius: 4px; color: white; }
+        .chart - container { position: relative; height: 300px; margin - top: 1rem; }
+        #connection - status { position: fixed; top: 10px; right: 10px; padding: 0.5rem; border - radius: 4px; color: white; }
         .connected { background: #4caf50; }
         .disconnected { background: #f44336; }
     </style>
@@ -397,71 +435,71 @@ class MonitoringDashboard:
 <body>
     <div class="header">
         <h1>🖥️ System Monitoring Dashboard</h1>
-        <p>Real-time monitoring and alerting system</p>
+        <p > Real - time monitoring and alerting system</p>
     </div>
-    
-    <div id="connection-status" class="disconnected">Disconnected</div>
-    
+
+    <div id="connection - status" class="disconnected">Disconnected</div>
+
     <div class="container">
         <div class="grid">
             <!-- System Status Card -->
             <div class="card">
                 <h3>🔧 System Status</h3>
-                <div id="system-status">
+                <div id="system - status">
                     <div class="metric">
-                        <span>Overall Health:</span>
-                        <span class="metric-value" id="health-score">Loading...</span>
+                        <span > Overall Health:</span>
+                        <span class="metric - value" id="health - score">Loading...</span>
                     </div>
                     <div class="metric">
-                        <span>CPU Usage:</span>
-                        <span class="metric-value" id="cpu-usage">Loading...</span>
+                        <span > CPU Usage:</span>
+                        <span class="metric - value" id="cpu - usage">Loading...</span>
                     </div>
                     <div class="metric">
-                        <span>Memory Usage:</span>
-                        <span class="metric-value" id="memory-usage">Loading...</span>
+                        <span > Memory Usage:</span>
+                        <span class="metric - value" id="memory - usage">Loading...</span>
                     </div>
                     <div class="metric">
-                        <span>Disk Usage:</span>
-                        <span class="metric-value" id="disk-usage">Loading...</span>
+                        <span > Disk Usage:</span>
+                        <span class="metric - value" id="disk - usage">Loading...</span>
                     </div>
                     <div class="metric">
-                        <span>Uptime:</span>
-                        <span class="metric-value" id="uptime">Loading...</span>
+                        <span > Uptime:</span>
+                        <span class="metric - value" id="uptime">Loading...</span>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Active Alerts Card -->
             <div class="card">
                 <h3>🚨 Active Alerts</h3>
-                <div id="active-alerts">
-                    <p>Loading alerts...</p>
+                <div id="active - alerts">
+                    <p > Loading alerts...</p>
                 </div>
             </div>
-            
+
             <!-- Compliance Status Card -->
             <div class="card">
                 <h3>✅ Compliance Status</h3>
-                <div id="compliance-status">
+                <div id="compliance - status">
                     <div class="metric">
-                        <span>Compliance Score:</span>
-                        <span class="metric-value" id="compliance-score">Loading...</span>
+                        <span > Compliance Score:</span>
+                        <span class="metric - value" id="compliance - score">Loading...</span>
                     </div>
                     <div class="metric">
-                        <span>Active Violations:</span>
-                        <span class="metric-value" id="compliance-violations">Loading...</span>
+                        <span > Active Violations:</span>
+                        <span class="metric - value" id="compliance - violations">Loading...</span>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Performance Metrics Card -->
             <div class="card">
                 <h3>📊 Performance Metrics</h3>
-                <div class="chart-container">
-                    <canvas id="performance-chart"></canvas>
+                <div class="chart - container">
+                    <canvas id="performance - chart"></canvas>
                 </div>
             </div>
-            
+
             <!-- Quick Actions Card -->
             <div class="card">
                 <h3>⚡ Quick Actions</h3>
@@ -469,153 +507,153 @@ class MonitoringDashboard:
                 <button class="btn" onclick="exportData()">Export Data</button>
                 <button class="btn" onclick="refreshData()">Refresh Data</button>
             </div>
-            
+
             <!-- Recent Activity Card -->
             <div class="card">
                 <h3>📝 Recent Activity</h3>
-                <div id="recent-activity">
-                    <p>Loading activity...</p>
+                <div id="recent - activity">
+                    <p > Loading activity...</p>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Initialize Socket.IO connection
         const socket = io();
         let performanceChart = null;
-        
+
         // Connection status
         socket.on('connect', function() {
-            document.getElementById('connection-status').textContent = 'Connected';
-            document.getElementById('connection-status').className = 'connected';
+            document.getElementById('connection - status').textContent = 'Connected';
+            document.getElementById('connection - status').className = 'connected';
         });
-        
+
         socket.on('disconnect', function() {
-            document.getElementById('connection-status').textContent = 'Disconnected';
-            document.getElementById('connection-status').className = 'disconnected';
+            document.getElementById('connection - status').textContent = 'Disconnected';
+            document.getElementById('connection - status').className = 'disconnected';
         });
-        
+
         // System status updates
         socket.on('system_status', function(data) {
             updateSystemStatus(data);
         });
-        
+
         // Alerts updates
         socket.on('alerts_update', function(data) {
             updateActiveAlerts(data.active_alerts);
         });
-        
+
         // Metrics updates
         socket.on('metrics_update', function(data) {
             updatePerformanceChart(data);
         });
-        
+
         function updateSystemStatus(data) {
-            document.getElementById('health-score').textContent = data.health_score ? data.health_score.toFixed(1) + '%' : 'N/A';
-            document.getElementById('cpu-usage').textContent = data.cpu_percent ? data.cpu_percent.toFixed(1) + '%' : 'N/A';
-            document.getElementById('memory-usage').textContent = data.memory_percent ? data.memory_percent.toFixed(1) + '%' : 'N/A';
-            document.getElementById('disk-usage').textContent = data.disk_percent ? data.disk_percent.toFixed(1) + '%' : 'N/A';
-            document.getElementById('uptime').textContent = data.uptime_hours ? formatUptime(data.uptime_hours) : 'N/A';
-            
+            document.getElementById('health - score').textContent = data.health_score ? data.health_score.toFixed(1) + '%' : 'N / A';
+            document.getElementById('cpu - usage').textContent = data.cpu_percent ? data.cpu_percent.toFixed(1) + '%' : 'N / A';
+            document.getElementById('memory - usage').textContent = data.memory_percent ? data.memory_percent.toFixed(1) + '%' : 'N / A';
+            document.getElementById('disk - usage').textContent = data.disk_percent ? data.disk_percent.toFixed(1) + '%' : 'N / A';
+            document.getElementById('uptime').textContent = data.uptime_hours ? formatUptime(data.uptime_hours) : 'N / A';
+
             // Update compliance
-            document.getElementById('compliance-score').textContent = data.compliance_score ? data.compliance_score.toFixed(1) + '%' : 'N/A';
+            document.getElementById('compliance - score').textContent = data.compliance_score ? data.compliance_score.toFixed(1) + '%' : 'N / A';
         }
-        
+
         function updateActiveAlerts(alerts) {
-            const container = document.getElementById('active-alerts');
-            
+            const container = document.getElementById('active - alerts');
+
             if (!alerts || alerts.length === 0) {
                 container.innerHTML = '<p style="color: #4caf50;">✅ No active alerts</p>';
                 return;
             }
-            
+
             let html = '';
             alerts.forEach(alert => {
                 const alertClass = `alert-${alert.severity}`;
                 const statusIndicator = getStatusIndicator(alert.severity);
-                
+
                 html += `
                     <div class="alert ${alertClass}">
                         ${statusIndicator}
                         <strong>${alert.title}</strong><br>
                         <small>${alert.description}</small><br>
-                        <small>Created: ${new Date(alert.created_at).toLocaleString()}</small>
-                        ${alert.status === 'active' ? `<button class="btn" style="float: right; font-size: 12px; padding: 0.25rem 0.5rem;" onclick="acknowledgeAlert('${alert.alert_id}')">Acknowledge</button>` : ''}
+                        <small > Created: ${new Date(alert.created_at).toLocaleString()}</small>
+                        ${alert.status === 'active' ? `<button class="btn" style="float: right; font - size: 12px; padding: 0.25rem 0.5rem;" onclick="acknowledgeAlert('${alert.alert_id}')">Acknowledge</button>` : ''}
                     </div>
                 `;
             });
-            
+
             container.innerHTML = html;
         }
-        
+
         function updatePerformanceChart(data) {
-            const ctx = document.getElementById('performance-chart').getContext('2d');
-            
+            const ctx = document.getElementById('performance - chart').getContext('2d');
+
             if (performanceChart) {
                 performanceChart.destroy();
             }
-            
+
             performanceChart = new Chart(ctx, {
                 type: 'line',
-                data: {
+                    data: {
                     labels: ['CPU', 'Memory', 'Disk', 'Health'],
-                    datasets: [{
+                        datasets: [{
                         label: 'System Metrics (%)',
-                        data: [
+                            data: [
                             data.cpu_percent || 0,
-                            data.memory_percent || 0,
-                            data.disk_percent || 0,
-                            data.health_score || 0
+                                data.memory_percent || 0,
+                                data.disk_percent || 0,
+                                data.health_score || 0
                         ],
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        tension: 0.4
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4
                     }]
                 },
-                options: {
+                    options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
+                        maintainAspectRatio: false,
+                        scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100
+                                max: 100
                         }
                     }
                 }
             });
         }
-        
+
         function getStatusIndicator(severity) {
-            const statusClass = severity === 'critical' || severity === 'emergency' ? 'status-critical' :
-                              severity === 'warning' ? 'status-warning' : 'status-healthy';
-            return `<span class="status-indicator ${statusClass}"></span>`;
+            const statusClass = severity === 'critical' || severity === 'emergency' ? 'status - critical' :
+                              severity === 'warning' ? 'status - warning' : 'status - healthy';
+            return `<span class="status - indicator ${statusClass}"></span>`;
         }
-        
+
         function formatUptime(hours) {
             const days = Math.floor(hours / 24);
             const remainingHours = Math.floor(hours % 24);
             return `${days}d ${remainingHours}h`;
         }
-        
+
         function acknowledgeAlert(alertId) {
             socket.emit('acknowledge_alert', {
                 alert_id: alertId,
-                acknowledged_by: 'dashboard_user'
+                    acknowledged_by: 'dashboard_user'
             });
         }
-        
+
         function createTestAlert() {
-            fetch('/api/create-test-alert', {
+            fetch('/api / create - test - alert', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+                    headers: {
+                    'Content - Type': 'application / json'
                 },
-                body: JSON.stringify({
+                    body: JSON.stringify({
                     title: 'Dashboard Test Alert',
-                    description: 'This is a test alert created from the dashboard',
-                    severity: 'warning',
-                    category: 'application'
+                        description: 'This is a test alert created from the dashboard',
+                        severity: 'warning',
+                        category: 'application'
                 })
             })
             .then(response => response.json())
@@ -631,36 +669,36 @@ class MonitoringDashboard:
                 alert('Error creating test alert');
             });
         }
-        
+
         function exportData() {
-            window.open('/api/export-data?type=json', '_blank');
+            window.open('/api / export - data?type = json', '_blank');
         }
-        
+
         function refreshData() {
             location.reload();
         }
-        
+
         // Load initial compliance data
-        fetch('/api/compliance')
+        fetch('/api / compliance')
             .then(response => response.json())
             .then(data => {
                 if (data.compliance) {
-                    document.getElementById('compliance-score').textContent = data.compliance.overall_compliance_score.toFixed(1) + '%';
-                    document.getElementById('compliance-violations').textContent = data.compliance.violations.length;
+                    document.getElementById('compliance - score').textContent = data.compliance.overall_compliance_score.toFixed(1) + '%';
+                    document.getElementById('compliance - violations').textContent = data.compliance.violations.length;
                 }
             })
             .catch(error => console.error('Error loading compliance data:', error));
-        
+
         // Load recent activity
-        fetch('/api/alerts?status=history&limit=5')
+        fetch('/api / alerts?status = history&limit = 5')
             .then(response => response.json())
             .then(data => {
-                const container = document.getElementById('recent-activity');
+                const container = document.getElementById('recent - activity');
                 if (data.alerts && data.alerts.length > 0) {
                     let html = '';
                     data.alerts.slice(-5).forEach(alert => {
                         html += `
-                            <div style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                            <div style="padding: 0.5rem 0; border - bottom: 1px solid #eee;">
                                 <strong>${alert.title}</strong><br>
                                 <small>${alert.status} - ${new Date(alert.created_at).toLocaleString()}</small>
                             </div>
@@ -668,38 +706,40 @@ class MonitoringDashboard:
                     });
                     container.innerHTML = html;
                 } else {
-                    container.innerHTML = '<p>No recent activity</p>';
+                    container.innerHTML = '<p > No recent activity</p>';
                 }
             })
             .catch(error => {
                 console.error('Error loading recent activity:', error);
-                document.getElementById('recent-activity').innerHTML = '<p>Error loading activity</p>';
+                document.getElementById('recent - activity').innerHTML = '<p > Error loading activity</p>';
             });
     </script>
 </body>
 </html>
         """
 
+
     def _serialize_alert(self, alert) -> Dict[str, Any]:
         """Serialize alert object to dictionary"""
         return {
             "alert_id": alert.alert_id,
-            "rule_id": alert.rule_id,
-            "title": alert.title,
-            "description": alert.description,
-            "category": alert.category.value,
-            "severity": alert.severity.value,
-            "status": alert.status.value,
-            "created_at": alert.created_at,
-            "updated_at": alert.updated_at,
-            "resolved_at": alert.resolved_at,
-            "acknowledged_at": alert.acknowledged_at,
-            "acknowledged_by": alert.acknowledged_by,
-            "current_value": alert.current_value,
-            "threshold": alert.threshold,
-            "metadata": alert.metadata,
-            "escalation_level": alert.escalation_level,
-        }
+                "rule_id": alert.rule_id,
+                "title": alert.title,
+                "description": alert.description,
+                "category": alert.category.value,
+                "severity": alert.severity.value,
+                "status": alert.status.value,
+                "created_at": alert.created_at,
+                "updated_at": alert.updated_at,
+                "resolved_at": alert.resolved_at,
+                "acknowledged_at": alert.acknowledged_at,
+                "acknowledged_by": alert.acknowledged_by,
+                "current_value": alert.current_value,
+                "threshold": alert.threshold,
+                "metadata": alert.metadata,
+                "escalation_level": alert.escalation_level,
+                }
+
 
     def _get_system_status(self) -> Dict[str, Any]:
         """Get current system status"""
@@ -710,18 +750,19 @@ class MonitoringDashboard:
 
         return {
             "cpu_percent": health_summary.get("cpu_percent", 0),
-            "memory_percent": health_summary.get("memory_percent", 0),
-            "disk_percent": health_summary.get("disk_percent", 0),
-            "health_score": health_summary.get("health_score", 0),
-            "active_alerts": health_summary.get("active_alerts", 0),
-            "monitoring_active": health_summary.get("monitoring_active", False),
-            "uptime_hours": getattr(health_status, "uptime_hours", 0),
-            "response_time_ms": getattr(health_status, "response_time_ms", 0),
-            "compliance_score": alert_manager._get_latest_metric_value(
+                "memory_percent": health_summary.get("memory_percent", 0),
+                "disk_percent": health_summary.get("disk_percent", 0),
+                "health_score": health_summary.get("health_score", 0),
+                "active_alerts": health_summary.get("active_alerts", 0),
+                "monitoring_active": health_summary.get("monitoring_active", False),
+                "uptime_hours": getattr(health_status, "uptime_hours", 0),
+                "response_time_ms": getattr(health_status, "response_time_ms", 0),
+                "compliance_score": alert_manager._get_latest_metric_value(
                 "compliance.score", 0
             ),
-            "timestamp": datetime.now().isoformat(),
-        }
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     def _get_all_current_metrics(self) -> Dict[str, Any]:
         """Get all current metrics"""
@@ -732,9 +773,9 @@ class MonitoringDashboard:
                 latest_point = metric_buffer[-1]
                 metrics[metric_name] = {
                     "value": latest_point.value,
-                    "timestamp": latest_point.timestamp,
-                    "labels": latest_point.labels,
-                }
+                        "timestamp": latest_point.timestamp,
+                        "labels": latest_point.labels,
+                        }
 
         # Add calculated metrics
         metrics["cpu_percent"] = alert_manager._get_latest_metric_value(
@@ -752,6 +793,7 @@ class MonitoringDashboard:
 
         return metrics
 
+
     def _get_metric_history(
         self, metric_name: str, duration_hours: int
     ) -> List[Dict[str, Any]]:
@@ -767,12 +809,13 @@ class MonitoringDashboard:
                 history.append(
                     {
                         "timestamp": point.timestamp,
-                        "value": point.value,
-                        "labels": point.labels,
-                    }
+                            "value": point.value,
+                            "labels": point.labels,
+                            }
                 )
 
         return history
+
 
     def run(self):
         """Run the dashboard server"""
@@ -781,21 +824,22 @@ class MonitoringDashboard:
         # Log audit event
         audit_logger.log_security_event(
             event_type="dashboard_started",
-            severity="info",
-            additional_data={"host": self.host, "port": self.port, "debug": self.debug},
-        )
+                severity="info",
+                additional_data={"host": self.host, "port": self.port, "debug": self.debug},
+                )
 
         try:
             self.socketio.run(
                 self.app,
-                host=self.host,
-                port=self.port,
-                debug=self.debug,
-                allow_unsafe_werkzeug=True,  # For development only
+                    host = self.host,
+                    port = self.port,
+                    debug = self.debug,
+                    allow_unsafe_werkzeug = True,  # For development only
             )
         except Exception as e:
             self.logger.error(f"Error running dashboard: {str(e)}")
             raise
+
 
     def stop(self):
         """Stop the dashboard server"""
@@ -806,7 +850,6 @@ class MonitoringDashboard:
             event_type="dashboard_stopped", severity="info", additional_data={}
         )
 
-
 # Global dashboard instance
 dashboard = None
 
@@ -816,7 +859,7 @@ def start_dashboard(host: str = "0.0.0.0", port: int = 8080, debug: bool = False
     global dashboard
 
     if dashboard is None:
-        dashboard = MonitoringDashboard(host=host, port=port, debug=debug)
+        dashboard = MonitoringDashboard(host = host, port = port, debug = debug)
 
     dashboard.run()
 
@@ -829,15 +872,14 @@ def stop_dashboard():
         dashboard.stop()
         dashboard = None
 
-
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="System Monitoring Dashboard")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
-    parser.add_argument("--port", type=int, default=8080, help="Port to bind to")
+    parser.add_argument("--port", type = int, default = 8080, help="Port to bind to")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 
     args = parser.parse_args()
 
-    start_dashboard(host=args.host, port=args.port, debug=args.debug)
+    start_dashboard(host = args.host, port = args.port, debug = args.debug)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Validation utilities for TRAE.AI System
 Provides bundle structure validation and data integrity checks
@@ -25,14 +25,14 @@ def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
     if not bundle_dir.exists():
         return {
             "valid": False,
-            "error": f"Bundle directory does not exist: {bundle_path}",
-        }
+                "error": f"Bundle directory does not exist: {bundle_path}",
+                }
 
     if not bundle_dir.is_dir():
         return {
             "valid": False,
-            "error": f"Bundle path is not a directory: {bundle_path}",
-        }
+                "error": f"Bundle path is not a directory: {bundle_path}",
+                }
 
     # Check for required files
     required_files = ["README.md"]
@@ -62,12 +62,12 @@ def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
 
     return {
         "valid": True,
-        "bundle_name": bundle_dir.name,
-        "files_found": [f.name for f in bundle_dir.iterdir() if f.is_file()],
-        "size_bytes": sum(
+            "bundle_name": bundle_dir.name,
+            "files_found": [f.name for f in bundle_dir.iterdir() if f.is_file()],
+            "size_bytes": sum(
             f.stat().st_size for f in bundle_dir.rglob("*") if f.is_file()
         ),
-    }
+            }
 
 
 def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
@@ -88,7 +88,7 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
     try:
         import csv
 
-        with open(csv_file, "r", encoding="utf-8") as f:
+        with open(csv_file, "r", encoding="utf - 8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
 
@@ -100,8 +100,8 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
         if not all(col in reader.fieldnames for col in required_columns):
             return {
                 "valid": False,
-                "error": f"Missing required columns: {required_columns}",
-            }
+                    "error": f"Missing required columns: {required_columns}",
+                    }
 
         return {"valid": True, "row_count": len(rows), "columns": reader.fieldnames}
 
@@ -117,7 +117,7 @@ def validate_file_permissions(
 
     Args:
         file_path: Path to file
-        required_perms: Required permissions (r/w/x)
+        required_perms: Required permissions (r / w/x)
 
     Returns:
         Dict with validation results

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Model Context Protocol (MCP) Implementation
 
@@ -11,8 +11,8 @@ Features:
 - Context sharing and state management
 - Tool registration and discovery
 - Resource management and access control
-- Real-time bidirectional communication
-- Multi-model orchestration
+- Real - time bidirectional communication
+- Multi - model orchestration
 - Context persistence and retrieval
 
 Author: TRAE.AI System
@@ -63,37 +63,37 @@ class MCPMessageType(Enum):
     PONG = "pong"
 
     # Tool management
-    LIST_TOOLS = "tools/list"
-    CALL_TOOL = "tools/call"
-    TOOL_RESULT = "tools/result"
+    LIST_TOOLS = "tools / list"
+    CALL_TOOL = "tools / call"
+    TOOL_RESULT = "tools / result"
 
     # Resource management
-    LIST_RESOURCES = "resources/list"
-    READ_RESOURCE = "resources/read"
-    SUBSCRIBE_RESOURCE = "resources/subscribe"
-    UNSUBSCRIBE_RESOURCE = "resources/unsubscribe"
-    RESOURCE_UPDATED = "resources/updated"
+    LIST_RESOURCES = "resources / list"
+    READ_RESOURCE = "resources / read"
+    SUBSCRIBE_RESOURCE = "resources / subscribe"
+    UNSUBSCRIBE_RESOURCE = "resources / unsubscribe"
+    RESOURCE_UPDATED = "resources / updated"
 
     # Context management
-    GET_CONTEXT = "context/get"
-    SET_CONTEXT = "context/set"
-    UPDATE_CONTEXT = "context/update"
-    CLEAR_CONTEXT = "context/clear"
+    GET_CONTEXT = "context / get"
+    SET_CONTEXT = "context / set"
+    UPDATE_CONTEXT = "context / update"
+    CLEAR_CONTEXT = "context / clear"
 
     # Prompt management
-    LIST_PROMPTS = "prompts/list"
-    GET_PROMPT = "prompts/get"
+    LIST_PROMPTS = "prompts / list"
+    GET_PROMPT = "prompts / get"
 
     # Notifications
     NOTIFICATION = "notification"
     ERROR = "error"
 
     # Custom extensions
-    AGENT_REGISTER = "agent/register"
-    AGENT_UNREGISTER = "agent/unregister"
-    WORKFLOW_START = "workflow/start"
-    WORKFLOW_STATUS = "workflow/status"
-    WORKFLOW_COMPLETE = "workflow/complete"
+    AGENT_REGISTER = "agent / register"
+    AGENT_UNREGISTER = "agent / unregister"
+    WORKFLOW_START = "workflow / start"
+    WORKFLOW_STATUS = "workflow / status"
+    WORKFLOW_COMPLETE = "workflow / complete"
 
 
 class MCPCapability(Enum):
@@ -122,8 +122,9 @@ class MCPResourceType(Enum):
     DATABASE = "database"
     API = "api"
 
-
 @dataclass
+
+
 class MCPMessage:
     """Base MCP message structure."""
 
@@ -133,6 +134,7 @@ class MCPMessage:
     params: Optional[Dict[str, Any]] = None
     result: Optional[Any] = None
     error: Optional[Dict[str, Any]] = None
+
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -152,19 +154,22 @@ class MCPMessage:
         return data
 
     @classmethod
+
+
     def from_dict(cls, data: Dict[str, Any]) -> "MCPMessage":
         """Create from dictionary."""
         return cls(
-            jsonrpc=data.get("jsonrpc", "2.0"),
-            id=data.get("id"),
-            method=data.get("method"),
-            params=data.get("params"),
-            result=data.get("result"),
-            error=data.get("error"),
-        )
-
+            jsonrpc = data.get("jsonrpc", "2.0"),
+                id = data.get("id"),
+                method = data.get("method"),
+                params = data.get("params"),
+                result = data.get("result"),
+                error = data.get("error"),
+                )
 
 @dataclass
+
+
 class MCPTool:
     """MCP tool definition."""
 
@@ -175,8 +180,9 @@ class MCPTool:
     handler: Optional[Callable] = None
     metadata: Optional[Dict[str, Any]] = None
 
-
 @dataclass
+
+
 class MCPResource:
     """MCP resource definition."""
 
@@ -189,8 +195,9 @@ class MCPResource:
     content: Optional[Any] = None
     lastModified: Optional[datetime] = None
 
-
 @dataclass
+
+
 class MCPPrompt:
     """MCP prompt definition."""
 
@@ -200,8 +207,9 @@ class MCPPrompt:
     arguments: Optional[List[Dict[str, Any]]] = None
     metadata: Optional[Dict[str, Any]] = None
 
-
 @dataclass
+
+
 class MCPContext:
     """MCP context data."""
 
@@ -213,8 +221,9 @@ class MCPContext:
     expires_at: Optional[datetime] = None
     metadata: Optional[Dict[str, Any]] = None
 
-
 @dataclass
+
+
 class MCPServerInfo:
     """MCP server information."""
 
@@ -233,26 +242,27 @@ class MCPServer:
     Provides standardized AI model communication and context sharing.
     """
 
+
     def __init__(
         self,
-        name: str,
-        version: str = "1.0.0",
-        host: str = "localhost",
-        port: int = 8765,
-        capabilities: Optional[List[MCPCapability]] = None,
-    ):
+            name: str,
+            version: str = "1.0.0",
+            host: str = "localhost",
+            port: int = 8765,
+            capabilities: Optional[List[MCPCapability]] = None,
+            ):
 
         self.logger = setup_logger(f"mcp_server_{name}")
 
         # Server configuration
         self.info = MCPServerInfo(
-            name=name,
-            version=version,
-            capabilities=capabilities
+            name = name,
+                version = version,
+                capabilities = capabilities
             or [MCPCapability.TOOLS, MCPCapability.RESOURCES, MCPCapability.CONTEXT],
-            description=f"TRAE.AI MCP Server - {name}",
-            author="TRAE.AI System",
-        )
+                description = f"TRAE.AI MCP Server - {name}",
+                author="TRAE.AI System",
+                )
 
         self.host = host
         self.port = port
@@ -271,42 +281,46 @@ class MCPServer:
         # Message handlers
         self.handlers: Dict[str, Callable] = {
             MCPMessageType.INITIALIZE.value: self._handle_initialize,
-            MCPMessageType.PING.value: self._handle_ping,
-            MCPMessageType.LIST_TOOLS.value: self._handle_list_tools,
-            MCPMessageType.CALL_TOOL.value: self._handle_call_tool,
-            MCPMessageType.LIST_RESOURCES.value: self._handle_list_resources,
-            MCPMessageType.READ_RESOURCE.value: self._handle_read_resource,
-            MCPMessageType.LIST_PROMPTS.value: self._handle_list_prompts,
-            MCPMessageType.GET_PROMPT.value: self._handle_get_prompt,
-            MCPMessageType.GET_CONTEXT.value: self._handle_get_context,
-            MCPMessageType.SET_CONTEXT.value: self._handle_set_context,
-            MCPMessageType.UPDATE_CONTEXT.value: self._handle_update_context,
-            MCPMessageType.CLEAR_CONTEXT.value: self._handle_clear_context,
-        }
+                MCPMessageType.PING.value: self._handle_ping,
+                MCPMessageType.LIST_TOOLS.value: self._handle_list_tools,
+                MCPMessageType.CALL_TOOL.value: self._handle_call_tool,
+                MCPMessageType.LIST_RESOURCES.value: self._handle_list_resources,
+                MCPMessageType.READ_RESOURCE.value: self._handle_read_resource,
+                MCPMessageType.LIST_PROMPTS.value: self._handle_list_prompts,
+                MCPMessageType.GET_PROMPT.value: self._handle_get_prompt,
+                MCPMessageType.GET_CONTEXT.value: self._handle_get_context,
+                MCPMessageType.SET_CONTEXT.value: self._handle_set_context,
+                MCPMessageType.UPDATE_CONTEXT.value: self._handle_update_context,
+                MCPMessageType.CLEAR_CONTEXT.value: self._handle_clear_context,
+                }
 
         # Server state
         self.running = False
         self.server = None
 
         # Thread pool for blocking operations
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = ThreadPoolExecutor(max_workers = 10)
 
         self.logger.info(f"MCP Server '{name}' initialized")
+
 
     def register_tool(self, tool: MCPTool):
         """Register a tool with the server."""
         self.tools[tool.name] = tool
         self.logger.info(f"Registered tool: {tool.name}")
 
+
     def register_resource(self, resource: MCPResource):
         """Register a resource with the server."""
         self.resources[resource.uri] = resource
         self.logger.info(f"Registered resource: {resource.uri}")
 
+
     def register_prompt(self, prompt: MCPPrompt):
         """Register a prompt with the server."""
         self.prompts[prompt.name] = prompt
         self.logger.info(f"Registered prompt: {prompt.name}")
+
 
     async def start(self):
         """Start the MCP server."""
@@ -328,6 +342,7 @@ class MCPServer:
         except Exception as e:
             self.logger.error(f"Failed to start MCP server: {e}")
             raise
+
 
     async def stop(self):
         """Stop the MCP server."""
@@ -351,9 +366,10 @@ class MCPServer:
             await self.server.wait_closed()
 
         # Shutdown executor
-        self.executor.shutdown(wait=True)
+            self.executor.shutdown(wait = True)
 
         self.logger.info("MCP Server stopped")
+
 
     async def _handle_client(self, websocket, path):
         """Handle new client connection."""
@@ -374,10 +390,11 @@ class MCPServer:
             if client_id in self.clients:
                 del self.clients[client_id]
 
+
     async def _process_message(self, client_id: str, raw_message: str):
         """Process incoming message from client."""
         try:
-            # Parse JSON-RPC message
+            # Parse JSON - RPC message
             data = json.loads(raw_message)
             message = MCPMessage.from_dict(data)
 
@@ -391,12 +408,12 @@ class MCPServer:
             else:
                 # Unknown method
                 error_response = MCPMessage(
-                    id=message.id,
-                    error={
+                    id = message.id,
+                        error={
                         "code": -32601,
-                        "message": f"Method not found: {message.method}",
-                    },
-                )
+                            "message": f"Method not found: {message.method}",
+                            },
+                        )
                 await self._send_message(client_id, error_response)
 
         except json.JSONDecodeError as e:
@@ -408,10 +425,11 @@ class MCPServer:
         except Exception as e:
             self.logger.error(f"Error processing message from client {client_id}: {e}")
             error_response = MCPMessage(
-                id=getattr(message, "id", None) if "message" in locals() else None,
-                error={"code": -32603, "message": "Internal error"},
-            )
+                id = getattr(message, "id", None) if "message" in locals() else None,
+                    error={"code": -32603, "message": "Internal error"},
+                    )
             await self._send_message(client_id, error_response)
+
 
     async def _send_message(self, client_id: str, message: MCPMessage):
         """Send message to client."""
@@ -427,6 +445,7 @@ class MCPServer:
         except Exception as e:
             self.logger.error(f"Error sending message to client {client_id}: {e}")
 
+
     async def broadcast_message(
         self, message: MCPMessage, exclude_client: Optional[str] = None
     ):
@@ -437,30 +456,34 @@ class MCPServer:
             await self._send_message(client_id, message)
 
     # Message handlers
+
+
     async def _handle_initialize(
         self, client_id: str, message: MCPMessage
     ) -> MCPMessage:
         """Handle initialization request."""
         return MCPMessage(
-            id=message.id,
-            result={
-                "protocolVersion": "2024-11-05",
-                "capabilities": [cap.value for cap in self.info.capabilities],
-                "serverInfo": {
+            id = message.id,
+                result={
+                "protocolVersion": "2024 - 11 - 05",
+                    "capabilities": [cap.value for cap in self.info.capabilities],
+                    "serverInfo": {
                     "name": self.info.name,
-                    "version": self.info.version,
-                    "description": self.info.description,
-                    "author": self.info.author,
-                },
-            },
-        )
+                        "version": self.info.version,
+                        "description": self.info.description,
+                        "author": self.info.author,
+                        },
+                    },
+                )
+
 
     async def _handle_ping(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle ping request."""
         return MCPMessage(
-            id=message.id,
-            result={"pong": True, "timestamp": datetime.now().isoformat()},
-        )
+            id = message.id,
+                result={"pong": True, "timestamp": datetime.now().isoformat()},
+                )
+
 
     async def _handle_list_tools(
         self, client_id: str, message: MCPMessage
@@ -471,14 +494,15 @@ class MCPServer:
             tools_list.append(
                 {
                     "name": tool.name,
-                    "description": tool.description,
-                    "inputSchema": tool.inputSchema,
-                    "outputSchema": tool.outputSchema,
-                    "metadata": tool.metadata,
-                }
+                        "description": tool.description,
+                        "inputSchema": tool.inputSchema,
+                        "outputSchema": tool.outputSchema,
+                        "metadata": tool.metadata,
+                        }
             )
 
-        return MCPMessage(id=message.id, result={"tools": tools_list})
+        return MCPMessage(id = message.id, result={"tools": tools_list})
+
 
     async def _handle_call_tool(
         self, client_id: str, message: MCPMessage
@@ -490,9 +514,9 @@ class MCPServer:
 
         if tool_name not in self.tools:
             return MCPMessage(
-                id=message.id,
-                error={"code": -32602, "message": f"Tool not found: {tool_name}"},
-            )
+                id = message.id,
+                    error={"code": -32602, "message": f"Tool not found: {tool_name}"},
+                    )
 
         tool = self.tools[tool_name]
 
@@ -513,31 +537,32 @@ class MCPServer:
             else:
                 result = {
                     "message": f"Tool {tool_name} executed",
-                    "arguments": arguments,
-                }
+                        "arguments": arguments,
+                        }
 
             return MCPMessage(
-                id=message.id,
-                result={
+                id = message.id,
+                    result={
                     "content": [
                         {
                             "type": "text",
-                            "text": (
+                                "text": (
                                 json.dumps(result)
                                 if not isinstance(result, str)
                                 else result
                             ),
-                        }
+                                }
                     ]
                 },
-            )
+                    )
 
         except Exception as e:
             self.logger.error(f"Error calling tool {tool_name}: {e}")
             return MCPMessage(
-                id=message.id,
-                error={"code": -32603, "message": f"Tool execution failed: {str(e)}"},
-            )
+                id = message.id,
+                    error={"code": -32603, "message": f"Tool execution failed: {str(e)}"},
+                    )
+
 
     async def _handle_list_resources(
         self, client_id: str, message: MCPMessage
@@ -548,15 +573,16 @@ class MCPServer:
             resources_list.append(
                 {
                     "uri": resource.uri,
-                    "name": resource.name,
-                    "description": resource.description,
-                    "mimeType": resource.mimeType,
-                    "resourceType": resource.resourceType.value,
-                    "metadata": resource.metadata,
-                }
+                        "name": resource.name,
+                        "description": resource.description,
+                        "mimeType": resource.mimeType,
+                        "resourceType": resource.resourceType.value,
+                        "metadata": resource.metadata,
+                        }
             )
 
-        return MCPMessage(id=message.id, result={"resources": resources_list})
+        return MCPMessage(id = message.id, result={"resources": resources_list})
+
 
     async def _handle_read_resource(
         self, client_id: str, message: MCPMessage
@@ -567,24 +593,25 @@ class MCPServer:
 
         if uri not in self.resources:
             return MCPMessage(
-                id=message.id,
-                error={"code": -32602, "message": f"Resource not found: {uri}"},
-            )
+                id = message.id,
+                    error={"code": -32602, "message": f"Resource not found: {uri}"},
+                    )
 
         resource = self.resources[uri]
 
         return MCPMessage(
-            id=message.id,
-            result={
+            id = message.id,
+                result={
                 "contents": [
                     {
                         "uri": resource.uri,
-                        "mimeType": resource.mimeType,
-                        "text": str(resource.content) if resource.content else "",
-                    }
+                            "mimeType": resource.mimeType,
+                            "text": str(resource.content) if resource.content else "",
+                            }
                 ]
             },
-        )
+                )
+
 
     async def _handle_list_prompts(
         self, client_id: str, message: MCPMessage
@@ -595,13 +622,14 @@ class MCPServer:
             prompts_list.append(
                 {
                     "name": prompt.name,
-                    "description": prompt.description,
-                    "arguments": prompt.arguments,
-                    "metadata": prompt.metadata,
-                }
+                        "description": prompt.description,
+                        "arguments": prompt.arguments,
+                        "metadata": prompt.metadata,
+                        }
             )
 
-        return MCPMessage(id=message.id, result={"prompts": prompts_list})
+        return MCPMessage(id = message.id, result={"prompts": prompts_list})
+
 
     async def _handle_get_prompt(
         self, client_id: str, message: MCPMessage
@@ -613,9 +641,9 @@ class MCPServer:
 
         if prompt_name not in self.prompts:
             return MCPMessage(
-                id=message.id,
-                error={"code": -32602, "message": f"Prompt not found: {prompt_name}"},
-            )
+                id = message.id,
+                    error={"code": -32602, "message": f"Prompt not found: {prompt_name}"},
+                    )
 
         prompt = self.prompts[prompt_name]
 
@@ -625,17 +653,18 @@ class MCPServer:
             rendered_template = rendered_template.replace(f"{{{key}}}", str(value))
 
         return MCPMessage(
-            id=message.id,
-            result={
+            id = message.id,
+                result={
                 "description": prompt.description,
-                "messages": [
+                    "messages": [
                     {
                         "role": "user",
-                        "content": {"type": "text", "text": rendered_template},
-                    }
+                            "content": {"type": "text", "text": rendered_template},
+                            }
                 ],
-            },
-        )
+                    },
+                )
+
 
     async def _handle_get_context(
         self, client_id: str, message: MCPMessage
@@ -646,9 +675,9 @@ class MCPServer:
 
         if context_id not in self.contexts:
             return MCPMessage(
-                id=message.id,
-                error={"code": -32602, "message": f"Context not found: {context_id}"},
-            )
+                id = message.id,
+                    error={"code": -32602, "message": f"Context not found: {context_id}"},
+                    )
 
         context = self.contexts[context_id]
 
@@ -656,23 +685,24 @@ class MCPServer:
         if context.expires_at and context.expires_at < datetime.now():
             del self.contexts[context_id]
             return MCPMessage(
-                id=message.id,
-                error={"code": -32602, "message": f"Context expired: {context_id}"},
-            )
+                id = message.id,
+                    error={"code": -32602, "message": f"Context expired: {context_id}"},
+                    )
 
         return MCPMessage(
-            id=message.id,
-            result={
+            id = message.id,
+                result={
                 "context": {
                     "id": context.id,
-                    "name": context.name,
-                    "data": context.data,
-                    "created_at": context.created_at.isoformat(),
-                    "updated_at": context.updated_at.isoformat(),
-                    "metadata": context.metadata,
-                }
+                        "name": context.name,
+                        "data": context.data,
+                        "created_at": context.created_at.isoformat(),
+                        "updated_at": context.updated_at.isoformat(),
+                        "metadata": context.metadata,
+                        }
             },
-        )
+                )
+
 
     async def _handle_set_context(
         self, client_id: str, message: MCPMessage
@@ -687,23 +717,24 @@ class MCPServer:
 
         expires_at = None
         if expires_in:
-            expires_at = datetime.now() + timedelta(seconds=expires_in)
+            expires_at = datetime.now() + timedelta(seconds = expires_in)
 
         context = MCPContext(
-            id=context_id,
-            name=name,
-            data=data,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-            expires_at=expires_at,
-            metadata=metadata,
-        )
+            id = context_id,
+                name = name,
+                data = data,
+                created_at = datetime.now(),
+                updated_at = datetime.now(),
+                expires_at = expires_at,
+                metadata = metadata,
+                )
 
         self.contexts[context_id] = context
 
         return MCPMessage(
-            id=message.id, result={"context_id": context_id, "created": True}
+            id = message.id, result={"context_id": context_id, "created": True}
         )
+
 
     async def _handle_update_context(
         self, client_id: str, message: MCPMessage
@@ -715,9 +746,9 @@ class MCPServer:
 
         if context_id not in self.contexts:
             return MCPMessage(
-                id=message.id,
-                error={"code": -32602, "message": f"Context not found: {context_id}"},
-            )
+                id = message.id,
+                    error={"code": -32602, "message": f"Context not found: {context_id}"},
+                    )
 
         context = self.contexts[context_id]
 
@@ -726,8 +757,9 @@ class MCPServer:
         context.updated_at = datetime.now()
 
         return MCPMessage(
-            id=message.id, result={"context_id": context_id, "updated": True}
+            id = message.id, result={"context_id": context_id, "updated": True}
         )
+
 
     async def _handle_clear_context(
         self, client_id: str, message: MCPMessage
@@ -740,20 +772,20 @@ class MCPServer:
             # Clear specific context
             if context_id in self.contexts:
                 del self.contexts[context_id]
-                return MCPMessage(id=message.id, result={"cleared": context_id})
+                return MCPMessage(id = message.id, result={"cleared": context_id})
             else:
                 return MCPMessage(
-                    id=message.id,
-                    error={
+                    id = message.id,
+                        error={
                         "code": -32602,
-                        "message": f"Context not found: {context_id}",
-                    },
-                )
+                            "message": f"Context not found: {context_id}",
+                            },
+                        )
         else:
             # Clear all contexts
             cleared_count = len(self.contexts)
             self.contexts.clear()
-            return MCPMessage(id=message.id, result={"cleared_count": cleared_count})
+            return MCPMessage(id = message.id, result={"cleared_count": cleared_count})
 
 
 class MCPClient:
@@ -761,6 +793,7 @@ class MCPClient:
     Model Context Protocol (MCP) Client implementation.
     Connects to MCP servers and provides standardized communication.
     """
+
 
     def __init__(self, name: str = "TRAE.AI MCP Client"):
         self.logger = setup_logger("mcp_client")
@@ -780,6 +813,7 @@ class MCPClient:
 
         self.logger.info(f"MCP Client '{name}' initialized")
 
+
     async def connect(self, uri: str) -> bool:
         """Connect to MCP server."""
         try:
@@ -789,12 +823,12 @@ class MCPClient:
             # Initialize connection
             init_response = await self.send_request(
                 "initialize",
-                {
-                    "protocolVersion": "2024-11-05",
-                    "capabilities": {},
-                    "clientInfo": {"name": self.name, "version": "1.0.0"},
-                },
-            )
+                    {
+                    "protocolVersion": "2024 - 11 - 05",
+                        "capabilities": {},
+                        "clientInfo": {"name": self.name, "version": "1.0.0"},
+                        },
+                    )
 
             if init_response and "result" in init_response:
                 self.server_info = init_response["result"]
@@ -810,6 +844,7 @@ class MCPClient:
             self.connected = False
             return False
 
+
     async def disconnect(self):
         """Disconnect from MCP server."""
         if self.websocket:
@@ -822,6 +857,7 @@ class MCPClient:
 
         self.logger.info("Disconnected from MCP server")
 
+
     async def send_request(
         self, method: str, params: Optional[Dict] = None
     ) -> Optional[Dict]:
@@ -831,7 +867,7 @@ class MCPClient:
             return None
 
         self.message_id += 1
-        message = MCPMessage(id=self.message_id, method=method, params=params)
+        message = MCPMessage(id = self.message_id, method = method, params = params)
 
         try:
             # Send message
@@ -847,42 +883,48 @@ class MCPClient:
             self.logger.error(f"Error sending request {method}: {e}")
             return None
 
+
     async def list_tools(self) -> List[Dict]:
         """List available tools on the server."""
-        response = await self.send_request("tools/list")
+        response = await self.send_request("tools / list")
         if response and "result" in response:
             return response["result"].get("tools", [])
         return []
 
+
     async def call_tool(self, name: str, arguments: Dict = None) -> Optional[Dict]:
         """Call a tool on the server."""
         response = await self.send_request(
-            "tools/call", {"name": name, "arguments": arguments or {}}
+            "tools / call", {"name": name, "arguments": arguments or {}}
         )
         if response and "result" in response:
             return response["result"]
         return None
 
+
     async def list_resources(self) -> List[Dict]:
         """List available resources on the server."""
-        response = await self.send_request("resources/list")
+        response = await self.send_request("resources / list")
         if response and "result" in response:
             return response["result"].get("resources", [])
         return []
 
+
     async def read_resource(self, uri: str) -> Optional[Dict]:
         """Read a resource from the server."""
-        response = await self.send_request("resources/read", {"uri": uri})
+        response = await self.send_request("resources / read", {"uri": uri})
         if response and "result" in response:
             return response["result"]
         return None
 
+
     async def get_context(self, context_id: str) -> Optional[Dict]:
         """Get context from the server."""
-        response = await self.send_request("context/get", {"id": context_id})
+        response = await self.send_request("context / get", {"id": context_id})
         if response and "result" in response:
             return response["result"].get("context")
         return None
+
 
     async def set_context(
         self, context_id: str, name: str, data: Dict, expires_in: Optional[int] = None
@@ -892,54 +934,56 @@ class MCPClient:
         if expires_in:
             params["expires_in"] = expires_in
 
-        response = await self.send_request("context/set", params)
+        response = await self.send_request("context / set", params)
         return (
             response
             and "result" in response
             and response["result"].get("created", False)
         )
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_mcp_protocol():
         # Create MCP server
         server = MCPServer(
-            "TRAE-AI-MCP",
-            capabilities=[
+            "TRAE - AI - MCP",
+                capabilities=[
                 MCPCapability.TOOLS,
-                MCPCapability.RESOURCES,
-                MCPCapability.CONTEXT,
-            ],
-        )
+                    MCPCapability.RESOURCES,
+                    MCPCapability.CONTEXT,
+                    ],
+                )
 
         # Register a sample tool
+
+
         def sample_tool(message: str = "Hello") -> str:
             return f"Tool executed with message: {message}"
 
         server.register_tool(
             MCPTool(
                 name="sample_tool",
-                description="A sample tool for testing",
-                inputSchema={
+                    description="A sample tool for testing",
+                    inputSchema={
                     "type": "object",
-                    "properties": {"message": {"type": "string"}},
-                },
-                handler=sample_tool,
-            )
+                        "properties": {"message": {"type": "string"}},
+                        },
+                    handler = sample_tool,
+                    )
         )
 
         # Register a sample resource
         server.register_resource(
             MCPResource(
-                uri="trae://sample/data",
-                name="Sample Data",
-                description="Sample data resource",
-                mimeType="application/json",
-                resourceType=MCPResourceType.JSON,
-                content={"key": "value", "timestamp": datetime.now().isoformat()},
-            )
+                uri="trae://sample / data",
+                    name="Sample Data",
+                    description="Sample data resource",
+                    mimeType="application / json",
+                    resourceType = MCPResourceType.JSON,
+                    content={"key": "value", "timestamp": datetime.now().isoformat()},
+                    )
         )
 
         print("MCP Server configured with sample tools and resources")

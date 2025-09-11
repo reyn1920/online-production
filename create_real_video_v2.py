@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI - Bulletproof Video Generator v2
 This script generates a complete, 100% live MP4 video from start to finish.
-It is self-contained, creating its own assets and bypassing external dependencies
+It is self - contained, creating its own assets and bypassing external dependencies
 like Ollama to ensure a successful run.
 """
 import logging
@@ -16,9 +16,9 @@ ASSETS_DIR = os.path.join("assets", "generated")
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 # --- Setup ---
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(ASSETS_DIR, exist_ok=True)
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+os.makedirs(OUTPUT_DIR, exist_ok = True)
+os.makedirs(ASSETS_DIR, exist_ok = True)
+logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
 
 
 def generate_script(topic: str) -> str:
@@ -46,9 +46,9 @@ def generate_audio(script_text: str, topic: str) -> str:
     # Using 'say' on macOS as a reliable, free TTS engine
     try:
         subprocess.run(
-            ["say", "-o", audio_path, "--data-format=LEF32@44100", script_text],
-            check=True,
-        )
+            ["say", "-o", audio_path, "--data - format = LEF32@44100", script_text],
+                check = True,
+                )
         logging.info(f"✅ Audio file generated successfully: {audio_path}")
         return audio_path
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
@@ -66,31 +66,31 @@ def generate_video(topic: str, audio_path: str) -> str:
 
     # This ffmpeg command is corrected to handle text with spaces and special characters
     # by using a temporary file for the text filter.
-    filter_text = f"drawtext=fontfile=/System/Library/Fonts/Helvetica.ttc:text='{topic}':fontcolor=white:fontsize=48:x=(w-text_w)/2:y=(h-text_h)/2"
+    filter_text = f"drawtext = fontfile=/System / Library / Fonts / Helvetica.ttc:text='{topic}':fontcolor = white:fontsize = 48:x=(w - text_w)/2:y=(h - text_h)/2"
 
     command = [
         "ffmpeg",
-        "-f",
-        "lavfi",
+            "-f",
+            "lavfi",
+            "-i",
+            "color = c=black:s = 1920x1080",  # Simple black background
         "-i",
-        "color=c=black:s=1920x1080",  # Simple black background
-        "-i",
-        audio_path,
-        "-vf",
-        filter_text,
-        "-c:v",
-        "libx264",
-        "-c:a",
-        "aac",
-        "-b:a",
-        "192k",
-        "-shortest",  # End the video when the audio ends
+            audio_path,
+            "-vf",
+            filter_text,
+            "-c:v",
+            "libx264",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "192k",
+            "-shortest",  # End the video when the audio ends
         "-y",  # Overwrite if exists
         video_path,
-    ]
+            ]
 
     try:
-        subprocess.run(command, check=True, capture_output=True, text=True)
+        subprocess.run(command, check = True, capture_output = True, text = True)
         logging.info(f"✅ Final video generated successfully!")
         return video_path
     except subprocess.CalledProcessError as e:
@@ -125,7 +125,6 @@ def main():
     logging.info(f"Final video file is ready for review at:")
     print(f"\n{video_file}\n")
     logging.info("=" * 50)
-
 
 if __name__ == "__main__":
     main()

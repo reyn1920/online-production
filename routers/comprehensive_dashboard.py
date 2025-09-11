@@ -15,7 +15,7 @@ from fastapi.templating import Jinja2Templates
 try:
     from app.bridge_to_system import SystemBridge
     from monitoring.performance_monitor import PerformanceMonitor
-    from system_monitor import SystemMonitor
+        from system_monitor import SystemMonitor
 except ImportError as e:
     logging.warning(f"Some monitoring components not available: {e}")
     SystemMonitor = None
@@ -32,11 +32,15 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 logger = logging.getLogger(__name__)
 
-
 # WebSocket connection manager
+
+
 class ConnectionManager:
+
+
     def __init__(self):
         self.active_connections: List[WebSocket] = []
+
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
@@ -45,6 +49,7 @@ class ConnectionManager:
             f"WebSocket connected. Total connections: {len(self.active_connections)}"
         )
 
+
     def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
             self.active_connections.remove(websocket)
@@ -52,12 +57,14 @@ class ConnectionManager:
             f"WebSocket disconnected. Total connections: {len(self.active_connections)}"
         )
 
+
     async def send_personal_message(self, message: str, websocket: WebSocket):
         try:
             await websocket.send_text(message)
         except Exception as e:
             logger.error(f"Error sending personal message: {e}")
             self.disconnect(websocket)
+
 
     async def broadcast(self, message: str):
         disconnected = []
@@ -71,7 +78,6 @@ class ConnectionManager:
         # Remove disconnected connections
         for conn in disconnected:
             self.disconnect(conn)
-
 
 manager = ConnectionManager()
 
@@ -97,18 +103,20 @@ try:
 except Exception as e:
     logging.warning(f"Failed to initialize monitoring components: {e}")
 
+@router.get("/comprehensive - dashboard", response_class = HTMLResponse)
 
-@router.get("/comprehensive-dashboard", response_class=HTMLResponse)
+
 async def comprehensive_dashboard(request: Request):
     """Serve the comprehensive dashboard HTML page"""
     return templates.TemplateResponse(
         "comprehensive_dashboard.html", {"request": request}
     )
 
+@router.websocket("/ws / dashboard")
 
-@router.websocket("/ws/dashboard")
+
 async def websocket_endpoint(websocket: WebSocket):
-    """WebSocket endpoint for real-time dashboard updates"""
+    """WebSocket endpoint for real - time dashboard updates"""
     await manager.connect(websocket)
     try:
         while True:
@@ -117,16 +125,17 @@ async def websocket_endpoint(websocket: WebSocket):
             dashboard_data = await get_all_dashboard_data()
             await manager.send_personal_message(
                 json.dumps({"type": "dashboard_update", "data": dashboard_data}),
-                websocket,
-            )
+                    websocket,
+                    )
     except WebSocketDisconnect:
         manager.disconnect(websocket)
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
         manager.disconnect(websocket)
 
+@router.get("/api / system / metrics")
 
-@router.get("/api/system/metrics")
+
 async def get_system_metrics():
     """Get current system performance metrics using advanced monitoring components"""
     try:
@@ -136,28 +145,28 @@ async def get_system_metrics():
                 system_metrics = system_monitor.collect_system_metrics()
                 metrics = {
                     "cpu_percent": system_metrics.cpu_percent,
-                    "memory_percent": system_metrics.memory_percent,
-                    "memory_used_gb": system_metrics.memory_used_gb,
-                    "memory_total_gb": system_metrics.memory_total_gb,
-                    "disk_percent": system_metrics.disk_usage_percent,
-                    "disk_used_gb": system_metrics.disk_used_gb,
-                    "disk_total_gb": system_metrics.disk_total_gb,
-                    "active_connections": getattr(
+                        "memory_percent": system_metrics.memory_percent,
+                        "memory_used_gb": system_metrics.memory_used_gb,
+                        "memory_total_gb": system_metrics.memory_total_gb,
+                        "disk_percent": system_metrics.disk_usage_percent,
+                        "disk_used_gb": system_metrics.disk_used_gb,
+                        "disk_total_gb": system_metrics.disk_total_gb,
+                        "active_connections": getattr(
                         system_metrics, "active_connections", 0
                     ),
-                    "uptime_seconds": system_metrics.uptime_seconds,
-                    "response_time_ms": getattr(system_metrics, "response_time_ms", 50),
-                    "health_score": getattr(system_metrics, "health_score", 100),
-                    "load_average": getattr(system_metrics, "load_average", [0, 0, 0]),
-                    "process_count": getattr(system_metrics, "process_count", 0),
-                    "network_bytes_sent": getattr(
+                        "uptime_seconds": system_metrics.uptime_seconds,
+                        "response_time_ms": getattr(system_metrics, "response_time_ms", 50),
+                        "health_score": getattr(system_metrics, "health_score", 100),
+                        "load_average": getattr(system_metrics, "load_average", [0, 0, 0]),
+                        "process_count": getattr(system_metrics, "process_count", 0),
+                        "network_bytes_sent": getattr(
                         system_metrics, "network_bytes_sent", 0
                     ),
-                    "network_bytes_recv": getattr(
+                        "network_bytes_recv": getattr(
                         system_metrics, "network_bytes_recv", 0
                     ),
-                    "timestamp": system_metrics.timestamp,
-                }
+                        "timestamp": system_metrics.timestamp,
+                        }
 
                 # Cache the metrics
 
@@ -170,7 +179,7 @@ async def get_system_metrics():
                 )
 
         # Fallback to basic psutil monitoring
-        cpu_percent = psutil.cpu_percent(interval=1)
+        cpu_percent = psutil.cpu_percent(interval = 1)
         memory = psutil.virtual_memory()
         disk = psutil.disk_usage("/")
 
@@ -205,22 +214,22 @@ async def get_system_metrics():
 
         metrics = {
             "cpu_percent": cpu_percent,
-            "memory_percent": memory.percent,
-            "memory_used_gb": memory.used / (1024**3),
-            "memory_total_gb": memory.total / (1024**3),
-            "disk_percent": disk.percent,
-            "disk_used_gb": disk.used / (1024**3),
-            "disk_total_gb": disk.total / (1024**3),
-            "active_connections": connections,
-            "uptime_seconds": uptime_seconds,
-            "response_time_ms": response_time_ms,
-            "health_score": 100,  # Basic fallback
+                "memory_percent": memory.percent,
+                "memory_used_gb": memory.used / (1024**3),
+                "memory_total_gb": memory.total / (1024**3),
+                "disk_percent": disk.percent,
+                "disk_used_gb": disk.used / (1024**3),
+                "disk_total_gb": disk.total / (1024**3),
+                "active_connections": connections,
+                "uptime_seconds": uptime_seconds,
+                "response_time_ms": response_time_ms,
+                "health_score": 100,  # Basic fallback
             "load_average": load_avg,
-            "process_count": process_count,
-            "network_bytes_sent": network_bytes_sent,
-            "network_bytes_recv": network_bytes_recv,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "process_count": process_count,
+                "network_bytes_sent": network_bytes_sent,
+                "network_bytes_recv": network_bytes_recv,
+                "timestamp": datetime.now().isoformat(),
+                }
 
         # Cache the metrics
         system_metrics_cache = metrics
@@ -229,10 +238,11 @@ async def get_system_metrics():
 
     except Exception as e:
         logger.error(f"Error getting system metrics: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get system metrics")
+        raise HTTPException(status_code = 500, detail="Failed to get system metrics")
+
+@router.get("/api / revenue / dashboard")
 
 
-@router.get("/api/revenue/dashboard")
 async def get_revenue_dashboard():
     """Get revenue dashboard data"""
     try:
@@ -253,37 +263,37 @@ async def get_revenue_dashboard():
         # Fallback to mock data if engine is not available
         mock_revenue_data = {
             "total_monthly_target": 10000.0,
-            "total_current_revenue": 7500.0,
-            "overall_progress": 75.0,
-            "revenue_by_stream": {
+                "total_current_revenue": 7500.0,
+                "overall_progress": 75.0,
+                "revenue_by_stream": {
                 "digital_products": {
                     "current": 2500.0,
-                    "target": 3000.0,
-                    "progress": 83.3,
-                },
-                "affiliate_marketing": {
+                        "target": 3000.0,
+                        "progress": 83.3,
+                        },
+                    "affiliate_marketing": {
                     "current": 1800.0,
-                    "target": 2000.0,
-                    "progress": 90.0,
-                },
-                "consulting": {"current": 1500.0, "target": 2000.0, "progress": 75.0},
-                "courses": {"current": 1200.0, "target": 1500.0, "progress": 80.0},
-                "subscriptions": {"current": 500.0, "target": 1500.0, "progress": 33.3},
-            },
-            "recent_revenue": {
+                        "target": 2000.0,
+                        "progress": 90.0,
+                        },
+                    "consulting": {"current": 1500.0, "target": 2000.0, "progress": 75.0},
+                    "courses": {"current": 1200.0, "target": 1500.0, "progress": 80.0},
+                    "subscriptions": {"current": 500.0, "target": 1500.0, "progress": 33.3},
+                    },
+                "recent_revenue": {
                 "digital_products": 450.0,
-                "affiliate_marketing": 320.0,
-                "consulting": 280.0,
-                "courses": 180.0,
-                "subscriptions": 75.0,
-            },
-            "active_campaigns": 8,
-            "conversion_rate": 3.2,
-            "avg_order_value": 127.50,
-            "customer_ltv": 450.0,
-            "churn_rate": 2.1,
-            "timestamp": datetime.now().isoformat(),
-        }
+                    "affiliate_marketing": 320.0,
+                    "consulting": 280.0,
+                    "courses": 180.0,
+                    "subscriptions": 75.0,
+                    },
+                "active_campaigns": 8,
+                "conversion_rate": 3.2,
+                "avg_order_value": 127.50,
+                "customer_ltv": 450.0,
+                "churn_rate": 2.1,
+                "timestamp": datetime.now().isoformat(),
+                }
 
         # Cache the mock data
         revenue_cache = mock_revenue_data
@@ -292,10 +302,11 @@ async def get_revenue_dashboard():
 
     except Exception as e:
         logger.error(f"Error getting revenue dashboard: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get revenue data")
+        raise HTTPException(status_code = 500, detail="Failed to get revenue data")
+
+@router.get("/api / services / status")
 
 
-@router.get("/api/services/status")
 async def get_services_status():
     """Get status of all services using advanced monitoring components"""
     try:
@@ -340,14 +351,14 @@ async def get_services_status():
                     keyword in proc_name.lower()
                     for keyword in [
                         "python",
-                        "node",
-                        "nginx",
-                        "apache",
-                        "redis",
-                        "postgres",
-                        "mysql",
-                        "mongodb",
-                    ]
+                            "node",
+                            "nginx",
+                            "apache",
+                            "redis",
+                            "postgres",
+                            "mysql",
+                            "mongodb",
+                            ]
                 ):
 
                     # Determine service status
@@ -370,12 +381,12 @@ async def get_services_status():
 
                     services[f"{proc_name}_{proc_info['pid']}"] = {
                         "status": status,
-                        "cpu_percent": cpu_percent,
-                        "memory_mb": memory_mb,
-                        "response_time_ms": response_time_ms,
-                        "pid": proc_info["pid"],
-                        "health_score": 100 if status == "running" else 0,
-                    }
+                            "cpu_percent": cpu_percent,
+                            "memory_mb": memory_mb,
+                            "response_time_ms": response_time_ms,
+                            "pid": proc_info["pid"],
+                            "health_score": 100 if status == "running" else 0,
+                            }
 
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 continue
@@ -385,45 +396,45 @@ async def get_services_status():
             services = {
                 "web_server": {
                     "status": "running",
-                    "cpu_percent": 15.2,
-                    "memory_mb": 256.8,
-                    "response_time_ms": 85,
-                    "pid": 1234,
-                    "health_score": 95,
-                },
-                "api_server": {
+                        "cpu_percent": 15.2,
+                        "memory_mb": 256.8,
+                        "response_time_ms": 85,
+                        "pid": 1234,
+                        "health_score": 95,
+                        },
+                    "api_server": {
                     "status": "running",
-                    "cpu_percent": 8.7,
-                    "memory_mb": 128.4,
-                    "response_time_ms": 45,
-                    "pid": 1235,
-                    "health_score": 98,
-                },
-                "database": {
+                        "cpu_percent": 8.7,
+                        "memory_mb": 128.4,
+                        "response_time_ms": 45,
+                        "pid": 1235,
+                        "health_score": 98,
+                        },
+                    "database": {
                     "status": "running",
-                    "cpu_percent": 5.3,
-                    "memory_mb": 512.1,
-                    "response_time_ms": 12,
-                    "pid": 1236,
-                    "health_score": 100,
-                },
-                "payment_processor": {
+                        "cpu_percent": 5.3,
+                        "memory_mb": 512.1,
+                        "response_time_ms": 12,
+                        "pid": 1236,
+                        "health_score": 100,
+                        },
+                    "payment_processor": {
                     "status": "running",
-                    "cpu_percent": 2.1,
-                    "memory_mb": 64.2,
-                    "response_time_ms": 120,
-                    "pid": 1237,
-                    "health_score": 92,
-                },
-                "analytics_service": {
+                        "cpu_percent": 2.1,
+                        "memory_mb": 64.2,
+                        "response_time_ms": 120,
+                        "pid": 1237,
+                        "health_score": 92,
+                        },
+                    "analytics_service": {
                     "status": "running",
-                    "cpu_percent": 12.8,
-                    "memory_mb": 192.6,
-                    "response_time_ms": 95,
-                    "pid": 1238,
-                    "health_score": 88,
-                },
-            }
+                        "cpu_percent": 12.8,
+                        "memory_mb": 192.6,
+                        "response_time_ms": 95,
+                        "pid": 1238,
+                        "health_score": 88,
+                        },
+                    }
 
         # Cache the services data
         services_cache = services
@@ -432,10 +443,11 @@ async def get_services_status():
 
     except Exception as e:
         logger.error(f"Error getting services status: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get services status")
+        raise HTTPException(status_code = 500, detail="Failed to get services status")
+
+@router.get("/api / integrations / status")
 
 
-@router.get("/api/integrations/status")
 async def get_integrations_status():
     """Get status of all integrations"""
     try:
@@ -444,65 +456,65 @@ async def get_integrations_status():
         integrations = {
             "Stripe": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=5)).isoformat(),
-                "health_score": 98,
-                "transactions_today": 47,
-            },
-            "PayPal": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 5)).isoformat(),
+                    "health_score": 98,
+                    "transactions_today": 47,
+                    },
+                "PayPal": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=8)).isoformat(),
-                "health_score": 95,
-                "transactions_today": 23,
-            },
-            "Shopify": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 8)).isoformat(),
+                    "health_score": 95,
+                    "transactions_today": 23,
+                    },
+                "Shopify": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=2)).isoformat(),
-                "health_score": 100,
-                "orders_today": 15,
-            },
-            "WooCommerce": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 2)).isoformat(),
+                    "health_score": 100,
+                    "orders_today": 15,
+                    },
+                "WooCommerce": {
                 "status": "warning",
-                "last_sync": (datetime.now() - timedelta(hours=2)).isoformat(),
-                "health_score": 75,
-                "orders_today": 8,
-            },
-            "Mailchimp": {
+                    "last_sync": (datetime.now() - timedelta(hours = 2)).isoformat(),
+                    "health_score": 75,
+                    "orders_today": 8,
+                    },
+                "Mailchimp": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=15)).isoformat(),
-                "health_score": 92,
-                "emails_sent_today": 1250,
-            },
-            "Google Analytics": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 15)).isoformat(),
+                    "health_score": 92,
+                    "emails_sent_today": 1250,
+                    },
+                "Google Analytics": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=1)).isoformat(),
-                "health_score": 100,
-                "sessions_today": 2847,
-            },
-            "Facebook Ads": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 1)).isoformat(),
+                    "health_score": 100,
+                    "sessions_today": 2847,
+                    },
+                "Facebook Ads": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=10)).isoformat(),
-                "health_score": 88,
-                "spend_today": 156.78,
-            },
-            "Affiliate Network": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 10)).isoformat(),
+                    "health_score": 88,
+                    "spend_today": 156.78,
+                    },
+                "Affiliate Network": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(minutes=30)).isoformat(),
-                "health_score": 85,
-                "commissions_today": 89.45,
-            },
-            "Zapier": {
+                    "last_sync": (datetime.now() - timedelta(minutes = 30)).isoformat(),
+                    "health_score": 85,
+                    "commissions_today": 89.45,
+                    },
+                "Zapier": {
                 "status": "error",
-                "last_sync": (datetime.now() - timedelta(hours=6)).isoformat(),
-                "health_score": 0,
-                "automations_failed": 3,
-            },
-            "Slack": {
+                    "last_sync": (datetime.now() - timedelta(hours = 6)).isoformat(),
+                    "health_score": 0,
+                    "automations_failed": 3,
+                    },
+                "Slack": {
                 "status": "connected",
-                "last_sync": (datetime.now() - timedelta(seconds=30)).isoformat(),
-                "health_score": 100,
-                "notifications_sent": 12,
-            },
-        }
+                    "last_sync": (datetime.now() - timedelta(seconds = 30)).isoformat(),
+                    "health_score": 100,
+                    "notifications_sent": 12,
+                    },
+                }
 
         # Cache the integrations data
 
@@ -512,10 +524,11 @@ async def get_integrations_status():
 
     except Exception as e:
         logger.error(f"Error getting integrations status: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get integrations status")
+        raise HTTPException(status_code = 500, detail="Failed to get integrations status")
+
+@router.get("/api / dashboard / all")
 
 
-@router.get("/api/dashboard/all")
 async def get_all_dashboard_data():
     """Get all dashboard data in one request"""
     try:
@@ -527,18 +540,19 @@ async def get_all_dashboard_data():
 
         return {
             "system": system_data,
-            "revenue": revenue_data,
-            "services": services_data,
-            "integrations": integrations_data,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "revenue": revenue_data,
+                "services": services_data,
+                "integrations": integrations_data,
+                "timestamp": datetime.now().isoformat(),
+                }
 
     except Exception as e:
         logger.error(f"Error getting all dashboard data: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get dashboard data")
+        raise HTTPException(status_code = 500, detail="Failed to get dashboard data")
+
+@router.post("/api / dashboard / alert")
 
 
-@router.post("/api/dashboard/alert")
 async def send_dashboard_alert(alert_data: dict):
     """Send an alert to all connected dashboard clients"""
     try:
@@ -548,10 +562,11 @@ async def send_dashboard_alert(alert_data: dict):
 
     except Exception as e:
         logger.error(f"Error sending dashboard alert: {e}")
-        raise HTTPException(status_code=500, detail="Failed to send alert")
+        raise HTTPException(status_code = 500, detail="Failed to send alert")
+
+@router.get("/api / dashboard / health")
 
 
-@router.get("/api/dashboard/health")
 async def dashboard_health_check():
     """Comprehensive health check endpoint using advanced monitoring components"""
     try:
@@ -561,15 +576,15 @@ async def dashboard_health_check():
                 system_health = system_bridge.get_system_health()
                 return {
                     "status": system_health.status,
-                    "timestamp": system_health.timestamp.isoformat(),
-                    "uptime": system_health.uptime,
-                    "active_websocket_connections": len(manager.active_connections),
-                    "components": system_health.components,
-                    "memory_usage": system_health.memory_usage,
-                    "active_agents": system_health.active_agents,
-                    "queue_size": system_health.queue_size,
-                    "health_score": system_bridge._get_system_health_score(),
-                }
+                        "timestamp": system_health.timestamp.isoformat(),
+                        "uptime": system_health.uptime,
+                        "active_websocket_connections": len(manager.active_connections),
+                        "components": system_health.components,
+                        "memory_usage": system_health.memory_usage,
+                        "active_agents": system_health.active_agents,
+                        "queue_size": system_health.queue_size,
+                        "health_score": system_bridge._get_system_health_score(),
+                        }
             except Exception as e:
                 logger.warning(f"System bridge health check failed, falling back: {e}")
 
@@ -579,15 +594,15 @@ async def dashboard_health_check():
                 health_status = performance_monitor.get_health_status()
                 return {
                     "status": health_status["status"],
-                    "timestamp": health_status["timestamp"],
-                    "uptime_seconds": health_status.get(
+                        "timestamp": health_status["timestamp"],
+                        "uptime_seconds": health_status.get(
                         "uptime_seconds", time.time() - start_time
                     ),
-                    "active_websocket_connections": len(manager.active_connections),
-                    "system_metrics": health_status.get("system_metrics", {}),
-                    "application_metrics": health_status.get("application_metrics", {}),
-                    "alerts": health_status.get("alerts", []),
-                }
+                        "active_websocket_connections": len(manager.active_connections),
+                        "system_metrics": health_status.get("system_metrics", {}),
+                        "application_metrics": health_status.get("application_metrics", {}),
+                        "alerts": health_status.get("alerts", []),
+                        }
             except Exception as e:
                 logger.warning(
                     f"Performance monitor health check failed, falling back: {e}"
@@ -611,9 +626,9 @@ async def dashboard_health_check():
                 alerts.append(
                     {
                         "type": "high_memory",
-                        "severity": "warning",
-                        "value": memory_percent,
-                    }
+                            "severity": "warning",
+                            "value": memory_percent,
+                            }
                 )
 
         if cpu_percent > 95 or memory_percent > 95:
@@ -623,43 +638,44 @@ async def dashboard_health_check():
                 alerts.append(
                     {
                         "type": "critical_cpu",
-                        "severity": "critical",
-                        "value": cpu_percent,
-                    }
+                            "severity": "critical",
+                            "value": cpu_percent,
+                            }
                 )
             if memory_percent > 95:
                 alerts.append(
                     {
                         "type": "critical_memory",
-                        "severity": "critical",
-                        "value": memory_percent,
-                    }
+                            "severity": "critical",
+                            "value": memory_percent,
+                            }
                 )
 
         return {
             "status": health_status,
-            "timestamp": datetime.now().isoformat(),
-            "uptime_seconds": time.time() - start_time,
-            "active_websocket_connections": len(manager.active_connections),
-            "system_metrics": {
+                "timestamp": datetime.now().isoformat(),
+                "uptime_seconds": time.time() - start_time,
+                "active_websocket_connections": len(manager.active_connections),
+                "system_metrics": {
                 "cpu_percent": cpu_percent,
-                "memory_percent": memory_percent,
-            },
-            "alerts": alerts,
-            "health_score": max(0, 100 - (cpu_percent * 0.5) - (memory_percent * 0.5)),
-        }
+                    "memory_percent": memory_percent,
+                    },
+                "alerts": alerts,
+                "health_score": max(0, 100 - (cpu_percent * 0.5) - (memory_percent * 0.5)),
+                }
 
     except Exception as e:
         logger.error(f"Error in dashboard health check: {e}")
         return {
             "status": "error",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat(),
-            "health_score": 0,
-        }
-
+                "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+                "health_score": 0,
+                }
 
 # Background task to send periodic updates
+
+
 async def periodic_dashboard_updates():
     """Send periodic updates to all connected clients"""
     while True:
@@ -676,7 +692,6 @@ async def periodic_dashboard_updates():
         except Exception as e:
             logger.error(f"Error in periodic dashboard updates: {e}")
             await asyncio.sleep(60)  # Wait longer on error
-
 
 # Start the background task when the module is imported
 # Note: In a real application, this would be started in the main app startup

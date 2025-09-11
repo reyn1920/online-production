@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Conservative Research System - Self-Healing Health Monitor
-Autonomous system monitoring with predictive failure detection and auto-recovery
+Conservative Research System - Self - Healing Health Monitor
+Autonomous system monitoring with predictive failure detection and auto - recovery
 
 This module provides comprehensive system health monitoring with:
-- Real-time component health checks
+- Real - time component health checks
 - Predictive failure detection
 - Automatic recovery mechanisms
 - Performance optimization
@@ -29,9 +29,9 @@ import requests
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("system_health.log"), logging.StreamHandler()],
+    level = logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("system_health.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
@@ -57,8 +57,9 @@ class ComponentType(Enum):
     SYSTEM_RESOURCE = "system_resource"
     NETWORK = "network"
 
-
 @dataclass
+
+
 class HealthMetric:
     """Individual health metric data structure"""
 
@@ -73,8 +74,9 @@ class HealthMetric:
     recovery_attempts: int = 0
     last_recovery: Optional[datetime] = None
 
-
 @dataclass
+
+
 class SystemSnapshot:
     """Complete system health snapshot"""
 
@@ -90,12 +92,14 @@ class SystemSnapshot:
 
 
 class PredictiveAnalyzer:
-    """AI-powered predictive failure analysis"""
+    """AI - powered predictive failure analysis"""
+
 
     def __init__(self):
         self.historical_data = []
         self.failure_patterns = {}
         self.prediction_accuracy = 0.0
+
 
     def analyze_trends(self, metrics: List[HealthMetric]) -> Dict[str, float]:
         """Analyze metric trends to predict potential failures"""
@@ -125,6 +129,7 @@ class PredictiveAnalyzer:
 
         return predictions
 
+
     def update_historical_data(self, metrics: List[HealthMetric]):
         """Update historical data for trend analysis"""
         self.historical_data.extend(metrics)
@@ -135,19 +140,21 @@ class PredictiveAnalyzer:
 
 
 class AutoRecoverySystem:
-    """Intelligent auto-recovery system for failed components"""
+    """Intelligent auto - recovery system for failed components"""
+
 
     def __init__(self):
         self.recovery_strategies = {
             ComponentType.DATABASE: self._recover_database,
-            ComponentType.SCRAPER: self._recover_scraper,
-            ComponentType.CONTENT_GENERATOR: self._recover_content_generator,
-            ComponentType.API_ENDPOINT: self._recover_api,
-            ComponentType.YOUTUBE_ANALYZER: self._recover_youtube_analyzer,
-            ComponentType.SYSTEM_RESOURCE: self._recover_system_resource,
-        }
+                ComponentType.SCRAPER: self._recover_scraper,
+                ComponentType.CONTENT_GENERATOR: self._recover_content_generator,
+                ComponentType.API_ENDPOINT: self._recover_api,
+                ComponentType.YOUTUBE_ANALYZER: self._recover_youtube_analyzer,
+                ComponentType.SYSTEM_RESOURCE: self._recover_system_resource,
+                }
         self.max_recovery_attempts = 3
         self.recovery_cooldown = 300  # 5 minutes
+
 
     async def attempt_recovery(self, metric: HealthMetric) -> bool:
         """Attempt to recover a failed component"""
@@ -156,7 +163,7 @@ class AutoRecoverySystem:
             return False
 
         if metric.last_recovery and datetime.now() - metric.last_recovery < timedelta(
-            seconds=self.recovery_cooldown
+            seconds = self.recovery_cooldown
         ):
             logger.info(f"Recovery cooldown active for {metric.component_name}")
             return False
@@ -183,6 +190,7 @@ class AutoRecoverySystem:
             )
             return False
 
+
     async def _recover_database(self, metric: HealthMetric) -> bool:
         """Recover database connection issues"""
         try:
@@ -204,6 +212,7 @@ class AutoRecoverySystem:
             logger.error(f"Database recovery failed: {str(e)}")
             return False
 
+
     async def _recover_scraper(self, metric: HealthMetric) -> bool:
         """Recover news scraper issues"""
         try:
@@ -223,6 +232,7 @@ class AutoRecoverySystem:
             logger.error(f"Scraper recovery failed: {str(e)}")
             return False
 
+
     async def _recover_content_generator(self, metric: HealthMetric) -> bool:
         """Recover content generation issues"""
         try:
@@ -239,6 +249,7 @@ class AutoRecoverySystem:
         except Exception as e:
             logger.error(f"Content generator recovery failed: {str(e)}")
             return False
+
 
     async def _recover_api(self, metric: HealthMetric) -> bool:
         """Recover API endpoint issues"""
@@ -257,6 +268,7 @@ class AutoRecoverySystem:
             logger.error(f"API recovery failed: {str(e)}")
             return False
 
+
     async def _recover_youtube_analyzer(self, metric: HealthMetric) -> bool:
         """Recover YouTube analyzer issues"""
         try:
@@ -274,6 +286,7 @@ class AutoRecoverySystem:
             logger.error(f"YouTube analyzer recovery failed: {str(e)}")
             return False
 
+
     async def _recover_system_resource(self, metric: HealthMetric) -> bool:
         """Recover system resource issues"""
         try:
@@ -281,19 +294,19 @@ class AutoRecoverySystem:
 
             if "memory" in metric.component_name.lower():
                 # Clear memory caches
-                subprocess.run(["sync"], check=False)
+                subprocess.run(["sync"], check = False)
                 subprocess.run(
-                    ["echo", "3", ">", "/proc/sys/vm/drop_caches"],
-                    shell=True,
-                    check=False,
-                )
+                    ["echo", "3", ">", "/proc / sys / vm / drop_caches"],
+                        shell = True,
+                        check = False,
+                        )
 
             elif "disk" in metric.component_name.lower():
                 # Clean temporary files
                 subprocess.run(
                     ["find", "/tmp", "-type", "f", "-atime", "+7", "-delete"],
-                    check=False,
-                )
+                        check = False,
+                        )
 
             await asyncio.sleep(1)
             return True
@@ -305,6 +318,7 @@ class AutoRecoverySystem:
 
 class SystemHealthMonitor:
     """Main system health monitoring class"""
+
 
     def __init__(self, check_interval: int = 30):
         self.check_interval = check_interval
@@ -318,17 +332,19 @@ class SystemHealthMonitor:
         # Component health checkers
         self.health_checkers = {
             "database_connectivity": self._check_database_health,
-            "news_scrapers": self._check_scraper_health,
-            "content_generator": self._check_content_generator_health,
-            "youtube_analyzer": self._check_youtube_analyzer_health,
-            "api_endpoints": self._check_api_health,
-            "system_resources": self._check_system_resources,
-            "network_connectivity": self._check_network_health,
-        }
+                "news_scrapers": self._check_scraper_health,
+                "content_generator": self._check_content_generator_health,
+                "youtube_analyzer": self._check_youtube_analyzer_health,
+                "api_endpoints": self._check_api_health,
+                "system_resources": self._check_system_resources,
+                "network_connectivity": self._check_network_health,
+                }
+
 
     def add_alert_callback(self, callback: Callable[[HealthMetric], None]):
         """Add callback function for health alerts"""
         self.alert_callbacks.append(callback)
+
 
     async def start_monitoring(self):
         """Start continuous system monitoring"""
@@ -368,10 +384,12 @@ class SystemHealthMonitor:
                 logger.error(f"Error in monitoring loop: {str(e)}")
                 await asyncio.sleep(self.check_interval)
 
+
     def stop_monitoring(self):
         """Stop system monitoring"""
         self.is_running = False
         logger.info("Stopping system health monitoring...")
+
 
     async def _perform_health_check(self) -> SystemSnapshot:
         """Perform comprehensive health check"""
@@ -386,15 +404,15 @@ class SystemHealthMonitor:
                 logger.error(f"Health checker {checker_name} failed: {str(e)}")
                 # Create error metric
                 error_metric = HealthMetric(
-                    component_name=checker_name,
-                    component_type=ComponentType.SYSTEM_RESOURCE,
-                    status=HealthStatus.FAILED,
-                    value=0.0,
-                    threshold_warning=0.5,
-                    threshold_critical=0.8,
-                    timestamp=datetime.now(),
-                    message=f"Health checker failed: {str(e)}",
-                )
+                    component_name = checker_name,
+                        component_type = ComponentType.SYSTEM_RESOURCE,
+                        status = HealthStatus.FAILED,
+                        value = 0.0,
+                        threshold_warning = 0.5,
+                        threshold_critical = 0.8,
+                        timestamp = datetime.now(),
+                        message = f"Health checker failed: {str(e)}",
+                        )
                 metrics.append(error_metric)
 
         # Determine overall system status
@@ -409,16 +427,17 @@ class SystemHealthMonitor:
         uptime_seconds = int((datetime.now() - self.start_time).total_seconds())
 
         return SystemSnapshot(
-            timestamp=datetime.now(),
-            overall_status=overall_status,
-            metrics=metrics,
-            cpu_usage=cpu_usage,
-            memory_usage=memory_usage,
-            disk_usage=disk_usage,
-            network_status=network_status,
-            active_processes=active_processes,
-            uptime_seconds=uptime_seconds,
-        )
+            timestamp = datetime.now(),
+                overall_status = overall_status,
+                metrics = metrics,
+                cpu_usage = cpu_usage,
+                memory_usage = memory_usage,
+                disk_usage = disk_usage,
+                network_status = network_status,
+                active_processes = active_processes,
+                uptime_seconds = uptime_seconds,
+                )
+
 
     def _calculate_overall_status(self, metrics: List[HealthMetric]) -> HealthStatus:
         """Calculate overall system health status"""
@@ -449,6 +468,7 @@ class SystemHealthMonitor:
 
         return HealthStatus.HEALTHY
 
+
     async def _check_database_health(self) -> List[HealthMetric]:
         """Check database connectivity and performance"""
         metrics = []
@@ -456,7 +476,7 @@ class SystemHealthMonitor:
         try:
             # Test database connection
             start_time = time.time()
-            conn = sqlite3.connect("conservative_research.db", timeout=5)
+            conn = sqlite3.connect("conservative_research.db", timeout = 5)
             conn.execute("SELECT COUNT(*) FROM sqlite_master")
             conn.close()
             response_time = time.time() - start_time
@@ -471,31 +491,32 @@ class SystemHealthMonitor:
             metrics.append(
                 HealthMetric(
                     component_name="database_response_time",
-                    component_type=ComponentType.DATABASE,
-                    status=status,
-                    value=response_time,
-                    threshold_warning=1.0,
-                    threshold_critical=5.0,
-                    timestamp=datetime.now(),
-                    message=f"Database response time: {response_time:.2f}s",
-                )
+                        component_type = ComponentType.DATABASE,
+                        status = status,
+                        value = response_time,
+                        threshold_warning = 1.0,
+                        threshold_critical = 5.0,
+                        timestamp = datetime.now(),
+                        message = f"Database response time: {response_time:.2f}s",
+                        )
             )
 
         except Exception as e:
             metrics.append(
                 HealthMetric(
                     component_name="database_connectivity",
-                    component_type=ComponentType.DATABASE,
-                    status=HealthStatus.FAILED,
-                    value=0.0,
-                    threshold_warning=0.5,
-                    threshold_critical=0.8,
-                    timestamp=datetime.now(),
-                    message=f"Database connection failed: {str(e)}",
-                )
+                        component_type = ComponentType.DATABASE,
+                        status = HealthStatus.FAILED,
+                        value = 0.0,
+                        threshold_warning = 0.5,
+                        threshold_critical = 0.8,
+                        timestamp = datetime.now(),
+                        message = f"Database connection failed: {str(e)}",
+                        )
             )
 
         return metrics
+
 
     async def _check_scraper_health(self) -> List[HealthMetric]:
         """Check news scraper health and performance"""
@@ -518,32 +539,33 @@ class SystemHealthMonitor:
 
                 metrics.append(
                     HealthMetric(
-                        component_name=f"{scraper}_scraper",
-                        component_type=ComponentType.SCRAPER,
-                        status=status,
-                        value=success_rate,
-                        threshold_warning=0.8,
-                        threshold_critical=0.5,
-                        timestamp=datetime.now(),
-                        message=f"Scraper success rate: {success_rate:.1%}",
-                    )
+                        component_name = f"{scraper}_scraper",
+                            component_type = ComponentType.SCRAPER,
+                            status = status,
+                            value = success_rate,
+                            threshold_warning = 0.8,
+                            threshold_critical = 0.5,
+                            timestamp = datetime.now(),
+                            message = f"Scraper success rate: {success_rate:.1%}",
+                            )
                 )
 
             except Exception as e:
                 metrics.append(
                     HealthMetric(
-                        component_name=f"{scraper}_scraper",
-                        component_type=ComponentType.SCRAPER,
-                        status=HealthStatus.FAILED,
-                        value=0.0,
-                        threshold_warning=0.8,
-                        threshold_critical=0.5,
-                        timestamp=datetime.now(),
-                        message=f"Scraper failed: {str(e)}",
-                    )
+                        component_name = f"{scraper}_scraper",
+                            component_type = ComponentType.SCRAPER,
+                            status = HealthStatus.FAILED,
+                            value = 0.0,
+                            threshold_warning = 0.8,
+                            threshold_critical = 0.5,
+                            timestamp = datetime.now(),
+                            message = f"Scraper failed: {str(e)}",
+                            )
                 )
 
         return metrics
+
 
     async def _check_content_generator_health(self) -> List[HealthMetric]:
         """Check content generator health and performance"""
@@ -564,14 +586,14 @@ class SystemHealthMonitor:
             metrics.append(
                 HealthMetric(
                     component_name="content_generation_speed",
-                    component_type=ComponentType.CONTENT_GENERATOR,
-                    status=speed_status,
-                    value=generation_speed,
-                    threshold_warning=5.0,
-                    threshold_critical=2.0,
-                    timestamp=datetime.now(),
-                    message=f"Generation speed: {generation_speed} articles/hour",
-                )
+                        component_type = ComponentType.CONTENT_GENERATOR,
+                        status = speed_status,
+                        value = generation_speed,
+                        threshold_warning = 5.0,
+                        threshold_critical = 2.0,
+                        timestamp = datetime.now(),
+                        message = f"Generation speed: {generation_speed} articles / hour",
+                        )
             )
 
             # Quality metric
@@ -584,31 +606,32 @@ class SystemHealthMonitor:
             metrics.append(
                 HealthMetric(
                     component_name="content_quality_score",
-                    component_type=ComponentType.CONTENT_GENERATOR,
-                    status=quality_status,
-                    value=quality_score,
-                    threshold_warning=0.8,
-                    threshold_critical=0.6,
-                    timestamp=datetime.now(),
-                    message=f"Content quality: {quality_score:.1%}",
-                )
+                        component_type = ComponentType.CONTENT_GENERATOR,
+                        status = quality_status,
+                        value = quality_score,
+                        threshold_warning = 0.8,
+                        threshold_critical = 0.6,
+                        timestamp = datetime.now(),
+                        message = f"Content quality: {quality_score:.1%}",
+                        )
             )
 
         except Exception as e:
             metrics.append(
                 HealthMetric(
                     component_name="content_generator",
-                    component_type=ComponentType.CONTENT_GENERATOR,
-                    status=HealthStatus.FAILED,
-                    value=0.0,
-                    threshold_warning=0.5,
-                    threshold_critical=0.8,
-                    timestamp=datetime.now(),
-                    message=f"Content generator failed: {str(e)}",
-                )
+                        component_type = ComponentType.CONTENT_GENERATOR,
+                        status = HealthStatus.FAILED,
+                        value = 0.0,
+                        threshold_warning = 0.5,
+                        threshold_critical = 0.8,
+                        timestamp = datetime.now(),
+                        message = f"Content generator failed: {str(e)}",
+                        )
             )
 
         return metrics
+
 
     async def _check_youtube_analyzer_health(self) -> List[HealthMetric]:
         """Check YouTube analyzer health and performance"""
@@ -629,14 +652,14 @@ class SystemHealthMonitor:
             metrics.append(
                 HealthMetric(
                     component_name="youtube_api_quota",
-                    component_type=ComponentType.YOUTUBE_ANALYZER,
-                    status=quota_status,
-                    value=api_quota_used,
-                    threshold_warning=0.8,
-                    threshold_critical=0.95,
-                    timestamp=datetime.now(),
-                    message=f"API quota used: {api_quota_used:.1%}",
-                )
+                        component_type = ComponentType.YOUTUBE_ANALYZER,
+                        status = quota_status,
+                        value = api_quota_used,
+                        threshold_warning = 0.8,
+                        threshold_critical = 0.95,
+                        timestamp = datetime.now(),
+                        message = f"API quota used: {api_quota_used:.1%}",
+                        )
             )
 
             # Analysis accuracy metric
@@ -649,31 +672,32 @@ class SystemHealthMonitor:
             metrics.append(
                 HealthMetric(
                     component_name="youtube_analysis_accuracy",
-                    component_type=ComponentType.YOUTUBE_ANALYZER,
-                    status=accuracy_status,
-                    value=analysis_accuracy,
-                    threshold_warning=0.8,
-                    threshold_critical=0.6,
-                    timestamp=datetime.now(),
-                    message=f"Analysis accuracy: {analysis_accuracy:.1%}",
-                )
+                        component_type = ComponentType.YOUTUBE_ANALYZER,
+                        status = accuracy_status,
+                        value = analysis_accuracy,
+                        threshold_warning = 0.8,
+                        threshold_critical = 0.6,
+                        timestamp = datetime.now(),
+                        message = f"Analysis accuracy: {analysis_accuracy:.1%}",
+                        )
             )
 
         except Exception as e:
             metrics.append(
                 HealthMetric(
                     component_name="youtube_analyzer",
-                    component_type=ComponentType.YOUTUBE_ANALYZER,
-                    status=HealthStatus.FAILED,
-                    value=0.0,
-                    threshold_warning=0.5,
-                    threshold_critical=0.8,
-                    timestamp=datetime.now(),
-                    message=f"YouTube analyzer failed: {str(e)}",
-                )
+                        component_type = ComponentType.YOUTUBE_ANALYZER,
+                        status = HealthStatus.FAILED,
+                        value = 0.0,
+                        threshold_warning = 0.5,
+                        threshold_critical = 0.8,
+                        timestamp = datetime.now(),
+                        message = f"YouTube analyzer failed: {str(e)}",
+                        )
             )
 
         return metrics
+
 
     async def _check_api_health(self) -> List[HealthMetric]:
         """Check API endpoint health and performance"""
@@ -681,15 +705,15 @@ class SystemHealthMonitor:
 
         # API endpoints to check
         endpoints = [
-            {"name": "health_check", "url": "http://localhost:8000/health"},
-            {"name": "research_api", "url": "http://localhost:8000/api/research"},
-            {"name": "content_api", "url": "http://localhost:8000/api/content"},
-        ]
+            {"name": "health_check", "url": "http://localhost:8000 / health"},
+                {"name": "research_api", "url": "http://localhost:8000 / api / research"},
+                {"name": "content_api", "url": "http://localhost:8000 / api / content"},
+                ]
 
         for endpoint in endpoints:
             try:
                 start_time = time.time()
-                response = requests.get(endpoint["url"], timeout=10)
+                response = requests.get(endpoint["url"], timeout = 10)
                 response_time = time.time() - start_time
 
                 # Determine status based on response
@@ -702,39 +726,40 @@ class SystemHealthMonitor:
 
                 metrics.append(
                     HealthMetric(
-                        component_name=endpoint["name"],
-                        component_type=ComponentType.API_ENDPOINT,
-                        status=status,
-                        value=response_time,
-                        threshold_warning=2.0,
-                        threshold_critical=5.0,
-                        timestamp=datetime.now(),
-                        message=f"Response time: {response_time:.2f}s, Status: {response.status_code}",
-                    )
+                        component_name = endpoint["name"],
+                            component_type = ComponentType.API_ENDPOINT,
+                            status = status,
+                            value = response_time,
+                            threshold_warning = 2.0,
+                            threshold_critical = 5.0,
+                            timestamp = datetime.now(),
+                            message = f"Response time: {response_time:.2f}s, Status: {response.status_code}",
+                            )
                 )
 
             except Exception as e:
                 metrics.append(
                     HealthMetric(
-                        component_name=endpoint["name"],
-                        component_type=ComponentType.API_ENDPOINT,
-                        status=HealthStatus.FAILED,
-                        value=0.0,
-                        threshold_warning=2.0,
-                        threshold_critical=5.0,
-                        timestamp=datetime.now(),
-                        message=f"API endpoint failed: {str(e)}",
-                    )
+                        component_name = endpoint["name"],
+                            component_type = ComponentType.API_ENDPOINT,
+                            status = HealthStatus.FAILED,
+                            value = 0.0,
+                            threshold_warning = 2.0,
+                            threshold_critical = 5.0,
+                            timestamp = datetime.now(),
+                            message = f"API endpoint failed: {str(e)}",
+                            )
                 )
 
         return metrics
+
 
     async def _check_system_resources(self) -> List[HealthMetric]:
         """Check system resource usage"""
         metrics = []
 
         # CPU usage
-        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_usage = psutil.cpu_percent(interval = 1)
         cpu_status = HealthStatus.HEALTHY
         if cpu_usage > 80:
             cpu_status = HealthStatus.WARNING
@@ -744,14 +769,14 @@ class SystemHealthMonitor:
         metrics.append(
             HealthMetric(
                 component_name="cpu_usage",
-                component_type=ComponentType.SYSTEM_RESOURCE,
-                status=cpu_status,
-                value=cpu_usage,
-                threshold_warning=80.0,
-                threshold_critical=95.0,
-                timestamp=datetime.now(),
-                message=f"CPU usage: {cpu_usage:.1f}%",
-            )
+                    component_type = ComponentType.SYSTEM_RESOURCE,
+                    status = cpu_status,
+                    value = cpu_usage,
+                    threshold_warning = 80.0,
+                    threshold_critical = 95.0,
+                    timestamp = datetime.now(),
+                    message = f"CPU usage: {cpu_usage:.1f}%",
+                    )
         )
 
         # Memory usage
@@ -765,14 +790,14 @@ class SystemHealthMonitor:
         metrics.append(
             HealthMetric(
                 component_name="memory_usage",
-                component_type=ComponentType.SYSTEM_RESOURCE,
-                status=memory_status,
-                value=memory.percent,
-                threshold_warning=85.0,
-                threshold_critical=95.0,
-                timestamp=datetime.now(),
-                message=f"Memory usage: {memory.percent:.1f}%",
-            )
+                    component_type = ComponentType.SYSTEM_RESOURCE,
+                    status = memory_status,
+                    value = memory.percent,
+                    threshold_warning = 85.0,
+                    threshold_critical = 95.0,
+                    timestamp = datetime.now(),
+                    message = f"Memory usage: {memory.percent:.1f}%",
+                    )
         )
 
         # Disk usage
@@ -787,17 +812,18 @@ class SystemHealthMonitor:
         metrics.append(
             HealthMetric(
                 component_name="disk_usage",
-                component_type=ComponentType.SYSTEM_RESOURCE,
-                status=disk_status,
-                value=disk_percent,
-                threshold_warning=85.0,
-                threshold_critical=95.0,
-                timestamp=datetime.now(),
-                message=f"Disk usage: {disk_percent:.1f}%",
-            )
+                    component_type = ComponentType.SYSTEM_RESOURCE,
+                    status = disk_status,
+                    value = disk_percent,
+                    threshold_warning = 85.0,
+                    threshold_critical = 95.0,
+                    timestamp = datetime.now(),
+                    message = f"Disk usage: {disk_percent:.1f}%",
+                    )
         )
 
         return metrics
+
 
     async def _check_network_health(self) -> List[HealthMetric]:
         """Check network connectivity and performance"""
@@ -809,28 +835,30 @@ class SystemHealthMonitor:
         metrics.append(
             HealthMetric(
                 component_name="network_connectivity",
-                component_type=ComponentType.NETWORK,
-                status=HealthStatus.HEALTHY if network_status else HealthStatus.FAILED,
-                value=1.0 if network_status else 0.0,
-                threshold_warning=0.5,
-                threshold_critical=0.8,
-                timestamp=datetime.now(),
-                message=f"Network connectivity: {'OK' if network_status else 'FAILED'}",
-            )
+                    component_type = ComponentType.NETWORK,
+                    status = HealthStatus.HEALTHY if network_status else HealthStatus.FAILED,
+                    value = 1.0 if network_status else 0.0,
+                    threshold_warning = 0.5,
+                    threshold_critical = 0.8,
+                    timestamp = datetime.now(),
+                    message = f"Network connectivity: {'OK' if network_status else 'FAILED'}",
+                    )
         )
 
         return metrics
 
+
     def _test_network_connectivity(self) -> bool:
         """Test basic network connectivity"""
         try:
-            response = requests.get("https://www.google.com", timeout=5)
+            response = requests.get("https://www.google.com", timeout = 5)
             return response.status_code == 200
-        except:
+        except Exception:
             return False
 
+
     async def _handle_critical_issues(self, metrics: List[HealthMetric]):
-        """Handle critical system issues with auto-recovery"""
+        """Handle critical system issues with auto - recovery"""
         critical_metrics = [
             m
             for m in metrics
@@ -842,16 +870,17 @@ class SystemHealthMonitor:
                 f"Critical issue detected: {metric.component_name} - {metric.message}"
             )
 
-            # Attempt auto-recovery
+            # Attempt auto - recovery
             recovery_success = await self.recovery_system.attempt_recovery(metric)
 
             if recovery_success:
                 metric.status = HealthStatus.RECOVERING
                 metric.recovery_attempts += 1
                 metric.last_recovery = datetime.now()
-                logger.info(f"Auto-recovery initiated for {metric.component_name}")
+                logger.info(f"Auto - recovery initiated for {metric.component_name}")
             else:
-                logger.error(f"Auto-recovery failed for {metric.component_name}")
+                logger.error(f"Auto - recovery failed for {metric.component_name}")
+
 
     async def _handle_predictions(self, predictions: Dict[str, float]):
         """Handle predictive failure alerts"""
@@ -861,6 +890,7 @@ class SystemHealthMonitor:
                     f"High failure probability ({probability:.1%}) predicted for {component}"
                 )
                 # Implement proactive measures here
+
 
     async def _trigger_alerts(self, snapshot: SystemSnapshot):
         """Trigger alerts for system issues"""
@@ -872,31 +902,33 @@ class SystemHealthMonitor:
             except Exception as e:
                 logger.error(f"Alert callback failed: {str(e)}")
 
+
     def _log_system_status(self, snapshot: SystemSnapshot):
         """Log current system status"""
         status_summary = {
             "timestamp": snapshot.timestamp.isoformat(),
-            "overall_status": snapshot.overall_status.value,
-            "cpu_usage": snapshot.cpu_usage,
-            "memory_usage": snapshot.memory_usage,
-            "disk_usage": snapshot.disk_usage,
-            "uptime_hours": snapshot.uptime_seconds / 3600,
-            "component_count": len(snapshot.metrics),
-            "healthy_components": len(
+                "overall_status": snapshot.overall_status.value,
+                "cpu_usage": snapshot.cpu_usage,
+                "memory_usage": snapshot.memory_usage,
+                "disk_usage": snapshot.disk_usage,
+                "uptime_hours": snapshot.uptime_seconds / 3600,
+                "component_count": len(snapshot.metrics),
+                "healthy_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.HEALTHY]
             ),
-            "warning_components": len(
+                "warning_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.WARNING]
             ),
-            "critical_components": len(
+                "critical_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.CRITICAL]
             ),
-            "failed_components": len(
+                "failed_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.FAILED]
             ),
-        }
+                }
 
-        logger.info(f"System Status: {json.dumps(status_summary, indent=2)}")
+        logger.info(f"System Status: {json.dumps(status_summary, indent = 2)}")
+
 
     def get_system_report(self) -> Dict[str, Any]:
         """Generate comprehensive system health report"""
@@ -908,56 +940,56 @@ class SystemHealthMonitor:
         return {
             "system_overview": {
                 "status": latest_snapshot.overall_status.value,
-                "uptime_hours": latest_snapshot.uptime_seconds / 3600,
-                "last_check": latest_snapshot.timestamp.isoformat(),
-                "monitoring_duration_hours": len(self.metrics_history)
+                    "uptime_hours": latest_snapshot.uptime_seconds / 3600,
+                    "last_check": latest_snapshot.timestamp.isoformat(),
+                    "monitoring_duration_hours": len(self.metrics_history)
                 * self.check_interval
                 / 3600,
-            },
-            "resource_usage": {
+                    },
+                "resource_usage": {
                 "cpu_percent": latest_snapshot.cpu_usage,
-                "memory_percent": latest_snapshot.memory_usage,
-                "disk_percent": latest_snapshot.disk_usage,
-                "active_processes": latest_snapshot.active_processes,
-            },
-            "component_health": {
+                    "memory_percent": latest_snapshot.memory_usage,
+                    "disk_percent": latest_snapshot.disk_usage,
+                    "active_processes": latest_snapshot.active_processes,
+                    },
+                "component_health": {
                 "total_components": len(latest_snapshot.metrics),
-                "healthy": len(
+                    "healthy": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.HEALTHY
                     ]
                 ),
-                "warning": len(
+                    "warning": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.WARNING
                     ]
                 ),
-                "critical": len(
+                    "critical": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.CRITICAL
                     ]
                 ),
-                "failed": len(
+                    "failed": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.FAILED
                     ]
                 ),
-            },
-            "recent_issues": [
+                    },
+                "recent_issues": [
                 {
                     "component": m.component_name,
-                    "status": m.status.value,
-                    "message": m.message,
-                    "timestamp": m.timestamp.isoformat(),
-                }
+                        "status": m.status.value,
+                        "message": m.message,
+                        "timestamp": m.timestamp.isoformat(),
+                        }
                 for m in latest_snapshot.metrics
                 if m.status
                 in [HealthStatus.WARNING, HealthStatus.CRITICAL, HealthStatus.FAILED]
@@ -966,10 +998,10 @@ class SystemHealthMonitor:
             ],  # Last 10 issues
         }
 
-
 # Example usage and CLI interface
 if __name__ == "__main__":
     import argparse
+
 
     def alert_callback(metric: HealthMetric):
         """Example alert callback function"""
@@ -977,27 +1009,28 @@ if __name__ == "__main__":
             f"🚨 ALERT: {metric.component_name} is {metric.status.value} - {metric.message}"
         )
 
+
     async def main():
         parser = argparse.ArgumentParser(
             description="Conservative Research System Health Monitor"
         )
         parser.add_argument(
-            "--interval", type=int, default=30, help="Check interval in seconds"
+            "--interval", type = int, default = 30, help="Check interval in seconds"
         )
         parser.add_argument(
             "--report", action="store_true", help="Generate system report and exit"
         )
         args = parser.parse_args()
 
-        monitor = SystemHealthMonitor(check_interval=args.interval)
+        monitor = SystemHealthMonitor(check_interval = args.interval)
         monitor.add_alert_callback(alert_callback)
 
         if args.report:
-            # Generate one-time report
+            # Generate one - time report
             snapshot = await monitor._perform_health_check()
             monitor.metrics_history.append(snapshot)
             report = monitor.get_system_report()
-            print(json.dumps(report, indent=2))
+            print(json.dumps(report, indent = 2))
         else:
             # Start continuous monitoring
             try:
@@ -1007,4 +1040,4 @@ if __name__ == "__main__":
                 print("\nMonitoring stopped.")
 
     # Run the monitor
-    asyncio.run(main())
+        asyncio.run(main())

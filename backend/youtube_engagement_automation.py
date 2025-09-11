@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI YouTube Engagement Automation System
 
 Comprehensive engagement automation that provides:
 - Intelligent comment management and moderation
-- AI-powered response generation and interaction
+- AI - powered response generation and interaction
 - Community post automation and scheduling
 - Subscriber engagement campaigns and outreach
 - Sentiment analysis and reputation monitoring
 - Automated community building and growth
-- Cross-platform engagement coordination
+- Cross - platform engagement coordination
 - Influencer and collaboration management
 
 Features:
@@ -18,8 +18,8 @@ Features:
 - Personalized response generation
 - Community sentiment tracking
 - Engagement optimization algorithms
-- Multi-language support
-- Real-time interaction monitoring
+- Multi - language support
+- Real - time interaction monitoring
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -115,8 +115,9 @@ class CommunityPostType(Enum):
     EDUCATIONAL = "educational"
     ENTERTAINMENT = "entertainment"
 
-
 @dataclass
+
+
 class CommentData:
     """YouTube comment data structure."""
 
@@ -141,8 +142,9 @@ class CommentData:
     questions: List[str]
     processed_at: datetime
 
-
 @dataclass
+
+
 class EngagementResponse:
     """Generated engagement response."""
 
@@ -164,8 +166,9 @@ class EngagementResponse:
     posted_at: Optional[datetime]
     performance_metrics: Dict[str, Any]
 
-
 @dataclass
+
+
 class CommunityPost:
     """Community post data structure."""
 
@@ -185,8 +188,9 @@ class CommunityPost:
     performance_score: float
     created_at: datetime
 
-
 @dataclass
+
+
 class EngagementCampaign:
     """Engagement campaign configuration."""
 
@@ -205,8 +209,9 @@ class EngagementCampaign:
     started_at: Optional[datetime]
     completed_at: Optional[datetime]
 
-
 @dataclass
+
+
 class EngagementInsight:
     """Engagement analytics insight."""
 
@@ -227,18 +232,19 @@ class EngagementInsight:
 
 class YouTubeEngagementAutomation:
     """
-    Advanced YouTube engagement automation system with AI-powered responses,
-    community management, and intelligent interaction optimization.
+    Advanced YouTube engagement automation system with AI - powered responses,
+        community management, and intelligent interaction optimization.
     """
 
-    def __init__(self, config_path: str = "config/engagement_config.json"):
+
+    def __init__(self, config_path: str = "config / engagement_config.json"):
         self.logger = setup_logger("youtube_engagement")
         self.config_path = config_path
         self.config = self._load_config()
 
         # Initialize database
         self.db_path = self.config.get(
-            "database_path", "data/youtube_engagement.sqlite"
+            "database_path", "data / youtube_engagement.sqlite"
         )
         self._init_database()
 
@@ -265,6 +271,7 @@ class YouTubeEngagementAutomation:
 
         self.logger.info("YouTube Engagement Automation initialized")
 
+
     def _load_config(self) -> Dict[str, Any]:
         """Load engagement configuration."""
         try:
@@ -275,62 +282,63 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error loading engagement config: {e}")
 
         return {
-            "database_path": "data/youtube_engagement.sqlite",
-            "comment_monitoring": {
+            "database_path": "data / youtube_engagement.sqlite",
+                "comment_monitoring": {
                 "enabled": True,
-                "check_interval_minutes": 15,
-                "max_comments_per_check": 100,
-                "languages": ["en", "es", "fr", "de", "it", "pt"],
-                "auto_reply_enabled": True,
-                "moderation_enabled": True,
-            },
-            "response_generation": {
-                "ai_model": "gpt-3.5-turbo",
-                "max_response_length": 280,
-                "personalization_level": 0.7,
-                "tone_adaptation": True,
-                "emoji_usage": True,
-                "cta_inclusion_rate": 0.3,
-            },
-            "sentiment_analysis": {
+                    "check_interval_minutes": 15,
+                    "max_comments_per_check": 100,
+                    "languages": ["en", "es", "fr", "de", "it", "pt"],
+                    "auto_reply_enabled": True,
+                    "moderation_enabled": True,
+                    },
+                "response_generation": {
+                "ai_model": "gpt - 3.5 - turbo",
+                    "max_response_length": 280,
+                    "personalization_level": 0.7,
+                    "tone_adaptation": True,
+                    "emoji_usage": True,
+                    "cta_inclusion_rate": 0.3,
+                    },
+                "sentiment_analysis": {
                 "enabled": True,
-                "toxicity_threshold": 0.7,
-                "spam_threshold": 0.8,
-                "sentiment_model": "cardiffnlp/twitter-roberta-base-sentiment-latest",
-            },
-            "community_posts": {
+                    "toxicity_threshold": 0.7,
+                    "spam_threshold": 0.8,
+                    "sentiment_model": "cardiffnlp / twitter - roberta - base - sentiment - latest",
+                    },
+                "community_posts": {
                 "enabled": True,
-                "posting_frequency": "daily",
-                "optimal_times": ["09:00", "15:00", "20:00"],
-                "content_types": ["announcement", "behind_scenes", "poll", "question"],
-                "auto_generate": True,
-            },
-            "engagement_campaigns": {
+                    "posting_frequency": "daily",
+                    "optimal_times": ["09:00", "15:00", "20:00"],
+                    "content_types": ["announcement", "behind_scenes", "poll", "question"],
+                    "auto_generate": True,
+                    },
+                "engagement_campaigns": {
                 "enabled": True,
-                "max_active_campaigns": 5,
-                "subscriber_outreach": True,
-                "collaboration_requests": True,
-                "milestone_celebrations": True,
-            },
-            "moderation": {
+                    "max_active_campaigns": 5,
+                    "subscriber_outreach": True,
+                    "collaboration_requests": True,
+                    "milestone_celebrations": True,
+                    },
+                "moderation": {
                 "auto_moderate": True,
-                "spam_action": "hide",  # hide, delete, report
+                    "spam_action": "hide",  # hide, delete, report
                 "toxic_action": "delete",
-                "manual_review_threshold": 0.5,
-                "whitelist_channels": [],
-                "blacklist_keywords": [],
-            },
-            "analytics": {
+                    "manual_review_threshold": 0.5,
+                    "whitelist_channels": [],
+                    "blacklist_keywords": [],
+                    },
+                "analytics": {
                 "track_engagement_metrics": True,
-                "generate_insights": True,
-                "performance_reporting": True,
-                "optimization_suggestions": True,
-            },
-        }
+                    "generate_insights": True,
+                    "performance_reporting": True,
+                    "optimization_suggestions": True,
+                    },
+                }
+
 
     def _init_database(self):
         """Initialize engagement database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
 
         with sqlite3.connect(self.db_path) as conn:
             # Comments table
@@ -338,26 +346,26 @@ class YouTubeEngagementAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS comments (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    comment_id TEXT UNIQUE,
-                    video_id TEXT,
-                    channel_id TEXT,
-                    author_name TEXT,
-                    author_channel_id TEXT,
-                    text TEXT,
-                    like_count INTEGER,
-                    reply_count INTEGER,
-                    published_at TIMESTAMP,
-                    updated_at TIMESTAMP,
-                    parent_id TEXT,
-                    sentiment TEXT,
-                    language TEXT,
-                    toxicity_score REAL,
-                    spam_score REAL,
-                    engagement_score REAL,
-                    keywords TEXT,
-                    mentions TEXT,
-                    questions TEXT,
-                    processed_at TIMESTAMP
+                        comment_id TEXT UNIQUE,
+                        video_id TEXT,
+                        channel_id TEXT,
+                        author_name TEXT,
+                        author_channel_id TEXT,
+                        text TEXT,
+                        like_count INTEGER,
+                        reply_count INTEGER,
+                        published_at TIMESTAMP,
+                        updated_at TIMESTAMP,
+                        parent_id TEXT,
+                        sentiment TEXT,
+                        language TEXT,
+                        toxicity_score REAL,
+                        spam_score REAL,
+                        engagement_score REAL,
+                        keywords TEXT,
+                        mentions TEXT,
+                        questions TEXT,
+                        processed_at TIMESTAMP
                 )
             """
             )
@@ -367,23 +375,23 @@ class YouTubeEngagementAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS responses (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    response_id TEXT UNIQUE,
-                    original_comment_id TEXT,
-                    response_text TEXT,
-                    response_tone TEXT,
-                    confidence_score REAL,
-                    personalization_level REAL,
-                    estimated_engagement REAL,
-                    language TEXT,
-                    contains_cta BOOLEAN,
-                    contains_question BOOLEAN,
-                    contains_emoji BOOLEAN,
-                    word_count INTEGER,
-                    generated_at TIMESTAMP,
-                    approved BOOLEAN,
-                    posted BOOLEAN,
-                    posted_at TIMESTAMP,
-                    performance_metrics TEXT
+                        response_id TEXT UNIQUE,
+                        original_comment_id TEXT,
+                        response_text TEXT,
+                        response_tone TEXT,
+                        confidence_score REAL,
+                        personalization_level REAL,
+                        estimated_engagement REAL,
+                        language TEXT,
+                        contains_cta BOOLEAN,
+                        contains_question BOOLEAN,
+                        contains_emoji BOOLEAN,
+                        word_count INTEGER,
+                        generated_at TIMESTAMP,
+                        approved BOOLEAN,
+                        posted BOOLEAN,
+                        posted_at TIMESTAMP,
+                        performance_metrics TEXT
                 )
             """
             )
@@ -393,21 +401,21 @@ class YouTubeEngagementAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS community_posts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    post_id TEXT UNIQUE,
-                    channel_id TEXT,
-                    post_type TEXT,
-                    title TEXT,
-                    content TEXT,
-                    media_urls TEXT,
-                    poll_options TEXT,
-                    scheduled_time TIMESTAMP,
-                    published_at TIMESTAMP,
-                    engagement_metrics TEXT,
-                    target_audience TEXT,
-                    hashtags TEXT,
-                    mentions TEXT,
-                    performance_score REAL,
-                    created_at TIMESTAMP
+                        post_id TEXT UNIQUE,
+                        channel_id TEXT,
+                        post_type TEXT,
+                        title TEXT,
+                        content TEXT,
+                        media_urls TEXT,
+                        poll_options TEXT,
+                        scheduled_time TIMESTAMP,
+                        published_at TIMESTAMP,
+                        engagement_metrics TEXT,
+                        target_audience TEXT,
+                        hashtags TEXT,
+                        mentions TEXT,
+                        performance_score REAL,
+                        created_at TIMESTAMP
                 )
             """
             )
@@ -417,20 +425,20 @@ class YouTubeEngagementAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS engagement_campaigns (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    campaign_id TEXT UNIQUE,
-                    name TEXT,
-                    campaign_type TEXT,
-                    target_audience TEXT,
-                    content_templates TEXT,
-                    scheduling_rules TEXT,
-                    success_metrics TEXT,
-                    budget_limits TEXT,
-                    duration_seconds INTEGER,
-                    status TEXT,
-                    performance_data TEXT,
-                    created_at TIMESTAMP,
-                    started_at TIMESTAMP,
-                    completed_at TIMESTAMP
+                        campaign_id TEXT UNIQUE,
+                        name TEXT,
+                        campaign_type TEXT,
+                        target_audience TEXT,
+                        content_templates TEXT,
+                        scheduling_rules TEXT,
+                        success_metrics TEXT,
+                        budget_limits TEXT,
+                        duration_seconds INTEGER,
+                        status TEXT,
+                        performance_data TEXT,
+                        created_at TIMESTAMP,
+                        started_at TIMESTAMP,
+                        completed_at TIMESTAMP
                 )
             """
             )
@@ -440,24 +448,25 @@ class YouTubeEngagementAutomation:
                 """
                 CREATE TABLE IF NOT EXISTS engagement_insights (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    insight_id TEXT UNIQUE,
-                    insight_type TEXT,
-                    title TEXT,
-                    description TEXT,
-                    impact_score REAL,
-                    confidence_level REAL,
-                    recommendations TEXT,
-                    supporting_data TEXT,
-                    actionable_items TEXT,
-                    expected_improvement TEXT,
-                    priority TEXT,
-                    created_at TIMESTAMP,
-                    expires_at TIMESTAMP
+                        insight_id TEXT UNIQUE,
+                        insight_type TEXT,
+                        title TEXT,
+                        description TEXT,
+                        impact_score REAL,
+                        confidence_level REAL,
+                        recommendations TEXT,
+                        supporting_data TEXT,
+                        actionable_items TEXT,
+                        expected_improvement TEXT,
+                        priority TEXT,
+                        created_at TIMESTAMP,
+                        expires_at TIMESTAMP
                 )
             """
             )
 
             conn.commit()
+
 
     def _init_ai_models(self):
         """Initialize AI models for engagement automation."""
@@ -465,12 +474,12 @@ class YouTubeEngagementAutomation:
             # Sentiment analysis model
             model_name = self.config["sentiment_analysis"]["sentiment_model"]
             self.sentiment_analyzer = pipeline(
-                "sentiment-analysis", model=model_name, tokenizer=model_name
+                "sentiment - analysis", model = model_name, tokenizer = model_name
             )
 
             # Toxicity detection model
             self.toxicity_analyzer = pipeline(
-                "text-classification", model="unitary/toxic-bert"
+                "text - classification", model="unitary / toxic - bert"
             )
 
             # Language detection
@@ -493,45 +502,47 @@ class YouTubeEngagementAutomation:
         except Exception as e:
             self.logger.error(f"Error initializing AI models: {e}")
 
+
     def _load_response_templates(self) -> Dict[str, List[str]]:
         """Load response templates for different scenarios."""
         return {
             "greeting": [
                 "Thanks for watching! {emoji}",
-                "Great to see you here! {emoji}",
-                "Welcome to the channel! {emoji}",
-            ],
-            "question_response": [
+                    "Great to see you here! {emoji}",
+                    "Welcome to the channel! {emoji}",
+                    ],
+                "question_response": [
                 "Great question! {answer} {emoji}",
-                "Thanks for asking! {answer}",
-                "That's a really good point. {answer} {emoji}",
-            ],
-            "positive_feedback": [
+                    "Thanks for asking! {answer}",
+                    "That's a really good point. {answer} {emoji}",
+                    ],
+                "positive_feedback": [
                 "Thank you so much! That means a lot {emoji}",
-                "I'm so glad you enjoyed it! {emoji}",
-                "Your support is amazing! {emoji}",
-            ],
-            "constructive_criticism": [
+                    "I'm so glad you enjoyed it! {emoji}",
+                    "Your support is amazing! {emoji}",
+                    ],
+                "constructive_criticism": [
                 "Thanks for the feedback! I'll definitely consider that for future videos {emoji}",
-                "I appreciate your honest input! Always looking to improve {emoji}",
-                "Great point! I'll keep that in mind {emoji}",
-            ],
-            "collaboration_interest": [
+                    "I appreciate your honest input! Always looking to improve {emoji}",
+                    "Great point! I'll keep that in mind {emoji}",
+                    ],
+                "collaboration_interest": [
                 "That sounds interesting! Feel free to reach out via email {emoji}",
-                "I'd love to hear more about your idea! {emoji}",
-                "Thanks for reaching out! Let's connect {emoji}",
-            ],
-            "technical_help": [
+                    "I'd love to hear more about your idea! {emoji}",
+                    "Thanks for reaching out! Let's connect {emoji}",
+                    ],
+                "technical_help": [
                 "I'll try to help! {answer} {emoji}",
-                "Good question! {answer}",
-                "Here's what I know: {answer} {emoji}",
-            ],
-            "milestone_celebration": [
+                    "Good question! {answer}",
+                    "Here's what I know: {answer} {emoji}",
+                    ],
+                "milestone_celebration": [
                 "We did it! Thanks to amazing viewers like you! {emoji}",
-                "Couldn't have done it without you all! {emoji}",
-                "This community is incredible! {emoji}",
-            ],
-        }
+                    "Couldn't have done it without you all! {emoji}",
+                    "This community is incredible! {emoji}",
+                    ],
+                }
+
 
     async def monitor_comments(self, video_ids: List[str]) -> List[CommentData]:
         """Monitor and process new comments on specified videos."""
@@ -545,10 +556,10 @@ class YouTubeEngagementAutomation:
                     # Get comments from YouTube API
                     comments_data = await self.youtube_integration.get_video_comments(
                         video_id,
-                        max_results=self.config["comment_monitoring"][
+                            max_results = self.config["comment_monitoring"][
                             "max_comments_per_check"
                         ],
-                    )
+                            )
 
                     for comment_data in comments_data:
                         # Process comment
@@ -583,6 +594,7 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error monitoring comments: {e}")
             return []
 
+
     async def _process_comment(
         self, comment_data: Dict[str, Any]
     ) -> Optional[CommentData]:
@@ -597,7 +609,7 @@ class YouTubeEngagementAutomation:
             # Detect language
             try:
                 language = detect(text)
-            except:
+            except Exception:
                 language = "unknown"
 
             # Skip if language not supported
@@ -626,37 +638,38 @@ class YouTubeEngagementAutomation:
             )
 
             comment = CommentData(
-                comment_id=comment_data.get("id", ""),
-                video_id=comment_data.get("video_id", ""),
-                channel_id=comment_data.get("channel_id", ""),
-                author_name=comment_data.get("author_name", ""),
-                author_channel_id=comment_data.get("author_channel_id", ""),
-                text=text,
-                like_count=comment_data.get("like_count", 0),
-                reply_count=comment_data.get("reply_count", 0),
-                published_at=datetime.fromisoformat(
+                comment_id = comment_data.get("id", ""),
+                    video_id = comment_data.get("video_id", ""),
+                    channel_id = comment_data.get("channel_id", ""),
+                    author_name = comment_data.get("author_name", ""),
+                    author_channel_id = comment_data.get("author_channel_id", ""),
+                    text = text,
+                    like_count = comment_data.get("like_count", 0),
+                    reply_count = comment_data.get("reply_count", 0),
+                    published_at = datetime.fromisoformat(
                     comment_data.get("published_at", datetime.now().isoformat())
                 ),
-                updated_at=datetime.fromisoformat(
+                    updated_at = datetime.fromisoformat(
                     comment_data.get("updated_at", datetime.now().isoformat())
                 ),
-                parent_id=comment_data.get("parent_id"),
-                sentiment=sentiment,
-                language=language,
-                toxicity_score=toxicity_score,
-                spam_score=spam_score,
-                engagement_score=engagement_score,
-                keywords=keywords,
-                mentions=mentions,
-                questions=questions,
-                processed_at=datetime.now(),
-            )
+                    parent_id = comment_data.get("parent_id"),
+                    sentiment = sentiment,
+                    language = language,
+                    toxicity_score = toxicity_score,
+                    spam_score = spam_score,
+                    engagement_score = engagement_score,
+                    keywords = keywords,
+                    mentions = mentions,
+                    questions = questions,
+                    processed_at = datetime.now(),
+                    )
 
             return comment
 
         except Exception as e:
             self.logger.error(f"Error processing comment: {e}")
             return None
+
 
     async def _analyze_sentiment(self, text: str) -> SentimentType:
         """Analyze sentiment of comment text."""
@@ -685,6 +698,7 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error analyzing sentiment: {e}")
             return SentimentType.NEUTRAL
 
+
     async def _analyze_toxicity(self, text: str) -> float:
         """Analyze toxicity level of comment text."""
         try:
@@ -697,14 +711,15 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error analyzing toxicity: {e}")
             return 0.0
 
+
     async def _analyze_spam(self, text: str) -> float:
         """Analyze spam likelihood of comment text."""
         try:
             spam_indicators = [
-                r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+",  # URLs
-                r"\b(?:subscribe|like|follow|check out|visit)\b.*\b(?:channel|page|profile)\b",  # Self-promotion
+                r"http[s]?://(?:[a - zA - Z]|[0 - 9]|[$-_@.&+]|[!*\(\),]|(?:%[0 - 9a - fA - F][0 - 9a - fA - F]))+",  # URLs
+                r"\b(?:subscribe|like|follow|check out|visit)\b.*\b(?:channel|page|profile)\b",  # Self - promotion
                 r"\b(?:free|win|prize|giveaway|contest)\b",  # Spam keywords
-                r"[A-Z]{5,}",  # Excessive caps
+                r"[A - Z]{5,}",  # Excessive caps
                 r"(.)\1{4,}",  # Repeated characters
                 r"[!@#$%^&*()]{3,}",  # Excessive punctuation
             ]
@@ -720,6 +735,7 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error analyzing spam: {e}")
             return 0.0
 
+
     def _extract_keywords(self, text: str) -> List[str]:
         """Extract keywords from comment text."""
         try:
@@ -729,57 +745,57 @@ class YouTubeEngagementAutomation:
                 # Filter out common stop words
                 stop_words = {
                     "the",
-                    "a",
-                    "an",
-                    "and",
-                    "or",
-                    "but",
-                    "in",
-                    "on",
-                    "at",
-                    "to",
-                    "for",
-                    "of",
-                    "with",
-                    "by",
-                    "is",
-                    "are",
-                    "was",
-                    "were",
-                    "be",
-                    "been",
-                    "being",
-                    "have",
-                    "has",
-                    "had",
-                    "do",
-                    "does",
-                    "did",
-                    "will",
-                    "would",
-                    "could",
-                    "should",
-                    "may",
-                    "might",
-                    "must",
-                    "can",
-                    "this",
-                    "that",
-                    "these",
-                    "those",
-                    "i",
-                    "you",
-                    "he",
-                    "she",
-                    "it",
-                    "we",
-                    "they",
-                    "me",
-                    "him",
-                    "her",
-                    "us",
-                    "them",
-                }
+                        "a",
+                        "an",
+                        "and",
+                        "or",
+                        "but",
+                        "in",
+                        "on",
+                        "at",
+                        "to",
+                        "for",
+                        "of",
+                        "with",
+                        "by",
+                        "is",
+                        "are",
+                        "was",
+                        "were",
+                        "be",
+                        "been",
+                        "being",
+                        "have",
+                        "has",
+                        "had",
+                        "do",
+                        "does",
+                        "did",
+                        "will",
+                        "would",
+                        "could",
+                        "should",
+                        "may",
+                        "might",
+                        "must",
+                        "can",
+                        "this",
+                        "that",
+                        "these",
+                        "those",
+                        "i",
+                        "you",
+                        "he",
+                        "she",
+                        "it",
+                        "we",
+                        "they",
+                        "me",
+                        "him",
+                        "her",
+                        "us",
+                        "them",
+                        }
                 keywords = [
                     word for word in words if word not in stop_words and len(word) > 2
                 ]
@@ -809,14 +825,16 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error extracting keywords: {e}")
             return []
 
+
     def _extract_mentions(self, text: str) -> List[str]:
         """Extract @mentions from comment text."""
         try:
-            mentions = re.findall(r"@([a-zA-Z0-9_]+)", text)
+            mentions = re.findall(r"@([a - zA - Z0 - 9_]+)", text)
             return mentions
         except Exception as e:
             self.logger.error(f"Error extracting mentions: {e}")
             return []
+
 
     def _extract_questions(self, text: str) -> List[str]:
         """Extract questions from comment text."""
@@ -832,22 +850,22 @@ class YouTubeEngagementAutomation:
                     or sentence.lower().startswith(
                         (
                             "what",
-                            "how",
-                            "why",
-                            "when",
-                            "where",
-                            "who",
-                            "which",
-                            "can",
-                            "could",
-                            "would",
-                            "should",
-                            "is",
-                            "are",
-                            "do",
-                            "does",
-                            "did",
-                        )
+                                "how",
+                                "why",
+                                "when",
+                                "where",
+                                "who",
+                                "which",
+                                "can",
+                                "could",
+                                "would",
+                                "should",
+                                "is",
+                                "are",
+                                "do",
+                                "does",
+                                "did",
+                                )
                     )
                 ):
                     questions.append(sentence)
@@ -858,13 +876,14 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error extracting questions: {e}")
             return []
 
+
     def _calculate_engagement_score(
         self,
-        comment_data: Dict[str, Any],
-        sentiment: SentimentType,
-        toxicity_score: float,
-        spam_score: float,
-    ) -> float:
+            comment_data: Dict[str, Any],
+            sentiment: SentimentType,
+            toxicity_score: float,
+            spam_score: float,
+            ) -> float:
         """Calculate engagement score for comment prioritization."""
         try:
             score = 0.0
@@ -876,7 +895,7 @@ class YouTubeEngagementAutomation:
             score += min(like_count * 2, 20)  # Max 20 points from likes
             score += min(reply_count * 5, 25)  # Max 25 points from replies
 
-            # Sentiment bonus/penalty
+            # Sentiment bonus / penalty
             if sentiment == SentimentType.POSITIVE:
                 score += 15
             elif sentiment == SentimentType.NEGATIVE:
@@ -902,11 +921,12 @@ class YouTubeEngagementAutomation:
             elif text_length >= 500:
                 score += 3
 
-            return max(0.0, min(100.0, score))  # Clamp between 0-100
+            return max(0.0, min(100.0, score))  # Clamp between 0 - 100
 
         except Exception as e:
             self.logger.error(f"Error calculating engagement score: {e}")
             return 0.0
+
 
     def _should_respond_to_comment(self, comment: CommentData) -> bool:
         """Determine if we should respond to a comment."""
@@ -919,7 +939,7 @@ class YouTubeEngagementAutomation:
             ):
                 return False
 
-            # Don't respond if auto-reply is disabled
+            # Don't respond if auto - reply is disabled
             if not self.config["comment_monitoring"]["auto_reply_enabled"]:
                 return False
 
@@ -948,10 +968,11 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error determining response need: {e}")
             return False
 
+
     async def _generate_response(
         self, comment: CommentData
     ) -> Optional[EngagementResponse]:
-        """Generate AI-powered response to comment."""
+        """Generate AI - powered response to comment."""
         try:
             # Determine response tone based on comment sentiment and content
             response_tone = self._determine_response_tone(comment)
@@ -968,8 +989,8 @@ class YouTubeEngagementAutomation:
             contains_emoji = bool(
                 re.search(
                     r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]",
-                    response_text,
-                )
+                        response_text,
+                        )
             )
             word_count = len(response_text.split())
 
@@ -985,31 +1006,32 @@ class YouTubeEngagementAutomation:
             )
 
             response = EngagementResponse(
-                response_id=f"resp_{comment.comment_id}_{int(time.time())}",
-                original_comment_id=comment.comment_id,
-                response_text=response_text,
-                response_tone=response_tone,
-                confidence_score=confidence_score,
-                personalization_level=personalization_level,
-                estimated_engagement=estimated_engagement,
-                language=comment.language,
-                contains_cta=contains_cta,
-                contains_question=contains_question,
-                contains_emoji=contains_emoji,
-                word_count=word_count,
-                generated_at=datetime.now(),
-                approved=confidence_score
-                > 0.7,  # Auto-approve high confidence responses
-                posted=False,
-                posted_at=None,
-                performance_metrics={},
-            )
+                response_id = f"resp_{comment.comment_id}_{int(time.time())}",
+                    original_comment_id = comment.comment_id,
+                    response_text = response_text,
+                    response_tone = response_tone,
+                    confidence_score = confidence_score,
+                    personalization_level = personalization_level,
+                    estimated_engagement = estimated_engagement,
+                    language = comment.language,
+                    contains_cta = contains_cta,
+                    contains_question = contains_question,
+                    contains_emoji = contains_emoji,
+                    word_count = word_count,
+                    generated_at = datetime.now(),
+                    approved = confidence_score
+                > 0.7,  # Auto - approve high confidence responses
+                posted = False,
+                    posted_at = None,
+                    performance_metrics={},
+                    )
 
             return response
 
         except Exception as e:
             self.logger.error(f"Error generating response: {e}")
             return None
+
 
     def _determine_response_tone(self, comment: CommentData) -> ResponseTone:
         """Determine appropriate response tone based on comment."""
@@ -1033,6 +1055,7 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error determining response tone: {e}")
             return ResponseTone.FRIENDLY
 
+
     async def _generate_ai_response(
         self, comment: CommentData, tone: ResponseTone
     ) -> Optional[str]:
@@ -1041,12 +1064,12 @@ class YouTubeEngagementAutomation:
             # Prepare context for AI
             context = f"""
             You are a friendly YouTube content creator responding to a comment on your video.
-            
+
             Comment: "{comment.text}"
             Comment sentiment: {comment.sentiment.value}
             Comment language: {comment.language}
             Response tone: {tone.value}
-            
+
             Generate a {tone.value} response that:
             - Is authentic and personal
             - Addresses the comment directly
@@ -1054,22 +1077,22 @@ class YouTubeEngagementAutomation:
             - Matches the tone specified
             - Includes an emoji if appropriate
             - Encourages further engagement
-            
+
             Response:
             """
 
             response = await openai.ChatCompletion.acreate(
-                model=self.config["response_generation"]["ai_model"],
-                messages=[
+                model = self.config["response_generation"]["ai_model"],
+                    messages=[
                     {
                         "role": "system",
-                        "content": "You are a helpful YouTube content creator assistant.",
-                    },
-                    {"role": "user", "content": context},
-                ],
-                max_tokens=100,
-                temperature=0.7,
-            )
+                            "content": "You are a helpful YouTube content creator assistant.",
+                            },
+                        {"role": "user", "content": context},
+                        ],
+                    max_tokens = 100,
+                    temperature = 0.7,
+                    )
 
             generated_text = response.choices[0].message.content.strip()
 
@@ -1081,6 +1104,7 @@ class YouTubeEngagementAutomation:
         except Exception as e:
             self.logger.error(f"Error generating AI response: {e}")
             return None
+
 
     def _clean_response_text(self, text: str) -> str:
         """Clean and format response text."""
@@ -1095,8 +1119,8 @@ class YouTubeEngagementAutomation:
             # Add emoji if configured and not present
             if self.config["response_generation"]["emoji_usage"] and not re.search(
                 r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]",
-                text,
-            ):
+                    text,
+                    ):
 
                 # Add appropriate emoji based on content
                 if any(
@@ -1120,19 +1144,21 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error cleaning response text: {e}")
             return text
 
+
     def _contains_call_to_action(self, text: str) -> bool:
         """Check if response contains a call to action."""
         cta_patterns = [
             r"\b(?:subscribe|like|share|comment|check out|visit|follow)\b",
-            r"\b(?:let me know|tell me|what do you think)\b",
-            r"\b(?:try|watch|see|read)\b.*\b(?:video|channel|content)\b",
-        ]
+                r"\b(?:let me know|tell me|what do you think)\b",
+                r"\b(?:try|watch|see|read)\b.*\b(?:video|channel|content)\b",
+                ]
 
         for pattern in cta_patterns:
             if re.search(pattern, text, re.IGNORECASE):
                 return True
 
         return False
+
 
     def _calculate_response_confidence(
         self, comment: CommentData, response: str
@@ -1177,6 +1203,7 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error calculating response confidence: {e}")
             return 0.5
 
+
     def _calculate_personalization_level(
         self, comment: CommentData, response: str
     ) -> float:
@@ -1213,12 +1240,13 @@ class YouTubeEngagementAutomation:
             self.logger.error(f"Error calculating personalization level: {e}")
             return 0.0
 
+
     def _estimate_response_engagement(
         self, comment: CommentData, response: str
     ) -> float:
         """Estimate potential engagement for response."""
         try:
-            base_score = comment.engagement_score / 100.0  # Normalize to 0-1
+            base_score = comment.engagement_score / 100.0  # Normalize to 0 - 1
 
             # Response quality factors
             if self._contains_call_to_action(response):
@@ -1233,8 +1261,8 @@ class YouTubeEngagementAutomation:
             # Emoji usage
             if re.search(
                 r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]",
-                response,
-            ):
+                    response,
+                    ):
                 base_score += 0.05
 
             return max(0.0, min(1.0, base_score))
@@ -1242,6 +1270,7 @@ class YouTubeEngagementAutomation:
         except Exception as e:
             self.logger.error(f"Error estimating response engagement: {e}")
             return 0.0
+
 
     async def post_approved_responses(self) -> int:
         """Post approved responses to YouTube."""
@@ -1282,45 +1311,48 @@ class YouTubeEngagementAutomation:
             return 0
 
     # Database helper methods
+
+
     async def _store_comment(self, comment: CommentData):
         """Store comment in database."""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO comments 
+                    INSERT OR REPLACE INTO comments
                     (comment_id, video_id, channel_id, author_name, author_channel_id, text,
-                     like_count, reply_count, published_at, updated_at, parent_id, sentiment,
-                     language, toxicity_score, spam_score, engagement_score, keywords,
-                     mentions, questions, processed_at)
+                        like_count, reply_count, published_at, updated_at, parent_id, sentiment,
+                         language, toxicity_score, spam_score, engagement_score, keywords,
+                         mentions, questions, processed_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         comment.comment_id,
-                        comment.video_id,
-                        comment.channel_id,
-                        comment.author_name,
-                        comment.author_channel_id,
-                        comment.text,
-                        comment.like_count,
-                        comment.reply_count,
-                        comment.published_at.isoformat(),
-                        comment.updated_at.isoformat(),
-                        comment.parent_id,
-                        comment.sentiment.value,
-                        comment.language,
-                        comment.toxicity_score,
-                        comment.spam_score,
-                        comment.engagement_score,
-                        json.dumps(comment.keywords),
-                        json.dumps(comment.mentions),
-                        json.dumps(comment.questions),
-                        comment.processed_at.isoformat(),
-                    ),
-                )
+                            comment.video_id,
+                            comment.channel_id,
+                            comment.author_name,
+                            comment.author_channel_id,
+                            comment.text,
+                            comment.like_count,
+                            comment.reply_count,
+                            comment.published_at.isoformat(),
+                            comment.updated_at.isoformat(),
+                            comment.parent_id,
+                            comment.sentiment.value,
+                            comment.language,
+                            comment.toxicity_score,
+                            comment.spam_score,
+                            comment.engagement_score,
+                            json.dumps(comment.keywords),
+                            json.dumps(comment.mentions),
+                            json.dumps(comment.questions),
+                            comment.processed_at.isoformat(),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing comment: {e}")
+
 
     async def _store_response(self, response: EngagementResponse):
         """Store response in database."""
@@ -1328,47 +1360,50 @@ class YouTubeEngagementAutomation:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT INTO responses 
+                    INSERT INTO responses
                     (response_id, original_comment_id, response_text, response_tone,
-                     confidence_score, personalization_level, estimated_engagement,
-                     language, contains_cta, contains_question, contains_emoji,
-                     word_count, generated_at, approved, posted, posted_at,
-                     performance_metrics)
+                        confidence_score, personalization_level, estimated_engagement,
+                         language, contains_cta, contains_question, contains_emoji,
+                         word_count, generated_at, approved, posted, posted_at,
+                         performance_metrics)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         response.response_id,
-                        response.original_comment_id,
-                        response.response_text,
-                        response.response_tone.value,
-                        response.confidence_score,
-                        response.personalization_level,
-                        response.estimated_engagement,
-                        response.language,
-                        response.contains_cta,
-                        response.contains_question,
-                        response.contains_emoji,
-                        response.word_count,
-                        response.generated_at.isoformat(),
-                        response.approved,
-                        response.posted,
-                        response.posted_at.isoformat() if response.posted_at else None,
-                        json.dumps(response.performance_metrics),
-                    ),
-                )
+                            response.original_comment_id,
+                            response.response_text,
+                            response.response_tone.value,
+                            response.confidence_score,
+                            response.personalization_level,
+                            response.estimated_engagement,
+                            response.language,
+                            response.contains_cta,
+                            response.contains_question,
+                            response.contains_emoji,
+                            response.word_count,
+                            response.generated_at.isoformat(),
+                            response.approved,
+                            response.posted,
+                            response.posted_at.isoformat() if response.posted_at else None,
+                            json.dumps(response.performance_metrics),
+                            ),
+                        )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing response: {e}")
+
 
     async def _get_approved_responses(self) -> List[EngagementResponse]:
         """Get approved responses that haven't been posted yet."""
         # Implementation would query database for approved, unposted responses
         return []
 
+
     async def _update_response_status(self, response: EngagementResponse):
         """Update response status in database."""
         # Implementation would update response status
         pass
+
 
     def get_engagement_status(self) -> Dict[str, Any]:
         """Get current engagement system status."""
@@ -1391,37 +1426,37 @@ class YouTubeEngagementAutomation:
 
                 return {
                     "status": "active",
-                    "last_comment_check": (
+                        "last_comment_check": (
                         self.last_comment_check.isoformat()
                         if self.last_comment_check
                         else None
                     ),
-                    "total_comments_processed": total_comments,
-                    "approved_responses": approved_responses,
-                    "posted_responses": posted_responses,
-                    "community_posts": community_posts,
-                    "engagement_stats": dict(self.engagement_stats),
-                    "config": self.config,
-                }
+                        "total_comments_processed": total_comments,
+                        "approved_responses": approved_responses,
+                        "posted_responses": posted_responses,
+                        "community_posts": community_posts,
+                        "engagement_stats": dict(self.engagement_stats),
+                        "config": self.config,
+                        }
         except Exception as e:
             self.logger.error(f"Error getting engagement status: {e}")
             return {"error": str(e)}
 
-
 # Factory function
+
+
 def create_youtube_engagement_automation() -> YouTubeEngagementAutomation:
     """Create and return YouTube engagement automation instance."""
     return YouTubeEngagementAutomation()
-
 
 # CLI interface for testing
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="YouTube Engagement Automation")
-    parser.add_argument("--monitor", type=str, help="Monitor comments for video ID")
+    parser.add_argument("--monitor", type = str, help="Monitor comments for video ID")
     parser.add_argument(
-        "--post-responses", action="store_true", help="Post approved responses"
+        "--post - responses", action="store_true", help="Post approved responses"
     )
     parser.add_argument("--status", action="store_true", help="Get system status")
 
@@ -1441,7 +1476,7 @@ if __name__ == "__main__":
 
     elif args.status:
         status = engagement.get_engagement_status()
-        print(json.dumps(status, indent=2, default=str))
+        print(json.dumps(status, indent = 2, default = str))
 
     else:
-        print("Use --monitor, --post-responses, or --status")
+        print("Use --monitor, --post - responses, or --status")

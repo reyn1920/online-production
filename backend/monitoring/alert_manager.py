@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Alert Manager - Comprehensive Monitoring and Alerting System
-Implements real-time monitoring, alerting, and scaling rules for go-live compliance
+Implements real - time monitoring, alerting, and scaling rules for go - live compliance
 """
 
 import asyncio
@@ -72,8 +72,9 @@ class NotificationChannel(Enum):
     DISCORD = "discord"
     TEAMS = "teams"
 
-
 @dataclass
+
+
 class AlertRule:
     """Alert rule definition"""
 
@@ -92,8 +93,9 @@ class AlertRule:
     auto_resolve: bool
     tags: List[str]
 
-
 @dataclass
+
+
 class Alert:
     """Alert instance"""
 
@@ -115,8 +117,9 @@ class Alert:
     notification_history: List[Dict[str, Any]]
     escalation_level: int
 
-
 @dataclass
+
+
 class MetricPoint:
     """Time series metric point"""
 
@@ -124,8 +127,9 @@ class MetricPoint:
     value: float
     labels: Dict[str, str]
 
-
 @dataclass
+
+
 class SystemMetrics:
     """System performance metrics"""
 
@@ -138,10 +142,11 @@ class SystemMetrics:
     uptime_seconds: float
     timestamp: float
 
-
 @dataclass
+
+
 class ApplicationMetrics:
-    """Application-specific metrics"""
+    """Application - specific metrics"""
 
     request_count: int
     error_count: int
@@ -156,6 +161,7 @@ class ApplicationMetrics:
 class AlertManager:
     """Comprehensive monitoring and alerting system"""
 
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = self._load_default_config()
         if config:
@@ -163,8 +169,8 @@ class AlertManager:
 
         self.alert_rules = {}
         self.active_alerts = {}
-        self.alert_history = deque(maxlen=10000)
-        self.metrics_buffer = defaultdict(lambda: deque(maxlen=1000))
+        self.alert_history = deque(maxlen = 10000)
+        self.metrics_buffer = defaultdict(lambda: deque(maxlen = 1000))
         self.notification_channels = {}
         self.escalation_handlers = {}
 
@@ -188,49 +194,51 @@ class AlertManager:
         self.monitoring_thread = None
         self._start_monitoring()
 
+
     def _load_default_config(self) -> Dict[str, Any]:
         """Load default alert manager configuration"""
         return {
             "metric_collection_interval": 30,  # seconds
             "alert_evaluation_interval": 10,  # seconds
             "max_alerts_per_rule_per_hour": 10,
-            "default_cooldown_seconds": 300,  # 5 minutes
+                "default_cooldown_seconds": 300,  # 5 minutes
             "escalation_timeout_minutes": 15,
-            "auto_resolve_timeout_minutes": 60,
-            "notification_retry_attempts": 3,
-            "notification_retry_delay": 30,
-            "metrics_retention_hours": 24,
-            "alert_history_retention_days": 30,
-            "enable_system_monitoring": True,
-            "enable_application_monitoring": True,
-            "enable_security_monitoring": True,
-            "enable_compliance_monitoring": True,
-            "cpu_threshold_warning": 80.0,
-            "cpu_threshold_critical": 95.0,
-            "memory_threshold_warning": 85.0,
-            "memory_threshold_critical": 95.0,
-            "disk_threshold_warning": 80.0,
-            "disk_threshold_critical": 90.0,
-            "response_time_threshold_warning": 2000,  # ms
+                "auto_resolve_timeout_minutes": 60,
+                "notification_retry_attempts": 3,
+                "notification_retry_delay": 30,
+                "metrics_retention_hours": 24,
+                "alert_history_retention_days": 30,
+                "enable_system_monitoring": True,
+                "enable_application_monitoring": True,
+                "enable_security_monitoring": True,
+                "enable_compliance_monitoring": True,
+                "cpu_threshold_warning": 80.0,
+                "cpu_threshold_critical": 95.0,
+                "memory_threshold_warning": 85.0,
+                "memory_threshold_critical": 95.0,
+                "disk_threshold_warning": 80.0,
+                "disk_threshold_critical": 90.0,
+                "response_time_threshold_warning": 2000,  # ms
             "response_time_threshold_critical": 5000,  # ms
             "error_rate_threshold_warning": 5.0,  # %
             "error_rate_threshold_critical": 10.0,  # %
             "availability_threshold_warning": 99.0,  # %
             "availability_threshold_critical": 95.0,  # %
             "email_smtp_server": os.getenv("SMTP_SERVER", "smtp.gmail.com"),
-            "email_smtp_port": int(os.getenv("SMTP_PORT", "587")),
-            "email_username": os.getenv("ALERT_EMAIL_USERNAME"),
-            "email_password": os.getenv("ALERT_EMAIL_PASSWORD"),
-            "email_from": os.getenv("ALERT_EMAIL_FROM"),
-            "email_to": os.getenv("ALERT_EMAIL_TO", "").split(","),
-            "slack_webhook_url": os.getenv("SLACK_WEBHOOK_URL"),
-            "discord_webhook_url": os.getenv("DISCORD_WEBHOOK_URL"),
-            "webhook_endpoints": os.getenv("ALERT_WEBHOOK_ENDPOINTS", "").split(","),
-            "enable_auto_scaling": True,
-            "scaling_cpu_threshold": 70.0,
-            "scaling_memory_threshold": 80.0,
-            "scaling_cooldown_minutes": 10,
-        }
+                "email_smtp_port": int(os.getenv("SMTP_PORT", "587")),
+                "email_username": os.getenv("ALERT_EMAIL_USERNAME"),
+                "email_password": os.getenv("ALERT_EMAIL_PASSWORD"),
+                "email_from": os.getenv("ALERT_EMAIL_FROM"),
+                "email_to": os.getenv("ALERT_EMAIL_TO", "").split(","),
+                "slack_webhook_url": os.getenv("SLACK_WEBHOOK_URL"),
+                "discord_webhook_url": os.getenv("DISCORD_WEBHOOK_URL"),
+                "webhook_endpoints": os.getenv("ALERT_WEBHOOK_ENDPOINTS", "").split(","),
+                "enable_auto_scaling": True,
+                "scaling_cpu_threshold": 70.0,
+                "scaling_memory_threshold": 80.0,
+                "scaling_cooldown_minutes": 10,
+                }
+
 
     def _initialize_default_rules(self):
         """Initialize default monitoring rules"""
@@ -239,261 +247,262 @@ class AlertManager:
         self.register_alert_rule(
             AlertRule(
                 rule_id="high_cpu_usage",
-                name="High CPU Usage",
-                description="CPU usage is above threshold",
-                category=AlertCategory.SYSTEM,
-                severity=AlertSeverity.WARNING,
-                condition="cpu_percent > threshold",
-                threshold=self.config["cpu_threshold_warning"],
-                duration_seconds=120,
-                cooldown_seconds=300,
-                enabled=True,
-                notification_channels=[
+                    name="High CPU Usage",
+                    description="CPU usage is above threshold",
+                    category = AlertCategory.SYSTEM,
+                    severity = AlertSeverity.WARNING,
+                    condition="cpu_percent > threshold",
+                    threshold = self.config["cpu_threshold_warning"],
+                    duration_seconds = 120,
+                    cooldown_seconds = 300,
+                    enabled = True,
+                    notification_channels=[
                     NotificationChannel.EMAIL,
-                    NotificationChannel.SLACK,
-                ],
-                escalation_rules=[
+                        NotificationChannel.SLACK,
+                        ],
+                    escalation_rules=[
                     {
                         "after_minutes": 15,
-                        "severity": AlertSeverity.CRITICAL,
-                        "channels": [
+                            "severity": AlertSeverity.CRITICAL,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                ],
+                            }
                 ],
-                auto_resolve=True,
-                tags=["system", "performance", "cpu"],
-            )
+                    auto_resolve = True,
+                    tags=["system", "performance", "cpu"],
+                    )
         )
 
         self.register_alert_rule(
             AlertRule(
                 rule_id="critical_cpu_usage",
-                name="Critical CPU Usage",
-                description="CPU usage is critically high",
-                category=AlertCategory.SYSTEM,
-                severity=AlertSeverity.CRITICAL,
-                condition="cpu_percent > threshold",
-                threshold=self.config["cpu_threshold_critical"],
-                duration_seconds=60,
-                cooldown_seconds=180,
-                enabled=True,
-                notification_channels=[
+                    name="Critical CPU Usage",
+                    description="CPU usage is critically high",
+                    category = AlertCategory.SYSTEM,
+                    severity = AlertSeverity.CRITICAL,
+                    condition="cpu_percent > threshold",
+                    threshold = self.config["cpu_threshold_critical"],
+                    duration_seconds = 60,
+                    cooldown_seconds = 180,
+                    enabled = True,
+                    notification_channels=[
                     NotificationChannel.EMAIL,
-                    NotificationChannel.SLACK,
-                ],
-                escalation_rules=[
+                        NotificationChannel.SLACK,
+                        ],
+                    escalation_rules=[
                     {
                         "after_minutes": 5,
-                        "severity": AlertSeverity.EMERGENCY,
-                        "channels": [
+                            "severity": AlertSeverity.EMERGENCY,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                            NotificationChannel.SMS,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                NotificationChannel.SMS,
+                                ],
+                            }
                 ],
-                auto_resolve=True,
-                tags=["system", "performance", "cpu", "critical"],
-            )
+                    auto_resolve = True,
+                    tags=["system", "performance", "cpu", "critical"],
+                    )
         )
 
         self.register_alert_rule(
             AlertRule(
                 rule_id="high_memory_usage",
-                name="High Memory Usage",
-                description="Memory usage is above threshold",
-                category=AlertCategory.SYSTEM,
-                severity=AlertSeverity.WARNING,
-                condition="memory_percent > threshold",
-                threshold=self.config["memory_threshold_warning"],
-                duration_seconds=180,
-                cooldown_seconds=300,
-                enabled=True,
-                notification_channels=[NotificationChannel.EMAIL],
-                escalation_rules=[],
-                auto_resolve=True,
-                tags=["system", "performance", "memory"],
-            )
+                    name="High Memory Usage",
+                    description="Memory usage is above threshold",
+                    category = AlertCategory.SYSTEM,
+                    severity = AlertSeverity.WARNING,
+                    condition="memory_percent > threshold",
+                    threshold = self.config["memory_threshold_warning"],
+                    duration_seconds = 180,
+                    cooldown_seconds = 300,
+                    enabled = True,
+                    notification_channels=[NotificationChannel.EMAIL],
+                    escalation_rules=[],
+                    auto_resolve = True,
+                    tags=["system", "performance", "memory"],
+                    )
         )
 
         self.register_alert_rule(
             AlertRule(
                 rule_id="disk_space_low",
-                name="Low Disk Space",
-                description="Disk space is running low",
-                category=AlertCategory.SYSTEM,
-                severity=AlertSeverity.WARNING,
-                condition="disk_percent > threshold",
-                threshold=self.config["disk_threshold_warning"],
-                duration_seconds=300,
-                cooldown_seconds=1800,
-                enabled=True,
-                notification_channels=[
+                    name="Low Disk Space",
+                    description="Disk space is running low",
+                    category = AlertCategory.SYSTEM,
+                    severity = AlertSeverity.WARNING,
+                    condition="disk_percent > threshold",
+                    threshold = self.config["disk_threshold_warning"],
+                    duration_seconds = 300,
+                    cooldown_seconds = 1800,
+                    enabled = True,
+                    notification_channels=[
                     NotificationChannel.EMAIL,
-                    NotificationChannel.SLACK,
-                ],
-                escalation_rules=[
+                        NotificationChannel.SLACK,
+                        ],
+                    escalation_rules=[
                     {
                         "after_minutes": 30,
-                        "severity": AlertSeverity.CRITICAL,
-                        "channels": [
+                            "severity": AlertSeverity.CRITICAL,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                ],
+                            }
                 ],
-                auto_resolve=True,
-                tags=["system", "storage", "disk"],
-            )
+                    auto_resolve = True,
+                    tags=["system", "storage", "disk"],
+                    )
         )
 
         # Application monitoring rules
         self.register_alert_rule(
             AlertRule(
                 rule_id="high_response_time",
-                name="High Response Time",
-                description="Application response time is above threshold",
-                category=AlertCategory.PERFORMANCE,
-                severity=AlertSeverity.WARNING,
-                condition="response_time_ms > threshold",
-                threshold=self.config["response_time_threshold_warning"],
-                duration_seconds=120,
-                cooldown_seconds=300,
-                enabled=True,
-                notification_channels=[NotificationChannel.EMAIL],
-                escalation_rules=[],
-                auto_resolve=True,
-                tags=["application", "performance", "response_time"],
-            )
+                    name="High Response Time",
+                    description="Application response time is above threshold",
+                    category = AlertCategory.PERFORMANCE,
+                    severity = AlertSeverity.WARNING,
+                    condition="response_time_ms > threshold",
+                    threshold = self.config["response_time_threshold_warning"],
+                    duration_seconds = 120,
+                    cooldown_seconds = 300,
+                    enabled = True,
+                    notification_channels=[NotificationChannel.EMAIL],
+                    escalation_rules=[],
+                    auto_resolve = True,
+                    tags=["application", "performance", "response_time"],
+                    )
         )
 
         self.register_alert_rule(
             AlertRule(
                 rule_id="high_error_rate",
-                name="High Error Rate",
-                description="Application error rate is above threshold",
-                category=AlertCategory.APPLICATION,
-                severity=AlertSeverity.ERROR,
-                condition="error_rate > threshold",
-                threshold=self.config["error_rate_threshold_warning"],
-                duration_seconds=60,
-                cooldown_seconds=180,
-                enabled=True,
-                notification_channels=[
+                    name="High Error Rate",
+                    description="Application error rate is above threshold",
+                    category = AlertCategory.APPLICATION,
+                    severity = AlertSeverity.ERROR,
+                    condition="error_rate > threshold",
+                    threshold = self.config["error_rate_threshold_warning"],
+                    duration_seconds = 60,
+                    cooldown_seconds = 180,
+                    enabled = True,
+                    notification_channels=[
                     NotificationChannel.EMAIL,
-                    NotificationChannel.SLACK,
-                ],
-                escalation_rules=[
+                        NotificationChannel.SLACK,
+                        ],
+                    escalation_rules=[
                     {
                         "after_minutes": 10,
-                        "severity": AlertSeverity.CRITICAL,
-                        "channels": [
+                            "severity": AlertSeverity.CRITICAL,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                ],
+                            }
                 ],
-                auto_resolve=True,
-                tags=["application", "errors", "reliability"],
-            )
+                    auto_resolve = True,
+                    tags=["application", "errors", "reliability"],
+                    )
         )
 
         # Security monitoring rules
         self.register_alert_rule(
             AlertRule(
                 rule_id="security_threat_detected",
-                name="Security Threat Detected",
-                description="Security monitoring detected a potential threat",
-                category=AlertCategory.SECURITY,
-                severity=AlertSeverity.CRITICAL,
-                condition="threat_level >= threshold",
-                threshold=3.0,  # High threat level
-                duration_seconds=0,  # Immediate
-                cooldown_seconds=60,
-                enabled=True,
-                notification_channels=[
+                    name="Security Threat Detected",
+                    description="Security monitoring detected a potential threat",
+                    category = AlertCategory.SECURITY,
+                    severity = AlertSeverity.CRITICAL,
+                    condition="threat_level >= threshold",
+                    threshold = 3.0,  # High threat level
+                duration_seconds = 0,  # Immediate
+                cooldown_seconds = 60,
+                    enabled = True,
+                    notification_channels=[
                     NotificationChannel.EMAIL,
-                    NotificationChannel.SLACK,
-                ],
-                escalation_rules=[
+                        NotificationChannel.SLACK,
+                        ],
+                    escalation_rules=[
                     {
                         "after_minutes": 5,
-                        "severity": AlertSeverity.EMERGENCY,
-                        "channels": [
+                            "severity": AlertSeverity.EMERGENCY,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                            NotificationChannel.SMS,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                NotificationChannel.SMS,
+                                ],
+                            }
                 ],
-                auto_resolve=False,  # Manual resolution required
+                    auto_resolve = False,  # Manual resolution required
                 tags=["security", "threat", "critical"],
-            )
+                    )
         )
 
         # Compliance monitoring rules
         self.register_alert_rule(
             AlertRule(
                 rule_id="compliance_violation",
-                name="Compliance Violation",
-                description="System is not compliant with required rules",
-                category=AlertCategory.COMPLIANCE,
-                severity=AlertSeverity.ERROR,
-                condition="compliance_score < threshold",
-                threshold=95.0,  # 95% compliance required
-                duration_seconds=300,
-                cooldown_seconds=600,
-                enabled=True,
-                notification_channels=[NotificationChannel.EMAIL],
-                escalation_rules=[
+                    name="Compliance Violation",
+                    description="System is not compliant with required rules",
+                    category = AlertCategory.COMPLIANCE,
+                    severity = AlertSeverity.ERROR,
+                    condition="compliance_score < threshold",
+                    threshold = 95.0,  # 95% compliance required
+                duration_seconds = 300,
+                    cooldown_seconds = 600,
+                    enabled = True,
+                    notification_channels=[NotificationChannel.EMAIL],
+                    escalation_rules=[
                     {
                         "after_minutes": 30,
-                        "severity": AlertSeverity.CRITICAL,
-                        "channels": [
+                            "severity": AlertSeverity.CRITICAL,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                ],
+                            }
                 ],
-                auto_resolve=True,
-                tags=["compliance", "governance", "audit"],
-            )
+                    auto_resolve = True,
+                    tags=["compliance", "governance", "audit"],
+                    )
         )
 
         # Health check rules
         self.register_alert_rule(
             AlertRule(
                 rule_id="service_unavailable",
-                name="Service Unavailable",
-                description="Critical service is unavailable",
-                category=AlertCategory.INFRASTRUCTURE,
-                severity=AlertSeverity.CRITICAL,
-                condition="availability < threshold",
-                threshold=self.config["availability_threshold_critical"],
-                duration_seconds=30,
-                cooldown_seconds=120,
-                enabled=True,
-                notification_channels=[
+                    name="Service Unavailable",
+                    description="Critical service is unavailable",
+                    category = AlertCategory.INFRASTRUCTURE,
+                    severity = AlertSeverity.CRITICAL,
+                    condition="availability < threshold",
+                    threshold = self.config["availability_threshold_critical"],
+                    duration_seconds = 30,
+                    cooldown_seconds = 120,
+                    enabled = True,
+                    notification_channels=[
                     NotificationChannel.EMAIL,
-                    NotificationChannel.SLACK,
-                ],
-                escalation_rules=[
+                        NotificationChannel.SLACK,
+                        ],
+                    escalation_rules=[
                     {
                         "after_minutes": 2,
-                        "severity": AlertSeverity.EMERGENCY,
-                        "channels": [
+                            "severity": AlertSeverity.EMERGENCY,
+                            "channels": [
                             NotificationChannel.EMAIL,
-                            NotificationChannel.SLACK,
-                            NotificationChannel.SMS,
-                        ],
-                    }
+                                NotificationChannel.SLACK,
+                                NotificationChannel.SMS,
+                                ],
+                            }
                 ],
-                auto_resolve=True,
-                tags=["infrastructure", "availability", "critical"],
-            )
+                    auto_resolve = True,
+                    tags=["infrastructure", "availability", "critical"],
+                    )
         )
+
 
     def _setup_notification_channels(self):
         """Setup notification channels"""
@@ -502,64 +511,68 @@ class AlertManager:
         if self.config["email_username"] and self.config["email_password"]:
             self.notification_channels[NotificationChannel.EMAIL] = {
                 "enabled": True,
-                "config": {
+                    "config": {
                     "smtp_server": self.config["email_smtp_server"],
-                    "smtp_port": self.config["email_smtp_port"],
-                    "username": self.config["email_username"],
-                    "password": self.config["email_password"],
-                    "from_email": self.config["email_from"],
-                    "to_emails": self.config["email_to"],
-                },
-            }
+                        "smtp_port": self.config["email_smtp_port"],
+                        "username": self.config["email_username"],
+                        "password": self.config["email_password"],
+                        "from_email": self.config["email_from"],
+                        "to_emails": self.config["email_to"],
+                        },
+                    }
 
         # Slack notification
         if self.config["slack_webhook_url"]:
             self.notification_channels[NotificationChannel.SLACK] = {
                 "enabled": True,
-                "config": {"webhook_url": self.config["slack_webhook_url"]},
-            }
+                    "config": {"webhook_url": self.config["slack_webhook_url"]},
+                    }
 
         # Discord notification
         if self.config["discord_webhook_url"]:
             self.notification_channels[NotificationChannel.DISCORD] = {
                 "enabled": True,
-                "config": {"webhook_url": self.config["discord_webhook_url"]},
-            }
+                    "config": {"webhook_url": self.config["discord_webhook_url"]},
+                    }
 
         # Webhook notifications
         if self.config["webhook_endpoints"]:
             self.notification_channels[NotificationChannel.WEBHOOK] = {
                 "enabled": True,
-                "config": {
+                    "config": {
                     "endpoints": [
                         url.strip()
                         for url in self.config["webhook_endpoints"]
                         if url.strip()
                     ]
                 },
-            }
+                    }
+
 
     def register_alert_rule(self, rule: AlertRule):
         """Register an alert rule"""
         self.alert_rules[rule.rule_id] = rule
         self.logger.info(f"Registered alert rule: {rule.rule_id}")
 
+
     def _start_monitoring(self):
         """Start the monitoring thread"""
         if not self.monitoring_active:
             self.monitoring_active = True
             self.monitoring_thread = threading.Thread(
-                target=self._monitoring_loop, daemon=True
+                target = self._monitoring_loop, daemon = True
             )
             self.monitoring_thread.start()
             self.logger.info("Alert monitoring started")
+
 
     def stop_monitoring(self):
         """Stop the monitoring thread"""
         self.monitoring_active = False
         if self.monitoring_thread:
-            self.monitoring_thread.join(timeout=5)
+            self.monitoring_thread.join(timeout = 5)
         self.logger.info("Alert monitoring stopped")
+
 
     def _monitoring_loop(self):
         """Main monitoring loop"""
@@ -579,7 +592,7 @@ class AlertManager:
                 # Process escalations
                 self._process_escalations()
 
-                # Auto-resolve alerts
+                # Auto - resolve alerts
                 self._auto_resolve_alerts()
 
                 # Cleanup old data
@@ -590,6 +603,7 @@ class AlertManager:
             except Exception as e:
                 self.logger.error(f"Error in monitoring loop: {str(e)}")
                 time.sleep(10)  # Wait before retrying
+
 
     def _collect_metrics(self):
         """Collect system and application metrics"""
@@ -618,21 +632,21 @@ class AlertManager:
                 if system_metrics.load_average:
                     self._store_metric(
                         "system.load_average_1m",
-                        system_metrics.load_average[0],
-                        current_time,
-                    )
+                            system_metrics.load_average[0],
+                            current_time,
+                            )
                     if len(system_metrics.load_average) > 1:
                         self._store_metric(
                             "system.load_average_5m",
-                            system_metrics.load_average[1],
-                            current_time,
-                        )
+                                system_metrics.load_average[1],
+                                current_time,
+                                )
                     if len(system_metrics.load_average) > 2:
                         self._store_metric(
                             "system.load_average_15m",
-                            system_metrics.load_average[2],
-                            current_time,
-                        )
+                                system_metrics.load_average[2],
+                                current_time,
+                                )
 
             # Collect application metrics
             if self.config["enable_application_monitoring"]:
@@ -646,14 +660,14 @@ class AlertManager:
                     )
                     self._store_metric(
                         "app.response_time_ms",
-                        app_metrics.response_time_ms,
-                        current_time,
-                    )
+                            app_metrics.response_time_ms,
+                            current_time,
+                            )
                     self._store_metric(
                         "app.active_connections",
-                        app_metrics.active_connections,
-                        current_time,
-                    )
+                            app_metrics.active_connections,
+                            current_time,
+                            )
                     self._store_metric(
                         "app.queue_size", app_metrics.queue_size, current_time
                     )
@@ -662,9 +676,9 @@ class AlertManager:
                     )
                     self._store_metric(
                         "app.database_connections",
-                        app_metrics.database_connections,
-                        current_time,
-                    )
+                            app_metrics.database_connections,
+                            current_time,
+                            )
 
             # Collect health metrics
             health_status = health_monitor.get_system_health()
@@ -673,37 +687,38 @@ class AlertManager:
             )
             self._store_metric(
                 "health.availability",
-                100.0 if health_status.status == HealthStatus.HEALTHY else 0.0,
-                current_time,
-            )
+                    100.0 if health_status.status == HealthStatus.HEALTHY else 0.0,
+                    current_time,
+                    )
 
             # Collect compliance metrics
             if self.config["enable_compliance_monitoring"]:
                 compliance_report = compliance_monitor.get_compliance_report()
                 self._store_metric(
                     "compliance.score",
-                    compliance_report["overall_compliance_score"],
-                    current_time,
-                )
+                        compliance_report["overall_compliance_score"],
+                        current_time,
+                        )
                 self._store_metric(
                     "compliance.violations",
-                    len(compliance_report["violations"]),
-                    current_time,
-                )
+                        len(compliance_report["violations"]),
+                        current_time,
+                        )
 
         except Exception as e:
             self.logger.error(f"Error collecting metrics: {str(e)}")
 
+
     def _collect_system_metrics(self) -> SystemMetrics:
         """Collect system performance metrics"""
         try:
-            cpu_percent = psutil.cpu_percent(interval=1)
+            cpu_percent = psutil.cpu_percent(interval = 1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
             network = psutil.net_io_counters()
             process_count = len(psutil.pids())
 
-            # Get load average (Unix-like systems)
+            # Get load average (Unix - like systems)
             load_average = []
             try:
                 load_average = list(os.getloadavg())
@@ -714,62 +729,64 @@ class AlertManager:
             uptime_seconds = time.time() - psutil.boot_time()
 
             return SystemMetrics(
-                cpu_percent=cpu_percent,
-                memory_percent=memory.percent,
-                disk_percent=disk.percent,
-                network_io={
+                cpu_percent = cpu_percent,
+                    memory_percent = memory.percent,
+                    disk_percent = disk.percent,
+                    network_io={
                     "bytes_sent": network.bytes_sent,
-                    "bytes_recv": network.bytes_recv,
-                    "packets_sent": network.packets_sent,
-                    "packets_recv": network.packets_recv,
-                },
-                process_count=process_count,
-                load_average=load_average,
-                uptime_seconds=uptime_seconds,
-                timestamp=time.time(),
-            )
+                        "bytes_recv": network.bytes_recv,
+                        "packets_sent": network.packets_sent,
+                        "packets_recv": network.packets_recv,
+                        },
+                    process_count = process_count,
+                    load_average = load_average,
+                    uptime_seconds = uptime_seconds,
+                    timestamp = time.time(),
+                    )
 
         except Exception as e:
             self.logger.error(f"Error collecting system metrics: {str(e)}")
             return SystemMetrics(
-                cpu_percent=0.0,
-                memory_percent=0.0,
-                disk_percent=0.0,
-                network_io={},
-                process_count=0,
-                load_average=[],
-                uptime_seconds=0.0,
-                timestamp=time.time(),
-            )
+                cpu_percent = 0.0,
+                    memory_percent = 0.0,
+                    disk_percent = 0.0,
+                    network_io={},
+                    process_count = 0,
+                    load_average=[],
+                    uptime_seconds = 0.0,
+                    timestamp = time.time(),
+                    )
+
 
     def _collect_application_metrics(self) -> Optional[ApplicationMetrics]:
-        """Collect application-specific metrics"""
+        """Collect application - specific metrics"""
         try:
             # This would typically integrate with your application's metrics endpoint
             # For now, return mock data or integrate with existing monitoring
 
             # Try to get metrics from health monitor
-            health_status = health_monitor.get_system_health()
+                health_status = health_monitor.get_system_health()
 
             return ApplicationMetrics(
-                request_count=0,  # Would come from web server metrics
-                error_count=0,  # Would come from error tracking
-                response_time_ms=health_status.response_time_ms,
-                active_connections=0,  # Would come from connection pool
-                queue_size=0,  # Would come from task queue
-                cache_hit_rate=0.0,  # Would come from cache metrics
-                database_connections=0,  # Would come from DB pool
-                timestamp=time.time(),
-            )
+                request_count = 0,  # Would come from web server metrics
+                error_count = 0,  # Would come from error tracking
+                response_time_ms = health_status.response_time_ms,
+                    active_connections = 0,  # Would come from connection pool
+                queue_size = 0,  # Would come from task queue
+                cache_hit_rate = 0.0,  # Would come from cache metrics
+                database_connections = 0,  # Would come from DB pool
+                timestamp = time.time(),
+                    )
 
         except Exception as e:
             self.logger.error(f"Error collecting application metrics: {str(e)}")
             return None
 
+
     def _store_metric(self, metric_name: str, value: float, timestamp: float):
         """Store a metric point"""
         metric_point = MetricPoint(
-            timestamp=timestamp, value=value, labels={"metric": metric_name}
+            timestamp = timestamp, value = value, labels={"metric": metric_name}
         )
 
         self.metrics_buffer[metric_name].append(metric_point)
@@ -781,6 +798,7 @@ class AlertManager:
             and self.metrics_buffer[metric_name][0].timestamp < cutoff_time
         ):
             self.metrics_buffer[metric_name].popleft()
+
 
     def _evaluate_alert_rules(self):
         """Evaluate all alert rules against current metrics"""
@@ -811,21 +829,22 @@ class AlertManager:
                         # Log alert creation
                         audit_logger.log_security_event(
                             event_type="alert_created",
-                            severity=rule.severity.value,
-                            additional_data={
+                                severity = rule.severity.value,
+                                additional_data={
                                 "alert_id": alert.alert_id,
-                                "rule_id": rule_id,
-                                "category": rule.category.value,
-                            },
-                        )
+                                    "rule_id": rule_id,
+                                    "category": rule.category.value,
+                                    },
+                                )
                 else:
-                    # Check if existing alert should be auto-resolved
+                    # Check if existing alert should be auto - resolved
                     existing_alert = self._get_active_alert(rule_id)
                     if existing_alert and rule.auto_resolve:
                         self._resolve_alert(existing_alert.alert_id, "auto_resolved")
 
             except Exception as e:
                 self.logger.error(f"Error evaluating rule {rule_id}: {str(e)}")
+
 
     def _evaluate_rule_condition(self, rule: AlertRule, current_time: float) -> bool:
         """Evaluate if a rule condition is met"""
@@ -839,12 +858,12 @@ class AlertManager:
             # Create a safe evaluation environment
             safe_globals = {
                 "__builtins__": {},
-                "abs": abs,
-                "min": min,
-                "max": max,
-                "round": round,
-                "len": len,
-            }
+                    "abs": abs,
+                    "min": min,
+                    "max": max,
+                    "round": round,
+                    "len": len,
+                    }
 
             result = eval(condition_code, safe_globals, context)
 
@@ -859,6 +878,7 @@ class AlertManager:
                 f"Error evaluating condition for rule {rule.rule_id}: {str(e)}"
             )
             return False
+
 
     def _build_evaluation_context(
         self, rule: AlertRule, current_time: float
@@ -915,11 +935,13 @@ class AlertManager:
 
         return context
 
+
     def _get_latest_metric_value(self, metric_name: str, default: float = 0.0) -> float:
         """Get the latest value for a metric"""
         if metric_name in self.metrics_buffer and self.metrics_buffer[metric_name]:
             return self.metrics_buffer[metric_name][-1].value
         return default
+
 
     def _check_condition_duration(
         self, rule: AlertRule, condition_met: bool, current_time: float
@@ -943,6 +965,7 @@ class AlertManager:
                 del self._rule_states[rule_state_key]
             return False
 
+
     def _is_rule_in_cooldown(self, rule_id: str, current_time: float) -> bool:
         """Check if rule is in cooldown period"""
         cooldown_key = f"cooldown_{rule_id}"
@@ -957,12 +980,14 @@ class AlertManager:
 
         return False
 
+
     def _get_active_alert(self, rule_id: str) -> Optional[Alert]:
         """Get active alert for a rule"""
         for alert in self.active_alerts.values():
             if alert.rule_id == rule_id and alert.status == AlertStatus.ACTIVE:
                 return alert
         return None
+
 
     def _create_alert(self, rule: AlertRule, current_time: float) -> Alert:
         """Create a new alert"""
@@ -973,28 +998,28 @@ class AlertManager:
         current_value = context.get(rule.condition.split()[0], 0.0)
 
         alert = Alert(
-            alert_id=alert_id,
-            rule_id=rule.rule_id,
-            title=rule.name,
-            description=rule.description,
-            category=rule.category,
-            severity=rule.severity,
-            status=AlertStatus.ACTIVE,
-            created_at=datetime.fromtimestamp(current_time).isoformat(),
-            updated_at=datetime.fromtimestamp(current_time).isoformat(),
-            resolved_at=None,
-            acknowledged_at=None,
-            acknowledged_by=None,
-            current_value=current_value,
-            threshold=rule.threshold,
-            metadata={
+            alert_id = alert_id,
+                rule_id = rule.rule_id,
+                title = rule.name,
+                description = rule.description,
+                category = rule.category,
+                severity = rule.severity,
+                status = AlertStatus.ACTIVE,
+                created_at = datetime.fromtimestamp(current_time).isoformat(),
+                updated_at = datetime.fromtimestamp(current_time).isoformat(),
+                resolved_at = None,
+                acknowledged_at = None,
+                acknowledged_by = None,
+                current_value = current_value,
+                threshold = rule.threshold,
+                metadata={
                 "rule_tags": rule.tags,
-                "evaluation_context": context,
-                "hostname": os.uname().nodename if hasattr(os, "uname") else "unknown",
-            },
-            notification_history=[],
-            escalation_level=0,
-        )
+                    "evaluation_context": context,
+                    "hostname": os.uname().nodename if hasattr(os, "uname") else "unknown",
+                    },
+                notification_history=[],
+                escalation_level = 0,
+                )
 
         # Update cooldown state
         if not hasattr(self, "_cooldown_states"):
@@ -1005,6 +1030,7 @@ class AlertManager:
         self.alert_counters[rule.rule_id] += 1
 
         return alert
+
 
     def _send_notifications(self, alert: Alert):
         """Send notifications for an alert"""
@@ -1021,10 +1047,10 @@ class AlertManager:
                     # Record notification attempt
                     notification_record = {
                         "channel": channel.value,
-                        "timestamp": datetime.now().isoformat(),
-                        "success": success,
-                        "attempt": 1,
-                    }
+                            "timestamp": datetime.now().isoformat(),
+                            "success": success,
+                            "attempt": 1,
+                            }
 
                     alert.notification_history.append(notification_record)
 
@@ -1038,6 +1064,7 @@ class AlertManager:
                 self.logger.error(
                     f"Error sending notification via {channel.value}: {str(e)}"
                 )
+
 
     def _send_notification(self, channel: NotificationChannel, alert: Alert) -> bool:
         """Send notification via specific channel"""
@@ -1059,6 +1086,7 @@ class AlertManager:
         except Exception as e:
             self.logger.error(f"Error in {channel.value} notification: {str(e)}")
             return False
+
 
     def _send_email_notification(self, alert: Alert) -> bool:
         """Send email notification"""
@@ -1085,7 +1113,7 @@ Created: {alert.created_at}
 Alert ID: {alert.alert_id}
 
 Metadata:
-{json.dumps(alert.metadata, indent=2)}
+{json.dumps(alert.metadata, indent = 2)}
 
 ---
 This is an automated alert from the monitoring system.
@@ -1096,7 +1124,7 @@ This is an automated alert from the monitoring system.
             # Send email
             context = ssl.create_default_context()
             with smtplib.SMTP(config["smtp_server"], config["smtp_port"]) as server:
-                server.starttls(context=context)
+                server.starttls(context = context)
                 server.login(config["username"], config["password"])
                 server.send_message(msg)
 
@@ -1106,6 +1134,7 @@ This is an automated alert from the monitoring system.
             self.logger.error(f"Failed to send email notification: {str(e)}")
             return False
 
+
     def _send_slack_notification(self, alert: Alert) -> bool:
         """Send Slack notification"""
         try:
@@ -1114,58 +1143,58 @@ This is an automated alert from the monitoring system.
             # Create Slack message
             color = {
                 AlertSeverity.INFO: "good",
-                AlertSeverity.WARNING: "warning",
-                AlertSeverity.ERROR: "danger",
-                AlertSeverity.CRITICAL: "danger",
-                AlertSeverity.EMERGENCY: "danger",
-            }.get(alert.severity, "warning")
+                    AlertSeverity.WARNING: "warning",
+                    AlertSeverity.ERROR: "danger",
+                    AlertSeverity.CRITICAL: "danger",
+                    AlertSeverity.EMERGENCY: "danger",
+                    }.get(alert.severity, "warning")
 
             payload = {
                 "text": f"Alert: {alert.title}",
-                "attachments": [
+                    "attachments": [
                     {
                         "color": color,
-                        "fields": [
+                            "fields": [
                             {
                                 "title": "Severity",
-                                "value": alert.severity.value.upper(),
-                                "short": True,
-                            },
-                            {
+                                    "value": alert.severity.value.upper(),
+                                    "short": True,
+                                    },
+                                {
                                 "title": "Category",
-                                "value": alert.category.value,
-                                "short": True,
-                            },
-                            {
+                                    "value": alert.category.value,
+                                    "short": True,
+                                    },
+                                {
                                 "title": "Current Value",
-                                "value": str(alert.current_value),
-                                "short": True,
-                            },
-                            {
+                                    "value": str(alert.current_value),
+                                    "short": True,
+                                    },
+                                {
                                 "title": "Threshold",
-                                "value": str(alert.threshold),
-                                "short": True,
-                            },
-                            {
+                                    "value": str(alert.threshold),
+                                    "short": True,
+                                    },
+                                {
                                 "title": "Description",
-                                "value": alert.description,
-                                "short": False,
-                            },
-                            {
+                                    "value": alert.description,
+                                    "short": False,
+                                    },
+                                {
                                 "title": "Alert ID",
-                                "value": alert.alert_id,
-                                "short": False,
-                            },
-                        ],
-                        "ts": int(time.time()),
-                    }
+                                    "value": alert.alert_id,
+                                    "short": False,
+                                    },
+                                ],
+                            "ts": int(time.time()),
+                            }
                 ],
-            }
+                    }
 
             # Send to Slack
             import requests
 
-            response = requests.post(config["webhook_url"], json=payload, timeout=10)
+            response = requests.post(config["webhook_url"], json = payload, timeout = 10)
             response.raise_for_status()
 
             return True
@@ -1173,6 +1202,7 @@ This is an automated alert from the monitoring system.
         except Exception as e:
             self.logger.error(f"Failed to send Slack notification: {str(e)}")
             return False
+
 
     def _send_discord_notification(self, alert: Alert) -> bool:
         """Send Discord notification"""
@@ -1192,45 +1222,45 @@ This is an automated alert from the monitoring system.
                 "embeds": [
                     {
                         "title": f"🚨 {alert.title}",
-                        "description": alert.description,
-                        "color": color,
-                        "fields": [
+                            "description": alert.description,
+                            "color": color,
+                            "fields": [
                             {
                                 "name": "Severity",
-                                "value": alert.severity.value.upper(),
-                                "inline": True,
-                            },
-                            {
+                                    "value": alert.severity.value.upper(),
+                                    "inline": True,
+                                    },
+                                {
                                 "name": "Category",
-                                "value": alert.category.value,
-                                "inline": True,
-                            },
-                            {
+                                    "value": alert.category.value,
+                                    "inline": True,
+                                    },
+                                {
                                 "name": "Current Value",
-                                "value": str(alert.current_value),
-                                "inline": True,
-                            },
-                            {
+                                    "value": str(alert.current_value),
+                                    "inline": True,
+                                    },
+                                {
                                 "name": "Threshold",
-                                "value": str(alert.threshold),
-                                "inline": True,
-                            },
-                            {
+                                    "value": str(alert.threshold),
+                                    "inline": True,
+                                    },
+                                {
                                 "name": "Alert ID",
-                                "value": f"`{alert.alert_id}`",
-                                "inline": False,
-                            },
-                        ],
-                        "timestamp": alert.created_at,
-                        "footer": {"text": "Monitoring System"},
-                    }
+                                    "value": f"`{alert.alert_id}`",
+                                    "inline": False,
+                                    },
+                                ],
+                            "timestamp": alert.created_at,
+                            "footer": {"text": "Monitoring System"},
+                            }
                 ]
             }
 
             # Send to Discord
             import requests
 
-            response = requests.post(config["webhook_url"], json=payload, timeout=10)
+            response = requests.post(config["webhook_url"], json = payload, timeout = 10)
             response.raise_for_status()
 
             return True
@@ -1238,6 +1268,7 @@ This is an automated alert from the monitoring system.
         except Exception as e:
             self.logger.error(f"Failed to send Discord notification: {str(e)}")
             return False
+
 
     def _send_webhook_notification(self, alert: Alert) -> bool:
         """Send webhook notification"""
@@ -1247,17 +1278,17 @@ This is an automated alert from the monitoring system.
             # Create webhook payload
             payload = {
                 "alert_id": alert.alert_id,
-                "rule_id": alert.rule_id,
-                "title": alert.title,
-                "description": alert.description,
-                "severity": alert.severity.value,
-                "category": alert.category.value,
-                "status": alert.status.value,
-                "current_value": alert.current_value,
-                "threshold": alert.threshold,
-                "created_at": alert.created_at,
-                "metadata": alert.metadata,
-            }
+                    "rule_id": alert.rule_id,
+                    "title": alert.title,
+                    "description": alert.description,
+                    "severity": alert.severity.value,
+                    "category": alert.category.value,
+                    "status": alert.status.value,
+                    "current_value": alert.current_value,
+                    "threshold": alert.threshold,
+                    "created_at": alert.created_at,
+                    "metadata": alert.metadata,
+                    }
 
             # Send to all webhook endpoints
             import requests
@@ -1266,7 +1297,7 @@ This is an automated alert from the monitoring system.
 
             for endpoint in config["endpoints"]:
                 try:
-                    response = requests.post(endpoint, json=payload, timeout=10)
+                    response = requests.post(endpoint, json = payload, timeout = 10)
                     response.raise_for_status()
                     success_count += 1
                 except Exception as e:
@@ -1277,6 +1308,7 @@ This is an automated alert from the monitoring system.
         except Exception as e:
             self.logger.error(f"Failed to send webhook notifications: {str(e)}")
             return False
+
 
     def _process_escalations(self):
         """Process alert escalations"""
@@ -1319,18 +1351,19 @@ This is an automated alert from the monitoring system.
                     # Log escalation
                     audit_logger.log_security_event(
                         event_type="alert_escalated",
-                        severity=alert.severity.value,
-                        additional_data={
+                            severity = alert.severity.value,
+                            additional_data={
                             "alert_id": alert.alert_id,
-                            "escalation_level": alert.escalation_level,
-                            "new_severity": alert.severity.value,
-                        },
-                    )
+                                "escalation_level": alert.escalation_level,
+                                "new_severity": alert.severity.value,
+                                },
+                            )
 
                     break
 
+
     def _auto_resolve_alerts(self):
-        """Auto-resolve alerts that meet resolution criteria"""
+        """Auto - resolve alerts that meet resolution criteria"""
         current_time = time.time()
 
         for alert_id, alert in list(self.active_alerts.items()):
@@ -1345,13 +1378,14 @@ This is an automated alert from the monitoring system.
             condition_met = self._evaluate_rule_condition(rule, current_time)
 
             if not condition_met:
-                # Check auto-resolve timeout
+                # Check auto - resolve timeout
                 alert_age_minutes = (
                     current_time - datetime.fromisoformat(alert.created_at).timestamp()
                 ) / 60
 
                 if alert_age_minutes >= self.config["auto_resolve_timeout_minutes"]:
                     self._resolve_alert(alert_id, "auto_resolved")
+
 
     def _resolve_alert(self, alert_id: str, resolved_by: str = "system"):
         """Resolve an alert"""
@@ -1368,19 +1402,20 @@ This is an automated alert from the monitoring system.
             # Log resolution
             audit_logger.log_security_event(
                 event_type="alert_resolved",
-                severity="info",
-                additional_data={
+                    severity="info",
+                    additional_data={
                     "alert_id": alert_id,
-                    "resolved_by": resolved_by,
-                    "duration_minutes": (
+                        "resolved_by": resolved_by,
+                        "duration_minutes": (
                         datetime.fromisoformat(alert.resolved_at).timestamp()
                         - datetime.fromisoformat(alert.created_at).timestamp()
                     )
                     / 60,
-                },
-            )
+                        },
+                    )
 
             self.logger.info(f"Alert {alert_id} resolved by {resolved_by}")
+
 
     def _cleanup_old_data(self):
         """Cleanup old alerts and metrics"""
@@ -1400,6 +1435,7 @@ This is an automated alert from the monitoring system.
         # Cleanup old metrics (already handled in _store_metric)
         pass
 
+
     def acknowledge_alert(self, alert_id: str, acknowledged_by: str) -> bool:
         """Acknowledge an alert"""
         if alert_id in self.active_alerts:
@@ -1412,24 +1448,27 @@ This is an automated alert from the monitoring system.
             # Log acknowledgment
             audit_logger.log_security_event(
                 event_type="alert_acknowledged",
-                severity="info",
-                additional_data={
+                    severity="info",
+                    additional_data={
                     "alert_id": alert_id,
-                    "acknowledged_by": acknowledged_by,
-                },
-            )
+                        "acknowledged_by": acknowledged_by,
+                        },
+                    )
 
             return True
 
         return False
 
+
     def get_active_alerts(self) -> List[Alert]:
         """Get all active alerts"""
         return list(self.active_alerts.values())
 
+
     def get_alert_history(self, limit: int = 100) -> List[Alert]:
         """Get alert history"""
         return list(self.alert_history)[-limit:]
+
 
     def get_monitoring_report(self) -> Dict[str, Any]:
         """Generate comprehensive monitoring report"""
@@ -1449,104 +1488,104 @@ This is an automated alert from the monitoring system.
         # Calculate alert statistics
         alert_stats = {
             "total_alerts_24h": len(recent_alerts),
-            "critical_alerts_24h": len(
+                "critical_alerts_24h": len(
                 [a for a in recent_alerts if a.severity == AlertSeverity.CRITICAL]
             ),
-            "active_alerts": len(self.active_alerts),
-            "acknowledged_alerts": len(
+                "active_alerts": len(self.active_alerts),
+                "acknowledged_alerts": len(
                 [
                     a
                     for a in self.active_alerts.values()
                     if a.status == AlertStatus.ACKNOWLEDGED
                 ]
             ),
-        }
+                }
 
         # Get current system status
         system_status = {
             "cpu_percent": self._get_latest_metric_value("system.cpu_percent"),
-            "memory_percent": self._get_latest_metric_value("system.memory_percent"),
-            "disk_percent": self._get_latest_metric_value("system.disk_percent"),
-            "uptime_hours": uptime_seconds / 3600,
-            "health_score": self._get_latest_metric_value("health.overall_score"),
-            "compliance_score": self._get_latest_metric_value("compliance.score"),
-        }
+                "memory_percent": self._get_latest_metric_value("system.memory_percent"),
+                "disk_percent": self._get_latest_metric_value("system.disk_percent"),
+                "uptime_hours": uptime_seconds / 3600,
+                "health_score": self._get_latest_metric_value("health.overall_score"),
+                "compliance_score": self._get_latest_metric_value("compliance.score"),
+                }
 
         return {
             "report_id": f"monitoring_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-            "timestamp": datetime.now().isoformat(),
-            "monitoring_status": {
+                "timestamp": datetime.now().isoformat(),
+                "monitoring_status": {
                 "active": self.monitoring_active,
-                "uptime_hours": uptime_seconds / 3600,
-                "last_metric_collection": datetime.fromtimestamp(
+                    "uptime_hours": uptime_seconds / 3600,
+                    "last_metric_collection": datetime.fromtimestamp(
                     self.last_metric_collection
                 ).isoformat(),
-            },
-            "system_status": system_status,
-            "alert_statistics": alert_stats,
-            "active_alerts": [asdict(alert) for alert in self.active_alerts.values()],
-            "notification_channels": {
+                    },
+                "system_status": system_status,
+                "alert_statistics": alert_stats,
+                "active_alerts": [asdict(alert) for alert in self.active_alerts.values()],
+                "notification_channels": {
                 channel.value: config["enabled"]
                 for channel, config in self.notification_channels.items()
             },
-            "alert_rules": {
+                "alert_rules": {
                 "total_rules": len(self.alert_rules),
-                "enabled_rules": len(
+                    "enabled_rules": len(
                     [r for r in self.alert_rules.values() if r.enabled]
                 ),
-                "rule_summary": {
+                    "rule_summary": {
                     rule_id: {
                         "name": rule.name,
-                        "enabled": rule.enabled,
-                        "severity": rule.severity.value,
-                        "category": rule.category.value,
-                    }
+                            "enabled": rule.enabled,
+                            "severity": rule.severity.value,
+                            "category": rule.category.value,
+                            }
                     for rule_id, rule in self.alert_rules.items()
                 },
-            },
-            "performance_metrics": {
+                    },
+                "performance_metrics": {
                 "metrics_collected": len(self.metrics_buffer),
-                "total_metric_points": sum(
+                    "total_metric_points": sum(
                     len(buffer) for buffer in self.metrics_buffer.values()
                 ),
-                "avg_evaluation_time_ms": 0,  # Would need to track this
+                    "avg_evaluation_time_ms": 0,  # Would need to track this
             },
-        }
-
+                }
 
 # Global alert manager instance
 alert_manager = AlertManager()
 
-
 # Convenience functions
+
+
 def create_custom_alert(
     title: str,
-    description: str,
-    severity: AlertSeverity,
-    category: AlertCategory = AlertCategory.APPLICATION,
+        description: str,
+        severity: AlertSeverity,
+        category: AlertCategory = AlertCategory.APPLICATION,
 ) -> str:
     """Create a custom alert"""
     alert_id = f"custom_{int(time.time())}"
 
     alert = Alert(
-        alert_id=alert_id,
-        rule_id="custom",
-        title=title,
-        description=description,
-        category=category,
-        severity=severity,
-        status=AlertStatus.ACTIVE,
-        created_at=datetime.now().isoformat(),
-        updated_at=datetime.now().isoformat(),
-        resolved_at=None,
-        acknowledged_at=None,
-        acknowledged_by=None,
-        current_value=0.0,
-        threshold=0.0,
-        metadata={"custom": True},
-        notification_history=[],
-        escalation_level=0,
-    )
+        alert_id = alert_id,
+            rule_id="custom",
+            title = title,
+            description = description,
+            category = category,
+            severity = severity,
+            status = AlertStatus.ACTIVE,
+            created_at = datetime.now().isoformat(),
+            updated_at = datetime.now().isoformat(),
+            resolved_at = None,
+            acknowledged_at = None,
+            acknowledged_by = None,
+            current_value = 0.0,
+            threshold = 0.0,
+            metadata={"custom": True},
+            notification_history=[],
+            escalation_level = 0,
+            )
 
     alert_manager.active_alerts[alert_id] = alert
     alert_manager._send_notifications(alert)
@@ -1558,11 +1597,11 @@ def get_system_health_summary() -> Dict[str, Any]:
     """Get system health summary"""
     return {
         "cpu_percent": alert_manager._get_latest_metric_value("system.cpu_percent"),
-        "memory_percent": alert_manager._get_latest_metric_value(
+            "memory_percent": alert_manager._get_latest_metric_value(
             "system.memory_percent"
         ),
-        "disk_percent": alert_manager._get_latest_metric_value("system.disk_percent"),
-        "health_score": alert_manager._get_latest_metric_value("health.overall_score"),
-        "active_alerts": len(alert_manager.active_alerts),
-        "monitoring_active": alert_manager.monitoring_active,
-    }
+            "disk_percent": alert_manager._get_latest_metric_value("system.disk_percent"),
+            "health_score": alert_manager._get_latest_metric_value("health.overall_score"),
+            "active_alerts": len(alert_manager.active_alerts),
+            "monitoring_active": alert_manager.monitoring_active,
+            }

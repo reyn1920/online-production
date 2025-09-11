@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Submit Strategic Project Request to Task Queue
 
@@ -35,35 +35,35 @@ def main():
     # Define the strategic project task
     task_payload = {
         "task_id": "project_q4_2025_launch",
-        "target_agent": "PlannerAgent",
-        "task_type": "STRATEGIC_PROJECT_EXECUTION",
-        "priority": "HIGHEST",
-        "payload": {
+            "target_agent": "PlannerAgent",
+            "task_type": "STRATEGIC_PROJECT_EXECUTION",
+            "priority": "HIGHEST",
+            "payload": {
             "goal": "Initiate the 'Right Perspective Q4 2025' content strategy.",
-            "instructions": [
+                "instructions": [
                 "1. Task the ResearchAgent to identify the top 5 trending political topics from the last 72 hours based on its RSS feeds.",
-                "2. From those topics, task the ContentAgent to generate three distinct video script outlines.",
-                "3. Task the AuditorAgent to review the outlines for compliance with the 'RightPerspectiveFirewall'.",
-                "4. Select the highest-scoring outline and task the VideoCreator to produce a 2-minute video.",
-                "5. Task the MarketingAgent to schedule the final video for publication on YouTube and draft a promotional tweet.",
-            ],
-        },
-        "status": "pending",
-    }
+                    "2. From those topics, task the ContentAgent to generate three distinct video script outlines.",
+                    "3. Task the AuditorAgent to review the outlines for compliance with the 'RightPerspectiveFirewall'.",
+                    "4. Select the highest - scoring outline and task the VideoCreator to produce a 2 - minute video.",
+                    "5. Task the MarketingAgent to schedule the final video for publication on YouTube and draft a promotional tweet.",
+                    ],
+                },
+            "status": "pending",
+            }
 
     try:
         # Submit task to queue
         task_id = task_manager.add_task(
-            task_type=TaskType.WORKFLOW,
-            payload=task_payload,
-            priority=TaskPriority.URGENT,
-            assigned_agent="planner",
-            metadata={
+            task_type = TaskType.WORKFLOW,
+                payload = task_payload,
+                priority = TaskPriority.URGENT,
+                assigned_agent="planner",
+                metadata={
                 "project_name": "Right Perspective Q4 2025",
-                "initiated_by": "strategic_request",
-                "timestamp": datetime.now().isoformat(),
-            },
-        )
+                    "initiated_by": "strategic_request",
+                    "timestamp": datetime.now().isoformat(),
+                    },
+                )
 
         logger.info(f"Strategic project task submitted successfully with ID: {task_id}")
         print(f"✅ Strategic project task submitted successfully!")
@@ -77,7 +77,6 @@ def main():
         logger.error(f"Failed to submit strategic project task: {e}")
         print(f"❌ Failed to submit task: {e}")
         return None
-
 
 if __name__ == "__main__":
     main()

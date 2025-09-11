@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Test Avatar Generation Functionality
 
@@ -16,7 +16,7 @@ sys.path.insert(0, str(project_root))
 
 # Set minimal environment variables
 os.environ["ENVIRONMENT"] = "development"
-os.environ["SECRET_KEY"] = "test-secret-key-for-avatar-testing-only"
+os.environ["SECRET_KEY"] = "test - secret - key - for - avatar - testing - only"
 os.environ["DEBUG"] = "true"
 
 try:
@@ -74,16 +74,16 @@ async def test_avatar_generation():
     test_text = "Hello, this is a test of the avatar generation system."
     voice_settings = {
         "voice_style": "neutral",
-        "speed": 1.0,
-        "pitch": 1.0,
-        "volume": 1.0,
-    }
+            "speed": 1.0,
+            "pitch": 1.0,
+            "volume": 1.0,
+            }
     video_settings = {
         "avatar_style": "professional",
-        "duration": 5,
-        "resolution": "720p",
-        "fps": 25,
-    }
+            "duration": 5,
+            "resolution": "720p",
+            "fps": 25,
+            }
 
     try:
         result = await generate_avatar(test_text, voice_settings, video_settings)
@@ -154,7 +154,6 @@ def main():
 
         print(f"📊 Full traceback: {traceback.format_exc()}")
         return 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TRAE.AI Base Agentic Framework
 
@@ -30,7 +30,7 @@ from typing import Any, Dict, List, Optional, Union
 from utils.logger import PerformanceTimer, get_logger
 
 from backend.agents.base44_agent_protocol import (AgentMode, Base44AgentProtocol,
-                                                  ConfirmationLevel, TaskContext)
+    ConfirmationLevel, TaskContext)
 from backend.integrations.ollama_integration import OllamaIntegration
 # Import utilities
 from backend.secret_store import SecretStore
@@ -80,13 +80,14 @@ class BaseAgent(Base44AgentProtocol):
     that all agents in the TRAE.AI system must implement.
     """
 
+
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         """
         Initialize the base agent.
 
         Args:
             agent_id: Unique identifier for the agent
-            name: Human-readable name for the agent
+            name: Human - readable name for the agent
         """
         self.agent_id = agent_id or str(uuid.uuid4())
         self.name = name or self.__class__.__name__
@@ -96,10 +97,10 @@ class BaseAgent(Base44AgentProtocol):
         self.task_history: List[Dict[str, Any]] = []
         self.performance_metrics: Dict[str, Any] = {
             "tasks_completed": 0,
-            "tasks_failed": 0,
-            "average_execution_time": 0.0,
-            "success_rate": 0.0,
-        }
+                "tasks_failed": 0,
+                "average_execution_time": 0.0,
+                "success_rate": 0.0,
+                }
 
         # Initialize logger and secret store
         self.logger = get_logger(f"agent.{self.name.lower()}")
@@ -116,6 +117,8 @@ class BaseAgent(Base44AgentProtocol):
 
     @property
     @abc.abstractmethod
+
+
     def capabilities(self) -> List[AgentCapability]:
         """
         Return the list of capabilities this agent possesses.
@@ -126,18 +129,23 @@ class BaseAgent(Base44AgentProtocol):
         pass
 
     @property
+
+
     def is_busy(self) -> bool:
         """Check if the agent is currently busy."""
         return self.status not in [
             AgentStatus.IDLE,
-            AgentStatus.COMPLETED,
-            AgentStatus.FAILED,
-        ]
+                AgentStatus.COMPLETED,
+                AgentStatus.FAILED,
+                ]
 
     @property
+
+
     def uptime(self) -> float:
         """Get the agent's uptime in seconds."""
         return (datetime.now() - self.created_at).total_seconds()
+
 
     def _load_configuration(self) -> Dict[str, Any]:
         """Load configuration from state.json with caching."""
@@ -160,6 +168,7 @@ class BaseAgent(Base44AgentProtocol):
             self.logger.error(f"Error loading configuration: {e}")
             return self._get_default_config()
 
+
     def _should_reload_config(self) -> bool:
         """Check if configuration should be reloaded based on file modification time."""
         if self._config_last_loaded is None:
@@ -171,18 +180,20 @@ class BaseAgent(Base44AgentProtocol):
         except OSError:
             return True
 
+
     def _get_default_config(self) -> Dict[str, Any]:
         """Return default configuration when config file is unavailable."""
         return {
             "go_live": False,
-            "master_automation": False,
-            "toggles": {
+                "master_automation": False,
+                "toggles": {
                 "channels": {"enabled": False},
-                "monetization": {"enabled": False},
-                "syndication": {"enabled": False},
-                "autonomous_directives": {"enabled": False},
-            },
-        }
+                    "monetization": {"enabled": False},
+                    "syndication": {"enabled": False},
+                    "autonomous_directives": {"enabled": False},
+                    },
+                }
+
 
     def is_action_allowed(self, action_type: str, specific_action: str = None) -> bool:
         """Check if a specific action is allowed based on current configuration."""
@@ -198,10 +209,10 @@ class BaseAgent(Base44AgentProtocol):
         # Check go_live switch for production actions
         if action_type in [
             "publish",
-            "deploy",
-            "monetize",
-            "syndicate",
-        ] and not config.get("go_live", False):
+                "deploy",
+                "monetize",
+                "syndicate",
+                ] and not config.get("go_live", False):
             self.logger.debug(f"Action {action_type} blocked: go_live is disabled")
             return False
 
@@ -210,14 +221,14 @@ class BaseAgent(Base44AgentProtocol):
 
         action_toggle_map = {
             "channel": "channels",
-            "monetization": "monetization",
-            "monetize": "monetization",
-            "syndication": "syndication",
-            "syndicate": "syndication",
-            "autonomous": "autonomous_directives",
-            "content_creation": "autonomous_directives",
-            "marketing": "autonomous_directives",
-        }
+                "monetization": "monetization",
+                "monetize": "monetization",
+                "syndication": "syndication",
+                "syndicate": "syndication",
+                "autonomous": "autonomous_directives",
+                "content_creation": "autonomous_directives",
+                "marketing": "autonomous_directives",
+                }
 
         toggle_key = action_toggle_map.get(action_type)
         if toggle_key and toggle_key in toggles:
@@ -229,6 +240,7 @@ class BaseAgent(Base44AgentProtocol):
 
         self.logger.debug(f"Action {action_type} allowed")
         return True
+
 
     def update_status(self, status: AgentStatus, message: Optional[str] = None):
         """
@@ -250,13 +262,14 @@ class BaseAgent(Base44AgentProtocol):
 
         self.logger.info(log_message)
 
+
     def record_task_completion(
         self,
-        task_id: str,
-        success: bool,
-        execution_time: float,
-        details: Optional[Dict] = None,
-    ):
+            task_id: str,
+            success: bool,
+            execution_time: float,
+            details: Optional[Dict] = None,
+            ):
         """
         Record the completion of a task for performance tracking.
 
@@ -268,11 +281,11 @@ class BaseAgent(Base44AgentProtocol):
         """
         task_record = {
             "task_id": task_id,
-            "success": success,
-            "execution_time": execution_time,
-            "timestamp": datetime.now().isoformat(),
-            "details": details or {},
-        }
+                "success": success,
+                "execution_time": execution_time,
+                "timestamp": datetime.now().isoformat(),
+                "details": details or {},
+                }
 
         self.task_history.append(task_record)
 
@@ -303,6 +316,7 @@ class BaseAgent(Base44AgentProtocol):
             f"Task {task_id} recorded: success={success}, time={execution_time:.2f}s"
         )
 
+
     def get_performance_summary(self) -> Dict[str, Any]:
         """
         Get a summary of the agent's performance metrics.
@@ -312,13 +326,14 @@ class BaseAgent(Base44AgentProtocol):
         """
         return {
             "agent_id": self.agent_id,
-            "agent_name": self.name,
-            "status": self.status.value,
-            "uptime_seconds": self.uptime,
-            "capabilities": [cap.value for cap in self.capabilities],
-            "performance_metrics": self.performance_metrics.copy(),
-            "recent_tasks": self.task_history[-10:] if self.task_history else [],
-        }
+                "agent_name": self.name,
+                "status": self.status.value,
+                "uptime_seconds": self.uptime,
+                "capabilities": [cap.value for cap in self.capabilities],
+                "performance_metrics": self.performance_metrics.copy(),
+                "recent_tasks": self.task_history[-10:] if self.task_history else [],
+                }
+
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -332,18 +347,20 @@ class BaseAgent(Base44AgentProtocol):
         """
         # Create task context for Base44 protocol
         task_context = TaskContext(
-            task_id=task.get("id", str(uuid.uuid4())),
-            task_type=task.get("type", "unknown"),
-            priority=task.get("priority", "medium"),
-            requires_confirmation=task.get("requires_confirmation", False),
-            confirmation_level=task.get("confirmation_level", ConfirmationLevel.NONE),
-            metadata=task.get("metadata", {}),
-        )
+            task_id = task.get("id", str(uuid.uuid4())),
+                task_type = task.get("type", "unknown"),
+                priority = task.get("priority", "medium"),
+                requires_confirmation = task.get("requires_confirmation", False),
+                confirmation_level = task.get("confirmation_level", ConfirmationLevel.NONE),
+                metadata = task.get("metadata", {}),
+                )
 
         # Use Base44 protocol to process the task
         return await self.process_task_with_protocol(task, task_context)
 
     @abc.abstractmethod
+
+
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
@@ -360,6 +377,8 @@ class BaseAgent(Base44AgentProtocol):
         pass
 
     @abc.abstractmethod
+
+
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
         """
         Rephrase task for confirmation (Base44 protocol requirement).
@@ -374,6 +393,8 @@ class BaseAgent(Base44AgentProtocol):
         pass
 
     @abc.abstractmethod
+
+
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
     ) -> bool:
@@ -390,8 +411,10 @@ class BaseAgent(Base44AgentProtocol):
         """
         pass
 
+
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.name}, {self.status.value})"
+
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(agent_id='{self.agent_id}', name='{self.name}', status='{self.status.value}')"
@@ -407,133 +430,137 @@ class PlannerAgent(BaseAgent):
     - Decide: Formulate strategic plans and tactical decisions
     - Act: Populate task_queue with specific jobs for other agents
 
-    The OODA loop enables rapid, adaptive decision-making in dynamic environments.
+    The OODA loop enables rapid, adaptive decision - making in dynamic environments.
     """
+
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "PlannerAgent")
         self.planning_strategies: Dict[str, Any] = {
             "default": "sequential",
-            "parallel_threshold": 3,
-            "priority_weighting": True,
-        }
+                "parallel_threshold": 3,
+                "priority_weighting": True,
+                }
 
         # Sovereign Engine Workflow Automation
         self.workflow_automation = {
             "active_workflows": {},
-            "behavioral_triggers": {},
-            "customer_journeys": {},
-            "automation_rules": {
+                "behavioral_triggers": {},
+                "customer_journeys": {},
+                "automation_rules": {
                 "new_subscriber_sequence": {
                     "enabled": True,
-                    "tasks": [
+                        "tasks": [
                         {
                             "type": "SEND_EMAIL",
-                            "template": "welcome_email_1",
-                            "delay_hours": 0,
-                        },
-                        {
+                                "template": "welcome_email_1",
+                                "delay_hours": 0,
+                                },
+                            {
                             "type": "SEND_EMAIL",
-                            "template": "follow_up_1",
-                            "delay_hours": 48,
-                        },
-                        {
+                                "template": "follow_up_1",
+                                "delay_hours": 48,
+                                },
+                            {
                             "type": "SEND_EMAIL",
-                            "template": "affiliate_offer",
-                            "delay_hours": 120,
+                                "template": "affiliate_offer",
+                                "delay_hours": 120,
+                                },
+                            ],
                         },
-                    ],
-                },
-                "product_click_followup": {
+                    "product_click_followup": {
                     "enabled": True,
-                    "trigger": "affiliate_link_click",
-                    "tasks": [
+                        "trigger": "affiliate_link_click",
+                        "tasks": [
                         {
                             "type": "SEND_EMAIL",
-                            "template": "product_guide",
-                            "delay_hours": 2,
-                        }
+                                "template": "product_guide",
+                                "delay_hours": 2,
+                                }
                     ],
-                },
-            },
-        }
+                        },
+                    },
+                }
 
         # RSS Intelligence Integration
         self.rss_intelligence = {
             "trending_topics": [],
-            "topic_momentum": {},
-            "content_opportunities": [],
-            "last_intelligence_update": None,
-            "intelligence_refresh_interval": 1800,  # 30 minutes
+                "topic_momentum": {},
+                "content_opportunities": [],
+                "last_intelligence_update": None,
+                "intelligence_refresh_interval": 1800,  # 30 minutes
         }
 
         # Dynamic Content Scheduling
         self.content_scheduling = {
             "base_schedule": {},
-            "dynamic_adjustments": [],
-            "trend_multipliers": {},
-            "scheduling_rules": {
+                "dynamic_adjustments": [],
+                "trend_multipliers": {},
+                "scheduling_rules": {
                 "high_momentum_boost": 2.0,
-                "trending_topic_priority": "high",
-                "min_trend_score": 0.7,
-            },
-        }
+                    "trending_topic_priority": "high",
+                    "min_trend_score": 0.7,
+                    },
+                }
 
         # OODA Loop state management
         self.ooda_state = {
             "current_phase": "observe",  # observe, orient, decide, act
             "cycle_count": 0,
-            "last_cycle_time": None,
-            "cycle_duration": 3600,  # 1 hour default cycle
+                "last_cycle_time": None,
+                "cycle_duration": 3600,  # 1 hour default cycle
             "observations": [],
-            "orientation_data": {},
-            "observation_history": [],
-            "decisions": [],
-            "actions_taken": [],
-        }
+                "orientation_data": {},
+                "observation_history": [],
+                "decisions": [],
+                "actions_taken": [],
+                }
 
         # Strategic context
         self.strategic_context = {
             "market_conditions": {},
-            "competitive_landscape": {},
-            "resource_availability": {},
-            "performance_metrics": {},
-            "risk_assessment": {},
-            "opportunity_matrix": {},
-        }
+                "competitive_landscape": {},
+                "resource_availability": {},
+                "performance_metrics": {},
+                "risk_assessment": {},
+                "opportunity_matrix": {},
+                }
 
         # Planning templates and frameworks
         self.planning_frameworks = {
             "content_calendar": self._create_content_calendar_template(),
-            "marketing_campaign": self._create_marketing_campaign_template(),
-            "research_agenda": self._create_research_agenda_template(),
-            "quality_assurance": self._create_qa_template(),
-        }
+                "marketing_campaign": self._create_marketing_campaign_template(),
+                "research_agenda": self._create_research_agenda_template(),
+                "quality_assurance": self._create_qa_template(),
+                }
 
         # Active plans and history
         self.active_plans: Dict[str, Dict[str, Any]] = {}
         self.planning_history: List[Dict[str, Any]] = []
 
         # Initialize database connection for workflow automation
-        self.db_path = "data/trae_master.db"
+        self.db_path = "data / trae_master.db"
 
         # Initialize Ollama integration for political neutrality vetting
         try:
             ollama_config = {
                 "ollama_endpoint": "http://localhost:11434",
-                "default_model": "llama2:7b",
-                "max_concurrent_requests": 3,
-                "cache_enabled": True,
-                "cache_ttl": 1800,
-            }
+                    "default_model": "llama2:7b",
+                    "max_concurrent_requests": 3,
+                    "cache_enabled": True,
+                    "cache_ttl": 1800,
+                    }
             self.ollama = OllamaIntegration(ollama_config)
         except Exception as e:
             logger.warning(f"Failed to initialize Ollama integration: {e}")
             self.ollama = None
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [AgentCapability.PLANNING]
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -554,11 +581,11 @@ class PlannerAgent(BaseAgent):
         if not self.is_action_allowed("autonomous_planning"):
             return {
                 "success": False,
-                "error": "Autonomous planning is disabled in configuration",
-                "planning_time": 0,
-                "agent_id": self.agent_id,
-                "task_id": context.task_id,
-            }
+                    "error": "Autonomous planning is disabled in configuration",
+                    "planning_time": 0,
+                    "agent_id": self.agent_id,
+                    "task_id": context.task_id,
+                    }
 
         try:
             self.update_status(AgentStatus.PLANNING, f"Planning task {context.task_id}")
@@ -581,16 +608,16 @@ class PlannerAgent(BaseAgent):
 
                 result = {
                     "success": True,
-                    "plan": plan,
-                    "validation": validation_result,
-                    "planning_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                }
+                        "plan": plan,
+                        "validation": validation_result,
+                        "planning_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        }
 
                 self.update_status(
                     AgentStatus.COMPLETED,
-                    f"Planning completed for task {context.task_id}",
-                )
+                        f"Planning completed for task {context.task_id}",
+                        )
                 self.record_task_completion(
                     context.task_id, True, time.time() - start_time, result
                 )
@@ -600,10 +627,10 @@ class PlannerAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "error": str(e),
-                "planning_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-            }
+                    "error": str(e),
+                    "planning_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    }
 
             self.logger.error(f"Planning failed for task {context.task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Planning failed: {e}")
@@ -612,6 +639,7 @@ class PlannerAgent(BaseAgent):
             )
 
             return error_result
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
         """
@@ -627,7 +655,7 @@ class PlannerAgent(BaseAgent):
         requirements = task.get("requirements", {})
         task_type = task.get("type", "planning")
 
-        # Generate human-readable description of the planning task
+        # Generate human - readable description of the planning task
         description = (
             f"I will create a {task_type} plan with the following requirements:\n"
         )
@@ -643,9 +671,10 @@ class PlannerAgent(BaseAgent):
         if "channel" in requirements:
             description += f"- Channel: {requirements['channel']}\n"
 
-        description += f"\nThis plan will include step-by-step execution instructions with priority level: {context.priority}"
+        description += f"\nThis plan will include step - by - step execution instructions with priority level: {context.priority}"
 
         return description
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
@@ -669,20 +698,21 @@ class PlannerAgent(BaseAgent):
             # Check if content type is mentioned if present
             requirements.get("content_type", "") == ""
             or requirements["content_type"].lower() in rephrased.lower(),
-            # Check if target audience is mentioned if present
+                # Check if target audience is mentioned if present
             requirements.get("target_audience", "") == ""
             or requirements["target_audience"].lower() in rephrased.lower(),
-            # Check if task type is mentioned
+                # Check if task type is mentioned
             original_task.get("type", "planning").lower() in rephrased.lower(),
-            # Check if priority is mentioned
+                # Check if priority is mentioned
             context.priority.lower() in rephrased.lower(),
-            # Check if channel is mentioned if present
+                # Check if channel is mentioned if present
             requirements.get("channel", "") == ""
             or requirements["channel"].lower() in rephrased.lower(),
-        ]
+                ]
 
         # Return True if at least 75% of checks pass
         return sum(accuracy_checks) >= len(accuracy_checks) * 0.75
+
 
     async def _create_execution_plan(
         self, requirements: Dict[str, Any], priority: TaskPriority
@@ -700,15 +730,15 @@ class PlannerAgent(BaseAgent):
         # Placeholder implementation - to be expanded based on specific requirements
         plan = {
             "id": str(uuid.uuid4()),
-            "created_at": datetime.now().isoformat(),
-            "priority": priority.value,
-            "requirements": requirements,
-            "steps": [],
-            "estimated_duration": 0,
-            "required_agents": [],
-            "dependencies": [],
-            "resources": [],
-        }
+                "created_at": datetime.now().isoformat(),
+                "priority": priority.value,
+                "requirements": requirements,
+                "steps": [],
+                "estimated_duration": 0,
+                "required_agents": [],
+                "dependencies": [],
+                "resources": [],
+                }
 
         # Analyze requirements and create steps
         task_type = requirements.get("type", "generic")
@@ -731,23 +761,23 @@ class PlannerAgent(BaseAgent):
             plan["steps"] = [
                 {
                     "id": 1,
-                    "action": "research_topic",
-                    "agent": "ResearchAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "research_topic",
+                        "agent": "ResearchAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 2,
-                    "action": "create_content",
-                    "agent": "ContentAgent",
-                    "duration": 600,
-                },
-                {
+                        "action": "create_content",
+                        "agent": "ContentAgent",
+                        "duration": 600,
+                        },
+                    {
                     "id": 3,
-                    "action": "quality_check",
-                    "agent": "QAAgent",
-                    "duration": 180,
-                },
-            ]
+                        "action": "quality_check",
+                        "agent": "QAAgent",
+                        "duration": 180,
+                        },
+                    ]
             plan["required_agents"] = ["ResearchAgent", "ContentAgent", "QAAgent"]
             plan["estimated_duration"] = 1080
 
@@ -756,36 +786,36 @@ class PlannerAgent(BaseAgent):
             plan["steps"] = [
                 {
                     "id": 1,
-                    "action": "research_topic",
-                    "agent": "ResearchAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "research_topic",
+                        "agent": "ResearchAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 2,
-                    "action": "create_product",
-                    "agent": "ContentAgent",
-                    "duration": 1200,
-                },
-                {
+                        "action": "create_product",
+                        "agent": "ContentAgent",
+                        "duration": 1200,
+                        },
+                    {
                     "id": 3,
-                    "action": "quality_check",
-                    "agent": "QAAgent",
-                    "duration": 180,
-                },
-                {
+                        "action": "quality_check",
+                        "agent": "QAAgent",
+                        "duration": 180,
+                        },
+                    {
                     "id": 4,
-                    "action": "generate_marketing_package",
-                    "agent": "MarketingAgent",
-                    "duration": 600,
-                    "marketing_type": "ecommerce_marketing",
-                },
-            ]
+                        "action": "generate_marketing_package",
+                        "agent": "MarketingAgent",
+                        "duration": 600,
+                        "marketing_type": "ecommerce_marketing",
+                        },
+                    ]
             plan["required_agents"] = [
                 "ResearchAgent",
-                "ContentAgent",
-                "QAAgent",
-                "MarketingAgent",
-            ]
+                    "ContentAgent",
+                    "QAAgent",
+                    "MarketingAgent",
+                    ]
             plan["estimated_duration"] = 2280
             plan["monetization_enabled"] = True
             plan["auto_marketing"] = True
@@ -794,23 +824,23 @@ class PlannerAgent(BaseAgent):
             plan["steps"] = [
                 {
                     "id": 1,
-                    "action": "system_check",
-                    "agent": "SystemAgent",
-                    "duration": 120,
-                },
-                {
+                        "action": "system_check",
+                        "agent": "SystemAgent",
+                        "duration": 120,
+                        },
+                    {
                     "id": 2,
-                    "action": "perform_maintenance",
-                    "agent": "SystemAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "perform_maintenance",
+                        "agent": "SystemAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 3,
-                    "action": "verify_system",
-                    "agent": "SystemAgent",
-                    "duration": 60,
-                },
-            ]
+                        "action": "verify_system",
+                        "agent": "SystemAgent",
+                        "duration": 60,
+                        },
+                    ]
             plan["required_agents"] = ["SystemAgent"]
             plan["estimated_duration"] = 480
 
@@ -819,28 +849,29 @@ class PlannerAgent(BaseAgent):
             plan["steps"] = [
                 {
                     "id": 1,
-                    "action": "analyze_task",
-                    "agent": "SystemAgent",
-                    "duration": 60,
-                },
-                {
+                        "action": "analyze_task",
+                        "agent": "SystemAgent",
+                        "duration": 60,
+                        },
+                    {
                     "id": 2,
-                    "action": "execute_task",
-                    "agent": "ExecutorAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "execute_task",
+                        "agent": "ExecutorAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 3,
-                    "action": "audit_result",
-                    "agent": "AuditorAgent",
-                    "duration": 120,
-                },
-            ]
+                        "action": "audit_result",
+                        "agent": "AuditorAgent",
+                        "duration": 120,
+                        },
+                    ]
             plan["required_agents"] = ["SystemAgent", "ExecutorAgent", "AuditorAgent"]
             plan["estimated_duration"] = 480
 
         self.logger.info(f"Created execution plan with {len(plan['steps'])} steps")
         return plan
+
 
     async def _create_protected_right_perspective_plan(
         self, requirements: Dict[str, Any], priority: TaskPriority
@@ -850,7 +881,7 @@ class PlannerAgent(BaseAgent):
 
         This method enforces the specific workflow sequence:
         1. breaking_news_watcher.py (trigger content based on breaking news)
-        2. evidence table in right_perspective.db (require facts/receipts)
+        2. evidence table in right_perspective.db (require facts / receipts)
         3. humor_style_db.py (inject unique tone and style)
 
         This workflow is LOCKED and cannot be modified by system agents.
@@ -867,90 +898,91 @@ class PlannerAgent(BaseAgent):
 
         plan = {
             "id": str(uuid.uuid4()),
-            "created_at": datetime.now().isoformat(),
-            "priority": priority.value,
-            "requirements": requirements,
-            "channel": "The Right Perspective",
-            "protected_channel": True,
-            "locked_workflow": True,
-            "modification_prohibited": True,
-            "steps": [
+                "created_at": datetime.now().isoformat(),
+                "priority": priority.value,
+                "requirements": requirements,
+                "channel": "The Right Perspective",
+                "protected_channel": True,
+                "locked_workflow": True,
+                "modification_prohibited": True,
+                "steps": [
                 {
                     "id": 1,
-                    "action": "trigger_breaking_news_analysis",
-                    "agent": "ResearchAgent",
-                    "tool": "breaking_news_watcher.py",
-                    "duration": 300,
-                    "description": "Monitor breaking news and identify content opportunities",
-                    "protected": True,
-                    "required": True,
-                },
-                {
+                        "action": "trigger_breaking_news_analysis",
+                        "agent": "ResearchAgent",
+                        "tool": "breaking_news_watcher.py",
+                        "duration": 300,
+                        "description": "Monitor breaking news and identify content opportunities",
+                        "protected": True,
+                        "required": True,
+                        },
+                    {
                     "id": 2,
-                    "action": "gather_evidence_receipts",
-                    "agent": "ResearchAgent",
-                    "tool": "right_perspective.db:evidence",
-                    "duration": 240,
-                    "description": "Collect factual evidence and receipts from database",
-                    "protected": True,
-                    "required": True,
-                    "validation": "evidence_required",
-                },
-                {
+                        "action": "gather_evidence_receipts",
+                        "agent": "ResearchAgent",
+                        "tool": "right_perspective.db:evidence",
+                        "duration": 240,
+                        "description": "Collect factual evidence and receipts from database",
+                        "protected": True,
+                        "required": True,
+                        "validation": "evidence_required",
+                        },
+                    {
                     "id": 3,
-                    "action": "generate_humor_style_content",
-                    "agent": "ContentAgent",
-                    "tool": "humor_style_db.py",
-                    "duration": 420,
-                    "description": "Generate witty/sarcastic banter using protected humor styles",
-                    "protected": True,
-                    "required": True,
-                    "persona_lock": "The Right Perspective Host",
-                },
-                {
+                        "action": "generate_humor_style_content",
+                        "agent": "ContentAgent",
+                        "tool": "humor_style_db.py",
+                        "duration": 420,
+                        "description": "Generate witty / sarcastic banter using protected humor styles",
+                        "protected": True,
+                        "required": True,
+                        "persona_lock": "The Right Perspective Host",
+                        },
+                    {
                     "id": 4,
-                    "action": "protected_quality_check",
-                    "agent": "QAAgent",
-                    "duration": 180,
-                    "description": "Validate content maintains The Right Perspective formula",
-                    "protected": True,
-                    "validation_rules": [
+                        "action": "protected_quality_check",
+                        "agent": "QAAgent",
+                        "duration": 180,
+                        "description": "Validate content maintains The Right Perspective formula",
+                        "protected": True,
+                        "validation_rules": [
                         "tone_consistency",
-                        "evidence_integration",
-                        "humor_style_compliance",
+                            "evidence_integration",
+                            "humor_style_compliance",
+                            ],
+                        },
                     ],
-                },
-            ],
-            "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
-            "estimated_duration": 1140,
-            "dependencies": [
+                "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
+                "estimated_duration": 1140,
+                "dependencies": [
                 {"from_step": 1, "to_step": 2, "type": "sequential"},
-                {"from_step": 2, "to_step": 3, "type": "sequential"},
-                {"from_step": 3, "to_step": 4, "type": "sequential"},
-            ],
-            "resources": [
+                    {"from_step": 2, "to_step": 3, "type": "sequential"},
+                    {"from_step": 3, "to_step": 4, "type": "sequential"},
+                    ],
+                "resources": [
                 "breaking_news_watcher.py",
-                "right_perspective.db",
-                "humor_style_db.py",
-            ],
-            "protection_rules": {
+                    "right_perspective.db",
+                    "humor_style_db.py",
+                    ],
+                "protection_rules": {
                 "workflow_modification": "PROHIBITED",
-                "step_reordering": "PROHIBITED",
-                "agent_substitution": "PROHIBITED",
-                "persona_modification": "PROHIBITED",
-                "cross_promotion": "PROHIBITED",
-            },
-            "validation_checkpoints": [
+                    "step_reordering": "PROHIBITED",
+                    "agent_substitution": "PROHIBITED",
+                    "persona_modification": "PROHIBITED",
+                    "cross_promotion": "PROHIBITED",
+                    },
+                "validation_checkpoints": [
                 {"step": 2, "requirement": "evidence_data_present"},
-                {"step": 3, "requirement": "humor_style_applied"},
-                {"step": 4, "requirement": "tone_consistency_verified"},
-            ],
-        }
+                    {"step": 3, "requirement": "humor_style_applied"},
+                    {"step": 4, "requirement": "tone_consistency_verified"},
+                    ],
+                }
 
         self.logger.info(
             "PROTECTED CHANNEL: Locked workflow created for The Right Perspective"
         )
         return plan
+
 
     async def _validate_right_perspective_protection(self) -> bool:
         """
@@ -963,7 +995,7 @@ class PlannerAgent(BaseAgent):
             import sqlite3
             from pathlib import Path
 
-            db_path = Path("./data/right_perspective.db")
+            db_path = Path("./data / right_perspective.db")
             if not db_path.exists():
                 self.logger.error("PROTECTION BREACH: right_perspective.db not found")
                 return False
@@ -989,7 +1021,7 @@ class PlannerAgent(BaseAgent):
                 )
                 result = cursor.fetchone()
 
-                if not result or "PROTECTED READ-ONLY PERSONA" not in result[0]:
+                if not result or "PROTECTED READ - ONLY PERSONA" not in result[0]:
                     self.logger.error(
                         "PROTECTION BREACH: The Right Perspective persona protection compromised"
                     )
@@ -1006,16 +1038,18 @@ class PlannerAgent(BaseAgent):
             )
             return False
 
+
     def _observe_for_planning(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
         """OODA Loop - Observe phase: Gather relevant data for planning."""
         observations = {
             "requirements": requirements,
-            "system_state": self._get_system_state(),
-            "resource_availability": self._assess_resource_availability(),
-            "current_workload": len(self.active_plans),
-            "timestamp": datetime.now().isoformat(),
-        }
+                "system_state": self._get_system_state(),
+                "resource_availability": self._assess_resource_availability(),
+                "current_workload": len(self.active_plans),
+                "timestamp": datetime.now().isoformat(),
+                }
         return observations
+
 
     def _orient_planning_context(
         self, observations: Dict[str, Any], requirements: Dict[str, Any]
@@ -1023,12 +1057,13 @@ class PlannerAgent(BaseAgent):
         """OODA Loop - Orient phase: Analyze and synthesize information."""
         orientation = {
             "task_complexity": self._assess_task_complexity(requirements),
-            "resource_constraints": self._identify_constraints(observations),
-            "strategic_alignment": self._check_strategic_alignment(requirements),
-            "risk_factors": self._identify_risks(requirements, observations),
-            "opportunities": self._identify_opportunities(requirements, observations),
-        }
+                "resource_constraints": self._identify_constraints(observations),
+                "strategic_alignment": self._check_strategic_alignment(requirements),
+                "risk_factors": self._identify_risks(requirements, observations),
+                "opportunities": self._identify_opportunities(requirements, observations),
+                }
         return orientation
+
 
     def _decide_plan_structure(
         self, orientation: Dict[str, Any], requirements: Dict[str, Any]
@@ -1041,76 +1076,77 @@ class PlannerAgent(BaseAgent):
             tasks = [
                 {
                     "id": 1,
-                    "action": "research_topic",
-                    "agent": "ResearchAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "research_topic",
+                        "agent": "ResearchAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 2,
-                    "action": "create_content",
-                    "agent": "ContentAgent",
-                    "duration": 600,
-                },
-                {
+                        "action": "create_content",
+                        "agent": "ContentAgent",
+                        "duration": 600,
+                        },
+                    {
                     "id": 3,
-                    "action": "quality_check",
-                    "agent": "QAAgent",
-                    "duration": 180,
-                },
-            ]
+                        "action": "quality_check",
+                        "agent": "QAAgent",
+                        "duration": 180,
+                        },
+                    ]
             duration = 1080
         elif task_type == "system_maintenance":
             tasks = [
                 {
                     "id": 1,
-                    "action": "system_check",
-                    "agent": "SystemAgent",
-                    "duration": 120,
-                },
-                {
+                        "action": "system_check",
+                        "agent": "SystemAgent",
+                        "duration": 120,
+                        },
+                    {
                     "id": 2,
-                    "action": "perform_maintenance",
-                    "agent": "SystemAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "perform_maintenance",
+                        "agent": "SystemAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 3,
-                    "action": "verify_system",
-                    "agent": "SystemAgent",
-                    "duration": 60,
-                },
-            ]
+                        "action": "verify_system",
+                        "agent": "SystemAgent",
+                        "duration": 60,
+                        },
+                    ]
             duration = 480
         else:
             tasks = [
                 {
                     "id": 1,
-                    "action": "analyze_task",
-                    "agent": "SystemAgent",
-                    "duration": 60,
-                },
-                {
+                        "action": "analyze_task",
+                        "agent": "SystemAgent",
+                        "duration": 60,
+                        },
+                    {
                     "id": 2,
-                    "action": "execute_task",
-                    "agent": "ExecutorAgent",
-                    "duration": 300,
-                },
-                {
+                        "action": "execute_task",
+                        "agent": "ExecutorAgent",
+                        "duration": 300,
+                        },
+                    {
                     "id": 3,
-                    "action": "audit_result",
-                    "agent": "AuditorAgent",
-                    "duration": 120,
-                },
-            ]
+                        "action": "audit_result",
+                        "agent": "AuditorAgent",
+                        "duration": 120,
+                        },
+                    ]
             duration = 480
 
         decisions = {
             "tasks": tasks,
-            "dependencies": self._calculate_dependencies(tasks),
-            "duration": duration,
-            "execution_strategy": "sequential" if complexity == "high" else "parallel",
-        }
+                "dependencies": self._calculate_dependencies(tasks),
+                "duration": duration,
+                "execution_strategy": "sequential" if complexity == "high" else "parallel",
+                }
         return decisions
+
 
     def _get_system_state(self) -> Dict[str, Any]:
         """Get current system state for observation."""
@@ -1120,7 +1156,7 @@ class PlannerAgent(BaseAgent):
 
         try:
             # Get actual system metrics
-            cpu_percent = psutil.cpu_percent(interval=1)
+            cpu_percent = psutil.cpu_percent(interval = 1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
 
@@ -1147,27 +1183,28 @@ class PlannerAgent(BaseAgent):
                 "active_agents": len(
                     [agent for agent in getattr(self, "_active_agents", [])]
                 ),
-                "system_load": cpu_percent / 100.0,
-                "load_category": load_category,
-                "available_resources": resources,
-                "memory_usage_percent": memory.percent,
-                "memory_available_gb": round(memory_available_gb, 2),
-                "disk_usage_percent": (disk.used / disk.total) * 100,
-                "disk_free_gb": round(disk_free_gb, 2),
-                "cpu_count": psutil.cpu_count(),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "system_load": cpu_percent / 100.0,
+                    "load_category": load_category,
+                    "available_resources": resources,
+                    "memory_usage_percent": memory.percent,
+                    "memory_available_gb": round(memory_available_gb, 2),
+                    "disk_usage_percent": (disk.used / disk.total) * 100,
+                    "disk_free_gb": round(disk_free_gb, 2),
+                    "cpu_count": psutil.cpu_count(),
+                    "timestamp": datetime.now().isoformat(),
+                    }
         except Exception as e:
             self.logger.warning(f"Failed to get system state: {e}")
             # Fallback to basic info
             return {
                 "active_agents": 1,
-                "system_load": 0.5,
-                "load_category": "medium",
-                "available_resources": "medium",
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "system_load": 0.5,
+                    "load_category": "medium",
+                    "available_resources": "medium",
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     def _assess_resource_availability(self) -> Dict[str, Any]:
         """Assess available resources for planning."""
@@ -1175,7 +1212,7 @@ class PlannerAgent(BaseAgent):
 
         try:
             # Get system resource information
-            cpu_percent = psutil.cpu_percent(interval=0.1)
+            cpu_percent = psutil.cpu_percent(interval = 0.1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
 
@@ -1220,33 +1257,34 @@ class PlannerAgent(BaseAgent):
 
             return {
                 "compute_resources": compute_status,
-                "memory_resources": memory_status,
-                "storage": storage_status,
-                "agent_capacity": agent_capacity,
-                "cpu_usage_percent": cpu_percent,
-                "memory_usage_percent": memory.percent,
-                "disk_usage_percent": (disk.used / disk.total) * 100,
-                "active_tasks": active_tasks,
-                "max_concurrent_tasks": max_concurrent,
-                "can_accept_new_tasks": active_tasks < max_concurrent,
-                "resource_score": self._calculate_resource_score(
+                    "memory_resources": memory_status,
+                    "storage": storage_status,
+                    "agent_capacity": agent_capacity,
+                    "cpu_usage_percent": cpu_percent,
+                    "memory_usage_percent": memory.percent,
+                    "disk_usage_percent": (disk.used / disk.total) * 100,
+                    "active_tasks": active_tasks,
+                    "max_concurrent_tasks": max_concurrent,
+                    "can_accept_new_tasks": active_tasks < max_concurrent,
+                    "resource_score": self._calculate_resource_score(
                     cpu_percent, memory.percent, (disk.used / disk.total) * 100
                 ),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "timestamp": datetime.now().isoformat(),
+                    }
         except Exception as e:
             self.logger.warning(f"Failed to assess resource availability: {e}")
             # Fallback assessment
             return {
                 "compute_resources": "available",
-                "memory_resources": "adequate",
-                "storage": "sufficient",
-                "agent_capacity": "medium",
-                "can_accept_new_tasks": True,
-                "resource_score": 0.7,
-                "error": str(e),
-                "timestamp": datetime.now().isoformat(),
-            }
+                    "memory_resources": "adequate",
+                    "storage": "sufficient",
+                    "agent_capacity": "medium",
+                    "can_accept_new_tasks": True,
+                    "resource_score": 0.7,
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                    }
+
 
     def _calculate_resource_score(
         self, cpu_percent: float, memory_percent: float, disk_percent: float
@@ -1260,6 +1298,7 @@ class PlannerAgent(BaseAgent):
         # Weighted average (CPU and memory are more important for agent tasks)
         return cpu_score * 0.4 + memory_score * 0.4 + disk_score * 0.2
 
+
     def _assess_task_complexity(self, requirements: Dict[str, Any]) -> str:
         """Assess the complexity of the task."""
         task_type = requirements.get("type", "generic")
@@ -1270,6 +1309,7 @@ class PlannerAgent(BaseAgent):
         else:
             return "low"
 
+
     def _identify_constraints(self, observations: Dict[str, Any]) -> List[str]:
         """Identify resource and operational constraints."""
         constraints = []
@@ -1277,15 +1317,17 @@ class PlannerAgent(BaseAgent):
             constraints.append("high_workload")
         return constraints
 
+
     def _check_strategic_alignment(
         self, requirements: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Check alignment with strategic objectives."""
         return {
             "aligned": True,
-            "strategic_value": "medium",
-            "business_impact": "positive",
-        }
+                "strategic_value": "medium",
+                "business_impact": "positive",
+                }
+
 
     def _identify_risks(
         self, requirements: Dict[str, Any], observations: Dict[str, Any]
@@ -1296,11 +1338,12 @@ class PlannerAgent(BaseAgent):
             risks.append(
                 {
                     "type": "time_pressure",
-                    "severity": "high",
-                    "mitigation": "allocate_additional_resources",
-                }
+                        "severity": "high",
+                        "mitigation": "allocate_additional_resources",
+                        }
             )
         return risks
+
 
     def _identify_opportunities(
         self, requirements: Dict[str, Any], observations: Dict[str, Any]
@@ -1311,11 +1354,12 @@ class PlannerAgent(BaseAgent):
             opportunities.append(
                 {
                     "type": "parallel_execution",
-                    "benefit": "faster_completion",
-                    "feasibility": "high",
-                }
+                        "benefit": "faster_completion",
+                        "feasibility": "high",
+                        }
             )
         return opportunities
+
 
     def _calculate_dependencies(
         self, tasks: List[Dict[str, Any]]
@@ -1328,51 +1372,56 @@ class PlannerAgent(BaseAgent):
             )
         return dependencies
 
+
     def _create_content_calendar_template(self) -> Dict[str, Any]:
         """Create content calendar planning template."""
         return {
             "type": "content_calendar",
-            "phases": ["research", "creation", "review", "publication"],
-            "default_duration": 2400,  # 40 minutes
+                "phases": ["research", "creation", "review", "publication"],
+                "default_duration": 2400,  # 40 minutes
             "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
-        }
+                }
+
 
     def _create_marketing_campaign_template(self) -> Dict[str, Any]:
         """Create marketing campaign planning template."""
         return {
             "type": "marketing_campaign",
-            "phases": ["strategy", "content_creation", "execution", "analysis"],
-            "default_duration": 7200,  # 2 hours
+                "phases": ["strategy", "content_creation", "execution", "analysis"],
+                "default_duration": 7200,  # 2 hours
             "required_agents": [
                 "PlannerAgent",
-                "ContentAgent",
-                "MarketingAgent",
-                "AnalyticsAgent",
-            ],
-        }
+                    "ContentAgent",
+                    "MarketingAgent",
+                    "AnalyticsAgent",
+                    ],
+                }
+
 
     def _create_research_agenda_template(self) -> Dict[str, Any]:
         """Create research agenda planning template."""
         return {
             "type": "research_agenda",
-            "phases": [
+                "phases": [
                 "topic_identification",
-                "data_gathering",
-                "analysis",
-                "reporting",
-            ],
-            "default_duration": 3600,  # 1 hour
+                    "data_gathering",
+                    "analysis",
+                    "reporting",
+                    ],
+                "default_duration": 3600,  # 1 hour
             "required_agents": ["ResearchAgent", "AnalyticsAgent"],
-        }
+                }
+
 
     def _create_qa_template(self) -> Dict[str, Any]:
         """Create quality assurance planning template."""
         return {
             "type": "quality_assurance",
-            "phases": ["preparation", "testing", "validation", "reporting"],
-            "default_duration": 1800,  # 30 minutes
+                "phases": ["preparation", "testing", "validation", "reporting"],
+                "default_duration": 1800,  # 30 minutes
             "required_agents": ["QAAgent", "AuditorAgent"],
-        }
+                }
+
 
     def create_plan(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
         """Create an execution plan based on requirements using OODA loop methodology."""
@@ -1385,35 +1434,36 @@ class PlannerAgent(BaseAgent):
 
         plan = {
             "id": plan_id,
-            "requirements": requirements,
-            "created_at": datetime.now().isoformat(),
-            "status": "draft",
-            "tasks": decisions.get("tasks", []),
-            "dependencies": decisions.get("dependencies", []),
-            "estimated_duration": decisions.get("duration", 0),
-            "priority": requirements.get("priority", "medium"),
-            "ooda_context": {
+                "requirements": requirements,
+                "created_at": datetime.now().isoformat(),
+                "status": "draft",
+                "tasks": decisions.get("tasks", []),
+                "dependencies": decisions.get("dependencies", []),
+                "estimated_duration": decisions.get("duration", 0),
+                "priority": requirements.get("priority", "medium"),
+                "ooda_context": {
                 "observations": observations,
-                "orientation": orientation,
-                "decisions": decisions,
-            },
-        }
+                    "orientation": orientation,
+                    "decisions": decisions,
+                    },
+                }
 
         # Add to active plans
         self.active_plans[plan_id] = plan
         self.planning_history.append(
             {
                 "action": "plan_created",
-                "plan_id": plan_id,
-                "timestamp": datetime.now().isoformat(),
-                "ooda_cycle": self.ooda_state["cycle_count"],
-            }
+                    "plan_id": plan_id,
+                    "timestamp": datetime.now().isoformat(),
+                    "ooda_cycle": self.ooda_state["cycle_count"],
+                    }
         )
 
         self.logger.info(
-            f"Created OODA-based plan {plan_id} with {len(plan['tasks'])} tasks"
+            f"Created OODA - based plan {plan_id} with {len(plan['tasks'])} tasks"
         )
         return plan
+
 
     def execute_ooda_cycle(self, task_queue_manager) -> Dict[str, Any]:
         """
@@ -1451,12 +1501,12 @@ class PlannerAgent(BaseAgent):
 
             cycle_result = {
                 "cycle_id": self.ooda_state["cycle_count"],
-                "duration": (datetime.now() - cycle_start).total_seconds(),
-                "observations_count": len(observations),
-                "decisions_made": len(decisions),
-                "actions_taken": len(actions),
-                "status": "completed",
-            }
+                    "duration": (datetime.now() - cycle_start).total_seconds(),
+                    "observations_count": len(observations),
+                    "decisions_made": len(decisions),
+                    "actions_taken": len(actions),
+                    "status": "completed",
+                    }
 
             self.logger.info(
                 f"OODA cycle {self.ooda_state['cycle_count']} completed in {cycle_result['duration']:.2f}s"
@@ -1467,9 +1517,10 @@ class PlannerAgent(BaseAgent):
             self.logger.error(f"OODA cycle failed: {str(e)}")
             return {
                 "cycle_id": self.ooda_state["cycle_count"],
-                "status": "failed",
-                "error": str(e),
-            }
+                    "status": "failed",
+                    "error": str(e),
+                    }
+
 
     def _observe_system_state(self, task_queue_manager) -> Dict[str, Any]:
         """
@@ -1477,14 +1528,14 @@ class PlannerAgent(BaseAgent):
         """
         observations = {
             "timestamp": datetime.now().isoformat(),
-            "observation_id": str(uuid.uuid4()),
-            "task_queue_status": self._observe_task_queue(task_queue_manager),
-            "agent_performance": self._observe_agent_performance(),
-            "system_metrics": self._observe_system_metrics(),
-            "market_conditions": self._observe_market_conditions(),
-            "content_performance": self._observe_content_performance(),
-            "resource_utilization": self._observe_resource_utilization(),
-        }
+                "observation_id": str(uuid.uuid4()),
+                "task_queue_status": self._observe_task_queue(task_queue_manager),
+                "agent_performance": self._observe_agent_performance(),
+                "system_metrics": self._observe_system_metrics(),
+                "market_conditions": self._observe_market_conditions(),
+                "content_performance": self._observe_content_performance(),
+                "resource_utilization": self._observe_resource_utilization(),
+                }
 
         # Update OODA state with observations
         self.ooda_state["last_observation"] = observations
@@ -1498,30 +1549,32 @@ class PlannerAgent(BaseAgent):
 
         return observations
 
+
     def _orient_strategic_context(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """
         OODA Loop - Orient: Analyze observations and update strategic context.
         """
         orientation = {
             "situation_assessment": self._assess_current_situation(observations),
-            "trend_analysis": self._analyze_trends(observations),
-            "opportunity_identification": self._identify_strategic_opportunities(
+                "trend_analysis": self._analyze_trends(observations),
+                "opportunity_identification": self._identify_strategic_opportunities(
                 observations
             ),
-            "threat_assessment": self._assess_threats(observations),
-            "resource_optimization": self._optimize_resource_allocation(observations),
-            "performance_gaps": self._identify_performance_gaps(observations),
-        }
+                "threat_assessment": self._assess_threats(observations),
+                "resource_optimization": self._optimize_resource_allocation(observations),
+                "performance_gaps": self._identify_performance_gaps(observations),
+                }
 
         # Update strategic context
         self.strategic_context.update(
             {
                 "last_updated": datetime.now().isoformat(),
-                "orientation_data": orientation,
-            }
+                    "orientation_data": orientation,
+                    }
         )
 
         return orientation
+
 
     def _decide_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1532,7 +1585,7 @@ class PlannerAgent(BaseAgent):
         decision_id = str(uuid.uuid4())
         decisions = []
 
-        # Research-driven decisions
+        # Research - driven decisions
         research_decisions = self._decide_research_actions(orientation, observations)
         decisions.extend(research_decisions)
 
@@ -1561,10 +1614,10 @@ class PlannerAgent(BaseAgent):
         # Store decision in OODA state
         self.ooda_state["last_decision"] = {
             "id": decision_id,
-            "timestamp": datetime.now().isoformat(),
-            "decisions_count": len(decisions),
-            "decision_types": list(set([d.get("type", "unknown") for d in decisions])),
-        }
+                "timestamp": datetime.now().isoformat(),
+                "decisions_count": len(decisions),
+                "decision_types": list(set([d.get("type", "unknown") for d in decisions])),
+                }
 
         # Maintain decision history (last 5 decisions)
         if "decision_history" not in self.ooda_state:
@@ -1574,6 +1627,7 @@ class PlannerAgent(BaseAgent):
             self.ooda_state["decision_history"].pop(0)
 
         return decisions
+
 
     def _act_on_decisions(
         self, decisions: List[Dict[str, Any]], task_queue_manager
@@ -1586,21 +1640,21 @@ class PlannerAgent(BaseAgent):
         for decision in decisions:
             try:
                 task_id = task_queue_manager.create_task(
-                    task_type=decision["task_type"],
-                    priority=decision.get("priority", "medium"),
-                    payload=decision["payload"],
-                    assigned_agent=decision.get("assigned_agent"),
-                    scheduled_at=decision.get("scheduled_at"),
-                )
+                    task_type = decision["task_type"],
+                        priority = decision.get("priority", "medium"),
+                        payload = decision["payload"],
+                        assigned_agent = decision.get("assigned_agent"),
+                        scheduled_at = decision.get("scheduled_at"),
+                        )
 
                 actions_taken.append(
                     {
                         "decision_id": decision.get("id"),
-                        "task_id": task_id,
-                        "action_type": decision["task_type"],
-                        "status": "created",
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "task_id": task_id,
+                            "action_type": decision["task_type"],
+                            "status": "created",
+                            "timestamp": datetime.now().isoformat(),
+                            }
                 )
 
             except Exception as e:
@@ -1610,36 +1664,39 @@ class PlannerAgent(BaseAgent):
                 actions_taken.append(
                     {
                         "decision_id": decision.get("id"),
-                        "status": "failed",
-                        "error": str(e),
-                        "timestamp": datetime.now().isoformat(),
-                    }
+                            "status": "failed",
+                            "error": str(e),
+                            "timestamp": datetime.now().isoformat(),
+                            }
                 )
 
         return actions_taken
 
     # OODA Loop Supporting Methods
+
+
     def _observe_task_queue(self, task_queue_manager) -> Dict[str, Any]:
         """Observe current task queue status."""
         try:
             pending_tasks = task_queue_manager.get_tasks(status="pending")
             in_progress_tasks = task_queue_manager.get_tasks(status="in_progress")
-            completed_tasks = task_queue_manager.get_tasks(status="completed", limit=50)
+            completed_tasks = task_queue_manager.get_tasks(status="completed", limit = 50)
 
             return {
                 "pending_count": len(pending_tasks),
-                "in_progress_count": len(in_progress_tasks),
-                "completed_today": len(
+                    "in_progress_count": len(in_progress_tasks),
+                    "completed_today": len(
                     [
                         t
                         for t in completed_tasks
                         if self._is_today(t.get("completed_at"))
                     ]
                 ),
-                "queue_health": "healthy" if len(pending_tasks) < 20 else "congested",
-            }
+                    "queue_health": "healthy" if len(pending_tasks) < 20 else "congested",
+                    }
         except Exception as e:
             return {"error": str(e), "status": "unavailable"}
+
 
     def _observe_agent_performance(self) -> Dict[str, Any]:
         """Observe agent performance metrics."""
@@ -1647,17 +1704,19 @@ class PlannerAgent(BaseAgent):
             "active_agents": 5,  # Placeholder
             "average_task_completion_time": 300,  # 5 minutes
             "success_rate": 0.95,
-            "bottlenecks": [],
-        }
+                "bottlenecks": [],
+                }
+
 
     def _observe_system_metrics(self) -> Dict[str, Any]:
         """Observe system performance metrics."""
         return {
             "cpu_usage": 0.6,
-            "memory_usage": 0.4,
-            "disk_usage": 0.3,
-            "network_latency": 50,  # ms
+                "memory_usage": 0.4,
+                "disk_usage": 0.3,
+                "network_latency": 50,  # ms
         }
+
 
     def _observe_market_conditions(self) -> Dict[str, Any]:
         """Observe market and competitive conditions including RSS intelligence."""
@@ -1668,27 +1727,30 @@ class PlannerAgent(BaseAgent):
             "trending_topics": rss_intelligence.get(
                 "trending_topics", ["AI", "automation", "productivity"]
             ),
-            "topic_momentum": rss_intelligence.get("topic_momentum", {}),
-            "content_opportunities": rss_intelligence.get("content_opportunities", []),
-            "competitor_activity": "moderate",
-            "market_sentiment": "positive",
-        }
+                "topic_momentum": rss_intelligence.get("topic_momentum", {}),
+                "content_opportunities": rss_intelligence.get("content_opportunities", []),
+                "competitor_activity": "moderate",
+                "market_sentiment": "positive",
+                }
+
 
     def _observe_content_performance(self) -> Dict[str, Any]:
         """Observe content performance metrics."""
         return {
             "recent_engagement": 0.8,
-            "content_quality_score": 0.9,
-            "publication_frequency": "optimal",
-        }
+                "content_quality_score": 0.9,
+                "publication_frequency": "optimal",
+                }
+
 
     def _observe_resource_utilization(self) -> Dict[str, Any]:
         """Observe resource utilization."""
         return {
             "compute_resources": "available",
-            "storage_capacity": "sufficient",
-            "api_quotas": "within_limits",
-        }
+                "storage_capacity": "sufficient",
+                "api_quotas": "within_limits",
+                }
+
 
     def _assess_current_situation(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """Assess the current operational situation."""
@@ -1703,17 +1765,19 @@ class PlannerAgent(BaseAgent):
 
         return {
             "overall_status": situation,
-            "priority_areas": ["task_queue_management", "resource_optimization"],
-            "immediate_actions_needed": situation != "normal",
-        }
+                "priority_areas": ["task_queue_management", "resource_optimization"],
+                "immediate_actions_needed": situation != "normal",
+                }
+
 
     def _analyze_trends(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze trends from observations."""
         return {
             "task_completion_trend": "stable",
-            "resource_usage_trend": "increasing",
-            "content_performance_trend": "improving",
-        }
+                "resource_usage_trend": "increasing",
+                "content_performance_trend": "improving",
+                }
+
 
     def _identify_strategic_opportunities(
         self, observations: Dict[str, Any]
@@ -1726,13 +1790,14 @@ class PlannerAgent(BaseAgent):
             opportunities.append(
                 {
                     "type": "content_opportunity",
-                    "description": "Create AI-focused content",
-                    "priority": "high",
-                    "estimated_impact": "high",
-                }
+                        "description": "Create AI - focused content",
+                        "priority": "high",
+                        "estimated_impact": "high",
+                        }
             )
 
         return opportunities
+
 
     def _assess_threats(self, observations: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Assess potential threats."""
@@ -1743,13 +1808,14 @@ class PlannerAgent(BaseAgent):
             threats.append(
                 {
                     "type": "operational_threat",
-                    "description": "Task queue congestion",
-                    "severity": "medium",
-                    "mitigation": "increase_processing_capacity",
-                }
+                        "description": "Task queue congestion",
+                        "severity": "medium",
+                        "mitigation": "increase_processing_capacity",
+                        }
             )
 
         return threats
+
 
     def _optimize_resource_allocation(
         self, observations: Dict[str, Any]
@@ -1757,9 +1823,10 @@ class PlannerAgent(BaseAgent):
         """Optimize resource allocation based on observations."""
         return {
             "recommended_adjustments": [],
-            "priority_reallocation": "content_creation",
-            "efficiency_improvements": ["parallel_processing"],
-        }
+                "priority_reallocation": "content_creation",
+                "efficiency_improvements": ["parallel_processing"],
+                }
+
 
     def _identify_performance_gaps(
         self, observations: Dict[str, Any]
@@ -1772,13 +1839,14 @@ class PlannerAgent(BaseAgent):
             gaps.append(
                 {
                     "area": "agent_reliability",
-                    "current_performance": agent_performance.get("success_rate"),
-                    "target_performance": 0.95,
-                    "improvement_actions": ["error_handling_enhancement"],
-                }
+                        "current_performance": agent_performance.get("success_rate"),
+                        "target_performance": 0.95,
+                        "improvement_actions": ["error_handling_enhancement"],
+                        }
             )
 
         return gaps
+
 
     def _decide_research_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1791,15 +1859,15 @@ class PlannerAgent(BaseAgent):
             decisions.append(
                 {
                     "id": f"research_{len(decisions) + 1}",
-                    "task_type": "research",
-                    "priority": "high",
-                    "payload": {
+                        "task_type": "research",
+                        "priority": "high",
+                        "payload": {
                         "action": "monitor_breaking_news",
-                        "focus_sectors": orientation.get("target_markets", []),
-                        "alert_threshold": 0.8,
-                    },
-                    "assigned_agent": "ResearchAgent",
-                }
+                            "focus_sectors": orientation.get("target_markets", []),
+                            "alert_threshold": 0.8,
+                            },
+                        "assigned_agent": "ResearchAgent",
+                        }
             )
 
         # Competitor analysis
@@ -1808,18 +1876,19 @@ class PlannerAgent(BaseAgent):
             decisions.append(
                 {
                     "id": f"research_{len(decisions) + 1}",
-                    "task_type": "research",
-                    "priority": "medium",
-                    "payload": {
+                        "task_type": "research",
+                        "priority": "medium",
+                        "payload": {
                         "action": "analyze_competitors",
-                        "competitors": orientation.get("key_competitors", []),
-                        "analysis_depth": "comprehensive",
-                    },
-                    "assigned_agent": "ResearchAgent",
-                }
+                            "competitors": orientation.get("key_competitors", []),
+                            "analysis_depth": "comprehensive",
+                            },
+                        "assigned_agent": "ResearchAgent",
+                        }
             )
 
         return decisions
+
 
     def _decide_automation_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1833,15 +1902,15 @@ class PlannerAgent(BaseAgent):
             decisions.append(
                 {
                     "id": f"automation_{len(decisions) + 1}",
-                    "task_type": "automation",
-                    "priority": "medium",
-                    "payload": {
+                        "task_type": "automation",
+                        "priority": "medium",
+                        "payload": {
                         "action": "automate_affiliate_signups",
-                        "platforms": pending_signups,
-                        "stealth_level": "high",
-                    },
-                    "assigned_agent": "WebAutomationAgent",
-                }
+                            "platforms": pending_signups,
+                            "stealth_level": "high",
+                            },
+                        "assigned_agent": "WebAutomationAgent",
+                        }
             )
 
         # Content tool automation
@@ -1849,18 +1918,19 @@ class PlannerAgent(BaseAgent):
             decisions.append(
                 {
                     "id": f"automation_{len(decisions) + 1}",
-                    "task_type": "automation",
-                    "priority": "low",
-                    "payload": {
+                        "task_type": "automation",
+                        "priority": "low",
+                        "payload": {
                         "action": "automate_content_tools",
-                        "tools": ["spechelo_pro", "thumbnail_blaster"],
-                        "batch_size": 5,
-                    },
-                    "assigned_agent": "WebAutomationAgent",
-                }
+                            "tools": ["spechelo_pro", "thumbnail_blaster"],
+                            "batch_size": 5,
+                            },
+                        "assigned_agent": "WebAutomationAgent",
+                        }
             )
 
         return decisions
+
 
     def _decide_content_strategy(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1874,7 +1944,7 @@ class PlannerAgent(BaseAgent):
                 topic = opportunity.get("description")
                 target_channel = opportunity.get("channel", "general")
 
-                # Apply political neutrality vetting for non-Right Perspective channels
+                # Apply political neutrality vetting for non - Right Perspective channels
                 if target_channel != "The Right Perspective":
                     is_political = self._vet_topic_for_political_content(topic)
                     if is_political:
@@ -1887,20 +1957,21 @@ class PlannerAgent(BaseAgent):
                 decisions.append(
                     {
                         "id": f"content_{len(decisions) + 1}",
-                        "task_type": "content",
-                        "priority": opportunity.get("priority", "medium"),
-                        "payload": {
+                            "task_type": "content",
+                            "priority": opportunity.get("priority", "medium"),
+                            "payload": {
                             "action": "create_content",
-                            "topic": topic,
-                            "target_audience": "general",
-                            "content_type": "article",
-                            "channel": target_channel,
-                        },
-                        "assigned_agent": "ContentAgent",
-                    }
+                                "topic": topic,
+                                "target_audience": "general",
+                                "content_type": "article",
+                                "channel": target_channel,
+                                },
+                            "assigned_agent": "ContentAgent",
+                            }
                 )
 
         return decisions
+
 
     def _vet_topic_for_political_content(self, topic: str) -> bool:
         """Vet a topic for political content using Ollama LLM.
@@ -1929,7 +2000,7 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 """
 
             response = self.ollama.query(
-                prompt=vetting_prompt, model="llama2:7b", max_tokens=10, temperature=0.1
+                prompt = vetting_prompt, model="llama2:7b", max_tokens = 10, temperature = 0.1
             )
 
             if response and response.content:
@@ -1941,25 +2012,26 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             # Fallback: check for obvious political keywords
             political_keywords = [
                 "election",
-                "vote",
-                "democrat",
-                "republican",
-                "biden",
-                "trump",
-                "congress",
-                "senate",
-                "political",
-                "politics",
-                "campaign",
-                "conservative",
-                "liberal",
-                "partisan",
-                "policy debate",
-            ]
+                    "vote",
+                    "democrat",
+                    "republican",
+                    "biden",
+                    "trump",
+                    "congress",
+                    "senate",
+                    "political",
+                    "politics",
+                    "campaign",
+                    "conservative",
+                    "liberal",
+                    "partisan",
+                    "policy debate",
+                    ]
             topic_lower = topic.lower()
             return any(keyword in topic_lower for keyword in political_keywords)
 
         return False
+
 
     def _decide_marketing_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -1975,15 +2047,15 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             decisions.append(
                 {
                     "id": f"marketing_{len(decisions) + 1}",
-                    "task_type": "marketing",
-                    "priority": "medium",
-                    "payload": {
+                        "task_type": "marketing",
+                        "priority": "medium",
+                        "payload": {
                         "action": "optimize_campaigns",
-                        "focus_areas": market_conditions.get("trending_topics", []),
-                        "budget_allocation": "increase",
-                    },
-                    "assigned_agent": "MarketingAgent",
-                }
+                            "focus_areas": market_conditions.get("trending_topics", []),
+                            "budget_allocation": "increase",
+                            },
+                        "assigned_agent": "MarketingAgent",
+                        }
             )
 
         # Twitter promotion for new content
@@ -1991,15 +2063,15 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             decisions.append(
                 {
                     "id": f"twitter_promotion_{len(decisions) + 1}",
-                    "task_type": "marketing",
-                    "priority": "high",
-                    "payload": {
+                        "task_type": "marketing",
+                        "priority": "high",
+                        "payload": {
                         "action": "twitter_promotion",
-                        "promotion_type": "youtube_upload",
-                        "content_count": content_performance.get("new_videos_count", 0),
-                    },
-                    "assigned_agent": "MarketingAgent",
-                }
+                            "promotion_type": "youtube_upload",
+                            "content_count": content_performance.get("new_videos_count", 0),
+                            },
+                        "assigned_agent": "MarketingAgent",
+                        }
             )
 
         # Twitter engagement for community building
@@ -2008,16 +2080,16 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             decisions.append(
                 {
                     "id": f"twitter_engagement_{len(decisions) + 1}",
-                    "task_type": "marketing",
-                    "priority": "medium",
-                    "payload": {
+                        "task_type": "marketing",
+                        "priority": "medium",
+                        "payload": {
                         "action": "twitter_engagement",
-                        "engagement_type": "topic_monitoring",
-                        "topics": trending_topics[:3],  # Focus on top 3 trending topics
+                            "engagement_type": "topic_monitoring",
+                            "topics": trending_topics[:3],  # Focus on top 3 trending topics
                         "engagement_goal": "community_building",
-                    },
-                    "assigned_agent": "MarketingAgent",
-                }
+                            },
+                        "assigned_agent": "MarketingAgent",
+                        }
             )
 
         # Daily Twitter engagement cycle
@@ -2026,21 +2098,22 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             decisions.append(
                 {
                     "id": f"twitter_daily_{len(decisions) + 1}",
-                    "task_type": "marketing",
-                    "priority": "medium",
-                    "payload": {
+                        "task_type": "marketing",
+                        "priority": "medium",
+                        "payload": {
                         "action": "twitter_engagement",
-                        "engagement_type": "conversation_search",
-                        "search_keywords": market_conditions.get(
+                            "engagement_type": "conversation_search",
+                            "search_keywords": market_conditions.get(
                             "trending_topics", ["AI", "automation", "productivity"]
                         ),
-                        "engagement_goal": "thought_leadership",
-                    },
-                    "assigned_agent": "MarketingAgent",
-                }
+                            "engagement_goal": "thought_leadership",
+                            },
+                        "assigned_agent": "MarketingAgent",
+                        }
             )
 
         return decisions
+
 
     def _decide_system_optimizations(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -2054,18 +2127,19 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 decisions.append(
                     {
                         "id": f"system_{len(decisions) + 1}",
-                        "task_type": "system",
-                        "priority": "high",
-                        "payload": {
+                            "task_type": "system",
+                            "priority": "high",
+                            "payload": {
                             "action": "optimize_performance",
-                            "target_area": "task_queue",
-                            "optimization_type": threat.get("mitigation"),
-                        },
-                        "assigned_agent": "SystemAgent",
-                    }
+                                "target_area": "task_queue",
+                                "optimization_type": threat.get("mitigation"),
+                                },
+                            "assigned_agent": "SystemAgent",
+                            }
                 )
 
         return decisions
+
 
     def _decide_qa_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
@@ -2079,18 +2153,19 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 decisions.append(
                     {
                         "id": f"qa_{len(decisions) + 1}",
-                        "task_type": "qa",
-                        "priority": "high",
-                        "payload": {
+                            "task_type": "qa",
+                            "priority": "high",
+                            "payload": {
                             "action": "quality_audit",
-                            "focus_area": gap.get("area"),
-                            "target_improvement": gap.get("target_performance"),
-                        },
-                        "assigned_agent": "QAAgent",
-                    }
+                                "focus_area": gap.get("area"),
+                                "target_improvement": gap.get("target_performance"),
+                                },
+                            "assigned_agent": "QAAgent",
+                            }
                 )
 
         return decisions
+
 
     def _is_today(self, timestamp_str: Optional[str]) -> bool:
         """Check if timestamp is from today."""
@@ -2099,8 +2174,9 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
         try:
             timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
             return timestamp.date() == datetime.now().date()
-        except:
+        except Exception:
             return False
+
 
     def _get_rss_intelligence(self) -> Dict[str, Any]:
         """Get RSS intelligence from Research Agent for dynamic content scheduling."""
@@ -2122,11 +2198,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 rss_engine = self._rss_engine_singleton
 
                 # Get trending topics
-                trending_topics = rss_engine.get_trending_topics(limit=10)
+                trending_topics = rss_engine.get_trending_topics(limit = 10)
 
                 # Get latest intelligence briefing
                 intelligence_briefing = rss_engine.get_intelligence_briefing(
-                    "general", max_articles=5
+                    "general", max_articles = 5
                 )
 
                 # Calculate topic momentum
@@ -2143,11 +2219,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                         "trending_topics": [
                             topic["keyword"] for topic in trending_topics
                         ],
-                        "topic_momentum": topic_momentum,
-                        "content_opportunities": content_opportunities,
-                        "intelligence_briefing": intelligence_briefing,
-                        "last_intelligence_update": current_time,
-                    }
+                            "topic_momentum": topic_momentum,
+                            "content_opportunities": content_opportunities,
+                            "intelligence_briefing": intelligence_briefing,
+                            "last_intelligence_update": current_time,
+                            }
                 )
 
             return self.rss_intelligence
@@ -2156,10 +2232,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             # Fallback to default values if RSS intelligence fails
             return {
                 "trending_topics": ["AI", "automation", "productivity"],
-                "topic_momentum": {},
-                "content_opportunities": [],
-                "intelligence_briefing": None,
-            }
+                    "topic_momentum": {},
+                    "content_opportunities": [],
+                    "intelligence_briefing": None,
+                    }
+
 
     def _calculate_topic_momentum(
         self, trending_topics: List[Dict[str, Any]]
@@ -2178,6 +2255,7 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 
         return momentum
 
+
     def _identify_content_opportunities(
         self, trending_topics: List[Dict[str, Any]], topic_momentum: Dict[str, float]
     ) -> List[Dict[str, Any]]:
@@ -2192,35 +2270,37 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             if momentum_score >= min_trend_score:
                 opportunity = {
                     "topic": keyword,
-                    "momentum_score": momentum_score,
-                    "priority": "high" if momentum_score > 0.8 else "medium",
-                    "content_type": "video",
-                    "suggested_angle": self._suggest_content_angle(keyword),
-                    "urgency": "immediate" if momentum_score > 0.9 else "scheduled",
-                }
+                        "momentum_score": momentum_score,
+                        "priority": "high" if momentum_score > 0.8 else "medium",
+                        "content_type": "video",
+                        "suggested_angle": self._suggest_content_angle(keyword),
+                        "urgency": "immediate" if momentum_score > 0.9 else "scheduled",
+                        }
                 opportunities.append(opportunity)
 
         # Sort by momentum score (highest first)
-        opportunities.sort(key=lambda x: x["momentum_score"], reverse=True)
+        opportunities.sort(key = lambda x: x["momentum_score"], reverse = True)
 
         return opportunities[:5]  # Return top 5 opportunities
+
 
     def _suggest_content_angle(self, topic: str) -> str:
         """Suggest content angle based on topic."""
         # Simple content angle suggestions based on topic keywords
         angle_map = {
             "AI": "How AI is transforming industries",
-            "automation": "The future of work and automation",
-            "productivity": "Productivity hacks that actually work",
-            "technology": "Latest tech trends you need to know",
-            "business": "Business strategies for modern entrepreneurs",
-        }
+                "automation": "The future of work and automation",
+                "productivity": "Productivity hacks that actually work",
+                "technology": "Latest tech trends you need to know",
+                "business": "Business strategies for modern entrepreneurs",
+                }
 
         for keyword, angle in angle_map.items():
             if keyword.lower() in topic.lower():
                 return angle
 
         return f"Deep dive into {topic} trends"
+
 
     def create_dynamic_content_schedule(
         self, base_schedule: Dict[str, Any]
@@ -2234,7 +2314,7 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
         dynamic_schedule = base_schedule.copy()
         adjustments = []
 
-        # Process high-priority content opportunities
+        # Process high - priority content opportunities
         for opportunity in content_opportunities:
             if (
                 opportunity.get("priority") == "high"
@@ -2243,14 +2323,14 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 # Create immediate content task
                 content_task = {
                     "id": f"rss_content_{int(time.time())}",
-                    "type": "content_creation",
-                    "topic": opportunity["topic"],
-                    "angle": opportunity["suggested_angle"],
-                    "priority": "high",
-                    "source": "rss_intelligence",
-                    "momentum_score": opportunity["momentum_score"],
-                    "deadline": "within_24_hours",
-                }
+                        "type": "content_creation",
+                        "topic": opportunity["topic"],
+                        "angle": opportunity["suggested_angle"],
+                        "priority": "high",
+                        "source": "rss_intelligence",
+                        "momentum_score": opportunity["momentum_score"],
+                        "deadline": "within_24_hours",
+                        }
 
                 # Add to schedule
                 if "urgent_content" not in dynamic_schedule:
@@ -2260,9 +2340,9 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 adjustments.append(
                     {
                         "type": "urgent_content_added",
-                        "topic": opportunity["topic"],
-                        "reason": f"High momentum detected (score: {opportunity['momentum_score']:.2f})",
-                    }
+                            "topic": opportunity["topic"],
+                            "reason": f"High momentum detected (score: {opportunity['momentum_score']:.2f})",
+                            }
                 )
 
         # Store adjustments for tracking
@@ -2270,10 +2350,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 
         return {
             "schedule": dynamic_schedule,
-            "adjustments": adjustments,
-            "intelligence_source": "rss_feeds",
-            "last_updated": time.time(),
-        }
+                "adjustments": adjustments,
+                "intelligence_source": "rss_feeds",
+                "last_updated": time.time(),
+                }
+
 
     async def _validate_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -2301,9 +2382,9 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 
             for i, step in enumerate(plan["steps"]):
                 if "action" not in step:
-                    errors.append(f"Step {i+1} missing 'action' field")
+                    errors.append(f"Step {i + 1} missing 'action' field")
                 if "agent" not in step:
-                    errors.append(f"Step {i+1} missing 'agent' field")
+                    errors.append(f"Step {i + 1} missing 'agent' field")
 
         # Check estimated duration
         if plan.get("estimated_duration", 0) <= 0:
@@ -2315,20 +2396,21 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 
         return {
             "valid": len(errors) == 0,
-            "errors": errors,
-            "warnings": warnings,
-            "validated_at": datetime.now().isoformat(),
-        }
+                "errors": errors,
+                "warnings": warnings,
+                "validated_at": datetime.now().isoformat(),
+                }
 
     # Sovereign Engine Workflow Automation Methods
 
+
     async def handle_contact_event(
         self,
-        event_type: str,
-        contact_id: str,
-        event_data: Dict[str, Any],
-        task_queue_manager,
-    ) -> Dict[str, Any]:
+            event_type: str,
+            contact_id: str,
+            event_data: Dict[str, Any],
+            task_queue_manager,
+            ) -> Dict[str, Any]:
         """
         Handle contact events and trigger appropriate workflow automation.
 
@@ -2367,11 +2449,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 
             return {
                 "success": True,
-                "event_processed": event_type,
-                "contact_id": contact_id,
-                "automations_triggered": len(automation_results),
-                "results": automation_results,
-            }
+                    "event_processed": event_type,
+                    "contact_id": contact_id,
+                    "automations_triggered": len(automation_results),
+                    "results": automation_results,
+                    }
 
         except Exception as e:
             self.logger.error(
@@ -2379,10 +2461,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             )
             return {
                 "success": False,
-                "error": str(e),
-                "event_type": event_type,
-                "contact_id": contact_id,
-            }
+                    "error": str(e),
+                    "event_type": event_type,
+                    "contact_id": contact_id,
+                    }
+
 
     async def _trigger_new_subscriber_workflow(
         self, contact_id: str, event_data: Dict[str, Any], task_queue_manager
@@ -2404,63 +2487,64 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             for task_config in workflow_config["tasks"]:
                 # Calculate scheduled time
                 delay_hours = task_config.get("delay_hours", 0)
-                scheduled_time = current_time + timedelta(hours=delay_hours)
+                scheduled_time = current_time + timedelta(hours = delay_hours)
 
                 # Create task in queue
                 task_data = {
                     "type": "MARKETING",
-                    "subtype": task_config["type"],
-                    "contact_id": contact_id,
-                    "template": task_config["template"],
-                    "workflow": "new_subscriber_sequence",
-                    "scheduled_time": scheduled_time.isoformat(),
-                    "priority": "MEDIUM",
-                    "agent_type": "MarketingAgent",
-                }
+                        "subtype": task_config["type"],
+                        "contact_id": contact_id,
+                        "template": task_config["template"],
+                        "workflow": "new_subscriber_sequence",
+                        "scheduled_time": scheduled_time.isoformat(),
+                        "priority": "MEDIUM",
+                        "agent_type": "MarketingAgent",
+                        }
 
                 task_id = task_queue_manager.add_task(
                     task_type="MARKETING",
-                    task_data=task_data,
-                    priority="MEDIUM",
-                    agent_id=None,
-                    agent_type="MarketingAgent",
-                )
+                        task_data = task_data,
+                        priority="MEDIUM",
+                        agent_id = None,
+                        agent_type="MarketingAgent",
+                        )
 
                 tasks_created.append(
                     {
                         "task_id": task_id,
-                        "type": task_config["type"],
-                        "template": task_config["template"],
-                        "scheduled_time": scheduled_time.isoformat(),
-                    }
+                            "type": task_config["type"],
+                            "template": task_config["template"],
+                            "scheduled_time": scheduled_time.isoformat(),
+                            }
                 )
 
             # Store workflow in active workflows
             workflow_id = str(uuid.uuid4())
             self.workflow_automation["active_workflows"][workflow_id] = {
                 "type": "new_subscriber_sequence",
-                "contact_id": contact_id,
-                "created_at": current_time.isoformat(),
-                "tasks": tasks_created,
-                "status": "active",
-            }
+                    "contact_id": contact_id,
+                    "created_at": current_time.isoformat(),
+                    "tasks": tasks_created,
+                    "status": "active",
+                    }
 
             return {
                 "success": True,
-                "workflow_id": workflow_id,
-                "tasks_created": len(tasks_created),
-                "tasks": tasks_created,
-            }
+                    "workflow_id": workflow_id,
+                    "tasks_created": len(tasks_created),
+                    "tasks": tasks_created,
+                    }
 
         except Exception as e:
             self.logger.error(f"Error triggering new subscriber workflow: {str(e)}")
             return {"success": False, "error": str(e)}
 
+
     async def _trigger_product_followup_workflow(
         self, contact_id: str, event_data: Dict[str, Any], task_queue_manager
     ) -> Dict[str, Any]:
         """
-        Trigger product-specific follow-up workflow based on affiliate link clicks.
+        Trigger product - specific follow - up workflow based on affiliate link clicks.
         """
         try:
             workflow_config = self.workflow_automation["automation_rules"][
@@ -2470,8 +2554,8 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             if not workflow_config.get("enabled", False):
                 return {
                     "success": False,
-                    "reason": "Product followup workflow disabled",
-                }
+                        "reason": "Product followup workflow disabled",
+                        }
 
             # Extract product information from event data
             product_info = event_data.get("product_info", {})
@@ -2483,77 +2567,78 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             for task_config in workflow_config["tasks"]:
                 # Calculate scheduled time
                 delay_hours = task_config.get("delay_hours", 0)
-                scheduled_time = current_time + timedelta(hours=delay_hours)
+                scheduled_time = current_time + timedelta(hours = delay_hours)
 
                 # Create personalized task data
                 task_data = {
                     "type": "MARKETING",
-                    "subtype": task_config["type"],
-                    "contact_id": contact_id,
-                    "template": task_config["template"],
-                    "workflow": "product_click_followup",
-                    "product_info": product_info,
-                    "affiliate_link": affiliate_link,
-                    "scheduled_time": scheduled_time.isoformat(),
-                    "priority": "HIGH",
-                    "agent_type": "MarketingAgent",
-                }
+                        "subtype": task_config["type"],
+                        "contact_id": contact_id,
+                        "template": task_config["template"],
+                        "workflow": "product_click_followup",
+                        "product_info": product_info,
+                        "affiliate_link": affiliate_link,
+                        "scheduled_time": scheduled_time.isoformat(),
+                        "priority": "HIGH",
+                        "agent_type": "MarketingAgent",
+                        }
 
                 task_id = task_queue_manager.add_task(
                     task_type="MARKETING",
-                    task_data=task_data,
-                    priority="HIGH",
-                    agent_id=None,
-                    agent_type="MarketingAgent",
-                )
+                        task_data = task_data,
+                        priority="HIGH",
+                        agent_id = None,
+                        agent_type="MarketingAgent",
+                        )
 
                 tasks_created.append(
                     {
                         "task_id": task_id,
-                        "type": task_config["type"],
-                        "template": task_config["template"],
-                        "scheduled_time": scheduled_time.isoformat(),
-                    }
+                            "type": task_config["type"],
+                            "template": task_config["template"],
+                            "scheduled_time": scheduled_time.isoformat(),
+                            }
                 )
 
             # Store workflow in active workflows
             workflow_id = str(uuid.uuid4())
             self.workflow_automation["active_workflows"][workflow_id] = {
                 "type": "product_click_followup",
-                "contact_id": contact_id,
-                "product_info": product_info,
-                "created_at": current_time.isoformat(),
-                "tasks": tasks_created,
-                "status": "active",
-            }
+                    "contact_id": contact_id,
+                    "product_info": product_info,
+                    "created_at": current_time.isoformat(),
+                    "tasks": tasks_created,
+                    "status": "active",
+                    }
 
             return {
                 "success": True,
-                "workflow_id": workflow_id,
-                "tasks_created": len(tasks_created),
-                "tasks": tasks_created,
-            }
+                    "workflow_id": workflow_id,
+                    "tasks_created": len(tasks_created),
+                    "tasks": tasks_created,
+                    }
 
         except Exception as e:
             self.logger.error(f"Error triggering product followup workflow: {str(e)}")
             return {"success": False, "error": str(e)}
 
+
     async def _process_behavioral_trigger(
         self,
-        event_type: str,
-        contact_id: str,
-        event_data: Dict[str, Any],
-        task_queue_manager,
-    ) -> Dict[str, Any]:
+            event_type: str,
+            contact_id: str,
+            event_data: Dict[str, Any],
+            task_queue_manager,
+            ) -> Dict[str, Any]:
         """
-        Process behavioral triggers and create dynamic follow-up tasks.
+        Process behavioral triggers and create dynamic follow - up tasks.
         """
         try:
             # Check for existing behavioral patterns
             contact_behavior = await self._analyze_contact_behavior(contact_id)
 
-            # Determine appropriate follow-up actions based on behavior
-            follow_up_actions = self._determine_behavioral_followup(
+            # Determine appropriate follow - up actions based on behavior
+                follow_up_actions = self._determine_behavioral_followup(
                 event_type, contact_behavior, event_data
             )
 
@@ -2563,49 +2648,50 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             for action in follow_up_actions:
                 # Calculate scheduled time
                 delay_hours = action.get("delay_hours", 1)
-                scheduled_time = current_time + timedelta(hours=delay_hours)
+                scheduled_time = current_time + timedelta(hours = delay_hours)
 
-                # Create behavioral follow-up task
+                # Create behavioral follow - up task
                 task_data = {
                     "type": "MARKETING",
-                    "subtype": action["type"],
-                    "contact_id": contact_id,
-                    "template": action["template"],
-                    "workflow": "behavioral_trigger",
-                    "trigger_event": event_type,
-                    "behavior_analysis": contact_behavior,
-                    "scheduled_time": scheduled_time.isoformat(),
-                    "priority": action.get("priority", "MEDIUM"),
-                    "agent_type": "MarketingAgent",
-                }
+                        "subtype": action["type"],
+                        "contact_id": contact_id,
+                        "template": action["template"],
+                        "workflow": "behavioral_trigger",
+                        "trigger_event": event_type,
+                        "behavior_analysis": contact_behavior,
+                        "scheduled_time": scheduled_time.isoformat(),
+                        "priority": action.get("priority", "MEDIUM"),
+                        "agent_type": "MarketingAgent",
+                        }
 
                 task_id = task_queue_manager.add_task(
                     task_type="MARKETING",
-                    task_data=task_data,
-                    priority=action.get("priority", "MEDIUM"),
-                    agent_id=None,
-                    agent_type="MarketingAgent",
-                )
+                        task_data = task_data,
+                        priority = action.get("priority", "MEDIUM"),
+                        agent_id = None,
+                        agent_type="MarketingAgent",
+                        )
 
                 tasks_created.append(
                     {
                         "task_id": task_id,
-                        "type": action["type"],
-                        "template": action["template"],
-                        "scheduled_time": scheduled_time.isoformat(),
-                    }
+                            "type": action["type"],
+                            "template": action["template"],
+                            "scheduled_time": scheduled_time.isoformat(),
+                            }
                 )
 
             return {
                 "success": True,
-                "trigger_event": event_type,
-                "tasks_created": len(tasks_created),
-                "tasks": tasks_created,
-            }
+                    "trigger_event": event_type,
+                    "tasks_created": len(tasks_created),
+                    "tasks": tasks_created,
+                    }
 
         except Exception as e:
             self.logger.error(f"Error processing behavioral trigger: {str(e)}")
             return {"success": False, "error": str(e)}
+
 
     async def _analyze_contact_behavior(self, contact_id: str) -> Dict[str, Any]:
         """
@@ -2627,21 +2713,21 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                     LIMIT 50
                 """,
                     (contact_id,),
-                )
+                        )
 
                 events = cursor.fetchall()
 
                 # Analyze behavior patterns
                 behavior_analysis = {
                     "total_events": len(events),
-                    "email_opens": 0,
-                    "link_clicks": 0,
-                    "website_visits": 0,
-                    "engagement_score": 0,
-                    "last_activity": None,
-                    "preferred_topics": [],
-                    "activity_pattern": "unknown",
-                }
+                        "email_opens": 0,
+                        "link_clicks": 0,
+                        "website_visits": 0,
+                        "engagement_score": 0,
+                        "last_activity": None,
+                        "preferred_topics": [],
+                        "activity_pattern": "unknown",
+                        }
 
                 if events:
                     behavior_analysis["last_activity"] = events[0][2]
@@ -2663,7 +2749,7 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                     )
                     behavior_analysis["engagement_score"] = min(
                         total_interactions / 10.0, 1.0
-                    )  # Normalize to 0-1
+                    )  # Normalize to 0 - 1
 
                     # Determine activity pattern
                     if behavior_analysis["engagement_score"] > 0.7:
@@ -2679,19 +2765,20 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             self.logger.error(f"Error analyzing contact behavior: {str(e)}")
             return {
                 "total_events": 0,
-                "engagement_score": 0,
-                "activity_pattern": "unknown",
-                "error": str(e),
-            }
+                    "engagement_score": 0,
+                    "activity_pattern": "unknown",
+                    "error": str(e),
+                    }
+
 
     def _determine_behavioral_followup(
         self,
-        event_type: str,
-        behavior_analysis: Dict[str, Any],
-        event_data: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+            event_type: str,
+            behavior_analysis: Dict[str, Any],
+            event_data: Dict[str, Any],
+            ) -> List[Dict[str, Any]]:
         """
-        Determine appropriate follow-up actions based on behavioral analysis.
+        Determine appropriate follow - up actions based on behavioral analysis.
         """
         follow_up_actions = []
         engagement_score = behavior_analysis.get("engagement_score", 0)
@@ -2703,19 +2790,19 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 follow_up_actions.append(
                     {
                         "type": "SEND_EMAIL",
-                        "template": "premium_content_offer",
-                        "delay_hours": 4,
-                        "priority": "HIGH",
-                    }
+                            "template": "premium_content_offer",
+                            "delay_hours": 4,
+                            "priority": "HIGH",
+                            }
                 )
             elif event_type == "LINK_CLICK":
                 follow_up_actions.append(
                     {
                         "type": "SEND_EMAIL",
-                        "template": "exclusive_offer",
-                        "delay_hours": 2,
-                        "priority": "HIGH",
-                    }
+                            "template": "exclusive_offer",
+                            "delay_hours": 2,
+                            "priority": "HIGH",
+                            }
                 )
 
         # Moderate engagement users get nurturing content
@@ -2724,25 +2811,26 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                 follow_up_actions.append(
                     {
                         "type": "SEND_EMAIL",
-                        "template": "educational_content",
-                        "delay_hours": 24,
-                        "priority": "MEDIUM",
-                    }
+                            "template": "educational_content",
+                            "delay_hours": 24,
+                            "priority": "MEDIUM",
+                            }
                 )
 
-        # Low engagement users get re-engagement campaigns
+        # Low engagement users get re - engagement campaigns
         elif activity_pattern == "low_engagement":
             if event_type == "EMAIL_OPEN":  # Rare event for low engagement
                 follow_up_actions.append(
                     {
                         "type": "SEND_EMAIL",
-                        "template": "reengagement_campaign",
-                        "delay_hours": 12,
-                        "priority": "MEDIUM",
-                    }
+                            "template": "reengagement_campaign",
+                            "delay_hours": 12,
+                            "priority": "MEDIUM",
+                            }
                 )
 
         return follow_up_actions
+
 
     async def monitor_workflow_automation(self, task_queue_manager) -> Dict[str, Any]:
         """
@@ -2756,10 +2844,10 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
             for event in new_events:
                 result = await self.handle_contact_event(
                     event["event_type"],
-                    event["contact_id"],
-                    event["event_data"],
-                    task_queue_manager,
-                )
+                        event["contact_id"],
+                        event["event_data"],
+                        task_queue_manager,
+                        )
                 automation_results.append(result)
 
             # Clean up completed workflows
@@ -2767,14 +2855,15 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
 
             return {
                 "success": True,
-                "events_processed": len(new_events),
-                "active_workflows": len(self.workflow_automation["active_workflows"]),
-                "automation_results": automation_results,
-            }
+                    "events_processed": len(new_events),
+                    "active_workflows": len(self.workflow_automation["active_workflows"]),
+                    "automation_results": automation_results,
+                    }
 
         except Exception as e:
             self.logger.error(f"Error monitoring workflow automation: {str(e)}")
             return {"success": False, "error": str(e)}
+
 
     async def _check_for_new_contact_events(self) -> List[Dict[str, Any]]:
         """
@@ -2810,7 +2899,7 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                         WHERE id IN ({placeholders})
                     """,
                         event_ids,
-                    )
+                            )
                     conn.commit()
 
                 # Convert to dictionaries
@@ -2824,11 +2913,11 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
                     processed_events.append(
                         {
                             "id": event[0],
-                            "contact_id": event[1],
-                            "event_type": event[2],
-                            "event_data": event_data,
-                            "created_at": event[4],
-                        }
+                                "contact_id": event[1],
+                                "event_type": event[2],
+                                "event_data": event_data,
+                                "created_at": event[4],
+                                }
                     )
 
                 return processed_events
@@ -2836,6 +2925,7 @@ Respond with only "POLITICAL" if the topic contains political content, or "NEUTR
         except Exception as e:
             self.logger.error(f"Error checking for new contact events: {str(e)}")
             return []
+
 
     async def _cleanup_completed_workflows(self):
         """
@@ -2875,6 +2965,7 @@ class ExecutorAgent(BaseAgent):
     the actual work required to complete tasks using all integrated tools.
     """
 
+
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "ExecutorAgent")
         self.execution_context: Dict[str, Any] = {}
@@ -2884,59 +2975,60 @@ class ExecutorAgent(BaseAgent):
         # Initialize all tool integrations
         self._initialize_tools()
 
+
     def _initialize_tools(self):
         """Initialize all integrated tools for task execution."""
         try:
             # Content Creation Tools
             # Marketing Tools
             from backend.agents.marketing_tools import (AffiliateManager,
-                                                        CrossPromotionManager,
-                                                        DayOneBlitzStrategy,
-                                                        RelentlessOptimizationLoop)
+                CrossPromotionManager,
+                                                            DayOneBlitzStrategy,
+                                                            RelentlessOptimizationLoop)
             # Research Tools
             from backend.agents.research_tools import (BreakingNewsWatcher,
-                                                       CompetitorAnalyzer,
-                                                       MarketValidator)
+                CompetitorAnalyzer,
+                                                           MarketValidator)
             # Web Automation Tools
             from backend.agents.web_automation_tools import (AffiliateSignupAutomator,
-                                                             SpecheloPro,
-                                                             StealthOperations,
-                                                             ThumbnailBlaster,
-                                                             WebAutomationAgent)
+                SpecheloPro,
+                                                                 StealthOperations,
+                                                                 ThumbnailBlaster,
+                                                                 WebAutomationAgent)
             from backend.content.ai_inpainting import AIInpainting
             from backend.content.ai_video_editor import AIVideoEditor
-            from backend.content.animate_avatar import AnimateAvatar
+                from backend.content.animate_avatar import AnimateAvatar
             from backend.content.audio_postprod import AudioPostProduction
             from backend.content.automated_author import AutomatedAuthor
-            from backend.content.blender_compositor import BlenderCompositor
-            from backend.content.vidscript_pro import VidScriptPro
+                from backend.content.blender_compositor import BlenderCompositor
+                from backend.content.vidscript_pro import VidScriptPro
 
             # Initialize tool instances
             self.tools = {
                 # Content Creation
                 "vidscript_pro": VidScriptPro(),
-                "automated_author": AutomatedAuthor(),
-                "animate_avatar": AnimateAvatar(),
-                "ai_inpainting": AIInpainting(),
-                "blender_compositor": BlenderCompositor(),
-                "audio_postprod": AudioPostProduction(),
-                "ai_video_editor": AIVideoEditor(),
-                # Research
+                    "automated_author": AutomatedAuthor(),
+                    "animate_avatar": AnimateAvatar(),
+                    "ai_inpainting": AIInpainting(),
+                    "blender_compositor": BlenderCompositor(),
+                    "audio_postprod": AudioPostProduction(),
+                    "ai_video_editor": AIVideoEditor(),
+                    # Research
                 "breaking_news_watcher": BreakingNewsWatcher(),
-                "competitor_analyzer": CompetitorAnalyzer(),
-                "market_validator": MarketValidator(),
-                # Marketing
+                    "competitor_analyzer": CompetitorAnalyzer(),
+                    "market_validator": MarketValidator(),
+                    # Marketing
                 "day_one_blitz": DayOneBlitzStrategy(),
-                "optimization_loop": RelentlessOptimizationLoop(),
-                "affiliate_manager": AffiliateManager(),
-                "cross_promotion": CrossPromotionManager(),
-                # Web Automation
+                    "optimization_loop": RelentlessOptimizationLoop(),
+                    "affiliate_manager": AffiliateManager(),
+                    "cross_promotion": CrossPromotionManager(),
+                    # Web Automation
                 "stealth_operations": StealthOperations(),
-                "spechelo_pro": SpecheloPro(StealthOperations()),
-                "thumbnail_blaster": ThumbnailBlaster(StealthOperations()),
-                "affiliate_signup": AffiliateSignupAutomator(StealthOperations()),
-                "web_automation": WebAutomationAgent(),
-            }
+                    "spechelo_pro": SpecheloPro(StealthOperations()),
+                    "thumbnail_blaster": ThumbnailBlaster(StealthOperations()),
+                    "affiliate_signup": AffiliateSignupAutomator(StealthOperations()),
+                    "web_automation": WebAutomationAgent(),
+                    }
 
             self.logger.info(f"Initialized {len(self.tools)} tools for ExecutorAgent")
 
@@ -2945,13 +3037,16 @@ class ExecutorAgent(BaseAgent):
             self.tools = {}
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [
             AgentCapability.EXECUTION,
-            AgentCapability.CONTENT_CREATION,
-            AgentCapability.RESEARCH,
-            AgentCapability.MARKETING,
-        ]
+                AgentCapability.CONTENT_CREATION,
+                AgentCapability.RESEARCH,
+                AgentCapability.MARKETING,
+                ]
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -2973,11 +3068,11 @@ class ExecutorAgent(BaseAgent):
         if not self.is_action_allowed("autonomous_execution"):
             return {
                 "success": False,
-                "error": "Autonomous execution is disabled in configuration",
-                "execution_time": 0,
-                "agent_id": self.agent_id,
-                "task_id": task_id,
-            }
+                    "error": "Autonomous execution is disabled in configuration",
+                    "execution_time": 0,
+                    "agent_id": self.agent_id,
+                    "task_id": task_id,
+                    }
 
         try:
             self.update_status(AgentStatus.EXECUTING, f"Executing task {task_id}")
@@ -3003,10 +3098,10 @@ class ExecutorAgent(BaseAgent):
 
                 result = {
                     "success": True,
-                    "execution_result": execution_result,
-                    "execution_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                }
+                        "execution_result": execution_result,
+                        "execution_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Execution completed for task {task_id}"
@@ -3020,10 +3115,10 @@ class ExecutorAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "error": str(e),
-                "execution_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-            }
+                    "error": str(e),
+                    "execution_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    }
 
             self.logger.error(f"Execution failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Execution failed: {e}")
@@ -3036,6 +3131,7 @@ class ExecutorAgent(BaseAgent):
             # Clean up task from current tasks list
             if task_id in self.current_tasks:
                 self.current_tasks.remove(task_id)
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
         """
@@ -3061,6 +3157,7 @@ class ExecutorAgent(BaseAgent):
         else:
             return f"I will execute a {task_type} task with {len(steps)} automated steps as defined in the execution plan."
 
+
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
     ) -> bool:
@@ -3082,9 +3179,9 @@ class ExecutorAgent(BaseAgent):
         # Check if key elements are mentioned in rephrase
         accuracy_checks = [
             task_type.lower() in rephrased.lower(),
-            str(len(steps)) in rephrased,
-            "steps" in rephrased.lower() or "workflow" in rephrased.lower(),
-        ]
+                str(len(steps)) in rephrased,
+                "steps" in rephrased.lower() or "workflow" in rephrased.lower(),
+                ]
 
         # Additional specific checks based on task type
         if task_type == "content_creation":
@@ -3112,6 +3209,7 @@ class ExecutorAgent(BaseAgent):
         # Require at least 80% accuracy
         accuracy_score = sum(accuracy_checks) / len(accuracy_checks)
         return accuracy_score >= 0.8
+
 
     async def _execute_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -3143,14 +3241,14 @@ class ExecutorAgent(BaseAgent):
             step_results.append(
                 {
                     "step_id": step_id,
-                    "action": action,
-                    "success": step_result.get("success", True),
-                    "duration": step_duration,
-                    "result": step_result,
-                }
+                        "action": action,
+                        "success": step_result.get("success", True),
+                        "duration": step_duration,
+                        "result": step_result,
+                        }
             )
 
-            # Day One Monetization: Auto-trigger marketing after content creation
+            # Day One Monetization: Auto - trigger marketing after content creation
             if (
                 step_result.get("success", True)
                 and "content" in action.lower()
@@ -3165,11 +3263,12 @@ class ExecutorAgent(BaseAgent):
 
         return {
             "plan_id": plan.get("id"),
-            "steps_executed": len(step_results),
-            "total_steps": len(steps),
-            "step_results": step_results,
-            "overall_success": all(result["success"] for result in step_results),
-        }
+                "steps_executed": len(step_results),
+                "total_steps": len(steps),
+                "step_results": step_results,
+                "overall_success": all(result["success"] for result in step_results),
+                }
+
 
     async def _execute_step(self, step: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -3196,21 +3295,22 @@ class ExecutorAgent(BaseAgent):
 
             return {
                 "success": True,
-                "action": action,
-                "tool": tool_name,
-                "message": f"Successfully executed {action}",
-                "data": result,
-            }
+                    "action": action,
+                    "tool": tool_name,
+                    "message": f"Successfully executed {action}",
+                    "data": result,
+                    }
 
         except Exception as e:
             self.logger.error(f"Step execution failed for {action}: {str(e)}")
             return {
                 "success": False,
-                "action": action,
-                "tool": tool_name,
-                "error": str(e),
-                "data": {},
-            }
+                    "action": action,
+                    "tool": tool_name,
+                    "error": str(e),
+                    "data": {},
+                    }
+
 
     async def _execute_tool_action(
         self, tool, action: str, parameters: Dict[str, Any]
@@ -3282,11 +3382,12 @@ class ExecutorAgent(BaseAgent):
 
                 return {
                     "message": f"Action {action} executed on {tool.__class__.__name__}",
-                    "parameters": parameters,
-                }
+                        "parameters": parameters,
+                        }
 
         except Exception as e:
             raise Exception(f"Tool execution failed: {str(e)}")
+
 
     async def _execute_generic_action(
         self, action: str, parameters: Dict[str, Any]
@@ -3297,16 +3398,17 @@ class ExecutorAgent(BaseAgent):
 
         return {
             "message": f"Generic action {action} completed",
-            "parameters": parameters,
-            "timestamp": datetime.now().isoformat(),
-        }
+                "parameters": parameters,
+                "timestamp": datetime.now().isoformat(),
+                }
+
 
     async def _trigger_marketing_automation(
         self,
-        plan: Dict[str, Any],
-        completed_step: Dict[str, Any],
-        step_result: Dict[str, Any],
-    ):
+            plan: Dict[str, Any],
+            completed_step: Dict[str, Any],
+            step_result: Dict[str, Any],
+            ):
         """
         Trigger automatic marketing task creation after content creation completion.
         Implements the Day One Monetization workflow.
@@ -3319,46 +3421,46 @@ class ExecutorAgent(BaseAgent):
         try:
             # Import here to avoid circular imports
             from backend.task_queue_manager import (TaskPriority, TaskQueueManager,
-                                                    TaskType)
+                TaskType)
 
             # Extract product information from the completed step
             product_info = {
                 "product_name": completed_step.get("parameters", {}).get(
                     "title", "New Digital Product"
                 ),
-                "product_type": completed_step.get("parameters", {}).get(
+                    "product_type": completed_step.get("parameters", {}).get(
                     "type", "digital_product"
                 ),
-                "content_path": step_result.get("data", {}).get("output_path", ""),
-                "plan_id": plan.get("id"),
-                "step_id": completed_step.get("id"),
-            }
+                    "content_path": step_result.get("data", {}).get("output_path", ""),
+                    "plan_id": plan.get("id"),
+                    "step_id": completed_step.get("id"),
+                    }
 
             # Create marketing task payload
             marketing_payload = {
                 "marketing_type": "ecommerce_marketing",
-                "action": "generate_complete_package",
-                "product_info": product_info,
-                "automation_trigger": "day_one_monetization",
-                "source_plan": plan.get("id"),
-                "source_step": completed_step.get("id"),
-            }
+                    "action": "generate_complete_package",
+                    "product_info": product_info,
+                    "automation_trigger": "day_one_monetization",
+                    "source_plan": plan.get("id"),
+                    "source_step": completed_step.get("id"),
+                    }
 
             # Initialize task queue manager
             task_manager = TaskQueueManager()
 
             # Add marketing task to queue
             marketing_task_id = await task_manager.add_task(
-                task_type=TaskType.MARKETING,
-                payload=marketing_payload,
-                priority=TaskPriority.HIGH,
-                assigned_agent="MarketingAgent",
-                metadata={
+                task_type = TaskType.MARKETING,
+                    payload = marketing_payload,
+                    priority = TaskPriority.HIGH,
+                    assigned_agent="MarketingAgent",
+                    metadata={
                     "automation_type": "day_one_monetization",
-                    "triggered_by": f"content_creation_{completed_step.get('id')}",
-                    "product_name": product_info["product_name"],
-                },
-            )
+                        "triggered_by": f"content_creation_{completed_step.get('id')}",
+                        "product_name": product_info["product_name"],
+                        },
+                    )
 
             self.logger.info(
                 f"Day One Monetization: Created marketing task {marketing_task_id} for product '{product_info['product_name']}'"
@@ -3367,6 +3469,7 @@ class ExecutorAgent(BaseAgent):
         except Exception as e:
             self.logger.error(f"Failed to trigger marketing automation: {str(e)}")
             # Don't fail the main execution if marketing automation fails
+
 
     async def _simulate_work(self, duration: float):
         """
@@ -3421,22 +3524,26 @@ class AuditorAgent(BaseAgent):
     AuditorAgent performs quality assurance and compliance checking.
 
     This agent reviews completed tasks, ensures they meet quality standards,
-    and verifies compliance with system rules and regulations.
+        and verifies compliance with system rules and regulations.
     """
+
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "AuditorAgent")
         self.audit_criteria: Dict[str, Any] = {
             "quality_threshold": 0.8,
-            "compliance_checks": True,
-            "performance_validation": True,
-            "security_scan": True,
-        }
+                "compliance_checks": True,
+                "performance_validation": True,
+                "security_scan": True,
+                }
         self.audit_history: List[Dict[str, Any]] = []
 
     @property
+
+
     def capabilities(self) -> List[AgentCapability]:
         return [AgentCapability.AUDITING, AgentCapability.QUALITY_ASSURANCE]
+
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -3458,11 +3565,11 @@ class AuditorAgent(BaseAgent):
         if not self.is_action_allowed("autonomous_auditing"):
             return {
                 "success": False,
-                "error": "Autonomous auditing is disabled in configuration",
-                "audit_time": 0,
-                "agent_id": self.agent_id,
-                "task_id": task_id,
-            }
+                    "error": "Autonomous auditing is disabled in configuration",
+                    "audit_time": 0,
+                    "agent_id": self.agent_id,
+                    "task_id": task_id,
+                    }
 
         try:
             self.update_status(AgentStatus.AUDITING, f"Auditing task {task_id}")
@@ -3481,23 +3588,23 @@ class AuditorAgent(BaseAgent):
                 # Store audit in history
                 audit_record = {
                     "task_id": task_id,
-                    "audit_result": audit_result,
-                    "timestamp": datetime.now().isoformat(),
-                    "auditor_id": self.agent_id,
-                    "context": {
+                        "audit_result": audit_result,
+                        "timestamp": datetime.now().isoformat(),
+                        "auditor_id": self.agent_id,
+                        "context": {
                         "mode": context.mode.value,
-                        "confirmation_level": context.confirmation_level.value,
-                    },
-                }
+                            "confirmation_level": context.confirmation_level.value,
+                            },
+                        }
                 self.audit_history.append(audit_record)
 
                 result = {
                     "success": True,
-                    "audit_result": audit_result,
-                    "audit_time": timer.elapsed_time,
-                    "agent_id": self.agent_id,
-                    "protocol_compliance": True,
-                }
+                        "audit_result": audit_result,
+                        "audit_time": timer.elapsed_time,
+                        "agent_id": self.agent_id,
+                        "protocol_compliance": True,
+                        }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Audit completed for task {task_id}"
@@ -3511,11 +3618,11 @@ class AuditorAgent(BaseAgent):
         except Exception as e:
             error_result = {
                 "success": False,
-                "error": str(e),
-                "audit_time": time.time() - start_time,
-                "agent_id": self.agent_id,
-                "protocol_compliance": False,
-            }
+                    "error": str(e),
+                    "audit_time": time.time() - start_time,
+                    "agent_id": self.agent_id,
+                    "protocol_compliance": False,
+                    }
 
             self.logger.error(f"Audit failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Audit failed: {e}")
@@ -3524,6 +3631,7 @@ class AuditorAgent(BaseAgent):
             )
 
             return error_result
+
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
         """
@@ -3534,7 +3642,7 @@ class AuditorAgent(BaseAgent):
             context: Task execution context
 
         Returns:
-            Human-readable rephrased task description
+            Human - readable rephrased task description
         """
         task_type = task.get("type", "audit")
         audit_target = task.get("audit_target", {})
@@ -3550,6 +3658,7 @@ class AuditorAgent(BaseAgent):
             return f"Run compliance audit on {target_type} to verify adherence to regulatory requirements and internal policies."
         else:
             return f"Execute comprehensive audit on {target_type} covering quality, security, performance, and compliance aspects."
+
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
@@ -3578,12 +3687,12 @@ class AuditorAgent(BaseAgent):
             audit_type in rephrased_lower
             for audit_type in [
                 "quality",
-                "security",
-                "performance",
-                "compliance",
-                "comprehensive",
-                "audit",
-            ]
+                    "security",
+                    "performance",
+                    "compliance",
+                    "comprehensive",
+                    "audit",
+                    ]
         )
 
         # Verify target type is mentioned
@@ -3596,13 +3705,13 @@ class AuditorAgent(BaseAgent):
             action in rephrased_lower
             for action in [
                 "perform",
-                "conduct",
-                "execute",
-                "run",
-                "analyze",
-                "assess",
-                "identify",
-            ]
+                    "conduct",
+                    "execute",
+                    "run",
+                    "analyze",
+                    "assess",
+                    "identify",
+                    ]
         )
 
         # Calculate accuracy score
@@ -3611,6 +3720,7 @@ class AuditorAgent(BaseAgent):
         )
 
         return accuracy_score >= 0.7  # 70% accuracy threshold
+
 
     async def _perform_audit(self, audit_target: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -3624,14 +3734,14 @@ class AuditorAgent(BaseAgent):
         """
         audit_results = {
             "overall_score": 0.0,
-            "quality_score": 0.0,
-            "compliance_score": 0.0,
-            "performance_score": 0.0,
-            "security_score": 0.0,
-            "issues": [],
-            "recommendations": [],
-            "passed": False,
-        }
+                "quality_score": 0.0,
+                "compliance_score": 0.0,
+                "performance_score": 0.0,
+                "security_score": 0.0,
+                "issues": [],
+                "recommendations": [],
+                "passed": False,
+                }
 
         # Quality audit
         quality_result = await self._audit_quality(audit_target)
@@ -3656,10 +3766,10 @@ class AuditorAgent(BaseAgent):
         # Calculate overall score
         scores = [
             audit_results["quality_score"],
-            audit_results["compliance_score"],
-            audit_results["performance_score"],
-            audit_results["security_score"],
-        ]
+                audit_results["compliance_score"],
+                audit_results["performance_score"],
+                audit_results["security_score"],
+                ]
         audit_results["overall_score"] = sum(scores) / len(scores)
 
         # Determine if audit passed
@@ -3677,6 +3787,7 @@ class AuditorAgent(BaseAgent):
             f"Audit completed with overall score: {audit_results['overall_score']:.2f}"
         )
         return audit_results
+
 
     async def _audit_quality(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive quality audit."""
@@ -3736,22 +3847,23 @@ class AuditorAgent(BaseAgent):
             self.logger.info(f"Quality audit completed with score: {quality_score:.2f}")
             return {
                 "score": quality_score,
-                "issues": issues,
-                "metrics": {
+                    "issues": issues,
+                    "metrics": {
                     "completion_status": target.get("status"),
-                    "output_completeness": len(actual_outputs)
+                        "output_completeness": len(actual_outputs)
                     / max(1, len(required_outputs)),
-                    "execution_efficiency": (
+                        "execution_efficiency": (
                         min(1.0, expected_time / max(1, execution_time))
                         if expected_time > 0
                         else 1.0
                     ),
-                },
-            }
+                        },
+                    }
 
         except Exception as e:
             self.logger.error(f"Quality audit failed: {str(e)}")
             return {"score": 0.0, "issues": [f"Audit error: {str(e)}"], "metrics": {}}
+
 
     async def _audit_compliance(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """Perform compliance audit against standards and requirements."""
@@ -3816,15 +3928,15 @@ class AuditorAgent(BaseAgent):
             )
             return {
                 "score": compliance_score,
-                "issues": issues,
-                "compliance_checks": {
+                    "issues": issues,
+                    "compliance_checks": {
                     "required_fields": len(required_fields)
                     - len([f for f in required_fields if f not in target]),
-                    "workflow_completion": len(
+                        "workflow_completion": len(
                         [s for s in workflow_steps if s.get("completed")]
                     )
                     / max(1, len(workflow_steps)),
-                    "approval_status": (
+                        "approval_status": (
                         "approved"
                         if target.get("approved_by")
                         else (
@@ -3833,16 +3945,17 @@ class AuditorAgent(BaseAgent):
                             else "not_required"
                         )
                     ),
-                },
-            }
+                        },
+                    }
 
         except Exception as e:
             self.logger.error(f"Compliance audit failed: {str(e)}")
             return {
                 "score": 0.0,
-                "issues": [f"Audit error: {str(e)}"],
-                "compliance_checks": {},
-            }
+                    "issues": [f"Audit error: {str(e)}"],
+                    "compliance_checks": {},
+                    }
+
 
     async def _audit_performance(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """Perform performance audit of task execution."""
@@ -3881,7 +3994,7 @@ class AuditorAgent(BaseAgent):
                     issues.append(f"High memory usage detected: {memory_usage}MB")
                     performance_score -= 0.1
 
-            # Evaluate output quality vs time trade-off
+            # Evaluate output quality vs time trade - off
             outputs = target.get("outputs", {})
             quality_metrics = outputs.get("quality_metrics", {})
 
@@ -3897,7 +4010,7 @@ class AuditorAgent(BaseAgent):
 
                 if efficiency_ratio < 0.1:
                     issues.append(
-                        f"Low efficiency ratio: {efficiency_ratio:.3f} quality/minute"
+                        f"Low efficiency ratio: {efficiency_ratio:.3f} quality / minute"
                     )
                     performance_score -= 0.15
 
@@ -3930,29 +4043,30 @@ class AuditorAgent(BaseAgent):
             )
             return {
                 "score": performance_score,
-                "issues": issues,
-                "performance_metrics": {
+                    "issues": issues,
+                    "performance_metrics": {
                     "execution_time": execution_time,
-                    "time_efficiency": (
+                        "time_efficiency": (
                         min(1.0, estimated_time / max(1, execution_time))
                         if estimated_time > 0
                         else 1.0
                     ),
-                    "resource_efficiency": (
+                        "resource_efficiency": (
                         1.0 - (cpu_usage / 100) * 0.5 if cpu_usage else 1.0
                     ),
-                    "retry_rate": retry_count,
-                    "bottleneck_count": len(bottlenecks),
-                },
-            }
+                        "retry_rate": retry_count,
+                        "bottleneck_count": len(bottlenecks),
+                        },
+                    }
 
         except Exception as e:
             self.logger.error(f"Performance audit failed: {str(e)}")
             return {
                 "score": 0.0,
-                "issues": [f"Audit error: {str(e)}"],
-                "performance_metrics": {},
-            }
+                    "issues": [f"Audit error: {str(e)}"],
+                    "performance_metrics": {},
+                    }
+
 
     async def _audit_security(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive security audit."""
@@ -4028,7 +4142,7 @@ class AuditorAgent(BaseAgent):
                     issues.append(f"Insecure file access: {operation.get('path')}")
                     security_score -= 0.2
 
-            # Check for cross-site scripting (XSS) vulnerabilities
+            # Check for cross - site scripting (XSS) vulnerabilities
             if "html_content" in outputs:
                 html_content = outputs["html_content"]
                 if self._has_xss_vulnerability(html_content):
@@ -4042,34 +4156,35 @@ class AuditorAgent(BaseAgent):
             )
             return {
                 "score": security_score,
-                "issues": issues,
-                "security_checks": {
+                    "issues": issues,
+                    "security_checks": {
                     "authentication_status": (
                         "authenticated"
                         if target.get("authenticated_user")
                         else "anonymous"
                     ),
-                    "encryption_status": (
+                        "encryption_status": (
                         "encrypted" if target.get("encrypted") else "unencrypted"
                     ),
-                    "external_calls_secure": all(
+                        "external_calls_secure": all(
                         call.get("url", "").startswith("https://")
                         for call in external_calls
                     ),
-                    "audit_trail_enabled": target.get("access_logged", False),
-                    "sensitive_data_protected": not any(
+                        "audit_trail_enabled": target.get("access_logged", False),
+                        "sensitive_data_protected": not any(
                         self._contains_sensitive_data(v) for v in outputs.values()
                     ),
-                },
-            }
+                        },
+                    }
 
         except Exception as e:
             self.logger.error(f"Security audit failed: {str(e)}")
             return {
                 "score": 0.0,
-                "issues": [f"Audit error: {str(e)}"],
-                "security_checks": {},
-            }
+                    "issues": [f"Audit error: {str(e)}"],
+                    "security_checks": {},
+                    }
+
 
     async def _generate_recommendations(
         self, audit_results: Dict[str, Any]
@@ -4088,6 +4203,7 @@ class AuditorAgent(BaseAgent):
 
         return recommendations
 
+
     def get_audit_history(self, limit: int = 10) -> List[Dict[str, Any]]:
         """
         Get recent audit history.
@@ -4100,21 +4216,23 @@ class AuditorAgent(BaseAgent):
         """
         return self.audit_history[-limit:] if self.audit_history else []
 
+
     def _get_required_fields_for_task_type(self, task_type: str) -> List[str]:
         """Get required fields for a specific task type."""
         field_requirements = {
             "content_creation": ["title", "content", "target_audience", "created_at"],
-            "research": ["topic", "sources", "findings", "methodology"],
-            "marketing": ["campaign_name", "target_audience", "channels", "budget"],
-            "system_maintenance": [
+                "research": ["topic", "sources", "findings", "methodology"],
+                "marketing": ["campaign_name", "target_audience", "channels", "budget"],
+                "system_maintenance": [
                 "system_component",
-                "maintenance_type",
-                "completion_status",
-            ],
-            "quality_assurance": ["test_cases", "test_results", "pass_criteria"],
-            "planning": ["objectives", "timeline", "resources", "deliverables"],
-        }
+                    "maintenance_type",
+                    "completion_status",
+                    ],
+                "quality_assurance": ["test_cases", "test_results", "pass_criteria"],
+                "planning": ["objectives", "timeline", "resources", "deliverables"],
+                }
         return field_requirements.get(task_type, ["id", "type", "status", "created_at"])
+
 
     def _validate_output_format(
         self, output_key: str, output_value: Any
@@ -4157,10 +4275,11 @@ class AuditorAgent(BaseAgent):
 
                 datetime.fromisoformat(output_value.replace("Z", "+00:00"))
             except ValueError:
-                issues.append(f"Invalid date/timestamp format: {output_value}")
+                issues.append(f"Invalid date / timestamp format: {output_value}")
                 valid = False
 
         return {"valid": valid, "issues": issues}
+
 
     def _contains_sensitive_data(self, data: Any) -> bool:
         """Check if data contains sensitive information."""
@@ -4170,8 +4289,8 @@ class AuditorAgent(BaseAgent):
         sensitive_patterns = [
             r"\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b",  # Credit card numbers
             r"\b\d{3}-\d{2}-\d{4}\b",  # SSN
-            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",  # Email addresses
-            r"\b(?:password|pwd|pass|secret|key|token)\s*[:=]\s*\S+\b",  # Passwords/keys
+            r"\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\.[A - Z|a - z]{2,}\b",  # Email addresses
+            r"\b(?:password|pwd|pass|secret|key|token)\s*[:=]\s*\S+\b",  # Passwords / keys
             r"\b(?:api[_-]?key|access[_-]?token|auth[_-]?token)\s*[:=]\s*\S+\b",  # API keys
         ]
 
@@ -4183,10 +4302,11 @@ class AuditorAgent(BaseAgent):
 
         return False
 
+
     def _is_input_sanitized(self, input_value: Any) -> bool:
         """Check if input has been properly sanitized."""
         if not isinstance(input_value, str):
-            return True  # Non-string inputs are considered safe
+            return True  # Non - string inputs are considered safe
 
         # Check for common injection patterns
         dangerous_patterns = [
@@ -4204,6 +4324,7 @@ class AuditorAgent(BaseAgent):
                 return False
 
         return True
+
 
     def _has_sql_injection_risk(self, query: str) -> bool:
         """Check if a database query has SQL injection risks."""
@@ -4227,6 +4348,7 @@ class AuditorAgent(BaseAgent):
 
         return False
 
+
     def _is_file_access_secure(self, operation: Dict[str, Any]) -> bool:
         """Check if file access operation is secure."""
         path = operation.get("path", "")
@@ -4238,15 +4360,15 @@ class AuditorAgent(BaseAgent):
 
         # Check for access to sensitive system files
         sensitive_paths = [
-            "/etc/passwd",
-            "/etc/shadow",
-            "/etc/hosts",
-            "C:\\Windows\\System32",
-            "C:\\Windows\\SysWOW64",
-            "/proc/",
-            "/sys/",
-            "/dev/",
-        ]
+            "/etc / passwd",
+                "/etc / shadow",
+                "/etc / hosts",
+                "C:\\Windows\\System32",
+                "C:\\Windows\\SysWOW64",
+                "/proc/",
+                "/sys/",
+                "/dev/",
+                ]
 
         for sensitive_path in sensitive_paths:
             if path.startswith(sensitive_path):
@@ -4256,16 +4378,17 @@ class AuditorAgent(BaseAgent):
         if operation_type in ["write", "delete", "modify"]:
             system_dirs = [
                 "/bin/",
-                "/sbin/",
-                "/usr/bin/",
-                "/usr/sbin/",
-                "C:\\Program Files",
-            ]
+                    "/sbin/",
+                    "/usr / bin/",
+                    "/usr / sbin/",
+                    "C:\\Program Files",
+                    ]
             for sys_dir in system_dirs:
                 if path.startswith(sys_dir):
                     return False
 
         return True
+
 
     def _has_xss_vulnerability(self, html_content: str) -> bool:
         """Check if HTML content has XSS vulnerabilities."""
@@ -4274,12 +4397,12 @@ class AuditorAgent(BaseAgent):
 
         xss_patterns = [
             r"<script[^>]*>.*?</script>",
-            r"javascript:",
-            r'on\w+\s*=\s*["\'][^"\'>]*["\']',
-            r"<iframe[^>]*>.*?</iframe>",
-            r"<object[^>]*>.*?</object>",
-            r"<embed[^>]*>.*?</embed>",
-        ]
+                r"javascript:",
+                r'on\w+\s*=\s*["\'][^"\'>]*["\']',
+                r"<iframe[^>]*>.*?</iframe>",
+                r"<object[^>]*>.*?</object>",
+                r"<embed[^>]*>.*?</embed>",
+                ]
 
         import re
 

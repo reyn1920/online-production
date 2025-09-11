@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 import json
 import os
 import re
@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(os.getcwd())
-DEFAULT_DB = Path("data/right_perspective.db")  # change with --db if needed
+DEFAULT_DB = Path("data / right_perspective.db")  # change with --db if needed
 
 
 def ts():
@@ -25,12 +25,12 @@ def backup_file(path: Path):
     return bak
 
 
-def find_files(patterns, exts=(".py",), max_files=50):
+def find_files(patterns, exts=(".py",), max_files = 50):
     matches = []
     for p in ROOT.rglob("*"):
         if p.is_file() and p.suffix in exts:
             try:
-                txt = p.read_text(encoding="utf-8", errors="ignore")
+                txt = p.read_text(encoding="utf - 8", errors="ignore")
                 if any(pat in txt for pat in patterns):
                     matches.append((p, txt))
             except Exception:
@@ -52,12 +52,12 @@ def patch_right_perspective_firewall():
     for path, txt in candidates:
         # Ensure __init__ exists and _rule_cache is set
         class_match = re.search(
-            r"class\s+RightPerspectiveFirewall\s*(?:\([^)]*\))?\s*:\s*(?:\n\s+\"\"\".*?\"\"\"\s*)?",
-            txt,
-            re.S,
-        )
+            r"class\s + RightPerspectiveFirewall\s*(?:\([^)]*\))?\s*:\s*(?:\n\s+\"\"\".*?\"\"\"\s*)?",
+                txt,
+                re.S,
+                )
         if not class_match:
-            class_match = re.search(r"class\s+RightPerspectiveFirewall\s*:\s*", txt)
+            class_match = re.search(r"class\s + RightPerspectiveFirewall\s*:\s*", txt)
         if not class_match:
             continue
 
@@ -68,15 +68,15 @@ def patch_right_perspective_firewall():
             continue
 
         # Try to detect class block start and insert __init__ if missing
-        has_init = re.search(r"def\s+__init__\s*\(", txt) is not None
+        has_init = re.search(r"def\s + __init__\s*\(", txt) is not None
 
         if has_init:
             # Inject self._rule_cache = {} at start of __init__ if missing
             init_match = re.search(
-                r"(def\s+__init__\s*\([^)]*\)\s*:)(.*?)(?=\n\s*def|\n\s*class|\Z)",
-                txt,
-                re.S,
-            )
+                r"(def\s + __init__\s*\([^)]*\)\s*:)(.*?)(?=\n\s * def|\n\s * class|\Z)",
+                    txt,
+                    re.S,
+                    )
             if init_match:
                 init_body = init_match.group(2)
                 if "self._rule_cache" not in init_body:
@@ -89,11 +89,11 @@ def patch_right_perspective_firewall():
 
                     for line in lines:
                         new_lines.append(line)
-                        if re.match(r"\s*def\s+__init__\s*\(", line):
+                        if re.match(r"\s * def\s + __init__\s*\(", line):
                             in_init = True
                             init_indent = len(line) - len(line.lstrip())
                         elif in_init and not cache_added:
-                            # Look for first non-empty line in __init__ body
+                            # Look for first non - empty line in __init__ body
                             if (
                                 line.strip()
                                 and not line.strip().startswith('"""')
@@ -109,30 +109,30 @@ def patch_right_perspective_firewall():
 
                     if cache_added:
                         backup_file(path)
-                        path.write_text("\n".join(new_lines), encoding="utf-8")
+                        path.write_text("\n".join(new_lines), encoding="utf - 8")
                         patched_any = True
                         details.append(
                             {
                                 "file": str(path),
-                                "patched": True,
-                                "reason": "added_cache_to_init",
-                            }
+                                    "patched": True,
+                                    "reason": "added_cache_to_init",
+                                    }
                         )
                     else:
                         details.append(
                             {
                                 "file": str(path),
-                                "patched": False,
-                                "reason": "could_not_locate_init_body",
-                            }
+                                    "patched": False,
+                                    "reason": "could_not_locate_init_body",
+                                    }
                         )
                 else:
                     details.append(
                         {
                             "file": str(path),
-                            "patched": False,
-                            "reason": "cache_already_in_init",
-                        }
+                                "patched": False,
+                                "reason": "cache_already_in_init",
+                                }
                     )
         else:
             # Add __init__ method with _rule_cache
@@ -147,7 +147,7 @@ def patch_right_perspective_firewall():
 
             new_txt = txt[:class_start] + init_method + txt[class_start:]
             backup_file(path)
-            path.write_text(new_txt, encoding="utf-8")
+            path.write_text(new_txt, encoding="utf - 8")
             patched_any = True
             details.append(
                 {"file": str(path), "patched": True, "reason": "added_init_with_cache"}
@@ -173,7 +173,7 @@ def patch_content_agent():
         # Check if shutil is used but not imported
         has_shutil_usage = "shutil." in txt
         has_shutil_import = re.search(
-            r"^\s*import\s+shutil\s*$|^\s*from\s+\S+\s+import\s+.*shutil", txt, re.M
+            r"^\s * import\s + shutil\s*$|^\s * from\s+\S+\s + import\s+.*shutil", txt, re.M
         )
 
         if has_shutil_usage and not has_shutil_import:
@@ -200,13 +200,13 @@ def patch_content_agent():
                     import_inserted = True
                     break
                 elif not line.strip().startswith("#") and line.strip() != "":
-                    # Insert before first non-import, non-comment line
+                    # Insert before first non - import, non - comment line
                     lines.insert(i, "import shutil")
                     import_inserted = True
                     break
 
             if not import_inserted:
-                # Fallback: insert at the beginning after shebang/encoding
+                # Fallback: insert at the beginning after shebang / encoding
                 insert_pos = 0
                 for i, line in enumerate(lines[:5]):
                     if line.startswith("#!"):
@@ -216,7 +216,7 @@ def patch_content_agent():
                 lines.insert(insert_pos, "import shutil")
 
             backup_file(path)
-            path.write_text("\n".join(lines), encoding="utf-8")
+            path.write_text("\n".join(lines), encoding="utf - 8")
             patched_any = True
             details.append(
                 {"file": str(path), "patched": True, "reason": "added_shutil_import"}
@@ -276,11 +276,11 @@ def patch_database(db_path: Path):
                     """
                     CREATE TABLE api_discovery_tasks (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        task_type TEXT DEFAULT 'general',
-                        status TEXT DEFAULT 'pending',
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        data TEXT
+                            task_type TEXT DEFAULT 'general',
+                            status TEXT DEFAULT 'pending',
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            data TEXT
                     );
                 """
                 )
@@ -293,15 +293,15 @@ def patch_database(db_path: Path):
                         if len(row) >= 6:
                             cursor.execute(
                                 "INSERT INTO api_discovery_tasks (id, task_type, status, created_at, updated_at, data) VALUES (?, ?, ?, ?, ?, ?);",
-                                row[:6],
-                            )
+                                    row[:6],
+                                    )
                         else:
                             # Pad with defaults if row is shorter
                             padded_row = list(row) + [None] * (6 - len(row))
                             cursor.execute(
                                 "INSERT INTO api_discovery_tasks (id, task_type, status, created_at, updated_at, data) VALUES (?, ?, ?, ?, ?, ?);",
-                                padded_row[:6],
-                            )
+                                    padded_row[:6],
+                                    )
 
                 conn.commit()
                 conn.close()
@@ -315,11 +315,11 @@ def patch_database(db_path: Path):
                 """
                 CREATE TABLE api_discovery_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    task_type TEXT DEFAULT 'general',
-                    status TEXT DEFAULT 'pending',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    data TEXT
+                        task_type TEXT DEFAULT 'general',
+                        status TEXT DEFAULT 'pending',
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        data TEXT
                 );
             """
             )
@@ -367,7 +367,6 @@ def main():
 
     print("\n🎉 Agent fixes completed!")
     return results
-
 
 if __name__ == "__main__":
     main()

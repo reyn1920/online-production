@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Production MCP Puppeteer Integration for Trae AI
 Actually calls the MCP Puppeteer server to interact with AI websites.
@@ -15,12 +15,13 @@ from typing import Any, Callable, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class MCPCall:
     """Structure for MCP server calls"""
 
@@ -32,8 +33,9 @@ class MCPCall:
     result: Optional[Any] = None
     error: Optional[str] = None
 
-
 @dataclass
+
+
 class AIServiceSession:
     """Complete AI service interaction session"""
 
@@ -51,7 +53,8 @@ class AIServiceSession:
 
 
 class ProductionMCPIntegration:
-    """Production-ready MCP Puppeteer integration for AI services"""
+    """Production - ready MCP Puppeteer integration for AI services"""
+
 
     def __init__(self, mcp_caller: Optional[Callable] = None):
         """
@@ -65,61 +68,62 @@ class ProductionMCPIntegration:
         self.ai_services = {
             "abacus": {
                 "name": "Abacus AI",
-                "url": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
-                "selectors": {
-                    "input": 'textarea[placeholder*="Type your message"], .chat-input, textarea.message-input, [contenteditable="true"]',
-                    "submit": 'button[type="submit"], .send-button, .submit-btn',
-                    "response": ".message-content, .response-text, .assistant-message, .output",
-                },
-                "wait_times": {"navigation": 5, "input_fill": 2, "response_wait": 10},
-            },
-            "gemini": {
+                    "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
+                    "selectors": {
+                    "input": 'textarea[placeholder*="Type your message"], .chat - input, textarea.message - input, [contenteditable="true"]',
+                        "submit": 'button[type="submit"], .send - button, .submit - btn',
+                        "response": ".message - content, .response - text, .assistant - message, .output",
+                        },
+                    "wait_times": {"navigation": 5, "input_fill": 2, "response_wait": 10},
+                    },
+                "gemini": {
                 "name": "Google Gemini",
-                "url": "https://gemini.google.com/app",
-                "selectors": {
-                    "input": 'div[contenteditable="true"], .ProseMirror, rich-textarea',
-                    "submit": 'button[aria-label*="Send"], button[data-testid="send-button"]',
-                    "response": '[data-message-author-role="assistant"], .model-response',
-                },
-                "wait_times": {"navigation": 6, "input_fill": 2, "response_wait": 12},
-            },
-            "chatgpt": {
+                    "url": "https://gemini.google.com / app",
+                    "selectors": {
+                    "input": 'div[contenteditable="true"], .ProseMirror, rich - textarea',
+                        "submit": 'button[aria - label*="Send"], button[data - testid="send - button"]',
+                        "response": '[data - message - author - role="assistant"], .model - response',
+                        },
+                    "wait_times": {"navigation": 6, "input_fill": 2, "response_wait": 12},
+                    },
+                "chatgpt": {
                 "name": "ChatGPT",
-                "url": "https://chatgpt.com/",
-                "selectors": {
-                    "input": "#prompt-textarea, .ProseMirror",
-                    "submit": 'button[data-testid="send-button"]',
-                    "response": '[data-message-author-role="assistant"] .markdown',
-                },
-                "wait_times": {"navigation": 4, "input_fill": 1, "response_wait": 8},
-            },
-        }
+                    "url": "https://chatgpt.com/",
+                    "selectors": {
+                    "input": "#prompt - textarea, .ProseMirror",
+                        "submit": 'button[data - testid="send - button"]',
+                        "response": '[data - message - author - role="assistant"] .markdown',
+                        },
+                    "wait_times": {"navigation": 4, "input_fill": 1, "response_wait": 8},
+                    },
+                }
 
         self.sessions = []
         self.browser_config = {
             "headless": False,  # Show browser for debugging
             "args": [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-blink-features=AutomationControlled",
-                "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            ],
-        }
+                "--no - sandbox",
+                    "--disable - setuid - sandbox",
+                    "--disable - blink - features = AutomationControlled",
+                    "--user - agent = Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36",
+                    ],
+                }
+
 
     async def _simulate_mcp_call(
         self, server_name: str, tool_name: str, args: Dict[str, Any]
     ) -> MCPCall:
         """Simulate MCP calls for demonstration purposes"""
         call = MCPCall(
-            server_name=server_name,
-            tool_name=tool_name,
-            args=args,
-            timestamp=time.time(),
-        )
+            server_name = server_name,
+                tool_name = tool_name,
+                args = args,
+                timestamp = time.time(),
+                )
 
         try:
             logger.info(
-                f"MCP Call: {tool_name} with args: {json.dumps(args, indent=2)}"
+                f"MCP Call: {tool_name} with args: {json.dumps(args, indent = 2)}"
             )
 
             # Simulate different MCP operations
@@ -165,6 +169,7 @@ class ProductionMCPIntegration:
 
         return call
 
+
     def _generate_realistic_ai_response(self, context: Dict[str, Any]) -> str:
         """Generate realistic AI responses based on context"""
         service = context.get("service", "unknown")
@@ -177,19 +182,20 @@ class ProductionMCPIntegration:
         ):
             responses = {
                 "abacus": "I've analyzed your SQLite error. The column 'search_keywords' doesn't exist in your table schema. Here's the fix: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT; Use database migrations for schema changes and add proper error handling.",
-                "gemini": "This SQLite error occurs when database schema and application code are out of sync. Add the missing column with: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT DEFAULT '[]'; Then implement proper database migrations.",
-                "chatgpt": "I can help fix this SQLite error. The 'search_keywords' column doesn't exist. Quick fix: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT; For long-term, implement a migration system with proper error handling.",
-            }
+                    "gemini": "This SQLite error occurs when database schema and application code are out of sync. Add the missing column with: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT DEFAULT '[]'; Then implement proper database migrations.",
+                    "chatgpt": "I can help fix this SQLite error. The 'search_keywords' column doesn't exist. Quick fix: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT; For long - term, implement a migration system with proper error handling.",
+                    }
             return responses.get(service, "AI analysis completed successfully.")
 
         # Handle other types of queries
         responses = {
-            "abacus": f"Abacus AI analyzed: {query[:50]}... Here's a comprehensive solution with data-driven insights.",
-            "gemini": f"Google Gemini analyzed: {query[:50]}... Based on advanced AI reasoning, here are the findings.",
-            "chatgpt": f"ChatGPT processed: {query[:50]}... Here's a detailed response with step-by-step guidance.",
-        }
+            "abacus": f"Abacus AI analyzed: {query[:50]}... Here's a comprehensive solution with data - driven insights.",
+                "gemini": f"Google Gemini analyzed: {query[:50]}... Based on advanced AI reasoning, here are the findings.",
+                "chatgpt": f"ChatGPT processed: {query[:50]}... Here's a detailed response with step - by - step guidance.",
+                }
 
         return responses.get(service, "AI analysis completed successfully.")
+
 
     async def interact_with_ai_service(
         self, service: str, query: str
@@ -197,17 +203,17 @@ class ProductionMCPIntegration:
         """Complete interaction with an AI service using MCP Puppeteer"""
         if service not in self.ai_services:
             return AIServiceSession(
-                service=service,
-                service_name="Unknown",
-                url="",
-                query=query,
-                mcp_calls=[],
-                final_response="",
-                screenshots=[],
-                timestamp=time.time(),
-                success=False,
-                error=f"Unknown service: {service}",
-            )
+                service = service,
+                    service_name="Unknown",
+                    url="",
+                    query = query,
+                    mcp_calls=[],
+                    final_response="",
+                    screenshots=[],
+                    timestamp = time.time(),
+                    success = False,
+                    error = f"Unknown service: {service}",
+                    )
 
         service_config = self.ai_services[service]
         session_start = time.time()
@@ -221,13 +227,13 @@ class ProductionMCPIntegration:
             logger.info(f"Step 1: Navigating to {service_config['url']}")
             nav_call = await self.mcp_caller(
                 "mcp.config.usrlocalmcp.Puppeteer",
-                "puppeteer_navigate",
-                {
+                    "puppeteer_navigate",
+                    {
                     "url": service_config["url"],
-                    "launchOptions": self.browser_config,
-                    "allowDangerous": True,
-                },
-            )
+                        "launchOptions": self.browser_config,
+                        "allowDangerous": True,
+                        },
+                    )
             mcp_calls.append(nav_call)
 
             if not nav_call.success:
@@ -241,9 +247,9 @@ class ProductionMCPIntegration:
             initial_screenshot = f"{service}_initial_{int(time.time())}"
             screenshot_call = await self.mcp_caller(
                 "mcp.config.usrlocalmcp.Puppeteer",
-                "puppeteer_screenshot",
-                {"name": initial_screenshot, "width": 1400, "height": 900},
-            )
+                    "puppeteer_screenshot",
+                    {"name": initial_screenshot, "width": 1400, "height": 900},
+                    )
             mcp_calls.append(screenshot_call)
             if screenshot_call.success:
                 screenshots.append(initial_screenshot)
@@ -252,9 +258,9 @@ class ProductionMCPIntegration:
             logger.info(f"Step 3: Filling input with query: {query[:50]}...")
             fill_call = await self.mcp_caller(
                 "mcp.config.usrlocalmcp.Puppeteer",
-                "puppeteer_fill",
-                {"selector": service_config["selectors"]["input"], "value": query},
-            )
+                    "puppeteer_fill",
+                    {"selector": service_config["selectors"]["input"], "value": query},
+                    )
             mcp_calls.append(fill_call)
 
             if not fill_call.success:
@@ -266,9 +272,9 @@ class ProductionMCPIntegration:
             logger.info("Step 4: Submitting query")
             click_call = await self.mcp_caller(
                 "mcp.config.usrlocalmcp.Puppeteer",
-                "puppeteer_click",
-                {"selector": service_config["selectors"]["submit"]},
-            )
+                    "puppeteer_click",
+                    {"selector": service_config["selectors"]["submit"]},
+                    )
             mcp_calls.append(click_call)
 
             if not click_call.success:
@@ -285,9 +291,9 @@ class ProductionMCPIntegration:
             response_screenshot = f"{service}_response_{int(time.time())}"
             response_screenshot_call = await self.mcp_caller(
                 "mcp.config.usrlocalmcp.Puppeteer",
-                "puppeteer_screenshot",
-                {"name": response_screenshot, "width": 1400, "height": 900},
-            )
+                    "puppeteer_screenshot",
+                    {"name": response_screenshot, "width": 1400, "height": 900},
+                    )
             mcp_calls.append(response_screenshot_call)
             if response_screenshot_call.success:
                 screenshots.append(response_screenshot)
@@ -296,17 +302,17 @@ class ProductionMCPIntegration:
             logger.info("Step 7: Extracting AI response text")
             extract_call = await self.mcp_caller(
                 "mcp.config.usrlocalmcp.Puppeteer",
-                "puppeteer_evaluate",
-                {
+                    "puppeteer_evaluate",
+                    {
                     "script": f"""
                     // Extract AI response using multiple selectors
                     const selectors = [
                         "{service_config['selectors']['response']}",
-                        ".message", ".response", ".chat-message",
-                        "[data-message-author-role='assistant']",
-                        ".markdown", ".model-response", ".answer"
+                            ".message", ".response", ".chat - message",
+                            "[data - message - author - role='assistant']",
+                            ".markdown", ".model - response", ".answer"
                     ];
-                    
+
                     let responseText = "";
                     for (const selector of selectors) {{
                         const elements = document.querySelectorAll(selector);
@@ -319,12 +325,12 @@ class ProductionMCPIntegration:
                             }}
                         }}
                     }}
-                    
+
                     return responseText || "No response extracted";
                     """,
-                    "context": {"service": service, "query": query},
-                },
-            )
+                        "context": {"service": service, "query": query},
+                        },
+                    )
             mcp_calls.append(extract_call)
 
             final_response = ""
@@ -337,17 +343,17 @@ class ProductionMCPIntegration:
                 )
 
             session = AIServiceSession(
-                service=service,
-                service_name=service_config["name"],
-                url=service_config["url"],
-                query=query,
-                mcp_calls=mcp_calls,
-                final_response=final_response,
-                screenshots=screenshots,
-                timestamp=session_start,
-                success=True,
-                total_duration=time.time() - session_start,
-            )
+                service = service,
+                    service_name = service_config["name"],
+                    url = service_config["url"],
+                    query = query,
+                    mcp_calls = mcp_calls,
+                    final_response = final_response,
+                    screenshots = screenshots,
+                    timestamp = session_start,
+                    success = True,
+                    total_duration = time.time() - session_start,
+                    )
 
             self.sessions.append(session)
             logger.info(
@@ -359,21 +365,22 @@ class ProductionMCPIntegration:
             logger.error(f"Error interacting with {service}: {str(e)}")
 
             session = AIServiceSession(
-                service=service,
-                service_name=service_config["name"],
-                url=service_config["url"],
-                query=query,
-                mcp_calls=mcp_calls,
-                final_response="",
-                screenshots=screenshots,
-                timestamp=session_start,
-                success=False,
-                total_duration=time.time() - session_start,
-                error=str(e),
-            )
+                service = service,
+                    service_name = service_config["name"],
+                    url = service_config["url"],
+                    query = query,
+                    mcp_calls = mcp_calls,
+                    final_response="",
+                    screenshots = screenshots,
+                    timestamp = session_start,
+                    success = False,
+                    total_duration = time.time() - session_start,
+                    error = str(e),
+                    )
 
             self.sessions.append(session)
             return session
+
 
     async def multi_service_debugging(
         self, error_message: str, code_context: str = "", services: List[str] = None
@@ -392,13 +399,13 @@ class ProductionMCPIntegration:
 
 **What I need:**
 1. Root cause analysis of the error
-2. Step-by-step solution with code examples
+2. Step - by - step solution with code examples
 3. Prevention strategies to avoid similar issues
 4. Best practices for handling this type of error
 
 Please provide a comprehensive analysis and solution."""
 
-        logger.info(f"Starting multi-service debugging with {len(services)} services")
+        logger.info(f"Starting multi - service debugging with {len(services)} services")
 
         # Run interactions with all services concurrently
         tasks = [
@@ -406,7 +413,7 @@ Please provide a comprehensive analysis and solution."""
             for service in services
         ]
 
-        sessions = await asyncio.gather(*tasks, return_exceptions=True)
+        sessions = await asyncio.gather(*tasks, return_exceptions = True)
 
         # Process results
         results = {}
@@ -415,21 +422,22 @@ Please provide a comprehensive analysis and solution."""
             if isinstance(session, Exception):
                 logger.error(f"Exception in {service}: {session}")
                 results[service] = AIServiceSession(
-                    service=service,
-                    service_name=self.ai_services[service]["name"],
-                    url=self.ai_services[service]["url"],
-                    query=debugging_query,
-                    mcp_calls=[],
-                    final_response="",
-                    screenshots=[],
-                    timestamp=time.time(),
-                    success=False,
-                    error=str(session),
-                )
+                    service = service,
+                        service_name = self.ai_services[service]["name"],
+                        url = self.ai_services[service]["url"],
+                        query = debugging_query,
+                        mcp_calls=[],
+                        final_response="",
+                        screenshots=[],
+                        timestamp = time.time(),
+                        success = False,
+                        error = str(session),
+                        )
             else:
                 results[service] = session
 
         return results
+
 
     def generate_comprehensive_report(
         self, sessions: Dict[str, AIServiceSession], error_message: str
@@ -476,6 +484,7 @@ Please provide a comprehensive analysis and solution."""
 
         return report
 
+
     def export_complete_session(self, filename: str = None) -> str:
         """Export complete session data including all MCP calls and responses"""
         if filename is None:
@@ -485,48 +494,49 @@ Please provide a comprehensive analysis and solution."""
         export_data = {
             "session_metadata": {
                 "export_timestamp": time.time(),
-                "total_sessions": len(self.sessions),
-                "services_configured": list(self.ai_services.keys()),
-                "browser_config": self.browser_config,
-            },
-            "ai_services": self.ai_services,
-            "sessions": [
+                    "total_sessions": len(self.sessions),
+                    "services_configured": list(self.ai_services.keys()),
+                    "browser_config": self.browser_config,
+                    },
+                "ai_services": self.ai_services,
+                "sessions": [
                 {
                     "service": session.service,
-                    "service_name": session.service_name,
-                    "url": session.url,
-                    "query": session.query,
-                    "final_response": session.final_response,
-                    "screenshots": session.screenshots,
-                    "timestamp": session.timestamp,
-                    "success": session.success,
-                    "total_duration": session.total_duration,
-                    "error": session.error,
-                    "mcp_calls": [
+                        "service_name": session.service_name,
+                        "url": session.url,
+                        "query": session.query,
+                        "final_response": session.final_response,
+                        "screenshots": session.screenshots,
+                        "timestamp": session.timestamp,
+                        "success": session.success,
+                        "total_duration": session.total_duration,
+                        "error": session.error,
+                        "mcp_calls": [
                         {
                             "server_name": call.server_name,
-                            "tool_name": call.tool_name,
-                            "args": call.args,
-                            "timestamp": call.timestamp,
-                            "success": call.success,
-                            "result": call.result,
-                            "error": call.error,
-                        }
+                                "tool_name": call.tool_name,
+                                "args": call.args,
+                                "timestamp": call.timestamp,
+                                "success": call.success,
+                                "result": call.result,
+                                "error": call.error,
+                                }
                         for call in session.mcp_calls
                     ],
-                }
+                        }
                 for session in self.sessions
             ],
-        }
+                }
 
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(export_data, f, indent=2, ensure_ascii=False)
+        with open(filename, "w", encoding="utf - 8") as f:
+            json.dump(export_data, f, indent = 2, ensure_ascii = False)
 
         logger.info(f"Complete session data exported to: {filename}")
         return filename
 
-
 # Production demo function
+
+
 async def production_demo():
     """Demonstrate the production MCP integration"""
     print("🚀 Production MCP Puppeteer AI Integration")
@@ -535,15 +545,15 @@ async def production_demo():
     # Initialize the production integration
     mcp_integration = ProductionMCPIntegration()
 
-    # Demo: Multi-service debugging of SQLite error
-    print("\n🔍 Multi-Service AI Debugging Session")
+    # Demo: Multi - service debugging of SQLite error
+        print("\n🔍 Multi - Service AI Debugging Session")
 
     error_message = "sqlite3.OperationalError: no such column: search_keywords"
     code_context = """
 # Database query that failed:
 cursor.execute(
     "SELECT task_id, search_keywords FROM api_discovery_tasks WHERE search_keywords LIKE ?",
-    ('%python%',)
+        ('%python%',)
 )
 
 # Full error traceback:
@@ -607,8 +617,7 @@ cursor.execute(
     print("- Capture visual evidence of AI interactions")
     print("- Generate comprehensive debugging reports")
     print("- Export complete session data for analysis")
-    print("- Provide real-time browser automation for AI assistance")
-
+    print("- Provide real - time browser automation for AI assistance")
 
 if __name__ == "__main__":
     asyncio.run(production_demo())

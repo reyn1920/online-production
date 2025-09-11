@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 TTS Engine - Coqui TTS Integration for TRAE.AI
 
-This module provides high-quality text-to-speech generation using Coqui TTS,
+This module provides high - quality text - to - speech generation using Coqui TTS,
 replacing the proprietary Speechelo Pro RPA system with a direct, local integration.
 
 Features:
@@ -10,7 +10,7 @@ Features:
 - Emotion and style control
 - Batch processing capabilities
 - Audio format optimization
-- Real-time synthesis
+- Real - time synthesis
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
@@ -41,11 +41,12 @@ except ImportError:
     sys.exit(1)
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @dataclass
+
+
 class VoiceConfig:
     """Configuration for voice synthesis."""
 
@@ -59,10 +60,11 @@ class VoiceConfig:
     sample_rate: int = 22050
     format: str = "wav"
 
-
 @dataclass
+
+
 class SynthesisResult:
-    """Result of text-to-speech synthesis."""
+    """Result of text - to - speech synthesis."""
 
     audio_path: str
     text: str
@@ -74,7 +76,8 @@ class SynthesisResult:
 
 
 class TTSEngine:
-    """High-quality text-to-speech engine using Coqui TTS."""
+    """High - quality text - to - speech engine using Coqui TTS."""
+
 
     def __init__(self, cache_dir: Optional[str] = None):
         """Initialize TTS Engine.
@@ -85,21 +88,22 @@ class TTSEngine:
         self.cache_dir = (
             Path(cache_dir) if cache_dir else Path.home() / ".trae_tts_cache"
         )
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir.mkdir(parents = True, exist_ok = True)
 
         self.models_cache = {}
         self.available_models = self._get_available_models()
         self.default_config = VoiceConfig(
-            model_name="tts_models/en/ljspeech/tacotron2-DDC",
-            language="en",
-            speed=1.0,
-            pitch=1.0,
-            volume=1.0,
-        )
+            model_name="tts_models / en / ljspeech / tacotron2 - DDC",
+                language="en",
+                speed = 1.0,
+                pitch = 1.0,
+                volume = 1.0,
+                )
 
         logger.info(
             f"TTS Engine initialized with {len(self.available_models)} available models"
         )
+
 
     def _get_available_models(self) -> Dict[str, Dict[str, Any]]:
         """Get list of available TTS models."""
@@ -110,9 +114,9 @@ class TTSEngine:
             # Organize models by type and language
             organized_models = {
                 "multilingual": [],
-                "english": [],
-                "other_languages": [],
-            }
+                    "english": [],
+                    "other_languages": [],
+                    }
 
             for model in models:
                 if "multilingual" in model.lower():
@@ -125,7 +129,8 @@ class TTSEngine:
             return organized_models
         except Exception as e:
             logger.error(f"Error getting available models: {e}")
-            return {"english": ["tts_models/en/ljspeech/tacotron2-DDC"]}
+            return {"english": ["tts_models / en / ljspeech / tacotron2 - DDC"]}
+
 
     def _load_model(self, model_name: str) -> TTS:
         """Load and cache TTS model."""
@@ -134,7 +139,7 @@ class TTSEngine:
 
         try:
             logger.info(f"Loading TTS model: {model_name}")
-            tts = TTS(model_name=model_name, progress_bar=True)
+            tts = TTS(model_name = model_name, progress_bar = True)
 
             # Move to GPU if available
             if torch.cuda.is_available():
@@ -150,12 +155,13 @@ class TTSEngine:
                 return self._load_model(self.default_config.model_name)
             raise
 
+
     def synthesize_text(
         self,
-        text: str,
-        voice_config: Optional[VoiceConfig] = None,
-        output_path: Optional[str] = None,
-    ) -> SynthesisResult:
+            text: str,
+            voice_config: Optional[VoiceConfig] = None,
+            output_path: Optional[str] = None,
+            ) -> SynthesisResult:
         """Synthesize text to speech.
 
         Args:
@@ -187,17 +193,17 @@ class TTSEngine:
 
             # Generate audio
             if config.speaker and hasattr(tts, "speakers") and tts.speakers:
-                # Multi-speaker model
+                # Multi - speaker model
                 tts.tts_to_file(
-                    text=text, speaker=config.speaker, file_path=output_path
+                    text = text, speaker = config.speaker, file_path = output_path
                 )
             else:
                 # Single speaker model
-                tts.tts_to_file(text=text, file_path=output_path)
+                tts.tts_to_file(text = text, file_path = output_path)
 
             synthesis_time = (datetime.now() - start_time).total_seconds()
 
-            # Post-process audio if needed
+            # Post - process audio if needed
             if config.speed != 1.0 or config.pitch != 1.0 or config.volume != 1.0:
                 output_path = self._post_process_audio(
                     output_path, config.speed, config.pitch, config.volume
@@ -207,20 +213,20 @@ class TTSEngine:
             duration = self._get_audio_duration(output_path)
 
             result = SynthesisResult(
-                audio_path=output_path,
-                text=text,
-                voice_config=config,
-                duration=duration,
-                sample_rate=config.sample_rate,
-                created_at=datetime.now(),
-                metadata={
+                audio_path = output_path,
+                    text = text,
+                    voice_config = config,
+                    duration = duration,
+                    sample_rate = config.sample_rate,
+                    created_at = datetime.now(),
+                    metadata={
                     "synthesis_time": synthesis_time,
-                    "model_name": config.model_name,
-                    "text_length": len(text),
-                    "words_count": len(text.split()),
-                    "gpu_used": torch.cuda.is_available(),
-                },
-            )
+                        "model_name": config.model_name,
+                        "text_length": len(text),
+                        "words_count": len(text.split()),
+                        "gpu_used": torch.cuda.is_available(),
+                        },
+                    )
 
             logger.info(
                 f"Synthesis completed in {synthesis_time:.2f}s, duration: {duration:.2f}s"
@@ -231,22 +237,23 @@ class TTSEngine:
             logger.error(f"Error synthesizing text: {e}")
             raise
 
+
     def _post_process_audio(
         self, audio_path: str, speed: float, pitch: float, volume: float
     ) -> str:
-        """Post-process audio with speed, pitch, and volume adjustments."""
+        """Post - process audio with speed, pitch, and volume adjustments."""
         try:
             # Load audio
-            y, sr = librosa.load(audio_path, sr=None)
+            y, sr = librosa.load(audio_path, sr = None)
 
             # Adjust speed (time stretching)
             if speed != 1.0:
-                y = librosa.effects.time_stretch(y, rate=speed)
+                y = librosa.effects.time_stretch(y, rate = speed)
 
             # Adjust pitch
             if pitch != 1.0:
                 n_steps = 12 * np.log2(pitch)  # Convert to semitones
-                y = librosa.effects.pitch_shift(y, sr=sr, n_steps=n_steps)
+                y = librosa.effects.pitch_shift(y, sr = sr, n_steps = n_steps)
 
             # Adjust volume
             if volume != 1.0:
@@ -262,24 +269,26 @@ class TTSEngine:
             return processed_path
 
         except Exception as e:
-            logger.error(f"Error post-processing audio: {e}")
+            logger.error(f"Error post - processing audio: {e}")
             return audio_path  # Return original if processing fails
+
 
     def _get_audio_duration(self, audio_path: str) -> float:
         """Get audio file duration in seconds."""
         try:
-            y, sr = librosa.load(audio_path, sr=None)
+            y, sr = librosa.load(audio_path, sr = None)
             return len(y) / sr
         except Exception as e:
             logger.error(f"Error getting audio duration: {e}")
             return 0.0
 
+
     def batch_synthesize(
         self,
-        texts: List[str],
-        voice_config: Optional[VoiceConfig] = None,
-        output_dir: Optional[str] = None,
-    ) -> List[SynthesisResult]:
+            texts: List[str],
+            voice_config: Optional[VoiceConfig] = None,
+            output_dir: Optional[str] = None,
+            ) -> List[SynthesisResult]:
         """Synthesize multiple texts in batch.
 
         Args:
@@ -295,7 +304,7 @@ class TTSEngine:
 
         config = voice_config or self.default_config
         output_dir = Path(output_dir) if output_dir else self.cache_dir
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir.mkdir(parents = True, exist_ok = True)
 
         results = []
         total_texts = len(texts)
@@ -322,6 +331,7 @@ class TTSEngine:
         )
         return results
 
+
     def get_available_voices(self, language: str = "en") -> List[str]:
         """Get available voices for a language.
 
@@ -336,7 +346,7 @@ class TTSEngine:
         # Add multilingual models
         voices.extend(self.available_models.get("multilingual", []))
 
-        # Add language-specific models
+        # Add language - specific models
         if language == "en":
             voices.extend(self.available_models.get("english", []))
         else:
@@ -346,6 +356,7 @@ class TTSEngine:
                     voices.append(model)
 
         return voices
+
 
     def get_model_info(self, model_name: str) -> Dict[str, Any]:
         """Get information about a specific model.
@@ -361,12 +372,12 @@ class TTSEngine:
 
             info = {
                 "model_name": model_name,
-                "language": "unknown",
-                "speakers": [],
-                "sample_rate": getattr(tts, "sample_rate", 22050),
-                "is_multi_speaker": False,
-                "is_multi_lingual": False,
-            }
+                    "language": "unknown",
+                    "speakers": [],
+                    "sample_rate": getattr(tts, "sample_rate", 22050),
+                    "is_multi_speaker": False,
+                    "is_multi_lingual": False,
+                    }
 
             # Extract language from model name
             if "/en/" in model_name:
@@ -388,6 +399,7 @@ class TTSEngine:
         except Exception as e:
             logger.error(f"Error getting model info for {model_name}: {e}")
             return {"model_name": model_name, "error": str(e)}
+
 
     def cleanup_cache(self, max_age_days: int = 7) -> int:
         """Clean up old cached audio files.
@@ -418,7 +430,6 @@ class TTSEngine:
             logger.error(f"Error cleaning up cache: {e}")
             return 0
 
-
 # Example usage and testing
 if __name__ == "__main__":
     # Initialize TTS Engine
@@ -438,26 +449,26 @@ if __name__ == "__main__":
         # Test with custom configuration
         print("\n🎤 Testing with custom voice configuration...")
         custom_config = VoiceConfig(
-            model_name="tts_models/en/ljspeech/tacotron2-DDC",
-            language="en",
-            speed=1.1,
-            pitch=1.05,
-            volume=0.9,
-        )
+            model_name="tts_models / en / ljspeech / tacotron2 - DDC",
+                language="en",
+                speed = 1.1,
+                pitch = 1.05,
+                volume = 0.9,
+                )
 
         result2 = tts_engine.synthesize_text(
             "This is a test with custom voice settings including speed, pitch, and volume adjustments.",
-            voice_config=custom_config,
-        )
+                voice_config = custom_config,
+                )
         print(f"✅ Custom synthesis successful: {result2.audio_path}")
 
         # Test batch synthesis
         print("\n🎤 Testing batch synthesis...")
         batch_texts = [
             "First sentence for batch processing.",
-            "Second sentence with different content.",
-            "Third and final sentence in the batch.",
-        ]
+                "Second sentence with different content.",
+                "Third and final sentence in the batch.",
+                ]
 
         batch_results = tts_engine.batch_synthesize(batch_texts)
         print(f"✅ Batch synthesis completed: {len(batch_results)} files generated")

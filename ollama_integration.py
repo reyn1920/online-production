@@ -13,16 +13,15 @@ def ask_ollama(model, prompt):
     Returns:
         str: The complete response from the model
     """
-    url = "http://localhost:11434/api/generate"
+    url = "http://localhost:11434 / api / generate"
     payload = {"model": model, "prompt": prompt}
-    resp = requests.post(url, json=payload, stream=True)
+    resp = requests.post(url, json = payload, stream = True)
     answer = ""
     for line in resp.iter_lines():
         if line:
-            data = json.loads(line.decode("utf-8"))
+            data = json.loads(line.decode("utf - 8"))
             answer += data.get("response", "")
     return answer
-
 
 # Test function
 if __name__ == "__main__":

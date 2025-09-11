@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Research Agent Tools Module
 
 Implements comprehensive research capabilities including:
 - Breaking news monitoring via RSS feeds
-- Competitor analysis (TubeBuddy/VidIQ emulation)
+- Competitor analysis (TubeBuddy / VidIQ emulation)
 - Market validation for digital products
 - YouTube channel analysis and niche opportunity detection
 """
@@ -74,8 +74,9 @@ class CompetitorMetric(Enum):
     TRENDING_SCORE = "trending_score"
     NICHE_SATURATION = "niche_saturation"
 
-
 @dataclass
+
+
 class NewsItem:
     """Represents a single news item from RSS feeds"""
 
@@ -86,12 +87,13 @@ class NewsItem:
     source: str
     category: NewsCategory = NewsCategory.GENERAL
     sentiment_score: float = 0.0
-    keywords: List[str] = field(default_factory=list)
+    keywords: List[str] = field(default_factory = list)
     trend_strength: TrendStrength = TrendStrength.WEAK
     relevance_score: float = 0.0
 
-
 @dataclass
+
+
 class CompetitorChannel:
     """Represents a YouTube competitor channel"""
 
@@ -103,13 +105,14 @@ class CompetitorChannel:
     upload_frequency: float  # videos per week
     average_views: float
     engagement_rate: float
-    niche_keywords: List[str] = field(default_factory=list)
-    content_themes: List[str] = field(default_factory=list)
+    niche_keywords: List[str] = field(default_factory = list)
+    content_themes: List[str] = field(default_factory = list)
     opportunity_score: float = 0.0
-    last_analyzed: datetime = field(default_factory=datetime.now)
-
+    last_analyzed: datetime = field(default_factory = datetime.now)
 
 @dataclass
+
+
 class MarketOpportunity:
     """Represents a market opportunity for digital products"""
 
@@ -118,15 +121,16 @@ class MarketOpportunity:
     search_volume: int
     competition_level: str  # low, medium, high
     trend_direction: str  # rising, stable, declining
-    monetization_potential: float  # 0-1 score
+    monetization_potential: float  # 0 - 1 score
     target_audience: str
-    content_gaps: List[str] = field(default_factory=list)
-    recommended_products: List[str] = field(default_factory=list)
+    content_gaps: List[str] = field(default_factory = list)
+    recommended_products: List[str] = field(default_factory = list)
     confidence_score: float = 0.0
 
 
 class BreakingNewsWatcher:
     """Monitors RSS feeds for breaking news and trending topics"""
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
@@ -134,55 +138,57 @@ class BreakingNewsWatcher:
         self.news_cache: Dict[str, NewsItem] = {}
         self.keywords_of_interest = self.config.get(
             "keywords",
-            [
+                [
                 "AI",
-                "artificial intelligence",
-                "machine learning",
-                "automation",
-                "digital marketing",
-                "social media",
-                "content creation",
-                "YouTube",
-                "affiliate marketing",
-                "online business",
-                "SaaS",
-                "startup",
-            ],
-        )
+                    "artificial intelligence",
+                    "machine learning",
+                    "automation",
+                    "digital marketing",
+                    "social media",
+                    "content creation",
+                    "YouTube",
+                    "affiliate marketing",
+                    "online business",
+                    "SaaS",
+                    "startup",
+                    ],
+                )
         self.logger = logging.getLogger(__name__)
+
 
     def _get_default_feeds(self) -> List[Dict[str, str]]:
         """Get default RSS feeds for monitoring"""
         return [
             {
-                "url": "https://feeds.feedburner.com/TechCrunch",
-                "category": NewsCategory.TECHNOLOGY,
-            },
-            {
-                "url": "https://rss.cnn.com/rss/edition.rss",
-                "category": NewsCategory.GENERAL,
-            },
-            {
-                "url": "https://feeds.reuters.com/reuters/businessNews",
-                "category": NewsCategory.BUSINESS,
-            },
-            {
-                "url": "https://feeds.feedburner.com/venturebeat/SZYF",
-                "category": NewsCategory.TECHNOLOGY,
-            },
-            {
-                "url": "https://feeds.feedburner.com/Mashable",
-                "category": NewsCategory.TECHNOLOGY,
-            },
-            {
-                "url": "https://feeds.feedburner.com/socialmediaexaminer",
-                "category": NewsCategory.SOCIAL_MEDIA,
-            },
-            {
-                "url": "https://feeds.feedburner.com/MarketingLand",
-                "category": NewsCategory.MARKETING,
-            },
-        ]
+                "url": "https://feeds.feedburner.com / TechCrunch",
+                    "category": NewsCategory.TECHNOLOGY,
+                    },
+                {
+                "url": "https://rss.cnn.com / rss / edition.rss",
+                    "category": NewsCategory.GENERAL,
+                    },
+                {
+                "url": "https://feeds.reuters.com / reuters / businessNews",
+                    "category": NewsCategory.BUSINESS,
+                    },
+                {
+                "url": "https://feeds.feedburner.com / venturebeat / SZYF",
+                    "category": NewsCategory.TECHNOLOGY,
+                    },
+                {
+                "url": "https://feeds.feedburner.com / Mashable",
+                    "category": NewsCategory.TECHNOLOGY,
+                    },
+                {
+                "url": "https://feeds.feedburner.com / socialmediaexaminer",
+                    "category": NewsCategory.SOCIAL_MEDIA,
+                    },
+                {
+                "url": "https://feeds.feedburner.com / MarketingLand",
+                    "category": NewsCategory.MARKETING,
+                    },
+                ]
+
 
     async def monitor_feeds(self, duration_hours: int = 24) -> List[NewsItem]:
         """Monitor RSS feeds for specified duration"""
@@ -192,7 +198,7 @@ class BreakingNewsWatcher:
             )
             return []
 
-        end_time = datetime.now() + timedelta(hours=duration_hours)
+        end_time = datetime.now() + timedelta(hours = duration_hours)
         all_news = []
 
         while datetime.now() < end_time:
@@ -214,6 +220,7 @@ class BreakingNewsWatcher:
 
         return all_news
 
+
     async def _fetch_all_feeds(self) -> List[NewsItem]:
         """Fetch news from all configured RSS feeds"""
         tasks = []
@@ -221,7 +228,7 @@ class BreakingNewsWatcher:
             task = asyncio.create_task(self._fetch_feed(feed_config))
             tasks.append(task)
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        results = await asyncio.gather(*tasks, return_exceptions = True)
         all_news = []
 
         for result in results:
@@ -231,6 +238,7 @@ class BreakingNewsWatcher:
                 self.logger.error(f"Feed fetch error: {result}")
 
         return all_news
+
 
     async def _fetch_feed(self, feed_config: Dict) -> List[NewsItem]:
         """Fetch and parse a single RSS feed"""
@@ -245,13 +253,13 @@ class BreakingNewsWatcher:
                     pub_date = datetime(*entry.published_parsed[:6])
 
                 news_item = NewsItem(
-                    title=entry.get("title", ""),
-                    description=entry.get("description", ""),
-                    link=entry.get("link", ""),
-                    published=pub_date,
-                    source=feed.feed.get("title", feed_config["url"]),
-                    category=feed_config.get("category", NewsCategory.GENERAL),
-                )
+                    title = entry.get("title", ""),
+                        description = entry.get("description", ""),
+                        link = entry.get("link", ""),
+                        published = pub_date,
+                        source = feed.feed.get("title", feed_config["url"]),
+                        category = feed_config.get("category", NewsCategory.GENERAL),
+                        )
 
                 news_items.append(news_item)
 
@@ -260,6 +268,7 @@ class BreakingNewsWatcher:
         except Exception as e:
             self.logger.error(f"Error fetching feed {feed_config['url']}: {e}")
             return []
+
 
     def _filter_new_items(self, news_items: List[NewsItem]) -> List[NewsItem]:
         """Filter out already processed news items"""
@@ -272,6 +281,7 @@ class BreakingNewsWatcher:
                 new_items.append(item)
 
         return new_items
+
 
     async def _process_news_items(self, news_items: List[NewsItem]) -> List[NewsItem]:
         """Process news items for sentiment, keywords, and relevance"""
@@ -303,6 +313,7 @@ class BreakingNewsWatcher:
 
         return processed_items
 
+
     def _extract_keywords(self, text: str) -> List[str]:
         """Extract relevant keywords from text"""
         # Simple keyword extraction - can be enhanced with NLP
@@ -316,6 +327,7 @@ class BreakingNewsWatcher:
 
         return relevant_keywords
 
+
     def _calculate_relevance(self, item: NewsItem) -> float:
         """Calculate relevance score based on keywords and category"""
         score = 0.0
@@ -323,12 +335,12 @@ class BreakingNewsWatcher:
         # Base score by category
         category_scores = {
             NewsCategory.TECHNOLOGY: 0.8,
-            NewsCategory.BUSINESS: 0.7,
-            NewsCategory.MARKETING: 0.9,
-            NewsCategory.SOCIAL_MEDIA: 0.9,
-            NewsCategory.AI_ML: 1.0,
-            NewsCategory.GENERAL: 0.3,
-        }
+                NewsCategory.BUSINESS: 0.7,
+                NewsCategory.MARKETING: 0.9,
+                NewsCategory.SOCIAL_MEDIA: 0.9,
+                NewsCategory.AI_ML: 1.0,
+                NewsCategory.GENERAL: 0.3,
+                }
 
         score += category_scores.get(item.category, 0.3)
 
@@ -347,6 +359,7 @@ class BreakingNewsWatcher:
 
         return min(score, 1.0)
 
+
     def _assess_trend_strength(self, item: NewsItem) -> TrendStrength:
         """Assess the trend strength of a news item"""
         # Simple heuristic - can be enhanced with social media data
@@ -359,9 +372,10 @@ class BreakingNewsWatcher:
         else:
             return TrendStrength.WEAK
 
+
     def get_trending_topics(self, hours: int = 24) -> Dict[str, int]:
         """Get trending topics from recent news"""
-        cutoff_time = datetime.now() - timedelta(hours=hours)
+        cutoff_time = datetime.now() - timedelta(hours = hours)
         recent_items = [
             item for item in self.news_cache.values() if item.published > cutoff_time
         ]
@@ -373,17 +387,19 @@ class BreakingNewsWatcher:
                 keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
 
         # Sort by frequency
-        return dict(sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True))
+        return dict(sorted(keyword_counts.items(), key = lambda x: x[1], reverse = True))
 
 
 class CompetitorAnalyzer:
-    """Analyzes YouTube competitors similar to TubeBuddy/VidIQ"""
+    """Analyzes YouTube competitors similar to TubeBuddy / VidIQ"""
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.api_key = self.config.get("youtube_api_key", "")
         self.channels_cache: Dict[str, CompetitorChannel] = {}
         self.logger = logging.getLogger(__name__)
+
 
     async def analyze_niche(
         self, niche_keywords: List[str], max_channels: int = 50
@@ -410,12 +426,13 @@ class CompetitorAnalyzer:
             self._calculate_opportunity_scores(analyzed_channels)
 
             return sorted(
-                analyzed_channels, key=lambda x: x.opportunity_score, reverse=True
+                analyzed_channels, key = lambda x: x.opportunity_score, reverse = True
             )
 
         except Exception as e:
             self.logger.error(f"Error analyzing niche: {e}")
             return []
+
 
     async def _search_channels_by_keywords(
         self, keywords: List[str], max_results: int
@@ -426,7 +443,7 @@ class CompetitorAnalyzer:
         try:
             # Get YouTube API key from secure storage
             with SecretStore(
-                self.config.get("secrets_db", "data/secrets.sqlite")
+                self.config.get("secrets_db", "data / secrets.sqlite")
             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
@@ -438,7 +455,7 @@ class CompetitorAnalyzer:
                 return []
 
             channel_ids = set()
-            base_url = "https://www.googleapis.com/youtube/v3"
+            base_url = "https://www.googleapis.com / youtube / v3"
 
             # Search for channels using each keyword
             for keyword in keywords[
@@ -448,16 +465,16 @@ class CompetitorAnalyzer:
                     # Search for channels
                     search_response = requests.get(
                         f"{base_url}/search",
-                        params={
+                            params={
                             "part": "snippet",
-                            "type": "channel",
-                            "q": keyword,
-                            "maxResults": min(20, max_results),
-                            "order": "relevance",
-                            "key": api_key,
-                        },
-                        timeout=10,
-                    )
+                                "type": "channel",
+                                "q": keyword,
+                                "maxResults": min(20, max_results),
+                                "order": "relevance",
+                                "key": api_key,
+                                },
+                            timeout = 10,
+                            )
 
                     if search_response.status_code == 200:
                         search_data = search_response.json()
@@ -491,13 +508,13 @@ class CompetitorAnalyzer:
                 )
                 fallback_channels = [
                     "UCBJycsmduvYEL83R_U4JriQ",  # Marques Brownlee (Tech)
-                    "UCJ0-OtVpF0wOKEqT2Z1HEtA",  # ElectroBOOM (Engineering)
-                    "UCsooa4yRKGN_zEE8iknghZA",  # TED-Ed (Education)
-                    "UC-lHJZR3Gqxm24_Vd_AJ5Yw",  # PewDiePie (Gaming/Entertainment)
+                    "UCJ0 - OtVpF0wOKEqT2Z1HEtA",  # ElectroBOOM (Engineering)
+                    "UCsooa4yRKGN_zEE8iknghZA",  # TED - Ed (Education)
+                    "UC - lHJZR3Gqxm24_Vd_AJ5Yw",  # PewDiePie (Gaming / Entertainment)
                     "UCX6OQ3DkcsbYNE6H8uQQuVA",  # MrBeast (Entertainment)
                     "UC_x5XG1OV2P6uZZ5FSM9Ttw",  # Google Developers (Tech)
-                    "UCEOXxzW2vU0P-0THehuIIeg",  # Captain Disillusion (Science)
-                    "UCHnyfMqiRRG1u-2MsSQLbXA",  # Veritasium (Science)
+                    "UCEOXxzW2vU0P - 0THehuIIeg",  # Captain Disillusion (Science)
+                    "UCHnyfMqiRRG1u - 2MsSQLbXA",  # Veritasium (Science)
                     "UCsXVk37bltHxD1rDPwtNM8Q",  # Kurzgesagt (Science)
                     "UCR1IuLEqb6UEA_zQ81kwXfg",  # Real Engineering (Engineering)
                 ]
@@ -508,6 +525,7 @@ class CompetitorAnalyzer:
         except Exception as e:
             self.logger.error(f"Error searching channels by keywords: {e}")
             return []
+
 
     async def _analyze_channel(self, channel_id: str) -> Optional[CompetitorChannel]:
         """Analyze a single YouTube channel"""
@@ -524,17 +542,17 @@ class CompetitorAnalyzer:
 
             if channel_data:
                 competitor_channel = CompetitorChannel(
-                    channel_id=channel_id,
-                    channel_name=channel_data["name"],
-                    subscriber_count=channel_data["subscribers"],
-                    total_views=channel_data["total_views"],
-                    video_count=channel_data["video_count"],
-                    upload_frequency=channel_data["upload_frequency"],
-                    average_views=channel_data["average_views"],
-                    engagement_rate=channel_data["engagement_rate"],
-                    niche_keywords=channel_data["keywords"],
-                    content_themes=channel_data["themes"],
-                )
+                    channel_id = channel_id,
+                        channel_name = channel_data["name"],
+                        subscriber_count = channel_data["subscribers"],
+                        total_views = channel_data["total_views"],
+                        video_count = channel_data["video_count"],
+                        upload_frequency = channel_data["upload_frequency"],
+                        average_views = channel_data["average_views"],
+                        engagement_rate = channel_data["engagement_rate"],
+                        niche_keywords = channel_data["keywords"],
+                        content_themes = channel_data["themes"],
+                        )
 
                 # Cache the result
                 self.channels_cache[channel_id] = competitor_channel
@@ -545,6 +563,7 @@ class CompetitorAnalyzer:
 
         return None
 
+
     def _fetch_channel_data(self, channel_id: str) -> Optional[Dict]:
         """Fetch real YouTube channel data using YouTube Data API v3"""
         from backend.secret_store import SecretStore
@@ -552,7 +571,7 @@ class CompetitorAnalyzer:
         try:
             # Get YouTube API key from secure storage
             with SecretStore(
-                self.config.get("secrets_db", "data/secrets.sqlite")
+                self.config.get("secrets_db", "data / secrets.sqlite")
             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
@@ -564,18 +583,18 @@ class CompetitorAnalyzer:
                 return None
 
             # Fetch channel statistics from YouTube Data API
-            base_url = "https://www.googleapis.com/youtube/v3"
+            base_url = "https://www.googleapis.com / youtube / v3"
 
             # Get channel details
             channel_response = requests.get(
                 f"{base_url}/channels",
-                params={
+                    params={
                     "part": "snippet,statistics,brandingSettings",
-                    "id": channel_id,
-                    "key": api_key,
-                },
-                timeout=10,
-            )
+                        "id": channel_id,
+                        "key": api_key,
+                        },
+                    timeout = 10,
+                    )
 
             if channel_response.status_code != 200:
                 self.logger.error(
@@ -595,16 +614,16 @@ class CompetitorAnalyzer:
             # Get recent videos to calculate upload frequency and engagement
             videos_response = requests.get(
                 f"{base_url}/search",
-                params={
+                    params={
                     "part": "snippet",
-                    "channelId": channel_id,
-                    "type": "video",
-                    "order": "date",
-                    "maxResults": 50,
-                    "key": api_key,
-                },
-                timeout=10,
-            )
+                        "channelId": channel_id,
+                        "type": "video",
+                        "order": "date",
+                        "maxResults": 50,
+                        "key": api_key,
+                        },
+                    timeout = 10,
+                    )
 
             upload_frequency = 0.0
             average_views = 0
@@ -623,13 +642,13 @@ class CompetitorAnalyzer:
                     # Get detailed video statistics
                     video_stats_response = requests.get(
                         f"{base_url}/videos",
-                        params={
+                            params={
                             "part": "statistics,snippet",
-                            "id": ",".join(video_ids),
-                            "key": api_key,
-                        },
-                        timeout=10,
-                    )
+                                "id": ",".join(video_ids),
+                                "key": api_key,
+                                },
+                            timeout = 10,
+                            )
 
                     if video_stats_response.status_code == 200:
                         video_stats = video_stats_response.json()
@@ -728,23 +747,24 @@ class CompetitorAnalyzer:
 
             return {
                 "name": snippet.get("title", f"Channel_{channel_id[:8]}"),
-                "subscribers": int(statistics.get("subscriberCount", 0)),
-                "total_views": int(statistics.get("viewCount", 0)),
-                "video_count": int(statistics.get("videoCount", 0)),
-                "upload_frequency": max(
+                    "subscribers": int(statistics.get("subscriberCount", 0)),
+                    "total_views": int(statistics.get("viewCount", 0)),
+                    "video_count": int(statistics.get("videoCount", 0)),
+                    "upload_frequency": max(
                     upload_frequency, 0.1
                 ),  # Minimum 0.1 videos per week
                 "average_views": average_views,
-                "engagement_rate": min(engagement_rate, 1.0),  # Cap at 100%
+                    "engagement_rate": min(engagement_rate, 1.0),  # Cap at 100%
                 "keywords": keywords,
-                "themes": themes,
-            }
+                    "themes": themes,
+                    }
 
         except Exception as e:
             self.logger.error(
                 f"Error fetching YouTube data for channel {channel_id}: {e}"
             )
             return None
+
 
     def _calculate_opportunity_scores(self, channels: List[CompetitorChannel]) -> None:
         """Calculate opportunity scores for channels"""
@@ -775,6 +795,7 @@ class CompetitorAnalyzer:
                 sub_score * 0.4 + engagement_score * 0.4 + frequency_score * 0.2
             )
 
+
     def find_content_gaps(self, channels: List[CompetitorChannel]) -> List[str]:
         """Identify content gaps in the analyzed niche"""
         all_themes = set()
@@ -784,18 +805,18 @@ class CompetitorAnalyzer:
         # Common content themes that might be missing
         potential_themes = [
             "Beginner Tutorials",
-            "Advanced Techniques",
-            "Tool Reviews",
-            "Industry News",
-            "Behind the Scenes",
-            "Q&A Sessions",
-            "Collaboration Videos",
-            "Live Streams",
-            "Short Form Content",
-            "Educational Series",
-            "Case Studies",
-            "Interviews",
-        ]
+                "Advanced Techniques",
+                "Tool Reviews",
+                "Industry News",
+                "Behind the Scenes",
+                "Q&A Sessions",
+                "Collaboration Videos",
+                "Live Streams",
+                "Short Form Content",
+                "Educational Series",
+                "Case Studies",
+                "Interviews",
+                ]
 
         # Find gaps
         content_gaps = [theme for theme in potential_themes if theme not in all_themes]
@@ -805,9 +826,11 @@ class CompetitorAnalyzer:
 class MarketValidator:
     """Validates market opportunities for digital products"""
 
+
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.logger = logging.getLogger(__name__)
+
 
     async def validate_product_idea(
         self, product_concept: str, target_keywords: List[str]
@@ -846,17 +869,17 @@ class MarketValidator:
             )
 
             opportunity = MarketOpportunity(
-                niche=product_concept,
-                keywords=target_keywords,
-                search_volume=search_data["total_volume"],
-                competition_level=search_data["competition_level"],
-                trend_direction=trend_data["direction"],
-                monetization_potential=monetization_score,
-                target_audience=target_audience,
-                content_gaps=content_gaps,
-                recommended_products=recommended_products,
-                confidence_score=confidence_score,
-            )
+                niche = product_concept,
+                    keywords = target_keywords,
+                    search_volume = search_data["total_volume"],
+                    competition_level = search_data["competition_level"],
+                    trend_direction = trend_data["direction"],
+                    monetization_potential = monetization_score,
+                    target_audience = target_audience,
+                    content_gaps = content_gaps,
+                    recommended_products = recommended_products,
+                    confidence_score = confidence_score,
+                    )
 
             return opportunity
 
@@ -864,15 +887,16 @@ class MarketValidator:
             self.logger.error(f"Error validating product idea: {e}")
             # Return default opportunity with low confidence
             return MarketOpportunity(
-                niche=product_concept,
-                keywords=target_keywords,
-                search_volume=0,
-                competition_level="unknown",
-                trend_direction="unknown",
-                monetization_potential=0.0,
-                target_audience="unknown",
-                confidence_score=0.0,
-            )
+                niche = product_concept,
+                    keywords = target_keywords,
+                    search_volume = 0,
+                    competition_level="unknown",
+                    trend_direction="unknown",
+                    monetization_potential = 0.0,
+                    target_audience="unknown",
+                    confidence_score = 0.0,
+                    )
+
 
     async def _analyze_search_metrics(self, keywords: List[str]) -> Dict[str, Any]:
         """Analyze search volume and competition for keywords using Google Ads API"""
@@ -881,7 +905,7 @@ class MarketValidator:
         try:
             # Get Google Ads API credentials from secure storage
             with SecretStore(
-                self.config.get("secrets_db", "data/secrets.sqlite")
+                self.config.get("secrets_db", "data / secrets.sqlite")
             ) as store:
                 api_key = store.get_secret("GOOGLE_ADS_API_KEY")
                 customer_id = store.get_secret("GOOGLE_ADS_CUSTOMER_ID")
@@ -900,36 +924,36 @@ class MarketValidator:
             # Use Google Keyword Planner API to get real search volume data
             headers = {
                 "Authorization": f"Bearer {api_key}",
-                "developer-token": developer_token,
-                "Content-Type": "application/json",
-            }
+                    "developer - token": developer_token,
+                    "Content - Type": "application / json",
+                    }
 
             # Prepare keyword ideas request
             keyword_ideas_request = {
                 "customerId": customer_id,
-                "keywordPlanIdeaService": {
+                    "keywordPlanIdeaService": {
                     "generateKeywordIdeas": {
                         "keywordSeed": {
                             "keywords": keywords[
                                 :10
                             ]  # Limit to 10 keywords per request
                         },
-                        "geoTargetConstants": [
-                            "geoTargetConstants/2840"
+                            "geoTargetConstants": [
+                            "geoTargetConstants / 2840"
                         ],  # United States
-                        "language": "languageConstants/1000",  # English
+                        "language": "languageConstants / 1000",  # English
                         "keywordPlanNetwork": "GOOGLE_SEARCH",
-                    }
+                            }
                 },
-            }
+                    }
 
             # Make API request to Google Ads
             response = requests.post(
-                f"https://googleads.googleapis.com/v14/customers/{customer_id}/keywordPlanIdeas:generateKeywordIdeas",
-                headers=headers,
-                json=keyword_ideas_request,
-                timeout=30,
-            )
+                f"https://googleads.googleapis.com / v14 / customers/{customer_id}/keywordPlanIdeas:generateKeywordIdeas",
+                    headers = headers,
+                    json = keyword_ideas_request,
+                    timeout = 30,
+                    )
 
             if response.status_code != 200:
                 self.logger.error(
@@ -983,14 +1007,15 @@ class MarketValidator:
 
             return {
                 "total_volume": total_volume,
-                "competition_level": competition_level,
-                "avg_competition_score": avg_competition,
-                "keyword_count": len(results),
-            }
+                    "competition_level": competition_level,
+                    "avg_competition_score": avg_competition,
+                    "keyword_count": len(results),
+                    }
 
         except Exception as e:
             self.logger.error(f"Error analyzing search metrics: {e}")
             raise ValueError(f"Failed to analyze search metrics: {e}")
+
 
     async def _analyze_market_trends(
         self, product_concept: str, keywords: List[str]
@@ -1013,7 +1038,7 @@ class MarketValidator:
                 )
 
             # Initialize pytrends
-            pytrends = TrendReq(hl="en-US", tz=360)
+            pytrends = TrendReq(hl="en - US", tz = 360)
 
             # Analyze trends for top keywords (limit to 5 for API efficiency)
             trend_keywords = keywords[:5] if len(keywords) >= 5 else keywords
@@ -1024,7 +1049,7 @@ class MarketValidator:
 
             # Build payload for Google Trends
             pytrends.build_payload(
-                trend_keywords, cat=0, timeframe="today 12-m", geo="US", gprop=""
+                trend_keywords, cat = 0, timeframe="today 12 - m", geo="US", gprop=""
             )
 
             # Get interest over time data
@@ -1093,25 +1118,25 @@ class MarketValidator:
 
             return {
                 "direction": direction,
-                "confidence": confidence,
-                "recent_avg": round(recent_avg, 2),
-                "older_avg": round(older_avg, 2),
-                "keywords_analyzed": len(trend_keywords),
-            }
+                    "confidence": confidence,
+                    "recent_avg": round(recent_avg, 2),
+                    "older_avg": round(older_avg, 2),
+                    "keywords_analyzed": len(trend_keywords),
+                    }
 
         except Exception as e:
             self.logger.error(f"Error analyzing market trends: {e}")
             # Fallback to basic analysis if API fails
             trending_terms = [
                 "ai",
-                "automation",
-                "saas",
-                "digital",
-                "online",
-                "remote",
-                "machine learning",
-                "blockchain",
-            ]
+                    "automation",
+                    "saas",
+                    "digital",
+                    "online",
+                    "remote",
+                    "machine learning",
+                    "blockchain",
+                    ]
             has_trending = any(
                 term in product_concept.lower()
                 or any(term in keyword.lower() for keyword in keywords)
@@ -1120,9 +1145,10 @@ class MarketValidator:
 
             return {
                 "direction": "rising" if has_trending else "stable",
-                "confidence": "low",
-                "error": str(e),
-            }
+                    "confidence": "low",
+                    "error": str(e),
+                    }
+
 
     def _assess_monetization_potential(
         self, product_concept: str, search_data: Dict
@@ -1147,16 +1173,17 @@ class MarketValidator:
         # Product type impact
         high_value_terms = [
             "course",
-            "software",
-            "tool",
-            "platform",
-            "service",
-            "consulting",
-        ]
+                "software",
+                "tool",
+                "platform",
+                "service",
+                "consulting",
+                ]
         if any(term in product_concept.lower() for term in high_value_terms):
             score += 0.4
 
         return min(score, 1.0)
+
 
     def _identify_target_audience(
         self, product_concept: str, keywords: List[str]
@@ -1180,6 +1207,7 @@ class MarketValidator:
         else:
             return "General Consumers"
 
+
     async def _identify_content_gaps(self, keywords: List[str]) -> List[str]:
         """Identify content gaps by analyzing existing content and search queries"""
         try:
@@ -1197,11 +1225,11 @@ class MarketValidator:
                 try:
                     # Search for existing content on the topic
                     search_query = f"{keyword} tutorial guide how to"
-                    search_url = f"https://www.google.com/search?q={search_query.replace(' ', '+')}"
+                    search_url = f"https://www.google.com / search?q={search_query.replace(' ', '+')}"
 
                     # Use a more realistic user agent
                     headers = {
-                        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                        "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
                     }
 
                     # Note: In production, consider using Google Custom Search API instead
@@ -1210,16 +1238,16 @@ class MarketValidator:
                     # Analyze common content types that might be missing
                     common_content_types = [
                         f"Beginner's guide to {keyword}",
-                        f"Advanced {keyword} techniques",
-                        f"{keyword} case studies",
-                        f"{keyword} vs alternatives comparison",
-                        f"{keyword} best practices",
-                        f"{keyword} troubleshooting guide",
-                        f"How to integrate {keyword}",
-                        f"{keyword} ROI analysis",
-                        f"{keyword} implementation checklist",
-                        f"{keyword} common mistakes",
-                    ]
+                            f"Advanced {keyword} techniques",
+                            f"{keyword} case studies",
+                            f"{keyword} vs alternatives comparison",
+                            f"{keyword} best practices",
+                            f"{keyword} troubleshooting guide",
+                            f"How to integrate {keyword}",
+                            f"{keyword} ROI analysis",
+                            f"{keyword} implementation checklist",
+                            f"{keyword} common mistakes",
+                            ]
 
                     # Simulate content gap detection based on keyword analysis
                     # In a full production system, this would:
@@ -1231,7 +1259,7 @@ class MarketValidator:
                     keyword_lower = keyword.lower()
 
                     if "tutorial" not in keyword_lower and "guide" not in keyword_lower:
-                        content_gaps.append(f"Step-by-step {keyword} tutorial")
+                        content_gaps.append(f"Step - by - step {keyword} tutorial")
 
                     if (
                         "advanced" not in keyword_lower
@@ -1240,7 +1268,7 @@ class MarketValidator:
                         content_gaps.append(f"Advanced {keyword} strategies")
 
                     if "case" not in keyword_lower and "example" not in keyword_lower:
-                        content_gaps.append(f"Real-world {keyword} case studies")
+                        content_gaps.append(f"Real - world {keyword} case studies")
 
                     if "comparison" not in keyword_lower and "vs" not in keyword_lower:
                         content_gaps.append(f"{keyword} tool comparison")
@@ -1261,10 +1289,10 @@ class MarketValidator:
             if not unique_gaps:
                 unique_gaps = [
                     "Comprehensive beginner tutorials",
-                    "Advanced implementation guides",
-                    "Industry-specific case studies",
-                    "Tool comparison and reviews",
-                ]
+                        "Advanced implementation guides",
+                        "Industry - specific case studies",
+                        "Tool comparison and reviews",
+                        ]
 
             # Limit to top 6 most relevant gaps
             return unique_gaps[:6]
@@ -1274,10 +1302,11 @@ class MarketValidator:
             # Fallback to basic content gap suggestions
             return [
                 "Educational content for beginners",
-                "Advanced technique guides",
-                "Practical implementation examples",
-                "Comparative analysis content",
-            ]
+                    "Advanced technique guides",
+                    "Practical implementation examples",
+                    "Comparative analysis content",
+                    ]
+
 
     def _generate_product_recommendations(
         self, product_concept: str, search_data: Dict
@@ -1288,16 +1317,16 @@ class MarketValidator:
         # Base recommendations on search volume and competition
         if search_data["total_volume"] > 5000 and search_data["competition_level"] in [
             "low",
-            "medium",
-        ]:
+                "medium",
+                ]:
             recommendations.extend(
-                ["Online Course", "Digital Guide/Ebook", "Video Tutorial Series"]
+                ["Online Course", "Digital Guide / Ebook", "Video Tutorial Series"]
             )
 
         if search_data["competition_level"] == "low":
             recommendations.extend(["SaaS Tool", "Mobile App", "Consulting Service"])
 
-        # Product-specific recommendations
+        # Product - specific recommendations
         concept_lower = product_concept.lower()
         if "marketing" in concept_lower:
             recommendations.append("Marketing Automation Tool")
@@ -1307,6 +1336,7 @@ class MarketValidator:
             recommendations.append("Business Plan Template")
 
         return list(set(recommendations))  # Remove duplicates
+
 
     def _calculate_confidence_score(
         self, search_data: Dict, trend_data: Dict, monetization_score: float
@@ -1337,9 +1367,9 @@ class MarketValidator:
 
         return min(score, 1.0)
 
-
 # Example usage and testing
 if __name__ == "__main__":
+
 
     async def test_research_tools():
         """Test the research tools"""
@@ -1352,7 +1382,7 @@ if __name__ == "__main__":
         # Test feed fetching (short duration for testing)
         try:
             news_items = await news_watcher.monitor_feeds(
-                duration_hours=0.1
+                duration_hours = 0.1
             )  # 6 minutes
             print(f"Found {len(news_items)} news items")
 
@@ -1373,7 +1403,7 @@ if __name__ == "__main__":
 
         try:
             niche_keywords = ["tech review", "smartphone", "gadget"]
-            competitors = await analyzer.analyze_niche(niche_keywords, max_channels=5)
+            competitors = await analyzer.analyze_niche(niche_keywords, max_channels = 5)
             print(f"Found {len(competitors)} competitors")
 
             if competitors:
@@ -1390,11 +1420,11 @@ if __name__ == "__main__":
             print(f"Competitor analysis test failed: {e}")
 
         # Test Market Validator
-        print("\n3. Testing Market Validator...")
+            print("\n3. Testing Market Validator...")
         validator = MarketValidator()
 
         try:
-            product_concept = "AI-powered content creation tool"
+            product_concept = "AI - powered content creation tool"
             keywords = ["ai content", "automated writing", "content generator"]
 
             opportunity = await validator.validate_product_idea(

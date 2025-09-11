@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Monitoring Orchestrator - Unified Monitoring System Manager
 Coordinates all monitoring components and provides centralized control
@@ -39,8 +39,9 @@ class ServiceStatus(Enum):
     STOPPING = "stopping"
     ERROR = "error"
 
-
 @dataclass
+
+
 class ServiceInfo:
     """Service information"""
 
@@ -57,6 +58,7 @@ class ServiceInfo:
 
 class MonitoringOrchestrator:
     """Orchestrates all monitoring services"""
+
 
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or os.path.join(
@@ -82,18 +84,19 @@ class MonitoringOrchestrator:
         # Health check interval
         self.health_check_interval = self.config.get("health_check_interval", 30)
 
-        # Auto-restart configuration
+        # Auto - restart configuration
         self.auto_restart = self.config.get("auto_restart", True)
         self.max_restart_attempts = self.config.get("max_restart_attempts", 3)
 
         # Performance monitoring
         self.performance_metrics = {
             "start_time": None,
-            "total_restarts": 0,
-            "total_errors": 0,
-            "services_started": 0,
-            "last_health_check": None,
-        }
+                "total_restarts": 0,
+                "total_errors": 0,
+                "services_started": 0,
+                "last_health_check": None,
+                }
+
 
     def _load_config(self) -> Dict[str, Any]:
         """Load monitoring configuration"""
@@ -101,56 +104,56 @@ class MonitoringOrchestrator:
             "services": {
                 "alert_manager": {
                     "enabled": True,
-                    "auto_start": True,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-                "health_monitor": {
+                        "auto_start": True,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    "health_monitor": {
                     "enabled": True,
-                    "auto_start": True,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-                "compliance_monitor": {
+                        "auto_start": True,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    "compliance_monitor": {
                     "enabled": True,
-                    "auto_start": True,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-                "dashboard": {
+                        "auto_start": True,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    "dashboard": {
                     "enabled": True,
-                    "auto_start": True,
-                    "host": "0.0.0.0",
-                    "port": 8080,
-                    "debug": False,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-                "timeout_manager": {
+                        "auto_start": True,
+                        "host": "0.0.0.0",
+                        "port": 8080,
+                        "debug": False,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    "timeout_manager": {
                     "enabled": True,
-                    "auto_start": True,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-                "webhook_security": {
+                        "auto_start": True,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    "webhook_security": {
                     "enabled": True,
-                    "auto_start": True,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-                "content_validator": {
+                        "auto_start": True,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    "content_validator": {
                     "enabled": True,
-                    "auto_start": True,
-                    "health_check": True,
-                    "restart_on_failure": True,
-                },
-            },
-            "health_check_interval": 30,
-            "auto_restart": True,
-            "max_restart_attempts": 3,
-            "startup_delay": 2,
-            "shutdown_timeout": 30,
-        }
+                        "auto_start": True,
+                        "health_check": True,
+                        "restart_on_failure": True,
+                        },
+                    },
+                "health_check_interval": 30,
+                "auto_restart": True,
+                "max_restart_attempts": 3,
+                "startup_delay": 2,
+                "shutdown_timeout": 30,
+                }
 
         try:
             if os.path.exists(self.config_path):
@@ -169,6 +172,7 @@ class MonitoringOrchestrator:
 
         return default_config
 
+
     def _initialize_services(self):
         """Initialize service registry"""
         service_configs = self.config.get("services", {})
@@ -176,11 +180,13 @@ class MonitoringOrchestrator:
         for service_name, service_config in service_configs.items():
             if service_config.get("enabled", True):
                 self.services[service_name] = ServiceInfo(
-                    name=service_name, status=ServiceStatus.STOPPED
+                    name = service_name, status = ServiceStatus.STOPPED
                 )
+
 
     def _setup_signal_handlers(self):
         """Setup signal handlers for graceful shutdown"""
+
 
         def signal_handler(signum, frame):
             self.logger.info(f"Received signal {signum}, initiating graceful shutdown")
@@ -188,6 +194,7 @@ class MonitoringOrchestrator:
 
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
+
 
     def start_service(self, service_name: str) -> bool:
         """Start a specific service"""
@@ -230,12 +237,12 @@ class MonitoringOrchestrator:
             # Log audit event
             audit_logger.log_system_event(
                 event_type="service_started",
-                severity="info",
-                additional_data={
+                    severity="info",
+                    additional_data={
                     "service_name": service_name,
-                    "start_time": service.start_time.isoformat(),
-                },
-            )
+                        "start_time": service.start_time.isoformat(),
+                        },
+                    )
 
             self.logger.info(f"Service {service_name} started successfully")
             return True
@@ -250,11 +257,12 @@ class MonitoringOrchestrator:
             # Log audit event
             audit_logger.log_system_event(
                 event_type="service_start_failed",
-                severity="error",
-                additional_data={"service_name": service_name, "error": str(e)},
-            )
+                    severity="error",
+                    additional_data={"service_name": service_name, "error": str(e)},
+                    )
 
             return False
+
 
     def stop_service(self, service_name: str) -> bool:
         """Stop a specific service"""
@@ -289,7 +297,7 @@ class MonitoringOrchestrator:
 
             # Stop service thread if exists
             if service.thread and service.thread.is_alive():
-                service.thread.join(timeout=5)
+                service.thread.join(timeout = 5)
 
             service.status = ServiceStatus.STOPPED
             service.start_time = None
@@ -299,9 +307,9 @@ class MonitoringOrchestrator:
             # Log audit event
             audit_logger.log_system_event(
                 event_type="service_stopped",
-                severity="info",
-                additional_data={"service_name": service_name},
-            )
+                    severity="info",
+                    additional_data={"service_name": service_name},
+                    )
 
             self.logger.info(f"Service {service_name} stopped successfully")
             return True
@@ -312,6 +320,7 @@ class MonitoringOrchestrator:
 
             self.logger.error(f"Failed to stop service {service_name}: {str(e)}")
             return False
+
 
     def restart_service(self, service_name: str) -> bool:
         """Restart a specific service"""
@@ -332,8 +341,10 @@ class MonitoringOrchestrator:
         # Start the service
         return self.start_service(service_name)
 
+
     def _start_alert_manager(self, service: ServiceInfo):
         """Start alert manager service"""
+
 
         def run_alert_manager():
             try:
@@ -343,11 +354,13 @@ class MonitoringOrchestrator:
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_alert_manager, daemon=True)
+        service.thread = threading.Thread(target = run_alert_manager, daemon = True)
         service.thread.start()
+
 
     def _start_health_monitor(self, service: ServiceInfo):
         """Start health monitor service"""
+
 
         def run_health_monitor():
             try:
@@ -357,11 +370,13 @@ class MonitoringOrchestrator:
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_health_monitor, daemon=True)
+        service.thread = threading.Thread(target = run_health_monitor, daemon = True)
         service.thread.start()
+
 
     def _start_compliance_monitor(self, service: ServiceInfo):
         """Start compliance monitor service"""
+
 
         def run_compliance_monitor():
             try:
@@ -371,30 +386,34 @@ class MonitoringOrchestrator:
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_compliance_monitor, daemon=True)
+        service.thread = threading.Thread(target = run_compliance_monitor, daemon = True)
         service.thread.start()
+
 
     def _start_dashboard(self, service: ServiceInfo):
         """Start dashboard service"""
         dashboard_config = self.config["services"]["dashboard"]
 
+
         def run_dashboard():
             try:
                 start_dashboard(
-                    host=dashboard_config.get("host", "0.0.0.0"),
-                    port=dashboard_config.get("port", 8080),
-                    debug=dashboard_config.get("debug", False),
-                )
+                    host = dashboard_config.get("host", "0.0.0.0"),
+                        port = dashboard_config.get("port", 8080),
+                        debug = dashboard_config.get("debug", False),
+                        )
             except Exception as e:
                 self.logger.error(f"Dashboard error: {str(e)}")
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_dashboard, daemon=True)
+        service.thread = threading.Thread(target = run_dashboard, daemon = True)
         service.thread.start()
+
 
     def _start_timeout_manager(self, service: ServiceInfo):
         """Start timeout manager service"""
+
 
         def run_timeout_manager():
             try:
@@ -404,11 +423,13 @@ class MonitoringOrchestrator:
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_timeout_manager, daemon=True)
+        service.thread = threading.Thread(target = run_timeout_manager, daemon = True)
         service.thread.start()
+
 
     def _start_webhook_security(self, service: ServiceInfo):
         """Start webhook security service"""
+
 
         def run_webhook_security():
             try:
@@ -418,11 +439,13 @@ class MonitoringOrchestrator:
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_webhook_security, daemon=True)
+        service.thread = threading.Thread(target = run_webhook_security, daemon = True)
         service.thread.start()
+
 
     def _start_content_validator(self, service: ServiceInfo):
         """Start content validator service"""
+
 
         def run_content_validator():
             try:
@@ -432,8 +455,9 @@ class MonitoringOrchestrator:
                 service.status = ServiceStatus.ERROR
                 service.error_message = str(e)
 
-        service.thread = threading.Thread(target=run_content_validator, daemon=True)
+        service.thread = threading.Thread(target = run_content_validator, daemon = True)
         service.thread.start()
+
 
     def start_all(self) -> bool:
         """Start all enabled services"""
@@ -444,12 +468,12 @@ class MonitoringOrchestrator:
         # Log audit event
         audit_logger.log_system_event(
             event_type="monitoring_system_started",
-            severity="info",
-            additional_data={
+                severity="info",
+                additional_data={
                 "services": list(self.services.keys()),
-                "start_time": self.performance_metrics["start_time"].isoformat(),
-            },
-        )
+                    "start_time": self.performance_metrics["start_time"].isoformat(),
+                    },
+                )
 
         success = True
         service_configs = self.config.get("services", {})
@@ -474,6 +498,7 @@ class MonitoringOrchestrator:
 
         return success
 
+
     def stop_all(self) -> bool:
         """Stop all services"""
         self.logger.info("Stopping all monitoring services")
@@ -483,9 +508,9 @@ class MonitoringOrchestrator:
         # Log audit event
         audit_logger.log_system_event(
             event_type="monitoring_system_stopped",
-            severity="info",
-            additional_data={"services": list(self.services.keys())},
-        )
+                severity="info",
+                additional_data={"services": list(self.services.keys())},
+                )
 
         success = True
 
@@ -501,8 +526,10 @@ class MonitoringOrchestrator:
 
         return success
 
+
     def _start_health_check_loop(self):
         """Start health check loop"""
+
 
         def health_check_loop():
             while self.running and not self.shutdown_event.is_set():
@@ -518,8 +545,9 @@ class MonitoringOrchestrator:
                     self.logger.error(f"Error in health check loop: {str(e)}")
                     time.sleep(5)
 
-        health_thread = threading.Thread(target=health_check_loop, daemon=True)
+        health_thread = threading.Thread(target = health_check_loop, daemon = True)
         health_thread.start()
+
 
     def _perform_health_checks(self):
         """Perform health checks on all services"""
@@ -546,17 +574,18 @@ class MonitoringOrchestrator:
                             from alert_manager import create_custom_alert
 
                             create_custom_alert(
-                                title=f"Service {service_name} Failed",
-                                description=f"Service {service_name} has exceeded maximum restart attempts and is no longer being restarted",
-                                severity=AlertSeverity.CRITICAL,
-                                category=AlertCategory.SYSTEM,
-                            )
+                                title = f"Service {service_name} Failed",
+                                    description = f"Service {service_name} has exceeded maximum restart attempts and is no longer being restarted",
+                                    severity = AlertSeverity.CRITICAL,
+                                    category = AlertCategory.SYSTEM,
+                                    )
 
                 except Exception as e:
                     self.logger.error(
                         f"Error checking health of {service_name}: {str(e)}"
                     )
                     service.health_status = "error"
+
 
     def _check_service_health(self, service_name: str) -> str:
         """Check health of a specific service"""
@@ -586,10 +615,10 @@ class MonitoringOrchestrator:
                     check_host = "localhost" if host == "0.0.0.0" else host
 
                     response = requests.get(
-                        f"http://{check_host}:{port}/api/health", timeout=5
+                        f"http://{check_host}:{port}/api / health", timeout = 5
                     )
                     return "healthy" if response.status_code == 200 else "unhealthy"
-                except:
+                except Exception:
                     return "unhealthy"
             elif service_name == "timeout_manager":
                 return "healthy" if timeout_manager.is_active() else "unhealthy"
@@ -603,46 +632,49 @@ class MonitoringOrchestrator:
             self.logger.error(f"Error checking {service_name} health: {str(e)}")
             return "error"
 
+
     def get_status(self) -> Dict[str, Any]:
         """Get status of all services"""
         status = {
             "orchestrator": {
                 "running": self.running,
-                "start_time": (
+                    "start_time": (
                     self.performance_metrics["start_time"].isoformat()
                     if self.performance_metrics["start_time"]
                     else None
                 ),
-                "performance_metrics": self.performance_metrics.copy(),
-            },
-            "services": {},
-        }
+                    "performance_metrics": self.performance_metrics.copy(),
+                    },
+                "services": {},
+                }
 
         for service_name, service in self.services.items():
             status["services"][service_name] = {
                 "name": service.name,
-                "status": service.status.value,
-                "start_time": (
+                    "status": service.status.value,
+                    "start_time": (
                     service.start_time.isoformat() if service.start_time else None
                 ),
-                "error_message": service.error_message,
-                "restart_count": service.restart_count,
-                "last_health_check": (
+                    "error_message": service.error_message,
+                    "restart_count": service.restart_count,
+                    "last_health_check": (
                     service.last_health_check.isoformat()
                     if service.last_health_check
                     else None
                 ),
-                "health_status": service.health_status,
-                "pid": service.pid,
-            }
+                    "health_status": service.health_status,
+                    "pid": service.pid,
+                    }
 
         return status
+
 
     def get_service_logs(self, service_name: str, lines: int = 100) -> List[str]:
         """Get logs for a specific service"""
         # This would typically read from log files
         # For now, return a placeholder
         return [f"Log entry for {service_name} - {i}" for i in range(lines)]
+
 
     def shutdown(self):
         """Graceful shutdown"""
@@ -655,6 +687,7 @@ class MonitoringOrchestrator:
         time.sleep(2)
 
         self.logger.info("Monitoring orchestrator shutdown complete")
+
 
     def run(self):
         """Run the orchestrator"""
@@ -681,7 +714,6 @@ class MonitoringOrchestrator:
 
         return False
 
-
 # Global orchestrator instance
 orchestrator = None
 
@@ -693,7 +725,7 @@ def start_monitoring_system(
     global orchestrator
 
     if orchestrator is None:
-        orchestrator = MonitoringOrchestrator(config_path=config_path)
+        orchestrator = MonitoringOrchestrator(config_path = config_path)
 
     return orchestrator
 
@@ -715,7 +747,6 @@ def get_monitoring_status() -> Dict[str, Any]:
     else:
         return {"error": "Monitoring system not running"}
 
-
 if __name__ == "__main__":
     import argparse
 
@@ -730,10 +761,10 @@ if __name__ == "__main__":
 
     if args.status:
         status = get_monitoring_status()
-        print(json.dumps(status, indent=2))
+        print(json.dumps(status, indent = 2))
         sys.exit(0)
 
-    orchestrator = start_monitoring_system(config_path=args.config)
+    orchestrator = start_monitoring_system(config_path = args.config)
 
     if args.stop:
         orchestrator.stop_all()

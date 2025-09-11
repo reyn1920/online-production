@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Find the specific strategic project task by ID.
 """
@@ -15,7 +15,7 @@ def main():
     print("🔍 Looking for strategic project task...")
 
     # The task ID from when we submitted it
-    strategic_task_id = "93f9a950-9cc7-4ee7-86af-4fe91cc12be0"
+    strategic_task_id = "93f9a950 - 9cc7 - 4ee7 - 86af - 4fe91cc12be0"
 
     try:
         # Initialize task queue manager
@@ -63,7 +63,7 @@ def main():
 
             # Let's also search for any tasks with 'Right Perspective' in the payload
             print(f"\n🔍 Searching for tasks containing 'Right Perspective'...")
-            all_tasks = task_manager.get_tasks(limit=200)  # Get more tasks
+            all_tasks = task_manager.get_tasks(limit = 200)  # Get more tasks
             found_tasks = []
 
             for t in all_tasks:
@@ -91,7 +91,6 @@ def main():
         return 1
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

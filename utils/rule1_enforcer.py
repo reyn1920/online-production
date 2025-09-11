@@ -1,16 +1,16 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Rule-1 Compliance Tools for TRAE.AI System
+Rule - 1 Compliance Tools for TRAE.AI System
 
 This module provides comprehensive compliance scanning and enforcement
-tools to ensure content adheres to Rule-1 guidelines and platform policies.
+tools to ensure content adheres to Rule - 1 guidelines and platform policies.
 Includes deep scanning for forbidden terms, context analysis, and
 automated content filtering.
 
 Features:
 - Deep semantic analysis of content
 - Forbidden term detection with context awareness
-- Multi-language support
+- Multi - language support
 - Severity classification
 - Automated remediation suggestions
 - Compliance reporting
@@ -31,7 +31,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 
 class ViolationSeverity(Enum):
-    """Severity levels for Rule-1 violations"""
+    """Severity levels for Rule - 1 violations"""
 
     LOW = "low"
     MEDIUM = "medium"
@@ -49,8 +49,9 @@ class ContentType(Enum):
     COMMENT = "comment"
     METADATA = "metadata"
 
-
 @dataclass
+
+
 class ViolationResult:
     """Result of a compliance scan"""
 
@@ -62,8 +63,9 @@ class ViolationResult:
     suggested_fix: Optional[str] = None
     confidence: float = 1.0
 
-
 @dataclass
+
+
 class ScanResult:
     """Complete scan result for content"""
 
@@ -77,16 +79,17 @@ class ScanResult:
 
 class Rule1DeepScanner:
     """
-    Deep semantic scanner for Rule-1 compliance.
+    Deep semantic scanner for Rule - 1 compliance.
 
     This class performs comprehensive analysis of content to detect
-    potential violations of Rule-1 guidelines, including context-aware
+    potential violations of Rule - 1 guidelines, including context - aware
     forbidden term detection and semantic analysis.
     """
 
+
     def __init__(self, config_path: Optional[str] = None):
         """
-        Initialize the Rule-1 Deep Scanner.
+        Initialize the Rule - 1 Deep Scanner.
 
         Args:
             config_path (str, optional): Path to configuration file
@@ -97,16 +100,17 @@ class Rule1DeepScanner:
         self.context_patterns = self._load_context_patterns()
         self.whitelist_terms = self._load_whitelist_terms()
 
+
     def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
         """Load scanner configuration"""
         default_config = {
             "case_sensitive": False,
-            "context_window": 50,
-            "min_confidence": 0.7,
-            "enable_semantic_analysis": True,
-            "enable_context_analysis": True,
-            "max_violations_per_scan": 100,
-        }
+                "context_window": 50,
+                "min_confidence": 0.7,
+                "enable_semantic_analysis": True,
+                "enable_context_analysis": True,
+                "max_violations_per_scan": 100,
+                }
 
         if config_path and Path(config_path).exists():
             try:
@@ -118,6 +122,7 @@ class Rule1DeepScanner:
 
         return default_config
 
+
     def _load_forbidden_terms(self) -> Dict[str, Dict[str, Any]]:
         """Load forbidden terms database"""
         # Core forbidden terms with severity and context
@@ -126,109 +131,112 @@ class Rule1DeepScanner:
             "hate_speech": {
                 "terms": [
                     "hate",
-                    "discrimination",
-                    "prejudice",
-                    "bigotry",
-                    "racism",
-                    "sexism",
-                    "homophobia",
-                    "xenophobia",
-                ],
-                "severity": ViolationSeverity.HIGH,
-                "context_required": True,
-            },
-            # Violence and harmful content
+                        "discrimination",
+                        "prejudice",
+                        "bigotry",
+                        "racism",
+                        "sexism",
+                        "homophobia",
+                        "xenophobia",
+                        ],
+                    "severity": ViolationSeverity.HIGH,
+                    "context_required": True,
+                    },
+                # Violence and harmful content
             "violence": {
                 "terms": [
                     "violence",
-                    "harm",
-                    "attack",
-                    "assault",
-                    "abuse",
-                    "threat",
-                    "intimidation",
-                    "harassment",
-                ],
-                "severity": ViolationSeverity.HIGH,
-                "context_required": True,
-            },
-            # Misinformation indicators
+                        "harm",
+                        "attack",
+                        "assault",
+                        "abuse",
+                        "threat",
+                        "intimidation",
+                        "harassment",
+                        ],
+                    "severity": ViolationSeverity.HIGH,
+                    "context_required": True,
+                    },
+                # Misinformation indicators
             "misinformation": {
                 "terms": [
                     "fake news",
-                    "conspiracy",
-                    "hoax",
-                    "debunked",
-                    "false claim",
-                    "misleading",
-                    "unverified",
-                ],
-                "severity": ViolationSeverity.MEDIUM,
-                "context_required": True,
-            },
-            # Spam and manipulation
+                        "conspiracy",
+                        "hoax",
+                        "debunked",
+                        "false claim",
+                        "misleading",
+                        "unverified",
+                        ],
+                    "severity": ViolationSeverity.MEDIUM,
+                    "context_required": True,
+                    },
+                # Spam and manipulation
             "spam": {
                 "terms": [
                     "click here",
-                    "buy now",
-                    "limited time",
-                    "act fast",
-                    "guaranteed",
-                    "free money",
-                    "get rich quick",
-                ],
-                "severity": ViolationSeverity.LOW,
-                "context_required": False,
-            },
-            # Adult content
+                        "buy now",
+                        "limited time",
+                        "act fast",
+                        "guaranteed",
+                        "free money",
+                        "get rich quick",
+                        ],
+                    "severity": ViolationSeverity.LOW,
+                    "context_required": False,
+                    },
+                # Adult content
             "adult_content": {
                 "terms": [
                     "explicit",
-                    "nsfw",
-                    "adult only",
-                    "mature content",
-                    "sexual",
-                    "pornographic",
-                    "erotic",
-                ],
-                "severity": ViolationSeverity.MEDIUM,
-                "context_required": True,
-            },
-        }
+                        "nsfw",
+                        "adult only",
+                        "mature content",
+                        "sexual",
+                        "pornographic",
+                        "erotic",
+                        ],
+                    "severity": ViolationSeverity.MEDIUM,
+                    "context_required": True,
+                    },
+                }
 
         return forbidden_terms
+
 
     def _load_context_patterns(self) -> Dict[str, List[str]]:
         """Load context patterns for better detection"""
         return {
             "negation": [r"not\s+", r"never\s+", r"don't\s+", r"doesn't\s+"],
-            "question": [r"\?\s*$", r"^(what|how|why|when|where|who)\s+"],
-            "educational": [r"learn\s+about", r"understand\s+", r"explain\s+"],
-            "reporting": [r"report\s+on", r"news\s+about", r"according\s+to"],
-        }
+                "question": [r"\?\s*$", r"^(what|how|why|when|where|who)\s+"],
+                "educational": [r"learn\s + about", r"understand\s+", r"explain\s+"],
+                "reporting": [r"report\s + on", r"news\s + about", r"according\s + to"],
+                }
+
 
     def _load_whitelist_terms(self) -> Set[str]:
         """Load whitelisted terms that should not trigger violations"""
         return {
             "educational",
-            "informational",
-            "awareness",
-            "prevention",
-            "safety",
-            "protection",
-            "help",
-            "support",
-            "resources",
-            "mental health",
-            "well-being",
-            "community guidelines",
-        }
+                "informational",
+                "awareness",
+                "prevention",
+                "safety",
+                "protection",
+                "help",
+                "support",
+                "resources",
+                "mental health",
+                "well - being",
+                "community guidelines",
+                }
+
 
     def scan_content(
         self, content: str, content_type: ContentType, content_id: str = None
     ) -> ScanResult:
         """
-        Perform comprehensive scan of content for Rule-1 compliance.
+        Perform comprehensive scan of content for Rule - 1 compliance.
 
         Args:
             content (str): Content to scan
@@ -255,18 +263,19 @@ class Rule1DeepScanner:
         is_compliant = len(filtered_violations) == 0
 
         return ScanResult(
-            content_id=content_id,
-            content_type=content_type,
-            is_compliant=is_compliant,
-            violations=filtered_violations,
-            scan_timestamp=datetime.now(),
-            metadata={
+            content_id = content_id,
+                content_type = content_type,
+                is_compliant = is_compliant,
+                violations = filtered_violations,
+                scan_timestamp = datetime.now(),
+                metadata={
                 "content_length": len(content),
-                "scan_config": self.config,
-                "total_violations_found": len(violations),
-                "violations_after_filter": len(filtered_violations),
-            },
-        )
+                    "scan_config": self.config,
+                    "total_violations_found": len(violations),
+                    "violations_after_filter": len(filtered_violations),
+                    },
+                )
+
 
     def _scan_forbidden_terms(self, content: str) -> List[ViolationResult]:
         """Scan for forbidden terms"""
@@ -287,17 +296,18 @@ class Rule1DeepScanner:
                     context = self._extract_context(content, start, end)
 
                     violation = ViolationResult(
-                        violation_type=f"forbidden_term_{category}",
-                        severity=term_data["severity"],
-                        message=f"Forbidden term detected: '{term}'",
-                        context=context,
-                        position=(start, end),
-                        confidence=0.9,
-                    )
+                        violation_type = f"forbidden_term_{category}",
+                            severity = term_data["severity"],
+                            message = f"Forbidden term detected: '{term}'",
+                            context = context,
+                            position=(start, end),
+                            confidence = 0.9,
+                            )
 
                     violations.append(violation)
 
         return violations
+
 
     def _scan_context_patterns(self, content: str) -> List[ViolationResult]:
         """Scan for problematic context patterns"""
@@ -309,11 +319,11 @@ class Rule1DeepScanner:
             violations.append(
                 ViolationResult(
                     violation_type="excessive_caps",
-                    severity=ViolationSeverity.LOW,
-                    message="Excessive use of capital letters detected",
-                    context=content[:100],
-                    confidence=0.8,
-                )
+                        severity = ViolationSeverity.LOW,
+                        message="Excessive use of capital letters detected",
+                        context = content[:100],
+                        confidence = 0.8,
+                        )
             )
 
         # Check for excessive punctuation
@@ -322,15 +332,16 @@ class Rule1DeepScanner:
             violations.append(
                 ViolationResult(
                     violation_type="excessive_punctuation",
-                    severity=ViolationSeverity.LOW,
-                    message="Excessive punctuation detected",
-                    context=self._extract_context(content, match.start(), match.end()),
-                    position=(match.start(), match.end()),
-                    confidence=0.7,
-                )
+                        severity = ViolationSeverity.LOW,
+                        message="Excessive punctuation detected",
+                        context = self._extract_context(content, match.start(), match.end()),
+                        position=(match.start(), match.end()),
+                        confidence = 0.7,
+                        )
             )
 
         return violations
+
 
     def _scan_semantic_content(self, content: str) -> List[ViolationResult]:
         """Perform semantic analysis of content"""
@@ -353,14 +364,15 @@ class Rule1DeepScanner:
                 violations.append(
                     ViolationResult(
                         violation_type="repetitive_content",
-                        severity=ViolationSeverity.LOW,
-                        message="Highly repetitive content detected (potential spam)",
-                        context=content[:100],
-                        confidence=0.6,
-                    )
+                            severity = ViolationSeverity.LOW,
+                            message="Highly repetitive content detected (potential spam)",
+                            context = content[:100],
+                            confidence = 0.6,
+                            )
                 )
 
         return violations
+
 
     def _extract_context(self, content: str, start: int, end: int) -> str:
         """Extract context around a violation"""
@@ -377,6 +389,7 @@ class Rule1DeepScanner:
             context = context + "..."
 
         return context
+
 
     def _filter_violations(
         self, violations: List[ViolationResult], content: str
@@ -395,7 +408,7 @@ class Rule1DeepScanner:
                 whitelist_term in content_lower
                 for whitelist_term in self.whitelist_terms
             ):
-                # Reduce severity for educational/informational content
+                # Reduce severity for educational / informational content
                 if violation.severity == ViolationSeverity.HIGH:
                     violation.severity = ViolationSeverity.MEDIUM
                 elif violation.severity == ViolationSeverity.MEDIUM:
@@ -410,24 +423,26 @@ class Rule1DeepScanner:
 
 class Rule1Enforcer:
     """
-    Rule-1 enforcement system for automated compliance actions.
+    Rule - 1 enforcement system for automated compliance actions.
 
     This class takes scan results and applies appropriate enforcement
     actions based on violation severity and organizational policies.
     """
 
-    def __init__(self, db_path: str = "data/compliance.sqlite"):
+
+    def __init__(self, db_path: str = "data / compliance.sqlite"):
         """
-        Initialize the Rule-1 Enforcer.
+        Initialize the Rule - 1 Enforcer.
 
         Args:
             db_path (str): Path to compliance database
         """
         self.logger = logging.getLogger(__name__)
         self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path.parent.mkdir(parents = True, exist_ok = True)
         self.scanner = Rule1DeepScanner()
         self._init_database()
+
 
     def _init_database(self) -> None:
         """Initialize compliance tracking database"""
@@ -436,12 +451,12 @@ class Rule1Enforcer:
                 """
                 CREATE TABLE IF NOT EXISTS compliance_scans (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    content_id TEXT NOT NULL,
-                    content_type TEXT NOT NULL,
-                    is_compliant BOOLEAN NOT NULL,
-                    violation_count INTEGER NOT NULL,
-                    scan_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    metadata TEXT
+                        content_id TEXT NOT NULL,
+                        content_type TEXT NOT NULL,
+                        is_compliant BOOLEAN NOT NULL,
+                        violation_count INTEGER NOT NULL,
+                        scan_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        metadata TEXT
                 )
             """
             )
@@ -450,15 +465,15 @@ class Rule1Enforcer:
                 """
                 CREATE TABLE IF NOT EXISTS violations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    scan_id INTEGER NOT NULL,
-                    violation_type TEXT NOT NULL,
-                    severity TEXT NOT NULL,
-                    message TEXT NOT NULL,
-                    context TEXT,
-                    position_start INTEGER,
-                    position_end INTEGER,
-                    confidence REAL,
-                    FOREIGN KEY (scan_id) REFERENCES compliance_scans (id)
+                        scan_id INTEGER NOT NULL,
+                        violation_type TEXT NOT NULL,
+                        severity TEXT NOT NULL,
+                        message TEXT NOT NULL,
+                        context TEXT,
+                        position_start INTEGER,
+                        position_end INTEGER,
+                        confidence REAL,
+                        FOREIGN KEY (scan_id) REFERENCES compliance_scans (id)
                 )
             """
             )
@@ -467,26 +482,27 @@ class Rule1Enforcer:
                 """
                 CREATE TABLE IF NOT EXISTS enforcement_actions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    scan_id INTEGER NOT NULL,
-                    action_type TEXT NOT NULL,
-                    action_details TEXT,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (scan_id) REFERENCES compliance_scans (id)
+                        scan_id INTEGER NOT NULL,
+                        action_type TEXT NOT NULL,
+                        action_details TEXT,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (scan_id) REFERENCES compliance_scans (id)
                 )
             """
             )
 
             conn.commit()
 
+
     def enforce_compliance(
         self,
-        content: str,
-        content_type: ContentType,
-        content_id: str = None,
-        auto_fix: bool = False,
-    ) -> Dict[str, Any]:
+            content: str,
+            content_type: ContentType,
+            content_id: str = None,
+            auto_fix: bool = False,
+            ) -> Dict[str, Any]:
         """
-        Enforce Rule-1 compliance on content.
+        Enforce Rule - 1 compliance on content.
 
         Args:
             content (str): Content to check and enforce
@@ -509,12 +525,12 @@ class Rule1Enforcer:
         # Apply enforcement actions
         enforcement_result = {
             "scan_id": scan_id,
-            "is_compliant": scan_result.is_compliant,
-            "violation_count": len(scan_result.violations),
-            "actions_taken": [],
-            "modified_content": content,
-            "recommendations": [],
-        }
+                "is_compliant": scan_result.is_compliant,
+                "violation_count": len(scan_result.violations),
+                "actions_taken": [],
+                "modified_content": content,
+                "recommendations": [],
+                }
 
         for action in actions:
             result = self._apply_action(action, content, scan_result, auto_fix)
@@ -528,23 +544,24 @@ class Rule1Enforcer:
 
         return enforcement_result
 
+
     def _store_scan_result(self, scan_result: ScanResult) -> int:
         """Store scan result in database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                INSERT INTO compliance_scans 
+                INSERT INTO compliance_scans
                 (content_id, content_type, is_compliant, violation_count, metadata)
                 VALUES (?, ?, ?, ?, ?)
             """,
                 (
                     scan_result.content_id,
-                    scan_result.content_type.value,
-                    scan_result.is_compliant,
-                    len(scan_result.violations),
-                    json.dumps(scan_result.metadata),
-                ),
-            )
+                        scan_result.content_type.value,
+                        scan_result.is_compliant,
+                        len(scan_result.violations),
+                        json.dumps(scan_result.metadata),
+                        ),
+                    )
 
             scan_id = cursor.lastrowid
 
@@ -552,25 +569,26 @@ class Rule1Enforcer:
             for violation in scan_result.violations:
                 conn.execute(
                     """
-                    INSERT INTO violations 
-                    (scan_id, violation_type, severity, message, context, 
-                     position_start, position_end, confidence)
+                    INSERT INTO violations
+                    (scan_id, violation_type, severity, message, context,
+                        position_start, position_end, confidence)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         scan_id,
-                        violation.violation_type,
-                        violation.severity.value,
-                        violation.message,
-                        violation.context,
-                        violation.position[0] if violation.position else None,
-                        violation.position[1] if violation.position else None,
-                        violation.confidence,
-                    ),
-                )
+                            violation.violation_type,
+                            violation.severity.value,
+                            violation.message,
+                            violation.context,
+                            violation.position[0] if violation.position else None,
+                            violation.position[1] if violation.position else None,
+                            violation.confidence,
+                            ),
+                        )
 
             conn.commit()
             return scan_id
+
 
     def _determine_actions(self, scan_result: ScanResult) -> List[Dict[str, Any]]:
         """Determine appropriate enforcement actions"""
@@ -600,9 +618,9 @@ class Rule1Enforcer:
             actions.append(
                 {
                     "type": "block_content",
-                    "reason": "Critical Rule-1 violations detected",
-                    "violations": critical_violations,
-                }
+                        "reason": "Critical Rule - 1 violations detected",
+                        "violations": critical_violations,
+                        }
             )
 
         # High violations - require review
@@ -610,9 +628,9 @@ class Rule1Enforcer:
             actions.append(
                 {
                     "type": "require_review",
-                    "reason": "High severity Rule-1 violations detected",
-                    "violations": high_violations,
-                }
+                        "reason": "High severity Rule - 1 violations detected",
+                        "violations": high_violations,
+                        }
             )
 
         # Medium violations - flag for review
@@ -620,9 +638,9 @@ class Rule1Enforcer:
             actions.append(
                 {
                     "type": "flag_for_review",
-                    "reason": "Medium severity Rule-1 violations detected",
-                    "violations": medium_violations,
-                }
+                        "reason": "Medium severity Rule - 1 violations detected",
+                        "violations": medium_violations,
+                        }
             )
 
         # Low violations - suggest improvements
@@ -630,20 +648,21 @@ class Rule1Enforcer:
             actions.append(
                 {
                     "type": "suggest_improvements",
-                    "reason": "Minor Rule-1 violations detected",
-                    "violations": low_violations,
-                }
+                        "reason": "Minor Rule - 1 violations detected",
+                        "violations": low_violations,
+                        }
             )
 
         return actions
 
+
     def _apply_action(
         self,
-        action: Dict[str, Any],
-        content: str,
-        scan_result: ScanResult,
-        auto_fix: bool,
-    ) -> Dict[str, Any]:
+            action: Dict[str, Any],
+            content: str,
+            scan_result: ScanResult,
+            auto_fix: bool,
+            ) -> Dict[str, Any]:
         """Apply a specific enforcement action"""
         action_type = action["type"]
         result = {"action": action_type, "success": True, "details": action["reason"]}
@@ -661,13 +680,14 @@ class Rule1Enforcer:
             result["message"] = "Content flagged for review"
 
         elif action_type == "suggest_improvements" and auto_fix:
-            # Attempt automatic fixes for low-severity violations
+            # Attempt automatic fixes for low - severity violations
             modified_content = self._auto_fix_content(content, action["violations"])
             if modified_content != content:
                 result["modified_content"] = modified_content
                 result["message"] = "Content automatically improved"
 
         return result
+
 
     def _auto_fix_content(self, content: str, violations: List[ViolationResult]) -> str:
         """Attempt automatic fixes for violations"""
@@ -684,9 +704,10 @@ class Rule1Enforcer:
 
         return modified_content
 
+
     def _fix_excessive_caps(self, content: str) -> str:
         """Fix excessive capitalization"""
-        # Convert all-caps words to title case, preserving acronyms
+        # Convert all - caps words to title case, preserving acronyms
         words = content.split()
         fixed_words = []
 
@@ -699,6 +720,7 @@ class Rule1Enforcer:
 
         return " ".join(fixed_words)
 
+
     def _fix_excessive_punctuation(self, content: str) -> str:
         """Fix excessive punctuation"""
         # Reduce multiple punctuation marks to maximum of 2
@@ -706,6 +728,7 @@ class Rule1Enforcer:
         content = re.sub(r"[?]{3,}", "??", content)
         content = re.sub(r"[.]{4,}", "...", content)
         return content
+
 
     def _store_enforcement_actions(
         self, scan_id: int, actions: List[Dict[str, Any]]
@@ -719,8 +742,9 @@ class Rule1Enforcer:
                     VALUES (?, ?, ?)
                 """,
                     (scan_id, action["action"], json.dumps(action)),
-                )
+                        )
             conn.commit()
+
 
     def get_compliance_report(self, days: int = 30) -> Dict[str, Any]:
         """Generate compliance report for the specified period"""
@@ -730,62 +754,61 @@ class Rule1Enforcer:
             # Get scan statistics
             scan_stats = conn.execute(
                 """
-                SELECT 
+                SELECT
                     COUNT(*) as total_scans,
-                    SUM(CASE WHEN is_compliant THEN 1 ELSE 0 END) as compliant_scans,
-                    AVG(violation_count) as avg_violations
-                FROM compliance_scans 
+                        SUM(CASE WHEN is_compliant THEN 1 ELSE 0 END) as compliant_scans,
+                        AVG(violation_count) as avg_violations
+                FROM compliance_scans
                 WHERE scan_timestamp >= datetime('now', '-{} days')
             """.format(
-                    days
+                days
                 )
             ).fetchone()
 
             # Get violation breakdown
             violation_stats = conn.execute(
                 """
-                SELECT 
+                SELECT
                     violation_type,
-                    severity,
-                    COUNT(*) as count
+                        severity,
+                        COUNT(*) as count
                 FROM violations v
                 JOIN compliance_scans s ON v.scan_id = s.id
                 WHERE s.scan_timestamp >= datetime('now', '-{} days')
                 GROUP BY violation_type, severity
                 ORDER BY count DESC
             """.format(
-                    days
+                days
                 )
             ).fetchall()
 
             # Get enforcement actions
             action_stats = conn.execute(
                 """
-                SELECT 
+                SELECT
                     action_type,
-                    COUNT(*) as count
+                        COUNT(*) as count
                 FROM enforcement_actions e
                 JOIN compliance_scans s ON e.scan_id = s.id
                 WHERE s.scan_timestamp >= datetime('now', '-{} days')
                 GROUP BY action_type
                 ORDER BY count DESC
             """.format(
-                    days
+                days
                 )
             ).fetchall()
 
         return {
             "period_days": days,
-            "scan_statistics": dict(scan_stats) if scan_stats else {},
-            "violation_breakdown": [dict(row) for row in violation_stats],
-            "enforcement_actions": [dict(row) for row in action_stats],
-            "compliance_rate": (
+                "scan_statistics": dict(scan_stats) if scan_stats else {},
+                "violation_breakdown": [dict(row) for row in violation_stats],
+                "enforcement_actions": [dict(row) for row in action_stats],
+                "compliance_rate": (
                 scan_stats["compliant_scans"] / max(scan_stats["total_scans"], 1) * 100
                 if scan_stats and scan_stats["total_scans"] > 0
                 else 0
             ),
-        }
-
+                }
 
 if __name__ == "__main__":
     # Example usage and testing
@@ -795,17 +818,17 @@ if __name__ == "__main__":
     # Test content samples
     test_contents = [
         ("This is a normal, compliant piece of content.", ContentType.TEXT),
-        ("THIS IS SHOUTING WITH EXCESSIVE CAPS!!!", ContentType.TEXT),
-        ("Click here now!!! Buy this amazing product!!!", ContentType.TEXT),
-        (
+            ("THIS IS SHOUTING WITH EXCESSIVE CAPS!!!", ContentType.TEXT),
+            ("Click here now!!! Buy this amazing product!!!", ContentType.TEXT),
+            (
             "Educational content about preventing hate speech in communities.",
-            ContentType.TEXT,
-        ),
-        (
+                ContentType.TEXT,
+                ),
+            (
             "This content contains some questionable terms but in an educational context.",
-            ContentType.TEXT,
-        ),
-    ]
+                ContentType.TEXT,
+                ),
+            ]
 
     with tempfile.TemporaryDirectory() as temp_dir:
         db_path = os.path.join(temp_dir, "test_compliance.sqlite")
@@ -813,18 +836,18 @@ if __name__ == "__main__":
         # Test the Rule1Enforcer
         enforcer = Rule1Enforcer(db_path)
 
-        print("Testing Rule-1 Compliance System")
+        print("Testing Rule - 1 Compliance System")
         print("=" * 40)
 
         for i, (content, content_type) in enumerate(test_contents):
-            print(f"\nTest {i+1}: {content[:50]}...")
+            print(f"\nTest {i + 1}: {content[:50]}...")
 
             result = enforcer.enforce_compliance(
-                content=content,
-                content_type=content_type,
-                content_id=f"test_{i+1}",
-                auto_fix=True,
-            )
+                content = content,
+                    content_type = content_type,
+                    content_id = f"test_{i + 1}",
+                    auto_fix = True,
+                    )
 
             print(f"Compliant: {result['is_compliant']}")
             print(f"Violations: {result['violation_count']}")
@@ -836,7 +859,7 @@ if __name__ == "__main__":
         # Generate compliance report
         print("\nCompliance Report:")
         print("=" * 20)
-        report = enforcer.get_compliance_report(days=1)
+        report = enforcer.get_compliance_report(days = 1)
         print(f"Compliance Rate: {report['compliance_rate']:.1f}%")
         print(f"Total Scans: {report['scan_statistics'].get('total_scans', 0)}")
         print(f"Violations Found: {len(report['violation_breakdown'])}")

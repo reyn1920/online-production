@@ -12,7 +12,7 @@ def get_enabled_affiliates() -> List[Dict[str, Any]]:
     """
     with connect() as cx:
         cur = cx.execute(
-            "SELECT name, url, tag FROM affiliates WHERE enabled=1 ORDER BY name ASC"
+            "SELECT name, url, tag FROM affiliates WHERE enabled = 1 ORDER BY name ASC"
         )
         return [dict(row) for row in cur.fetchall()]
 
@@ -33,8 +33,8 @@ def build_affiliate_footer() -> str:
     # Get footer template from settings
     template = get_setting(
         "affiliate_footer_template",
-        "\n\n--- Affiliate Links ---\n{links}\n\nSupport us by using these links!",
-    )
+            "\n\n--- Affiliate Links ---\n{links}\n\nSupport us by using these links!",
+            )
 
     # Build links
     links = []

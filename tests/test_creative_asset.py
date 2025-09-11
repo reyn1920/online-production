@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Creative Asset Test Script
 
@@ -28,6 +28,7 @@ try:
 except ImportError:
     import logging
 
+
     def get_logger(name):
         return logging.getLogger(name)
 
@@ -35,11 +36,13 @@ except ImportError:
 class CreativeAssetTester:
     """Simulates the Creative Asset Test functionality."""
 
+
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
         self.channels_config = self._load_channels_config()
-        self.output_dir = Path("./output/tests")
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir = Path("./output / tests")
+        self.output_dir.mkdir(parents = True, exist_ok = True)
+
 
     def _load_channels_config(self) -> Dict[str, Any]:
         """Load channels configuration from channels.json."""
@@ -55,6 +58,7 @@ class CreativeAssetTester:
             self.logger.error(f"Failed to load channels config: {e}")
             return self._get_default_config()
 
+
     def _get_default_config(self) -> Dict[str, Any]:
         """Get default configuration if channels.json is not available."""
         return {
@@ -63,21 +67,22 @@ class CreativeAssetTester:
                     "avatars": [
                         {
                             "name": "Dr. Evelyn Reed",
-                            "voice_profile": "Trustworthy-Female-US-Standard",
-                            "base_face_image": "/assets/avatars/tech_evelyn_face.svg",
-                        }
+                                "voice_profile": "Trustworthy - Female - US - Standard",
+                                "base_face_image": "/assets / avatars / tech_evelyn_face.svg",
+                                }
                     ]
                 }
             }
         }
 
+
     def run_creative_asset_test(
         self,
-        channel: str = "Next Gen Tech Today",
-        avatar: str = "Dr. Evelyn Reed",
-        voice: str = "Trustworthy-Female-US-Standard",
-        topic: str = "Quantum Computing Explained",
-    ) -> Dict[str, Any]:
+            channel: str = "Next Gen Tech Today",
+            avatar: str = "Dr. Evelyn Reed",
+            voice: str = "Trustworthy - Female - US - Standard",
+            topic: str = "Quantum Computing Explained",
+            ) -> Dict[str, Any]:
         """Run the Creative Asset Test with specified parameters."""
 
         # Generate unique task ID
@@ -89,18 +94,18 @@ class CreativeAssetTester:
         # Simulate the test process
         test_result = {
             "task_id": task_id,
-            "timestamp": timestamp,
-            "parameters": {
+                "timestamp": timestamp,
+                "parameters": {
                 "channel": channel,
-                "avatar": avatar,
-                "voice": voice,
-                "topic": topic,
-            },
-            "status": "completed",
-            "steps": [],
-            "output_file": None,
-            "duration_seconds": 0,
-        }
+                    "avatar": avatar,
+                    "voice": voice,
+                    "topic": topic,
+                    },
+                "status": "completed",
+                "steps": [],
+                "output_file": None,
+                "duration_seconds": 0,
+                }
 
         start_time = time.time()
 
@@ -123,7 +128,7 @@ class CreativeAssetTester:
 
             # Step 4: Animate avatar
             self._log_step(
-                test_result, f"Animating avatar '{avatar}' with Linly-Talker model"
+                test_result, f"Animating avatar '{avatar}' with Linly - Talker model"
             )
             avatar_video = self._simulate_avatar_animation(
                 avatar, audio_file, timestamp
@@ -148,12 +153,14 @@ class CreativeAssetTester:
 
         return test_result
 
+
     def _log_step(self, test_result: Dict[str, Any], message: str):
         """Log a test step."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         step = {"timestamp": timestamp, "message": message, "status": "completed"}
         test_result["steps"].append(step)
         self.logger.info(f"STEP: {message}")
+
 
     def _validate_test_parameters(
         self, channel: str, avatar: str, voice: str, topic: str
@@ -170,28 +177,30 @@ class CreativeAssetTester:
 
         self.logger.info(f"Parameters validated: {channel}, {avatar}, {voice}, {topic}")
 
+
     def _generate_test_script(self, topic: str) -> str:
         """Generate a test script for the given topic."""
         script_templates = {
             "Quantum Computing Explained": """
-            Welcome to Next Gen Tech Today. I'm Dr. Evelyn Reed, and today we're diving deep 
-            into the fascinating world of quantum computing. 
-            
-            Quantum computing represents a fundamental shift in how we process information. 
-            Unlike classical computers that use bits as the smallest unit of data, quantum 
-            computers use quantum bits, or qubits, which can exist in multiple states 
+            Welcome to Next Gen Tech Today. I'm Dr. Evelyn Reed, and today we're diving deep
+            into the fascinating world of quantum computing.
+
+            Quantum computing represents a fundamental shift in how we process information.
+            Unlike classical computers that use bits as the smallest unit of data, quantum
+            computers use quantum bits, or qubits, which can exist in multiple states
             simultaneously through a phenomenon called superposition.
-            
-            This revolutionary technology promises to solve complex problems that would take 
-            classical computers thousands of years to complete. From cryptography to drug 
+
+            This revolutionary technology promises to solve complex problems that would take
+            classical computers thousands of years to complete. From cryptography to drug
             discovery, quantum computing is set to transform our digital landscape.
-            
-            Thank you for watching Next Gen Tech Today. Don't forget to subscribe for more 
-            cutting-edge technology insights.
+
+            Thank you for watching Next Gen Tech Today. Don't forget to subscribe for more
+            cutting - edge technology insights.
             """
         }
 
         return script_templates.get(topic, f"Generated script content for: {topic}")
+
 
     def _simulate_voice_generation(
         self, voice: str, script: str, timestamp: str
@@ -209,6 +218,7 @@ class CreativeAssetTester:
         self.logger.info(f"Voice generation simulated: {audio_file}")
         return str(audio_path)
 
+
     def _simulate_avatar_animation(
         self, avatar: str, audio_file: str, timestamp: str
     ) -> str:
@@ -225,6 +235,7 @@ class CreativeAssetTester:
         self.logger.info(f"Avatar animation simulated: {avatar_video}")
         return str(avatar_path)
 
+
     def _simulate_video_composite(
         self, avatar_video: str, topic: str, timestamp: str
     ) -> str:
@@ -239,7 +250,7 @@ class CreativeAssetTester:
             f.write(f"# Topic: {topic}\n")
             f.write(f"# Avatar Video: {avatar_video}\n")
             f.write(f"# Generated at: {timestamp}\n")
-            f.write(f"# Status: Production-ready test video\n")
+            f.write(f"# Status: Production - ready test video\n")
             f.write(
                 f"\n# This is a test video file demonstrating the Creative Asset generation pipeline.\n"
             )
@@ -247,23 +258,24 @@ class CreativeAssetTester:
         self.logger.info(f"Final video composite created: {final_video}")
         return str(final_path)
 
+
     def get_test_status(self, task_id: str) -> Dict[str, Any]:
         """Get the status of a test by task ID."""
         # In a real implementation, this would query the task queue
         return {
             "task_id": task_id,
-            "status": "completed",
-            "message": "Test completed successfully",
-        }
+                "status": "completed",
+                "message": "Test completed successfully",
+                }
 
 
 def main():
     """Main function to run the Creative Asset Test."""
     # Configure logging
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-    )
+        level = logging.INFO,
+            format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+            )
 
     # Create tester instance
     tester = CreativeAssetTester()
@@ -271,10 +283,10 @@ def main():
     # Run the test with the parameters from the user's scenario
     result = tester.run_creative_asset_test(
         channel="Next Gen Tech Today",
-        avatar="Dr. Evelyn Reed",
-        voice="Trustworthy-Female-US-Standard",
-        topic="Quantum Computing Explained",
-    )
+            avatar="Dr. Evelyn Reed",
+            voice="Trustworthy - Female - US - Standard",
+            topic="Quantum Computing Explained",
+            )
 
     # Print results
     print("\n" + "=" * 60)
@@ -295,7 +307,6 @@ def main():
         print(f"  {i}. {step['message']} ({step['status']})")
 
     print("\n" + "=" * 60)
-
 
 if __name__ == "__main__":
     main()

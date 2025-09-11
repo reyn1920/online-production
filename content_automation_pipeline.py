@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
-Content Automation Pipeline - Integrated News-to-Video System
+Content Automation Pipeline - Integrated News - to - Video System
 
 This module creates a complete automation pipeline that:
 1. Monitors RSS feeds for breaking news and trending topics
 2. Identifies content opportunities and hypocrisy tracking
 3. Automatically generates video scripts, voice, and visuals
-4. Produces multi-format content (video, audio, text)
+4. Produces multi - format content (video, audio, text)
 5. Schedules and publishes content across platforms
 
 Author: TRAE.AI System
@@ -57,8 +57,9 @@ class ContentFormat(Enum):
     NEWSLETTER = "newsletter"
     PODCAST = "podcast"
 
-
 @dataclass
+
+
 class ContentOpportunity:
     """Represents an identified content creation opportunity."""
 
@@ -74,8 +75,9 @@ class ContentOpportunity:
     created_at: datetime
     metadata: Dict[str, Any]
 
-
 @dataclass
+
+
 class ContentProject:
     """Represents a content creation project in progress."""
 
@@ -94,6 +96,7 @@ class ContentProject:
 
 class ContentAutomationPipeline:
     """Main content automation pipeline orchestrator."""
+
 
     def __init__(self, config_path: str = "content_automation_config.json"):
         self.config_path = config_path
@@ -116,24 +119,25 @@ class ContentAutomationPipeline:
         # Content generation settings
         self.generation_settings = {
             "video": {
-                "duration_range": (60, 180),  # 1-3 minutes
+                "duration_range": (60, 180),  # 1 - 3 minutes
                 "style": "professional",
-                "voice_profile": "authoritative",
-                "avatar_profile": "news_anchor",
-            },
-            "article": {
+                    "voice_profile": "authoritative",
+                    "avatar_profile": "news_anchor",
+                    },
+                "article": {
                 "word_count_range": (800, 1500),
-                "tone": "analytical",
-                "format": "blog_post",
-            },
-            "social_post": {
+                    "tone": "analytical",
+                    "format": "blog_post",
+                    },
+                "social_post": {
                 "character_limit": 280,
-                "hashtag_count": 3,
-                "include_media": True,
-            },
-        }
+                    "hashtag_count": 3,
+                    "include_media": True,
+                    },
+                }
 
         logger.info("Content Automation Pipeline initialized")
+
 
     def _load_config(self) -> Dict[str, Any]:
         """Load pipeline configuration."""
@@ -146,24 +150,25 @@ class ContentAutomationPipeline:
                 "monitoring_interval": 15,  # minutes
                 "content_generation_interval": 30,  # minutes
                 "max_daily_content": 10,
-                "priority_keywords": [
+                    "priority_keywords": [
                     "breaking",
-                    "urgent",
-                    "scandal",
-                    "controversy",
-                    "hypocrisy",
-                    "contradiction",
-                    "exposed",
-                ],
-                "content_formats": ["video", "article", "social_post"],
-                "auto_publish": False,
-                "quality_threshold": 0.7,
-            }
+                        "urgent",
+                        "scandal",
+                        "controversy",
+                        "hypocrisy",
+                        "contradiction",
+                        "exposed",
+                        ],
+                    "content_formats": ["video", "article", "social_post"],
+                    "auto_publish": False,
+                    "quality_threshold": 0.7,
+                    }
 
             with open(self.config_path, "w") as f:
-                json.dump(default_config, f, indent=2)
+                json.dump(default_config, f, indent = 2)
 
             return default_config
+
 
     def _init_automation_tables(self):
         """Initialize database tables for automation pipeline."""
@@ -175,17 +180,17 @@ class ContentAutomationPipeline:
             """
             CREATE TABLE IF NOT EXISTS content_opportunities (
                 id TEXT PRIMARY KEY,
-                topic TEXT NOT NULL,
-                angle TEXT NOT NULL,
-                priority INTEGER NOT NULL,
-                formats TEXT NOT NULL,
-                source_articles TEXT,
-                keywords TEXT,
-                estimated_engagement REAL,
-                deadline TIMESTAMP,
-                status TEXT DEFAULT 'pending',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                metadata TEXT
+                    topic TEXT NOT NULL,
+                    angle TEXT NOT NULL,
+                    priority INTEGER NOT NULL,
+                    formats TEXT NOT NULL,
+                    source_articles TEXT,
+                    keywords TEXT,
+                    estimated_engagement REAL,
+                    deadline TIMESTAMP,
+                    status TEXT DEFAULT 'pending',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    metadata TEXT
             )
         """
         )
@@ -195,17 +200,17 @@ class ContentAutomationPipeline:
             """
             CREATE TABLE IF NOT EXISTS content_projects (
                 id TEXT PRIMARY KEY,
-                opportunity_id TEXT,
-                title TEXT NOT NULL,
-                format TEXT NOT NULL,
-                status TEXT DEFAULT 'planning',
-                script TEXT,
-                assets TEXT,
-                output_files TEXT,
-                metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (opportunity_id) REFERENCES content_opportunities (id)
+                    opportunity_id TEXT,
+                    title TEXT NOT NULL,
+                    format TEXT NOT NULL,
+                    status TEXT DEFAULT 'planning',
+                    script TEXT,
+                    assets TEXT,
+                    output_files TEXT,
+                    metadata TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (opportunity_id) REFERENCES content_opportunities (id)
             )
         """
         )
@@ -215,15 +220,15 @@ class ContentAutomationPipeline:
             """
             CREATE TABLE IF NOT EXISTS content_performance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                project_id TEXT,
-                platform TEXT,
-                views INTEGER DEFAULT 0,
-                engagement_rate REAL DEFAULT 0.0,
-                shares INTEGER DEFAULT 0,
-                comments INTEGER DEFAULT 0,
-                published_at TIMESTAMP,
-                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (project_id) REFERENCES content_projects (id)
+                    project_id TEXT,
+                    platform TEXT,
+                    views INTEGER DEFAULT 0,
+                    engagement_rate REAL DEFAULT 0.0,
+                    shares INTEGER DEFAULT 0,
+                    comments INTEGER DEFAULT 0,
+                    published_at TIMESTAMP,
+                    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (project_id) REFERENCES content_projects (id)
             )
         """
         )
@@ -232,13 +237,14 @@ class ContentAutomationPipeline:
         conn.close()
         logger.info("Content automation database tables initialized")
 
+
     def identify_content_opportunities(self) -> List[ContentOpportunity]:
         """Analyze RSS data to identify content creation opportunities."""
         opportunities = []
 
         try:
             # Get trending topics from RSS engine
-            trending_topics = self.rss_engine.get_trending_topics(limit=20)
+            trending_topics = self.rss_engine.get_trending_topics(limit = 20)
 
             # Get recent hypocrisy opportunities
             hypocrisy_data = self._get_hypocrisy_opportunities()
@@ -266,6 +272,7 @@ class ContentAutomationPipeline:
 
         return opportunities
 
+
     def _analyze_trend_for_content(
         self, trend: TrendData
     ) -> Optional[ContentOpportunity]:
@@ -274,7 +281,7 @@ class ContentAutomationPipeline:
             # Calculate content potential score
             engagement_score = min(trend.frequency * 0.1 + trend.trend_score * 0.3, 1.0)
 
-            # Skip low-potential topics
+            # Skip low - potential topics
             if engagement_score < 0.3:
                 return None
 
@@ -297,30 +304,31 @@ class ContentAutomationPipeline:
             angle = self._generate_content_angle(trend.keyword, trend.sources)
 
             opportunity = ContentOpportunity(
-                id=hashlib.md5(
+                id = hashlib.md5(
                     f"{trend.keyword}_{datetime.now().isoformat()}".encode()
                 ).hexdigest()[:12],
-                topic=trend.keyword,
-                angle=angle,
-                priority=priority,
-                formats=formats,
-                source_articles=trend.related_articles,
-                keywords=[trend.keyword] + trend.keyword.split(),
-                estimated_engagement=engagement_score,
-                deadline=datetime.now() + timedelta(hours=24),
-                created_at=datetime.now(),
-                metadata={
+                    topic = trend.keyword,
+                    angle = angle,
+                    priority = priority,
+                    formats = formats,
+                    source_articles = trend.related_articles,
+                    keywords=[trend.keyword] + trend.keyword.split(),
+                    estimated_engagement = engagement_score,
+                    deadline = datetime.now() + timedelta(hours = 24),
+                    created_at = datetime.now(),
+                    metadata={
                     "trend_score": trend.trend_score,
-                    "frequency": trend.frequency,
-                    "sources": trend.sources,
-                },
-            )
+                        "frequency": trend.frequency,
+                        "sources": trend.sources,
+                        },
+                    )
 
             return opportunity
 
         except Exception as e:
             logger.error(f"Error analyzing trend {trend.keyword}: {e}")
             return None
+
 
     def _get_hypocrisy_opportunities(self) -> List[Dict[str, Any]]:
         """Get recent hypocrisy tracking opportunities from database."""
@@ -330,7 +338,7 @@ class ContentAutomationPipeline:
 
             cursor.execute(
                 """
-                SELECT * FROM hypocrisy_tracker 
+                SELECT * FROM hypocrisy_tracker
                 WHERE created_at > datetime('now', '-7 days')
                 AND content_used = FALSE
                 ORDER BY severity_score DESC, confidence_score DESC
@@ -353,6 +361,7 @@ class ContentAutomationPipeline:
             logger.error(f"Error fetching hypocrisy opportunities: {e}")
             return []
 
+
     def _create_hypocrisy_content_opportunity(
         self, hyp_data: Dict[str, Any]
     ) -> Optional[ContentOpportunity]:
@@ -363,7 +372,7 @@ class ContentAutomationPipeline:
             confidence = hyp_data.get("confidence_score", 0.5)
             engagement_score = (severity / 10.0) * confidence
 
-            # High-impact hypocrisy gets priority
+            # High - impact hypocrisy gets priority
             priority = ContentPriority.HIGH if severity >= 7 else ContentPriority.MEDIUM
 
             # Generate compelling angle
@@ -373,28 +382,28 @@ class ContentAutomationPipeline:
             angle = f"Exposing {subject}'s {contradiction_type} contradiction: A detailed analysis"
 
             opportunity = ContentOpportunity(
-                id=hashlib.md5(
+                id = hashlib.md5(
                     f"hyp_{hyp_data['id']}_{datetime.now().isoformat()}".encode()
                 ).hexdigest()[:12],
-                topic=f"{subject} Hypocrisy",
-                angle=angle,
-                priority=priority,
-                formats=[ContentFormat.VIDEO, ContentFormat.ARTICLE],
-                source_articles=[
+                    topic = f"{subject} Hypocrisy",
+                    angle = angle,
+                    priority = priority,
+                    formats=[ContentFormat.VIDEO, ContentFormat.ARTICLE],
+                    source_articles=[
                     hyp_data.get("source_1", ""),
-                    hyp_data.get("source_2", ""),
-                ],
-                keywords=[subject, "hypocrisy", "contradiction", contradiction_type],
-                estimated_engagement=engagement_score,
-                deadline=datetime.now() + timedelta(hours=12),  # Urgent for hypocrisy
-                created_at=datetime.now(),
-                metadata={
+                        hyp_data.get("source_2", ""),
+                        ],
+                    keywords=[subject, "hypocrisy", "contradiction", contradiction_type],
+                    estimated_engagement = engagement_score,
+                    deadline = datetime.now() + timedelta(hours = 12),  # Urgent for hypocrisy
+                created_at = datetime.now(),
+                    metadata={
                     "hypocrisy_id": hyp_data["id"],
-                    "severity_score": severity,
-                    "confidence_score": confidence,
-                    "subject_type": hyp_data.get("subject_type", "unknown"),
-                },
-            )
+                        "severity_score": severity,
+                        "confidence_score": confidence,
+                        "subject_type": hyp_data.get("subject_type", "unknown"),
+                        },
+                    )
 
             return opportunity
 
@@ -402,15 +411,16 @@ class ContentAutomationPipeline:
             logger.error(f"Error creating hypocrisy opportunity: {e}")
             return None
 
+
     def _generate_content_angle(self, topic: str, sources: List[str]) -> str:
         """Generate a compelling content angle for a topic."""
         angles = [
             f"Breaking: What the mainstream media isn't telling you about {topic}",
-            f"The hidden truth behind {topic} - An investigative analysis",
-            f"Why {topic} matters more than you think - A deep dive",
-            f"Exposing the real story behind {topic}",
-            f"The {topic} controversy: Facts vs. Fiction",
-        ]
+                f"The hidden truth behind {topic} - An investigative analysis",
+                f"Why {topic} matters more than you think - A deep dive",
+                f"Exposing the real story behind {topic}",
+                f"The {topic} controversy: Facts vs. Fiction",
+                ]
 
         # Simple selection based on topic characteristics
         if "scandal" in topic.lower() or "controversy" in topic.lower():
@@ -421,6 +431,7 @@ class ContentAutomationPipeline:
             )
         else:
             return f"The hidden truth behind {topic} - An investigative analysis"
+
 
     def generate_content_from_opportunity(
         self, opportunity: ContentOpportunity
@@ -445,6 +456,7 @@ class ContentAutomationPipeline:
 
         return projects
 
+
     def _create_content_project(
         self, opportunity: ContentOpportunity, content_format: ContentFormat
     ) -> Optional[ContentProject]:
@@ -463,28 +475,28 @@ class ContentAutomationPipeline:
                 title = opportunity.angle
 
             project = ContentProject(
-                id=project_id,
-                opportunity_id=opportunity.id,
-                title=title,
-                format=content_format,
-                status="planning",
-                script=None,
-                assets=[],
-                output_files=[],
-                metadata={
+                id = project_id,
+                    opportunity_id = opportunity.id,
+                    title = title,
+                    format = content_format,
+                    status="planning",
+                    script = None,
+                    assets=[],
+                    output_files=[],
+                    metadata={
                     "priority": opportunity.priority.value,
-                    "keywords": opportunity.keywords,
-                    "source_articles": opportunity.source_articles,
-                    "estimated_engagement": opportunity.estimated_engagement,
-                },
-                created_at=datetime.now(),
-                updated_at=datetime.now(),
-            )
+                        "keywords": opportunity.keywords,
+                        "source_articles": opportunity.source_articles,
+                        "estimated_engagement": opportunity.estimated_engagement,
+                        },
+                    created_at = datetime.now(),
+                    updated_at = datetime.now(),
+                    )
 
             # Store project in database
             self._store_content_project(project)
 
-            # Generate script/content
+            # Generate script / content
             self._generate_project_script(project, opportunity)
 
             return project
@@ -493,10 +505,11 @@ class ContentAutomationPipeline:
             logger.error(f"Error creating content project: {e}")
             return None
 
+
     def _generate_project_script(
         self, project: ContentProject, opportunity: ContentOpportunity
     ):
-        """Generate script/content for a project."""
+        """Generate script / content for a project."""
         try:
             if project.format == ContentFormat.VIDEO:
                 script = self._generate_video_script(opportunity)
@@ -519,32 +532,33 @@ class ContentAutomationPipeline:
         except Exception as e:
             logger.error(f"Error generating script for project {project.id}: {e}")
 
+
     def _generate_video_script(self, opportunity: ContentOpportunity) -> str:
         """Generate video script using content agent."""
         try:
             # Use automated author for script generation
             prompt = f"""
             Create a compelling video script for: {opportunity.angle}
-            
+
             Topic: {opportunity.topic}
             Keywords: {', '.join(opportunity.keywords)}
-            
+
             The script should:
             1. Hook viewers in the first 10 seconds
             2. Present facts and analysis
-            3. Include call-to-action
-            4. Be 2-3 minutes when spoken
+            3. Include call - to - action
+            4. Be 2 - 3 minutes when spoken
             5. Maintain journalistic integrity
-            
+
             Format as a proper video script with timing cues.
             """
 
             # Generate using automated author
-            script = self.automated_author.ollama.generate(
+                script = self.automated_author.ollama.generate(
                 prompt,
-                "You are an expert video script writer for investigative journalism.",
-                temperature=0.7,
-            )
+                    "You are an expert video script writer for investigative journalism.",
+                    temperature = 0.7,
+                    )
 
             return script
 
@@ -552,19 +566,20 @@ class ContentAutomationPipeline:
             logger.error(f"Error generating video script: {e}")
             return f"Video script for: {opportunity.angle}"
 
+
     def _generate_article_content(self, opportunity: ContentOpportunity) -> str:
         """Generate article content."""
         try:
             # Create writing project
             project = self.automated_author.create_project(
-                title=opportunity.angle,
-                content_type=ContentType.BLOG_SERIES,
-                target_audience="Informed citizens seeking truth",
-                target_word_count=1200,
-                persona_name="investigative_journalist",
-                topic=opportunity.topic,
-                key_themes=opportunity.keywords,
-            )
+                title = opportunity.angle,
+                    content_type = ContentType.BLOG_SERIES,
+                    target_audience="Informed citizens seeking truth",
+                    target_word_count = 1200,
+                    persona_name="investigative_journalist",
+                    topic = opportunity.topic,
+                    key_themes = opportunity.keywords,
+                    )
 
             # Generate first chapter
             if project.chapters:
@@ -579,34 +594,36 @@ class ContentAutomationPipeline:
             logger.error(f"Error generating article content: {e}")
             return f"Article content for: {opportunity.angle}"
 
+
     def _generate_social_post(self, opportunity: ContentOpportunity) -> str:
         """Generate social media post."""
         try:
             prompt = f"""
             Create a compelling social media post about: {opportunity.topic}
-            
+
             Angle: {opportunity.angle}
             Keywords: {', '.join(opportunity.keywords[:3])}
-            
+
             Requirements:
             - Under 280 characters
-            - Include 2-3 relevant hashtags
+            - Include 2 - 3 relevant hashtags
             - Create urgency and engagement
             - Maintain credibility
             """
 
             post = self.automated_author.ollama.generate(
                 prompt,
-                "You are a social media expert focused on news and current events.",
-                temperature=0.8,
-                max_tokens=100,
-            )
+                    "You are a social media expert focused on news and current events.",
+                    temperature = 0.8,
+                    max_tokens = 100,
+                    )
 
             return post
 
         except Exception as e:
             logger.error(f"Error generating social post: {e}")
             return f"Breaking: {opportunity.topic} - {opportunity.angle[:100]}..."
+
 
     def produce_video_content(self, project: ContentProject) -> bool:
         """Produce video content from script."""
@@ -619,8 +636,8 @@ class ContentAutomationPipeline:
             duration = settings["duration_range"][1]  # Use max duration
 
             # Generate video using basic video generator
-            output_dir = Path("output/videos")
-            output_dir.mkdir(parents=True, exist_ok=True)
+                output_dir = Path("output / videos")
+            output_dir.mkdir(parents = True, exist_ok = True)
 
             video_filename = f"{project.id}_video.mp4"
             video_path = output_dir / video_filename
@@ -631,12 +648,12 @@ class ContentAutomationPipeline:
 
             # Generate video
             success = create_basic_video(
-                output_path=str(video_path),
-                duration=duration,
-                background_image=str(background_path),
-                title_text=project.title[:50],  # Truncate for display
-                subtitle_text=f"Analysis by TRAE.AI",
-            )
+                output_path = str(video_path),
+                    duration = duration,
+                    background_image = str(background_path),
+                    title_text = project.title[:50],  # Truncate for display
+                subtitle_text = f"Analysis by TRAE.AI",
+                    )
 
             if success:
                 project.output_files.append(str(video_path))
@@ -652,6 +669,7 @@ class ContentAutomationPipeline:
 
         return False
 
+
     def _create_video_background(self, output_path: Path, title: str):
         """Create a background image for video."""
         try:
@@ -666,15 +684,15 @@ class ContentAutomationPipeline:
                 alpha = y / 1080.0
                 color = (
                     int(20 + alpha * 30),
-                    int(30 + alpha * 40),
-                    int(50 + alpha * 60),
-                )
-                draw.line([(0, y), (1920, y)], fill=color)
+                        int(30 + alpha * 40),
+                        int(50 + alpha * 60),
+                        )
+                draw.line([(0, y), (1920, y)], fill = color)
 
             # Add title overlay
             try:
-                font = ImageFont.truetype("/System/Library/Fonts/Arial.ttf", 72)
-            except:
+                font = ImageFont.truetype("/System / Library / Fonts / Arial.ttf", 72)
+            except Exception:
                 font = ImageFont.load_default()
 
             # Wrap text
@@ -685,7 +703,7 @@ class ContentAutomationPipeline:
             for word in words:
                 current_line.append(word)
                 test_line = " ".join(current_line)
-                bbox = draw.textbbox((0, 0), test_line, font=font)
+                bbox = draw.textbbox((0, 0), test_line, font = font)
                 if bbox[2] > 1700:  # Max width
                     if len(current_line) > 1:
                         current_line.pop()
@@ -701,9 +719,9 @@ class ContentAutomationPipeline:
             # Draw text lines
             y_offset = 400
             for line in lines[:3]:  # Max 3 lines
-                bbox = draw.textbbox((0, 0), line, font=font)
+                bbox = draw.textbbox((0, 0), line, font = font)
                 x = (1920 - bbox[2]) // 2
-                draw.text((x, y_offset), line, fill=(255, 255, 255), font=font)
+                draw.text((x, y_offset), line, fill=(255, 255, 255), font = font)
                 y_offset += 100
 
             img.save(output_path)
@@ -714,8 +732,9 @@ class ContentAutomationPipeline:
             try:
                 img = Image.new("RGB", (1920, 1080), color=(50, 50, 100))
                 img.save(output_path)
-            except:
+            except Exception:
                 pass
+
 
     def _store_content_opportunity(self, opportunity: ContentOpportunity):
         """Store content opportunity in database."""
@@ -726,29 +745,30 @@ class ContentAutomationPipeline:
             cursor.execute(
                 """
                 INSERT OR REPLACE INTO content_opportunities
-                (id, topic, angle, priority, formats, source_articles, keywords, 
-                 estimated_engagement, deadline, metadata)
+                (id, topic, angle, priority, formats, source_articles, keywords,
+                    estimated_engagement, deadline, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     opportunity.id,
-                    opportunity.topic,
-                    opportunity.angle,
-                    opportunity.priority.value,
-                    json.dumps([f.value for f in opportunity.formats]),
-                    json.dumps(opportunity.source_articles),
-                    json.dumps(opportunity.keywords),
-                    opportunity.estimated_engagement,
-                    opportunity.deadline.isoformat(),
-                    json.dumps(opportunity.metadata),
-                ),
-            )
+                        opportunity.topic,
+                        opportunity.angle,
+                        opportunity.priority.value,
+                        json.dumps([f.value for f in opportunity.formats]),
+                        json.dumps(opportunity.source_articles),
+                        json.dumps(opportunity.keywords),
+                        opportunity.estimated_engagement,
+                        opportunity.deadline.isoformat(),
+                        json.dumps(opportunity.metadata),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             logger.error(f"Error storing content opportunity: {e}")
+
 
     def _store_content_project(self, project: ContentProject):
         """Store content project in database."""
@@ -759,23 +779,23 @@ class ContentAutomationPipeline:
             cursor.execute(
                 """
                 INSERT OR REPLACE INTO content_projects
-                (id, opportunity_id, title, format, status, script, assets, 
-                 output_files, metadata, updated_at)
+                (id, opportunity_id, title, format, status, script, assets,
+                    output_files, metadata, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     project.id,
-                    project.opportunity_id,
-                    project.title,
-                    project.format.value,
-                    project.status,
-                    project.script,
-                    json.dumps(project.assets),
-                    json.dumps(project.output_files),
-                    json.dumps(project.metadata),
-                    project.updated_at.isoformat(),
-                ),
-            )
+                        project.opportunity_id,
+                        project.title,
+                        project.format.value,
+                        project.status,
+                        project.script,
+                        json.dumps(project.assets),
+                        json.dumps(project.output_files),
+                        json.dumps(project.metadata),
+                        project.updated_at.isoformat(),
+                        ),
+                    )
 
             conn.commit()
             conn.close()
@@ -783,9 +803,11 @@ class ContentAutomationPipeline:
         except Exception as e:
             logger.error(f"Error storing content project: {e}")
 
+
     def _update_content_project(self, project: ContentProject):
         """Update content project in database."""
         self._store_content_project(project)  # Same as store with REPLACE
+
 
     async def run_automation_pipeline(self):
         """Run the main automation pipeline."""
@@ -818,10 +840,12 @@ class ContentAutomationPipeline:
                 logger.error(f"Error in automation pipeline: {e}")
                 await asyncio.sleep(60)  # Wait 1 minute before retrying
 
+
     def stop_automation_pipeline(self):
         """Stop the automation pipeline."""
         self.running = False
         logger.info("Content Automation Pipeline stopped")
+
 
     def get_pipeline_status(self) -> Dict[str, Any]:
         """Get current pipeline status and metrics."""
@@ -844,7 +868,7 @@ class ContentAutomationPipeline:
             # Recent activity
             cursor.execute(
                 """
-                SELECT COUNT(*) FROM content_projects 
+                SELECT COUNT(*) FROM content_projects
                 WHERE created_at > datetime('now', '-24 hours')
             """
             )
@@ -854,16 +878,15 @@ class ContentAutomationPipeline:
 
             return {
                 "running": self.running,
-                "pending_opportunities": pending_opportunities,
-                "project_stats": project_stats,
-                "recent_projects_24h": recent_projects,
-                "last_updated": datetime.now().isoformat(),
-            }
+                    "pending_opportunities": pending_opportunities,
+                    "project_stats": project_stats,
+                    "recent_projects_24h": recent_projects,
+                    "last_updated": datetime.now().isoformat(),
+                    }
 
         except Exception as e:
             logger.error(f"Error getting pipeline status: {e}")
             return {"error": str(e)}
-
 
 if __name__ == "__main__":
     # Example usage
@@ -887,4 +910,4 @@ if __name__ == "__main__":
 
     # Show status
     status = pipeline.get_pipeline_status()
-    print(f"Pipeline status: {json.dumps(status, indent=2)}")
+    print(f"Pipeline status: {json.dumps(status, indent = 2)}")

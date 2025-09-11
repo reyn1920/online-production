@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Integrate All Channels Script
 Integrates all channels from channels.json into the Universal Channel Protocol
@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 from backend.content.universal_channel_protocol import (ChannelType,
-                                                        ContentFirewallLevel,
-                                                        get_protocol)
+    ContentFirewallLevel,
+                                                            get_protocol)
 
 
 def load_channels_config():
@@ -27,10 +27,10 @@ def map_category_to_channel_type(category):
     """Map channel category to ChannelType enum"""
     mapping = {
         "politics": ChannelType.POLITICAL,
-        "technology": ChannelType.TECH,
-        "health_wellness": ChannelType.WELLNESS,
-        "ai_education": ChannelType.EDUCATION,
-    }
+            "technology": ChannelType.TECH,
+            "health_wellness": ChannelType.WELLNESS,
+            "ai_education": ChannelType.EDUCATION,
+            }
     return mapping.get(category, ChannelType.ENTERTAINMENT)
 
 
@@ -38,47 +38,47 @@ def create_persona_config(channel_data):
     """Create persona configuration from channel data"""
     return {
         "persona_name": channel_data.get("display_name", "Default Persona"),
-        "writing_style": channel_data.get("content_style", "Professional and engaging"),
-        "tone_attributes": ["informative", "engaging"],
-        "vocabulary_level": "intermediate",
-        "humor_style": "light",
-        "expertise_areas": [channel_data.get("category", "general")],
-        "target_audience": channel_data.get("target_audience", "General audience"),
-        "voice_characteristics": {
+            "writing_style": channel_data.get("content_style", "Professional and engaging"),
+            "tone_attributes": ["informative", "engaging"],
+            "vocabulary_level": "intermediate",
+            "humor_style": "light",
+            "expertise_areas": [channel_data.get("category", "general")],
+            "target_audience": channel_data.get("target_audience", "General audience"),
+            "voice_characteristics": {
             "voice": channel_data.get("voice", "Default"),
-            "tone": "professional",
-        },
-        "content_preferences": {
-            "length": channel_data.get("target_length", "10-15 minutes"),
-            "schedule": channel_data.get("posting_schedule", "daily"),
-        },
-    }
+                "tone": "professional",
+                },
+            "content_preferences": {
+            "length": channel_data.get("target_length", "10 - 15 minutes"),
+                "schedule": channel_data.get("posting_schedule", "daily"),
+                },
+            }
 
 
 def get_rss_feeds_for_category(category):
     """Get relevant RSS feeds for channel category"""
     feeds = {
         "politics": [
-            "https://feeds.foxnews.com/foxnews/politics",
-            "https://www.breitbart.com/feed/",
-            "https://dailycaller.com/feed/",
-        ],
-        "technology": [
-            "https://techcrunch.com/feed/",
-            "https://www.theverge.com/rss/index.xml",
-            "https://arstechnica.com/feed/",
-        ],
-        "health_wellness": [
-            "https://www.healthline.com/rss",
-            "https://www.medicalnewstoday.com/rss",
-            "https://www.webmd.com/rss/rss.aspx?RSSSource=RSS_PUBLIC",
-        ],
-        "ai_education": [
-            "https://ai.googleblog.com/feeds/posts/default",
-            "https://openai.com/blog/rss/",
-            "https://www.technologyreview.com/feed/",
-        ],
-    }
+            "https://feeds.foxnews.com / foxnews / politics",
+                "https://www.breitbart.com / feed/",
+                "https://dailycaller.com / feed/",
+                ],
+            "technology": [
+            "https://techcrunch.com / feed/",
+                "https://www.theverge.com / rss / index.xml",
+                "https://arstechnica.com / feed/",
+                ],
+            "health_wellness": [
+            "https://www.healthline.com / rss",
+                "https://www.medicalnewstoday.com / rss",
+                "https://www.webmd.com / rss / rss.aspx?RSSSource = RSS_PUBLIC",
+                ],
+            "ai_education": [
+            "https://ai.googleblog.com / feeds / posts / default",
+                "https://openai.com / blog / rss/",
+                "https://www.technologyreview.com / feed/",
+                ],
+            }
     return feeds.get(category, [])
 
 
@@ -135,13 +135,13 @@ def integrate_all_channels():
 
             # Create channel in protocol
             channel_config = protocol.create_channel(
-                channel_id=channel_id,
-                channel_name=channel_name,
-                channel_type=channel_type,
-                persona_config=persona_config,
-                rss_feeds=rss_feeds,
-                firewall_level=firewall_level,
-            )
+                channel_id = channel_id,
+                    channel_name = channel_name,
+                    channel_type = channel_type,
+                    persona_config = persona_config,
+                    rss_feeds = rss_feeds,
+                    firewall_level = firewall_level,
+                    )
 
             print(f"  ✅ Successfully integrated: {channel_name}")
             print(f"     - Channel ID: {channel_id}")
@@ -173,7 +173,6 @@ def integrate_all_channels():
         print(f"  - {config.channel_name} ({config.channel_type.value})")
 
     return len(failed_channels) == 0
-
 
 if __name__ == "__main__":
     success = integrate_all_channels()

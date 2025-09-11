@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Verify Python File Integration Status
 Checks all .py files across the entire codebase
@@ -32,13 +32,13 @@ def check_python_files():
     # Check key integration files
     key_files = [
         "main.py",
-        "backend/app.py",
-        "app/dashboard.py",
-        "backend/content/universal_channel_protocol.py",
-        "orchestrator/main.py",
-        "agents/content_agent.py",
-        "marketing_agent/main.py",
-    ]
+            "backend / app.py",
+            "app / dashboard.py",
+            "backend / content / universal_channel_protocol.py",
+            "orchestrator / main.py",
+            "agents / content_agent.py",
+            "marketing_agent / main.py",
+            ]
 
     print("\n🔍 Key Integration Files:")
     existing_key_files = []
@@ -56,11 +56,11 @@ def check_python_files():
     test_modules = [
         (
             "backend.content.universal_channel_protocol",
-            "backend/content/universal_channel_protocol.py",
-        ),
-        ("shared_utils", "shared_utils.py"),
-        ("config.validator", "config/validator.py"),
-    ]
+                "backend / content / universal_channel_protocol.py",
+                ),
+            ("shared_utils", "shared_utils.py"),
+            ("config.validator", "config / validator.py"),
+            ]
 
     for module_name, file_path in test_modules:
         if Path(file_path).exists():
@@ -96,7 +96,7 @@ def check_python_files():
         print("   ✅ All critical Python modules are accessible")
         print("   ✅ Import system is working correctly")
         print("   ✅ System architecture is properly structured")
-        print("   🚀 Python integration is production-ready!")
+        print("   🚀 Python integration is production - ready!")
         return True
     elif integration_score >= 60:
         print("\n✅ GOOD! Most Python files are integrated successfully.")
@@ -105,7 +105,6 @@ def check_python_files():
     else:
         print("\n⚠️  ATTENTION NEEDED! Python integration requires review.")
         return False
-
 
 if __name__ == "__main__":
     success = check_python_files()
