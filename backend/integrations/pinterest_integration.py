@@ -1,57 +1,33 @@
 from __future__ import annotations
-
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Dict, Any
+from ._base_social import BaseSocialClient
 
-@dataclass
-
-
-class PinterestClient:
-    access_token: Optional[str] = None
+class PinterestClient(BaseSocialClient):
+    name = "pinterest"
 
     @classmethod
+    def from_env(cls) -> PinterestClient:
+        """Create PinterestClient instance from environment variables"""
+        return cls()
 
+    def _check_ready(self) -> bool:
+        return bool(self.env.get("PINTEREST_ACCESS_TOKEN") and self.env.get("PINTEREST_BOARD_ID"))
 
-    def from_env(cls) -> "PinterestClient":
-        return cls(
-            access_token = os.getenv("PINTEREST_ACCESS_TOKEN"),
-                )
+    def is_configured(self) -> bool:
+        """Check if Pinterest integration is configured"""
+        return self.ready()
 
-
-    def ready(self) -> bool:
-        # OFF by default: returns True only when creds exist
-        return bool(self.access_token)
-
-    # --- Stubs (no network calls yet) ---
-
-
-        def create_pin(
-        self, title: str, media_url: str, board_id: str = ""
-    ) -> Dict[str, Any]:
+    async def create_pin(self, title: str, link: str | None = None, image_path: str | None = None) -> Dict[str, Any]:
+        """Create a Pinterest pin"""
         if not self.ready():
-            raise RuntimeError("Pinterest not configured")
-        return {
-            "ok": True,
-                "id": "pin_stub",
-                "title": title[:80],
-                "media": media_url,
-                "board": board_id,
-                }
+            return {"ok": False, "error": "Pinterest not configured"}
+        # TODO: Pinterest API call
+        return {"ok": True, "provider": "pinterest", "title": title, "link": link, "image": bool(image_path)}
 
-
-    def create_board(self, name: str, description: str = "") -> Dict[str, Any]:
+    def post(self, title: str, link: str | None = None, image_path: str | None = None) -> Dict[str, Any]:
+        """Legacy method for backward compatibility"""
         if not self.ready():
-            raise RuntimeError("Pinterest not configured")
-        return {
-            "ok": True,
-                "id": "board_stub",
-                "name": name,
-                "description": description,
-                }
-
-
-    def insights(self) -> Dict[str, Any]:
-        if not self.ready():
-            raise RuntimeError("Pinterest not configured")
-        return {"ok": True, "followers": 0, "impressions": 0, "saves": 0}
+            return {"ok": False, "reason": "pinterest_not_configured"}
+        # TODO: Pinterest API call
+        return {"ok": True, "provider": "pinterest", "title": title, "link": link, "image": bool(image_path)}

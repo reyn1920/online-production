@@ -297,20 +297,15 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
+    <script>//Global variables
         let socket;
         let dashboardData = {};
-        let updateInterval;
-
-        // Initialize dashboard
+        let updateInterval;//Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             initializeSocket();
             loadDashboardData();
             startAutoRefresh();
-        });
-
-        // Socket.IO connection
+        });//Socket.IO connection
         function initializeSocket() {
             socket = io();
             
@@ -325,21 +320,17 @@
             socket.on('job_update', function(data) {
                 updateJobStatus(data);
             });
-        }
-
-        // Load initial dashboard data
+        }//Load initial dashboard data
         async function loadDashboardData() {
             try {
-                const response = await fetch('/api/media/dashboard');
+                const response = await fetch("/api/media/dashboard');
                 const data = await response.json();
                 dashboardData = data;
                 updateDashboard(data);
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
             }
-        }
-
-        // Update dashboard with new data
+        }//Update dashboard with new data
         function updateDashboard(data) {
             updateSystemMetrics(data.performance_metrics);
             updateCloudSoftware(data.cloud_integrations);
@@ -347,9 +338,7 @@
             updateBlenderStatus(data.blender_pipeline);
             updateRecentJobs(data.active_jobs);
             updateSystemHealth(data.system_status);
-        }
-
-        // Update system metrics
+        }//Update system metrics
         function updateSystemMetrics(metrics) {
             if (!metrics) return;
             
@@ -357,9 +346,7 @@
             document.getElementById('memoryUsage').textContent = `${metrics.memory_usage?.toFixed(1) || 0}%`;
             document.getElementById('gpuUsage').textContent = `${metrics.gpu_usage?.toFixed(1) || 0}%`;
             document.getElementById('storageUsage').textContent = `${metrics.disk_usage?.toFixed(1) || 0}%`;
-        }
-
-        // Update cloud software status
+        }//Update cloud software status
         function updateCloudSoftware(integrations) {
             const container = document.getElementById('cloudSoftwareGrid');
             if (!container || !integrations) return;
@@ -392,9 +379,7 @@
                     </div>
                 </div>
             `).join('');
-        }
-
-        // Update DaVinci Resolve status
+        }//Update DaVinci Resolve status
         function updateDaVinciStatus(status) {
             const container = document.getElementById('davinciStatus');
             if (!container || !status) return;
@@ -418,9 +403,7 @@
                     <span class="font-medium">Export Presets:</span>
                     <span class="text-gray-700">${status.export_presets?.length || 0}</span>
                 </div>
-            `;
-            
-            // Update render queue
+            `;//Update render queue
             const queueContainer = document.getElementById('renderQueue');
             if (queueContainer && status.render_queue) {
                 queueContainer.innerHTML = status.render_queue.map(item => `
@@ -438,9 +421,7 @@
                     </div>
                 `).join('');
             }
-        }
-
-        // Update Blender status
+        }//Update Blender status
         function updateBlenderStatus(status) {
             const container = document.getElementById('blenderStatus');
             if (!container || !status) return;
@@ -464,9 +445,7 @@
                     <span class="font-medium">Available Addons:</span>
                     <span class="text-gray-700">${status.available_addons?.length || 0}</span>
                 </div>
-            `;
-            
-            // Update active renders
+            `;//Update active renders
             const rendersContainer = document.getElementById('blenderRenders');
             if (rendersContainer && status.active_renders) {
                 rendersContainer.innerHTML = status.active_renders.map(render => `
@@ -476,15 +455,13 @@
                             <span class="text-sm text-gray-600">${render.engine}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: ${(render.frame / render.total_frames * 100)}%"></div>
+                            <div class="progress-bar h-2 rounded-full" style="width: ${(render.frame/render.total_frames * 100)}%"></div>
                         </div>
                         <div class="text-sm text-gray-600 mt-1">Frame ${render.frame} of ${render.total_frames}</div>
                     </div>
                 `).join('');
             }
-        }
-
-        // Update recent jobs
+        }//Update recent jobs
         function updateRecentJobs(jobs) {
             const container = document.getElementById('recentJobs');
             if (!container || !jobs) return;
@@ -502,9 +479,7 @@
                     <div class="text-sm text-gray-600">Job ID: ${job.job_id}</div>
                 </div>
             `).join('');
-        }
-
-        // Update system health
+        }//Update system health
         function updateSystemHealth(health) {
             const container = document.getElementById('systemHealth');
             if (!container || !health) return;
@@ -522,33 +497,20 @@
                     <span class="status-badge status-${item.status}">${item.status}</span>
                 </div>
             `).join('');
-        }
-
-        // Tab switching
-        function switchTab(tabName) {
-            // Hide all tab contents
+        }//Tab switching
+        function switchTab(tabName) {//Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
-            });
-            
-            // Remove active class from all buttons
+            });//Remove active class from all buttons
             document.querySelectorAll('.tab-button').forEach(button => {
                 button.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button
+            });//Show selected tab
+            document.getElementById(tabName).classList.add('active');//Add active class to clicked button
             event.target.classList.add('active');
-        }
-
-        // Auto refresh
+        }//Auto refresh
         function startAutoRefresh() {
-            updateInterval = setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
-        }
-
-        // Cleanup
+            updateInterval = setInterval(loadDashboardData, 30000);//Refresh every 30 seconds
+        }//Cleanup
         window.addEventListener('beforeunload', function() {
             if (updateInterval) {
                 clearInterval(updateInterval);

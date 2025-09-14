@@ -162,7 +162,7 @@ cleanup_personal_info() {
 2. **ASSESS THE DAMAGE**
    ```bash
    # Check what was accessed
-   grep -r "$(date +%Y-%m-%d)" /var/log/ 2>/dev/null | tail -50
+   grep -r "$(date +%Y-%m-%d)"/var/log/2>/dev/null | tail -50
    
    # Check for unauthorized changes
    git status

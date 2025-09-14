@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Specialized Agentic Framework
 
@@ -23,27 +23,38 @@ import shutil
 import time
 import uuid
 from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
-from utils.logger import PerformanceTimer, get_logger
+from utils.logger import PerformanceTimer
 
-from .base_agents import AgentCapability, AgentStatus, BaseAgent, TaskPriority
+from .base_agents import AgentCapability, AgentStatus, BaseAgent
 
 # Import content creation tools
 try:
+
     from backend.content.ai_inpainting import (AIInpainting, InpaintingConfig,
+
         InpaintingQuality)
+
     from backend.content.ai_video_editing import AIVideoEditor, CueType, EffectIntensity
     from backend.content.animate_avatar import (AnimateAvatar, AnimationConfig,
+
         AnimationQuality)
+
     from backend.content.audio_postprod import (AudioConfig, AudioPostProduction,
+
         AudioQuality)
+
     from backend.content.automated_author import (AutomatedAuthor, ContentType,
+
         GhostwriterPersona)
+
     from backend.content.blender_compositor import (BlenderCompositor, RenderConfig,
+
         RenderQuality)
+
     from backend.content.vidscript_pro import VidScriptPro
+
 except ImportError as e:
     print(f"Warning: Could not import content creation tools: {e}")
 
@@ -294,6 +305,7 @@ class SystemAgent(BaseAgent):
 
     async def _perform_health_check(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform system health check."""
+
         import socket
 
         import psutil
@@ -316,7 +328,7 @@ class SystemAgent(BaseAgent):
                 {
                     "cpu_usage": cpu_usage,
                         "memory_usage": memory.percent,
-                        "disk_usage": (disk.used / disk.total) * 100,
+                        "disk_usage": (disk.used/disk.total) * 100,
                         "network_status": network_status,
                         "memory_available": memory.available,
                         "disk_free": disk.free,
@@ -349,12 +361,12 @@ class SystemAgent(BaseAgent):
         self, task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Perform database maintenance operations."""
-        import os
+
         import sqlite3
         from pathlib import Path
 
         operations = task.get("operations", ["vacuum", "analyze"])
-        db_path = task.get("database_path", "data / trae_master.db")
+        db_path = task.get("database_path", "data/trae_master.db")
         results = {}
 
         try:
@@ -375,7 +387,8 @@ class SystemAgent(BaseAgent):
                     results[operation] = {
                         "success": True,
                             "duration": duration,
-                            "operation": "Database defragmentation and space reclamation",
+                            "operation": "Database defragmentation \
+    and space reclamation",
                             }
 
                 elif operation == "analyze":
@@ -503,7 +516,9 @@ class ResearchAgent(BaseAgent):
     def _initialize_research_tools(self):
         """Initialize research tools for direct use."""
         try:
+
             from .research_tools import (BreakingNewsWatcher, CompetitorAnalyzer,
+
                 MarketValidator)
 
             self.research_tools = {
@@ -629,6 +644,7 @@ class ResearchAgent(BaseAgent):
 
         # Functional web search implementation
         try:
+
             from urllib.parse import quote_plus
 
             import requests
@@ -692,7 +708,8 @@ class ResearchAgent(BaseAgent):
                     {
                         "title": f"Research guidance for: {query}",
                             "url": "",
-                            "snippet": f"Consider researching {query} through academic sources, industry reports, or specialized databases for more comprehensive information.",
+                            "snippet": f"Consider researching {query} through academic sources, industry reports, \
+    or specialized databases for more comprehensive information.",
                             "type": "guidance",
                             "relevance_score": 0.5,
                             }
@@ -779,9 +796,8 @@ class ResearchAgent(BaseAgent):
 
     async def _perform_trend_analysis(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform trend analysis using web search patterns."""
-        import json
+
         import re
-        from collections import Counter
 
         import requests
 
@@ -823,29 +839,32 @@ class ResearchAgent(BaseAgent):
                         # Analyze text for trend indicators
                         if text_content:
                             # Look for positive trend indicators
-                            positive_patterns = r"\b(growing|increasing|rising|expanding|booming|surge|uptick|growth|rise)\b"
-                            negative_patterns = r"\b(declining|decreasing|falling|shrinking|downturn|drop|fall|reduction)\b"
+                            positive_patterns = r"\\b(growing|increasing|rising|expanding|booming|surge|uptick|growth|rise)\\b"
+                            negative_patterns = r"\\b(declining|decreasing|falling|shrinking|downturn|drop|fall|reduction)\\b"
                             stable_patterns = (
-                                r"\b(stable|steady|consistent|maintained|unchanged)\b"
+                                r"\\b(stable|steady|consistent|maintained|unchanged)\\b"
                             )
 
                             if re.search(
                                 positive_patterns, text_content, re.IGNORECASE
                             ):
                                 # Extract keywords near positive indicators
-                                words = re.findall(r"\b[A - Za - z]{3,}\b", text_content)
+                                words = re.findall(r"\\b[A - Za - z]{3,}\\b",
+    text_content)
                                 trending_up.extend([word.lower() for word in words[:5]])
 
                             if re.search(
                                 negative_patterns, text_content, re.IGNORECASE
                             ):
-                                words = re.findall(r"\b[A - Za - z]{3,}\b", text_content)
+                                words = re.findall(r"\\b[A - Za - z]{3,}\\b",
+    text_content)
                                 trending_down.extend(
                                     [word.lower() for word in words[:3]]
                                 )
 
                             if re.search(stable_patterns, text_content, re.IGNORECASE):
-                                words = re.findall(r"\b[A - Za - z]{3,}\b", text_content)
+                                words = re.findall(r"\\b[A - Za - z]{3,}\\b",
+    text_content)
                                 stable.extend([word.lower() for word in words[:3]])
 
                             sources.append("web_search")
@@ -912,8 +931,8 @@ class ResearchAgent(BaseAgent):
 
     async def _perform_fact_check(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Perform fact checking using web search verification."""
+
         import json
-        import re
         import urllib.parse
         import urllib.request
 
@@ -1012,7 +1031,7 @@ class ResearchAgent(BaseAgent):
             1 for claim in verified_claims if claim.get("verified") is not None
         )
         overall_accuracy = (
-            verified_count / total_verifiable if total_verifiable > 0 else 0.5
+            verified_count/total_verifiable if total_verifiable > 0 else 0.5
         )
 
         return {
@@ -1035,8 +1054,8 @@ class ResearchAgent(BaseAgent):
 
     async def _generic_research(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Handle generic research tasks using comprehensive web search."""
+
         import json
-        import re
         import urllib.parse
         import urllib.request
 
@@ -1241,10 +1260,11 @@ class ContentAgent(BaseAgent):
             self.ai_video_editor = AIVideoEditor()
 
             # Initialize new production pipeline tools
+
             from avatar_pipeline import AvatarPipeline
             from tts_engine import TTSEngine
 
-            from backend.m1_optimizer import CoreType, TaskPriority, get_m1_optimizer
+            from backend.m1_optimizer import get_m1_optimizer
             from davinci_resolve_integration import DaVinciResolveIntegration
 
             self.tts_engine = TTSEngine()
@@ -1593,8 +1613,10 @@ class ContentAgent(BaseAgent):
         """
         try:
             # Import API Orchestrator
-                from backend.api_orchestrator_enhanced import (EnhancedAPIOrchestrator,
-                OrchestrationRequest)
+            from backend.api_orchestrator_enhanced import (
+                EnhancedAPIOrchestrator,
+                OrchestrationRequest
+            )
 
             # Extract parameters
             source_image = task.get("source_image")
@@ -1608,14 +1630,14 @@ class ContentAgent(BaseAgent):
             if not source_image:
                 return {
                     "error": "Source image is required for avatar animation",
-                        "type": "avatar_animation",
-                        }
+                    "type": "avatar_animation",
+                }
 
             if not audio_file and not text:
                 return {
                     "error": "Either audio file or text is required for avatar animation",
-                        "type": "avatar_animation",
-                        }
+                    "type": "avatar_animation",
+                }
 
             # Create orchestrator instance
             orchestrator = EnhancedAPIOrchestrator()
@@ -1623,20 +1645,20 @@ class ContentAgent(BaseAgent):
             # Prepare payload for avatar generation
             payload = {
                 "source_image": source_image,
-                    "text": text,
-                    "voice_settings": {
+                "text": text,
+                "voice_settings": {
                     "quality": quality,
-                        "speed": task.get("voice_speed", 1.0),
-                        "pitch": task.get("voice_pitch", 1.0),
-                        },
-                    "video_settings": {
+                    "speed": task.get("voice_speed", 1.0),
+                    "pitch": task.get("voice_pitch", 1.0),
+                },
+                "video_settings": {
                     "fps": task.get("fps", 30),
-                        "resolution": task.get("resolution", "1024x1024"),
-                        "quality": quality,
-                        "enable_preprocessing": task.get("enable_preprocessing", True),
-                        "enable_postprocessing": task.get("enable_postprocessing", True),
-                        },
-                    }
+                    "resolution": task.get("resolution", "1024x1024"),
+                    "quality": quality,
+                    "enable_preprocessing": task.get("enable_preprocessing", True),
+                    "enable_postprocessing": task.get("enable_postprocessing", True),
+                },
+            }
 
             # Add audio file if provided
             if audio_file:
@@ -1645,18 +1667,16 @@ class ContentAgent(BaseAgent):
             # Create orchestration request
             request_id = str(uuid.uuid4())
             orchestration_request = OrchestrationRequest(
-                request_id = request_id,
-                    capability="avatar - generation",
-                    payload = payload,
-                    timeout_seconds = task.get(
-                    "timeout", 120
-                ),  # Avatar generation can take longer
-                max_retries = 2,
-                    prefer_free = True,
-                    )
+                request_id=request_id,
+                capability="avatar-generation",
+                payload=payload,
+                timeout_seconds=task.get("timeout", 120),  # Avatar generation can take longer
+                max_retries=2,
+                prefer_free=True,
+            )
 
             # Execute request through orchestrator
-                result = await orchestrator.orchestrate_request(orchestration_request)
+            result = await orchestrator.orchestrate_request(orchestration_request)
 
             # Generate job ID for tracking
             job_id = str(uuid.uuid4())
@@ -1681,7 +1701,7 @@ class ContentAgent(BaseAgent):
                         "quality": quality,
                         "video_path": result.response_data.get("video_path"),
                         "duration": result.response_data.get("duration"),
-                        "processing_time": result.total_time_ms / 1000,
+                        "processing_time": result.total_time_ms/1000,
                         "engine_used": result.response_data.get("engine_used"),
                         "created_with": "API Orchestrator",
                         "api_used": (
@@ -1800,39 +1820,39 @@ class ContentAgent(BaseAgent):
 
             # Configure rendering
             config = RenderConfig(
-                quality = getattr(RenderQuality, quality.upper(), RenderQuality.MEDIUM),
-                    fps = 30,
-                    resolution=(1920, 1080),
-                    enable_checkpointing = True,
-                    checkpoint_interval = 100,
-                    )
+                quality=getattr(RenderQuality, quality.upper(), RenderQuality.MEDIUM),
+                fps=30,
+                resolution=(1920, 1080),
+                enable_checkpointing=True,
+                checkpoint_interval=100,
+            )
 
             # Create composite job
             job = await self.blender_compositor.create_composite_job(
-                avatar_video = avatar_video,
-                    background_video = background_video,
-                    config = config,
-                    )
+                avatar_video=avatar_video,
+                background_video=background_video,
+                config=config,
+            )
 
             # Track job
             self.active_jobs[job.job_id] = {
                 "task_id": task.get("task_id"),
-                    "content_type": "video_composite",
-                    "started_at": job.created_at,
-                    "status": job.status,
-                    }
+                "content_type": "video_composite",
+                "started_at": job.created_at,
+                "status": job.status,
+            }
 
             return {
                 "type": "video_composite",
-                    "job_id": job.job_id,
-                    "status": job.status,
-                    "avatar_video": avatar_video,
-                    "background_video": background_video,
-                    "quality": quality,
-                    "composite_mode": composite_mode,
-                    "checkpointing_enabled": True,
-                    "created_with": "Blender Compositor",
-                    }
+                "job_id": job.job_id,
+                "status": job.status,
+                "avatar_video": avatar_video,
+                "background_video": background_video,
+                "quality": quality,
+                "composite_mode": composite_mode,
+                "checkpointing_enabled": True,
+                "created_with": "Blender Compositor",
+            }
 
         except Exception as e:
             self.logger.error(f"Video composite creation failed: {e}")
@@ -1992,7 +2012,7 @@ class ContentAgent(BaseAgent):
         try:
             text = task.get("text", "")
             voice_model = task.get("voice_model", "default")
-            output_path = task.get("output_path", "output / tts_audio.wav")
+            output_path = task.get("output_path", "output/tts_audio.wav")
 
             result = await self.tts_engine.synthesize_speech(
                 text = text, voice_model = voice_model, output_path = output_path
@@ -2019,7 +2039,7 @@ class ContentAgent(BaseAgent):
         try:
             character_config = task.get("character_config", {})
             animation_type = task.get("animation_type", "talking")
-            output_path = task.get("output_path", "output / avatar_animation.mp4")
+            output_path = task.get("output_path", "output/avatar_animation.mp4")
 
             result = await self.avatar_pipeline.create_full_avatar(
                 character_config = character_config,
@@ -2032,7 +2052,7 @@ class ContentAgent(BaseAgent):
                     "status": "completed",
                     "video_file": result["video_file"],
                     "character_model": result["character_model"],
-                    "created_with": "Avatar Pipeline (MakeHuman / Mixamo / Blender)",
+                    "created_with": "Avatar Pipeline (MakeHuman/Mixamo/Blender)",
                     }
         except Exception as e:
             return {
@@ -2050,7 +2070,7 @@ class ContentAgent(BaseAgent):
         try:
             project_config = task.get("project_config", {})
             media_files = task.get("media_files", [])
-            output_path = task.get("output_path", "output / final_video.mp4")
+            output_path = task.get("output_path", "output/final_video.mp4")
 
             result = await self.davinci_resolve.create_project_and_render(
                 project_config = project_config,
@@ -2084,13 +2104,13 @@ class ContentAgent(BaseAgent):
                 result = await self.gimp_automation.create_thumbnail(
                     title = config.get("title", "Video Title"),
                         background_image = config.get("background_image"),
-                        output_path = config.get("output_path", "output / thumbnail.png"),
+                        output_path = config.get("output_path", "output/thumbnail.png"),
                         )
             elif graphics_type == "channel_art":
                 result = await self.gimp_automation.create_channel_art(
                     channel_name = config.get("channel_name", "Channel"),
                         theme = config.get("theme", "modern"),
-                        output_path = config.get("output_path", "output / channel_art.png"),
+                        output_path = config.get("output_path", "output/channel_art.png"),
                         )
             else:
                 raise ValueError(f"Unsupported graphics type: {graphics_type}")
@@ -2121,13 +2141,13 @@ class ContentAgent(BaseAgent):
                 result = await self.inkscape_automation.create_logo(
                     text = config.get("text", "Logo"),
                         style = config.get("style", "modern"),
-                        output_path = config.get("output_path", "output / logo.svg"),
+                        output_path = config.get("output_path", "output/logo.svg"),
                         )
             elif art_type == "vector_art":
                 result = await self.inkscape_automation.create_vector_art(
                     design_type = config.get("design_type", "abstract"),
                         colors = config.get("colors", ["#FF6B6B", "#4ECDC4"]),
-                        output_path = config.get("output_path", "output / vector_art.svg"),
+                        output_path = config.get("output_path", "output/vector_art.svg"),
                         )
             else:
                 raise ValueError(f"Unsupported art type: {art_type}")
@@ -2149,11 +2169,12 @@ class ContentAgent(BaseAgent):
 
 
     async def _create_base_model(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Create base 3D character model using MakeHuman / Daz3D."""
+        """Create base 3D character model using MakeHuman/Daz3D."""
         try:
             character_config = task.get("character_config", {})
 
             # Create character specification from config
+
             from copy_of_code.avatar_pipeline import CharacterSpec
 
             spec = CharacterSpec(
@@ -2172,7 +2193,7 @@ class ContentAgent(BaseAgent):
                     "status": "completed",
                     "model_file": base_model_path,
                     "character_spec": character_config,
-                    "created_with": "Avatar Pipeline (MakeHuman / Daz3D)",
+                    "created_with": "Avatar Pipeline (MakeHuman/Daz3D)",
                     }
         except Exception as e:
             return {
@@ -2191,6 +2212,7 @@ class ContentAgent(BaseAgent):
             character_config = task.get("character_config", {})
 
             # Create character specification and animation config
+
             from copy_of_code.avatar_pipeline import AnimationConfig, CharacterSpec
 
             spec = CharacterSpec(
@@ -2240,9 +2262,10 @@ class ContentAgent(BaseAgent):
             animated_model_path = task.get("animated_model_path", "")
             character_config = task.get("character_config", {})
             render_config = task.get("render_config", {})
-            output_path = task.get("output_path", "output / final_avatar.mp4")
+            output_path = task.get("output_path", "output/final_avatar.mp4")
 
             # Create character specification and render settings
+
             from copy_of_code.avatar_pipeline import CharacterSpec, RenderSettings
 
             spec = CharacterSpec(
@@ -2290,7 +2313,7 @@ class ContentAgent(BaseAgent):
         """M1 - optimized video rendering with hardware acceleration."""
         try:
             video_config = task.get("video_config", {})
-            output_path = task.get("output_path", "output / optimized_video.mp4")
+            output_path = task.get("output_path", "output/optimized_video.mp4")
 
             # Use M1 hardware acceleration for video rendering
             render_settings = {
@@ -2321,7 +2344,7 @@ class ContentAgent(BaseAgent):
         """M1 - optimized audio processing with Core Audio."""
         try:
             audio_config = task.get("audio_config", {})
-            output_path = task.get("output_path", "output / optimized_audio.wav")
+            output_path = task.get("output_path", "output/optimized_audio.wav")
 
             # Use Core Audio for M1 optimization
             processing_settings = {
@@ -2352,7 +2375,7 @@ class ContentAgent(BaseAgent):
         """M1 - optimized 3D rendering with Metal acceleration."""
         try:
             render_config = task.get("render_config", {})
-            output_path = task.get("output_path", "output / optimized_3d.png")
+            output_path = task.get("output_path", "output/optimized_3d.png")
 
             # Use Metal for M1 GPU acceleration
             render_settings = {
@@ -2384,7 +2407,7 @@ class ContentAgent(BaseAgent):
         try:
             batch_config = task.get("batch_config", {})
             content_items = task.get("content_items", [])
-            output_dir = task.get("output_dir", "output / batch")
+            output_dir = task.get("output_dir", "output/batch")
 
             # Process items in parallel with resource throttling
             batch_results = []
@@ -2449,7 +2472,7 @@ class ContentAgent(BaseAgent):
                     content = response.get("response", "")
 
                     # Extract title from content or generate one
-                    lines = content.split("\n")
+                    lines = content.split("\\n")
                     title = (
                         lines[0].strip("#").strip()
                         if lines and lines[0].startswith("#")
@@ -2457,7 +2480,8 @@ class ContentAgent(BaseAgent):
                     )
 
                     # Generate SEO meta description
-                    meta_description = f"Discover everything about {topic}. Expert insights, practical tips, and comprehensive coverage for {target_audience}."
+                    meta_description = f"Discover everything about {topic}. Expert insights, practical tips, \
+    and comprehensive coverage for {target_audience}."
 
                     return {
                         "title": title,
@@ -2483,21 +2507,36 @@ class ContentAgent(BaseAgent):
             # Fallback to structured template - based generation
             sections = [
                 f"# {topic}: Complete Guide",
-                    f"\n## Introduction\n\nIn today's rapidly evolving landscape, understanding {topic} has become essential for {target_audience}. This comprehensive guide provides you with the knowledge and practical insights needed to master this subject.",
-                    f"\n## Understanding {topic}\n\n{topic} represents a fundamental concept that impacts various aspects of modern applications. Let's explore its core principles and practical applications.",
-                    f"\n## Key Benefits and Applications\n\nThe practical applications of {topic} include:\n\n- **Enhanced Efficiency**: Streamlined processes and improved productivity\n- **Better Decision Making**: Data - driven insights for informed choices\n- **Resource Optimization**: Maximizing value from available resources\n- **Competitive Advantage**: Staying ahead in the market",
-                    f"\n## Best Practices and Implementation\n\nTo successfully implement {topic} strategies:\n\n1. **Assessment**: Start with a thorough analysis of current state\n2. **Planning**: Develop a structured implementation roadmap\n3. **Execution**: Follow proven methodologies and frameworks\n4. **Monitoring**: Track progress and measure success metrics\n5. **Optimization**: Continuously improve based on results",
-                    f"\n## Common Challenges and Solutions\n\nWhile working with {topic}, organizations often face several challenges:\n\n- **Challenge 1**: Resource constraints\n  - *Solution*: Prioritize high - impact initiatives\n- **Challenge 2**: Technical complexity\n  - *Solution*: Invest in training and expert consultation\n- **Challenge 3**: Change resistance\n  - *Solution*: Implement gradual change management",
-                    f"\n## Future Trends and Considerations\n\nThe landscape of {topic} continues to evolve. Key trends to watch include emerging technologies, changing user expectations, and evolving industry standards.",
-                    f"\n## Conclusion\n\nMastering {topic} requires a combination of theoretical understanding and practical application. By following the strategies and best practices outlined in this guide, you'll be well - positioned to achieve success.\n\n**Ready to get started?** Begin implementing these strategies today and take your {topic} expertise to the next level.",
+                    f"\\n## Introduction\\n\\nIn today's rapidly evolving landscape, understanding {topic} has become essential for {target_audience}. This comprehensive guide provides you with the knowledge \
+    and practical insights needed to master this subject.",
+                    f"\\n## Understanding {topic}\\n\\n{topic} represents a fundamental concept that impacts various aspects of modern applications. Let's explore its core principles \
+    and practical applications.",
+                    f"\\n## Key Benefits \
+    and Applications\\n\\nThe practical applications of {topic} include:\\n\\n- **Enhanced Efficiency**: Streamlined processes \
+    and improved productivity\\n- **Better Decision Making**: Data - driven insights for informed choices\\n- **Resource Optimization**: Maximizing value from available resources\\n- **Competitive Advantage**: Staying ahead in the market",
+                    f"\\n## Best Practices \
+    and Implementation\\n\\nTo successfully implement {topic} strategies:\\n\\n1. **Assessment**: Start with a thorough analysis of current state\\n2. **Planning**: Develop a structured implementation roadmap\\n3. **Execution**: Follow proven methodologies \
+    and frameworks\\n4. **Monitoring**: Track progress \
+    and measure success metrics\\n5. **Optimization**: Continuously improve based on results",
+                    f"\\n## Common Challenges \
+    and Solutions\\n\\nWhile working with {topic}, organizations often face several challenges:\\n\\n- **Challenge 1**: Resource constraints\\n  - *Solution*: Prioritize high - impact initiatives\\n- **Challenge 2**: Technical complexity\\n  - *Solution*: Invest in training \
+    and expert consultation\\n- **Challenge 3**: Change resistance\\n  - *Solution*: Implement gradual change management",
+                    f"\\n## Future Trends \
+    and Considerations\\n\\nThe landscape of {topic} continues to evolve. Key trends to watch include emerging technologies, changing user expectations, \
+    and evolving industry standards.",
+                    f"\\n## Conclusion\\n\\nMastering {topic} requires a combination of theoretical understanding \
+    and practical application. By following the strategies \
+    and best practices outlined in this guide, you'll be well - positioned to achieve success.\\n\\n**Ready to get started?** Begin implementing these strategies today \
+    and take your {topic} expertise to the next level.",
                     ]
 
-            content = "\n".join(sections)
+            content = "\\n".join(sections)
 
             return {
                 "title": f"{topic}: Complete Guide",
                     "text": content,
-                    "meta_description": f"Master {topic} with this comprehensive guide. Expert insights, practical strategies, and actionable tips for {target_audience}.",
+                    "meta_description": f"Master {topic} with this comprehensive guide. Expert insights, practical strategies, \
+    and actionable tips for {target_audience}.",
                     "tags": [
                     topic.lower().replace(" ", "-"),
                         "guide",
@@ -2534,17 +2573,18 @@ class ContentAgent(BaseAgent):
 
         # Try AI - powered content generation first
         try:
-            import json
+
 
             import requests
 
             # Attempt to use Ollama for content generation
-            ollama_url = "http://localhost:11434 / api / generate"
+            ollama_url = "http://localhost:11434/api/generate"
 
             platform_guidelines = {
                 "twitter": "Keep it under 280 characters, use relevant hashtags, be engaging",
                     "linkedin": "Professional tone, industry insights, thought leadership",
-                    "instagram": "Visual - friendly, use emojis, inspiring and engaging",
+                    "instagram": "Visual - friendly, use emojis, inspiring \
+    and engaging",
                     "facebook": "Conversational, community - focused, shareable content",
                     }
 
@@ -2554,7 +2594,8 @@ Guidelines: {platform_guidelines.get(platform, 'Be engaging and relevant')}
 Tone: {tone}
 Target audience: {target_audience}
 
-Generate only the post text, no explanations. Make it compelling and platform - appropriate."""
+Generate only the post text, no explanations. Make it compelling \
+    and platform - appropriate."""
 
             payload = {
                 "model": "llama3.2",
@@ -2614,7 +2655,8 @@ Generate only the post text, no explanations. Make it compelling and platform - 
                     f"💎 {topic} gems you didn't know you needed! Save this post for later 📌 #{topic.lower().replace(' ', '')} #tips",
                     ],
                 "facebook": [
-                f"Let's talk about {topic}! 💬 I've been exploring this topic and wanted to share some insights with our community...",
+                f"Let's talk about {topic}! 💬 I've been exploring this topic \
+    and wanted to share some insights with our community...",
                     f"Community question: What's your experience with {topic}? Share your thoughts below! 👇",
                     f"Sharing some valuable insights about {topic} that I think you'll find interesting...",
                     ],
@@ -2667,15 +2709,16 @@ Generate only the post text, no explanations. Make it compelling and platform - 
 
         # Try AI - powered email generation first
         try:
-            import json
+
 
             import requests
 
             # Attempt to use Ollama for email generation
-            ollama_url = "http://localhost:11434 / api / generate"
+            ollama_url = "http://localhost:11434/api/generate"
 
             email_guidelines = {
-                "newsletter": "Informative, engaging, with clear sections and valuable content",
+                "newsletter": "Informative, engaging, with clear sections \
+    and valuable content",
                     "promotional": "Persuasive, benefit - focused, with strong call - to - action",
                     "welcome": "Warm, welcoming, set expectations, introduce value proposition",
                     "announcement": "Clear, direct, important information delivery",
@@ -2713,7 +2756,7 @@ BODY: [email body]"""
 
                 if ai_content and "SUBJECT:" in ai_content and "BODY:" in ai_content:
                     # Parse AI response
-                    lines = ai_content.split("\n")
+                    lines = ai_content.split("\\n")
                     ai_subject = ""
                     ai_body = ""
 
@@ -2726,7 +2769,7 @@ BODY: [email body]"""
                             current_section = "body"
                             ai_body = line.replace("BODY:", "").strip()
                         elif current_section == "body":
-                            ai_body += "\n" + line
+                            ai_body += "\\n" + line
 
                     if ai_subject and ai_body:
                         # Generate HTML version
@@ -2741,7 +2784,8 @@ BODY: [email body]"""
                                 "click_rate_prediction": 0.08,
                                 "generation_method": "ai_powered",
                                 "word_count": len(ai_body.split()),
-                                "estimated_read_time": f"{max(1, len(ai_body.split()) // 200)} min",
+                                "estimated_read_time": f"{max(1,
+    len(ai_body.split())//200)} min",
                                 }
 
         except Exception as e:
@@ -2852,15 +2896,16 @@ P.S. Need help? We're here for you - just reply to this email.""",
                 "click_rate_prediction": 0.06,
                 "generation_method": "template_based",
                 "word_count": len(body_content.split()),
-                "estimated_read_time": f"{max(1, len(body_content.split()) // 200)} min",
+                "estimated_read_time": f"{max(1,
+    len(body_content.split())//200)} min",
                 }
 
 
     def _convert_to_html(self, text_content: str) -> str:
         """Convert plain text email to HTML format."""
         # Simple text to HTML conversion
-        html_content = text_content.replace("\n\n", "</p><p>")
-        html_content = html_content.replace("\n", "<br>")
+        html_content = text_content.replace("\\n\\n", "</p><p>")
+        html_content = html_content.replace("\\n", "<br>")
 
         # Handle bullet points
         html_content = html_content.replace("• ", "<li>")
@@ -2937,7 +2982,7 @@ P.S. Need help? We're here for you - just reply to this email.""",
             # Fallback: Generate structured script manually
             script_sections = []
 
-            # Hook / Intro (first 15 seconds)
+            # Hook/Intro (first 15 seconds)
             hooks = [
                 f"Did you know that {topic} could change everything?",
                     f"What if I told you that {topic} is more important than you think?",
@@ -2948,23 +2993,24 @@ P.S. Need help? We're here for you - just reply to this email.""",
             import random
 
             selected_hook = random.choice(hooks)
-            script_sections.append(f"[HOOK - 0:00 - 0:15]\n{selected_hook}\n")
+            script_sections.append(f"[HOOK - 0:00 - 0:15]\\n{selected_hook}\\n")
 
             # Introduction (15 - 45 seconds)
             intro_text = f"""Welcome back to the channel! I'm excited to dive deep into {topic} today.
-By the end of this video, you'll understand exactly why {topic} matters and how it affects you.
+By the end of this video, you'll understand exactly why {topic} matters \
+    and how it affects you.
 So let's jump right in!"""
-            script_sections.append(f"[INTRODUCTION - 0:15 - 0:45]\n{intro_text}\n")
+            script_sections.append(f"[INTRODUCTION - 0:15 - 0:45]\\n{intro_text}\\n")
 
             # Main content sections
-            main_duration = duration - 90  # Reserve 90 seconds for intro / outro
+            main_duration = duration - 90  # Reserve 90 seconds for intro/outro
             sections_count = max(
-                3, min(7, main_duration // 60)
+                3, min(7, main_duration//60)
             )  # 1 section per minute, 3 - 7 sections
 
             for i in range(sections_count):
-                start_time = 45 + (i * (main_duration // sections_count))
-                end_time = 45 + ((i + 1) * (main_duration // sections_count))
+                start_time = 45 + (i * (main_duration//sections_count))
+                end_time = 45 + ((i + 1) * (main_duration//sections_count))
 
                 section_topics = [
                     f"The fundamentals of {topic}",
@@ -2983,15 +3029,17 @@ This is where we explore the key concepts and provide valuable insights.
 This understanding will help you [specific benefit related to the topic]."""
 
                 script_sections.append(
-                    f"[SECTION {i + 1} - {start_time//60}:{start_time%60:02d}-{end_time//60}:{end_time%60:02d}]\n{section_content}\n"
+                    f"[SECTION {i + 1} - {start_time//60}:{start_time % 60:02d}-{end_time//60}:{end_time % 60:02d}]\\n{section_content}\\n"
                 )
 
             # Call to Action & Outro
             cta_options = [
-                "If you found this valuable, make sure to subscribe and hit the notification bell!",
+                "If you found this valuable, make sure to subscribe \
+    and hit the notification bell!",
                     "What's your experience with {topic}? Let me know in the comments below!",
                     "Don't forget to like this video if it helped you understand {topic} better!",
-                    "Subscribe for more content like this, and I'll see you in the next video!",
+                    "Subscribe for more content like this, \
+    and I'll see you in the next video!",
                     ]
 
             selected_cta = random.choice(cta_options).format(topic = topic)
@@ -3002,11 +3050,11 @@ Thanks for watching, and I'll see you next time!"""
 
             final_time = duration - 30
             script_sections.append(
-                f"[OUTRO & CTA - {final_time//60}:{final_time%60:02d}-{duration//60}:{duration%60:02d}]\n{outro_text}"
+                f"[OUTRO & CTA - {final_time//60}:{final_time % 60:02d}-{duration//60}:{duration % 60:02d}]\\n{outro_text}"
             )
 
             # Combine all sections
-            full_script = "\n".join(script_sections)
+            full_script = "\\n".join(script_sections)
 
             # Calculate metrics
             word_count = len(full_script.split())
@@ -3030,7 +3078,7 @@ Thanks for watching, and I'll see you next time!"""
             self.logger.error(f"Video script creation failed: {e}")
             return {
                 "title": f"Video Script: {topic}",
-                    "script": f"[INTRO]\nWelcome to our video about {topic}.\n\n[MAIN CONTENT]\nLet's dive into the key points...\n\n[OUTRO]\nThanks for watching!",
+                    "script": f"[INTRO]\\nWelcome to our video about {topic}.\\n\\n[MAIN CONTENT]\\nLet's dive into the key points...\\n\\n[OUTRO]\\nThanks for watching!",
                     "estimated_duration": duration,
                     "scene_count": 3,
                     "word_count": 150,
@@ -3133,11 +3181,12 @@ Thanks for watching, and I'll see you next time!"""
         sections = []
 
         # Introduction
-        intro = f"Understanding {topic} has become increasingly important in today's landscape. This comprehensive analysis explores the key aspects and implications of {topic}, providing valuable insights for readers seeking to deepen their knowledge."
+        intro = f"Understanding {topic} has become increasingly important in today's landscape. This comprehensive analysis explores the key aspects \
+    and implications of {topic}, providing valuable insights for readers seeking to deepen their knowledge."
         sections.append(intro)
 
         # Main content sections
-        section_count = max(2, min(4, target_length // 100))
+        section_count = max(2, min(4, target_length//100))
         for i in range(section_count):
             section_topics = [
                 f"The fundamentals of {topic}",
@@ -3147,11 +3196,15 @@ Thanks for watching, and I'll see you next time!"""
                     ]
 
             if i < len(section_topics):
-                section_content = f"When examining {section_topics[i].lower()}, several key factors emerge. Research indicates that {topic} continues to evolve, presenting both opportunities and challenges. Understanding these dynamics is crucial for making informed decisions and developing effective strategies."
+                section_content = f"When examining {section_topics[i].lower()}, several key factors emerge. Research indicates that {topic} continues to evolve, presenting both opportunities \
+    and challenges. Understanding these dynamics is crucial for making informed decisions \
+    and developing effective strategies."
                 sections.append(section_content)
 
         # Conclusion
-        conclusion = f"In conclusion, {topic} represents a significant area of interest that warrants continued attention and study. The insights presented here provide a foundation for further exploration and practical application."
+        conclusion = f"In conclusion, {topic} represents a significant area of interest that warrants continued attention \
+    and study. The insights presented here provide a foundation for further exploration \
+    and practical application."
         sections.append(conclusion)
 
         return " ".join(sections)
@@ -3176,12 +3229,14 @@ Thanks for watching, and I'll see you next time!"""
 
         # Main content
         content_parts.append(
-            f"When it comes to {topic}, there's a lot to unpack. From the basics to advanced concepts, understanding {topic} can help you make better decisions and stay informed about important developments."
+            f"When it comes to {topic}, there's a lot to unpack. From the basics to advanced concepts, understanding {topic} can help you make better decisions \
+    and stay informed about important developments."
         )
 
         # Key points
         content_parts.append(
-            f"Here are some key things to know about {topic}: it's constantly evolving, it impacts various aspects of our lives, and staying informed about it can provide significant advantages."
+            f"Here are some key things to know about {topic}: it's constantly evolving, it impacts various aspects of our lives, \
+    and staying informed about it can provide significant advantages."
         )
 
         # Call to action
@@ -3197,9 +3252,10 @@ Thanks for watching, and I'll see you next time!"""
         if target_length <= 50:  # Short post
             return f"🔥 {topic} is trending! Here's what you need to know 👇 #{topic.replace(' ', '')}"
         elif target_length <= 100:  # Medium post
-            return f"✨ Let's talk about {topic} ✨\n\nThis is something worth paying attention to. What are your thoughts? 💭\n\n#{topic.replace(' ', '')} #trending"
+            return f"✨ Let's talk about {topic} ✨\\n\\nThis is something worth paying attention to. What are your thoughts? 💭\\n\\n#{topic.replace(' ', '')} #trending"
         else:  # Long post
-            return f"I've been thinking about {topic} lately and wanted to share some insights.\n\nHere's what I've learned:\n• It's more important than most people realize\n• The implications are far - reaching\n• Now is the time to pay attention\n\nWhat's your take on {topic}? Let me know in the comments!\n\n#{topic.replace(' ', '')} #insights"
+            return f"I've been thinking about {topic} lately \
+    and wanted to share some insights.\\n\\nHere's what I've learned:\\n• It's more important than most people realize\\n• The implications are far - reaching\\n• Now is the time to pay attention\\n\\nWhat's your take on {topic}? Let me know in the comments!\\n\\n#{topic.replace(' ', '')} #insights"
 
 
     def _generate_email_text(self, topic: str, target_length: int, tone: str) -> str:
@@ -3210,13 +3266,15 @@ Hi there,
 
 I hope this message finds you well. I wanted to reach out to share some important information about {topic} that I think you'll find valuable.
 
-Recent developments in {topic} have created new opportunities and considerations. Here's what you should know:
+Recent developments in {topic} have created new opportunities \
+    and considerations. Here's what you should know:
 
 • Key insights about {topic}
 • Practical implications for you
 • Recommended next steps
 
-If you have any questions or would like to discuss this further, please don't hesitate to reach out.
+If you have any questions \
+    or would like to discuss this further, please don't hesitate to reach out.
 
 Best regards,
 [Your Name]"""
@@ -3245,7 +3303,10 @@ Order now and experience the difference!"""
 
     def _generate_default_text(self, topic: str, target_length: int, tone: str) -> str:
         """Generate default content as fallback."""
-        return f"This comprehensive overview of {topic} provides essential information and insights. Whether you're new to {topic} or looking to deepen your understanding, this content offers valuable perspectives and practical guidance. The information presented here is designed to be accessible, informative, and actionable for readers at all levels."
+        return f"This comprehensive overview of {topic} provides essential information \
+    and insights. Whether you're new to {topic} or looking to deepen your understanding, this content offers valuable perspectives \
+    and practical guidance. The information presented here is designed to be accessible, informative, \
+    and actionable for readers at all levels."
 
 
     def _calculate_content_quality(self, content: str, target_length: int) -> float:
@@ -3257,13 +3318,13 @@ Order now and experience the difference!"""
 
         # Length appropriateness (closer to target = higher score)
         if target_length > 0:
-            length_ratio = min(word_count / target_length, target_length / word_count)
+            length_ratio = min(word_count/target_length, target_length/word_count)
             quality_score += length_ratio * 0.2
 
         # Content complexity (more sentences = higher score, up to a point)
         sentence_count = content.count(".") + content.count("!") + content.count("?")
         if sentence_count > 0:
-            avg_words_per_sentence = word_count / sentence_count
+            avg_words_per_sentence = word_count/sentence_count
             if 10 <= avg_words_per_sentence <= 25:  # Optimal range
                 quality_score += 0.1
 
@@ -3329,11 +3390,15 @@ class MarketingAgent(BaseAgent):
     def _initialize_marketing_tools(self):
         """Initialize marketing tools for direct use."""
         try:
+
             from .marketing_tools import (AffiliateManager, DayOneBlitzStrategy,
+
                 RelentlessOptimizationLoop)
+
             from .twitter_engagement_agent import TwitterEngagementAgent
             from .twitter_promotion_agent import TwitterPromotionAgent
             from .web_automation_tools import (AffiliateSignupAutomator,
+
                 WebAutomationAgent)
 
             self.marketing_tools = {
@@ -3470,7 +3535,7 @@ class MarketingAgent(BaseAgent):
                     self.campaigns.append(campaign)
                     return {
                         "campaign": campaign,
-                            "message": f"Affiliate campaign created successfully",
+                            "message": "Affiliate campaign created successfully",
                             }
             except Exception as e:
                 self.logger.warning(f"Failed to use affiliate signup bot: {e}")
@@ -3730,7 +3795,7 @@ class MarketingAgent(BaseAgent):
                         f"Failed to process queued task {queued_task['id']}: {e}"
                     )
 
-        # Remove completed / failed tasks from queue
+        # Remove completed/failed tasks from queue
         self.twitter_queue = [t for t in self.twitter_queue if t["status"] == "queued"]
 
         return results
@@ -3761,7 +3826,7 @@ class MarketingAgent(BaseAgent):
         if result.get("success") is True or result.get("status") == "success":
             return True
 
-        # Check for meaningful content / data
+        # Check for meaningful content/data
         if result.get("campaign_id") or result.get("post_id") or result.get("email_id"):
             return True
 
@@ -4019,8 +4084,8 @@ class QAAgent(BaseAgent):
                     check.get("recommendations", [])
                 )
 
-            # Calculate overall score and pass / fail
-            overall_score = sum(scores.values()) / len(scores) if scores else 0
+            # Calculate overall score and pass/fail
+            overall_score = sum(scores.values())/len(scores) if scores else 0
             validation_results["overall_score"] = overall_score
             validation_results["passed"] = (
                 overall_score >= self.quality_standards["content_score_threshold"]
@@ -4226,7 +4291,7 @@ class QAAgent(BaseAgent):
             "test_type": test_type,
                 "target_url": target_url,
                 "response_time": 250,  # ms
-            "throughput": 1000,  # requests / second
+            "throughput": 1000,  # requests/second
             "error_rate": 0.01,  # 1%
             "cpu_usage": 45.5,  # %
             "memory_usage": 60.2,  # %
@@ -4251,7 +4316,7 @@ class QAAgent(BaseAgent):
                 "content_guidelines": True,
                 }
 
-        overall_score = sum(checks.values()) / len(checks)
+        overall_score = sum(checks.values())/len(checks)
 
         return {
             "compliance_type": compliance_type,
@@ -4282,7 +4347,7 @@ class QAAgent(BaseAgent):
             )
 
         overall_score = (
-            sum(1 for r in results if r["passed"]) / len(results) if results else 1.0
+            sum(1 for r in results if r["passed"])/len(results) if results else 1.0
         )
 
         return {
@@ -4333,9 +4398,9 @@ class QAAgent(BaseAgent):
         sentence_count = len([s for s in content_text.split(".") if s.strip()])
 
         scores = {
-            "readability": min(0.95, 0.6 + (0.4 * min(word_count / 300, 1))),
-                "grammar": 0.85 + (0.15 * (1 - min(sentence_count / 20, 1))),
-                "completeness": min(0.95, 0.5 + (0.5 * min(word_count / 200, 1))),
+            "readability": min(0.95, 0.6 + (0.4 * min(word_count/300, 1))),
+                "grammar": 0.85 + (0.15 * (1 - min(sentence_count/20, 1))),
+                "completeness": min(0.95, 0.5 + (0.5 * min(word_count/200, 1))),
                 "accuracy": 0.88,
                 "engagement": 0.82,
                 "seo_optimization": 0.75,
@@ -4392,12 +4457,14 @@ class QAAgent(BaseAgent):
             title_len = len(title)
             if title_len < self.seo_criteria["title_length"]["min"]:
                 issues.append(
-                    f"Title too short ({title_len} chars, min {self.seo_criteria['title_length']['min']})"
+                    f"Title too short ({title_len} chars, "
+                    f"min {self.seo_criteria['title_length']['min']})"
                 )
                 recommendations.append("Expand title with relevant keywords")
             elif title_len > self.seo_criteria["title_length"]["max"]:
                 issues.append(
-                    f"Title too long ({title_len} chars, max {self.seo_criteria['title_length']['max']})"
+                    f"Title too long ({title_len} chars, "
+                    f"max {self.seo_criteria['title_length']['max']})"
                 )
                 recommendations.append("Shorten title while maintaining key message")
 
@@ -4516,8 +4583,7 @@ class QAAgent(BaseAgent):
         return {
             "passed": len(missing_metadata) == 0,
                 "missing_fields": missing_metadata,
-                "completeness_score": (len(required_metadata) - len(missing_metadata))
-            / len(required_metadata),
+                "completeness_score": (len(required_metadata) - len(missing_metadata))/len(required_metadata),
                 }
 
 
@@ -4634,7 +4700,7 @@ class QAAgent(BaseAgent):
         if validation_results.get("passed", False):
             avg_review_score = sum(
                 check.get("score", 0) for check in review_checks.values()
-            ) / len(review_checks)
+            )/len(review_checks)
             if avg_review_score >= 0.85:
                 return "APPROVE - Content meets all quality standards"
             elif avg_review_score >= 0.75:
@@ -4651,16 +4717,16 @@ class GIMPAutomation:
 
     def __init__(self):
         self.gimp_executable = self._find_gimp_executable()
-        self.script_dir = "scripts / gimp"
+        self.script_dir = "scripts/gimp"
         os.makedirs(self.script_dir, exist_ok = True)
 
 
     def _find_gimp_executable(self) -> str:
         """Find GIMP executable on the system."""
         possible_paths = [
-            "/Applications / GIMP - 2.10.app / Contents / MacOS / gimp",
-                "/usr / local / bin / gimp",
-                "/usr / bin / gimp",
+            "/Applications/GIMP - 2.10.app/Contents/MacOS/gimp",
+                "/usr/local/bin/gimp",
+                "/usr/bin/gimp",
                 "gimp",
                 ]
 
@@ -4675,7 +4741,7 @@ class GIMPAutomation:
         self,
             title: str,
             background_image: Optional[str] = None,
-            output_path: str = "output / thumbnail.png",
+            output_path: str = "output/thumbnail.png",
             ) -> Dict[str, Any]:
         """Create a video thumbnail using GIMP."""
         try:
@@ -4709,8 +4775,8 @@ class GIMPAutomation:
     ; Center the text
     (let* ((text - width (car (gimp - drawable - width text - layer)))
            (text - height (car (gimp - drawable - height text - layer)))
-           (x - offset (/ (- 1280 text - width) 2))
-           (y - offset (/ (- 720 text - height) 2)))
+           (x - offset (/(- 1280 text - width) 2))
+           (y - offset (/(- 720 text - height) 2)))
       (gimp - layer - set - offsets text - layer x - offset y - offset))
 
     ; Add drop shadow
@@ -4731,6 +4797,7 @@ class GIMPAutomation:
                 f.write(script_content)
 
             # Run GIMP with the script
+
             import subprocess
 
             result = subprocess.run(
@@ -4764,7 +4831,7 @@ class GIMPAutomation:
         self,
             channel_name: str,
             theme: str = "modern",
-            output_path: str = "output / channel_art.png",
+            output_path: str = "output/channel_art.png",
             ) -> Dict[str, Any]:
         """Create YouTube channel art using GIMP."""
         try:
@@ -4800,8 +4867,8 @@ class GIMPAutomation:
     ; Center the text
     (let* ((text - width (car (gimp - drawable - width text - layer)))
            (text - height (car (gimp - drawable - height text - layer)))
-           (x - offset (/ (- 2560 text - width) 2))
-           (y - offset (/ (- 1440 text - height) 2)))
+           (x - offset (/(- 2560 text - width) 2))
+           (y - offset (/(- 1440 text - height) 2)))
       (gimp - layer - set - offsets text - layer x - offset y - offset))
 
     ; Add text effects
@@ -4822,6 +4889,7 @@ class GIMPAutomation:
                 f.write(script_content)
 
             # Run GIMP with the script
+
             import subprocess
 
             result = subprocess.run(
@@ -4857,16 +4925,16 @@ class InkscapeAutomation:
 
     def __init__(self):
         self.inkscape_executable = self._find_inkscape_executable()
-        self.template_dir = "templates / inkscape"
+        self.template_dir = "templates/inkscape"
         os.makedirs(self.template_dir, exist_ok = True)
 
 
     def _find_inkscape_executable(self) -> str:
         """Find Inkscape executable on the system."""
         possible_paths = [
-            "/Applications / Inkscape.app / Contents / MacOS / inkscape",
-                "/usr / local / bin / inkscape",
-                "/usr / bin / inkscape",
+            "/Applications/Inkscape.app/Contents/MacOS/inkscape",
+                "/usr/local/bin/inkscape",
+                "/usr/bin/inkscape",
                 "inkscape",
                 ]
 
@@ -4878,18 +4946,18 @@ class InkscapeAutomation:
 
 
     async def create_logo(
-        self, text: str, style: str = "modern", output_path: str = "output / logo.svg"
+        self, text: str, style: str = "modern", output_path: str = "output/logo.svg"
     ) -> Dict[str, Any]:
         """Create a logo using Inkscape."""
         try:
             # Create SVG template for logo
             svg_content = f"""
 <?xml version="1.0" encoding="UTF - 8"?>
-<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org / 2000 / svg">
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop - color:#FF6B6B;stop - opacity:1" />
-      <stop offset="100%" style="stop - color:#4ECDC4;stop - opacity:1" />
+      <stop offset="0%" style="stop - color:#FF6B6B;stop - opacity:1"/>
+      <stop offset="100%" style="stop - color:#4ECDC4;stop - opacity:1"/>
     </linearGradient>
   </defs>
 
@@ -4911,6 +4979,7 @@ class InkscapeAutomation:
                 f.write(svg_content)
 
             # Optimize with Inkscape
+
             import subprocess
 
             result = subprocess.run(
@@ -4942,7 +5011,7 @@ class InkscapeAutomation:
         self,
             design_type: str = "abstract",
             colors: List[str] = None,
-            output_path: str = "output / vector_art.svg",
+            output_path: str = "output/vector_art.svg",
             ) -> Dict[str, Any]:
         """Create vector art using Inkscape."""
         try:
@@ -4952,15 +5021,15 @@ class InkscapeAutomation:
             # Create SVG template for vector art
             svg_content = f"""
 <?xml version="1.0" encoding="UTF - 8"?>
-<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org / 2000 / svg">
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="artGradient1" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop - color:{colors[0]};stop - opacity:0.8" />
-      <stop offset="100%" style="stop - color:{colors[1]};stop - opacity:0.3" />
+      <stop offset="0%" style="stop - color:{colors[0]};stop - opacity:0.8"/>
+      <stop offset="100%" style="stop - color:{colors[1]};stop - opacity:0.3"/>
     </radialGradient>
     <linearGradient id="artGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop - color:{colors[2]};stop - opacity:0.7" />
-      <stop offset="100%" style="stop - color:{colors[3]};stop - opacity:0.5" />
+      <stop offset="0%" style="stop - color:{colors[2]};stop - opacity:0.7"/>
+      <stop offset="100%" style="stop - color:{colors[3]};stop - opacity:0.5"/>
     </linearGradient>
   </defs>
 
@@ -5007,6 +5076,7 @@ class InkscapeAutomation:
                 f.write(svg_content)
 
             # Optimize with Inkscape
+
             import subprocess
 
             result = subprocess.run(

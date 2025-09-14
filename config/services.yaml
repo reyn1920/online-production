@@ -10,7 +10,7 @@ services:
       port: 9350
       initial_grace_seconds: 10
     restart_policy:
-      mode: "always"            # was: on-failure / skipped-non-critical
+      mode: "always"            # was: on-failure/skipped-non-critical
       backoff_seconds: 2
       backoff_max_seconds: 60
     critical: true              # flips from "non-critical" to "critical"

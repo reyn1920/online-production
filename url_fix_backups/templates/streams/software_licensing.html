@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Licensing - Production Ready</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .status-active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #f44336;
+            color: white;
+        }
+
+        .status-starting {
+            background: #ff9800;
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .control-panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .metrics-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .licenses-section {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .licenses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .license-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .license-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .license-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .license-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .license-type {
+            background: #667eea;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .license-version {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .license-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .license-pricing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .price-single {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .price-bulk {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .license-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .activations-section {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .activations-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .activations-table th,
+        .activations-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .activations-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .activations-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .activation-status {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .status-active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-expired {
+            background: #f44336;
+            color: white;
+        }
+
+        .status-trial {
+            background: #ff9800;
+            color: white;
+        }
+
+        .status-suspended {
+            background: #9e9e9e;
+            color: white;
+        }
+
+        .new-license-form {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .test-results {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .test-pass {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .test-fail {
+            background: #f44336;
+            color: white;
+        }
+
+        .test-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .licenses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .license-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .license-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .activations-table {
+                font-size: 0.9rem;
+            }
+            
+            .activations-table th,
+            .activations-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="status-indicator" id="statusIndicator">INACTIVE</div>
+            <h1>🔐 Software Licensing</h1>
+            <p>Production-Ready License Management & Revenue Tracking</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h2>Stream Controls</h2>
+                
+                <div class="control-group">
+                    <label>Stream Status</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="streamToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="streamStatus">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Auto-Start on System Boot</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoStartToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span>Enabled when checked</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn btn-success" id="startBtn" onclick="startStream()">▶️ Start Stream</button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopStream()" disabled>⏹️ Stop Stream</button>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn btn-warning" onclick="runTests()">🧪 Run Tests</button>
+                    <button class="btn" onclick="saveConfig()">💾 Save Config</button>
+                    <button class="btn btn-purple" onclick="showNewLicenseForm()">➕ New License</button>
+                </div>
+
+                <div id="alertContainer"></div>
+            </div>
+
+            <!-- Metrics Panel -->
+            <div class="metrics-panel">
+                <h2>License Metrics</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="activeLicenses">0</div>
+                        <div class="metric-label">Active Licenses</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalRevenue">$0.00</div>
+                        <div class="metric-label">Total Revenue</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="monthlyRecurring">$0.00</div>
+                        <div class="metric-label">Monthly Recurring</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="conversionRate">0%</div>
+                        <div class="metric-label">Trial Conversion</div>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Monthly Revenue Goal</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="revenueGoalFill" style="width: 0%"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 5px;">
+                        <span id="revenueGoalText">$0 / $25,000 goal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Licenses Section -->
+            <div class="licenses-section">
+                <h2>Software Products</h2>
+                <p style="color: #666; margin-bottom: 20px;">Manage your software licenses and pricing tiers</p>
+                
+                <div class="licenses-grid" id="licensesGrid">
+                    <!-- Licenses will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Activations Section -->
+            <div class="activations-section">
+                <h2>License Activations</h2>
+                <p style="color: #666; margin-bottom: 20px;">Track active license keys and customer usage</p>
+                
+                <table class="activations-table" id="activationsTable">
+                    <thead>
+                        <tr>
+                            <th>License Key</th>
+                            <th>Product</th>
+                            <th>Customer</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Activated</th>
+                            <th>Expires</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activationsTableBody">
+                        <!-- Activations will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- New License Form -->
+            <div class="new-license-form" id="newLicenseForm" style="display: none;">
+                <h2>Create New Software License</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="productName" placeholder="Enter product name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="productVersion" placeholder="1.0.0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>License Type</label>
+                        <select id="licenseType">
+                            <option value="perpetual">Perpetual</option>
+                            <option value="subscription">Subscription</option>
+                            <option value="trial">Trial</option>
+                            <option value="educational">Educational</option>
+                            <option value="enterprise">Enterprise</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Single License Price ($)</label>
+                        <input type="number" id="singlePrice" placeholder="99" min="1" max="10000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Bulk License Price ($)</label>
+                        <input type="number" id="bulkPrice" placeholder="79" min="1" max="10000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Max Activations</label>
+                        <input type="number" id="maxActivations" placeholder="1" min="1" max="1000">
+                    </div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Product Description</label>
+                        <textarea id="productDescription" placeholder="Describe the software product and its features..."></textarea>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-success" onclick="createLicense()">✅ Create License</button>
+                    <button class="btn" onclick="hideNewLicenseForm()">❌ Cancel</button>
+                </div>
+            </div>
+
+            <!-- Test Results Section -->
+            <div class="test-results">
+                <h2>System Tests</h2>
+                <div id="testResultsContainer">
+                    <p style="text-align: center; color: #666;">Click "Run Tests" to validate all licensing systems</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let streamData = {
+            streamId: 'software_licensing',
+            status: 'inactive',
+            autoStart: false,
+            activeLicenses: 0,
+            totalRevenue: 0,
+            monthlyRecurring: 0,
+            conversionRate: 0,
+            revenueGoal: 25000,
+            licenses: [],
+            activations: []
+        };
+
+        const defaultLicenses = [
+            {
+                id: 'license_001',
+                productName: 'CodeMaster Pro',
+                version: '2.1.0',
+                type: 'perpetual',
+                singlePrice: 199,
+                bulkPrice: 149,
+                maxActivations: 3,
+                totalSales: 1247,
+                activeUsers: 892,
+                totalRevenue: 248253,
+                description: 'Advanced code editor with AI-powered features, syntax highlighting, and project management tools.'
+            },
+            {
+                id: 'license_002',
+                productName: 'DataViz Suite',
+                version: '1.5.2',
+                type: 'subscription',
+                singlePrice: 29,
+                bulkPrice: 24,
+                maxActivations: 1,
+                totalSales: 2156,
+                activeUsers: 1834,
+                totalRevenue: 62524,
+                description: 'Professional data visualization and analytics platform with real-time dashboards.'
+            },
+            {
+                id: 'license_003',
+                productName: 'SecureVault Enterprise',
+                version: '3.0.1',
+                type: 'enterprise',
+                singlePrice: 499,
+                bulkPrice: 399,
+                maxActivations: 50,
+                totalSales: 156,
+                activeUsers: 7800,
+                totalRevenue: 77844,
+                description: 'Enterprise-grade password manager and secure document storage solution.'
+            },
+            {
+                id: 'license_004',
+                productName: 'WebBuilder Studio',
+                version: '4.2.0',
+                type: 'perpetual',
+                singlePrice: 149,
+                bulkPrice: 119,
+                maxActivations: 2,
+                totalSales: 3421,
+                activeUsers: 2987,
+                totalRevenue: 509729,
+                description: 'Drag-and-drop website builder with responsive templates and e-commerce integration.'
+            },
+            {
+                id: 'license_005',
+                productName: 'AI Assistant SDK',
+                version: '1.0.0',
+                type: 'subscription',
+                singlePrice: 99,
+                bulkPrice: 79,
+                maxActivations: 1,
+                totalSales: 567,
+                activeUsers: 489,
+                totalRevenue: 56133,
+                description: 'Software development kit for integrating AI assistants into applications.'
+            },
+            {
+                id: 'license_006',
+                productName: 'CloudSync Pro',
+                version: '2.3.1',
+                type: 'trial',
+                singlePrice: 79,
+                bulkPrice: 59,
+                maxActivations: 5,
+                totalSales: 892,
+                activeUsers: 234,
+                totalRevenue: 18468,
+                description: 'Multi-cloud file synchronization and backup solution with encryption.'
+            }
+        ];
+
+        const defaultActivations = [
+            {
+                id: 'activation_001',
+                licenseKey: 'CM-PRO-2024-A1B2C3D4',
+                productId: 'license_001',
+                productName: 'CodeMaster Pro',
+                customerName: 'TechCorp Solutions',
+                customerEmail: 'admin@techcorp.com',
+                type: 'perpetual',
+                status: 'active',
+                activatedDate: '2024-01-15',
+                expiresDate: 'Never',
+                activationsUsed: 2,
+                maxActivations: 3
+            },
+            {
+                id: 'activation_002',
+                licenseKey: 'DV-SUITE-2024-E5F6G7H8',
+                productId: 'license_002',
+                productName: 'DataViz Suite',
+                customerName: 'Analytics Inc',
+                customerEmail: 'licenses@analytics.com',
+                type: 'subscription',
+                status: 'active',
+                activatedDate: '2024-02-01',
+                expiresDate: '2024-03-01',
+                activationsUsed: 1,
+                maxActivations: 1
+            },
+            {
+                id: 'activation_003',
+                licenseKey: 'SV-ENT-2024-I9J0K1L2',
+                productId: 'license_003',
+                productName: 'SecureVault Enterprise',
+                customerName: 'Global Finance Corp',
+                customerEmail: 'it@globalfinance.com',
+                type: 'enterprise',
+                status: 'active',
+                activatedDate: '2024-01-20',
+                expiresDate: '2025-01-20',
+                activationsUsed: 47,
+                maxActivations: 50
+            },
+            {
+                id: 'activation_004',
+                licenseKey: 'WB-STU-2024-M3N4O5P6',
+                productId: 'license_004',
+                productName: 'WebBuilder Studio',
+                customerName: 'Design Agency Pro',
+                customerEmail: 'team@designagency.com',
+                type: 'perpetual',
+                status: 'active',
+                activatedDate: '2024-01-10',
+                expiresDate: 'Never',
+                activationsUsed: 2,
+                maxActivations: 2
+            },
+            {
+                id: 'activation_005',
+                licenseKey: 'AI-SDK-2024-Q7R8S9T0',
+                productId: 'license_005',
+                productName: 'AI Assistant SDK',
+                customerName: 'StartupXYZ',
+                customerEmail: 'dev@startupxyz.com',
+                type: 'trial',
+                status: 'trial',
+                activatedDate: '2024-02-10',
+                expiresDate: '2024-03-10',
+                activationsUsed: 1,
+                maxActivations: 1
+            },
+            {
+                id: 'activation_006',
+                licenseKey: 'CS-PRO-2024-U1V2W3X4',
+                productId: 'license_006',
+                productName: 'CloudSync Pro',
+                customerName: 'Remote Team LLC',
+                customerEmail: 'admin@remoteteam.com',
+                type: 'subscription',
+                status: 'expired',
+                activatedDate: '2024-01-01',
+                expiresDate: '2024-02-01',
+                activationsUsed: 3,
+                maxActivations: 5
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            loadStreamData();
+            setupEventListeners();
+            startRealtimeUpdates();
+        });
+
+        function initializeData() {
+            streamData.licenses = defaultLicenses;
+            streamData.activations = defaultActivations;
+            streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;
+            streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
+            streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
+            
+            const trialActivations = streamData.activations.filter(a => a.type === 'trial').length;
+            const convertedTrials = streamData.activations.filter(a => a.type === 'trial' && a.status === 'active').length;
+            streamData.conversionRate = trialActivations > 0 ? Math.round((convertedTrials/trialActivations) * 100) : 0;
+            
+            renderLicenses();
+            renderActivations();
+        }
+
+        function setupEventListeners() {
+            // Stream toggle
+            document.getElementById('streamToggle').addEventListener('change', function() {
+                if (this.checked) {
+                    startStream();
+                } else {
+                    stopStream();
+                }
+            });
+
+            // Auto-start toggle
+            document.getElementById('autoStartToggle').addEventListener('change', function() {
+                streamData.autoStart = this.checked;
+                updateStreamConfig();
+            });
+        }
+
+        function renderLicenses() {
+            const container = document.getElementById('licensesGrid');
+            container.innerHTML = '';
+
+            streamData.licenses.forEach(license => {
+                const licenseCard = document.createElement('div');
+                licenseCard.className = 'license-card';
+                licenseCard.innerHTML = `
+                    <div class="license-header">
+                        <div>
+                            <div class="license-title">${license.productName}</div>
+                            <div class="license-version">Version ${license.version}</div>
+                        </div>
+                        <div class="license-type">${license.type}</div>
+                    </div>
+                    
+                    <div class="license-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${license.totalSales.toLocaleString()}</div>
+                            <div class="stat-label">Total Sales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${license.activeUsers.toLocaleString()}</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$${license.totalRevenue.toLocaleString()}</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                    </div>
+                    
+                    <div class="license-pricing">
+                        <div>
+                            <div class="price-single">$${license.singlePrice}</div>
+                            <div class="price-bulk">$${license.bulkPrice} bulk (10+)</div>
+                        </div>
+                        <div style="text-align: right; color: #666;">
+                            <div>Max: ${license.maxActivations} devices</div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">
+                        ${license.description}
+                    </div>
+                    
+                    <div class="license-actions">
+                        <button class="btn" onclick="editLicense('${license.id}')" style="padding: 10px; font-size: 0.9rem;">
+                            ✏️ Edit Pricing
+                        </button>
+                        <button class="btn btn-purple" onclick="generateLicenseKey('${license.id}')" style="padding: 10px; font-size: 0.9rem;">
+                            🔑 Generate Key
+                        </button>
+                    </div>
+                `;
+                container.appendChild(licenseCard);
+            });
+        }
+
+        function renderActivations() {
+            const tbody = document.getElementById('activationsTableBody');
+            tbody.innerHTML = '';
+
+            streamData.activations.forEach(activation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-family: monospace; font-size: 0.9rem;">${activation.licenseKey}</td>
+                    <td>${activation.productName}</td>
+                    <td>
+                        <div>${activation.customerName}</div>
+                        <div style="font-size: 0.8rem; color: #666;">${activation.customerEmail}</div>
+                    </td>
+                    <td><span class="license-type">${activation.type}</span></td>
+                    <td><span class="activation-status status-${activation.status}">${activation.status}</span></td>
+                    <td>${new Date(activation.activatedDate).toLocaleDateString()}</td>
+                    <td>${activation.expiresDate === 'Never' ? 'Never' : new Date(activation.expiresDate).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn" onclick="manageActivation('${activation.id}')" style="padding: 6px 12px; font-size: 0.8rem; margin: 2px;">
+                            ⚙️ Manage
+                        </button>
+                        <button class="btn btn-danger" onclick="revokeActivation('${activation.id}')" style="padding: 6px 12px; font-size: 0.8rem; margin: 2px;">
+                            🚫 Revoke
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function loadStreamData() {
+            try {
+                const response = await fetch('/api/revenue/status');
+                const data = await response.json();
+                
+                if (data.success && data.streams.software_licensing) {
+                    const stream = data.streams.software_licensing;
+                    streamData.status = stream.status;
+                    streamData.activeLicenses = stream.activeLicenses;
+                    streamData.totalRevenue = stream.totalRevenue;
+                    streamData.monthlyRecurring = stream.monthlyRecurring;
+                    streamData.conversionRate = stream.conversionRate;
+                    streamData.autoStart = stream.autoStart;
+                    
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Error loading stream data:', error);
+                showAlert('Error loading stream data', 'error');
+            }
+        }
+
+        function updateUI() {
+            // Update status indicator
+            const statusIndicator = document.getElementById('statusIndicator');
+            const streamToggle = document.getElementById('streamToggle');
+            const streamStatus = document.getElementById('streamStatus');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+
+            statusIndicator.textContent = streamData.status.toUpperCase();
+            statusIndicator.className = 'status-indicator status-' + streamData.status;
+
+            streamToggle.checked = streamData.status === 'active';
+            streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
+
+            startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
+
+            // Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;
+
+            // Update metrics
+            document.getElementById('activeLicenses').textContent = streamData.activeLicenses;
+            document.getElementById('totalRevenue').textContent = '$' + streamData.totalRevenue.toLocaleString();
+            document.getElementById('monthlyRecurring').textContent = '$' + streamData.monthlyRecurring.toLocaleString();
+            document.getElementById('conversionRate').textContent = streamData.conversionRate + '%';
+            
+            // Update revenue goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyRecurring/streamData.revenueGoal) * 100);
+            document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
+            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRecurring.toLocaleString()}/$${streamData.revenueGoal.toLocaleString()} goal`;
+        }
+
+        async function startStream() {
+            try {
+                showAlert('Starting Software Licensing stream...', 'warning');
+                
+                const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    streamData.status = 'starting';
+                    updateUI();
+                    showAlert(result.message, 'success');
+                    
+                    // Poll for status updates
+                    pollStreamStatus();
+                } else {
+                    showAlert('Failed to start stream: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error starting stream:', error);
+                showAlert('Error starting stream', 'error');
+            }
+        }
+
+        async function stopStream() {
+            try {
+                showAlert('Stopping Software Licensing stream...', 'warning');
+                
+                const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    streamData.status = 'stopping';
+                    updateUI();
+                    showAlert(result.message, 'success');
+                    
+                    // Poll for status updates
+                    pollStreamStatus();
+                } else {
+                    showAlert('Failed to stop stream: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error stopping stream:', error);
+                showAlert('Error stopping stream', 'error');
+            }
+        }
+
+        async function runTests() {
+            try {
+                showAlert('Running comprehensive software licensing tests...', 'warning');
+                
+                const testContainer = document.getElementById('testResultsContainer');
+                testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
+                
+                const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayTestResults(result.results);
+                    showAlert('Tests completed successfully', 'success');
+                } else {
+                    showAlert('Test execution failed: ' + result.error, 'error');
+                    testContainer.innerHTML = '<p style="text-align: center; color: #f44336;">Test execution failed</p>';
+                }
+            } catch (error) {
+                console.error('Error running tests:', error);
+                showAlert('Error running tests', 'error');
+            }
+        }
+
+        function displayTestResults(results) {
+            const container = document.getElementById('testResultsContainer');
+            container.innerHTML = '';
+            
+            Object.keys(results).forEach(testName => {
+                const test = results[testName];
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                
+                testItem.innerHTML = `
+                    <div>
+                        <strong>${testName}</strong>
+                        <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">${test.message}</div>
+                        <div style="font-size: 0.8rem; color: #999; margin-top: 3px;">Execution time: ${test.executionTime.toFixed(3)}s</div>
+                    </div>
+                    <div class="test-status test-${test.status}">${test.status}</div>
+                `;
+                
+                container.appendChild(testItem);
+            });
+        }
+
+        function showNewLicenseForm() {
+            document.getElementById('newLicenseForm').style.display = 'block';
+            document.getElementById('productName').focus();
+        }
+
+        function hideNewLicenseForm() {
+            document.getElementById('newLicenseForm').style.display = 'none';
+            // Clear form
+            document.getElementById('productName').value = '';
+            document.getElementById('productVersion').value = '';
+            document.getElementById('licenseType').value = 'perpetual';
+            document.getElementById('singlePrice').value = '';
+            document.getElementById('bulkPrice').value = '';
+            document.getElementById('maxActivations').value = '';
+            document.getElementById('productDescription').value = '';
+        }
+
+        async function createLicense() {
+            const productName = document.getElementById('productName').value.trim();
+            const version = document.getElementById('productVersion').value.trim();
+            const type = document.getElementById('licenseType').value;
+            const singlePrice = parseFloat(document.getElementById('singlePrice').value);
+            const bulkPrice = parseFloat(document.getElementById('bulkPrice').value);
+            const maxActivations = parseInt(document.getElementById('maxActivations').value);
+            const description = document.getElementById('productDescription').value.trim();
+
+            if (!productName || !version || !singlePrice || !bulkPrice || !maxActivations || !description) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            if (singlePrice < 1 || singlePrice > 10000) {
+                showAlert('Single price must be between $1 and $10,000', 'error');
+                return;
+            }
+
+            if (bulkPrice >= singlePrice) {
+                showAlert('Bulk price must be less than single price', 'error');
+                return;
+            }
+
+            try {
+                const newLicense = {
+                    id: 'license_' + Date.now(),
+                    productName: productName,
+                    version: version,
+                    type: type,
+                    singlePrice: singlePrice,
+                    bulkPrice: bulkPrice,
+                    maxActivations: maxActivations,
+                    totalSales: 0,
+                    activeUsers: 0,
+                    totalRevenue: 0,
+                    description: description
+                };
+
+                const response = await fetch('/api/licenses/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newLicense)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    streamData.licenses.unshift(newLicense);
+                    renderLicenses();
+                    hideNewLicenseForm();
+                    showAlert('License created successfully', 'success');
+                    updateUI();
+                } else {
+                    showAlert('Failed to create license: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error creating license:', error);
+                showAlert('Error creating license', 'error');
+            }
+        }
+
+        function editLicense(licenseId) {
+            const license = streamData.licenses.find(l => l.id === licenseId);
+            if (license) {
+                const newSinglePrice = prompt(`Enter new single license price for "${license.productName}":`, license.singlePrice);
+                if (newSinglePrice && !isNaN(newSinglePrice) && newSinglePrice >= 1 && newSinglePrice <= 10000) {
+                    const newBulkPrice = prompt(`Enter new bulk license price for "${license.productName}":`, license.bulkPrice);
+                    if (newBulkPrice && !isNaN(newBulkPrice) && newBulkPrice >= 1 && newBulkPrice < newSinglePrice) {
+                        license.singlePrice = parseFloat(newSinglePrice);
+                        license.bulkPrice = parseFloat(newBulkPrice);
+                        
+                        // Update monthly recurring if subscription
+                        if (license.type === 'subscription') {
+                            streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
+                        }
+                        
+                        renderLicenses();
+                        updateUI();
+                        showAlert(`Pricing updated for "${license.productName}"`, 'success');
+                    } else if (newBulkPrice) {
+                        showAlert('Invalid bulk price. Must be less than single price', 'error');
+                    }
+                } else if (newSinglePrice) {
+                    showAlert('Invalid single price. Must be between $1 and $10,000', 'error');
+                }
+            }
+        }
+
+        function generateLicenseKey(licenseId) {
+            const license = streamData.licenses.find(l => l.id === licenseId);
+            if (license) {
+                const customerName = prompt(`Enter customer name for "${license.productName}" license:`);
+                const customerEmail = prompt(`Enter customer email:`);
+                
+                if (customerName && customerEmail) {
+                    // Generate a license key
+                    const prefix = license.productName.split(' ').map(w => w.charAt(0)).join('').toUpperCase();
+                    const year = new Date().getFullYear();
+                    const random = Math.random().toString(36).substr(2, 8).toUpperCase();
+                    const licenseKey = `${prefix}-${year}-${random}`;
+                    
+                    const newActivation = {
+                        id: 'activation_' + Date.now(),
+                        licenseKey: licenseKey,
+                        productId: license.id,
+                        productName: license.productName,
+                        customerName: customerName,
+                        customerEmail: customerEmail,
+                        type: license.type,
+                        status: 'active',
+                        activatedDate: new Date().toISOString().split('T')[0],
+                        expiresDate: license.type === 'perpetual' ? 'Never' : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                        activationsUsed: 1,
+                        maxActivations: license.maxActivations
+                    };
+                    
+                    streamData.activations.unshift(newActivation);
+                    streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;
+                    
+                    // Update license stats
+                    license.totalSales += 1;
+                    license.activeUsers += 1;
+                    license.totalRevenue += license.singlePrice;
+                    
+                    // Update total revenue
+                    streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
+                    
+                    renderLicenses();
+                    renderActivations();
+                    updateUI();
+                    
+                    alert(`License key generated successfully:\n\nKey: ${licenseKey}\nCustomer: ${customerName}\nEmail: ${customerEmail}\nProduct: ${license.productName}`);
+                    showAlert('License key generated and activated', 'success');
+                }
+            }
+        }
+
+        function manageActivation(activationId) {
+            const activation = streamData.activations.find(a => a.id === activationId);
+            if (activation) {
+                const info = `License Details:\n\nKey: ${activation.licenseKey}\nProduct: ${activation.productName}\nCustomer: ${activation.customerName}\nEmail: ${activation.customerEmail}\nType: ${activation.type}\nStatus: ${activation.status}\nActivated: ${activation.activatedDate}\nExpires: ${activation.expiresDate}\nActivations: ${activation.activationsUsed}/${activation.maxActivations}`;
+                alert(info);
+            }
+        }
+
+        function revokeActivation(activationId) {
+            const activation = streamData.activations.find(a => a.id === activationId);
+            if (activation && confirm(`Are you sure you want to revoke the license for ${activation.customerName}?`)) {
+                activation.status = 'suspended';
+                streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;
+                
+                renderActivations();
+                updateUI();
+                showAlert(`License revoked for ${activation.customerName}`, 'success');
+            }
+        }
+
+        async function saveConfig() {
+            try {
+                const response = await fetch(`/api/revenue/config/${streamData.streamId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        autoStart: streamData.autoStart,
+                        licenses: streamData.licenses,
+                        activations: streamData.activations,
+                        revenueGoal: streamData.revenueGoal
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Configuration saved successfully', 'success');
+                } else {
+                    showAlert('Failed to save configuration: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving configuration:', error);
+                showAlert('Error saving configuration', 'error');
+            }
+        }
+
+        async function updateStreamConfig() {
+            try {
+                const response = await fetch(`/api/revenue/config/${streamData.streamId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        autoStart: streamData.autoStart
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to update auto-start setting');
+                }
+            } catch (error) {
+                console.error('Error updating stream config:', error);
+            }
+        }
+
+        function pollStreamStatus() {
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/revenue/status');
+                    const data = await response.json();
+                    
+                    if (data.success && data.streams.software_licensing) {
+                        const stream = data.streams.software_licensing;
+                        const oldStatus = streamData.status;
+                        streamData.status = stream.status;
+                        streamData.activeLicenses = stream.activeLicenses;
+                        streamData.totalRevenue = stream.totalRevenue;
+                        streamData.monthlyRecurring = stream.monthlyRecurring;
+                        streamData.conversionRate = stream.conversionRate;
+                        
+                        updateUI();
+                        
+                        // Stop polling if status is stable
+                        if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
+                            clearInterval(pollInterval);
+                            
+                            if (stream.status === 'error') {
+                                showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
+                            } else if (oldStatus !== stream.status) {
+                                showAlert(`Stream is now ${stream.status}`, 'success');
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error polling status:', error);
+                    clearInterval(pollInterval);
+                }
+            }, 2000);
+        }
+
+        function startRealtimeUpdates() {
+            // Update metrics every 30 seconds
+            setInterval(async () => {
+                if (streamData.status === 'active') {
+                    await loadStreamData();
+                    simulateLicensingActivity();
+                }
+            }, 30000);
+        }
+
+        function simulateLicensingActivity() {
+            if (streamData.status === 'active') {
+                // Simulate new license sales and renewals
+                streamData.licenses.forEach(license => {
+                    if (Math.random() < 0.1) {
+                        const newSales = Math.floor(Math.random() * 5) + 1;
+                        license.totalSales += newSales;
+                        license.activeUsers += newSales;
+                        license.totalRevenue += newSales * license.singlePrice;
+                    }
+                });
+                
+                // Update totals
+                streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
+                streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
+                
+                renderLicenses();
+                updateUI();
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

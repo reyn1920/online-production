@@ -212,7 +212,7 @@ Test the dashboard in multiple browsers:
 - [ ] Overall performance is smooth and responsive
 
 **Test Completion Date**: ___________
-**Overall Status**: ✅ PASS / ❌ FAIL
+**Overall Status**: ✅ PASS/❌ FAIL
 **Notes**: ________________________________
 
 ---

@@ -241,7 +241,7 @@
         }
 
         .products-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -370,7 +370,7 @@
         }
 
         .new-product-form {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -412,7 +412,7 @@
         }
 
         .sales-analytics {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -462,7 +462,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -653,7 +653,7 @@
                         <div class="progress-fill" id="salesGoalFill" style="width: 0%"></div>
                     </div>
                     <div style="text-align: center; margin-top: 5px;">
-                        <span id="salesGoalText">$0 / $10,000 goal</span>
+                        <span id="salesGoalText">$0/$10,000 goal</span>
                     </div>
                 </div>
             </div>
@@ -701,12 +701,12 @@
                         <input type="text" id="productIcon" placeholder="📚" maxlength="2">
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Description</label>
                         <textarea id="productDescription" placeholder="Describe your digital product..."></textarea>
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Download URL</label>
                         <input type="url" id="productDownloadUrl" placeholder="https://example.com/download/product">
                     </div>
@@ -839,9 +839,7 @@
                 bestseller: false,
                 created: new Date().toISOString()
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeProducts();
             loadStreamData();
@@ -855,17 +853,14 @@
             renderProducts();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
@@ -929,7 +924,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.digital_products) {
@@ -948,8 +943,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -963,29 +957,19 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('totalSales').textContent = streamData.totalSales.toLocaleString();
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
             document.getElementById('activeProducts').textContent = streamData.activeProducts.toLocaleString();
-            document.getElementById('conversionRate').textContent = streamData.conversionRate.toFixed(1) + '%';
-            
-            // Update sales goal progress
-            const goalPercent = Math.min(100, (streamData.monthlyRevenue / streamData.salesGoal) * 100);
+            document.getElementById('conversionRate').textContent = streamData.conversionRate.toFixed(1) + '%';//Update sales goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.salesGoal) * 100);
             document.getElementById('salesGoalFill').style.width = goalPercent + '%';
-            document.getElementById('salesGoalText').textContent = `$${streamData.monthlyRevenue.toFixed(2)} / $${streamData.salesGoal.toLocaleString()} goal`;
-
-            // Update analytics
+            document.getElementById('salesGoalText').textContent = `$${streamData.monthlyRevenue.toFixed(2)}/$${streamData.salesGoal.toLocaleString()} goal`;//Update analytics
             document.getElementById('todaySales').textContent = '$' + streamData.analytics.todaySales.toFixed(2);
             document.getElementById('weekSales').textContent = '$' + streamData.analytics.weekSales.toFixed(2);
             document.getElementById('avgOrderValue').textContent = '$' + streamData.analytics.avgOrderValue.toFixed(2);
-            document.getElementById('totalCustomers').textContent = streamData.analytics.totalCustomers.toLocaleString();
-            
-            // Update change indicators
+            document.getElementById('totalCustomers').textContent = streamData.analytics.totalCustomers.toLocaleString();//Update change indicators
             updateChangeIndicator('todayChange', streamData.analytics.todayChange);
             updateChangeIndicator('weekChange', streamData.analytics.weekChange);
             updateChangeIndicator('aovChange', streamData.analytics.aovChange);
@@ -1012,9 +996,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -1038,9 +1020,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1105,8 +1085,7 @@
         }
 
         function hideNewProductForm() {
-            document.getElementById('newProductForm').style.display = 'none';
-            // Clear form
+            document.getElementById('newProductForm').style.display = 'none';//Clear form
             document.getElementById('productName').value = '';
             document.getElementById('productCategory').value = 'ebook';
             document.getElementById('productPrice').value = '';
@@ -1144,7 +1123,7 @@
                     created: new Date().toISOString()
                 };
 
-                const response = await fetch('/api/products/create', {
+                const response = await fetch("/api/products/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1188,7 +1167,7 @@
                 try {
                     showAlert(`Testing "${product.name}" product...`, 'warning');
                     
-                    const response = await fetch('/api/test/product', {
+                    const response = await fetch("/api/test/product', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1263,7 +1242,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.digital_products) {
@@ -1274,9 +1253,7 @@
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.conversionRate = stream.conversionRate;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1294,8 +1271,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1305,8 +1281,7 @@
         }
 
         function simulateSalesActivity() {
-            if (streamData.status === 'active') {
-                // Simulate product sales
+            if (streamData.status === 'active') {//Simulate product sales
                 streamData.products.forEach(product => {
                     const newSales = Math.floor(Math.random() * 3);
                     const newViews = Math.floor(Math.random() * 20) + 5;
@@ -1314,21 +1289,15 @@
                     product.sales += newSales;
                     product.revenue += newSales * product.price;
                     product.views += newViews;
-                });
-                
-                // Update totals
+                });//Update totals
                 streamData.totalSales = streamData.products.reduce((sum, p) => sum + p.sales, 0);
                 streamData.monthlyRevenue = streamData.products.reduce((sum, p) => sum + p.revenue, 0);
                 streamData.conversionRate = streamData.totalSales > 0 ? 
-                    (streamData.totalSales / streamData.products.reduce((sum, p) => sum + p.views, 0)) * 100 : 0;
-                
-                // Update analytics
+                    (streamData.totalSales/streamData.products.reduce((sum, p) => sum + p.views, 0)) * 100 : 0;//Update analytics
                 streamData.analytics.todaySales = streamData.monthlyRevenue * 0.1;
                 streamData.analytics.weekSales = streamData.monthlyRevenue * 0.3;
-                streamData.analytics.avgOrderValue = streamData.totalSales > 0 ? streamData.monthlyRevenue / streamData.totalSales : 0;
-                streamData.analytics.totalCustomers = Math.floor(streamData.totalSales * 0.8);
-                
-                // Simulate changes
+                streamData.analytics.avgOrderValue = streamData.totalSales > 0 ? streamData.monthlyRevenue/streamData.totalSales : 0;
+                streamData.analytics.totalCustomers = Math.floor(streamData.totalSales * 0.8);//Simulate changes
                 streamData.analytics.todayChange = (Math.random() - 0.3) * 20;
                 streamData.analytics.weekChange = (Math.random() - 0.2) * 15;
                 streamData.analytics.aovChange = (Math.random() - 0.4) * 10;
@@ -1345,17 +1314,13 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start sales activity simulation
+        }//Start sales activity simulation
         setInterval(simulateSalesActivity, 20000);
     </script>
 </body>

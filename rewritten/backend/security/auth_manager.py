@@ -1,0 +1,521 @@
+#!/usr/bin/env python3
+"""
+Enterprise-Grade Authentication & Authorization Manager
+Implements JWT authentication, RBAC authorization, and comprehensive security controls
+"""
+
+import jwt
+import bcrypt
+import secrets
+import hashlib
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Set, Any
+from dataclasses import dataclass, field
+from enum import Enum
+import redis
+import logging
+from functools import wraps
+from fastapi import HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from cryptography.fernet import Fernet
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+class UserRole(Enum):
+    """User roles with hierarchical permissions"""
+
+    GUEST = "guest"
+    USER = "user"
+    PREMIUM = "premium"
+    BUSINESS = "business"
+    ENTERPRISE = "enterprise"
+    ADMIN = "admin"
+    SUPER_ADMIN = "super_admin"
+
+
+class Permission(Enum):
+    """Granular permissions for RBAC"""
+
+    # Basic permissions
+    READ_BASIC = "read:basic"
+    WRITE_BASIC = "write:basic"
+
+    # API permissions
+    USE_FREE_APIS = "use:free_apis"
+    USE_PREMIUM_APIS = "use:premium_apis"
+    USE_ENTERPRISE_APIS = "use:enterprise_apis"
+
+    # Content permissions
+    CREATE_CONTENT = "create:content"
+    EDIT_CONTENT = "edit:content"
+    DELETE_CONTENT = "delete:content"
+    PUBLISH_CONTENT = "publish:content"
+
+    # Video/Media permissions
+    CREATE_VIDEO = "create:video"
+    EDIT_VIDEO = "edit:video"
+    RENDER_4K = "render:4k"
+    RENDER_8K = "render:8k"
+    USE_AI_VOICES = "use:ai_voices"
+
+    # Business permissions
+    VIEW_ANALYTICS = "view:analytics"
+    MANAGE_TEAM = "manage:team"
+    BILLING_ACCESS = "billing:access"
+
+    # Admin permissions
+    MANAGE_USERS = "manage:users"
+    SYSTEM_CONFIG = "system:config"
+    VIEW_LOGS = "view:logs"
+
+
+@dataclass
+class User:
+    """User model with comprehensive attributes"""
+
+    id: str
+    email: str
+    username: str
+    password_hash: str
+    role: UserRole
+    permissions: Set[Permission] = field(default_factory=set)
+    is_active: bool = True
+    is_verified: bool = False
+    created_at: datetime = field(default_factory=datetime.utcnow)
+    last_login: Optional[datetime] = None
+    failed_login_attempts: int = 0
+    locked_until: Optional[datetime] = None
+    api_quota_used: Dict[str, int] = field(default_factory=dict)
+    api_quota_limit: Dict[str, int] = field(default_factory=dict)
+    subscription_tier: str = "free"
+    subscription_expires: Optional[datetime] = None
+
+
+class SecurityManager:
+    """Comprehensive security management system"""
+
+    def __init__(self, secret_key: str, redis_url: str = "redis://localhost:6379"):
+        self.secret_key = secret_key
+        self.algorithm = "HS256"
+        self.access_token_expire = timedelta(hours=1)
+        self.refresh_token_expire = timedelta(days=30)
+
+        # Initialize Redis for session management
+        try:
+            self.redis_client = redis.from_url(redis_url)
+            self.redis_client.ping()
+        except Exception as e:
+            logger.warning(f"Redis connection failed: {e}. Using in-memory storage.")
+            self.redis_client = None
+            self._memory_store = {}
+
+        # Initialize encryption for sensitive data
+        self.cipher_suite = Fernet(Fernet.generate_key())
+
+        # Role-based permissions mapping
+        self.role_permissions = {
+            UserRole.GUEST: {Permission.READ_BASIC, Permission.USE_FREE_APIS},
+            UserRole.USER: {
+                Permission.READ_BASIC,
+                Permission.WRITE_BASIC,
+                Permission.USE_FREE_APIS,
+                Permission.CREATE_CONTENT,
+                Permission.EDIT_CONTENT,
+            },
+            UserRole.PREMIUM: {
+                Permission.READ_BASIC,
+                Permission.WRITE_BASIC,
+                Permission.USE_FREE_APIS,
+                Permission.USE_PREMIUM_APIS,
+                Permission.CREATE_CONTENT,
+                Permission.EDIT_CONTENT,
+                Permission.DELETE_CONTENT,
+                Permission.CREATE_VIDEO,
+                Permission.EDIT_VIDEO,
+                Permission.RENDER_4K,
+                Permission.USE_AI_VOICES,
+            },
+            UserRole.BUSINESS: {
+                Permission.READ_BASIC,
+                Permission.WRITE_BASIC,
+                Permission.USE_FREE_APIS,
+                Permission.USE_PREMIUM_APIS,
+                Permission.USE_ENTERPRISE_APIS,
+                Permission.CREATE_CONTENT,
+                Permission.EDIT_CONTENT,
+                Permission.DELETE_CONTENT,
+                Permission.PUBLISH_CONTENT,
+                Permission.CREATE_VIDEO,
+                Permission.EDIT_VIDEO,
+                Permission.RENDER_4K,
+                Permission.RENDER_8K,
+                Permission.USE_AI_VOICES,
+                Permission.VIEW_ANALYTICS,
+                Permission.MANAGE_TEAM,
+            },
+            UserRole.ENTERPRISE: {
+                Permission.READ_BASIC,
+                Permission.WRITE_BASIC,
+                Permission.USE_FREE_APIS,
+                Permission.USE_PREMIUM_APIS,
+                Permission.USE_ENTERPRISE_APIS,
+                Permission.CREATE_CONTENT,
+                Permission.EDIT_CONTENT,
+                Permission.DELETE_CONTENT,
+                Permission.PUBLISH_CONTENT,
+                Permission.CREATE_VIDEO,
+                Permission.EDIT_VIDEO,
+                Permission.RENDER_4K,
+                Permission.RENDER_8K,
+                Permission.USE_AI_VOICES,
+                Permission.VIEW_ANALYTICS,
+                Permission.MANAGE_TEAM,
+                Permission.BILLING_ACCESS,
+            },
+            UserRole.ADMIN: set(Permission),  # All permissions
+            UserRole.SUPER_ADMIN: set(Permission),  # All permissions
+        }
+
+        # In-memory user store (replace with database in production)
+        self.users: Dict[str, User] = {}
+
+        # Rate limiting
+        self.rate_limits = {
+            "login": {"requests": 5, "window": 300},  # 5 attempts per 5 minutes
+            "api": {"requests": 1000, "window": 3600},  # 1000 requests per hour
+            "premium_api": {"requests": 10000, "window": 3600},  # 10k requests per hour
+        }
+
+    def hash_password(self, password: str) -> str:
+        """Hash password using bcrypt"""
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
+
+    def verify_password(self, password: str, hashed: str) -> bool:
+        """Verify password against hash"""
+        return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+
+    def generate_user_id(self) -> str:
+        """Generate secure user ID"""
+        return secrets.token_urlsafe(32)
+
+    def create_user(
+        self, email: str, username: str, password: str, role: UserRole = UserRole.USER
+    ) -> User:
+        """Create new user with security validations"""
+        # Validate email uniqueness
+        for user in self.users.values():
+            if user.email == email:
+                raise ValueError("Email already exists")
+
+        # Validate password strength
+        if not self._validate_password_strength(password):
+            raise ValueError("Password does not meet security requirements")
+
+        user_id = self.generate_user_id()
+        password_hash = self.hash_password(password)
+
+        user = User(
+            id=user_id,
+            email=email,
+            username=username,
+            password_hash=password_hash,
+            role=role,
+            permissions=self.role_permissions.get(role, set()),
+        )
+
+        self.users[user_id] = user
+        logger.info(f"User created: {email} with role {role.value}")
+        return user
+
+    def _validate_password_strength(self, password: str) -> bool:
+        """Validate password meets security requirements"""
+        if len(password) < 8:
+            return False
+
+        has_upper = any(c.isupper() for c in password)
+        has_lower = any(c.islower() for c in password)
+        has_digit = any(c.isdigit() for c in password)
+        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)
+
+        return has_upper and has_lower and has_digit and has_special
+
+    def authenticate_user(self, email: str, password: str) -> Optional[User]:
+        """Authenticate user with rate limiting and account lockout"""
+        # Find user by email
+        user = None
+        for u in self.users.values():
+            if u.email == email:
+                user = u
+                break
+
+        if not user:
+            return None
+
+        # Check if account is locked
+        if user.locked_until and datetime.utcnow() < user.locked_until:
+            raise HTTPException(status_code=423, detail="Account temporarily locked")
+
+        # Check rate limiting
+        if not self._check_rate_limit(f"login:{user.id}", "login"):
+            raise HTTPException(status_code=429, detail="Too many login attempts")
+
+        # Verify password
+        if not self.verify_password(password, user.password_hash):
+            user.failed_login_attempts += 1
+
+            # Lock account after 5 failed attempts
+            if user.failed_login_attempts >= 5:
+                user.locked_until = datetime.utcnow() + timedelta(minutes=30)
+                logger.warning(f"Account locked for user: {email}")
+
+            return None
+
+        # Reset failed attempts on successful login
+        user.failed_login_attempts = 0
+        user.locked_until = None
+        user.last_login = datetime.utcnow()
+
+        return user
+
+    def create_access_token(self, user: User) -> str:
+        """Create JWT access token"""
+        payload = {
+            "user_id": user.id,
+            "email": user.email,
+            "role": user.role.value,
+            "permissions": [p.value for p in user.permissions],
+            "exp": datetime.utcnow() + self.access_token_expire,
+            "iat": datetime.utcnow(),
+            "type": "access",
+        }
+
+        token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
+
+        # Store token in Redis for revocation capability
+        if self.redis_client:
+            self.redis_client.setex(
+                f"token:{user.id}:{hashlib.sha256(token.encode()).hexdigest()[:16]}",
+                int(self.access_token_expire.total_seconds()),
+                "valid",
+            )
+
+        return token
+
+    def create_refresh_token(self, user: User) -> str:
+        """Create JWT refresh token"""
+        payload = {
+            "user_id": user.id,
+            "exp": datetime.utcnow() + self.refresh_token_expire,
+            "iat": datetime.utcnow(),
+            "type": "refresh",
+        }
+
+        return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
+
+    def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
+        """Verify and decode JWT token"""
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+
+            # Check if token is revoked
+            token_hash = hashlib.sha256(token.encode()).hexdigest()[:16]
+            if self.redis_client:
+                if not self.redis_client.get(f"token:{payload['user_id']}:{token_hash}"):
+                    return None
+
+            return payload
+        except jwt.ExpiredSignatureError:
+            return None
+        except jwt.InvalidTokenError:
+            return None
+
+    def revoke_token(self, token: str) -> bool:
+        """Revoke a JWT token"""
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            token_hash = hashlib.sha256(token.encode()).hexdigest()[:16]
+
+            if self.redis_client:
+                self.redis_client.delete(f"token:{payload['user_id']}:{token_hash}")
+                return True
+        except:
+            pass
+        return False
+
+    def check_permission(self, user: User, permission: Permission) -> bool:
+        """Check if user has specific permission"""
+        return permission in user.permissions
+
+    def check_permissions(self, user: User, permissions: List[Permission]) -> bool:
+        """Check if user has all specified permissions"""
+        return all(p in user.permissions for p in permissions)
+
+    def _check_rate_limit(self, key: str, limit_type: str) -> bool:
+        """Check rate limiting"""
+        if limit_type not in self.rate_limits:
+            return True
+
+        limit_config = self.rate_limits[limit_type]
+        current_time = int(datetime.utcnow().timestamp())
+        window_start = current_time - limit_config["window"]
+
+        if self.redis_client:
+            # Use Redis for distributed rate limiting
+            pipe = self.redis_client.pipeline()
+            pipe.zremrangebyscore(key, 0, window_start)
+            pipe.zcard(key)
+            pipe.zadd(key, {str(current_time): current_time})
+            pipe.expire(key, limit_config["window"])
+            results = pipe.execute()
+
+            current_requests = results[1]
+            return current_requests < limit_config["requests"]
+        else:
+            # Use in-memory storage
+            if key not in self._memory_store:
+                self._memory_store[key] = []
+
+            # Clean old entries
+            self._memory_store[key] = [
+                timestamp for timestamp in self._memory_store[key] if timestamp > window_start
+            ]
+
+            if len(self._memory_store[key]) >= limit_config["requests"]:
+                return False
+
+            self._memory_store[key].append(current_time)
+            return True
+
+    def encrypt_sensitive_data(self, data: str) -> str:
+        """Encrypt sensitive data"""
+        return self.cipher_suite.encrypt(data.encode()).decode()
+
+    def decrypt_sensitive_data(self, encrypted_data: str) -> str:
+        """Decrypt sensitive data"""
+        return self.cipher_suite.decrypt(encrypted_data.encode()).decode()
+
+
+# FastAPI Security Dependencies
+security = HTTPBearer()
+
+
+def create_auth_dependency(security_manager: SecurityManager):
+    """Create authentication dependency for FastAPI"""
+
+    async def get_current_user(
+        credentials: HTTPAuthorizationCredentials = security,
+    ) -> User:
+        """Get current authenticated user"""
+        token = credentials.credentials
+        payload = security_manager.verify_token(token)
+
+        if not payload:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+        user = security_manager.users.get(payload["user_id"])
+        if not user or not user.is_active:
+            raise HTTPException(status_code=401, detail="User not found or inactive")
+
+        return user
+
+    return get_current_user
+
+
+def require_permissions(*permissions: Permission):
+    """Decorator to require specific permissions"""
+
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            # Extract user from kwargs (assumes user is passed as parameter)
+            user = kwargs.get("current_user")
+            if not user:
+                raise HTTPException(status_code=401, detail="Authentication required")
+
+            # Check permissions
+            for permission in permissions:
+                if permission not in user.permissions:
+                    raise HTTPException(
+                        status_code=403,
+                        detail=f"Permission required: {permission.value}",
+                    )
+
+            return await func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+def require_role(min_role: UserRole):
+    """Decorator to require minimum role level"""
+    role_hierarchy = {
+        UserRole.GUEST: 0,
+        UserRole.USER: 1,
+        UserRole.PREMIUM: 2,
+        UserRole.BUSINESS: 3,
+        UserRole.ENTERPRISE: 4,
+        UserRole.ADMIN: 5,
+        UserRole.SUPER_ADMIN: 6,
+    }
+
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            user = kwargs.get("current_user")
+            if not user:
+                raise HTTPException(status_code=401, detail="Authentication required")
+
+            if role_hierarchy.get(user.role, 0) < role_hierarchy.get(min_role, 0):
+                raise HTTPException(
+                    status_code=403, detail=f"Role required: {min_role.value} or higher"
+                )
+
+            return await func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+# Example usage and testing
+if __name__ == "__main__":
+    # Initialize security manager
+    import os
+    secret_key = os.getenv("JWT_SECRET_KEY", "demo-key-for-testing-only")
+    security_manager = SecurityManager(secret_key=secret_key)
+
+    # Create test users
+    admin_user = security_manager.create_user(
+        email="admin@example.com",
+        username="admin",
+        password="AdminPass123!",
+        role=UserRole.ADMIN,
+    )
+
+    premium_user = security_manager.create_user(
+        email="premium@example.com",
+        username="premium",
+        password="PremiumPass123!",
+        role=UserRole.PREMIUM,
+    )
+
+    # Test authentication
+    auth_user = security_manager.authenticate_user("admin@example.com", "AdminPass123!")
+    if auth_user:
+        access_token = security_manager.create_access_token(auth_user)
+        print(f"Access token created: {access_token[:50]}...")
+
+        # Verify token
+        payload = security_manager.verify_token(access_token)
+        print(f"Token verified: {payload['email']}")
+
+        # Check permissions
+        can_manage_users = security_manager.check_permission(auth_user, Permission.MANAGE_USERS)
+        print(f"Can manage users: {can_manage_users}")
+
+    print("Security framework initialized successfully!")

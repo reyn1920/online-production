@@ -241,7 +241,7 @@
         }
 
         .licenses-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -356,7 +356,7 @@
         }
 
         .activations-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -423,7 +423,7 @@
         }
 
         .new-license-form {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -465,7 +465,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -661,7 +661,7 @@
                         <div class="progress-fill" id="revenueGoalFill" style="width: 0%"></div>
                     </div>
                     <div style="text-align: center; margin-top: 5px;">
-                        <span id="revenueGoalText">$0 / $25,000 goal</span>
+                        <span id="revenueGoalText">$0/$25,000 goal</span>
                     </div>
                 </div>
             </div>
@@ -741,7 +741,7 @@
                         <input type="number" id="maxActivations" placeholder="1" min="1" max="1000">
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Product Description</label>
                         <textarea id="productDescription" placeholder="Describe the software product and its features..."></textarea>
                     </div>
@@ -943,9 +943,7 @@
                 activationsUsed: 3,
                 maxActivations: 5
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             loadStreamData();
@@ -962,23 +960,20 @@
             
             const trialActivations = streamData.activations.filter(a => a.type === 'trial').length;
             const convertedTrials = streamData.activations.filter(a => a.type === 'trial' && a.status === 'active').length;
-            streamData.conversionRate = trialActivations > 0 ? Math.round((convertedTrials / trialActivations) * 100) : 0;
+            streamData.conversionRate = trialActivations > 0 ? Math.round((convertedTrials/trialActivations) * 100) : 0;
             
             renderLicenses();
             renderActivations();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
@@ -1075,7 +1070,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.software_licensing) {
@@ -1095,8 +1090,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -1110,21 +1104,15 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('activeLicenses').textContent = streamData.activeLicenses;
             document.getElementById('totalRevenue').textContent = '$' + streamData.totalRevenue.toLocaleString();
             document.getElementById('monthlyRecurring').textContent = '$' + streamData.monthlyRecurring.toLocaleString();
-            document.getElementById('conversionRate').textContent = streamData.conversionRate + '%';
-            
-            // Update revenue goal progress
-            const goalPercent = Math.min(100, (streamData.monthlyRecurring / streamData.revenueGoal) * 100);
+            document.getElementById('conversionRate').textContent = streamData.conversionRate + '%';//Update revenue goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyRecurring/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
-            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRecurring.toLocaleString()} / $${streamData.revenueGoal.toLocaleString()} goal`;
+            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRecurring.toLocaleString()}/$${streamData.revenueGoal.toLocaleString()} goal`;
         }
 
         async function startStream() {
@@ -1140,9 +1128,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -1166,9 +1152,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1233,8 +1217,7 @@
         }
 
         function hideNewLicenseForm() {
-            document.getElementById('newLicenseForm').style.display = 'none';
-            // Clear form
+            document.getElementById('newLicenseForm').style.display = 'none';//Clear form
             document.getElementById('productName').value = '';
             document.getElementById('productVersion').value = '';
             document.getElementById('licenseType').value = 'perpetual';
@@ -1283,7 +1266,7 @@
                     description: description
                 };
 
-                const response = await fetch('/api/licenses/create', {
+                const response = await fetch("/api/licenses/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1316,9 +1299,7 @@
                     const newBulkPrice = prompt(`Enter new bulk license price for "${license.productName}":`, license.bulkPrice);
                     if (newBulkPrice && !isNaN(newBulkPrice) && newBulkPrice >= 1 && newBulkPrice < newSinglePrice) {
                         license.singlePrice = parseFloat(newSinglePrice);
-                        license.bulkPrice = parseFloat(newBulkPrice);
-                        
-                        // Update monthly recurring if subscription
+                        license.bulkPrice = parseFloat(newBulkPrice);//Update monthly recurring if subscription
                         if (license.type === 'subscription') {
                             streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
                         }
@@ -1341,8 +1322,7 @@
                 const customerName = prompt(`Enter customer name for "${license.productName}" license:`);
                 const customerEmail = prompt(`Enter customer email:`);
                 
-                if (customerName && customerEmail) {
-                    // Generate a license key
+                if (customerName && customerEmail) {//Generate a license key
                     const prefix = license.productName.split(' ').map(w => w.charAt(0)).join('').toUpperCase();
                     const year = new Date().getFullYear();
                     const random = Math.random().toString(36).substr(2, 8).toUpperCase();
@@ -1364,14 +1344,10 @@
                     };
                     
                     streamData.activations.unshift(newActivation);
-                    streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;
-                    
-                    // Update license stats
+                    streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;//Update license stats
                     license.totalSales += 1;
                     license.activeUsers += 1;
-                    license.totalRevenue += license.singlePrice;
-                    
-                    // Update total revenue
+                    license.totalRevenue += license.singlePrice;//Update total revenue
                     streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
                     
                     renderLicenses();
@@ -1455,7 +1431,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.software_licensing) {
@@ -1467,9 +1443,7 @@
                         streamData.monthlyRecurring = stream.monthlyRecurring;
                         streamData.conversionRate = stream.conversionRate;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1487,8 +1461,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1498,8 +1471,7 @@
         }
 
         function simulateLicensingActivity() {
-            if (streamData.status === 'active') {
-                // Simulate new license sales and renewals
+            if (streamData.status === 'active') {//Simulate new license sales and renewals
                 streamData.licenses.forEach(license => {
                     if (Math.random() < 0.1) {
                         const newSales = Math.floor(Math.random() * 5) + 1;
@@ -1507,9 +1479,7 @@
                         license.activeUsers += newSales;
                         license.totalRevenue += newSales * license.singlePrice;
                     }
-                });
-                
-                // Update totals
+                });//Update totals
                 streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
                 streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
                 

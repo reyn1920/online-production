@@ -1,9 +1,7 @@
 /**
  * TRAE.AI Diagnostics Panel
  * Floating diagnostics panel with system info and action catalog
- */
-
-class DiagnosticsPanel {
+ */class DiagnosticsPanel {
   constructor() {
     this.isVisible = false;
     this.panel = null;
@@ -14,14 +12,11 @@ class DiagnosticsPanel {
   init() {
     this.createPanel();
     this.attachEventListeners();
-    this.loadDiagnostics();
-
-    // Auto-refresh every 30 seconds
+    this.loadDiagnostics();//Auto-refresh every 30 seconds
     setInterval(() => this.loadDiagnostics(), 30000);
   }
 
-  createPanel() {
-    // Create floating panel
+  createPanel() {//Create floating panel
     this.panel = document.createElement('div');
     this.panel.id = 'trae-diagnostics-panel';
     this.panel.innerHTML = `
@@ -85,9 +80,7 @@ class DiagnosticsPanel {
                     </div>
                 </div>
             </div>
-        `;
-
-    // Add styles
+        `;//Add styles
     const style = document.createElement('style');
     style.textContent = `
             #trae-diagnostics-panel {
@@ -283,9 +276,7 @@ class DiagnosticsPanel {
         `;
 
     document.head.appendChild(style);
-    document.body.appendChild(this.panel);
-
-    // Create toggle button
+    document.body.appendChild(this.panel);//Create toggle button
     const toggleBtn = document.createElement('button');
     toggleBtn.id = 'trae-diagnostics-toggle';
     toggleBtn.innerHTML = '🔧';
@@ -293,8 +284,7 @@ class DiagnosticsPanel {
     document.body.appendChild(toggleBtn);
   }
 
-  attachEventListeners() {
-    // Tab switching
+  attachEventListeners() {//Tab switching
     this.panel.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         const tabName = e.target.dataset.tab;
@@ -303,20 +293,15 @@ class DiagnosticsPanel {
     });
   }
 
-  switchTab(tabName) {
-    // Update tab buttons
+  switchTab(tabName) {//Update tab buttons
     this.panel.querySelectorAll('.tab-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    this.panel.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-    // Update tab content
+    this.panel.querySelector(`[data-tab="${tabName}"]`).classList.add('active');//Update tab content
     this.panel.querySelectorAll('.tab-content').forEach(content => {
       content.classList.remove('active');
     });
-    this.panel.querySelector(`#${tabName}-tab`).classList.add('active');
-
-    // Load data for specific tabs
+    this.panel.querySelector(`#${tabName}-tab`).classList.add('active');//Load data for specific tabs
     if (tabName === 'metrics') {
       this.loadMetrics();
     }
@@ -428,8 +413,7 @@ class DiagnosticsPanel {
   copyToClipboard(text) {
     navigator.clipboard
       .writeText(text)
-      .then(() => {
-        // Show brief success feedback
+      .then(() => {//Show brief success feedback
         const btn = event.target;
         const originalText = btn.textContent;
         btn.textContent = 'Copied!';
@@ -443,9 +427,7 @@ class DiagnosticsPanel {
         console.error('Failed to copy text: ', err);
       });
   }
-}
-
-// Auto-initialize when DOM is ready
+}//Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     window.traePanel = new DiagnosticsPanel();

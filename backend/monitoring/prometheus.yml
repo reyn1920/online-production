@@ -29,14 +29,14 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     
   # Our main application metrics
   - job_name: 'trae-ai-application'
     static_configs:
       - targets: ['localhost:8000']
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 10s
     honor_labels: true
     
@@ -45,14 +45,14 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9100']
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     
   # Web scraping service metrics
   - job_name: 'web-scraping-service'
     static_configs:
       - targets: ['localhost:8001']
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 15s
     
   # API discovery service metrics
@@ -60,7 +60,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:8002']
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 15s
     
   # Research agent metrics
@@ -68,7 +68,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:8003']
     scrape_interval: 60s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 30s
     
   # Database metrics (if using PostgreSQL with postgres_exporter)
@@ -76,28 +76,28 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9187']
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
     
   # Redis metrics (if using redis_exporter)
   - job_name: 'redis-exporter'
     static_configs:
       - targets: ['localhost:9121']
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
     
   # Nginx metrics (if using nginx-prometheus-exporter)
   - job_name: 'nginx-exporter'
     static_configs:
       - targets: ['localhost:9113']
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
     
   # Custom business metrics endpoint
   - job_name: 'business-metrics'
     static_configs:
       - targets: ['localhost:8004']
     scrape_interval: 60s
-    metrics_path: /business-metrics
+    metrics_path:/business-metrics
     scrape_timeout: 30s
     
   # Health check endpoints
@@ -109,12 +109,12 @@ scrape_configs:
         - 'localhost:8002'
         - 'localhost:8003'
     scrape_interval: 30s
-    metrics_path: /health
+    metrics_path:/health
     scrape_timeout: 10s
     
   # Blackbox exporter for external service monitoring
   - job_name: 'blackbox'
-    metrics_path: /probe
+    metrics_path:/probe
     params:
       module: [http_2xx]  # Look for a HTTP 200 response
     static_configs:
@@ -150,19 +150,19 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:8005']
     scrape_interval: 60s
-    metrics_path: /automation-metrics
+    metrics_path:/automation-metrics
     
   - job_name: 'content-processing'
     static_configs:
       - targets: ['localhost:8006']
     scrape_interval: 45s
-    metrics_path: /content-metrics
+    metrics_path:/content-metrics
     
   - job_name: 'ai-model-metrics'
     static_configs:
       - targets: ['localhost:8007']
     scrape_interval: 120s
-    metrics_path: /ai-metrics
+    metrics_path:/ai-metrics
     scrape_timeout: 60s
 
 # Remote write configuration (for long-term storage)
@@ -231,7 +231,7 @@ query:
 #   static_configs:
 #     - targets: ['localhost:3000', 'localhost:3001']
 #   scrape_interval: 10s
-#   metrics_path: /dev-metrics
+#   metrics_path:/dev-metrics
 
 # Metric relabeling for cost optimization
 # This section helps reduce storage costs by dropping unnecessary metrics

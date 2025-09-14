@@ -110,15 +110,15 @@ from paste_avatar_improvements import PasteAvatarEnhancer
 
 enhancer = PasteAvatarEnhancer()
 
-@app.route('/paste/avatar/generate', methods=['POST'])
+@app.route("/paste/avatar/generate', methods=['POST'])
 def generate_enhanced_avatar():
     return enhancer.generate_avatar(request.json)
 
-@app.route('/paste/avatar/suggestions', methods=['POST'])
+@app.route("/paste/avatar/suggestions', methods=['POST'])
 def get_avatar_suggestions():
     return enhancer.get_suggestions(request.json)
 
-@app.route('/paste/avatar/templates', methods=['GET'])
+@app.route("/paste/avatar/templates', methods=['GET'])
 def get_avatar_templates():
     return enhancer.get_templates()
 ```
@@ -291,26 +291,26 @@ enhancer.add_template("custom_template_id", custom_template)
 ### Core Endpoints
 
 ```
-POST /paste/avatar/generate
+POST/paste/avatar/generate
 - Generate enhanced avatar from content
 - Body: { content, config }
 - Response: { success, video_path, processing_time }
 
-POST /paste/avatar/suggestions
+POST/paste/avatar/suggestions
 - Get avatar suggestions for content
 - Body: { content }
 - Response: { success, suggestions }
 
-GET /paste/avatar/templates
+GET/paste/avatar/templates
 - Get available templates
 - Response: { success, templates }
 
-POST /paste/avatar/batch
+POST/paste/avatar/batch
 - Batch process multiple avatars
 - Body: { items, config }
 - Response: { success, job_id, status_url }
 
-GET /paste/avatar/status/{job_id}
+GET/paste/avatar/status/{job_id}
 - Get processing status
 - Response: { success, status, progress, results }
 ```
@@ -318,7 +318,7 @@ GET /paste/avatar/status/{job_id}
 ### WebSocket Endpoints
 
 ```
-WS /paste/avatar/progress/{job_id}
+WS/paste/avatar/progress/{job_id}
 - Real-time progress updates
 - Events: progress, status, error, complete
 ```
@@ -413,18 +413,14 @@ enhancer = PasteAvatarEnhancer(debug=True)
 
 ### Basic Integration
 
-```javascript
-// Initialize avatar UI
-const avatarUI = new PasteAvatarUI();
-
-// Generate avatar
+```javascript//Initialize avatar UI
+const avatarUI = new PasteAvatarUI();//Generate avatar
 avatarUI.generateAvatar();
 ```
 
 ### Custom Configuration
 
-```javascript
-// Custom config
+```javascript//Custom config
 const config = {
     avatar_type: '3d',
     quality: 'cinematic',

@@ -1,12 +1,11 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Dashboard Snapshot Contract Test
-Verifies the /api / dashboard endpoint returns expected structure.
+Verifies the/api/dashboard endpoint returns expected structure.
 """
 
 import json
 import sys
-from typing import Any, Dict
 
 import requests
 
@@ -22,7 +21,7 @@ def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
         bool: True if test passes, False otherwise
     """
     try:
-        response = requests.get(f"{base_url}/api / dashboard", timeout = 10)
+        response = requests.get(f"{base_url}/api/dashboard", timeout=10)
 
         if response.status_code != 200:
             print(f"❌ Dashboard endpoint returned {response.status_code}")
@@ -55,7 +54,7 @@ def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
             print(f"❌ Invalid timestamp: {timestamp}")
             return False
 
-        print(f"✅ Dashboard snapshot contract test passed")
+        print("✅ Dashboard snapshot contract test passed")
         print(f"   Version: {data.get('version', 'unknown')}")
         print(f"   Agents: {len(data.get('agents', []))}")
         print(f"   Stats keys: {list(data.get('stats', {}).keys())}")
@@ -84,7 +83,7 @@ def test_metrics_endpoint(base_url: str = "http://127.0.0.1:8083") -> bool:
         bool: True if test passes, False otherwise
     """
     try:
-        response = requests.get(f"{base_url}/api / metrics", timeout = 10)
+        response = requests.get(f"{base_url}/api/metrics", timeout=10)
 
         if response.status_code != 200:
             print(f"❌ Metrics endpoint returned {response.status_code}")
@@ -99,12 +98,13 @@ def test_metrics_endpoint(base_url: str = "http://127.0.0.1:8083") -> bool:
                 print(f"❌ Missing required section: {section}")
                 return False
 
-        print(f"✅ Metrics endpoint contract test passed")
+        print("✅ Metrics endpoint contract test passed")
         return True
 
     except Exception as e:
         print(f"❌ Metrics test failed: {e}")
         return False
+
 
 if __name__ == "__main__":
     import sys
@@ -117,8 +117,8 @@ if __name__ == "__main__":
     metrics_ok = test_metrics_endpoint(base_url)
 
     if dashboard_ok and metrics_ok:
-        print("\n✅ All contract tests passed")
+        print("\\n✅ All contract tests passed")
         sys.exit(0)
     else:
-        print("\n❌ Some contract tests failed")
+        print("\\n❌ Some contract tests failed")
         sys.exit(1)

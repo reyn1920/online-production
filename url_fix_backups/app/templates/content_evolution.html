@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Evolution Dashboard - TRAE.AI</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #64748b;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-color: #1e293b;
+        --light-color: #f8fafc;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .dashboard-container {
+        padding: 2rem 0;
+      }
+
+      .dashboard-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .section-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .metric-card {
+        background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.3s ease;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .metric-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .trend-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+      }
+
+      .trend-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .format-badge {
+        background: linear-gradient(45deg, var(--primary-color), #3b82f6);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .platform-badge {
+        background: var(--secondary-color);
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+      }
+
+      .trend-strength {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .trend-strength-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success-color), var(--warning-color), var(--danger-color));
+        transition: width 0.3s ease;
+      }
+
+      .experiment-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .experiment-card.active {
+        border-color: var(--success-color);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+      }
+
+      .experiment-card.completed {
+        border-color: var(--primary-color);
+        opacity: 0.8;
+      }
+
+      .btn-custom {
+        background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+        border: none;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        color: white;
+      }
+
+      .form-control-custom {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.7rem 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+      }
+
+      .nav-tabs-custom {
+        border: none;
+        margin-bottom: 2rem;
+      }
+
+      .nav-tabs-custom .nav-link {
+        border: none;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--secondary-color);
+        border-radius: 25px;
+        margin-right: 0.5rem;
+        padding: 0.7rem 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-tabs-custom .nav-link.active {
+        background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+        color: white;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      }
+
+      .section-title {
+        color: var(--dark-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .loading-spinner {
+        text-align: center;
+        padding: 2rem;
+        color: var(--secondary-color);
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 1rem 0;
+      }
+
+      .adaptation-preview {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-left: 4px solid var(--success-color);
+      }
+
+      .confidence-meter {
+        width: 100%;
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 0.5rem;
+      }
+
+      .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--danger-color), var(--warning-color), var(--success-color));
+        transition: width 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid dashboard-container">
+      <!-- Header -->
+      <div class="dashboard-header text-center">
+        <h1 class="display-4 mb-3">
+          <i class="fas fa-chart-line text-primary"></i>
+          Content Evolution Dashboard
+        </h1>
+        <p class="lead mb-0">Autonomous content format adaptation based on emerging media trends</p>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <ul class="nav nav-tabs nav-tabs-custom justify-content-center" id="evolutionTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="overview-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#overview"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="trends-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#trends"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-trending-up me-2"></i>
+            Format Trends
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="adaptation-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#adaptation"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-magic me-2"></i>
+            Content Adaptation
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="experiments-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#experiments"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-flask me-2"></i>
+            Experiments
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="evolutionTabContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+          <!-- Metrics Row -->
+          <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+              <div class="metric-card">
+                <div class="metric-value" id="activeTrends">-</div>
+                <div class="metric-label">Active Trends</div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="metric-card" style="background: linear-gradient(135deg, var(--success-color), #059669)">
+                <div class="metric-value" id="adaptationRate">-</div>
+                <div class="metric-label">Adaptation Success Rate</div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="metric-card" style="background: linear-gradient(135deg, var(--warning-color), #d97706)">
+                <div class="metric-value" id="runningExperiments">-</div>
+                <div class="metric-label">Running Experiments</div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="metric-card" style="background: linear-gradient(135deg, var(--danger-color), #dc2626)">
+                <div class="metric-value" id="performanceLift">-</div>
+                <div class="metric-label">Avg Performance Lift</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="section-card">
+                <h3 class="section-title">
+                  <i class="fas fa-chart-area text-primary"></i>
+                  Format Trend Strength
+                </h3>
+                <div class="chart-container">
+                  <canvas id="trendStrengthChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="section-card">
+                <h3 class="section-title">
+                  <i class="fas fa-chart-pie text-primary"></i>
+                  Platform Distribution
+                </h3>
+                <div class="chart-container">
+                  <canvas id="platformChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="section-card">
+            <h3 class="section-title">
+              <i class="fas fa-clock text-primary"></i>
+              Recent Evolution Activity
+            </h3>
+            <div id="recentActivity">
+              <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Loading recent activity...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Format Trends Tab -->
+        <div class="tab-pane fade" id="trends" role="tabpanel">
+          <div class="section-card">
+            <h3 class="section-title">
+              <i class="fas fa-filter text-primary"></i>
+              Trend Filters
+            </h3>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="platformFilter" class="form-label">Platform</label>
+                <select class="form-control form-control-custom" id="platformFilter">
+                  <option value="">All Platforms</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="tiktok">TikTok</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="twitter">Twitter</option>
+                  <option value="linkedin">LinkedIn</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="formatFilter" class="form-label">Format Type</label>
+                <select class="form-control form-control-custom" id="formatFilter">
+                  <option value="">All Formats</option>
+                  <option value="short_video">Short Video</option>
+                  <option value="long_video">Long Video</option>
+                  <option value="carousel_post">Carousel Post</option>
+                  <option value="thread">Thread</option>
+                  <option value="live_stream">Live Stream</option>
+                  <option value="podcast">Podcast</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-custom w-100" onclick="loadTrends()">
+                  <i class="fas fa-search me-2"></i>
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <h3 class="section-title">
+              <i class="fas fa-trending-up text-primary"></i>
+              Current Format Trends
+            </h3>
+            <div id="trendsContainer">
+              <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Loading format trends...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Adaptation Tab -->
+        <div class="tab-pane fade" id="adaptation" role="tabpanel">
+          <div class="section-card">
+            <h3 class="section-title">
+              <i class="fas fa-magic text-primary"></i>
+              Adapt Content Format
+            </h3>
+            <form id="adaptationForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="contentId" class="form-label">Content ID</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-custom"
+                    id="contentId"
+                    placeholder="Enter content ID"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="targetFormat" class="form-label">Target Format</label>
+                  <select class="form-control form-control-custom" id="targetFormat" required>
+                    <option value="">Select target format</option>
+                    <option value="short_video">Short Video</option>
+                    <option value="long_video">Long Video</option>
+                    <option value="carousel_post">Carousel Post</option>
+                    <option value="thread">Thread</option>
+                    <option value="live_stream">Live Stream</option>
+                    <option value="podcast">Podcast</option>
+                    <option value="newsletter">Newsletter</option>
+                    <option value="interactive">Interactive</option>
+                    <option value="story">Story</option>
+                    <option value="blog_post">Blog Post</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-custom">
+                <i class="fas fa-magic me-2"></i>
+                Generate Adaptation
+              </button>
+            </form>
+          </div>
+
+          <div id="adaptationResults" style="display: none">
+            <div class="section-card">
+              <h3 class="section-title">
+                <i class="fas fa-eye text-primary"></i>
+                Adaptation Preview
+              </h3>
+              <div id="adaptationPreview"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Experiments Tab -->
+        <div class="tab-pane fade" id="experiments" role="tabpanel">
+          <div class="section-card">
+            <h3 class="section-title">
+              <i class="fas fa-flask text-primary"></i>
+              Format Experiments
+            </h3>
+            <div id="experimentsContainer">
+              <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Loading experiments...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Global variables
+      let dashboardData = {};
+      let trendStrengthChart = null;
+      let platformChart = null;
+
+      // Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+        loadDashboardData();
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {
+        // Adaptation form
+        document.getElementById('adaptationForm').addEventListener('submit', function (e) {
+          e.preventDefault();
+          adaptContent();
+        });
+
+        // Tab change events
+        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+          tab.addEventListener('shown.bs.tab', function (e) {
+            const target = e.target.getAttribute('data-bs-target');
+            if (target === '#trends') {
+              loadTrends();
+            } else if (target === '#experiments') {
+              loadExperiments();
+            }
+          });
+        });
+      }
+
+      async function loadDashboardData() {
+        try {
+          const response = await fetch('/api/content-evolution/dashboard');
+          if (!response.ok) {
+            throw new Error('Failed to load dashboard data');
+          }
+
+          dashboardData = await response.json();
+          updateDashboard();
+        } catch (error) {
+          console.error('Error loading dashboard data:', error);
+          showError('Failed to load dashboard data');
+        }
+      }
+
+      function updateDashboard() {
+        // Update metrics
+        const metrics = dashboardData.metrics || {};
+        document.getElementById('activeTrends').textContent = metrics.active_trends || '0';
+        document.getElementById('adaptationRate').textContent = (metrics.adaptation_success_rate || 0) + '%';
+        document.getElementById('runningExperiments').textContent = metrics.running_experiments || '0';
+        document.getElementById('performanceLift').textContent = (metrics.avg_performance_lift || 0) + '%';
+
+        // Update charts
+        updateTrendStrengthChart(dashboardData.trend_data || []);
+        updatePlatformChart(dashboardData.platform_data || []);
+
+        // Update recent activity
+        updateRecentActivity(dashboardData.recent_activity || []);
+      }
+
+      function updateTrendStrengthChart(data) {
+        const ctx = document.getElementById('trendStrengthChart').getContext('2d');
+
+        if (trendStrengthChart) {
+          trendStrengthChart.destroy();
+        }
+
+        trendStrengthChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.map(d => d.format || 'Unknown'),
+            datasets: [
+              {
+                label: 'Trend Strength',
+                data: data.map(d => d.strength || 0),
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 1,
+              },
+            },
+          },
+        });
+      }
+
+      function updatePlatformChart(data) {
+        const ctx = document.getElementById('platformChart').getContext('2d');
+
+        if (platformChart) {
+          platformChart.destroy();
+        }
+
+        platformChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: data.map(d => d.platform || 'Unknown'),
+            datasets: [
+              {
+                data: data.map(d => d.percentage || 0),
+                backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              },
+            },
+          },
+        });
+      }
+
+      function updateRecentActivity(activities) {
+        const container = document.getElementById('recentActivity');
+
+        if (activities.length === 0) {
+          container.innerHTML = '<p class="text-muted">No recent activity</p>';
+          return;
+        }
+
+        container.innerHTML = activities
+          .map(
+            activity => `
+                <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                    <div class="me-3">
+                        <i class="fas fa-${getActivityIcon(activity.type)} text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${activity.title || 'Unknown Activity'}</h6>
+                        <p class="text-muted mb-0">${activity.description || 'No description'}</p>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">${formatTime(activity.timestamp)}</small>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      async function loadTrends() {
+        try {
+          const platform = document.getElementById('platformFilter').value;
+          const format = document.getElementById('formatFilter').value;
+
+          const params = new URLSearchParams();
+          if (platform) params.append('platform', platform);
+          if (format) params.append('format_type', format);
+
+          const response = await fetch(`/api/content-evolution/trends?${params}`);
+          if (!response.ok) {
+            throw new Error('Failed to load trends');
+          }
+
+          const trends = await response.json();
+          displayTrends(trends);
+        } catch (error) {
+          console.error('Error loading trends:', error);
+          document.getElementById('trendsContainer').innerHTML =
+            '<div class="alert alert-danger">Failed to load trends. Please try again.</div>';
+        }
+      }
+
+      function displayTrends(trends) {
+        const container = document.getElementById('trendsContainer');
+
+        if (trends.length === 0) {
+          container.innerHTML = '<div class="alert alert-info">No trends found matching your criteria.</div>';
+          return;
+        }
+
+        container.innerHTML = trends
+          .map(
+            trend => `
+                <div class="trend-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="format-badge">${trend.format_type || 'Unknown'}</span>
+                            <span class="platform-badge ms-2">${trend.platform || 'All'}</span>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">Confidence: ${Math.round((trend.confidence_score || 0) * 100)}%</small>
+                        </div>
+                    </div>
+                    <h6 class="mb-2">${trend.title || 'Trend Analysis'}</h6>
+                    <p class="text-muted mb-2">${trend.description || 'No description available'}</p>
+                    <div class="mb-2">
+                        <small class="text-muted">Trend Strength:</small>
+                        <div class="trend-strength mt-1">
+                            <div class="trend-strength-fill" style="width: ${(trend.trend_strength || 0) * 100}%"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Growth: +${Math.round((trend.growth_velocity || 0) * 100)}%</small>
+                        <small class="text-muted">Engagement: ${trend.engagement_multiplier || 1}x</small>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      async function adaptContent() {
+        try {
+          const contentId = document.getElementById('contentId').value;
+          const targetFormat = document.getElementById('targetFormat').value;
+
+          const response = await fetch('/api/content-evolution/adapt', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              content_id: contentId,
+              target_format: targetFormat,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to adapt content');
+          }
+
+          const adaptation = await response.json();
+          displayAdaptation(adaptation);
+        } catch (error) {
+          console.error('Error adapting content:', error);
+          showError('Failed to adapt content. Please try again.');
+        }
+      }
+
+      function displayAdaptation(adaptation) {
+        const resultsDiv = document.getElementById('adaptationResults');
+        const previewDiv = document.getElementById('adaptationPreview');
+
+        previewDiv.innerHTML = `
+                <div class="adaptation-preview">
+                    <h5>Adaptation Summary</h5>
+                    <p><strong>Original Format:</strong> ${adaptation.original_format || 'Unknown'}</p>
+                    <p><strong>Target Format:</strong> ${adaptation.target_format || 'Unknown'}</p>
+                    <p><strong>Expected Performance Lift:</strong> +${Math.round((adaptation.expected_performance_lift || 0) * 100)}%</p>
+                    
+                    <h6 class="mt-3">Adaptation Rules:</h6>
+                    <ul>
+                        ${Object.entries(adaptation.adaptation_rules || {})
+                          .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
+                          .join('')}
+                    </ul>
+                    
+                    <h6 class="mt-3">Success Metrics:</h6>
+                    <ul>
+                        ${Object.entries(adaptation.success_metrics || {})
+                          .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
+                          .join('')}
+                    </ul>
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">Implementation Difficulty:</small>
+                        <div class="confidence-meter mt-1">
+                            <div class="confidence-fill" style="width: ${(adaptation.implementation_difficulty || 0) * 100}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        resultsDiv.style.display = 'block';
+      }
+
+      async function loadExperiments() {
+        try {
+          const response = await fetch('/api/content-evolution/experiments');
+          if (!response.ok) {
+            throw new Error('Failed to load experiments');
+          }
+
+          const experiments = await response.json();
+          displayExperiments(experiments);
+        } catch (error) {
+          console.error('Error loading experiments:', error);
+          document.getElementById('experimentsContainer').innerHTML =
+            '<div class="alert alert-danger">Failed to load experiments. Please try again.</div>';
+        }
+      }
+
+      function displayExperiments(experiments) {
+        const container = document.getElementById('experimentsContainer');
+
+        if (experiments.length === 0) {
+          container.innerHTML = '<div class="alert alert-info">No active experiments found.</div>';
+          return;
+        }
+
+        container.innerHTML = experiments
+          .map(
+            experiment => `
+                <div class="experiment-card ${experiment.status || 'pending'}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0">${experiment.name || 'Unnamed Experiment'}</h6>
+                        <span class="badge bg-${getStatusColor(experiment.status)}">${experiment.status || 'Unknown'}</span>
+                    </div>
+                    <p class="text-muted mb-2">${experiment.description || 'No description available'}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">Format:</small> ${experiment.format_type || 'Unknown'}<br>
+                            <small class="text-muted">Platform:</small> ${experiment.platform || 'All'}
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Started:</small> ${formatDate(experiment.start_date)}<br>
+                            <small class="text-muted">Duration:</small> ${experiment.duration || 'Unknown'}
+                        </div>
+                    </div>
+                    ${
+                      experiment.results
+                        ? `
+                        <div class="mt-3 p-2 bg-light rounded">
+                            <small class="text-muted">Results:</small>
+                            <div class="mt-1">
+                                ${Object.entries(experiment.results)
+                                  .map(([key, value]) => `<small><strong>${key}:</strong> ${value}</small><br>`)
+                                  .join('')}
+                            </div>
+                        </div>
+                    `
+                        : ''
+                    }
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      // Utility functions
+      function getActivityIcon(type) {
+        const icons = {
+          trend_detected: 'trending-up',
+          adaptation_completed: 'magic',
+          experiment_started: 'flask',
+          format_optimized: 'cog',
+        };
+        return icons[type] || 'info-circle';
+      }
+
+      function getStatusColor(status) {
+        const colors = {
+          active: 'success',
+          completed: 'primary',
+          pending: 'warning',
+          failed: 'danger',
+        };
+        return colors[status] || 'secondary';
+      }
+
+      function formatTime(timestamp) {
+        if (!timestamp) return 'Unknown';
+        const date = new Date(timestamp);
+        return date.toLocaleString();
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return 'Unknown';
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+      }
+
+      function showError(message) {
+        // Simple error display - could be enhanced with a toast library
+        alert(message);
+      }
+
+      // Load initial data
+      loadDashboardData();
+    </script>
+  </body>
+</html>

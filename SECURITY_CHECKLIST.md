@@ -140,8 +140,7 @@ Referrer-Policy: strict-origin-when-cross-origin
 - name: Secret scanning
   uses: trufflesecurity/trufflehog@main
   with:
-    path: ./
-    base: main
+    path: ./base: main
     head: HEAD
 ```
 

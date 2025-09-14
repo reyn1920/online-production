@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Twitter Promotion Agent
 
@@ -17,19 +17,16 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-import asyncio
 import json
 import os
 import sqlite3
 import sys
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
-from urllib.parse import urlparse
+from typing import Any, Dict, List, Optional
 
-import requests
 
 # Add project root to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -37,8 +34,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from utils.logger import setup_logger
 
 from backend.integrations.ollama_integration import OllamaIntegration
-from backend.integrations.twitter_integration import (TweetData, TweetType,
-    TwitterIntegration)
+from backend.integrations.twitter_integration import (
+    TweetData,
+    TweetType,
+    TwitterIntegration,
+)
+
 from backend.secret_store import SecretStore
 
 
@@ -60,9 +61,8 @@ class PromotionStrategy(Enum):
     DELAYED = "delayed"  # Post after initial engagement
     SERIES = "series"  # Multi - tweet thread
 
+
 @dataclass
-
-
 class VideoMetadata:
     """Metadata for YouTube videos to be promoted."""
 
@@ -79,9 +79,8 @@ class VideoMetadata:
     like_count: int = 0
     comment_count: int = 0
 
+
 @dataclass
-
-
 class PromotionCampaign:
     """A Twitter promotion campaign for a video."""
 
@@ -98,9 +97,8 @@ class PromotionCampaign:
     created_at: datetime
     updated_at: datetime
 
+
 @dataclass
-
-
 class HashtagAnalysis:
     """Analysis of hashtag performance and trends."""
 
@@ -118,8 +116,7 @@ class TwitterPromotionAgent:
     promotional tweets for new YouTube videos with AI - powered optimization.
     """
 
-
-    def __init__(self, db_path: str = "data / promotion_campaigns.sqlite"):
+    def __init__(self, db_path: str = "data/promotion_campaigns.sqlite"):
         self.logger = setup_logger("twitter_promotion")
         self.db_path = db_path
 
@@ -129,11 +126,11 @@ class TwitterPromotionAgent:
         # Initialize Ollama with proper config
         ollama_config = {
             "ollama_endpoint": "http://localhost:11434",
-                "default_model": "llama2:7b",
-                "max_concurrent_requests": 3,
-                "cache_enabled": True,
-                "cache_ttl": 3600,
-                }
+            "default_model": "llama2:7b",
+            "max_concurrent_requests": 3,
+            "cache_enabled": True,
+            "cache_ttl": 3600,
+        }
         self.ollama = OllamaIntegration(ollama_config)
         self.secret_store = SecretStore()
 
@@ -147,12 +144,11 @@ class TwitterPromotionAgent:
 
         self.logger.info("Twitter Promotion Agent initialized")
 
-
     def _init_database(self) -> None:
         """
         Initialize the promotion campaigns database.
         """
-        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -214,12 +210,11 @@ class TwitterPromotionAgent:
 
         self.logger.info("Promotion database initialized")
 
-
     def create_promotion_campaign(
         self,
-            video_metadata: VideoMetadata,
-            strategy: PromotionStrategy = PromotionStrategy.IMMEDIATE,
-            ) -> str:
+        video_metadata: VideoMetadata,
+        strategy: PromotionStrategy = PromotionStrategy.IMMEDIATE,
+    ) -> str:
         """
         Create a new promotion campaign for a YouTube video.
 
@@ -244,19 +239,19 @@ class TwitterPromotionAgent:
 
             # Create campaign
             campaign = PromotionCampaign(
-                campaign_id = campaign_id,
-                    video_metadata = video_metadata,
-                    strategy = strategy,
-                    status = PromotionStatus.PENDING,
-                    tweet_content = tweet_content,
-                    hashtags = hashtags,
-                    scheduled_time = scheduled_time,
-                    posted_time = None,
-                    tweet_id = None,
-                    engagement_metrics={},
-                    created_at = datetime.now(),
-                    updated_at = datetime.now(),
-                    )
+                campaign_id=campaign_id,
+                video_metadata=video_metadata,
+                strategy=strategy,
+                status=PromotionStatus.PENDING,
+                tweet_content=tweet_content,
+                hashtags=hashtags,
+                scheduled_time=scheduled_time,
+                posted_time=None,
+                tweet_id=None,
+                engagement_metrics={},
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+            )
 
             # Save to database
             self._save_campaign(campaign)
@@ -269,7 +264,6 @@ class TwitterPromotionAgent:
         except Exception as e:
             self.logger.error(f"Failed to create promotion campaign: {e}")
             raise
-
 
     def _generate_tweet_content(self, video_metadata: VideoMetadata) -> str:
         """
@@ -304,7 +298,7 @@ class TwitterPromotionAgent:
 
             # Generate content using Ollama
             response = self.ollama.generate_response(
-                prompt = prompt, model="llama3.2:3b", max_tokens = 100, temperature = 0.7
+                prompt=prompt, model="llama3.2:3b", max_tokens=100, temperature=0.7
             )
 
             # Clean and validate content
@@ -321,7 +315,6 @@ class TwitterPromotionAgent:
             self.logger.error(f"Failed to generate tweet content: {e}")
             # Fallback to simple format
             return f"New video: {video_metadata.title[:100]} {video_metadata.url}"
-
 
     def _select_optimal_hashtags(self, video_metadata: VideoMetadata) -> List[str]:
         """
@@ -360,7 +353,7 @@ class TwitterPromotionAgent:
                     )
 
             # Sort by score and select top hashtags
-            hashtag_scores.sort(key = lambda x: x[1], reverse = True)
+            hashtag_scores.sort(key=lambda x: x[1], reverse=True)
             selected_hashtags = [
                 f"#{hashtag}" for hashtag, _ in hashtag_scores[: self.max_hashtags]
             ]
@@ -374,7 +367,6 @@ class TwitterPromotionAgent:
         except Exception as e:
             self.logger.error(f"Failed to select hashtags: {e}")
             return ["#YouTube", "#NewVideo"]
-
 
     def _generate_ai_hashtags(self, video_metadata: VideoMetadata) -> List[str]:
         """
@@ -405,12 +397,12 @@ class TwitterPromotionAgent:
             """
 
             response = self.ollama.generate_response(
-                prompt = prompt, model="llama3.2:3b", max_tokens = 50, temperature = 0.5
+                prompt=prompt, model="llama3.2:3b", max_tokens=50, temperature=0.5
             )
 
             # Parse hashtags from response
             hashtags = []
-            for line in response.strip().split("\n"):
+            for line in response.strip().split("\\n"):
                 hashtag = line.strip().lower().replace("#", "").replace(" ", "")
                 if hashtag and len(hashtag) >= 3 and len(hashtag) <= 15:
                     hashtags.append(hashtag)
@@ -420,7 +412,6 @@ class TwitterPromotionAgent:
         except Exception as e:
             self.logger.error(f"Failed to generate AI hashtags: {e}")
             return []
-
 
     def _get_category_hashtags(self, category: str) -> List[str]:
         """
@@ -434,17 +425,16 @@ class TwitterPromotionAgent:
         """
         category_map = {
             "Education": ["education", "learning", "tutorial", "howto"],
-                "Entertainment": ["entertainment", "fun", "viral", "trending"],
-                "Gaming": ["gaming", "gamer", "gameplay", "esports"],
-                "Technology": ["tech", "technology", "innovation", "digital"],
-                "Music": ["music", "song", "artist", "audio"],
-                "Sports": ["sports", "fitness", "athlete", "training"],
-                "News": ["news", "breaking", "update", "current"],
-                "Comedy": ["comedy", "funny", "humor", "laugh"],
-                }
+            "Entertainment": ["entertainment", "fun", "viral", "trending"],
+            "Gaming": ["gaming", "gamer", "gameplay", "esports"],
+            "Technology": ["tech", "technology", "innovation", "digital"],
+            "Music": ["music", "song", "artist", "audio"],
+            "Sports": ["sports", "fitness", "athlete", "training"],
+            "News": ["news", "breaking", "update", "current"],
+            "Comedy": ["comedy", "funny", "humor", "laugh"],
+        }
 
         return category_map.get(category, ["content", "video"])
-
 
     def _analyze_hashtag_performance(self, hashtag: str) -> HashtagAnalysis:
         """
@@ -460,9 +450,7 @@ class TwitterPromotionAgent:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute(
-                "SELECT * FROM hashtag_performance WHERE hashtag = ?", (hashtag,)
-            )
+            cursor.execute("SELECT * FROM hashtag_performance WHERE hashtag = ?", (hashtag,))
             result = cursor.fetchone()
 
             if result:
@@ -486,29 +474,26 @@ class TwitterPromotionAgent:
             conn.close()
 
             return HashtagAnalysis(
-                hashtag = hashtag,
-                    trend_score = trend_score,
-                    usage_count = usage_count,
-                    engagement_rate = avg_engagement_rate,
-                    relevance_score = relevance_score,
-                    recommended = recommended,
-                    )
+                hashtag=hashtag,
+                trend_score=trend_score,
+                usage_count=usage_count,
+                engagement_rate=avg_engagement_rate,
+                relevance_score=relevance_score,
+                recommended=recommended,
+            )
 
         except Exception as e:
             self.logger.error(f"Failed to analyze hashtag {hashtag}: {e}")
             return HashtagAnalysis(
-                hashtag = hashtag,
-                    trend_score = 0.5,
-                    usage_count = 0,
-                    engagement_rate = 0.5,
-                    relevance_score = 0.3,
-                    recommended = False,
-                    )
+                hashtag=hashtag,
+                trend_score=0.5,
+                usage_count=0,
+                engagement_rate=0.5,
+                relevance_score=0.3,
+                recommended=False,
+            )
 
-
-    def _calculate_optimal_posting_time(
-        self, strategy: PromotionStrategy
-    ) -> Optional[datetime]:
+    def _calculate_optimal_posting_time(self, strategy: PromotionStrategy) -> Optional[datetime]:
         """
         Calculate optimal posting time based on strategy.
 
@@ -526,31 +511,26 @@ class TwitterPromotionAgent:
         elif strategy == PromotionStrategy.SCHEDULED:
             # Find next optimal hour
             current_hour = now.hour
-            next_optimal_hours = [
-                h for h in self.optimal_posting_hours if h > current_hour
-            ]
+            next_optimal_hours = [h for h in self.optimal_posting_hours if h > current_hour]
 
             if next_optimal_hours:
                 target_hour = next_optimal_hours[0]
-                scheduled_time = now.replace(
-                    hour = target_hour, minute = 0, second = 0, microsecond = 0
-                )
+                scheduled_time = now.replace(hour=target_hour, minute=0, second=0, microsecond=0)
             else:
                 # Next day's first optimal hour
                 target_hour = self.optimal_posting_hours[0]
-                scheduled_time = (now + timedelta(days = 1)).replace(
-                    hour = target_hour, minute = 0, second = 0, microsecond = 0
+                scheduled_time = (now + timedelta(days=1)).replace(
+                    hour=target_hour, minute=0, second=0, microsecond=0
                 )
 
             return scheduled_time
 
         elif strategy == PromotionStrategy.DELAYED:
             # Post 2 - 4 hours after upload
-            return now + timedelta(hours = 3)
+            return now + timedelta(hours=3)
 
         else:
             return None
-
 
     def _save_campaign(self, campaign: PromotionCampaign) -> None:
         """
@@ -573,21 +553,21 @@ class TwitterPromotionAgent:
             """,
                 (
                     campaign.campaign_id,
-                        campaign.video_metadata.video_id,
-                        campaign.video_metadata.title,
-                        campaign.video_metadata.url,
-                        campaign.video_metadata.thumbnail_url,
-                        campaign.strategy.value,
-                        campaign.status.value,
-                        campaign.tweet_content,
-                        json.dumps(campaign.hashtags),
-                        campaign.scheduled_time,
-                        campaign.posted_time,
-                        campaign.tweet_id,
-                        json.dumps(campaign.engagement_metrics),
-                        datetime.now(),
-                        ),
-                    )
+                    campaign.video_metadata.video_id,
+                    campaign.video_metadata.title,
+                    campaign.video_metadata.url,
+                    campaign.video_metadata.thumbnail_url,
+                    campaign.strategy.value,
+                    campaign.status.value,
+                    campaign.tweet_content,
+                    json.dumps(campaign.hashtags),
+                    campaign.scheduled_time,
+                    campaign.posted_time,
+                    campaign.tweet_id,
+                    json.dumps(campaign.engagement_metrics),
+                    datetime.now(),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -595,7 +575,6 @@ class TwitterPromotionAgent:
         except Exception as e:
             self.logger.error(f"Failed to save campaign: {e}")
             raise
-
 
     def execute_promotion(self, campaign_id: str) -> bool:
         """
@@ -628,9 +607,9 @@ class TwitterPromotionAgent:
                     full_text += f" {hashtag_text}"
 
             tweet_data = TweetData(
-                text = full_text,
-                    tweet_type = TweetType.PROMOTION,
-                    hashtags = None,  # Already included in text
+                text=full_text,
+                tweet_type=TweetType.PROMOTION,
+                hashtags=None,  # Already included in text
             )
 
             # Post tweet
@@ -649,9 +628,7 @@ class TwitterPromotionAgent:
                 # Update hashtag performance
                 self._update_hashtag_usage(campaign.hashtags)
 
-                self.logger.info(
-                    f"Successfully posted promotion for campaign {campaign_id}"
-                )
+                self.logger.info(f"Successfully posted promotion for campaign {campaign_id}")
                 return True
             else:
                 # Mark as failed
@@ -665,7 +642,6 @@ class TwitterPromotionAgent:
         except Exception as e:
             self.logger.error(f"Failed to execute promotion {campaign_id}: {e}")
             return False
-
 
     def _load_campaign(self, campaign_id: str) -> Optional[PromotionCampaign]:
         """
@@ -683,8 +659,8 @@ class TwitterPromotionAgent:
 
             cursor.execute(
                 "SELECT * FROM promotion_campaigns WHERE campaign_id = ?",
-                    (campaign_id,),
-                    )
+                (campaign_id,),
+            )
             result = cursor.fetchone()
             conn.close()
 
@@ -693,38 +669,37 @@ class TwitterPromotionAgent:
 
             # Reconstruct campaign object
             video_metadata = VideoMetadata(
-                video_id = result[1],
-                    title = result[2],
-                    description="",  # Not stored separately
-                url = result[3],
-                    thumbnail_url = result[4] or "",
-                    duration="",  # Not stored separately
-                upload_time = datetime.now(),  # Approximate
+                video_id=result[1],
+                title=result[2],
+                description="",  # Not stored separately
+                url=result[3],
+                thumbnail_url=result[4] or "",
+                duration="",  # Not stored separately
+                upload_time=datetime.now(),  # Approximate
                 tags=[],  # Not stored separately
                 category="",  # Not stored separately
             )
 
             campaign = PromotionCampaign(
-                campaign_id = result[0],
-                    video_metadata = video_metadata,
-                    strategy = PromotionStrategy(result[5]),
-                    status = PromotionStatus(result[6]),
-                    tweet_content = result[7] or "",
-                    hashtags = json.loads(result[8]) if result[8] else [],
-                    scheduled_time = datetime.fromisoformat(result[9]) if result[9] else None,
-                    posted_time = datetime.fromisoformat(result[10]) if result[10] else None,
-                    tweet_id = result[11],
-                    engagement_metrics = json.loads(result[12]) if result[12] else {},
-                    created_at = datetime.fromisoformat(result[13]),
-                    updated_at = datetime.fromisoformat(result[14]),
-                    )
+                campaign_id=result[0],
+                video_metadata=video_metadata,
+                strategy=PromotionStrategy(result[5]),
+                status=PromotionStatus(result[6]),
+                tweet_content=result[7] or "",
+                hashtags=json.loads(result[8]) if result[8] else [],
+                scheduled_time=datetime.fromisoformat(result[9]) if result[9] else None,
+                posted_time=datetime.fromisoformat(result[10]) if result[10] else None,
+                tweet_id=result[11],
+                engagement_metrics=json.loads(result[12]) if result[12] else {},
+                created_at=datetime.fromisoformat(result[13]),
+                updated_at=datetime.fromisoformat(result[14]),
+            )
 
             return campaign
 
         except Exception as e:
             self.logger.error(f"Failed to load campaign {campaign_id}: {e}")
             return None
-
 
     def _update_hashtag_usage(self, hashtags: List[str]) -> None:
         """
@@ -746,19 +721,19 @@ class TwitterPromotionAgent:
                         hashtag, usage_count, last_used, updated_at
                     ) VALUES (
                         ?,
-                            COALESCE((SELECT usage_count FROM hashtag_performance WHERE hashtag = ?), 0) + 1,
+                            COALESCE((SELECT usage_count FROM hashtag_performance WHERE hashtag = ?),
+    0) + 1,
                             ?, ?
                     )
                 """,
                     (clean_hashtag, clean_hashtag, datetime.now(), datetime.now()),
-                        )
+                )
 
             conn.commit()
             conn.close()
 
         except Exception as e:
             self.logger.error(f"Failed to update hashtag usage: {e}")
-
 
     def process_pending_campaigns(self) -> int:
         """
@@ -781,7 +756,7 @@ class TwitterPromotionAgent:
                 ORDER BY created_at ASC
             """,
                 (now,),
-                    )
+            )
 
             campaign_ids = [row[0] for row in cursor.fetchall()]
             conn.close()
@@ -802,7 +777,6 @@ class TwitterPromotionAgent:
             self.logger.error(f"Failed to process pending campaigns: {e}")
             return 0
 
-
     def get_campaign_analytics(self, days: int = 30) -> Dict[str, Any]:
         """
         Get analytics for promotion campaigns.
@@ -817,7 +791,7 @@ class TwitterPromotionAgent:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cutoff_date = datetime.now() - timedelta(days = days)
+            cutoff_date = datetime.now() - timedelta(days=days)
 
             # Get campaign statistics
             cursor.execute(
@@ -833,7 +807,7 @@ class TwitterPromotionAgent:
                 WHERE created_at >= ?
             """,
                 (cutoff_date,),
-                    )
+            )
 
             stats = cursor.fetchone()
 
@@ -847,7 +821,7 @@ class TwitterPromotionAgent:
                 LIMIT 10
             """,
                 (cutoff_date,),
-                    )
+            )
 
             top_hashtags = cursor.fetchall()
 
@@ -855,24 +829,25 @@ class TwitterPromotionAgent:
 
             return {
                 "period_days": days,
-                    "total_campaigns": stats[0] or 0,
-                    "successful_posts": stats[1] or 0,
-                    "failed_posts": stats[2] or 0,
-                    "success_rate": (stats[1] / stats[0]) if stats[0] > 0 else 0,
-                    "avg_posting_delay_hours": stats[3] or 0,
-                    "top_hashtags": [
+                "total_campaigns": stats[0] or 0,
+                "successful_posts": stats[1] or 0,
+                "failed_posts": stats[2] or 0,
+                "success_rate": (stats[1] / stats[0]) if stats[0] > 0 else 0,
+                "avg_posting_delay_hours": stats[3] or 0,
+                "top_hashtags": [
                     {
                         "hashtag": row[0],
-                            "usage_count": row[1],
-                            "engagement_rate": row[2],
-                            }
+                        "usage_count": row[1],
+                        "engagement_rate": row[2],
+                    }
                     for row in top_hashtags
                 ],
-                    }
+            }
 
         except Exception as e:
             self.logger.error(f"Failed to get campaign analytics: {e}")
             return {}
+
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -882,21 +857,19 @@ if __name__ == "__main__":
     # Example video metadata
     video = VideoMetadata(
         video_id="dQw4w9WgXcQ",
-            title="Amazing AI Tutorial - Learn Machine Learning in 10 Minutes!",
-            description="Complete guide to machine learning basics with practical examples...",
-            url="https://youtube.com / watch?v = dQw4w9WgXcQ",
-            thumbnail_url="https://img.youtube.com / vi / dQw4w9WgXcQ / maxresdefault.jpg",
-            duration="10:30",
-            upload_time = datetime.now(),
-            tags=["AI", "MachineLearning", "Tutorial", "Programming"],
-            category="Education",
-            )
+        title="Amazing AI Tutorial - Learn Machine Learning in 10 Minutes!",
+        description="Complete guide to machine learning basics with practical examples...",
+        url="https://youtube.com/watch?v = dQw4w9WgXcQ",
+        thumbnail_url="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+        duration="10:30",
+        upload_time=datetime.now(),
+        tags=["AI", "MachineLearning", "Tutorial", "Programming"],
+        category="Education",
+    )
 
     # Create and execute promotion
     try:
-        campaign_id = agent.create_promotion_campaign(
-            video, PromotionStrategy.IMMEDIATE
-        )
+        campaign_id = agent.create_promotion_campaign(video, PromotionStrategy.IMMEDIATE)
         print(f"✓ Created campaign: {campaign_id}")
 
         success = agent.execute_promotion(campaign_id)

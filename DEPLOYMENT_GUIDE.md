@@ -48,7 +48,7 @@ This guide provides step-by-step instructions for taking your Trae AI project fr
 
 - [ ] **Operating System**
   - Ubuntu 20.04+ LTS (recommended)
-  - CentOS 8+ / RHEL 8+
+  - CentOS 8+/RHEL 8+
   - macOS 11+ (development only)
   - Windows Server 2019+ (limited support)
 
@@ -102,18 +102,18 @@ This guide provides step-by-step instructions for taking your Trae AI project fr
 
 ```bash
 # Create dedicated user for AI CEO system
-sudo useradd -m -s /bin/bash aiceo
+sudo useradd -m -s/bin/bash aiceo
 sudo usermod -aG sudo aiceo
 
 # Setup SSH key authentication
-sudo mkdir -p /home/aiceo/.ssh
-sudo chmod 700 /home/aiceo/.ssh
-sudo chown aiceo:aiceo /home/aiceo/.ssh
+sudo mkdir -p/home/aiceo/.ssh
+sudo chmod 700/home/aiceo/.ssh
+sudo chown aiceo:aiceo/home/aiceo/.ssh
 
 # Copy your public key
-echo "your-public-key-here" | sudo tee /home/aiceo/.ssh/authorized_keys
-sudo chmod 600 /home/aiceo/.ssh/authorized_keys
-sudo chown aiceo:aiceo /home/aiceo/.ssh/authorized_keys
+echo "your-public-key-here" | sudo tee/home/aiceo/.ssh/authorized_keys
+sudo chmod 600/home/aiceo/.ssh/authorized_keys
+sudo chown aiceo:aiceo/home/aiceo/.ssh/authorized_keys
 ```
 
 #### 2. System Dependencies Installation
@@ -137,12 +137,12 @@ sudo apt install -y postgresql postgresql-contrib
 
 ```bash
 # Create application directories
-sudo mkdir -p /opt/aiceo/{app,logs,backups,config}
-sudo chown -R aiceo:aiceo /opt/aiceo
+sudo mkdir -p/opt/aiceo/{app,logs,backups,config}
+sudo chown -R aiceo:aiceo/opt/aiceo
 
 # Create log directories
-sudo mkdir -p /var/log/aiceo
-sudo chown aiceo:aiceo /var/log/aiceo
+sudo mkdir -p/var/log/aiceo
+sudo chown aiceo:aiceo/var/log/aiceo
 ```
 
 ### Environment Variables Configuration
@@ -195,7 +195,7 @@ sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 # Setup auto-renewal
 sudo crontab -e
 # Add this line:
-0 12 * * * /usr/bin/certbot renew --quiet
+0 12 * * */usr/bin/certbot renew --quiet
 ```
 
 ### Nginx Configuration
@@ -203,7 +203,7 @@ sudo crontab -e
 #### Create Nginx Configuration File
 
 ```bash
-sudo nano /etc/nginx/sites-available/aiceo
+sudo nano/etc/nginx/sites-available/aiceo
 ```
 
 ```nginx
@@ -217,8 +217,8 @@ server {
     listen 443 ssl http2;
     server_name yourdomain.com www.yourdomain.com;
 
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
+    ssl_certificate/etc/letsencrypt/live/yourdomain.com/fullchain.pem;
+    ssl_certificate_key/etc/letsencrypt/live/yourdomain.com/privkey.pem;
     
     # Security headers
     add_header X-Frame-Options DENY;
@@ -227,7 +227,7 @@ server {
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
     
     # Main application
-    location / {
+    location/{
         proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -236,7 +236,7 @@ server {
     }
     
     # Dashboard (restricted access)
-    location /dashboard {
+    location/dashboard {
         allow 127.0.0.1;
         allow your.office.ip.address;
         deny all;
@@ -249,8 +249,8 @@ server {
     }
     
     # Static files
-    location /static {
-        alias /opt/aiceo/app/static;
+    location/static {
+        alias/opt/aiceo/app/static;
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
@@ -261,9 +261,7 @@ server {
 
 ```bash
 # Enable site
-sudo ln -s /etc/nginx/sites-available/aiceo /etc/nginx/sites-enabled/
-
-# Test configuration
+sudo ln -s/etc/nginx/sites-available/aiceo/etc/nginx/sites-enabled/# Test configuration
 sudo nginx -t
 
 # Restart Nginx
@@ -299,7 +297,7 @@ sudo ufw status
 sudo su - aiceo
 
 # Clone repository
-cd /opt/aiceo/app
+cd/opt/aiceo/app
 git clone https://github.com/yourusername/ai-ceo-system.git .
 
 # Create virtual environment
@@ -337,7 +335,7 @@ chmod 600 .env.production
 #### Create AI CEO Service File
 
 ```bash
-sudo nano /etc/systemd/system/aiceo.service
+sudo nano/etc/systemd/system/aiceo.service
 ```
 
 ```ini
@@ -370,7 +368,7 @@ WantedBy=multi-user.target
 #### Create Dashboard Service File
 
 ```bash
-sudo nano /etc/systemd/system/aiceo-dashboard.service
+sudo nano/etc/systemd/system/aiceo-dashboard.service
 ```
 
 ```ini
@@ -582,7 +580,7 @@ sudo ufw enable
 3. **Set up log rotation:**
 ```bash
 # Configure logrotate for application logs
-sudo vim /etc/logrotate.d/trae-ai
+sudo vim/etc/logrotate.d/trae-ai
 ```
 
 ## 🔐 Security Configuration
@@ -671,8 +669,7 @@ pg_dump trae_ai > "$BACKUP_DIR/database.sql"
 ./backend/monitoring/setup_monitoring.sh backup
 
 # Backup application data
-tar -czf "$BACKUP_DIR/app-data.tar.gz" data/
-```
+tar -czf "$BACKUP_DIR/app-data.tar.gz" data/```
 
 ### Recovery Procedures
 
@@ -695,7 +692,7 @@ cd backend/monitoring
 
 ```python
 # Health check endpoints
-@app.route('/health')
+@app.route("/health')
 def health_check():
     return {
         'status': 'healthy',
@@ -717,7 +714,7 @@ def health_check():
 services=("prometheus" "grafana" "alertmanager" "redis")
 
 for service in "${services[@]}"; do
-    if ! curl -f "http://localhost:$port/health" > /dev/null 2>&1; then
+    if ! curl -f "http://localhost:$port/health" >/dev/null 2>&1; then
         echo "❌ $service is down"
         # Send alert
     else
@@ -793,7 +790,7 @@ docker-compose logs -f trae-app
 ./backend/monitoring/setup_monitoring.sh logs grafana
 
 # Search for errors
-grep -i error /var/log/trae-ai/*.log
+grep -i error/var/log/trae-ai/*.log
 ```
 
 ## 📊 Performance Benchmarks
@@ -851,7 +848,7 @@ export DEBUG=false
 watch -n 5 'docker stats --no-stream'
 
 # Monitor logs
-tail -f /var/log/trae-ai/application.log
+tail -f/var/log/trae-ai/application.log
 ```
 
 4. **Verify external access:**
@@ -910,7 +907,7 @@ docker-compose up --scale trae-app=3
 3. **Data Recovery:**
 ```bash
 # Restore from backup
-./restore_backup.sh /backups/latest
+./restore_backup.sh/backups/latest
 ```
 
 ---

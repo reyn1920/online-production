@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 AI Inpainting - Dynamic Avatar Clothing and Appearance Modification
 
@@ -11,21 +11,15 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-import base64
-import io
-import json
 import logging
-import os
 import shutil
-import subprocess
-import sys
 import tempfile
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -34,8 +28,8 @@ from PIL import Image, ImageDraw, ImageFilter
 # Import TRAE.AI utilities
 try:
     from utils.logger import get_logger
-except ImportError:
 
+except ImportError:
 
     def get_logger(name):
         return logging.getLogger(name)
@@ -54,7 +48,7 @@ class InpaintingQuality(Enum):
     """Quality settings for inpainting."""
 
     DRAFT = "draft"  # Fast, lower quality
-    STANDARD = "standard"  # Balanced quality / speed
+    STANDARD = "standard"  # Balanced quality/speed
     HIGH = "high"  # High quality, slower
     ULTRA = "ultra"  # Maximum quality, very slow
 
@@ -68,9 +62,8 @@ class MaskMode(Enum):
     AUTO_FACE = "auto_face"  # Automatic face detection
     CUSTOM_REGION = "custom_region"  # Custom region selection
 
+
 @dataclass
-
-
 class InpaintingConfig:
     """Configuration for AI inpainting."""
 
@@ -90,9 +83,8 @@ class InpaintingConfig:
     safety_checker: bool = True
     negative_prompt: str = "blurry, low quality, distorted, deformed"
 
+
 @dataclass
-
-
 class InpaintingJob:
     """Represents an inpainting job."""
 
@@ -110,7 +102,6 @@ class InpaintingJob:
     generated_images: List[str] = None
     metadata: Dict[str, Any] = None
 
-
     def __post_init__(self):
         if self.generated_images is None:
             self.generated_images = []
@@ -123,14 +114,12 @@ class InpaintingJob:
 class StableDiffusionEngine:
     """Engine for Stable Diffusion inpainting."""
 
-
     def __init__(self, model_path: Optional[str] = None, device: str = "cuda"):
-        self.model_path = model_path or "runwayml / stable - diffusion - inpainting"
+        self.model_path = model_path or "runwayml/stable - diffusion - inpainting"
         self.device = device
         self.logger = get_logger(self.__class__.__name__)
         self.is_initialized = False
         self.pipe = None
-
 
     def initialize(self) -> bool:
         """Initialize the Stable Diffusion pipeline."""
@@ -138,8 +127,10 @@ class StableDiffusionEngine:
             # Try to import required libraries
             try:
                 import torch
-                from diffusers import (DPMSolverMultistepScheduler,
-                    StableDiffusionInpaintPipeline)
+                from diffusers import (
+                    DPMSolverMultistepScheduler,
+                    StableDiffusionInpaintPipeline,
+                )
 
                 self.logger.info(f"PyTorch available: {torch.__version__}")
 
@@ -153,12 +144,10 @@ class StableDiffusionEngine:
 
                 self.pipe = StableDiffusionInpaintPipeline.from_pretrained(
                     self.model_path,
-                        torch_dtype=(
-                        torch.float16 if self.device == "cuda" else torch.float32
-                    ),
-                        safety_checker = None,  # Disable for local use
-                    requires_safety_checker = False,
-                        )
+                    torch_dtype=(torch.float16 if self.device == "cuda" else torch.float32),
+                    safety_checker=None,  # Disable for local use
+                    requires_safety_checker=False,
+                )
 
                 # Use DPM solver for faster inference
                 self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(
@@ -189,14 +178,13 @@ class StableDiffusionEngine:
             self.logger.error(f"Failed to initialize Stable Diffusion: {e}")
             return False
 
-
     def generate_inpainting(
         self,
-            source_image: Image.Image,
-            mask_image: Image.Image,
-            prompt: str,
-            config: InpaintingConfig,
-            ) -> List[Image.Image]:
+        source_image: Image.Image,
+        mask_image: Image.Image,
+        prompt: str,
+        config: InpaintingConfig,
+    ) -> List[Image.Image]:
         """Generate inpainted images using Stable Diffusion."""
         if not self.is_initialized:
             if not self.initialize():
@@ -210,20 +198,20 @@ class StableDiffusionEngine:
             # Generate images
             with torch.no_grad():
                 result = self.pipe(
-                    prompt = prompt,
-                        image = source_image,
-                        mask_image = mask_image,
-                        num_inference_steps = config.steps,
-                        guidance_scale = config.guidance_scale,
-                        strength = config.strength,
-                        generator=(
-                        torch.Generator(device = self.device).manual_seed(config.seed)
+                    prompt=prompt,
+                    image=source_image,
+                    mask_image=mask_image,
+                    num_inference_steps=config.steps,
+                    guidance_scale=config.guidance_scale,
+                    strength=config.strength,
+                    generator=(
+                        torch.Generator(device=self.device).manual_seed(config.seed)
                         if config.seed
                         else None
                     ),
-                        num_images_per_prompt = config.batch_size,
-                        negative_prompt = config.negative_prompt,
-                        )
+                    num_images_per_prompt=config.batch_size,
+                    negative_prompt=config.negative_prompt,
+                )
 
             return result.images
 
@@ -235,18 +223,16 @@ class StableDiffusionEngine:
 class FallbackEngine:
     """Fallback engine using traditional image processing."""
 
-
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
-
     def generate_inpainting(
         self,
-            source_image: Image.Image,
-            mask_image: Image.Image,
-            prompt: str,
-            config: InpaintingConfig,
-            ) -> List[Image.Image]:
+        source_image: Image.Image,
+        mask_image: Image.Image,
+        prompt: str,
+        config: InpaintingConfig,
+    ) -> List[Image.Image]:
         """Generate basic inpainting using traditional methods."""
         try:
             # Convert to numpy arrays
@@ -270,7 +256,6 @@ class FallbackEngine:
 class MaskGenerator:
     """Generates masks for inpainting based on different modes."""
 
-
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
@@ -282,13 +267,12 @@ class MaskGenerator:
         except Exception:
             self.face_cascade = None
 
-
     def generate_mask(
         self,
-            image: Image.Image,
-            mode: MaskMode,
-            region: Optional[Tuple[int, int, int, int]] = None,
-            ) -> Image.Image:
+        image: Image.Image,
+        mode: MaskMode,
+        region: Optional[Tuple[int, int, int, int]] = None,
+    ) -> Image.Image:
         """Generate mask based on the specified mode."""
         try:
             if mode == MaskMode.AUTO_CLOTHING:
@@ -307,7 +291,6 @@ class MaskGenerator:
             self.logger.error(f"Mask generation failed: {e}")
             return self._generate_center_mask(image)
 
-
     def _generate_clothing_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for clothing area (torso region)."""
         width, height = image.size
@@ -321,13 +304,12 @@ class MaskGenerator:
         y2 = int(height * 0.9)
 
         # Create elliptical mask for clothing
-        draw.ellipse([x1, y1, x2, y2], fill = 255)
+        draw.ellipse([x1, y1, x2, y2], fill=255)
 
         # Apply some blur to soften edges
-        mask = mask.filter(ImageFilter.GaussianBlur(radius = 5))
+        mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
 
         return mask
-
 
     def _generate_background_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for background (inverse of subject)."""
@@ -341,7 +323,7 @@ class MaskGenerator:
 
             # Dilate edges to create subject mask
             kernel = np.ones((5, 5), np.uint8)
-            subject_mask = cv2.dilate(edges, kernel, iterations = 2)
+            subject_mask = cv2.dilate(edges, kernel, iterations=2)
 
             # Invert to get background mask
             background_mask = cv2.bitwise_not(subject_mask)
@@ -354,7 +336,6 @@ class MaskGenerator:
         except Exception as e:
             self.logger.error(f"Background mask generation failed: {e}")
             return self._generate_center_mask(image)
-
 
     def _generate_face_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for face area."""
@@ -376,7 +357,7 @@ class MaskGenerator:
 
             if len(faces) > 0:
                 # Use the largest face
-                face = max(faces, key = lambda x: x[2] * x[3])
+                face = max(faces, key=lambda x: x[2] * x[3])
                 x, y, w, h = face
 
                 # Expand face region slightly
@@ -387,20 +368,19 @@ class MaskGenerator:
                 y2 = min(image.height, y + h + padding)
 
                 # Create elliptical mask
-                draw.ellipse([x1, y1, x2, y2], fill = 255)
+                draw.ellipse([x1, y1, x2, y2], fill=255)
             else:
                 # No face detected, use upper region
                 return self._generate_upper_mask(image)
 
             # Apply blur to soften edges
-            mask = mask.filter(ImageFilter.GaussianBlur(radius = 3))
+            mask = mask.filter(ImageFilter.GaussianBlur(radius=3))
 
             return mask
 
         except Exception as e:
             self.logger.error(f"Face mask generation failed: {e}")
             return self._generate_upper_mask(image)
-
 
     def _generate_region_mask(
         self, image: Image.Image, region: Tuple[int, int, int, int]
@@ -410,13 +390,12 @@ class MaskGenerator:
         draw = ImageDraw.Draw(mask)
 
         x1, y1, x2, y2 = region
-        draw.rectangle([x1, y1, x2, y2], fill = 255)
+        draw.rectangle([x1, y1, x2, y2], fill=255)
 
         # Apply blur to soften edges
-        mask = mask.filter(ImageFilter.GaussianBlur(radius = 2))
+        mask = mask.filter(ImageFilter.GaussianBlur(radius=2))
 
         return mask
-
 
     def _generate_center_mask(self, image: Image.Image) -> Image.Image:
         """Generate mask for center region."""
@@ -430,14 +409,13 @@ class MaskGenerator:
         x2 = int(width * 0.75)
         y2 = int(height * 0.75)
 
-        draw.ellipse([x1, y1, x2, y2], fill = 255)
-        mask = mask.filter(ImageFilter.GaussianBlur(radius = 5))
+        draw.ellipse([x1, y1, x2, y2], fill=255)
+        mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
 
         return mask
 
-
     def _generate_upper_mask(self, image: Image.Image) -> Image.Image:
-        """Generate mask for upper region (head / shoulders)."""
+        """Generate mask for upper region (head/shoulders)."""
         width, height = image.size
         mask = Image.new("L", (width, height), 0)
         draw = ImageDraw.Draw(mask)
@@ -448,8 +426,8 @@ class MaskGenerator:
         x2 = int(width * 0.8)
         y2 = int(height * 0.6)
 
-        draw.ellipse([x1, y1, x2, y2], fill = 255)
-        mask = mask.filter(ImageFilter.GaussianBlur(radius = 5))
+        draw.ellipse([x1, y1, x2, y2], fill=255)
+        mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
 
         return mask
 
@@ -457,16 +435,15 @@ class MaskGenerator:
 class AIInpainting:
     """Main class for AI - powered inpainting."""
 
-
     def __init__(self, config: Optional[InpaintingConfig] = None):
         self.config = config or InpaintingConfig()
         self.logger = get_logger(self.__class__.__name__)
 
         # Initialize engines
         self.sd_engine = StableDiffusionEngine(
-            model_path = self.config.model_path,
-                device="cuda" if self.config.use_gpu else "cpu",
-                )
+            model_path=self.config.model_path,
+            device="cuda" if self.config.use_gpu else "cpu",
+        )
         self.fallback_engine = FallbackEngine()
         self.mask_generator = MaskGenerator()
 
@@ -474,21 +451,18 @@ class AIInpainting:
         self.active_jobs: Dict[str, InpaintingJob] = {}
 
         # Setup temp directory
-        self.temp_dir = (
-            Path(self.config.temp_dir or tempfile.gettempdir()) / "ai_inpainting"
-        )
-        self.temp_dir.mkdir(parents = True, exist_ok = True)
-
+        self.temp_dir = Path(self.config.temp_dir or tempfile.gettempdir()) / "ai_inpainting"
+        self.temp_dir.mkdir(parents=True, exist_ok=True)
 
     def create_inpainting_job(
         self,
-            source_image: str,
-            prompt: str,
-            mask_image: Optional[str] = None,
-            output_path: Optional[str] = None,
-            job_id: Optional[str] = None,
-            config: Optional[InpaintingConfig] = None,
-            ) -> InpaintingJob:
+        source_image: str,
+        prompt: str,
+        mask_image: Optional[str] = None,
+        output_path: Optional[str] = None,
+        job_id: Optional[str] = None,
+        config: Optional[InpaintingConfig] = None,
+    ) -> InpaintingJob:
         """Create a new inpainting job."""
         if job_id is None:
             job_id = f"inpaint_{int(time.time())}_{len(self.active_jobs)}"
@@ -505,26 +479,25 @@ class AIInpainting:
             output_path = str(self.temp_dir / f"{job_id}_result.png")
 
         # Create output directory
-        Path(output_path).parent.mkdir(parents = True, exist_ok = True)
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
         job = InpaintingJob(
-            job_id = job_id,
-                source_image = source_image,
-                prompt = prompt,
-                mask_image = mask_image,
-                output_path = output_path,
-                config = config or self.config,
-                metadata={
+            job_id=job_id,
+            source_image=source_image,
+            prompt=prompt,
+            mask_image=mask_image,
+            output_path=output_path,
+            config=config or self.config,
+            metadata={
                 "created_at": datetime.now().isoformat(),
-                    "source_image_info": self._get_image_info(source_image),
-                    },
-                )
+                "source_image_info": self._get_image_info(source_image),
+            },
+        )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Inpainting job created: {job_id}")
 
         return job
-
 
     def process_job(self, job_id: str) -> bool:
         """Process an inpainting job."""
@@ -547,9 +520,7 @@ class AIInpainting:
             if job.mask_image:
                 mask_image = Image.open(job.mask_image).convert("L")
             else:
-                mask_image = self.mask_generator.generate_mask(
-                    source_image, job.config.mask_mode
-                )
+                mask_image = self.mask_generator.generate_mask(source_image, job.config.mask_mode)
                 # Save generated mask for reference
                 mask_path = str(self.temp_dir / f"{job_id}_mask.png")
                 mask_image.save(mask_path)
@@ -561,8 +532,8 @@ class AIInpainting:
             generated_images = []
             if job.config.model in [
                 InpaintingModel.STABLE_DIFFUSION_INPAINT,
-                    InpaintingModel.STABLE_DIFFUSION_XL_INPAINT,
-                    ]:
+                InpaintingModel.STABLE_DIFFUSION_XL_INPAINT,
+            ]:
                 generated_images = self.sd_engine.generate_inpainting(
                     source_image, mask_image, job.prompt, job.config
                 )
@@ -570,9 +541,7 @@ class AIInpainting:
 
             # Fallback if primary method fails
             if not generated_images:
-                self.logger.warning(
-                    f"Primary engine failed, using fallback for job {job_id}"
-                )
+                self.logger.warning(f"Primary engine failed, using fallback for job {job_id}")
                 generated_images = self.fallback_engine.generate_inpainting(
                     source_image, mask_image, job.prompt, job.config
                 )
@@ -616,25 +585,22 @@ class AIInpainting:
             self.logger.error(f"Inpainting job error: {job_id} - {e}")
             return False
 
-
     def _get_image_info(self, image_path: str) -> Dict[str, Any]:
         """Get image information."""
         try:
             with Image.open(image_path) as img:
                 return {
                     "width": img.width,
-                        "height": img.height,
-                        "format": img.format,
-                        "mode": img.mode,
-                        }
+                    "height": img.height,
+                    "format": img.format,
+                    "mode": img.mode,
+                }
         except Exception:
             return {}
-
 
     def get_job_status(self, job_id: str) -> Optional[InpaintingJob]:
         """Get status of an inpainting job."""
         return self.active_jobs.get(job_id)
-
 
     def cancel_job(self, job_id: str) -> bool:
         """Cancel an inpainting job."""
@@ -647,17 +613,15 @@ class AIInpainting:
                 return True
         return False
 
-
     def cleanup_temp_files(self) -> None:
         """Clean up temporary files."""
         try:
             if self.temp_dir.exists():
                 shutil.rmtree(self.temp_dir)
-                self.temp_dir.mkdir(parents = True, exist_ok = True)
+                self.temp_dir.mkdir(parents=True, exist_ok=True)
                 self.logger.info("Temporary files cleaned up")
         except Exception as e:
             self.logger.error(f"Cleanup failed: {e}")
-
 
     def batch_process(self, jobs: List[Tuple[str, str]]) -> List[str]:
         """Process multiple inpainting jobs in batch."""
@@ -673,68 +637,67 @@ class AIInpainting:
 
         return job_ids
 
-
     def change_avatar_clothing(
         self, avatar_image: str, clothing_prompt: str, output_path: Optional[str] = None
     ) -> Optional[str]:
         """Convenience method to change avatar clothing."""
         config = InpaintingConfig(
-            mask_mode = MaskMode.AUTO_CLOTHING,
-                quality = InpaintingQuality.HIGH,
-                steps = 30,
-                guidance_scale = 8.0,
-                )
+            mask_mode=MaskMode.AUTO_CLOTHING,
+            quality=InpaintingQuality.HIGH,
+            steps=30,
+            guidance_scale=8.0,
+        )
 
         job = self.create_inpainting_job(
-            source_image = avatar_image,
-                prompt = f"wearing {clothing_prompt}, high quality, detailed",
-                output_path = output_path,
-                config = config,
-                )
+            source_image=avatar_image,
+            prompt=f"wearing {clothing_prompt}, high quality, detailed",
+            output_path=output_path,
+            config=config,
+        )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
         return None
-
 
     def change_avatar_background(
         self,
-            avatar_image: str,
-            background_prompt: str,
-            output_path: Optional[str] = None,
-            ) -> Optional[str]:
+        avatar_image: str,
+        background_prompt: str,
+        output_path: Optional[str] = None,
+    ) -> Optional[str]:
         """Convenience method to change avatar background."""
         config = InpaintingConfig(
-            mask_mode = MaskMode.AUTO_BACKGROUND,
-                quality = InpaintingQuality.HIGH,
-                steps = 25,
-                guidance_scale = 7.0,
-                )
+            mask_mode=MaskMode.AUTO_BACKGROUND,
+            quality=InpaintingQuality.HIGH,
+            steps=25,
+            guidance_scale=7.0,
+        )
 
         job = self.create_inpainting_job(
-            source_image = avatar_image,
-                prompt = f"{background_prompt}, high quality, detailed background",
-                output_path = output_path,
-                config = config,
-                )
+            source_image=avatar_image,
+            prompt=f"{background_prompt}, high quality, detailed background",
+            output_path=output_path,
+            config=config,
+        )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
         return None
+
 
 # Example usage and testing
 if __name__ == "__main__":
     # Configure logging
-    logging.basicConfig(level = logging.INFO)
+    logging.basicConfig(level=logging.INFO)
 
     # Create AIInpainting instance
     config = InpaintingConfig(
-        quality = InpaintingQuality.STANDARD,
-            mask_mode = MaskMode.AUTO_CLOTHING,
-            steps = 20,
-            guidance_scale = 7.5,
-            batch_size = 1,
-            )
+        quality=InpaintingQuality.STANDARD,
+        mask_mode=MaskMode.AUTO_CLOTHING,
+        steps=20,
+        guidance_scale=7.5,
+        batch_size=1,
+    )
 
     inpainter = AIInpainting(config)
 
@@ -742,10 +705,10 @@ if __name__ == "__main__":
     try:
         # Change avatar clothing
         result = inpainter.change_avatar_clothing(
-            avatar_image="./assets / avatar.jpg",
-                clothing_prompt="elegant business suit",
-                output_path="./output / avatar_business_suit.png",
-                )
+            avatar_image="./assets/avatar.jpg",
+            clothing_prompt="elegant business suit",
+            output_path="./output/avatar_business_suit.png",
+        )
 
         if result:
             print(f"Avatar clothing changed: {result}")
@@ -754,10 +717,10 @@ if __name__ == "__main__":
 
         # Change background
         result = inpainter.change_avatar_background(
-            avatar_image="./assets / avatar.jpg",
-                background_prompt="modern office environment",
-                output_path="./output / avatar_office_bg.png",
-                )
+            avatar_image="./assets/avatar.jpg",
+            background_prompt="modern office environment",
+            output_path="./output/avatar_office_bg.png",
+        )
 
         if result:
             print(f"Avatar background changed: {result}")

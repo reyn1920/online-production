@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Base Agentic Framework
 
@@ -29,6 +29,7 @@ from typing import Any, Dict, List, Optional, Union
 from utils.logger import PerformanceTimer, get_logger
 
 # Import TRAE.AI utilities
+
 from backend.secret_store import SecretStore
 
 
@@ -193,7 +194,7 @@ class BaseAgent(abc.ABC):
             + self.performance_metrics["tasks_failed"]
         )
         self.performance_metrics["success_rate"] = (
-            self.performance_metrics["tasks_completed"] / total_tasks
+            self.performance_metrics["tasks_completed"]/total_tasks
             if total_tasks > 0
             else 0.0
         )
@@ -201,7 +202,7 @@ class BaseAgent(abc.ABC):
         # Update average execution time
         if len(self.task_history) > 0:
             total_time = sum(record["execution_time"] for record in self.task_history)
-            self.performance_metrics["average_execution_time"] = total_time / len(
+            self.performance_metrics["average_execution_time"] = total_time/len(
                 self.task_history
             )
 
@@ -425,7 +426,8 @@ class PlannerAgent(BaseAgent):
             "constraints": self._identify_constraints(observations),
                 "strategic_alignment": self._check_strategic_alignment(requirements),
                 "risks": self._identify_risks(requirements, observations),
-                "opportunities": self._identify_opportunities(requirements, observations),
+                "opportunities": self._identify_opportunities(requirements,
+    observations),
                 }
 
 
@@ -1346,20 +1348,27 @@ class ExecutorAgent(BaseAgent):
         try:
             # Content Creation Tools
             # Marketing Tools
+
             from backend.agents.marketing_tools import (AffiliateManager,
+
                 CrossPromotionManager,
                                                             DayOneBlitzStrategy,
                                                             RelentlessOptimizationLoop)
             # Research Tools
+
             from backend.agents.research_tools import (BreakingNewsWatcher,
+
                 CompetitorAnalyzer,
                                                            MarketValidator)
             # Web Automation Tools
+
             from backend.agents.web_automation_tools import (AffiliateSignupAutomator,
+
                 SpecheloPro,
                                                                  StealthOperations,
                                                                  ThumbnailBlaster,
                                                                  WebAutomationAgent)
+
             from backend.content.ai_inpainting import AIInpainting
             from backend.content.ai_video_editor import AIVideoEditor
                 from backend.content.animate_avatar import AnimateAvatar
@@ -1544,7 +1553,7 @@ class ExecutorAgent(BaseAgent):
         Execute a single step or task.
 
         Args:
-            step: Step / task to execute
+            step: Step/task to execute
 
         Returns:
             Dictionary containing step execution results

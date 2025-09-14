@@ -434,8 +434,7 @@ python main.py --force-fp16 --use-split-cross-attention --lowvram --cpu
 **Problem**: Model loading failures
 ```bash
 # Solution: Check model file integrity
-ls -la models/checkpoints/
-# Re-download corrupted models
+ls -la models/checkpoints/# Re-download corrupted models
 ```
 
 #### 3. Linly Talker Issues

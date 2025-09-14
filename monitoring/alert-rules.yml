@@ -121,7 +121,7 @@ groups:
       
       # High Error Rate
       - alert: HighErrorRate
-        expr: (rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])) * 100 > 5
+        expr: (rate(http_requests_total{status=~"5.."}[5m])/rate(http_requests_total[5m])) * 100 > 5
         for: 2m
         labels:
           severity: warning
@@ -134,7 +134,7 @@ groups:
       
       # Critical Error Rate
       - alert: CriticalErrorRate
-        expr: (rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])) * 100 > 15
+        expr: (rate(http_requests_total{status=~"5.."}[5m])/rate(http_requests_total[5m])) * 100 > 15
         for: 1m
         labels:
           severity: critical
@@ -190,7 +190,7 @@ groups:
       
       # Database Connection Issues
       - alert: DatabaseConnectionHigh
-        expr: database_connections_active / database_connections_max * 100 > 80
+        expr: database_connections_active/database_connections_max * 100 > 80
         for: 3m
         labels:
           severity: warning
@@ -203,7 +203,7 @@ groups:
       
       # Cache Performance Issues
       - alert: LowCacheHitRate
-        expr: (rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m]))) * 100 < 70
+        expr: (rate(cache_hits_total[5m])/(rate(cache_hits_total[5m]) + rate(cache_misses_total[5m]))) * 100 < 70
         for: 5m
         labels:
           severity: warning
@@ -340,7 +340,7 @@ groups:
     rules:
       # High Model Generation Failures
       - alert: HighModelGenerationFailures
-        expr: (rate(model_generation_failures_total[5m]) / rate(model_generation_requests_total[5m])) * 100 > 10
+        expr: (rate(model_generation_failures_total[5m])/rate(model_generation_requests_total[5m])) * 100 > 10
         for: 3m
         labels:
           severity: warning
@@ -368,7 +368,7 @@ groups:
       - alert: UserExperienceDegradation
         expr: (
           (histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 3) or
-          ((rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])) * 100 > 5)
+          ((rate(http_requests_total{status=~"5.."}[5m])/rate(http_requests_total[5m])) * 100 > 5)
         )
         for: 5m
         labels:

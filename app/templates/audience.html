@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Audience Management - TRAE.AI Dashboard</title>
     <style>
       * {
@@ -75,7 +75,7 @@
       }
 
       .full-width {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
       }
 
       .card-title {
@@ -416,8 +416,7 @@
               id="contact-search"
               class="form-input"
               placeholder="Search contacts by name, email, or tags..."
-              onkeyup="searchContacts()"
-            />
+              onkeyup="searchContacts()"/>
           </div>
 
           <div id="contacts-loading" class="loading">Loading contacts...</div>
@@ -514,19 +513,19 @@
         <form id="add-contact-form">
           <div class="form-group">
             <label class="form-label">Name</label>
-            <input type="text" id="contact-name" class="form-input" required />
+            <input type="text" id="contact-name" class="form-input" required/>
           </div>
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" id="contact-email" class="form-input" required />
+            <input type="email" id="contact-email" class="form-input" required/>
           </div>
           <div class="form-group">
             <label class="form-label">Phone (Optional)</label>
-            <input type="tel" id="contact-phone" class="form-input" />
+            <input type="tel" id="contact-phone" class="form-input"/>
           </div>
           <div class="form-group">
             <label class="form-label">Tags (comma-separated)</label>
-            <input type="text" id="contact-tags" class="form-input" placeholder="subscriber, lead, customer" />
+            <input type="text" id="contact-tags" class="form-input" placeholder="subscriber, lead, customer"/>
           </div>
           <div class="form-group">
             <label class="form-label">Notes</label>
@@ -550,11 +549,11 @@
         <form id="create-campaign-form">
           <div class="form-group">
             <label class="form-label">Campaign Name</label>
-            <input type="text" id="campaign-name" class="form-input" required />
+            <input type="text" id="campaign-name" class="form-input" required/>
           </div>
           <div class="form-group">
             <label class="form-label">Subject Line</label>
-            <input type="text" id="campaign-subject" class="form-input" required />
+            <input type="text" id="campaign-subject" class="form-input" required/>
           </div>
           <div class="form-group">
             <label class="form-label">Email Template</label>
@@ -586,7 +585,7 @@
           </div>
           <div id="schedule-datetime" class="form-group" style="display: none">
             <label class="form-label">Send Date & Time</label>
-            <input type="datetime-local" id="campaign-datetime" class="form-input" />
+            <input type="datetime-local" id="campaign-datetime" class="form-input"/>
           </div>
           <button type="submit" class="btn btn-primary">Create Campaign</button>
           <button type="button" class="btn btn-secondary" onclick="closeModal('create-campaign-modal')">Cancel</button>
@@ -602,7 +601,7 @@
         <form id="create-segment-form">
           <div class="form-group">
             <label class="form-label">Segment Name</label>
-            <input type="text" id="segment-name" class="form-input" required />
+            <input type="text" id="segment-name" class="form-input" required/>
           </div>
           <div class="form-group">
             <label class="form-label">Description</label>
@@ -626,7 +625,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Value</label>
-            <input type="text" id="segment-value" class="form-input" placeholder="Enter criteria value..." required />
+            <input type="text" id="segment-value" class="form-input" placeholder="Enter criteria value..." required/>
           </div>
           <button type="submit" class="btn btn-primary">Create Segment</button>
           <button type="button" class="btn btn-secondary" onclick="closeModal('create-segment-modal')">Cancel</button>
@@ -634,52 +633,36 @@
       </div>
     </div>
 
-    <script>
-      // Global variables
+    <script>//Global variables
       let contacts = [];
       let campaigns = [];
       let segments = [];
-      let currentTab = 'contacts';
-
-      // Initialize dashboard
+      let currentTab = 'contacts';//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         loadAudienceStats();
         loadContacts();
         loadCampaigns();
         loadSegments();
         setupEventListeners();
-      });
-
-      // Tab switching
-      function switchTab(tabName) {
-        // Hide all tab contents
+      });//Tab switching
+      function switchTab(tabName) {//Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(content => {
           content.classList.remove('active');
-        });
-
-        // Remove active class from all tabs
+        });//Remove active class from all tabs
         document.querySelectorAll('.tab').forEach(tab => {
           tab.classList.remove('active');
-        });
-
-        // Show selected tab content
-        document.getElementById(tabName + '-tab').classList.add('active');
-
-        // Add active class to selected tab
+        });//Show selected tab content
+        document.getElementById(tabName + '-tab').classList.add('active');//Add active class to selected tab
         event.target.classList.add('active');
 
-        currentTab = tabName;
-
-        // Load data for the selected tab if needed
+        currentTab = tabName;//Load data for the selected tab if needed
         if (tabName === 'analytics') {
           loadAnalytics();
         }
-      }
-
-      // Load audience statistics
+      }//Load audience statistics
       async function loadAudienceStats() {
         try {
-          const response = await fetch('/api/audience/stats');
+          const response = await fetch("/api/audience/stats');
           const stats = await response.json();
 
           document.getElementById('total-contacts').textContent = stats.total_contacts || 0;
@@ -691,9 +674,7 @@
         } catch (error) {
           console.error('Error loading audience stats:', error);
         }
-      }
-
-      // Load contacts
+      }//Load contacts
       async function loadContacts() {
         const loading = document.getElementById('contacts-loading');
         const error = document.getElementById('contacts-error');
@@ -704,7 +685,7 @@
           error.style.display = 'none';
           table.style.display = 'none';
 
-          const response = await fetch('/api/audience/contacts');
+          const response = await fetch("/api/audience/contacts');
           const data = await response.json();
 
           if (data.error) {
@@ -721,9 +702,7 @@
           error.style.display = 'block';
           error.textContent = 'Error loading contacts: ' + err.message;
         }
-      }
-
-      // Render contacts table
+      }//Render contacts table
       function renderContacts(contactList) {
         const tbody = document.getElementById('contacts-tbody');
         tbody.innerHTML = '';
@@ -744,9 +723,7 @@
                 `;
           tbody.appendChild(row);
         });
-      }
-
-      // Search contacts
+      }//Search contacts
       function searchContacts() {
         const searchTerm = document.getElementById('contact-search').value.toLowerCase();
         const filteredContacts = contacts.filter(
@@ -756,9 +733,7 @@
             (contact.tags && contact.tags.toLowerCase().includes(searchTerm))
         );
         renderContacts(filteredContacts);
-      }
-
-      // Load campaigns
+      }//Load campaigns
       async function loadCampaigns() {
         const loading = document.getElementById('campaigns-loading');
         const error = document.getElementById('campaigns-error');
@@ -769,7 +744,7 @@
           error.style.display = 'none';
           table.style.display = 'none';
 
-          const response = await fetch('/api/audience/campaigns');
+          const response = await fetch("/api/audience/campaigns');
           const data = await response.json();
 
           if (data.error) {
@@ -786,9 +761,7 @@
           error.style.display = 'block';
           error.textContent = 'Error loading campaigns: ' + err.message;
         }
-      }
-
-      // Render campaigns table
+      }//Render campaigns table
       function renderCampaigns(campaignList) {
         const tbody = document.getElementById('campaigns-tbody');
         tbody.innerHTML = '';
@@ -809,9 +782,7 @@
                 `;
           tbody.appendChild(row);
         });
-      }
-
-      // Load segments
+      }//Load segments
       async function loadSegments() {
         const loading = document.getElementById('segments-loading');
         const error = document.getElementById('segments-error');
@@ -821,7 +792,7 @@
           loading.style.display = 'block';
           error.style.display = 'none';
 
-          const response = await fetch('/api/audience/segments');
+          const response = await fetch("/api/audience/segments');
           const data = await response.json();
 
           if (data.error) {
@@ -837,9 +808,7 @@
           error.style.display = 'block';
           error.textContent = 'Error loading segments: ' + err.message;
         }
-      }
-
-      // Render segments
+      }//Render segments
       function renderSegments(segmentList) {
         const grid = document.getElementById('segments-grid');
         grid.innerHTML = '';
@@ -867,33 +836,24 @@
                 `;
           grid.appendChild(card);
         });
-      }
-
-      // Load analytics
+      }//Load analytics
       async function loadAnalytics() {
         try {
-          const response = await fetch('/api/audience/analytics');
-          const data = await response.json();
-
-          // Render charts here (would need Chart.js or similar library)
+          const response = await fetch("/api/audience/analytics');
+          const data = await response.json();//Render charts here (would need Chart.js or similar library)
           console.log('Analytics data:', data);
         } catch (error) {
           console.error('Error loading analytics:', error);
         }
-      }
-
-      // Modal functions
+      }//Modal functions
       function openModal(modalId) {
         document.getElementById(modalId).style.display = 'block';
       }
 
       function closeModal(modalId) {
         document.getElementById(modalId).style.display = 'none';
-      }
-
-      // Setup event listeners
-      function setupEventListeners() {
-        // Add contact form
+      }//Setup event listeners
+      function setupEventListeners() {//Add contact form
         document.getElementById('add-contact-form').addEventListener('submit', async function (e) {
           e.preventDefault();
 
@@ -906,7 +866,7 @@
           };
 
           try {
-            const response = await fetch('/api/audience/contacts', {
+            const response = await fetch("/api/audience/contacts', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -927,9 +887,7 @@
           } catch (error) {
             alert('Error adding contact: ' + error.message);
           }
-        });
-
-        // Create campaign form
+        });//Create campaign form
         document.getElementById('create-campaign-form').addEventListener('submit', async function (e) {
           e.preventDefault();
 
@@ -943,7 +901,7 @@
           };
 
           try {
-            const response = await fetch('/api/audience/campaigns', {
+            const response = await fetch("/api/audience/campaigns', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -964,9 +922,7 @@
           } catch (error) {
             alert('Error creating campaign: ' + error.message);
           }
-        });
-
-        // Create segment form
+        });//Create segment form
         document.getElementById('create-segment-form').addEventListener('submit', async function (e) {
           e.preventDefault();
 
@@ -978,7 +934,7 @@
           };
 
           try {
-            const response = await fetch('/api/audience/segments', {
+            const response = await fetch("/api/audience/segments', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -998,9 +954,7 @@
           } catch (error) {
             alert('Error creating segment: ' + error.message);
           }
-        });
-
-        // Campaign schedule change
+        });//Campaign schedule change
         document.getElementById('campaign-schedule').addEventListener('change', function () {
           const datetimeGroup = document.getElementById('schedule-datetime');
           if (this.value === 'later') {
@@ -1008,63 +962,45 @@
           } else {
             datetimeGroup.style.display = 'none';
           }
-        });
-
-        // Close modals when clicking outside
+        });//Close modals when clicking outside
         window.addEventListener('click', function (event) {
           if (event.target.classList.contains('modal')) {
             event.target.style.display = 'none';
           }
         });
-      }
-
-      // Contact management functions
-      function editContact(contactId) {
-        // Implementation for editing contacts
+      }//Contact management functions
+      function editContact(contactId) {//Implementation for editing contacts
         console.log('Edit contact:', contactId);
       }
 
       function deleteContact(contactId) {
-        if (confirm('Are you sure you want to delete this contact?')) {
-          // Implementation for deleting contacts
+        if (confirm('Are you sure you want to delete this contact?')) {//Implementation for deleting contacts
           console.log('Delete contact:', contactId);
         }
-      }
-
-      // Campaign management functions
-      function editCampaign(campaignId) {
-        // Implementation for editing campaigns
+      }//Campaign management functions
+      function editCampaign(campaignId) {//Implementation for editing campaigns
         console.log('Edit campaign:', campaignId);
       }
 
       function deleteCampaign(campaignId) {
-        if (confirm('Are you sure you want to delete this campaign?')) {
-          // Implementation for deleting campaigns
+        if (confirm('Are you sure you want to delete this campaign?')) {//Implementation for deleting campaigns
           console.log('Delete campaign:', campaignId);
         }
-      }
-
-      // Segment management functions
-      function editSegment(segmentId) {
-        // Implementation for editing segments
+      }//Segment management functions
+      function editSegment(segmentId) {//Implementation for editing segments
         console.log('Edit segment:', segmentId);
       }
 
       function deleteSegment(segmentId) {
-        if (confirm('Are you sure you want to delete this segment?')) {
-          // Implementation for deleting segments
+        if (confirm('Are you sure you want to delete this segment?')) {//Implementation for deleting segments
           console.log('Delete segment:', segmentId);
         }
-      }
-
-      // Import/Export functions
-      function importContacts() {
-        // Implementation for importing contacts from CSV
+      }//Import/Export functions
+      function importContacts() {//Implementation for importing contacts from CSV
         console.log('Import contacts');
       }
 
-      function exportContacts() {
-        // Implementation for exporting contacts to CSV
+      function exportContacts() {//Implementation for exporting contacts to CSV
         console.log('Export contacts');
       }
     </script>

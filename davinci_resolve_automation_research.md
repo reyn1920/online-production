@@ -74,9 +74,7 @@ cd "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/MacOS/"
 - Multiple simultaneous plugin support
 
 **Installation Directory (macOS):**
-```
-/Library/Application Support/Blackmagic Design/DaVinci Resolve/Workflow Integration Plugins/
-```
+```/Library/Application Support/Blackmagic Design/DaVinci Resolve/Workflow Integration Plugins/```
 
 **Plugin Structure:**
 - `manifest.xml` - Plugin configuration

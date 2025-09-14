@@ -336,16 +336,13 @@
     </main>
 
     <!-- JavaScript -->
-    <script>
-        // Update current time
+    <script>//Update current time
         function updateTime() {
             const now = new Date();
             document.getElementById('currentTime').textContent = now.toLocaleTimeString();
         }
         setInterval(updateTime, 1000);
-        updateTime();
-
-        // System test functionality
+        updateTime();//System test functionality
         let testRunning = false;
         
         document.getElementById('runSystemTest').addEventListener('click', function() {
@@ -356,17 +353,11 @@
             const progress = document.getElementById('testProgress');
             const results = document.getElementById('testResults');
             const terminal = document.getElementById('terminalOutput');
-            const status = document.getElementById('testStatus');
-            
-            // Update button state
+            const status = document.getElementById('testStatus');//Update button state
             button.classList.add('running');
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Running Tests...';
-            
-            // Show progress
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Running Tests...';//Show progress
             progress.classList.remove('hidden');
-            progress.classList.add('slide-in');
-            
-            // Simulate comprehensive testing
+            progress.classList.add('slide-in');//Simulate comprehensive testing
             const tests = [
                 'Initializing test environment...',
                 'Checking API endpoints (120+ APIs)...',
@@ -384,30 +375,20 @@
             const testInterval = setInterval(() => {
                 if (currentTest < tests.length) {
                     status.textContent = tests[currentTest];
-                    terminal.innerHTML += `\n[${new Date().toLocaleTimeString()}] ${tests[currentTest]}`;
-                    
-                    // Update progress ring
-                    const progress = ((currentTest + 1) / tests.length) * 251.2;
+                    terminal.innerHTML += `\n[${new Date().toLocaleTimeString()}] ${tests[currentTest]}`;//Update progress ring
+                    const progress = ((currentTest + 1)/tests.length) * 251.2;
                     document.querySelector('.progress-ring-circle').style.strokeDashoffset = 251.2 - progress;
                     
                     currentTest++;
                 } else {
-                    clearInterval(testInterval);
-                    
-                    // Test completed
+                    clearInterval(testInterval);//Test completed
                     status.textContent = 'All tests completed successfully!';
-                    terminal.innerHTML += `\n[${new Date().toLocaleTimeString()}] ✅ System test completed - All systems operational`;
-                    
-                    // Update button state
+                    terminal.innerHTML += `\n[${new Date().toLocaleTimeString()}] ✅ System test completed - All systems operational`;//Update button state
                     button.classList.remove('running');
                     button.classList.add('success');
-                    button.innerHTML = '<i class="fas fa-check mr-3"></i>Tests Completed Successfully';
-                    
-                    // Show results
+                    button.innerHTML = '<i class="fas fa-check mr-3"></i>Tests Completed Successfully';//Show results
                     results.classList.remove('hidden');
-                    results.classList.add('slide-in');
-                    
-                    // Reset after 5 seconds
+                    results.classList.add('slide-in');//Reset after 5 seconds
                     setTimeout(() => {
                         button.classList.remove('success');
                         button.innerHTML = '<i class="fas fa-play mr-3"></i>Run Complete System Test';
@@ -416,18 +397,13 @@
                     }, 5000);
                 }
             }, 800);
-        });
-
-        // Live validation updates
-        function updateLiveMetrics() {
-            // Simulate real-time updates
+        });//Live validation updates
+        function updateLiveMetrics() {//Simulate real-time updates
             const load = Math.floor(Math.random() * 30) + 15;
             document.getElementById('systemLoad').textContent = load + '%';
             
             const uptime = (99.5 + Math.random() * 0.4).toFixed(1);
-            document.getElementById('systemUptime').textContent = uptime + '%';
-            
-            // Update status indicators based on values
+            document.getElementById('systemUptime').textContent = uptime + '%';//Update status indicators based on values
             const loadStatus = document.getElementById('loadStatus');
             if (load > 80) {
                 loadStatus.className = 'status-indicator status-error';
@@ -439,30 +415,20 @@
         }
         
         setInterval(updateLiveMetrics, 3000);
-        updateLiveMetrics();
-
-        // Module navigation
-        function openModule(module) {
-            // Simulate module opening with smooth transition
+        updateLiveMetrics();//Module navigation
+        function openModule(module) {//Simulate module opening with smooth transition
             const card = event.currentTarget;
             card.style.transform = 'scale(0.95)';
             
             setTimeout(() => {
-                card.style.transform = 'scale(1)';
-                // Here you would typically navigate to the specific module
+                card.style.transform = 'scale(1)';//Here you would typically navigate to the specific module
                 console.log(`Opening ${module} module...`);
                 alert(`${module.charAt(0).toUpperCase() + module.slice(1)} module would open here`);
             }, 150);
-        }
-
-        // Initialize dashboard
+        }//Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Modern TRAE.AI Dashboard initialized');
-            
-            // Add smooth scrolling
-            document.documentElement.style.scrollBehavior = 'smooth';
-            
-            // Initialize all cards with slide-in animation
+            console.log('Modern TRAE.AI Dashboard initialized');//Add smooth scrolling
+            document.documentElement.style.scrollBehavior = 'smooth';//Initialize all cards with slide-in animation
             const cards = document.querySelectorAll('.metric-card-modern, .action-card, .glass-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {

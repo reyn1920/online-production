@@ -13,7 +13,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/system
+      path:/etc/grafana/provisioning/dashboards/system
 
   # Application Performance Dashboards
   - name: "application-dashboards"
@@ -24,7 +24,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/application
+      path:/etc/grafana/provisioning/dashboards/application
 
   # Business Metrics Dashboards
   - name: "business-dashboards"
@@ -35,7 +35,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/business
+      path:/etc/grafana/provisioning/dashboards/business
 
   # Content Creation Dashboards
   - name: "content-dashboards"
@@ -46,7 +46,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/content
+      path:/etc/grafana/provisioning/dashboards/content
 
   # Marketing Performance Dashboards
   - name: "marketing-dashboards"
@@ -57,7 +57,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/marketing
+      path:/etc/grafana/provisioning/dashboards/marketing
 
   # Revenue & Monetization Dashboards
   - name: "revenue-dashboards"
@@ -68,7 +68,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/revenue
+      path:/etc/grafana/provisioning/dashboards/revenue
 
   # Security & Compliance Dashboards
   - name: "security-dashboards"
@@ -79,7 +79,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/security
+      path:/etc/grafana/provisioning/dashboards/security
 
   # External Services Dashboards
   - name: "external-dashboards"
@@ -90,7 +90,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/external
+      path:/etc/grafana/provisioning/dashboards/external
 
   # Executive Summary Dashboards
   - name: "executive-dashboards"
@@ -101,7 +101,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/executive
+      path:/etc/grafana/provisioning/dashboards/executive
 
   # Development & DevOps Dashboards
   - name: "devops-dashboards"
@@ -112,4 +112,4 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/devops
+      path:/etc/grafana/provisioning/dashboards/devops

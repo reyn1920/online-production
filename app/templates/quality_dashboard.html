@@ -419,9 +419,7 @@
                 await this.loadStatistics();
                 await this.loadProviderStatus();
                 this.setupEventListeners();
-                this.setupChart();
-                
-                // Refresh data every 30 seconds
+                this.setupChart();//Refresh data every 30 seconds
                 setInterval(() => {
                     this.loadStatistics();
                     this.loadProviderStatus();
@@ -526,7 +524,7 @@
                     
                     if (result.success) {
                         this.displayResults(result);
-                        await this.loadStatistics(); // Refresh stats
+                        await this.loadStatistics();//Refresh stats
                     } else {
                         alert(`Validation failed: ${result.error}`);
                     }
@@ -542,17 +540,11 @@
                 const resultsSection = document.getElementById('resultsSection');
                 const consensusScore = document.getElementById('consensusScore');
                 const providerScores = document.getElementById('providerScores');
-                const recommendationsList = document.getElementById('recommendationsList');
-                
-                // Show results section
-                resultsSection.style.display = 'block';
-                
-                // Update consensus score with color coding
+                const recommendationsList = document.getElementById('recommendationsList');//Show results section
+                resultsSection.style.display = 'block';//Update consensus score with color coding
                 const score = result.consensus_score;
                 consensusScore.textContent = score.toFixed(1);
-                consensusScore.className = 'consensus-score ' + this.getScoreClass(score);
-                
-                // Update provider scores
+                consensusScore.className = 'consensus-score ' + this.getScoreClass(score);//Update provider scores
                 const providerHtml = result.metrics.map(metric => {
                     return `
                         <div class="provider-card">
@@ -567,16 +559,12 @@
                     `;
                 }).join('');
                 
-                providerScores.innerHTML = providerHtml;
-                
-                // Update recommendations
+                providerScores.innerHTML = providerHtml;//Update recommendations
                 const recommendationsHtml = result.recommendations.map(rec => 
                     `<li>${rec}</li>`
                 ).join('');
                 
-                recommendationsList.innerHTML = recommendationsHtml;
-                
-                // Scroll to results
+                recommendationsList.innerHTML = recommendationsHtml;//Scroll to results
                 resultsSection.scrollIntoView({ behavior: 'smooth' });
             }
             
@@ -626,7 +614,7 @@
                 const labels = trends.reverse().map(t => t.date);
                 const scores = trends.map(t => t.average_score);
                 const passRates = trends.map(t => 
-                    t.total_validations > 0 ? (t.passed_validations / t.total_validations * 100) : 0
+                    t.total_validations > 0 ? (t.passed_validations/t.total_validations * 100) : 0
                 );
                 
                 this.chart.data.labels = labels;
@@ -634,9 +622,7 @@
                 this.chart.data.datasets[1].data = passRates;
                 this.chart.update();
             }
-        }
-        
-        // Initialize dashboard when page loads
+        }//Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', () => {
             new QualityDashboard();
         });

@@ -214,7 +214,7 @@ rm -rf output/*.mp4 output/*.wav output/*.aiff output/*.png
 
 If something blocks the run (fast triage)
 
-A. ffmpeg not found / codec error
+A. ffmpeg not found/codec error
 
 
 
@@ -256,7 +256,7 @@ Ensure you're in the venv and at repo root:
 
 cd "$HOME/trae.ai" && source venv/bin/activate && python scripts/status_check.py
 
-When these checks pass, you are live and the system has proven it can synthesize voice, compose frames, and emit a playable .mp4 through the API path that your orchestrator and dashboard can drive. If you want me to wire this endpoint into your dashboard toggles next, say "wire dashboard to /api/create_video" and I'll ship an add-only hook.
+When these checks pass, you are live and the system has proven it can synthesize voice, compose frames, and emit a playable .mp4 through the API path that your orchestrator and dashboard can drive. If you want me to wire this endpoint into your dashboard toggles next, say "wire dashboard to/api/create_video" and I'll ship an add-only hook.
 
 You said:
 
@@ -377,7 +377,7 @@ a{color:#7cc7ff}
 const log = (m)=>{ const el=document.getElementById('log'); el.textContent += m + "\\n"; el.scrollTop = el.scrollHeight; };
 async function health(){
 try{
-const r = await fetch('/health'); const j = await r.json();
+const r = await fetch("/health'); const j = await r.json();
 document.getElementById('status').innerHTML = j.ok ? '<b class="ok">Healthy</b>' : '<b class="err">Issue</b>';
 log('Health: ' + JSON.stringify(j));
 }catch(e){ document.getElementById('status').innerHTML='<b class="err">Offline</b>'; log('Health error: '+e); }
@@ -385,7 +385,7 @@ log('Health: ' + JSON.stringify(j));
 async function createClip(){
 try{
 log('Starting clip…');
-const r = await fetch('/api/create_video', {
+const r = await fetch("/api/create_video', {
 method:'POST',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify({
@@ -395,8 +395,7 @@ script:'This clip was created from the dashboard.'
 });
 const j = await r.json();
 log('Create response: ' + JSON.stringify(j));
-if(j.ok && j.video){
-// Because the output path is local, we just show a message and attempt to open via a file:// link hint
+if(j.ok && j.video){//Because the output path is local, we just show a message and attempt to open via a file://link hint
 document.getElementById('vid').src = '';
 log('Created at: ' + j.video);
 }
@@ -404,7 +403,7 @@ log('Created at: ' + j.video);
 }
 async function listOutputs(){
 try{
-const r = await fetch('/api/list_output'); const j = await r.json();
+const r = await fetch("/api/list_output'); const j = await r.json();
 log('Outputs: ' + JSON.stringify(j));
 }catch(e){ log('List error: '+e); }
 }
@@ -425,7 +424,7 @@ items.append({"name": p.name, "size": p.stat().st_size, "mtime": p.stat().st_mti
 return {"ok": True, "items": items}
 """
 
-p.write_text(new)print("app.py updated with CORS, /ui, and /api/list_output (if not present).")
+p.write_text(new)print("app.py updated with CORS,/ui, and/api/list_output (if not present).")
 
 PY
 
@@ -465,7 +464,7 @@ PY
 
 VERIFY
 
-UI reachable at /ui, shows Healthy in green.
+UI reachable at/ui, shows Healthy in green.
 
 Create Clip writes a new real .mp4 and the UI log shows absolute path.
 
@@ -481,7 +480,7 @@ Add-only changes inside backend/app.py. To revert just these additions:
 
 # Make a safety copy first
 cp backend/app.py backend/app.py.bak.$(date +%s)
-# Manually remove the added CORS block, /ui route, and /api/list_output from backend/app.py
+# Manually remove the added CORS block,/ui route, and/api/list_output from backend/app.py
 # (Search for "CORS for local access", "@app.get(\"/ui\")", and "@app.get(\"/api/list_output\")")
 # Save file, then restart:
 
@@ -508,9 +507,9 @@ Add a lightweight Affiliate Command Center:
 
 SQLite-backed affiliate_manager with add/list/toggle/validate actions.
 
-New API routes under /api/affiliates/*.
+New API routes under/api/affiliates/*.
 
-Extend /ui with a panel to add affiliates, toggle on/off, and validate reachability.
+Extend/ui with a panel to add affiliates, toggle on/off, and validate reachability.
 
 Uses only existing deps (fastapi, httpx, sqlite3); encrypted secrets continue via SecretStore.
 
@@ -663,7 +662,7 @@ return {"ok": False, "error": str(e)}
 
 PY
 
-# --- Patch backend/app.py: add affiliate routes + extend /ui with a panel ---
+# --- Patch backend/app.py: add affiliate routes + extend/ui with a panel ---
 
 python - <<'PY'
 
@@ -752,7 +751,7 @@ return await validate_url(body.url)
 # place before end of file
 src = src.rstrip() + "\n" + insert
 
-# Extend /ui with an Affiliate panel if not already present
+# Extend/ui with an Affiliate panel if not already present
 if "Affiliate Command Center" not in src:
 
 src = src.replace(
@@ -771,7 +770,7 @@ src = src.replace(
 
 <input id="af-tag" placeholder="tag (optional)" style="padding:8px;border-radius:10px;border:1px solid #2a2a2a;background:#0f0f0f;color:#eee">
 
-<button id="af-add">Add / Update</button>
+<button id="af-add">Add/Update</button>
 
 <button id="af-list">Refresh</button>
 
@@ -809,9 +808,7 @@ src = src.replace(
 
 "health();\n</script>",
 
-"""health();
-
-// Affiliate handlers
+"""health();//Affiliate handlers
 
 async function afAdd(){
 
@@ -823,7 +820,7 @@ const tag = document.getElementById('af-tag').value.trim();
 
 if(!name || !url){ log('Please enter name and url'); return; }
 
-const r = await fetch('/api/affiliates/add', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,url,tag,enabled:true})});
+const r = await fetch("/api/affiliates/add', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,url,tag,enabled:true})});
 
 const j = await r.json(); log('Affiliate add: '+JSON.stringify(j));
 
@@ -831,7 +828,7 @@ const j = await r.json(); log('Affiliate add: '+JSON.stringify(j));
 
 async function afList(){
 
-const r = await fetch('/api/affiliates/list');
+const r = await fetch("/api/affiliates/list');
 
 const j = await r.json();
 
@@ -847,7 +844,7 @@ const state = document.getElementById('af-toggle-state').value === 'on';
 
 if(!name){ log('Enter name to toggle'); return; }
 
-const r = await fetch('/api/affiliates/toggle', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,enabled:state})});
+const r = await fetch("/api/affiliates/toggle', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,enabled:state})});
 
 const j = await r.json(); log('Affiliate toggle: '+JSON.stringify(j));
 
@@ -859,7 +856,7 @@ const url = document.getElementById('af-validate-url').value.trim();
 
 if(!url){ log('Enter url to validate'); return; }
 
-const r = await fetch('/api/affiliates/validate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url})});
+const r = await fetch("/api/affiliates/validate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url})});
 
 const j = await r.json(); log('Affiliate validate: '+JSON.stringify(j));
 
@@ -895,7 +892,7 @@ python launch_live.py
 
 Open http://127.0.0.1:8000/ui → Affiliate Command Center section.
 
-Fill name, url, optional tag → click Add / Update.
+Fill name, url, optional tag → click Add/Update.
 
 Click Refresh to view entries.
 
@@ -944,9 +941,9 @@ VERIFY
 
 UI panel appears and actions log JSON results.
 
-GET /api/affiliates/list returns your entries with enabled states.
+GET/api/affiliates/list returns your entries with enabled states.
 
-POST /api/affiliates/validate returns { ok: true, status: 200..399 } for reachable links.
+POST/api/affiliates/validate returns { ok: true, status: 200..399 } for reachable links.
 
 Your earlier end-to-end verification still passes:
 
@@ -962,7 +959,7 @@ cp backend/app.py backend/app.py.bak.$(date +%s)
 # also remove backend/marketing/affiliate_manager.py and backend/core/db.py if desired
 rm -f backend/marketing/affiliate_manager.py backend/core/db.py
 
-Ready for the next layer (e.g., auto-embed enabled affiliates into /api/create_video descriptions, or Blender/Resolve handoff toggles). Say the word and I'll ship the add-only pack.
+Ready for the next layer (e.g., auto-embed enabled affiliates into/api/create_video descriptions, or Blender/Resolve handoff toggles). Say the word and I'll ship the add-only pack.
 
 You said:
 
@@ -976,7 +973,7 @@ Base44 Pack — "Auto-Embed Affiliates in Video Descriptions" (one-paste, zero-c
 
 PLAN
 
-Extend the runtime so /api/create_video optionally injects enabled affiliates into the returned description block (for uploads/publishing).
+Extend the runtime so/api/create_video optionally injects enabled affiliates into the returned description block (for uploads/publishing).
 
 Add lightweight settings storage (SQLite) for:
 
@@ -984,7 +981,7 @@ affiliate_auto_embed (on/off)
 
 affiliate_embed_limit (max links appended)
 
-Add /api/affiliates/embed_preview and expand the /ui page with toggles + preview.
+Add/api/affiliates/embed_preview and expand the/ui page with toggles + preview.
 
 Keep everything add-only; no removals. Compatible with your current verification suite.
 
@@ -1127,10 +1124,10 @@ return header + "\n".join(links)
 PY
 
 # --- Patch backend/app.py to: 
-# - inject affiliate footer in /api/create_video responses (non-destructive)
+# - inject affiliate footer in/api/create_video responses (non-destructive)
 # - add settings routes
 # - add embed_preview route
-# - extend /ui with controls
+# - extend/ui with controls
 
 python - <<'PY'
 
@@ -1201,7 +1198,7 @@ src = src.replace(
 
 )
 
-# Inject affiliate footer into /api/create_video handler return
+# Inject affiliate footer into/api/create_video handler return
 if "compose_video(bg_png, wav, mp4)" in src and "footer = build_affiliate_footer()" not in src:
 
 src = src.replace(
@@ -1302,9 +1299,9 @@ src = src.replace(
 
 "</script>",
 
-"""async function kvGet(k, d=''){ const r=await fetch('/api/settings/get?key='+encodeURIComponent(k)+'&default='+encodeURIComponent(d)); return (await r.json()).value; }
+"""async function kvGet(k, d=''){ const r=await fetch("/api/settings/get?key='+encodeURIComponent(k)+'&default='+encodeURIComponent(d)); return (await r.json()).value; }
 
-async function kvSet(k, v){ const r=await fetch('/api/settings/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, value:v})}); return await r.json(); }
+async function kvSet(k, v){ const r=await fetch("/api/settings/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, value:v})}); return await r.json(); }
 
 (async function initEmbedSettings(){
 
@@ -1338,7 +1335,7 @@ log('Saved embed settings: auto='+auto+', limit='+lim);
 
 document.getElementById('af-preview').onclick = async ()=>{
 
-const r = await fetch('/api/affiliates/embed_preview');
+const r = await fetch("/api/affiliates/embed_preview');
 
 const j = await r.json();
 
@@ -1410,19 +1407,11 @@ r = requests.post("http://127.0.0.1:8000/api/create_video", json=payload, timeou
 
 PY
 
-VERIFY
-
-/ui shows the new Affiliate Embed Settings card.
-
-/api/settings/set and /api/settings/get function (UI logs confirm).
-
-/api/affiliates/embed_preview returns a footer string when:
+VERIFY/ui shows the new Affiliate Embed Settings card./api/settings/set and/api/settings/get function (UI logs confirm)./api/affiliates/embed_preview returns a footer string when:
 
 affiliate_auto_embed = on
 
-At least one affiliate is enabled=1
-
-/api/create_video response now includes a description value that appends the footer when include_affiliates=True and settings permit.
+At least one affiliate is enabled=1/api/create_video response now includes a description value that appends the footer when include_affiliates=True and settings permit.
 
 Your earlier definitive verification still passes:
 
@@ -1462,13 +1451,13 @@ Add configurable handoff to Blender (VSE) and DaVinci Resolve:
 
 Settings: enable/disable per pipeline + path to app binary
 
-Endpoints: /api/pipeline/blender and /api/pipeline/resolve
+Endpoints:/api/pipeline/blender and/api/pipeline/resolve
 
 Blender: auto-generate a tiny .py that loads bg + audio into VSE and writes a .blend (optional render)
 
 Resolve: attempt native API if available; otherwise return a clear status with local import steps
 
-Extend /ui with a Pipelines card: enable toggles, set paths, run handoff buttons
+Extend/ui with a Pipelines card: enable toggles, set paths, run handoff buttons
 
 Keep add-only; no removals; zero paid deps
 
@@ -1828,7 +1817,7 @@ from backend.core.settings import get_setting
 
 return {"ok": True, "key": key, "path": get_setting(key, default)}
 
-"""# Extend /ui with Pipelines card if not presentif "Pipelines" not in src:
+"""# Extend/ui with Pipelines card if not presentif "Pipelines" not in src:
 
 src = src.replace(
 
@@ -1894,9 +1883,9 @@ src = src.replace(
 
 "</script>",
 
-"""async function pathGet(k){ const r=await fetch('/api/paths/get?key='+encodeURIComponent(k)); return (await r.json()).path; }
+"""async function pathGet(k){ const r=await fetch("/api/paths/get?key='+encodeURIComponent(k)); return (await r.json()).path; }
 
-async function pathSet(k,v){ const r=await fetch('/api/paths/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, path:v})}); return await r.json(); }
+async function pathSet(k,v){ const r=await fetch("/api/paths/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, path:v})}); return await r.json(); }
 
 const plog = (m)=>{ const el=document.getElementById('pipe-log'); el.textContent += m + "\n"; el.scrollTop = el.scrollHeight; };
 
@@ -1942,7 +1931,7 @@ document.getElementById('blender-run').onclick = async ()=>{
 
 const render = (document.getElementById('blender-render').value === 'on');
 
-const r = await fetch('/api/pipeline/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'blender', render})});
+const r = await fetch("/api/pipeline/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'blender', render})});
 
 const j = await r.json(); plog('Blender: '+JSON.stringify(j));
 
@@ -1950,7 +1939,7 @@ const j = await r.json(); plog('Blender: '+JSON.stringify(j));
 
 document.getElementById('resolve-run').onclick = async ()=>{
 
-const r = await fetch('/api/pipeline/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'resolve'})});
+const r = await fetch("/api/pipeline/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'resolve'})});
 
 const j = await r.json(); plog('Resolve: '+JSON.stringify(j));
 
@@ -1982,11 +1971,7 @@ Open http://127.0.0.1:8000/ui → Pipelines card:
 
 
 
-Set Blender path (if Blender is not on PATH). Example macOS:
-
-
-
-/Applications/Blender.app/Contents/MacOS/Blender
+Set Blender path (if Blender is not on PATH). Example macOS:/Applications/Blender.app/Contents/MacOS/Blender
 
 Click Save.
 
@@ -2022,7 +2007,7 @@ Resolve handoff returns { ok: true, project: "TRAE_AI_Auto", timeline: "TRAE_AI_
 
 or a clear { ok: false, reason: "...", hint: "..." } if API not enabled.
 
-Prior /api/create_video flow and pytest verification remain green.
+Prior/api/create_video flow and pytest verification remain green.
 
 ROLLBACK
 
@@ -2054,7 +2039,7 @@ Yes 👍 — once you've applied the Blender & Resolve Handoff Pack, it can be a
 
 1. Manual Trigger (Default)
 
-From the UI card at /ui, you click Run Blender Handoff or Run Resolve Handoff.
+From the UI card at/ui, you click Run Blender Handoff or Run Resolve Handoff.
 
 The backend calls Blender/Resolve with the last-generated bg.png, voice.wav, and clip.mp4.
 
@@ -2062,11 +2047,11 @@ This works right now — no extra wiring needed.
 
 2. Automatic Trigger (Optional Upgrade)
 
-If you want every successful /api/create_video to immediately hand off to Blender or Resolve:
+If you want every successful/api/create_video to immediately hand off to Blender or Resolve:
 
 
 
-We extend the /api/create_video handler with a setting like:
+We extend the/api/create_video handler with a setting like:
 
 auto_blender_handoff = on/off
 
@@ -2090,7 +2075,7 @@ Right now: you trigger handoff manually from the UI.
 
 With one more add-only pack: you can make it automatic after every clip generation.
 
-Would you like me to ship that next pack — Auto-Handoff on Create — so it runs Blender/Resolve as soon as /api/create_video finishes?
+Would you like me to ship that next pack — Auto-Handoff on Create — so it runs Blender/Resolve as soon as/api/create_video finishes?
 
 You said:
 
@@ -2106,7 +2091,7 @@ Base44 Pack — "Auto-Handoff on Create" (Blender/Resolve) — zero-cost, add-on
 
 PLAN
 
-Make /api/create_video automatically trigger Blender and/or Resolve handoffs after a clip is generated.
+Make/api/create_video automatically trigger Blender and/or Resolve handoffs after a clip is generated.
 
 Add persistent settings:
 
@@ -2286,7 +2271,7 @@ return {"ok": True, "key": body.key, "value": v}
 
 """
 
-src += endpoints# ---- Hook into /api/create_video to trigger auto handoff in a thread ----if "compose_video(bg_png, wav, mp4)" in src and "AUTO_HANDOFF_THREAD" not in src:
+src += endpoints# ---- Hook into/api/create_video to trigger auto handoff in a thread ----if "compose_video(bg_png, wav, mp4)" in src and "AUTO_HANDOFF_THREAD" not in src:
 
 hook = """
 
@@ -2330,7 +2315,7 @@ src = src.replace(
 
 " compose_video(bg_png, wav, mp4)\n" + hook.rstrip()
 
-)# ---- Extend /ui with the Auto Handoff Settings card + JS ----if "Auto Handoff Settings" not in src:
+)# ---- Extend/ui with the Auto Handoff Settings card + JS ----if "Auto Handoff Settings" not in src:
 
 # Insert a card near Pipelines card (or before </main>)
 
@@ -2390,9 +2375,9 @@ src = src.replace(
 
 "</script>",
 
-"""async function ahGet(){ const r=await fetch('/api/auto_handoff/get'); return await r.json(); }
+"""async function ahGet(){ const r=await fetch("/api/auto_handoff/get'); return await r.json(); }
 
-async function ahSet(k,v){ const r=await fetch('/api/auto_handoff/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,value:v})}); return await r.json(); }
+async function ahSet(k,v){ const r=await fetch("/api/auto_handoff/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,value:v})}); return await r.json(); }
 
 
 
@@ -2470,7 +2455,7 @@ Set Blender render = on/off
 
 Click Save
 
-Then, in the same UI, click Create Clip (or call /api/create_video).
+Then, in the same UI, click Create Clip (or call/api/create_video).
 
 
 
@@ -2518,7 +2503,7 @@ Add-only. To remove auto-handoff:
 
 
 
-# optional backupcp backend/app.py backend/app.py.bak.$(date +%s)# edit backend/app.py and remove:# - _run_pipeline_internal()# - /api/auto_handoff/* endpoints# - the thread block inside /api/create_video (search AUTO_HANDOFF_THREAD)# - the "Auto Handoff Settings" UI card + JS# then restart API
+# optional backupcp backend/app.py backend/app.py.bak.$(date +%s)# edit backend/app.py and remove:# - _run_pipeline_internal()# -/api/auto_handoff/* endpoints# - the thread block inside/api/create_video (search AUTO_HANDOFF_THREAD)# - the "Auto Handoff Settings" UI card + JS# then restart API
 
 
 
@@ -2558,7 +2543,7 @@ Your Repair Directive:
 
 Audit the test_create_video_workflow function in the tests/test_system_integrity.py file.
 
-Locate the task_data dictionary that is sent to the /api/tasks endpoint. The log indicates this API call is failing with a 400 Bad Request.
+Locate the task_data dictionary that is sent to the/api/tasks endpoint. The log indicates this API call is failing with a 400 Bad Request.
 
 Apply the fix: You must correct the keys in the task_data dictionary to match the API's requirements.
 

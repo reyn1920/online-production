@@ -7,13 +7,11 @@
  * Features:
  * - Real-time WebSocket messaging
  * - AI-powered responses
- * - Integration commands (/weather, /news, /images, /pets)
+ * - Integration commands (/weather,/news,/images,/pets)
  * - Rich media support
  * - Modern responsive UI
  * - Chat history persistence
- */
-
-class TraeChat {
+ */class TraeChat {
     constructor(options = {}) {
         this.userId = options.userId || `user_${Date.now()}`;
         this.roomId = options.roomId || 'general';
@@ -23,9 +21,7 @@ class TraeChat {
         this.socket = null;
         this.isConnected = false;
         this.messageHistory = [];
-        this.currentRoom = this.roomId;
-        
-        // Chat history management
+        this.currentRoom = this.roomId;//Chat history management
         this.chatHistory = JSON.parse(localStorage.getItem('traeChat_history') || '[]');
         this.maxHistorySize = 1000;
         this.currentConversationId = null;
@@ -95,33 +91,25 @@ class TraeChat {
         }
     }
 
-    updateConversationsList() {
-        // This would update a conversations sidebar if implemented
-        // For now, we'll just log the conversations
+    updateConversationsList() {//This would update a conversations sidebar if implemented//For now, we'll just log the conversations
         console.log('Available conversations:', this.conversations);
     }
     
     async init() {
         this.createChatUI();
         this.setupEventListeners();
-        this.connectWebSocket();
-        
-        // Load conversations and chat history
-        await this.loadConversations();
-        
-        // Create a new conversation if none exists
+        this.connectWebSocket();//Load conversations and chat history
+        await this.loadConversations();//Create a new conversation if none exists
         if (this.conversations.length === 0) {
             await this.createNewConversation();
-        } else {
-            // Load the most recent conversation
+        } else {//Load the most recent conversation
             this.currentConversationId = this.conversations[0].id;
         }
         
         this.loadChatHistory();
     }
     
-    createChatUI() {
-        // Create main chat container
+    createChatUI() {//Create main chat container
         const chatContainer = document.createElement('div');
         chatContainer.id = 'trae-chat-container';
         chatContainer.innerHTML = `
@@ -141,7 +129,7 @@ class TraeChat {
                 
                 <div class="chat-input-container">
                     <div class="input-wrapper">
-                        <input type="text" id="chat-input" placeholder="Type a message... (try /ai, /weather, /news, /images, /pets)" autocomplete="off">
+                        <input type="text" id="chat-input" placeholder="Type a message... (try/ai,/weather,/news,/images,/pets)" autocomplete="off">
                         <button id="send-button" class="btn-send">Send</button>
                     </div>
                     
@@ -154,12 +142,8 @@ class TraeChat {
                     </div>
                 </div>
             </div>
-        `;
-        
-        // Add CSS styles
-        this.addChatStyles();
-        
-        // Append to body
+        `;//Add CSS styles
+        this.addChatStyles();//Append to body
         document.body.appendChild(chatContainer);
     }
     
@@ -582,9 +566,7 @@ class TraeChat {
         const sendButton = document.getElementById('send-button');
         const toggleButton = document.getElementById('toggle-chat');
         const clearButton = document.getElementById('clear-chat');
-        const commandButtons = document.querySelectorAll('.cmd-btn');
-        
-        // Send message on Enter or button click
+        const commandButtons = document.querySelectorAll('.cmd-btn');//Send message on Enter or button click
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -592,23 +574,17 @@ class TraeChat {
             }
         });
         
-        sendButton.addEventListener('click', () => this.sendMessage());
-        
-        // Toggle chat minimize/maximize
+        sendButton.addEventListener('click', () => this.sendMessage());//Toggle chat minimize/maximize
         toggleButton.addEventListener('click', () => {
             const container = document.getElementById('trae-chat-container');
             container.classList.toggle('chat-minimized');
             toggleButton.textContent = container.classList.contains('chat-minimized') ? '+' : '−';
-        });
-        
-        // Clear chat
+        });//Clear chat
         clearButton.addEventListener('click', () => {
             if (confirm('Clear all chat messages?')) {
                 this.clearChat();
             }
-        });
-        
-        // Command buttons
+        });//Command buttons
         commandButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const cmd = btn.dataset.cmd;
@@ -619,8 +595,7 @@ class TraeChat {
     }
     
     connectWebSocket() {
-        try {
-            // Update WebSocket URL to include user ID
+        try {//Update WebSocket URL to include user ID
             this.wsUrl = this.wsUrl.includes('?') 
                 ? this.wsUrl + `&user_id=${this.userId}`
                 : this.wsUrl + `?user_id=${this.userId}`;
@@ -641,9 +616,7 @@ class TraeChat {
             this.socket.onclose = () => {
                 this.isConnected = false;
                 this.updateConnectionStatus('Disconnected', 'disconnected');
-                console.log('Chat WebSocket disconnected');
-                
-                // Attempt to reconnect after 3 seconds
+                console.log('Chat WebSocket disconnected');//Attempt to reconnect after 3 seconds
                 setTimeout(() => {
                     if (!this.isConnected) {
                         this.connectWebSocket();
@@ -683,28 +656,20 @@ class TraeChat {
         const input = document.getElementById('chat-input');
         const message = input.value.trim();
         
-        if (!message || !this.isConnected) return;
-        
-        // Add user message to UI immediately
+        if (!message || !this.isConnected) return;//Add user message to UI immediately
         this.addMessage({
             type: 'message',
             user_id: this.userId,
             content: message,
             message_type: 'text',
             timestamp: new Date().toISOString()
-        }, true);
-        
-        // Send via WebSocket
+        }, true);//Send via WebSocket
         this.socket.send(JSON.stringify({
             content: message,
             type: 'text',
             metadata: {}
-        }));
-        
-        // Clear input
-        input.value = '';
-        
-        // Show typing indicator for AI/integration commands
+        }));//Clear input
+        input.value = '';//Show typing indicator for AI/integration commands
         if (message.startsWith('/ai ') || message.startsWith('/weather ') || 
             message.startsWith('/news ') || message.startsWith('/images ') || 
             message.startsWith('/pets ')) {
@@ -715,19 +680,15 @@ class TraeChat {
     handleIncomingMessage(data) {
         this.hideTypingIndicator();
         
-        if (data.type === 'message') {
-            // Regular chat message from another user
+        if (data.type === 'message') {//Regular chat message from another user
             if (data.user_id !== this.userId) {
                 this.addMessage(data);
             }
-        } else if (data.type === 'system') {
-            // System message
+        } else if (data.type === 'system') {//System message
             this.addSystemMessage(data.content, data.timestamp);
-        } else if (data.type === 'ai_response') {
-            // AI response
+        } else if (data.type === 'ai_response') {//AI response
             this.addAIMessage(data.content, data.timestamp);
-        } else if (data.type === 'integration_data') {
-            // Integration data (weather, news, images, pets)
+        } else if (data.type === 'integration_data') {//Integration data (weather, news, images, pets)
             this.addIntegrationMessage(data);
         }
     }
@@ -908,9 +869,7 @@ class TraeChat {
     
     clearChat() {
         const messagesContainer = document.getElementById('chat-messages');
-        messagesContainer.innerHTML = '';
-        
-        // Also clear on server
+        messagesContainer.innerHTML = '';//Also clear on server
         fetch(`${this.apiUrl}/rooms/${this.roomId}/history`, {
             method: 'DELETE'
         }).catch(error => {
@@ -927,9 +886,7 @@ class TraeChat {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
-    }
-    
-    // Public methods
+    }//Public methods
     destroy() {
         if (this.socket) {
             this.socket.close();
@@ -954,32 +911,24 @@ class TraeChat {
     
     changeRoom(roomId) {
         this.roomId = roomId;
-        this.currentRoom = roomId;
-        
-        // Reconnect to new room
+        this.currentRoom = roomId;//Reconnect to new room
         if (this.socket) {
             this.socket.close();
         }
         
         this.wsUrl = this.wsUrl.replace(/room_id=[^&]*/, `room_id=${roomId}`);
-        this.connectWebSocket();
-        
-        // Clear current messages and load new room history
+        this.connectWebSocket();//Clear current messages and load new room history
         document.getElementById('chat-messages').innerHTML = '';
         this.loadChatHistory();
     }
-}
-
-// Auto-initialize chat when DOM is ready
+}//Auto-initialize chat when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.traeChat = new TraeChat();
     });
 } else {
     window.traeChat = new TraeChat();
-}
-
-// Export for module usage
+}//Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = TraeChat;
 }

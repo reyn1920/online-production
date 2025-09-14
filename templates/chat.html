@@ -268,12 +268,9 @@
     <!-- Chat JavaScript -->
     <script src="/static/js/chat.js"></script>
     
-    <script>
-        // Initialize chat system with status updates
+    <script>//Initialize chat system with status updates
         document.addEventListener('DOMContentLoaded', function() {
-            const statusElement = document.getElementById('status');
-            
-            // Update status based on chat connection
+            const statusElement = document.getElementById('status');//Update status based on chat connection
             function updateStatus() {
                 if (window.traeChat && window.traeChat.isConnected) {
                     statusElement.className = 'status';
@@ -282,30 +279,18 @@
                     statusElement.className = 'status error';
                     statusElement.innerHTML = '❌ Chat system connection failed. Please refresh the page or check your connection.';
                 }
-            }
-            
-            // Check status periodically
+            }//Check status periodically
             const statusInterval = setInterval(() => {
-                updateStatus();
-                
-                // Stop checking once connected
+                updateStatus();//Stop checking once connected
                 if (window.traeChat && window.traeChat.isConnected) {
                     clearInterval(statusInterval);
                 }
-            }, 1000);
-            
-            // Initial status check after 2 seconds
-            setTimeout(updateStatus, 2000);
-            
-            // Add some demo functionality
-            let demoMessageSent = false;
-            
-            // Send a welcome message after connection is established
+            }, 1000);//Initial status check after 2 seconds
+            setTimeout(updateStatus, 2000);//Add some demo functionality
+            let demoMessageSent = false;//Send a welcome message after connection is established
             setTimeout(() => {
                 if (window.traeChat && window.traeChat.isConnected && !demoMessageSent) {
-                    demoMessageSent = true;
-                    
-                    // Add a system message to demonstrate the chat
+                    demoMessageSent = true;//Add a system message to demonstrate the chat
                     const messagesContainer = document.getElementById('chat-messages');
                     if (messagesContainer) {
                         const welcomeDiv = document.createElement('div');
@@ -321,34 +306,25 @@
                             </div>
                             <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                         `;
-                        messagesContainer.appendChild(welcomeDiv);
-                        
-                        // Scroll to show the message
+                        messagesContainer.appendChild(welcomeDiv);//Scroll to show the message
                         messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     }
                 }
             }, 3000);
-        });
-        
-        // Add keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl/Cmd + K to focus chat input
+        });//Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {//Ctrl/Cmd + K to focus chat input
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
                 const chatInput = document.getElementById('chat-input');
                 if (chatInput) {
-                    chatInput.focus();
-                    
-                    // Expand chat if minimized
+                    chatInput.focus();//Expand chat if minimized
                     const container = document.getElementById('trae-chat-container');
                     if (container && container.classList.contains('chat-minimized')) {
                         container.classList.remove('chat-minimized');
                         document.getElementById('toggle-chat').textContent = '−';
                     }
                 }
-            }
-            
-            // Escape to minimize chat
+            }//Escape to minimize chat
             if (e.key === 'Escape') {
                 const container = document.getElementById('trae-chat-container');
                 if (container && !container.classList.contains('chat-minimized')) {
@@ -356,17 +332,13 @@
                     document.getElementById('toggle-chat').textContent = '+';
                 }
             }
-        });
-        
-        // Add some analytics
+        });//Add some analytics
         if (typeof gtag !== 'undefined') {
             gtag('event', 'page_view', {
                 page_title: 'TRAE.AI Chat Integration',
                 page_location: window.location.href
             });
-        }
-        
-        // Service worker registration for PWA capabilities
+        }//Service worker registration for PWA capabilities
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/static/sw.js')
                 .then(registration => {

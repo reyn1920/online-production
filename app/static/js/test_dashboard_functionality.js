@@ -1,5 +1,4 @@
-// Dashboard Functionality Test Script
-// This script tests all interactive elements on the dashboard
+//Dashboard Functionality Test Script//This script tests all interactive elements on the dashboard
 
 class DashboardTester {
     constructor() {
@@ -7,39 +6,19 @@ class DashboardTester {
         this.totalTests = 0;
         this.passedTests = 0;
         this.failedTests = 0;
-    }
-
-    // Main test runner
+    }//Main test runner
     async runAllTests() {
         console.log('🚀 Starting Dashboard Functionality Tests...');
-        console.log('=' .repeat(50));
-        
-        // Test navigation tabs
-        await this.testTabNavigation();
-        
-        // Test buttons
-        await this.testButtons();
-        
-        // Test toggles and switches
-        await this.testToggles();
-        
-        // Test forms
-        await this.testForms();
-        
-        // Test avatar functionality
-        await this.testAvatarFunctionality();
-        
-        // Test quick actions
-        await this.testQuickActions();
-        
-        // Test data refresh
-        await this.testDataRefresh();
-        
-        // Display results
+        console.log('=' .repeat(50));//Test navigation tabs
+        await this.testTabNavigation();//Test buttons
+        await this.testButtons();//Test toggles and switches
+        await this.testToggles();//Test forms
+        await this.testForms();//Test avatar functionality
+        await this.testAvatarFunctionality();//Test quick actions
+        await this.testQuickActions();//Test data refresh
+        await this.testDataRefresh();//Display results
         this.displayResults();
-    }
-
-    // Test tab navigation
+    }//Test tab navigation
     async testTabNavigation() {
         console.log('\n📋 Testing Tab Navigation...');
         
@@ -50,14 +29,9 @@ class DashboardTester {
                 const tabButton = document.querySelector(`[data-tab="${tab}"]`);
                 const tabContent = document.getElementById(`${tab}-tab`);
                 
-                if (tabButton && tabContent) {
-                    // Click the tab
-                    tabButton.click();
-                    
-                    // Wait a moment for the transition
-                    await this.wait(100);
-                    
-                    // Check if tab is active
+                if (tabButton && tabContent) {//Click the tab
+                    tabButton.click();//Wait a moment for the transition
+                    await this.wait(100);//Check if tab is active
                     const isActive = tabButton.classList.contains('active');
                     const isContentVisible = !tabContent.classList.contains('hidden');
                     
@@ -70,9 +44,7 @@ class DashboardTester {
                 this.recordTest(`Tab Navigation - ${tab}`, false, `Error: ${error.message}`);
             }
         }
-    }
-
-    // Test all buttons
+    }//Test all buttons
     async testButtons() {
         console.log('\n🔘 Testing Buttons...');
         
@@ -95,9 +67,7 @@ class DashboardTester {
                     const isEnabled = !button.disabled;
                     const isVisible = button.offsetParent !== null;
                     const hasClickHandler = button.onclick !== null || 
-                                          button.addEventListener !== undefined;
-                    
-                    // Test click (without actually triggering the action)
+                                          button.addEventListener !== undefined;//Test click (without actually triggering the action)
                     const originalOnClick = button.onclick;
                     let clickTriggered = false;
                     
@@ -121,9 +91,7 @@ class DashboardTester {
                 this.recordTest(`Button - ${test.name}`, false, `Error: ${error.message}`);
             }
         }
-    }
-
-    // Test toggles and switches
+    }//Test toggles and switches
     async testToggles() {
         console.log('\n🔄 Testing Toggles and Switches...');
         
@@ -149,9 +117,7 @@ class DashboardTester {
                             
                             if (initialState !== newState) {
                                 workingCount++;
-                            }
-                            
-                            // Reset to original state
+                            }//Reset to original state
                             toggle.checked = initialState;
                         } catch (error) {
                             allWorking = false;
@@ -167,9 +133,7 @@ class DashboardTester {
                 this.recordTest(`Toggle - ${test.name}`, false, `Error: ${error.message}`);
             }
         }
-    }
-
-    // Test forms
+    }//Test forms
     async testForms() {
         console.log('\n📝 Testing Forms...');
         
@@ -188,8 +152,7 @@ class DashboardTester {
                     
                     elements.forEach(element => {
                         try {
-                            if (element.tagName === 'FORM') {
-                                // Test form inputs
+                            if (element.tagName === 'FORM') {//Test form inputs
                                 const inputs = element.querySelectorAll('input, textarea, select');
                                 inputs.forEach(input => {
                                     const originalValue = input.value;
@@ -224,29 +187,23 @@ class DashboardTester {
                 this.recordTest(`Form - ${test.name}`, false, `Error: ${error.message}`);
             }
         }
-    }
-
-    // Test avatar functionality
+    }//Test avatar functionality
     async testAvatarFunctionality() {
         console.log('\n🤖 Testing Avatar Functionality...');
         
-        try {
-            // Test avatar initialization
+        try {//Test avatar initialization
             const avatarExists = window.dashboardAvatar !== undefined;
             this.recordTest('Avatar - Initialization', avatarExists, 
                 `Dashboard avatar object: ${avatarExists ? 'Found' : 'Not found'}`);
             
-            if (avatarExists) {
-                // Test chat interface
+            if (avatarExists) {//Test chat interface
                 const chatInterface = document.getElementById('chat-interface');
                 const chatInput = document.getElementById('chat-input');
                 const chatMessages = document.getElementById('chat-messages');
                 
                 this.recordTest('Avatar - Chat Interface', 
                     chatInterface && chatInput && chatMessages,
-                    `Interface: ${!!chatInterface}, Input: ${!!chatInput}, Messages: ${!!chatMessages}`);
-                
-                // Test quick actions
+                    `Interface: ${!!chatInterface}, Input: ${!!chatInput}, Messages: ${!!chatMessages}`);//Test quick actions
                 const quickActions = document.querySelectorAll('.quick-action-btn');
                 this.recordTest('Avatar - Quick Actions', quickActions.length > 0, 
                     `${quickActions.length} quick action buttons found`);
@@ -254,9 +211,7 @@ class DashboardTester {
         } catch (error) {
             this.recordTest('Avatar - Functionality', false, `Error: ${error.message}`);
         }
-    }
-
-    // Test quick actions
+    }//Test quick actions
     async testQuickActions() {
         console.log('\n⚡ Testing Quick Actions...');
         
@@ -271,9 +226,7 @@ class DashboardTester {
                 const button = document.getElementById(test.id);
                 
                 if (button) {
-                    const isClickable = !button.disabled && button.offsetParent !== null;
-                    
-                    // Test visual feedback on hover
+                    const isClickable = !button.disabled && button.offsetParent !== null;//Test visual feedback on hover
                     button.dispatchEvent(new MouseEvent('mouseenter'));
                     await this.wait(50);
                     button.dispatchEvent(new MouseEvent('mouseleave'));
@@ -287,14 +240,11 @@ class DashboardTester {
                 this.recordTest(`Quick Action - ${test.name}`, false, `Error: ${error.message}`);
             }
         }
-    }
-
-    // Test data refresh functionality
+    }//Test data refresh functionality
     async testDataRefresh() {
         console.log('\n🔄 Testing Data Refresh...');
         
-        try {
-            // Test if refresh functions exist
+        try {//Test if refresh functions exist
             const refreshFunctions = [
                 'loadDashboardData',
                 'updateMetrics',
@@ -310,9 +260,7 @@ class DashboardTester {
             });
             
             this.recordTest('Data Refresh - Functions', functionsFound > 0, 
-                `${functionsFound}/${refreshFunctions.length} refresh functions found`);
-            
-            // Test auto-refresh interval
+                `${functionsFound}/${refreshFunctions.length} refresh functions found`);//Test auto-refresh interval
             const hasAutoRefresh = window.setInterval !== undefined;
             this.recordTest('Data Refresh - Auto Refresh', hasAutoRefresh, 
                 `Auto-refresh capability: ${hasAutoRefresh ? 'Available' : 'Not available'}`);
@@ -320,9 +268,7 @@ class DashboardTester {
         } catch (error) {
             this.recordTest('Data Refresh - Functionality', false, `Error: ${error.message}`);
         }
-    }
-
-    // Helper methods
+    }//Helper methods
     wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -352,7 +298,7 @@ class DashboardTester {
         console.log(`Total Tests: ${this.totalTests}`);
         console.log(`✅ Passed: ${this.passedTests}`);
         console.log(`❌ Failed: ${this.failedTests}`);
-        console.log(`📈 Success Rate: ${((this.passedTests / this.totalTests) * 100).toFixed(1)}%`);
+        console.log(`📈 Success Rate: ${((this.passedTests/this.totalTests) * 100).toFixed(1)}%`);
         
         if (this.failedTests > 0) {
             console.log('\n🔍 FAILED TESTS:');
@@ -363,29 +309,24 @@ class DashboardTester {
                 });
         }
         
-        console.log('\n✨ Testing completed!');
-        
-        // Return results for programmatic access
+        console.log('\n✨ Testing completed!');//Return results for programmatic access
         return {
             total: this.totalTests,
             passed: this.passedTests,
             failed: this.failedTests,
-            successRate: (this.passedTests / this.totalTests) * 100,
+            successRate: (this.passedTests/this.totalTests) * 100,
             results: this.testResults
         };
     }
-}
-
-// Auto-run tests when script is loaded
-if (typeof window !== 'undefined') {
-    // Wait for DOM to be ready
+}//Auto-run tests when script is loaded
+if (typeof window !== 'undefined') {//Wait for DOM to be ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const tester = new DashboardTester();
                 window.dashboardTester = tester;
                 tester.runAllTests();
-            }, 1000); // Wait 1 second for dashboard to initialize
+            }, 1000);//Wait 1 second for dashboard to initialize
         });
     } else {
         setTimeout(() => {
@@ -394,9 +335,7 @@ if (typeof window !== 'undefined') {
             tester.runAllTests();
         }, 1000);
     }
-}
-
-// Export for manual testing
+}//Export for manual testing
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DashboardTester;
 }

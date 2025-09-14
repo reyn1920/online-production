@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Blender Compositor - Avatar Video Compositing with Checkpointed Rendering
 
@@ -30,7 +30,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import TRAE.AI utilities
 try:
+
     from utils.logger import get_logger
+
 except ImportError:
 
 
@@ -240,7 +242,7 @@ class BlenderScriptGenerator:
         # Add checkpoint rendering logic
         script_lines.extend(self._generate_checkpoint_script(job))
 
-        return "\n".join(script_lines)
+        return "\\n".join(script_lines)
 
 
     def _generate_layer_nodes(
@@ -324,10 +326,12 @@ class BlenderScriptGenerator:
                 "        try:",
                 "            with open(checkpoint_file, 'r') as f:",
                 "                checkpoint = json.load(f)",
-                "            start_frame = checkpoint.get('last_frame', start_frame) + 1",
+                "            start_frame = checkpoint.get('last_frame',
+    start_frame) + 1",
                 "            print(f'Resuming from frame {start_frame}')",
                 "        except Exception:",
-                "            print('Failed to load checkpoint, starting from beginning')",
+                "            print('Failed to load checkpoint,
+    starting from beginning')",
                 "    ",
                 "    # Render frames with checkpointing",
                 "    for frame in range(start_frame, bpy.context.scene.frame_end + 1):",
@@ -395,7 +399,7 @@ class BlenderCompositor:
         self.executor = ThreadPoolExecutor(max_workers = 2)
 
         # Setup temp directory
-        self.temp_dir = Path(tempfile.gettempdir()) / "blender_compositor"
+        self.temp_dir = Path(tempfile.gettempdir())/"blender_compositor"
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Validate Blender installation
@@ -406,10 +410,10 @@ class BlenderCompositor:
     def _find_blender(self) -> str:
         """Find Blender executable."""
         possible_paths = [
-            "/Applications / Blender.app / Contents / MacOS / Blender",  # macOS
-            "/usr / bin / blender",  # Linux
-            "/usr / local / bin / blender",  # Linux
-            "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",  # Windows
+            "/Applications/Blender.app/Contents/MacOS/Blender",  # macOS
+            "/usr/bin/blender",  # Linux
+            "/usr/local/bin/blender",  # Linux
+            "C:\\\\Program Files\\\\Blender Foundation\\\\Blender\\\\blender.exe",  # Windows
             "blender",  # In PATH
         ]
 
@@ -463,7 +467,7 @@ class BlenderCompositor:
         Path(output_path).parent.mkdir(parents = True, exist_ok = True)
 
         # Generate project file path
-        project_file = str(self.temp_dir / f"{job_id}.blend")
+        project_file = str(self.temp_dir/f"{job_id}.blend")
 
         job = RenderJob(
             job_id = job_id,
@@ -502,7 +506,7 @@ class BlenderCompositor:
         try:
             # Generate Blender script
             script_content = self.script_generator.generate_composite_script(job)
-            script_path = self.temp_dir / f"{job_id}_script.py"
+            script_path = self.temp_dir/f"{job_id}_script.py"
 
             with open(script_path, "w") as f:
                 f.write(script_content)
@@ -608,7 +612,7 @@ class BlenderCompositor:
                             "last_frame", job.config.frame_start
                         )
                         job.current_frame = current_frame
-                        job.progress = min(90.0, (current_frame / total_frames) * 90.0)
+                        job.progress = min(90.0, (current_frame/total_frames) * 90.0)
 
                     time.sleep(2)  # Check every 2 seconds
 
@@ -628,8 +632,7 @@ class BlenderCompositor:
 
         for frame in range(job.config.frame_start, job.config.frame_end + 1):
             frame_file = (
-                output_dir
-                / f"{base_name}_{frame:04d}.{job.config.output_format.lower()}"
+                output_dir/f"{base_name}_{frame:04d}.{job.config.output_format.lower()}"
             )
             if frame_file.exists():
                 rendered_frames.append(frame)
@@ -780,10 +783,10 @@ if __name__ == "__main__":
     try:
         # Create avatar composite
         job_id = compositor.create_avatar_composite(
-            avatar_video="./assets / avatar_animation.mp4",
-                background_image="./assets / office_background.jpg",
-                output_path="./output / final_composite",
-                effects=["./assets / particle_effect.mp4"],
+            avatar_video="./assets/avatar_animation.mp4",
+                background_image="./assets/office_background.jpg",
+                output_path="./output/final_composite",
+                effects=["./assets/particle_effect.mp4"],
                 )
 
         print(f"Avatar composite job created: {job_id}")

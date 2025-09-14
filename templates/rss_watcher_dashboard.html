@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>RSS Watcher Dashboard</title>
     <style>
       * {
@@ -161,7 +161,7 @@
       }
 
       .triggers-list {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
       }
 
       .trigger-item {
@@ -303,15 +303,15 @@
           <h3>⚙️ Controls</h3>
           <div class="control-group">
             <label for="monitoring-interval">Monitoring Interval (seconds)</label>
-            <input type="number" id="monitoring-interval" value="300" min="60" max="3600" />
+            <input type="number" id="monitoring-interval" value="300" min="60" max="3600"/>
           </div>
           <div class="control-group">
             <label for="urgency-threshold">Urgency Threshold</label>
-            <input type="number" id="urgency-threshold" value="0.5" min="0" max="1" step="0.1" />
+            <input type="number" id="urgency-threshold" value="0.5" min="0" max="1" step="0.1"/>
           </div>
           <div class="control-group">
             <label for="video-duration">Video Duration (seconds)</label>
-            <input type="number" id="video-duration" value="60" min="30" max="300" />
+            <input type="number" id="video-duration" value="60" min="30" max="300"/>
           </div>
           <div class="control-group">
             <label for="include-affiliates">Include Affiliates</label>
@@ -337,9 +337,7 @@
     </div>
 
     <script>
-      const API_BASE = 'http://localhost:8080';
-
-      // Show message to user
+      const API_BASE = 'http://localhost:8080';//Show message to user
       function showMessage(message, type = 'info') {
         const messageArea = document.getElementById('message-area');
         const messageDiv = document.createElement('div');
@@ -351,9 +349,7 @@
         setTimeout(() => {
           messageDiv.remove();
         }, 5000);
-      }
-
-      // Load RSS watcher status
+      }//Load RSS watcher status
       async function loadStatus() {
         try {
           const response = await fetch(`${API_BASE}/api/rss_watcher/status`);
@@ -379,9 +375,7 @@
           console.error('Error loading status:', error);
           document.getElementById('status-content').innerHTML = '<p class="error">Error loading status</p>';
         }
-      }
-
-      // Load recent triggers
+      }//Load recent triggers
       async function loadTriggers() {
         try {
           const response = await fetch(`${API_BASE}/api/rss_watcher/triggers?limit=10`);
@@ -428,9 +422,7 @@
           console.error('Error loading triggers:', error);
           document.getElementById('triggers-content').innerHTML = '<p class="error">Error loading triggers</p>';
         }
-      }
-
-      // Start monitoring
+      }//Start monitoring
       async function startMonitoring() {
         try {
           const config = {
@@ -460,9 +452,7 @@
           console.error('Error starting monitoring:', error);
           showMessage('Error starting monitoring', 'error');
         }
-      }
-
-      // Stop monitoring
+      }//Stop monitoring
       async function stopMonitoring() {
         try {
           const response = await fetch(`${API_BASE}/api/rss_watcher/stop`, {
@@ -481,20 +471,14 @@
           console.error('Error stopping monitoring:', error);
           showMessage('Error stopping monitoring', 'error');
         }
-      }
-
-      // Refresh status
+      }//Refresh status
       function refreshStatus() {
         loadStatus();
         loadTriggers();
-      }
-
-      // Initialize dashboard
+      }//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         loadStatus();
-        loadTriggers();
-
-        // Auto-refresh every 30 seconds
+        loadTriggers();//Auto-refresh every 30 seconds
         setInterval(() => {
           loadStatus();
           loadTriggers();

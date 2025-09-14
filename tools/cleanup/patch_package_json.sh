@@ -368,7 +368,7 @@ run_security_audit() {
     case "$package_manager" in
         "npm")
             if audit_output=$(npm audit --json 2>/dev/null); then
-                local vulnerabilities=$(echo "$audit_output" | jq -r '.metadata.vulnerabilities.total // 0')
+                local vulnerabilities=$(echo "$audit_output" | jq -r '.metadata.vulnerabilities.total//0')
                 if [[ "$vulnerabilities" -gt 0 ]]; then
                     log "WARN" "Found $vulnerabilities security vulnerabilities"
                     if [[ "$FIX_VULNERABILITIES" == "true" ]]; then
@@ -521,10 +521,10 @@ generate_report() {
         echo "PACKAGE INFORMATION:"
         echo "-------------------"
         if command -v jq >/dev/null 2>&1; then
-            echo "Name: $(jq -r '.name // "N/A"' "$PACKAGE_JSON")"
-            echo "Version: $(jq -r '.version // "N/A"' "$PACKAGE_JSON")"
-            echo "Description: $(jq -r '.description // "N/A"' "$PACKAGE_JSON")"
-            echo "License: $(jq -r '.license // "N/A"' "$PACKAGE_JSON")"
+            echo "Name: $(jq -r '.name//"N/A"' "$PACKAGE_JSON")"
+            echo "Version: $(jq -r '.version//"N/A"' "$PACKAGE_JSON")"
+            echo "Description: $(jq -r '.description//"N/A"' "$PACKAGE_JSON")"
+            echo "License: $(jq -r '.license//"N/A"' "$PACKAGE_JSON")"
             echo ""
             
             # Dependencies count

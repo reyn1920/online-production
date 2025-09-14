@@ -29,16 +29,12 @@ Your first channel **"The Right Perspective"** has been successfully configured 
 
 ## 📁 Directory Structure Created
 
-```
-/online production/
-├── output/
-│   ├── audio/the_right_perspective/          # Generated audio files
-│   ├── graphics/the_right_perspective/       # Thumbnails and graphics
-│   └── thumbnails/the_right_perspective/     # Episode thumbnails
-├── content/
-│   ├── scripts/the_right_perspective/        # Episode scripts
-│   └── templates/the_right_perspective/      # Content templates
-└── logs/the_right_perspective/               # Production logs
+```/online production/├── output/│   ├── audio/the_right_perspective/# Generated audio files
+│   ├── graphics/the_right_perspective/# Thumbnails and graphics
+│   └── thumbnails/the_right_perspective/# Episode thumbnails
+├── content/│   ├── scripts/the_right_perspective/# Episode scripts
+│   └── templates/the_right_perspective/# Content templates
+└── logs/the_right_perspective/# Production logs
 ```
 
 ---

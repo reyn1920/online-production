@@ -20,7 +20,7 @@ Sublime Text Build 4200 is now successfully integrated into the TRAE.AI automati
 ```bash
 # Installation check
 which subl && subl --version
-# Output: /Users/thomasbrianreynolds/homebrew/bin/subl
+# Output:/Users/thomasbrianreynolds/homebrew/bin/subl
 # Output: Sublime Text Build 4200
 
 # Help and capabilities
@@ -134,14 +134,12 @@ python sublime_automation_integration.py
 
 ### CI/CD Integration Commands
 ```bash
-# Pre-commit formatting
-/Users/thomasbrianreynolds/homebrew/bin/subl --command reindent --wait
+# Pre-commit formatting/Users/thomasbrianreynolds/homebrew/bin/subl --command reindent --wait
 
 # Batch formatting for CI
-find . -name '*.py' -exec /Users/thomasbrianreynolds/homebrew/bin/subl --command reindent --wait {} \;
+find . -name '*.py' -exec/Users/thomasbrianreynolds/homebrew/bin/subl --command reindent --wait {} \;
 
-# Project setup
-/Users/thomasbrianreynolds/homebrew/bin/subl --project TRAE_AI_Project.sublime-project
+# Project setup/Users/thomasbrianreynolds/homebrew/bin/subl --project TRAE_AI_Project.sublime-project
 ```
 
 ---

@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 AI - Driven Video Editing - Script Cue Parser for Dynamic Blender Effects
 
@@ -30,7 +30,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import TRAE.AI utilities
 try:
+
     from utils.logger import get_logger
+
 except ImportError:
 
 
@@ -83,7 +85,7 @@ class EffectTiming(Enum):
 
     INSTANT = "instant"  # Effect happens immediately
     GRADUAL = "gradual"  # Effect builds up over time
-    PULSE = "pulse"  # Effect pulses / repeats
+    PULSE = "pulse"  # Effect pulses/repeats
     SUSTAINED = "sustained"  # Effect lasts for duration
 
 @dataclass
@@ -167,124 +169,124 @@ class ScriptCueParser:
         # Define cue patterns
         self.cue_patterns = {
             CueType.TENSE_MOMENT: [
-                r"\[TENSE[_\s]*MOMENT\]",
-                    r"\[TENSION\]",
-                    r"\[SUSPENSEFUL\]",
+                r"\\[TENSE[_\\s]*MOMENT\\]",
+                    r"\\[TENSION\\]",
+                    r"\\[SUSPENSEFUL\\]",
                     r"tension builds",
                     r"atmosphere grows tense",
                     ],
                 CueType.DRAMATIC_PAUSE: [
-                r"\[DRAMATIC[_\s]*PAUSE\]",
-                    r"\[PAUSE\]",
-                    r"\[BEAT\]",
-                    r"\.\.\.",
+                r"\\[DRAMATIC[_\\s]*PAUSE\\]",
+                    r"\\[PAUSE\\]",
+                    r"\\[BEAT\\]",
+                    r"\\.\\.\\.",
                     r"long pause",
                     r"moment of silence",
                     ],
                 CueType.ACTION_SEQUENCE: [
-                r"\[ACTION[_\s]*SEQUENCE\]",
-                    r"\[ACTION\]",
-                    r"\[FIGHT[_\s]*SCENE\]",
-                    r"\[CHASE\]",
+                r"\\[ACTION[_\\s]*SEQUENCE\\]",
+                    r"\\[ACTION\\]",
+                    r"\\[FIGHT[_\\s]*SCENE\\]",
+                    r"\\[CHASE\\]",
                     r"action packed",
                     r"intense action",
                     ],
                 CueType.EMOTIONAL_PEAK: [
-                r"\[EMOTIONAL[_\s]*PEAK\]",
-                    r"\[CLIMAX\]",
-                    r"\[BREAKDOWN\]",
+                r"\\[EMOTIONAL[_\\s]*PEAK\\]",
+                    r"\\[CLIMAX\\]",
+                    r"\\[BREAKDOWN\\]",
                     r"emotional climax",
                     r"tears in.*eyes",
                     ],
                 CueType.TRANSITION: [
-                r"\[TRANSITION\]",
-                    r"\[CUT[_\s]*TO\]",
-                    r"\[FADE[_\s]*TO\]",
+                r"\\[TRANSITION\\]",
+                    r"\\[CUT[_\\s]*TO\\]",
+                    r"\\[FADE[_\\s]*TO\\]",
                     r"meanwhile",
                     r"later that day",
                     r"suddenly",
                     ],
                 CueType.EMPHASIS: [
-                r"\[EMPHASIS\]",
-                    r"\[IMPORTANT\]",
-                    r"\[KEY[_\s]*POINT\]",
-                    r"\*\*.*\*\*",
+                r"\\[EMPHASIS\\]",
+                    r"\\[IMPORTANT\\]",
+                    r"\\[KEY[_\\s]*POINT\\]",
+                    r"\\*\\*.*\\*\\*",
                     r"THIS IS IMPORTANT",
                     ],
                 CueType.SUSPENSE: [
-                r"\[SUSPENSE\]",
-                    r"\[MYSTERY\]",
-                    r"\[OMINOUS\]",
+                r"\\[SUSPENSE\\]",
+                    r"\\[MYSTERY\\]",
+                    r"\\[OMINOUS\\]",
                     r"something.*wrong",
                     r"eerie silence",
                     ],
                 CueType.REVELATION: [
-                r"\[REVELATION\]",
-                    r"\[DISCOVERY\]",
-                    r"\[REALIZATION\]",
+                r"\\[REVELATION\\]",
+                    r"\\[DISCOVERY\\]",
+                    r"\\[REALIZATION\\]",
                     r"suddenly realizes",
                     r"the truth is",
                     ],
                 CueType.CLOSE_UP: [
-                r"\[CLOSE[_\s]*UP\]",
-                    r"\[CU\]",
+                r"\\[CLOSE[_\\s]*UP\\]",
+                    r"\\[CU\\]",
                     r"close - up on",
                     r"zoom in on",
                     ],
                 CueType.WIDE_SHOT: [
-                r"\[WIDE[_\s]*SHOT\]",
-                    r"\[WS\]",
-                    r"\[ESTABLISHING[_\s]*SHOT\]",
+                r"\\[WIDE[_\\s]*SHOT\\]",
+                    r"\\[WS\\]",
+                    r"\\[ESTABLISHING[_\\s]*SHOT\\]",
                     r"wide view of",
                     r"panoramic view",
                     ],
                 CueType.ZOOM_IN: [
-                r"\[ZOOM[_\s]*IN\]",
-                    r"\[PUSH[_\s]*IN\]",
+                r"\\[ZOOM[_\\s]*IN\\]",
+                    r"\\[PUSH[_\\s]*IN\\]",
                     r"camera moves closer",
                     r"zoom in on",
                     ],
                 CueType.ZOOM_OUT: [
-                r"\[ZOOM[_\s]*OUT\]",
-                    r"\[PULL[_\s]*BACK\]",
+                r"\\[ZOOM[_\\s]*OUT\\]",
+                    r"\\[PULL[_\\s]*BACK\\]",
                     r"camera pulls back",
                     r"zoom out to reveal",
                     ],
                 CueType.SHAKE: [
-                r"\[SHAKE\]",
-                    r"\[CAMERA[_\s]*SHAKE\]",
-                    r"\[EARTHQUAKE\]",
+                r"\\[SHAKE\\]",
+                    r"\\[CAMERA[_\\s]*SHAKE\\]",
+                    r"\\[EARTHQUAKE\\]",
                     r"ground shakes",
                     r"violent tremor",
                     ],
                 CueType.SLOW_MOTION: [
-                r"\[SLOW[_\s]*MOTION\]",
-                    r"\[SLO[_\s]*MO\]",
+                r"\\[SLOW[_\\s]*MOTION\\]",
+                    r"\\[SLO[_\\s]*MO\\]",
                     r"time slows down",
                     r"in slow motion",
                     ],
                 CueType.FADE_IN: [
-                r"\[FADE[_\s]*IN\]",
-                    r"\[FADE[_\s]*FROM[_\s]*BLACK\]",
+                r"\\[FADE[_\\s]*IN\\]",
+                    r"\\[FADE[_\\s]*FROM[_\\s]*BLACK\\]",
                     r"fade in from",
                     r"slowly appears",
                     ],
                 CueType.FADE_OUT: [
-                r"\[FADE[_\s]*OUT\]",
-                    r"\[FADE[_\s]*TO[_\s]*BLACK\]",
+                r"\\[FADE[_\\s]*OUT\\]",
+                    r"\\[FADE[_\\s]*TO[_\\s]*BLACK\\]",
                     r"fade to black",
                     r"slowly disappears",
                     ],
                 CueType.FLASH: [
-                r"\[FLASH\]",
-                    r"\[LIGHTNING\]",
-                    r"\[STROBE\]",
+                r"\\[FLASH\\]",
+                    r"\\[LIGHTNING\\]",
+                    r"\\[STROBE\\]",
                     r"bright flash",
                     r"blinding light",
                     ],
                 CueType.BLUR: [
-                r"\[BLUR\]",
-                    r"\[OUT[_\s]*OF[_\s]*FOCUS\]",
+                r"\\[BLUR\\]",
+                    r"\\[OUT[_\\s]*OF[_\\s]*FOCUS\\]",
                     r"vision blurs",
                     r"everything becomes hazy",
                     ],
@@ -316,7 +318,7 @@ class ScriptCueParser:
     ) -> List[ScriptCue]:
         """Parse script content to extract cues."""
         cues = []
-        lines = script_content.split("\n")
+        lines = script_content.split("\\n")
 
         # Estimate timing based on text length and reading speed
         words_per_minute = 150  # Average reading speed
@@ -329,7 +331,7 @@ class ScriptCueParser:
 
             # Calculate time for this line based on word count
             word_count = len(line.split())
-            line_duration = (word_count / words_per_minute) * 60
+            line_duration = (word_count/words_per_minute) * 60
 
             # Look for cues in this line
             line_cues = self._extract_cues_from_line(
@@ -437,20 +439,20 @@ class ScriptCueParser:
 
         # Look for duration specifications
         duration_match = re.search(
-            r"(\d+(?:\.\d+)?)\s*(?:sec|second|s)\b", context, re.IGNORECASE
+            r"(\\d+(?:\\.\\d+)?)\\s*(?:sec|second|s)\\b", context, re.IGNORECASE
         )
         if duration_match:
             parameters["duration"] = float(duration_match.group(1))
 
         # Look for intensity specifications
         intensity_match = re.search(
-            r"intensity[:\s]*(\d+(?:\.\d+)?)", context, re.IGNORECASE
+            r"intensity[:\\s]*(\\d+(?:\\.\\d+)?)", context, re.IGNORECASE
         )
         if intensity_match:
             parameters["intensity_value"] = float(intensity_match.group(1))
 
         # Look for color specifications
-        color_match = re.search(r"color[:\s]*(\w+)", context, re.IGNORECASE)
+        color_match = re.search(r"color[:\\s]*(\\w+)", context, re.IGNORECASE)
         if color_match:
             parameters["color"] = color_match.group(1)
 
@@ -534,7 +536,10 @@ class BlenderEffectGenerator:
             return self._create_fade_effect(cue, start_frame, end_frame, fade_in = True)
 
         elif cue.cue_type == CueType.FADE_OUT:
-            return self._create_fade_effect(cue, start_frame, end_frame, fade_in = False)
+            return self._create_fade_effect(cue,
+    start_frame,
+    end_frame,
+    fade_in = False)
 
         elif cue.cue_type == CueType.FLASH:
             return self._create_flash_effect(
@@ -591,7 +596,7 @@ class BlenderEffectGenerator:
         keyframes = []
         for frame in range(start_frame, end_frame + 1):
             # Generate random shake values
-            time_factor = (frame - start_frame) / max(1, end_frame - start_frame)
+            time_factor = (frame - start_frame)/max(1, end_frame - start_frame)
             shake_x = (
                 shake_amount
                 * math.sin(frame * frequency * 0.1)
@@ -636,7 +641,7 @@ class BlenderEffectGenerator:
             ) -> BlenderEffect:
         """Create zoom effect."""
         start_focal_length = 50.0  # Default focal length
-        zoom_factor = 1.5 * intensity if zoom_in else 0.7 / intensity
+        zoom_factor = 1.5 * intensity if zoom_in else 0.7/intensity
         end_focal_length = start_focal_length * zoom_factor
 
         keyframes = [
@@ -695,7 +700,7 @@ class BlenderEffectGenerator:
         flash_brightness = 2.0 * intensity
 
         # Flash peaks at middle frame
-        mid_frame = (start_frame + end_frame) // 2
+        mid_frame = (start_frame + end_frame)//2
 
         keyframes = [
             {"frame": start_frame, "energy": 1.0, "interpolation": "LINEAR"},
@@ -726,12 +731,12 @@ class BlenderEffectGenerator:
         keyframes = [
             {"frame": start_frame, "size": 0.0, "interpolation": "LINEAR"},
                 {
-                "frame": start_frame + (end_frame - start_frame) // 3,
+                "frame": start_frame + (end_frame - start_frame)//3,
                     "size": blur_amount,
                     "interpolation": "LINEAR",
                     },
                 {
-                "frame": end_frame - (end_frame - start_frame) // 3,
+                "frame": end_frame - (end_frame - start_frame)//3,
                     "size": blur_amount,
                     "interpolation": "LINEAR",
                     },
@@ -954,7 +959,7 @@ class BlenderScriptGenerator:
                     ]
         )
 
-        return "\n".join(script_lines)
+        return "\\n".join(script_lines)
 
 
     def _generate_effect_script(self, effect: BlenderEffect) -> List[str]:
@@ -997,7 +1002,8 @@ class BlenderScriptGenerator:
                         f"    bpy.context.scene.frame_set({frame})",
                             f"    camera.location.x += {x}",
                             f"    camera.location.y += {y}",
-                            f"    camera.keyframe_insert(data_path='location', frame={frame})",
+                            f"    camera.keyframe_insert(data_path='location',
+    frame={frame})",
                             ]
                 )
 
@@ -1011,7 +1017,8 @@ class BlenderScriptGenerator:
                     [
                         f"    bpy.context.scene.frame_set({frame})",
                             f"    camera.data.lens = {lens}",
-                            f"    camera.data.keyframe_insert(data_path='lens', frame={frame})",
+                            f"    camera.data.keyframe_insert(data_path='lens',
+    frame={frame})",
                             ]
                 )
 
@@ -1040,7 +1047,8 @@ class BlenderScriptGenerator:
                 [
                     f"bpy.context.scene.frame_set({frame})",
                         f"light.data.energy = {energy}",
-                        f"light.data.keyframe_insert(data_path='energy', frame={frame})",
+                        f"light.data.keyframe_insert(data_path='energy',
+    frame={frame})",
                         ]
             )
 
@@ -1084,7 +1092,8 @@ class BlenderScriptGenerator:
                             f"bpy.context.scene.frame_set({frame})",
                                 f"if hasattr(effect_node, '{prop}'):",
                                 f"    effect_node.{prop} = {value}",
-                                f"    effect_node.keyframe_insert(data_path='{prop}', frame={frame})",
+                                f"    effect_node.keyframe_insert(data_path='{prop}',
+    frame={frame})",
                                 ]
                     )
 
@@ -1129,16 +1138,16 @@ class AIVideoEditor:
         self.executor = ThreadPoolExecutor(max_workers = 2)
 
         # Setup temp directory
-        self.temp_dir = Path(tempfile.gettempdir()) / "ai_video_editing"
+        self.temp_dir = Path(tempfile.gettempdir())/"ai_video_editing"
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
 
     def _find_blender(self) -> str:
         """Find Blender executable."""
         possible_paths = [
-            "/Applications / Blender.app / Contents / MacOS / Blender",
-                "/usr / bin / blender",
-                "/usr / local / bin / blender",
+            "/Applications/Blender.app/Contents/MacOS/Blender",
+                "/usr/bin/blender",
+                "/usr/local/bin/blender",
                 "blender",
                 ]
 
@@ -1218,7 +1227,7 @@ class AIVideoEditor:
 
             # Step 3: Generate Blender script (75% progress)
             blender_script = self.script_generator.generate_script(job.effects, job.fps)
-            script_path = self.temp_dir / f"{job_id}_effects.py"
+            script_path = self.temp_dir/f"{job_id}_effects.py"
 
             with open(script_path, "w") as f:
                 f.write(blender_script)
@@ -1258,7 +1267,10 @@ class AIVideoEditor:
                     video_path,
                     ]
 
-            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 30)
+            result = subprocess.run(cmd,
+    capture_output = True,
+    text = True,
+    timeout = 30)
 
             if result.returncode == 0:
                 data = json.loads(result.stdout)
@@ -1286,7 +1298,11 @@ class AIVideoEditor:
             self.logger.info(f"Applying effects in Blender: {' '.join(cmd)}")
 
             result = subprocess.run(
-                cmd, capture_output = True, text = True, timeout = 600, cwd = str(self.temp_dir)
+                cmd,
+    capture_output = True,
+    text = True,
+    timeout = 600,
+    cwd = str(self.temp_dir)
             )
 
             if result.returncode == 0:
@@ -1378,8 +1394,8 @@ if __name__ == "__main__":
     try:
         job_id = video_editor.process_script_with_effects(
             script_content = sample_script,
-                video_path="./assets / raw_video.mp4",
-                output_path="./output / enhanced_video.blend",
+                video_path="./assets/raw_video.mp4",
+                output_path="./output/enhanced_video.blend",
                 )
 
         print(f"Video editing job created: {job_id}")

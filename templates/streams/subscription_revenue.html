@@ -237,7 +237,7 @@
         }
 
         .subscription-plans {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -355,7 +355,7 @@
         }
 
         .config-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -390,7 +390,7 @@
         }
 
         .subscribers-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -445,7 +445,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -776,9 +776,7 @@
                 stripeProductId: '',
                 stripePriceId: ''
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializePlans();
             loadStreamData();
@@ -791,23 +789,18 @@
             renderPlans();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
-            });
-
-            // Configuration inputs
+            });//Configuration inputs
             const configInputs = ['stripePublishableKey', 'stripeSecretKey', 'webhookSecret', 'trialPeriod', 'gracePeriod', 'billingCycle'];
             configInputs.forEach(inputId => {
                 document.getElementById(inputId).addEventListener('change', function() {
@@ -884,7 +877,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.subscription_revenue) {
@@ -902,8 +895,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -917,31 +909,21 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
             document.getElementById('activeSubscribers').textContent = streamData.activeSubscribers.toLocaleString();
             document.getElementById('churnRate').textContent = streamData.churnRate.toFixed(1) + '%';
-            document.getElementById('avgRevenue').textContent = '$' + streamData.avgRevenue.toFixed(2);
-            
-            // Update growth progress
+            document.getElementById('avgRevenue').textContent = '$' + streamData.avgRevenue.toFixed(2);//Update growth progress
             const growthPercent = Math.max(0, Math.min(100, streamData.growthRate));
             document.getElementById('growthFill').style.width = growthPercent + '%';
-            document.getElementById('growthText').textContent = streamData.growthRate.toFixed(1) + '% Growth';
-
-            // Update configuration inputs
+            document.getElementById('growthText').textContent = streamData.growthRate.toFixed(1) + '% Growth';//Update configuration inputs
             Object.keys(streamData.config).forEach(key => {
                 const element = document.getElementById(key);
                 if (element) {
                     element.value = streamData.config[key];
                 }
-            });
-
-            // Update subscribers table
+            });//Update subscribers table
             renderSubscribers();
         }
 
@@ -958,9 +940,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -984,9 +964,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1063,7 +1041,7 @@
                 try {
                     showAlert(`Creating Stripe product for ${plan.name}...`, 'warning');
                     
-                    const response = await fetch('/api/stripe/create-product', {
+                    const response = await fetch("/api/stripe/create-product', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1096,7 +1074,7 @@
             try {
                 showAlert('Syncing with Stripe...', 'warning');
                 
-                const response = await fetch('/api/stripe/sync', {
+                const response = await fetch("/api/stripe/sync', {
                     method: 'POST'
                 });
                 
@@ -1175,7 +1153,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.subscription_revenue) {
@@ -1185,9 +1163,7 @@
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.activeSubscribers = stream.activeSubscribers;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1205,8 +1181,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1216,8 +1191,7 @@
         }
 
         function simulateSubscriptionActivity() {
-            if (streamData.status === 'active') {
-                // Simulate new subscribers and revenue
+            if (streamData.status === 'active') {//Simulate new subscribers and revenue
                 const newSubscribers = Math.floor(Math.random() * 3);
                 
                 for (let i = 0; i < newSubscribers; i++) {
@@ -1237,16 +1211,12 @@
                     randomPlan.revenue += randomPlan.price;
                     streamData.monthlyRevenue += randomPlan.price;
                     streamData.activeSubscribers += 1;
-                }
-                
-                // Calculate metrics
+                }//Calculate metrics
                 streamData.avgRevenue = streamData.activeSubscribers > 0 ? 
-                    streamData.monthlyRevenue / streamData.activeSubscribers : 0;
+                    streamData.monthlyRevenue/streamData.activeSubscribers : 0;
                 
-                streamData.churnRate = Math.random() * 5; // 0-5% churn rate
-                streamData.growthRate = Math.random() * 20 + 5; // 5-25% growth rate
-                
-                // Keep only recent subscribers (last 50)
+                streamData.churnRate = Math.random() * 5;//0-5% churn rate
+                streamData.growthRate = Math.random() * 20 + 5;//5-25% growth rate//Keep only recent subscribers (last 50)
                 if (streamData.subscribers.length > 50) {
                     streamData.subscribers = streamData.subscribers.slice(0, 50);
                 }
@@ -1262,17 +1232,13 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start subscription activity simulation
+        }//Start subscription activity simulation
         setInterval(simulateSubscriptionActivity, 20000);
     </script>
 </body>

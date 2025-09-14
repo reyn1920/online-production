@@ -192,28 +192,17 @@
         const processor = new AffiliateProcessor();
 
         async function fetchAndProcessData() {
-            try {
-                // Fetch pets affiliates
-                const petsResponse = await fetch('/pets/affiliates');
-                const petsData = await petsResponse.json();
-                
-                // Fetch birds & exotics affiliates (from content API)
-                const birdsResponse = await fetch('/content/birds_exotics_affiliates');
-                const birdsData = await birdsResponse.json();
-                
-                // Prepare data structure for processing
+            try {//Fetch pets affiliates
+                const petsResponse = await fetch("/pets/affiliates');
+                const petsData = await petsResponse.json();//Fetch birds & exotics affiliates (from content API)
+                const birdsResponse = await fetch("/content/birds_exotics_affiliates');
+                const birdsData = await birdsResponse.json();//Prepare data structure for processing
                 const combinedData = {
                     pets_affiliates: petsData.data || [],
                     birds_exotics_affiliates: birdsData.data || birdsData.members || []
-                };
-
-                // Show raw data
-                document.getElementById('rawOutput').textContent = JSON.stringify(combinedData, null, 2);
-
-                // Process the data
-                const buckets = processor.processAffiliateData(combinedData);
-                
-                // Display processed buckets
+                };//Show raw data
+                document.getElementById('rawOutput').textContent = JSON.stringify(combinedData, null, 2);//Process the data
+                const buckets = processor.processAffiliateData(combinedData);//Display processed buckets
                 displayResults(buckets);
                 
             } catch (error) {
@@ -233,20 +222,13 @@
                     { id: 'tractor_supply', name: 'Tractor Supply (Feed/Farm/Poultry)', url: 'https://www.tractorsupply.com/tsc/cms/affiliate-program', enabled: false },
                     { id: 'only_natural_pet', name: 'Only Natural Pet', url: 'https://www.onlynaturalpet.com/pages/affiliate-program', enabled: false }
                 ]
-            };
-
-            // Show raw data
-            document.getElementById('rawOutput').textContent = JSON.stringify(sampleData, null, 2);
-
-            // Process the sample data
-            const buckets = processor.processAffiliateData(sampleData);
-            
-            // Display results
+            };//Show raw data
+            document.getElementById('rawOutput').textContent = JSON.stringify(sampleData, null, 2);//Process the sample data
+            const buckets = processor.processAffiliateData(sampleData);//Display results
             displayResults(buckets);
         }
 
-        function displayResults(buckets) {
-            // Display processed buckets with status indicators
+        function displayResults(buckets) {//Display processed buckets with status indicators
             let bucketsHtml = 'Processed Affiliate Buckets:\n\n';
             
             Object.entries(buckets).forEach(([channel, affiliates]) => {
@@ -259,18 +241,12 @@
                 bucketsHtml += '\n';
             });
             
-            document.getElementById('bucketsOutput').textContent = bucketsHtml;
-            
-            // Get statistics
-            const stats = processor.getStatistics();
-            
-            // Update stats display
+            document.getElementById('bucketsOutput').textContent = bucketsHtml;//Get statistics
+            const stats = processor.getStatistics();//Update stats display
             document.getElementById('stats').style.display = 'flex';
             document.getElementById('totalCount').textContent = stats.total;
             document.getElementById('petsCount').textContent = stats.byChannel['Pets'] || 0;
-            document.getElementById('birdsCount').textContent = stats.byChannel['Birds & Exotics'] || 0;
-            
-            // Display channel breakdown with status indicators
+            document.getElementById('birdsCount').textContent = stats.byChannel['Birds & Exotics'] || 0;//Display channel breakdown with status indicators
             let channelBreakdown = 'Channel Breakdown with Status:\n\n';
             Object.entries(stats.byChannel).forEach(([channel, count]) => {
                 channelBreakdown += `${channel}: ${count} affiliates\n`;
@@ -285,9 +261,7 @@
             });
             
             document.getElementById('channelOutput').textContent = channelBreakdown;
-        }
-
-        // Helper functions for status indicators
+        }//Helper functions for status indicators
         function getRandomStatus() {
             const statuses = ['active', 'active', 'active', 'disabled', 'error'];
             return statuses[Math.floor(Math.random() * statuses.length)];
@@ -309,9 +283,7 @@
             document.getElementById('rawOutput').textContent = 'Raw API data will appear here...';
             document.getElementById('stats').style.display = 'none';
             processor.clearBuckets();
-        }
-
-        // Auto-load sample data on page load
+        }//Auto-load sample data on page load
         window.addEventListener('DOMContentLoaded', () => {
             console.log('Affiliate Processing Demo loaded');
             console.log('Available methods:', Object.getOwnPropertyNames(AffiliateProcessor.prototype));

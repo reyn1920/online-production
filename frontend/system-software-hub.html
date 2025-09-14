@@ -519,18 +519,14 @@
 
     <script>
         let softwareData = {};
-        let availableSoftware = [];
-
-        // Initialize the application
+        let availableSoftware = [];//Initialize the application
         async function init() {
             await loadSoftwareStatus();
             populateSoftwareSelect();
-        }
-
-        // Load software status from API
+        }//Load software status from API
         async function loadSoftwareStatus() {
             try {
-                const response = await fetch('/api/software/status');
+                const response = await fetch("/api/software/status');
                 const data = await response.json();
                 
                 softwareData = data.software;
@@ -542,9 +538,7 @@
                 console.error('Error loading software status:', error);
                 showNotification('Failed to load software status', 'error');
             }
-        }
-
-        // Update status overview cards
+        }//Update status overview cards
         function updateStatusOverview(data) {
             document.getElementById('totalSoftware').textContent = data.total_software;
             document.getElementById('availableSoftware').textContent = data.available_count;
@@ -556,9 +550,7 @@
             
             document.getElementById('creativeSoftware').textContent = creativeCount;
             document.getElementById('developmentSoftware').textContent = developmentCount;
-        }
-
-        // Render software categories
+        }//Render software categories
         function renderSoftwareCategories() {
             const categories = {
                 creative: { icon: '🎨', title: 'Creative Software', class: 'creative-icon' },
@@ -608,9 +600,7 @@
                 `;
                 container.appendChild(categoryElement);
             });
-        }
-
-        // Populate software select dropdown
+        }//Populate software select dropdown
         function populateSoftwareSelect() {
             const select = document.getElementById('softwareSelect');
             select.innerHTML = '<option value="">Select software...</option>';
@@ -622,12 +612,10 @@
                 option.textContent = software.name;
                 select.appendChild(option);
             });
-        }
-
-        // Launch software
+        }//Launch software
         async function launchSoftware(softwareKey) {
             try {
-                const response = await fetch('/api/software/execute', {
+                const response = await fetch("/api/software/execute', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -650,9 +638,7 @@
                 console.error('Error launching software:', error);
                 showNotification('Error launching software', 'error');
             }
-        }
-
-        // Execute custom command
+        }//Execute custom command
         async function executeCommand() {
             const software = document.getElementById('softwareSelect').value;
             const command = document.getElementById('commandInput').value;
@@ -666,7 +652,7 @@
             const args = argsText ? argsText.split(' ').filter(arg => arg.trim()) : [];
             
             try {
-                const response = await fetch('/api/software/execute', {
+                const response = await fetch("/api/software/execute', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -678,9 +664,7 @@
                     })
                 });
                 
-                const result = await response.json();
-                
-                // Show output panel
+                const result = await response.json();//Show output panel
                 const outputPanel = document.getElementById('commandOutput');
                 outputPanel.classList.add('show');
                 outputPanel.innerHTML = `
@@ -703,18 +687,16 @@
                 console.error('Error executing command:', error);
                 showNotification('Error executing command', 'error');
             }
-        }
-
-        // Execute automation pipeline
+        }//Execute automation pipeline
         async function executePipeline(pipelineType) {
             try {
-                const response = await fetch('/api/software/batch/creative-pipeline', {
+                const response = await fetch("/api/software/batch/creative-pipeline', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        input_files: ['/tmp/sample_input.blend'], // This would be dynamic in real implementation
+                        input_files: ['/tmp/sample_input.blend'],//This would be dynamic in real implementation
                         output_directory: '/tmp/pipeline_output',
                         pipeline_type: pipelineType
                     })
@@ -732,9 +714,7 @@
                 console.error('Error executing pipeline:', error);
                 showNotification('Pipeline execution failed', 'error');
             }
-        }
-
-        // Show notification
+        }//Show notification
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -743,19 +723,13 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
-        }
-
-        // Refresh software status
+        }//Refresh software status
         async function refreshStatus() {
             await loadSoftwareStatus();
             populateSoftwareSelect();
             showNotification('Software status refreshed', 'success');
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', init);
-
-        // Auto-refresh every 30 seconds
+        }//Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);//Auto-refresh every 30 seconds
         setInterval(refreshStatus, 30000);
     </script>
 </body>

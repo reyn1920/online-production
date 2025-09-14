@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 AI - Driven Video Editing - Script - Cue - Driven Dynamic Effects in Blender
 
@@ -231,7 +231,8 @@ class EditingProject:
 
     # Scene configuration
     blender_scene: BlenderScene = field(
-        default_factory = lambda: BlenderScene(scene_name="AI_Edit_Scene", video_path="")
+        default_factory = lambda: BlenderScene(scene_name="AI_Edit_Scene",
+    video_path="")
     )
 
     # Processing options
@@ -297,55 +298,55 @@ class ScriptParser:
         # Default cue patterns
         self.cue_patterns = {
             ScriptCueType.TENSE_MOMENT: [
-                r"\[TENSE[_\s]MOMENT\]",
-                    r"\[TENSION\]",
-                    r"\[DRAMATIC[_\s]PAUSE\]",
-                    r"\[SUSPENSEFUL\]",
+                r"\\[TENSE[_\\s]MOMENT\\]",
+                    r"\\[TENSION\\]",
+                    r"\\[DRAMATIC[_\\s]PAUSE\\]",
+                    r"\\[SUSPENSEFUL\\]",
                     ],
                 ScriptCueType.ACTION_SEQUENCE: [
-                r"\[ACTION[_\s]SEQUENCE\]",
-                    r"\[ACTION\]",
-                    r"\[FIGHT[_\s]SCENE\]",
-                    r"\[CHASE\]",
-                    r"\[EXPLOSION\]",
+                r"\\[ACTION[_\\s]SEQUENCE\\]",
+                    r"\\[ACTION\\]",
+                    r"\\[FIGHT[_\\s]SCENE\\]",
+                    r"\\[CHASE\\]",
+                    r"\\[EXPLOSION\\]",
                     ],
                 ScriptCueType.EMOTIONAL_BEAT: [
-                r"\[EMOTIONAL[_\s]BEAT\]",
-                    r"\[EMOTIONAL\]",
-                    r"\[HEARTFELT\]",
-                    r"\[TOUCHING\]",
+                r"\\[EMOTIONAL[_\\s]BEAT\\]",
+                    r"\\[EMOTIONAL\\]",
+                    r"\\[HEARTFELT\\]",
+                    r"\\[TOUCHING\\]",
                     ],
                 ScriptCueType.REVEAL: [
-                r"\[REVEAL\]",
-                    r"\[BIG[_\s]REVEAL\]",
-                    r"\[PLOT[_\s]TWIST\]",
-                    r"\[SURPRISE\]",
+                r"\\[REVEAL\\]",
+                    r"\\[BIG[_\\s]REVEAL\\]",
+                    r"\\[PLOT[_\\s]TWIST\\]",
+                    r"\\[SURPRISE\\]",
                     ],
                 ScriptCueType.CLIMAX: [
-                r"\[CLIMAX\]",
-                    r"\[FINALE\]",
-                    r"\[PEAK[_\s]MOMENT\]",
+                r"\\[CLIMAX\\]",
+                    r"\\[FINALE\\]",
+                    r"\\[PEAK[_\\s]MOMENT\\]",
                     ],
                 ScriptCueType.TRANSITION: [
-                r"\[TRANSITION\]",
-                    r"\[SCENE[_\s]CHANGE\]",
-                    r"\[CUT[_\s]TO\]",
-                    r"\[FADE[_\s]IN\]",
-                    r"\[FADE[_\s]OUT\]",
+                r"\\[TRANSITION\\]",
+                    r"\\[SCENE[_\\s]CHANGE\\]",
+                    r"\\[CUT[_\\s]TO\\]",
+                    r"\\[FADE[_\\s]IN\\]",
+                    r"\\[FADE[_\\s]OUT\\]",
                     ],
-                ScriptCueType.FLASHBACK: [r"\[FLASHBACK\]", r"\[MEMORY\]", r"\[PAST\]"],
+                ScriptCueType.FLASHBACK: [r"\\[FLASHBACK\\]", r"\\[MEMORY\\]", r"\\[PAST\\]"],
                 ScriptCueType.DREAM_SEQUENCE: [
-                r"\[DREAM[_\s]SEQUENCE\]",
-                    r"\[DREAM\]",
-                    r"\[SURREAL\]",
-                    r"\[FANTASY\]",
+                r"\\[DREAM[_\\s]SEQUENCE\\]",
+                    r"\\[DREAM\\]",
+                    r"\\[SURREAL\\]",
+                    r"\\[FANTASY\\]",
                     ],
-                }
+        }
 
-        logger.info("Script parser initialized with default cue patterns")
+        logging.getLogger(__name__).info("Script parser initialized with default cue patterns")
 
 
-    def parse_script(
+    def parse_script(:
         self, script_content: str, custom_patterns: Optional[Dict[str, str]] = None
     ) -> List[ScriptCue]:
         """Parse script content and extract cues."""
@@ -362,14 +363,14 @@ class ScriptParser:
                             patterns[cue_type] = []
                         patterns[cue_type].append(pattern)
                     except ValueError:
-                        logger.warning(f"Unknown cue type: {cue_name}")
+                        logging.getLogger(__name__).warning(f"Unknown cue type: {cue_name}")
 
             # Split script into lines for processing
-            lines = script_content.split("\n")
+            lines = script_content.split("\\n")
 
             # Estimate timing (rough approximation)
             estimated_duration = self._estimate_script_duration(script_content)
-            time_per_line = estimated_duration / max(len(lines), 1)
+            time_per_line = estimated_duration/max(len(lines), 1)
 
             for line_num, line in enumerate(lines):
                 line = line.strip()
@@ -400,32 +401,34 @@ class ScriptParser:
                                     line_number = line_num + 1,
                                     confidence = 0.9,  # High confidence for explicit cues
                                 metadata={
-                                    "pattern_matched": pattern,
-                                        "line_content": line,
-                                        },
+            "pattern_matched": pattern,
+            "line_content": line,
+        except Exception as e:
+            pass
+        },
                                     )
 
                             cues.append(cue)
-                            logger.info(
+                            logging.getLogger(__name__).info(
                                 f"Found cue: {cue_type.value} at {start_time:.2f}s"
                             )
 
             # Sort cues by start time
             cues.sort(key = lambda c: c.start_time)
 
-            logger.info(f"Parsed {len(cues)} cues from script")
-            return cues
+            logging.getLogger(__name__).info(f"Parsed {len(cues)} cues from script")
+        return cues
 
         except Exception as e:
-            logger.error(f"Script parsing failed: {e}")
-            return []
+            logging.getLogger(__name__).error(f"Script parsing failed: {e}")
+        return []
 
 
     def _estimate_script_duration(self, script_content: str) -> float:
         """Estimate total script duration in seconds."""
         # Rough estimation: 150 words per minute for dialogue
         word_count = len(script_content.split())
-        estimated_minutes = word_count / 150
+        estimated_minutes = word_count/150
         return estimated_minutes * 60
 
 
@@ -440,7 +443,7 @@ class ScriptParser:
                 ScriptCueType.TRANSITION: 1.0,
                 ScriptCueType.FLASHBACK: 3.0,
                 ScriptCueType.DREAM_SEQUENCE: 4.0,
-                }
+        }
         return duration_map.get(cue_type, 2.0)
 
 
@@ -474,7 +477,7 @@ class ScriptParser:
             context["dialogue"] = " ".join(dialogue_lines)
 
         except Exception as e:
-            logger.error(f"Context extraction failed: {e}")
+            logging.getLogger(__name__).error(f"Context extraction failed: {e}")
 
         return context
 
@@ -485,80 +488,80 @@ class EffectGenerator:
 
     def __init__(self):
         self.effect_templates = self._load_effect_templates()
-        logger.info("Effect generator initialized with templates")
+        logging.getLogger(__name__).info("Effect generator initialized with templates")
 
 
     def _load_effect_templates(self) -> Dict[ScriptCueType, Dict[str, Any]]:
         """Load effect templates for different cue types."""
         return {
             ScriptCueType.TENSE_MOMENT: {
-                "camera_shake": {
-                    "strength": 0.1,
-                        "frequency": 8.0,
-                        "duration_multiplier": 1.0,
-                        },
-                    "color_grading": {
-                    "contrast": 1.2,
-                        "saturation": 0.8,
-                        "shadows": -0.1,
-                        "highlights": 0.1,
-                        },
-                    "lighting": {
-                    "intensity_multiplier": 0.7,
-                        "color_temperature": 3200,  # Warmer, more dramatic
-                },
-                    },
+            "camera_shake": {
+            "strength": 0.1,
+            "frequency": 8.0,
+            "duration_multiplier": 1.0,
+        },
+            "color_grading": {
+            "contrast": 1.2,
+            "saturation": 0.8,
+            "shadows": -0.1,
+            "highlights": 0.1,
+        },
+            "lighting": {
+            "intensity_multiplier": 0.7,
+            "color_temperature": 3200,  # Warmer, more dramatic
+        },
+        },
                 ScriptCueType.ACTION_SEQUENCE: {
-                "motion_blur": {"strength": 0.8, "samples": 16},
-                    "camera_shake": {"strength": 0.3, "frequency": 12.0},
-                    "color_grading": {"contrast": 1.4, "saturation": 1.2, "vibrance": 0.3},
-                    },
+            "motion_blur": {"strength": 0.8, "samples": 16},
+            "camera_shake": {"strength": 0.3, "frequency": 12.0},
+            "color_grading": {"contrast": 1.4, "saturation": 1.2, "vibrance": 0.3},
+        },
                 ScriptCueType.EMOTIONAL_BEAT: {
-                "depth_of_field": {"f_stop": 1.4, "focus_distance": 2.0},
-                    "color_grading": {"warmth": 0.2, "saturation": 1.1, "highlights": 0.2},
-                    "lighting": {"softness": 0.8, "intensity_multiplier": 1.1},
-                    },
+            "depth_of_field": {"f_stop": 1.4, "focus_distance": 2.0},
+            "color_grading": {"warmth": 0.2, "saturation": 1.1, "highlights": 0.2},
+            "lighting": {"softness": 0.8, "intensity_multiplier": 1.1},
+        },
                 ScriptCueType.REVEAL: {
-                "camera_zoom": {
-                    "start_focal_length": 85.0,
-                        "end_focal_length": 35.0,
-                        "duration": 2.0,
-                        },
-                    "lighting_change": {
-                    "intensity_change": 0.5,
-                        "color_temperature_change": 1000,
-                        },
-                    "particle_effects": {"type": "sparkles", "count": 100, "lifetime": 2.0},
-                    },
+            "camera_zoom": {
+            "start_focal_length": 85.0,
+            "end_focal_length": 35.0,
+            "duration": 2.0,
+        },
+            "lighting_change": {
+            "intensity_change": 0.5,
+            "color_temperature_change": 1000,
+        },
+            "particle_effects": {"type": "sparkles", "count": 100, "lifetime": 2.0},
+        },
                 ScriptCueType.CLIMAX: {
-                "camera_shake": {"strength": 0.4, "frequency": 15.0},
-                    "color_grading": {"contrast": 1.6, "saturation": 1.3, "vibrance": 0.4},
-                    "lens_flare": {"intensity": 0.7, "size": 2.0},
-                    "particle_effects": {"type": "energy", "count": 200, "intensity": 1.5},
-                    },
+            "camera_shake": {"strength": 0.4, "frequency": 15.0},
+            "color_grading": {"contrast": 1.6, "saturation": 1.3, "vibrance": 0.4},
+            "lens_flare": {"intensity": 0.7, "size": 2.0},
+            "particle_effects": {"type": "energy", "count": 200, "intensity": 1.5},
+        },
                 ScriptCueType.FLASHBACK: {
-                "color_grading": {"saturation": 0.3, "contrast": 0.8, "sepia": 0.4},
-                    "vignette": {"strength": 0.6, "feather": 0.8},
-                    "time_effects": {"speed_multiplier": 0.8, "frame_blending": True},
-                    },
+            "color_grading": {"saturation": 0.3, "contrast": 0.8, "sepia": 0.4},
+            "vignette": {"strength": 0.6, "feather": 0.8},
+            "time_effects": {"speed_multiplier": 0.8, "frame_blending": True},
+        },
                 ScriptCueType.DREAM_SEQUENCE: {
-                "depth_of_field": {"f_stop": 0.8, "focus_distance": 1.5},
-                    "color_grading": {
-                    "saturation": 1.4,
-                        "highlights": 0.3,
-                        "ethereal_glow": 0.2,
-                        },
-                    "particle_effects": {
-                    "type": "floating_particles",
-                        "count": 50,
-                        "float_speed": 0.1,
-                        },
-                    "atmospheric": {"fog_density": 0.3, "light_scattering": 0.4},
-                    },
-                }
+            "depth_of_field": {"f_stop": 0.8, "focus_distance": 1.5},
+            "color_grading": {
+            "saturation": 1.4,
+            "highlights": 0.3,
+            "ethereal_glow": 0.2,
+        },
+            "particle_effects": {
+            "type": "floating_particles",
+            "count": 50,
+            "float_speed": 0.1,
+        },
+            "atmospheric": {"fog_density": 0.3, "light_scattering": 0.4},
+        },
+        }
 
 
-    def generate_effects(
+    def generate_effects(:
         self, cues: List[ScriptCue], intensity_multiplier: float = 1.0
     ) -> List[VisualEffect]:
         """Generate visual effects from script cues."""
@@ -569,22 +572,24 @@ class EffectGenerator:
                 cue_effects = self._generate_effects_for_cue(cue, intensity_multiplier)
                 effects.extend(cue_effects)
 
-                logger.info(
+                logging.getLogger(__name__).info(
                     f"Generated {len(cue_effects)} effects for cue: {cue.cue_type.value}"
                 )
 
             # Sort effects by start time
             effects.sort(key = lambda e: e.start_time)
 
-            logger.info(f"Generated {len(effects)} total effects")
-            return effects
+            logging.getLogger(__name__).info(f"Generated {len(effects)} total effects")
+        except Exception as e:
+            pass
+        return effects
 
         except Exception as e:
-            logger.error(f"Effect generation failed: {e}")
-            return []
+            logging.getLogger(__name__).error(f"Effect generation failed: {e}")
+        return []
 
 
-    def _generate_effects_for_cue(
+    def _generate_effects_for_cue(:
         self, cue: ScriptCue, intensity_multiplier: float
     ) -> List[VisualEffect]:
         """Generate effects for a specific cue."""
@@ -611,9 +616,11 @@ class EffectGenerator:
                         parameters = adjusted_params,
                         created_from_cue = cue.original_text,
                         metadata={
-                        "cue_type": cue.cue_type.value,
-                            "original_template": effect_name,
-                            },
+            "cue_type": cue.cue_type.value,
+            "original_template": effect_name,
+        except Exception as e:
+            pass
+        },
                         )
 
                 # Generate Blender - specific data
@@ -623,7 +630,7 @@ class EffectGenerator:
                 effects.append(effect)
 
         except Exception as e:
-            logger.error(f"Effect generation for cue failed: {e}")
+            logging.getLogger(__name__).error(f"Effect generation for cue failed: {e}")
 
         return effects
 
@@ -632,22 +639,22 @@ class EffectGenerator:
         """Map effect template name to EffectType enum."""
         mapping = {
             "camera_shake": EffectType.CAMERA_SHAKE,
-                "color_grading": EffectType.COLOR_GRADING,
-                "lighting": EffectType.LIGHTING_CHANGE,
-                "motion_blur": EffectType.MOTION_BLUR,
-                "depth_of_field": EffectType.DEPTH_OF_FIELD,
-                "lens_flare": EffectType.LENS_FLARE,
-                "particle_effects": EffectType.PARTICLE_EFFECTS,
-                "vignette": EffectType.SCREEN_DISTORTION,
-                "time_effects": EffectType.TIME_EFFECTS,
-                "atmospheric": EffectType.ATMOSPHERIC,
-                "camera_zoom": EffectType.CAMERA_SHAKE,  # Camera movement
+            "color_grading": EffectType.COLOR_GRADING,
+            "lighting": EffectType.LIGHTING_CHANGE,
+            "motion_blur": EffectType.MOTION_BLUR,
+            "depth_of_field": EffectType.DEPTH_OF_FIELD,
+            "lens_flare": EffectType.LENS_FLARE,
+            "particle_effects": EffectType.PARTICLE_EFFECTS,
+            "vignette": EffectType.SCREEN_DISTORTION,
+            "time_effects": EffectType.TIME_EFFECTS,
+            "atmospheric": EffectType.ATMOSPHERIC,
+            "camera_zoom": EffectType.CAMERA_SHAKE,  # Camera movement
             "lighting_change": EffectType.LIGHTING_CHANGE,
-                }
+        }
         return mapping.get(effect_name, EffectType.CUSTOM)
 
 
-    def _adjust_effect_intensity(
+    def _adjust_effect_intensity(:
         self, params: Dict[str, Any], intensity: EffectIntensity, multiplier: float
     ) -> Dict[str, Any]:
         """Adjust effect parameters based on intensity."""
@@ -656,7 +663,7 @@ class EffectGenerator:
                 EffectIntensity.MODERATE: 1.0,
                 EffectIntensity.STRONG: 1.5,
                 EffectIntensity.EXTREME: 2.0,
-                }
+        }
 
         factor = intensity_factors.get(intensity, 1.0) * multiplier
 
@@ -685,45 +692,47 @@ class EffectGenerator:
             if effect.effect_type == EffectType.COLOR_GRADING:
                 nodes.append(
                     {
-                        "type": "CompositorNodeColorBalance",
-                            "name": f"ColorBalance_{effect.effect_id}",
-                            "lift": effect.parameters.get("shadows", 0),
-                            "gamma": effect.parameters.get("midtones", 1),
-                            "gain": effect.parameters.get("highlights", 1),
-                            }
+            "type": "CompositorNodeColorBalance",
+            "name": f"ColorBalance_{effect.effect_id}",
+            "lift": effect.parameters.get("shadows", 0),
+            "gamma": effect.parameters.get("midtones", 1),
+            "gain": effect.parameters.get("highlights", 1),
+        except Exception as e:
+            pass
+        }
                 )
 
                 nodes.append(
                     {
-                        "type": "CompositorNodeHueSat",
-                            "name": f"HueSat_{effect.effect_id}",
-                            "color_saturation": effect.parameters.get("saturation", 1),
-                            "color_value": effect.parameters.get("brightness", 1),
-                            }
+            "type": "CompositorNodeHueSat",
+            "name": f"HueSat_{effect.effect_id}",
+            "color_saturation": effect.parameters.get("saturation", 1),
+            "color_value": effect.parameters.get("brightness", 1),
+        }
                 )
 
             elif effect.effect_type == EffectType.MOTION_BLUR:
                 nodes.append(
                     {
-                        "type": "CompositorNodeVecBlur",
-                            "name": f"MotionBlur_{effect.effect_id}",
-                            "factor": effect.parameters.get("strength", 0.5),
-                            "samples": effect.parameters.get("samples", 16),
-                            }
+            "type": "CompositorNodeVecBlur",
+            "name": f"MotionBlur_{effect.effect_id}",
+            "factor": effect.parameters.get("strength", 0.5),
+            "samples": effect.parameters.get("samples", 16),
+        }
                 )
 
             elif effect.effect_type == EffectType.LENS_FLARE:
                 nodes.append(
                     {
-                        "type": "CompositorNodeLensdist",
-                            "name": f"LensFlare_{effect.effect_id}",
-                            "distortion": effect.parameters.get("intensity", 0.1),
-                            "dispersion": effect.parameters.get("dispersion", 0.05),
-                            }
+            "type": "CompositorNodeLensdist",
+            "name": f"LensFlare_{effect.effect_id}",
+            "distortion": effect.parameters.get("intensity", 0.1),
+            "dispersion": effect.parameters.get("dispersion", 0.05),
+        }
                 )
 
         except Exception as e:
-            logger.error(f"Blender node generation failed: {e}")
+            logging.getLogger(__name__).error(f"Blender node generation failed: {e}")
 
         return nodes
 
@@ -742,7 +751,7 @@ class EffectGenerator:
                 shake_frequency = effect.parameters.get("frequency", 8.0)
 
                 for frame in range(start_frame, end_frame + 1):
-                    time_offset = (frame - start_frame) / 24.0
+                    time_offset = (frame - start_frame)/24.0
                     shake_x = (
                         math.sin(time_offset * shake_frequency * 2 * math.pi)
                         * shake_strength
@@ -754,11 +763,13 @@ class EffectGenerator:
 
                     keyframes.append(
                         {
-                            "frame": frame,
-                                "property": "location",
-                                "value": [shake_x, shake_y, 0],
-                                "interpolation": "LINEAR",
-                                }
+            "frame": frame,
+            "property": "location",
+            "value": [shake_x, shake_y, 0],
+            "interpolation": "LINEAR",
+        except Exception as e:
+            pass
+        }
                     )
 
             elif effect.effect_type == EffectType.LIGHTING_CHANGE:
@@ -768,28 +779,28 @@ class EffectGenerator:
                 keyframes.extend(
                     [
                         {
-                            "frame": start_frame,
-                                "property": "energy",
-                                "value": 1.0,
-                                "interpolation": "BEZIER",
-                                },
+            "frame": start_frame,
+            "property": "energy",
+            "value": 1.0,
+            "interpolation": "BEZIER",
+        },
                             {
-                            "frame": start_frame + (end_frame - start_frame) // 2,
-                                "property": "energy",
-                                "value": 1.0 + intensity_change,
-                                "interpolation": "BEZIER",
-                                },
+            "frame": start_frame + (end_frame - start_frame)//2,
+            "property": "energy",
+            "value": 1.0 + intensity_change,
+            "interpolation": "BEZIER",
+        },
                             {
-                            "frame": end_frame,
-                                "property": "energy",
-                                "value": 1.0,
-                                "interpolation": "BEZIER",
-                                },
+            "frame": end_frame,
+            "property": "energy",
+            "value": 1.0,
+            "interpolation": "BEZIER",
+        },
                             ]
                 )
 
         except Exception as e:
-            logger.error(f"Keyframe generation failed: {e}")
+            logging.getLogger(__name__).error(f"Keyframe generation failed: {e}")
 
         return keyframes
 
@@ -800,29 +811,29 @@ class BlenderInterface:
 
     def __init__(self, blender_executable: Optional[str] = None):
         self.blender_executable = blender_executable or self._find_blender()
-        self.temp_dir = Path(tempfile.gettempdir()) / "ai_video_editor"
+        self.temp_dir = Path(tempfile.gettempdir())/"ai_video_editor"
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Validate Blender installation
         if not self._validate_blender():
             raise RuntimeError("Blender not found or invalid installation")
 
-        logger.info(f"Blender interface initialized: {self.blender_executable}")
+        logging.getLogger(__name__).info(f"Blender interface initialized: {self.blender_executable}")
 
 
     def _find_blender(self) -> str:
         """Find Blender executable on the system."""
         possible_paths = [
-            "/Applications / Blender.app / Contents / MacOS / Blender",  # macOS
-            "/usr / local / bin / blender",  # Linux / macOS
-            "/usr / bin / blender",  # Linux
-            "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",  # Windows
+            "/Applications/Blender.app/Contents/MacOS/Blender",  # macOS
+            "/usr/local/bin/blender",  # Linux/macOS
+            "/usr/bin/blender",  # Linux
+            "C:\\\\Program Files\\\\Blender Foundation\\\\Blender\\\\blender.exe",  # Windows
             "blender",  # PATH
         ]
 
         for path in possible_paths:
             if os.path.exists(path) or shutil.which(path):
-                return path
+        return path
 
         raise RuntimeError("Blender executable not found")
 
@@ -836,13 +847,15 @@ class BlenderInterface:
                     text = True,
                     timeout = 10,
                     )
-            return result.returncode == 0 and "Blender" in result.stdout
         except Exception as e:
-            logger.error(f"Blender validation failed: {e}")
-            return False
+            pass
+        return result.returncode == 0 and "Blender" in result.stdout
+        except Exception as e:
+            logging.getLogger(__name__).error(f"Blender validation failed: {e}")
+        return False
 
 
-    def generate_blender_script(
+    def generate_blender_script(:
         self, scene: BlenderScene, effects: List[VisualEffect]
     ) -> str:
         """Generate Python script for Blender automation."""
@@ -914,7 +927,8 @@ class BlenderInterface:
             [
                 "",
                     f"# Connect final effect to composite",
-                    f"tree.links.new({last_node}.outputs['Image'], composite.inputs['Image'])",
+                    f"tree.links.new({last_node}.outputs['Image'],
+    composite.inputs['Image'])",
                     "",
                     "# Set render settings",
                     f"scene.render.engine = '{scene.render_engine}'",
@@ -929,10 +943,10 @@ class BlenderInterface:
                     ]
         )
 
-        return "\n".join(script_lines)
+        return "\\n".join(script_lines)
 
 
-    def _generate_effect_script(
+    def _generate_effect_script(:
         self, effect: VisualEffect, index: int, x_offset: int, input_node: str
     ) -> List[str]:
         """Generate script lines for a specific effect."""
@@ -946,9 +960,18 @@ class BlenderInterface:
                         f"# {effect.name}",
                             f"{node_name} = tree.nodes.new('CompositorNodeColorBalance')",
                             f"{node_name}.location = ({x_offset}, 0)",
-                            f"{node_name}.lift = ({effect.parameters.get('shadows', 0)}, {effect.parameters.get('shadows', 0)}, {effect.parameters.get('shadows', 0)})",
-                            f"{node_name}.gamma = ({effect.parameters.get('midtones', 1)}, {effect.parameters.get('midtones', 1)}, {effect.parameters.get('midtones', 1)})",
-                            f"{node_name}.gain = ({effect.parameters.get('highlights', 1)}, {effect.parameters.get('highlights', 1)}, {effect.parameters.get('highlights', 1)})",
+                            f"{node_name}.lift = ({effect.parameters.get('shadows',
+    0)}, {effect.parameters.get('shadows',
+    0)}, {effect.parameters.get('shadows',
+    0)})",
+                            f"{node_name}.gamma = ({effect.parameters.get('midtones',
+    1)}, {effect.parameters.get('midtones',
+    1)}, {effect.parameters.get('midtones',
+    1)})",
+                            f"{node_name}.gain = ({effect.parameters.get('highlights',
+    1)}, {effect.parameters.get('highlights',
+    1)}, {effect.parameters.get('highlights',
+    1)})",
                             f"tree.links.new({input_node}.outputs['Image'], {node_name}.inputs['Image'])",
                             ]
                 )
@@ -959,8 +982,10 @@ class BlenderInterface:
                         f"# {effect.name}",
                             f"{node_name} = tree.nodes.new('CompositorNodeVecBlur')",
                             f"{node_name}.location = ({x_offset}, 0)",
-                            f"{node_name}.factor = {effect.parameters.get('strength', 0.5)}",
-                            f"{node_name}.samples = {effect.parameters.get('samples', 16)}",
+                            f"{node_name}.factor = {effect.parameters.get('strength',
+    0.5)}",
+                            f"{node_name}.samples = {effect.parameters.get('samples',
+    16)}",
                             f"tree.links.new({input_node}.outputs['Image'], {node_name}.inputs['Image'])",
                             ]
                 )
@@ -979,7 +1004,8 @@ class BlenderInterface:
                     if keyframe["property"] == "location":
                         lines.append(
                             f"camera.location = {keyframe['value']}"
-                            f"\ncamera.keyframe_insert(data_path='location', frame={keyframe['frame']})"
+                            f"\\ncamera.keyframe_insert(data_path='location',
+    frame={keyframe['frame']})"
                         )
 
             else:
@@ -994,7 +1020,7 @@ class BlenderInterface:
                 )
 
         except Exception as e:
-            logger.error(f"Effect script generation failed: {e}")
+            logging.getLogger(__name__).error(f"Effect script generation failed: {e}")
             lines = [f"# Error generating effect: {effect.name}"]
 
         return lines
@@ -1004,7 +1030,7 @@ class BlenderInterface:
         """Execute Blender script and render output."""
         try:
             # Save script to temporary file
-            script_path = self.temp_dir / f"blender_script_{int(time.time())}.py"
+            script_path = self.temp_dir/f"blender_script_{int(time.time())}.py"
             with open(script_path, "w") as f:
                 f.write(script_content)
 
@@ -1021,21 +1047,23 @@ class BlenderInterface:
                     ]
 
             # Execute Blender
-            logger.info(f"Executing Blender script: {script_path}")
+            logging.getLogger(__name__).info(f"Executing Blender script: {script_path}")
             result = subprocess.run(
                 cmd, capture_output = True, text = True, timeout = 3600  # 1 hour timeout
             )
 
             if result.returncode == 0:
-                logger.info(f"Blender script executed successfully")
-                return True
+                logging.getLogger(__name__).info(f"Blender script executed successfully")
+        except Exception as e:
+            pass
+        return True
             else:
-                logger.error(f"Blender execution failed: {result.stderr}")
-                return False
+                logging.getLogger(__name__).error(f"Blender execution failed: {result.stderr}")
+        return False
 
         except Exception as e:
-            logger.error(f"Blender script execution failed: {e}")
-            return False
+            logging.getLogger(__name__).error(f"Blender script execution failed: {e}")
+        return False
         finally:
             # Cleanup script file
             try:
@@ -1049,7 +1077,7 @@ class AIVideoEditor:
     """Main AI - driven video editing system."""
 
 
-    def __init__(
+    def __init__(:
         self, blender_executable: Optional[str] = None, temp_dir: Optional[str] = None
     ):
         self.script_parser = ScriptParser()
@@ -1060,7 +1088,7 @@ class AIVideoEditor:
         self.temp_dir = (
             Path(temp_dir)
             if temp_dir
-            else Path(tempfile.gettempdir()) / "ai_video_editor"
+            else Path(tempfile.gettempdir())/"ai_video_editor"
         )
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
@@ -1068,10 +1096,10 @@ class AIVideoEditor:
         self.active_jobs: Dict[str, EditingJob] = {}
         self._job_lock = threading.Lock()
 
-        logger.info("AI Video Editor system initialized successfully")
+        logging.getLogger(__name__).info("AI Video Editor system initialized successfully")
 
 
-    def create_project(
+    def create_project(:
         self,
             name: str,
             script_content: str,
@@ -1102,13 +1130,13 @@ class AIVideoEditor:
                 audio_path = audio_path,
                 blender_scene = blender_scene,
                 metadata={
-                "created_at": datetime.now().isoformat(),
-                    "script_length": len(script_content),
-                    "video_path": video_path,
-                    },
+            "created_at": datetime.now().isoformat(),
+            "script_length": len(script_content),
+            "video_path": video_path,
+        },
                 )
 
-        logger.info(f"Created AI video editing project: {project_id}")
+        logging.getLogger(__name__).info(f"Created AI video editing project: {project_id}")
         return project_id
 
 
@@ -1122,10 +1150,10 @@ class AIVideoEditor:
                 project = project,
                 status = ProcessingStatus.PENDING,
                 metadata={
-                "project_name": project.name,
-                    "script_length": len(project.script_content),
-                    "video_path": project.video_path,
-                    },
+            "project_name": project.name,
+            "script_length": len(project.script_content),
+            "video_path": project.video_path,
+        },
                 )
 
         with self._job_lock:
@@ -1136,7 +1164,7 @@ class AIVideoEditor:
             target = self._process_job_async, args=(job,), daemon = True
         ).start()
 
-        logger.info(f"Started AI video editing job: {job_id}")
+        logging.getLogger(__name__).info(f"Started AI video editing job: {job_id}")
         return job_id
 
 
@@ -1146,7 +1174,7 @@ class AIVideoEditor:
 
         try:
             # Step 1: Parse script for cues
-            logger.info(f"Parsing script for job: {job.job_id}")
+            logging.getLogger(__name__).info(f"Parsing script for job: {job.job_id}")
             job.status = ProcessingStatus.PARSING_SCRIPT
             job.progress_percentage = 10.0
             job.current_step = "Parsing script cues"
@@ -1162,7 +1190,7 @@ class AIVideoEditor:
                 )
 
             # Step 2: Generate effects
-            logger.info(f"Generating effects for job: {job.job_id}")
+            logging.getLogger(__name__).info(f"Generating effects for job: {job.job_id}")
             job.status = ProcessingStatus.GENERATING_EFFECTS
             job.progress_percentage = 30.0
             job.current_step = "Generating visual effects"
@@ -1173,7 +1201,7 @@ class AIVideoEditor:
             job.generated_effects = effects
 
             # Step 3: Setup Blender scene
-            logger.info(f"Setting up Blender scene for job: {job.job_id}")
+            logging.getLogger(__name__).info(f"Setting up Blender scene for job: {job.job_id}")
             job.status = ProcessingStatus.SETTING_UP_BLENDER
             job.progress_percentage = 50.0
             job.current_step = "Setting up Blender scene"
@@ -1191,13 +1219,13 @@ class AIVideoEditor:
             )
 
             # Save script for debugging
-            script_path = self.temp_dir / f"blender_script_{job.job_id}.py"
+            script_path = self.temp_dir/f"blender_script_{job.job_id}.py"
             with open(script_path, "w") as f:
                 f.write(blender_script)
             job.temp_files.append(str(script_path))
 
             # Step 5: Render video
-            logger.info(f"Rendering video for job: {job.job_id}")
+            logging.getLogger(__name__).info(f"Rendering video for job: {job.job_id}")
             job.status = ProcessingStatus.RENDERING
             job.progress_percentage = 85.0
             job.current_step = "Rendering final video"
@@ -1227,20 +1255,20 @@ class AIVideoEditor:
             job.completed_at = datetime.now()
             job.processing_time = (job.completed_at - job.started_at).total_seconds()
 
-            logger.info(
+            logging.getLogger(__name__).info(
                 f"AI video editing completed: {job.job_id} ({job.processing_time:.2f}s)"
             )
 
         except Exception as e:
             job.status = ProcessingStatus.ERROR
             job.error_message = str(e)
-            logger.error(f"AI video editing failed: {job.job_id} - {e}")
+            logging.getLogger(__name__).error(f"AI video editing failed: {job.job_id} - {e}")
 
 
     def get_job_status(self, job_id: str) -> Optional[EditingJob]:
         """Get current status of an editing job."""
         with self._job_lock:
-            return self.active_jobs.get(job_id)
+        return self.active_jobs.get(job_id)
 
 
     def cancel_job(self, job_id: str) -> bool:
@@ -1263,13 +1291,13 @@ class AIVideoEditor:
                                 except subprocess.TimeoutExpired:
                                     process.kill()
                         except Exception as e:
-                            logger.error(f"Failed to terminate Blender process: {e}")
+                            logging.getLogger(__name__).error(f"Failed to terminate Blender process: {e}")
 
                     job.status = ProcessingStatus.CANCELLED
                     job.error_message = "Job cancelled by user"
 
-                    logger.info(f"AI video editing job cancelled: {job_id}")
-                    return True
+                    logging.getLogger(__name__).info(f"AI video editing job cancelled: {job_id}")
+        return True
 
         return False
 
@@ -1301,25 +1329,25 @@ class AIVideoEditor:
                     # Remove from active jobs
                     del self.active_jobs[job_id]
 
-            logger.info(f"Cleaned up AI video editing job: {job_id}")
+            logging.getLogger(__name__).info(f"Cleaned up AI video editing job: {job_id}")
 
         except Exception as e:
-            logger.error(f"AI video editing job cleanup failed: {e}")
+            logging.getLogger(__name__).error(f"AI video editing job cleanup failed: {e}")
 
 
     def get_system_info(self) -> Dict[str, Any]:
         """Get system information and capabilities."""
         return {
             "blender_executable": self.blender_interface.blender_executable,
-                "temp_directory": str(self.temp_dir),
-                "active_jobs": len(self.active_jobs),
-                "supported_cue_types": [ct.value for ct in ScriptCueType],
-                "supported_effect_types": [et.value for et in EffectType],
-                "effect_intensities": [ei.value for ei in EffectIntensity],
-                "render_qualities": [rq.value for rq in RenderQuality],
-                "script_parsing_enabled": True,
-                "blender_integration_enabled": True,
-                }
+            "temp_directory": str(self.temp_dir),
+            "active_jobs": len(self.active_jobs),
+            "supported_cue_types": [ct.value for ct in ScriptCueType],
+            "supported_effect_types": [et.value for et in EffectType],
+            "effect_intensities": [ei.value for ei in EffectIntensity],
+            "render_qualities": [rq.value for rq in RenderQuality],
+            "script_parsing_enabled": True,
+            "blender_integration_enabled": True,
+        }
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -1378,7 +1406,7 @@ if __name__ == "__main__":
         """
 
         # Test script parsing
-        print(f"\n📝 Testing script parsing...")
+        print(f"\\n📝 Testing script parsing...")
         cues = ai_editor.script_parser.parse_script(sample_script)
 
         print(f"Found {len(cues)} script cues:")
@@ -1390,7 +1418,7 @@ if __name__ == "__main__":
             print(f"    Context: {cue.scene_description[:50]}...")
 
         # Test effect generation
-        print(f"\n🎨 Testing effect generation...")
+        print(f"\\n🎨 Testing effect generation...")
         effects = ai_editor.effect_generator.generate_effects(cues)
 
         print(f"Generated {len(effects)} visual effects:")
@@ -1404,10 +1432,10 @@ if __name__ == "__main__":
         # Example project creation (requires actual video file)
         try:
             video_file = "sample_video.mp4"
-            output_file = "output / edited_video.mp4"
+            output_file = "output/edited_video.mp4"
 
             if os.path.exists(video_file):
-                print(f"\n🎥 Creating AI video editing project...")
+                print(f"\\n🎥 Creating AI video editing project...")
 
                 project_id = ai_editor.create_project(
                     name="Sample AI Edit",
@@ -1465,7 +1493,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Project creation failed: {e}")
 
-        print(f"\n🎬 AI Video Editor system ready for production use!")
+        print(f"\\n🎬 AI Video Editor system ready for production use!")
 
     except Exception as e:
         print(f"❌ AI Video Editor initialization failed: {e}")

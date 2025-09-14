@@ -51,31 +51,31 @@
       "passed": false,
       "details": {
         "/health": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103e0dbd0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103e0dbd0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         },
         "/api/health": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103d85810>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103d85810>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         },
         "/api/health/db": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/health/db (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103e7c510>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/health/db (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103e7c510>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         },
         "/api/metrics": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103e37650>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103e37650>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         },
         "/api/services": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/services (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda9c0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/services (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda9c0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         },
         "/api/system-info": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/system-info (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103ddb130>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/system-info (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103ddb130>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         },
         "/dashboard/": {
-          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /dashboard/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda470>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+          "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/dashboard/(Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda470>: Failed to establish a new connection: [Errno 61] Connection refused'))",
           "success": false
         }
       },
@@ -100,15 +100,15 @@
       "details": {
         "api_response_times": {
           "/health": {
-            "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda580>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+            "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda580>: Failed to establish a new connection: [Errno 61] Connection refused'))",
             "within_threshold": false
           },
           "/api/metrics": {
-            "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103ddaad0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+            "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103ddaad0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
             "within_threshold": false
           },
           "/api/services": {
-            "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/services (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda8b0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+            "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/services (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda8b0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
             "within_threshold": false
           }
         },
@@ -205,15 +205,15 @@
   "performance_metrics": {
     "api_response_times": {
       "/health": {
-        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda580>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda580>: Failed to establish a new connection: [Errno 61] Connection refused'))",
         "within_threshold": false
       },
       "/api/metrics": {
-        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103ddaad0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103ddaad0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
         "within_threshold": false
       },
       "/api/services": {
-        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/services (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda8b0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url:/api/services (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x103dda8b0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
         "within_threshold": false
       }
     },

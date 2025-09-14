@@ -2,15 +2,13 @@
  * YouTube Creator Monetization Hub - API Integrations Module
  * Handles YouTube Data API v3, TikTok Creator API, and Affiliate Marketing APIs
  * Based on 2024-2025 research findings
- */
-
-class APIIntegrations {
+ */class APIIntegrations {
     constructor() {
         this.config = {
             youtube: {
                 apiKey: process.env.YOUTUBE_API_KEY || '',
                 baseUrl: 'https://www.googleapis.com/youtube/v3',
-                quotaLimit: 10000 // Daily quota limit
+                quotaLimit: 10000//Daily quota limit
             },
             tiktok: {
                 clientKey: process.env.TIKTOK_CLIENT_KEY || '',
@@ -33,19 +31,14 @@ class APIIntegrations {
         
         this.rateLimiter = new Map();
         this.cache = new Map();
-    }
-
-    /**
+    }/**
      * YouTube Data API Integration
      * Fetches channel analytics, video performance, and monetization data
-     */
-    async getYouTubeChannelData(channelId) {
+     */async getYouTubeChannelData(channelId) {
         try {
             const cacheKey = `youtube_channel_${channelId}`;
-            const cached = this.getCachedData(cacheKey, 300000); // 5 minutes cache
-            if (cached) return cached;
-
-            // Check rate limiting
+            const cached = this.getCachedData(cacheKey, 300000);//5 minutes cache
+            if (cached) return cached;//Check rate limiting
             if (!this.checkRateLimit('youtube', 100)) {
                 throw new Error('YouTube API rate limit exceeded');
             }
@@ -54,9 +47,7 @@ class APIIntegrations {
                 channel: `${this.config.youtube.baseUrl}/channels`,
                 analytics: `${this.config.youtube.baseUrl}/reports`,
                 videos: `${this.config.youtube.baseUrl}/search`
-            };
-
-            // Fetch channel statistics
+            };//Fetch channel statistics
             const channelResponse = await fetch(
                 `${endpoints.channel}?part=statistics,snippet,brandingSettings&id=${channelId}&key=${this.config.youtube.apiKey}`
             );
@@ -67,21 +58,15 @@ class APIIntegrations {
             }
 
             const channel = channelData.items[0];
-            const stats = channel.statistics;
-
-            // Fetch recent videos for performance analysis
+            const stats = channel.statistics;//Fetch recent videos for performance analysis
             const videosResponse = await fetch(
                 `${endpoints.videos}?part=snippet,statistics&channelId=${channelId}&order=date&maxResults=50&key=${this.config.youtube.apiKey}`
             );
-            const videosData = await videosResponse.json();
-
-            // Calculate YPP eligibility
+            const videosData = await videosResponse.json();//Calculate YPP eligibility
             const subscribers = parseInt(stats.subscriberCount);
-            const ypyEligible = subscribers >= 1000;
-
-            // Estimate watch hours (approximation based on views and average duration)
+            const ypyEligible = subscribers >= 1000;//Estimate watch hours (approximation based on views and average duration)
             const totalViews = parseInt(stats.viewCount);
-            const estimatedWatchHours = Math.floor(totalViews * 0.1); // Rough estimate
+            const estimatedWatchHours = Math.floor(totalViews * 0.1);//Rough estimate
 
             const result = {
                 channelId,
@@ -92,8 +77,8 @@ class APIIntegrations {
                 estimatedWatchHours,
                 ypyEligible,
                 ypyProgress: {
-                    subscribers: Math.min((subscribers / 1000) * 100, 100),
-                    watchHours: Math.min((estimatedWatchHours / 4000) * 100, 100)
+                    subscribers: Math.min((subscribers/1000) * 100, 100),
+                    watchHours: Math.min((estimatedWatchHours/4000) * 100, 100)
                 },
                 recentVideos: videosData.items?.slice(0, 10) || [],
                 lastUpdated: new Date().toISOString()
@@ -106,29 +91,21 @@ class APIIntegrations {
             console.error('YouTube API Error:', error);
             throw new Error(`Failed to fetch YouTube data: ${error.message}`);
         }
-    }
-
-    /**
+    }/**
      * YouTube Analytics API Integration
      * Fetches detailed revenue and performance metrics
-     */
-    async getYouTubeAnalytics(channelId, startDate, endDate) {
+     */async getYouTubeAnalytics(channelId, startDate, endDate) {
         try {
             const cacheKey = `youtube_analytics_${channelId}_${startDate}_${endDate}`;
-            const cached = this.getCachedData(cacheKey, 3600000); // 1 hour cache
-            if (cached) return cached;
-
-            // Note: YouTube Analytics API requires OAuth2 authentication
-            // This is a simplified version - real implementation needs proper auth
+            const cached = this.getCachedData(cacheKey, 3600000);//1 hour cache
+            if (cached) return cached;//Note: YouTube Analytics API requires OAuth2 authentication//This is a simplified version - real implementation needs proper auth
             const metricsToFetch = [
                 'estimatedRevenue',
                 'monetizedPlaybacks',
                 'playbackBasedCpm',
                 'adImpressions',
                 'ctr'
-            ];
-
-            // Simulated analytics data based on research findings
+            ];//Simulated analytics data based on research findings
             const analyticsData = {
                 revenue: {
                     total: Math.random() * 1000 + 100,
@@ -163,16 +140,13 @@ class APIIntegrations {
             console.error('YouTube Analytics Error:', error);
             throw new Error(`Failed to fetch YouTube analytics: ${error.message}`);
         }
-    }
-
-    /**
+    }/**
      * TikTok Creator API Integration
      * Fetches TikTok creator fund and performance data
-     */
-    async getTikTokCreatorData(accessToken) {
+     */async getTikTokCreatorData(accessToken) {
         try {
             const cacheKey = `tiktok_creator_${accessToken.substring(0, 10)}`;
-            const cached = this.getCachedData(cacheKey, 600000); // 10 minutes cache
+            const cached = this.getCachedData(cacheKey, 600000);//10 minutes cache
             if (cached) return cached;
 
             if (!this.checkRateLimit('tiktok', 1000)) {
@@ -182,29 +156,23 @@ class APIIntegrations {
             const headers = {
                 'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
-            };
-
-            // Fetch user info and creator fund status
+            };//Fetch user info and creator fund status
             const userResponse = await fetch(
                 `${this.config.tiktok.baseUrl}/${this.config.tiktok.version}/user/info/`,
                 { headers }
             );
-            const userData = await userResponse.json();
-
-            // Fetch video analytics
+            const userData = await userResponse.json();//Fetch video analytics
             const videosResponse = await fetch(
                 `${this.config.tiktok.baseUrl}/${this.config.tiktok.version}/video/list/`,
                 { headers }
             );
-            const videosData = await videosResponse.json();
-
-            // Based on 2024-2025 research: TikTok Creator Rewards Program
+            const videosData = await videosResponse.json();//Based on 2024-2025 research: TikTok Creator Rewards Program
             const creatorData = {
                 userId: userData.data?.user?.open_id || 'unknown',
                 username: userData.data?.user?.display_name || 'Unknown User',
                 followerCount: Math.floor(Math.random() * 100000 + 1000),
                 totalViews: Math.floor(Math.random() * 1000000 + 10000),
-                creatorFundStatus: 'eligible', // or 'not_eligible', 'pending'
+                creatorFundStatus: 'eligible',//or 'not_eligible', 'pending'
                 rewardsProgram: {
                     enrolled: true,
                     estimatedEarnings: Math.random() * 500 + 50,
@@ -228,16 +196,13 @@ class APIIntegrations {
             console.error('TikTok API Error:', error);
             throw new Error(`Failed to fetch TikTok data: ${error.message}`);
         }
-    }
-
-    /**
+    }/**
      * Affiliate Marketing APIs Integration
      * Handles Amazon Associates, ShopMy, and other affiliate programs
-     */
-    async getAffiliateData() {
+     */async getAffiliateData() {
         try {
             const cacheKey = 'affiliate_data';
-            const cached = this.getCachedData(cacheKey, 1800000); // 30 minutes cache
+            const cached = this.getCachedData(cacheKey, 1800000);//30 minutes cache
             if (cached) return cached;
 
             const affiliateData = {
@@ -271,9 +236,7 @@ class APIIntegrations {
                 totalClicks: 0,
                 totalConversions: 0,
                 lastUpdated: new Date().toISOString()
-            };
-
-            // Calculate totals
+            };//Calculate totals
             affiliateData.totalEarnings = affiliateData.programs.reduce((sum, program) => sum + program.earnings, 0);
             affiliateData.totalClicks = affiliateData.programs.reduce((sum, program) => sum + program.clicks, 0);
             affiliateData.totalConversions = affiliateData.programs.reduce((sum, program) => sum + program.conversions, 0);
@@ -285,28 +248,18 @@ class APIIntegrations {
             console.error('Affiliate API Error:', error);
             throw new Error(`Failed to fetch affiliate data: ${error.message}`);
         }
-    }
-
-    /**
+    }/**
      * Amazon Associates API Integration
-     */
-    async getAmazonAffiliateData() {
-        try {
-            // Amazon Product Advertising API 5.0 integration
-            // Note: Requires proper AWS signature and authentication
-            
-            // Simulated data based on research findings
+     */async getAmazonAffiliateData() {
+        try {//Amazon Product Advertising API 5.0 integration//Note: Requires proper AWS signature and authentication//Simulated data based on research findings
             return Math.random() * 800 + 100;
         } catch (error) {
             console.error('Amazon Affiliate Error:', error);
             return 0;
         }
-    }
-
-    /**
+    }/**
      * ShopMy API Integration
-     */
-    async getShopMyData() {
+     */async getShopMyData() {
         try {
             if (!this.config.affiliate.shopmy.apiKey) {
                 throw new Error('ShopMy API key not configured');
@@ -331,21 +284,16 @@ class APIIntegrations {
 
         } catch (error) {
             console.error('ShopMy API Error:', error);
-            return Math.random() * 600 + 80; // Fallback to simulated data
+            return Math.random() * 600 + 80;//Fallback to simulated data
         }
-    }
-
-    /**
+    }/**
      * Brand Partnership Tracking
      * Integrates with CRM and partnership platforms
-     */
-    async getBrandPartnerships() {
+     */async getBrandPartnerships() {
         try {
             const cacheKey = 'brand_partnerships';
-            const cached = this.getCachedData(cacheKey, 3600000); // 1 hour cache
-            if (cached) return cached;
-
-            // Simulated brand partnership data based on research
+            const cached = this.getCachedData(cacheKey, 3600000);//1 hour cache
+            if (cached) return cached;//Simulated brand partnership data based on research
             const partnerships = {
                 active: [
                     {
@@ -403,14 +351,11 @@ class APIIntegrations {
             console.error('Brand Partnership Error:', error);
             throw new Error(`Failed to fetch brand partnerships: ${error.message}`);
         }
-    }
-
-    /**
+    }/**
      * Rate Limiting Helper
-     */
-    checkRateLimit(service, limit) {
+     */checkRateLimit(service, limit) {
         const now = Date.now();
-        const windowStart = now - 60000; // 1 minute window
+        const windowStart = now - 60000;//1 minute window
         
         if (!this.rateLimiter.has(service)) {
             this.rateLimiter.set(service, []);
@@ -426,12 +371,9 @@ class APIIntegrations {
         recentRequests.push(now);
         this.rateLimiter.set(service, recentRequests);
         return true;
-    }
-
-    /**
+    }/**
      * Cache Management
-     */
-    getCachedData(key, maxAge) {
+     */getCachedData(key, maxAge) {
         const cached = this.cache.get(key);
         if (cached && (Date.now() - cached.timestamp) < maxAge) {
             return cached.data;
@@ -444,12 +386,9 @@ class APIIntegrations {
             data,
             timestamp: Date.now()
         });
-    }
-
-    /**
+    }/**
      * Health Check for All APIs
-     */
-    async healthCheck() {
+     */async healthCheck() {
         const services = {
             youtube: false,
             tiktok: false,
@@ -457,22 +396,15 @@ class APIIntegrations {
             shopmy: false
         };
 
-        try {
-            // Test YouTube API
+        try {//Test YouTube API
             if (this.config.youtube.apiKey) {
                 const response = await fetch(
                     `${this.config.youtube.baseUrl}/channels?part=id&mine=true&key=${this.config.youtube.apiKey}`
                 );
                 services.youtube = response.ok;
-            }
-
-            // Test TikTok API (requires access token)
-            services.tiktok = !!this.config.tiktok.clientKey;
-
-            // Test Amazon API
-            services.amazon = !!(this.config.affiliate.amazon.accessKey && this.config.affiliate.amazon.secretKey);
-
-            // Test ShopMy API
+            }//Test TikTok API (requires access token)
+            services.tiktok = !!this.config.tiktok.clientKey;//Test Amazon API
+            services.amazon = !!(this.config.affiliate.amazon.accessKey && this.config.affiliate.amazon.secretKey);//Test ShopMy API
             if (this.config.affiliate.shopmy.apiKey) {
                 const response = await fetch(
                     `${this.config.affiliate.shopmy.baseUrl}/health`,
@@ -495,16 +427,12 @@ class APIIntegrations {
             timestamp: new Date().toISOString()
         };
     }
-}
-
-// Export for use in other modules
+}//Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = APIIntegrations;
 } else if (typeof window !== 'undefined') {
     window.APIIntegrations = APIIntegrations;
-}
-
-/**
+}/**
  * Usage Example:
  * 
  * const api = new APIIntegrations();

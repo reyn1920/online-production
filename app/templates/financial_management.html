@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Financial Management - TRAE.AI Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet"/>
     <style>
       .financial-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -292,19 +292,19 @@
             </div>
             <div class="card-body">
               <div class="form-check form-switch mb-3">
-                <input class="form-check-input" type="checkbox" id="autoReallocation" checked />
+                <input class="form-check-input" type="checkbox" id="autoReallocation" checked/>
                 <label class="form-check-label" for="autoReallocation">Auto Resource Reallocation</label>
               </div>
               <div class="form-check form-switch mb-3">
-                <input class="form-check-input" type="checkbox" id="costOptimization" checked />
+                <input class="form-check-input" type="checkbox" id="costOptimization" checked/>
                 <label class="form-check-label" for="costOptimization">Automatic Cost Optimization</label>
               </div>
               <div class="form-check form-switch mb-3">
-                <input class="form-check-input" type="checkbox" id="riskMonitoring" checked />
+                <input class="form-check-input" type="checkbox" id="riskMonitoring" checked/>
                 <label class="form-check-label" for="riskMonitoring">Risk Monitoring Alerts</label>
               </div>
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="performanceTracking" checked />
+                <input class="form-check-input" type="checkbox" id="performanceTracking" checked/>
                 <label class="form-check-label" for="performanceTracking">Performance Tracking</label>
               </div>
             </div>
@@ -338,11 +338,11 @@
               </div>
               <div class="mb-3">
                 <label for="investmentAmount" class="form-label">Investment Amount ($)</label>
-                <input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount" />
+                <input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount"/>
               </div>
               <div class="mb-3">
                 <label for="expectedROI" class="form-label">Expected ROI (%)</label>
-                <input type="number" class="form-control" id="expectedROI" placeholder="Enter expected ROI" />
+                <input type="number" class="form-control" id="expectedROI" placeholder="Enter expected ROI"/>
               </div>
               <div class="mb-3">
                 <label for="timeframe" class="form-label">Investment Timeframe</label>
@@ -379,7 +379,7 @@
 
       async function loadDashboard() {
         try {
-          const response = await fetch('/api/financial-management/dashboard');
+          const response = await fetch("/api/financial-management/dashboard');
           dashboardData = await response.json();
           updateDashboard();
           loadAlerts();
@@ -388,8 +388,7 @@
         }
       }
 
-      function updateDashboard() {
-        // Update financial metrics
+      function updateDashboard() {//Update financial metrics
         document.getElementById('totalRevenue').textContent = formatCurrency(dashboardData.total_revenue || 0);
         document.getElementById('revenueGrowth').textContent = dashboardData.revenue_growth || 0;
         document.getElementById('overallROI').textContent = (dashboardData.overall_roi || 0) + '%';
@@ -397,15 +396,9 @@
         document.getElementById('profitMargin').textContent = (dashboardData.profit_margin || 0) + '%';
         document.getElementById('marginChange').textContent = dashboardData.margin_change || 0;
         document.getElementById('costEfficiency').textContent = (dashboardData.cost_efficiency || 0) + '%';
-        document.getElementById('efficiencyChange').textContent = dashboardData.efficiency_change || 0;
-
-        // Update revenue streams
-        updateRevenueStreams();
-
-        // Update resource allocation
-        updateResourceAllocation();
-
-        // Update forecast chart
+        document.getElementById('efficiencyChange').textContent = dashboardData.efficiency_change || 0;//Update revenue streams
+        updateRevenueStreams();//Update resource allocation
+        updateResourceAllocation();//Update forecast chart
         updateForecastChart();
       }
 
@@ -451,7 +444,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6>${allocation.category}</h6>
-                            <p class="mb-1">${formatCurrency(allocation.allocated)} / ${formatCurrency(allocation.budget)}</p>
+                            <p class="mb-1">${formatCurrency(allocation.allocated)}/${formatCurrency(allocation.budget)}</p>
                             <small>Efficiency: ${allocation.efficiency}%</small>
                         </div>
                         <div class="text-end">
@@ -461,7 +454,7 @@
                         </div>
                     </div>
                     <div class="progress mt-2">
-                        <div class="progress-bar" style="width: ${(allocation.allocated / allocation.budget) * 100}%"></div>
+                        <div class="progress-bar" style="width: ${(allocation.allocated/allocation.budget) * 100}%"></div>
                     </div>
                 </div>
             `
@@ -521,7 +514,7 @@
 
       async function loadAlerts() {
         try {
-          const response = await fetch('/api/financial-management/alerts');
+          const response = await fetch("/api/financial-management/alerts');
           const alerts = await response.json();
           updateAlerts(alerts);
         } catch (error) {
@@ -576,7 +569,7 @@
 
       async function generateForecast() {
         try {
-          const response = await fetch('/api/financial-management/forecast', {
+          const response = await fetch("/api/financial-management/forecast', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -605,8 +598,7 @@
           confirm(
             'Are you sure you want to optimize resource allocation? This will automatically reallocate resources based on ROI analysis.'
           )
-        ) {
-          // Implement optimization logic
+        ) {//Implement optimization logic
           alert('Resource allocation optimization initiated. Results will be visible shortly.');
         }
       }
@@ -644,7 +636,7 @@
         };
 
         try {
-          const response = await fetch('/api/financial-management/allocate', {
+          const response = await fetch("/api/financial-management/allocate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -664,12 +656,8 @@
           console.error('Error submitting investment:', error);
           alert('Error submitting investment plan.');
         }
-      }
-
-      // Load dashboard on page load
-      document.addEventListener('DOMContentLoaded', loadDashboard);
-
-      // Auto-refresh every 30 seconds
+      }//Load dashboard on page load
+      document.addEventListener('DOMContentLoaded', loadDashboard);//Auto-refresh every 30 seconds
       setInterval(loadDashboard, 30000);
     </script>
   </body>

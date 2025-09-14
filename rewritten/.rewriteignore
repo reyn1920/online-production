@@ -1,0 +1,16 @@
+# virtualenvs and caches
+venv*/
+.venv*/
+**/__pycache__/**
+**/.mypy_cache/**
+**/.ruff_cache/**
+
+# vendor & backups
+**/site-packages/**
+url_fix_backups/**
+copy_of_code/**
+tests/**
+
+# generated, logs
+rewritten/**
+verify.log

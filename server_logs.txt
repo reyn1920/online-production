@@ -163,7 +163,7 @@ INFO:trae_ai.BlenderCompositor:Blender found: 4.5.2
 INFO:trae_ai.FFmpegAudioProcessor:FFmpeg found: ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers
 INFO:backend.content.ai_video_editor:Script parser initialized with default cue patterns
 INFO:backend.content.ai_video_editor:Effect generator initialized with templates
-INFO:backend.content.ai_video_editor:Blender interface initialized: /Applications/Blender.app/Contents/MacOS/Blender
+INFO:backend.content.ai_video_editor:Blender interface initialized:/Applications/Blender.app/Contents/MacOS/Blender
 INFO:backend.content.ai_video_editor:AI Video Editor system initialized successfully
 INFO:backend.agents.research_tools:Loaded 18 RSS feeds from configuration
 INFO:backend.database.hypocrisy_db_manager:Hypocrisy tracker database initialized successfully
@@ -338,38 +338,38 @@ INFO:trae_ai.orchestrator:🖥️  Starting unified dashboard...
 INFO:trae_ai.orchestrator:[dashboard] attempting to bind to http://127.0.0.1:8083
 Server initialized for threading.
 INFO:engineio.server:Server initialized for threading.
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST /api/action/clear_task_queue/Clear task queue
-INFO:trae_ai.app.dashboard:[actions] registering POST /api/action/clear_task_queue/Clear task queue
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST /api/action/clear_task_queue/Clear task queue
-INFO:trae_ai.app.dashboard:[actions] registering POST /api/action/clear_task_queue/Clear task queue
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST/api/action/clear_task_queue/Clear task queue
+INFO:trae_ai.app.dashboard:[actions] registering POST/api/action/clear_task_queue/Clear task queue
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST/api/action/clear_task_queue/Clear task queue
+INFO:trae_ai.app.dashboard:[actions] registering POST/api/action/clear_task_queue/Clear task queue
 05:06:43 | INFO     | trae_ai.app.dashboard | [actions] clear_task_queue: registered 2 actions
 INFO:trae_ai.app.dashboard:[actions] clear_task_queue: registered 2 actions
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS /api/action/get_system_status/Get system status
-INFO:trae_ai.app.dashboard:[actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS /api/action/get_system_status/Get system status
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS /api/action/get_system_status/Get system status
-INFO:trae_ai.app.dashboard:[actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS /api/action/get_system_status/Get system status
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS/api/action/get_system_status/Get system status
+INFO:trae_ai.app.dashboard:[actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS/api/action/get_system_status/Get system status
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS/api/action/get_system_status/Get system status
+INFO:trae_ai.app.dashboard:[actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS/api/action/get_system_status/Get system status
 05:06:43 | INFO     | trae_ai.app.dashboard | [actions] get_system_status: registered 2 actions
 INFO:trae_ai.app.dashboard:[actions] get_system_status: registered 2 actions
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST /api/action/reload_actions/reload_actions
-INFO:trae_ai.app.dashboard:[actions] registering POST /api/action/reload_actions/reload_actions
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST /api/action/reload_actions/reload_actions
-INFO:trae_ai.app.dashboard:[actions] registering POST /api/action/reload_actions/reload_actions
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST/api/action/reload_actions/reload_actions
+INFO:trae_ai.app.dashboard:[actions] registering POST/api/action/reload_actions/reload_actions
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST/api/action/reload_actions/reload_actions
+INFO:trae_ai.app.dashboard:[actions] registering POST/api/action/reload_actions/reload_actions
 05:06:43 | INFO     | trae_ai.app.dashboard | [actions] reload_actions: registered 2 actions
 INFO:trae_ai.app.dashboard:[actions] reload_actions: registered 2 actions
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RESTARTS THE SYSTEM MONITORING THREAD /api/action/restart_monitoring/Restart monitoring
-INFO:trae_ai.app.dashboard:[actions] registering RESTARTS THE SYSTEM MONITORING THREAD /api/action/restart_monitoring/Restart monitoring
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RESTARTS THE SYSTEM MONITORING THREAD /api/action/restart_monitoring/Restart monitoring
-INFO:trae_ai.app.dashboard:[actions] registering RESTARTS THE SYSTEM MONITORING THREAD /api/action/restart_monitoring/Restart monitoring
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RESTARTS THE SYSTEM MONITORING THREAD/api/action/restart_monitoring/Restart monitoring
+INFO:trae_ai.app.dashboard:[actions] registering RESTARTS THE SYSTEM MONITORING THREAD/api/action/restart_monitoring/Restart monitoring
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RESTARTS THE SYSTEM MONITORING THREAD/api/action/restart_monitoring/Restart monitoring
+INFO:trae_ai.app.dashboard:[actions] registering RESTARTS THE SYSTEM MONITORING THREAD/api/action/restart_monitoring/Restart monitoring
 05:06:43 | INFO     | trae_ai.app.dashboard | [actions] restart_monitoring: registered 2 actions
 INFO:trae_ai.app.dashboard:[actions] restart_monitoring: registered 2 actions
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST /api/action/dashboard/Clear task queue
-INFO:trae_ai.app.dashboard:[actions] registering POST /api/action/dashboard/Clear task queue
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS /api/action/dashboard/Get system status
-INFO:trae_ai.app.dashboard:[actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS /api/action/dashboard/Get system status
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST /api/action/dashboard/reload_actions
-INFO:trae_ai.app.dashboard:[actions] registering POST /api/action/dashboard/reload_actions
-05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RESTARTS THE SYSTEM MONITORING THREAD /api/action/dashboard/Restart monitoring
-INFO:trae_ai.app.dashboard:[actions] registering RESTARTS THE SYSTEM MONITORING THREAD /api/action/dashboard/Restart monitoring
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST/api/action/dashboard/Clear task queue
+INFO:trae_ai.app.dashboard:[actions] registering POST/api/action/dashboard/Clear task queue
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS/api/action/dashboard/Get system status
+INFO:trae_ai.app.dashboard:[actions] registering RETURNS CURRENT SYSTEM HEALTH AND STATISTICS/api/action/dashboard/Get system status
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering POST/api/action/dashboard/reload_actions
+INFO:trae_ai.app.dashboard:[actions] registering POST/api/action/dashboard/reload_actions
+05:06:43 | INFO     | trae_ai.app.dashboard | [actions] registering RESTARTS THE SYSTEM MONITORING THREAD/api/action/dashboard/Restart monitoring
+INFO:trae_ai.app.dashboard:[actions] registering RESTARTS THE SYSTEM MONITORING THREAD/api/action/dashboard/Restart monitoring
 05:06:43 | INFO     | trae_ai.app.dashboard | [actions] dashboard: registered 4 actions
 INFO:trae_ai.app.dashboard:[actions] dashboard: registered 4 actions
 05:06:43 | ERROR    | trae_ai.orchestrator | ❌ Failed to start dashboard: 'ActionRegistry' object has no attribute 'get_manifest'

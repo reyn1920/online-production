@@ -160,7 +160,7 @@ data:
           summary: "High response time detected"
           description: "95th percentile response time is {{ $value }}s"
       - alert: HighErrorRate
-        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 10
+        expr: rate(http_requests_total{status=~"5.."}[5m])/rate(http_requests_total[5m]) * 100 > 10
         for: 3m
         labels:
           severity: critical
@@ -187,11 +187,11 @@ spec:
   endpoints:
   - port: metrics
     interval: 30s
-    path: /metrics
+    path:/metrics
     honorLabels: true
   - port: health
     interval: 60s
-    path: /health
+    path:/health
     honorLabels: true
 
 ---

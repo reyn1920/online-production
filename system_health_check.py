@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Comprehensive System Health Check
 Verifies all components are working correctly
@@ -15,7 +15,7 @@ import requests
 def check_web_interface():
     """Check if the web interface is accessible"""
     try:
-        response = requests.get("http://localhost:7860", timeout = 5)
+        response = requests.get("http://localhost:7860", timeout=5)
         if response.status_code == 200:
             print("✅ Web interface is accessible at http://localhost:7860")
             return True
@@ -31,29 +31,19 @@ def check_avatar_generation():
     """Check avatar generation functionality"""
     try:
         # Import the demo functions
-        sys.path.append(
-            os.path.join(os.path.dirname(__file__), "models", "linly_talker")
-        )
+        sys.path.append(os.path.join(os.path.dirname(__file__), "models", "linly_talker"))
+
         from demo_app import demo_generate_ai_female_model
 
         print("🧪 Testing avatar generation...")
         result_text, result_image = demo_generate_ai_female_model()
 
-        # Check if result is JSON
-        if isinstance(result_text, str) and result_text.strip().startswith("{"):
-            try:
-                json_data = json.loads(result_text)
-                print("✅ Avatar generation returns valid JSON")
-                print(f"   Success: {json_data.get('success', 'unknown')}")
-                print(f"   Message: {json_data.get('message', 'No message')}")
-                return True
-            except json.JSONDecodeError:
-                print("⚠️  Avatar generation returns text (not JSON)")
-                return True
-        else:
-            print("✅ Avatar generation working (text response)")
+        if result_text and result_image:
+            print("✅ Avatar generation is working")
             return True
-
+        else:
+            print("❌ Avatar generation returned empty results")
+            return False
     except Exception as e:
         print(f"❌ Avatar generation check failed: {e}")
         return False
@@ -62,8 +52,9 @@ def check_avatar_generation():
 def check_backend_services():
     """Check backend services status"""
     try:
-        # Check if avatar engines are available
-        sys.path.append("backend / services")
+        # Add backend services to path
+        sys.path.append("backend/services")
+
         from backend.services.avatar_engines import engine_manager
 
         print("🔧 Checking backend services...")
@@ -81,10 +72,10 @@ def check_backend_services():
 def check_file_structure():
     """Check critical file structure"""
     critical_files = [
-        "models / linly_talker / demo_app.py",
-            "services / avatar_generation_service.py",
-            "backend / services / avatar_engines.py",
-            ]
+        "models/linly_talker/demo_app.py",
+        "services/avatar_generation_service.py",
+        "backend/services/avatar_engines.py",
+    ]
 
     print("📁 Checking file structure...")
     all_good = True
@@ -94,7 +85,7 @@ def check_file_structure():
         if os.path.exists(full_path):
             print(f"   ✅ {file_path}")
         else:
-            print(f"   ❌ {file_path} (missing)")
+            print(f"   ❌ {file_path} missing")
             all_good = False
 
     return all_good
@@ -109,10 +100,10 @@ def main():
 
     checks = [
         ("File Structure", check_file_structure),
-            ("Web Interface", check_web_interface),
-            ("Avatar Generation", check_avatar_generation),
-            ("Backend Services", check_backend_services),
-            ]
+        ("Web Interface", check_web_interface),
+        ("Avatar Generation", check_avatar_generation),
+        ("Backend Services", check_backend_services),
+    ]
 
     results = []
 
@@ -144,10 +135,9 @@ def main():
         print("🌐 Access the interface at: http://localhost:7860")
         return True
     else:
-        print(
-            f"\n⚠️  {total - passed} issues detected. Please review the failed checks."
-        )
+        print(f"\n⚠️  {total - passed} issues detected. Please review the failed checks.")
         return False
+
 
 if __name__ == "__main__":
     success = main()

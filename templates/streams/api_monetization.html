@@ -237,7 +237,7 @@
         }
 
         .api-endpoints {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -344,7 +344,7 @@
         }
 
         .pricing-tiers {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -424,7 +424,7 @@
         }
 
         .config-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -461,7 +461,7 @@
         }
 
         .api-keys-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -505,7 +505,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -892,9 +892,7 @@
                 maxRequests: -1,
                 costPerRequest: 0
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeEndpoints();
             initializeTiers();
@@ -913,23 +911,18 @@
             renderTiers();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
-            });
-
-            // Configuration inputs
+            });//Configuration inputs
             const configInputs = ['baseApiUrl', 'rateLimit', 'billingProvider', 'billingCycle', 'freeTierLimit', 'webhookUrl'];
             configInputs.forEach(inputId => {
                 document.getElementById(inputId).addEventListener('change', function() {
@@ -1043,7 +1036,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.api_monetization) {
@@ -1062,8 +1055,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -1077,31 +1069,21 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('totalRequests').textContent = streamData.totalRequests.toLocaleString();
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
             document.getElementById('activeClients').textContent = streamData.activeClients.toLocaleString();
-            document.getElementById('avgResponseTime').textContent = streamData.avgResponseTime + 'ms';
-            
-            // Update rate limit progress
-            const rateLimitPercent = Math.min(100, (streamData.rateLimitUsage / streamData.config.rateLimit) * 100);
+            document.getElementById('avgResponseTime').textContent = streamData.avgResponseTime + 'ms';//Update rate limit progress
+            const rateLimitPercent = Math.min(100, (streamData.rateLimitUsage/streamData.config.rateLimit) * 100);
             document.getElementById('rateLimitFill').style.width = rateLimitPercent + '%';
-            document.getElementById('rateLimitText').textContent = rateLimitPercent.toFixed(1) + '% of limit used';
-
-            // Update configuration inputs
+            document.getElementById('rateLimitText').textContent = rateLimitPercent.toFixed(1) + '% of limit used';//Update configuration inputs
             Object.keys(streamData.config).forEach(key => {
                 const element = document.getElementById(key);
                 if (element) {
                     element.value = streamData.config[key];
                 }
-            });
-
-            // Update API keys
+            });//Update API keys
             renderApiKeys();
         }
 
@@ -1118,9 +1100,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -1144,9 +1124,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1211,7 +1189,7 @@
                 try {
                     showAlert(`Testing ${endpoint.name} endpoint...`, 'warning');
                     
-                    const response = await fetch('/api/test/endpoint', {
+                    const response = await fetch("/api/test/endpoint', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1256,7 +1234,7 @@
                 
                 showAlert('Generating new API key...', 'warning');
                 
-                const response = await fetch('/api/keys/generate', {
+                const response = await fetch("/api/keys/generate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1366,7 +1344,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.api_monetization) {
@@ -1377,9 +1355,7 @@
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.activeClients = stream.activeClients;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1397,8 +1373,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1408,27 +1383,22 @@
         }
 
         function simulateApiActivity() {
-            if (streamData.status === 'active') {
-                // Simulate API requests and revenue
+            if (streamData.status === 'active') {//Simulate API requests and revenue
                 streamData.endpoints.forEach(endpoint => {
                     const newRequests = Math.floor(Math.random() * 50);
                     endpoint.requests += newRequests;
                     endpoint.revenue += newRequests * endpoint.costPerRequest;
                     endpoint.avgResponseTime = Math.floor(Math.random() * 200) + 50;
-                });
-                
-                // Update totals
+                });//Update totals
                 streamData.totalRequests = streamData.endpoints.reduce((sum, ep) => sum + ep.requests, 0);
                 streamData.monthlyRevenue = streamData.endpoints.reduce((sum, ep) => sum + ep.revenue, 0);
                 streamData.activeClients = Math.floor(Math.random() * 100) + 50;
-                streamData.avgResponseTime = Math.floor(streamData.endpoints.reduce((sum, ep) => sum + ep.avgResponseTime, 0) / streamData.endpoints.length);
-                streamData.rateLimitUsage = Math.floor(Math.random() * streamData.config.rateLimit * 0.8);
-                
-                // Update API key stats
+                streamData.avgResponseTime = Math.floor(streamData.endpoints.reduce((sum, ep) => sum + ep.avgResponseTime, 0)/streamData.endpoints.length);
+                streamData.rateLimitUsage = Math.floor(Math.random() * streamData.config.rateLimit * 0.8);//Update API key stats
                 streamData.apiKeys.forEach(key => {
                     const newRequests = Math.floor(Math.random() * 20);
                     key.requests += newRequests;
-                    key.revenue += newRequests * 0.02; // Average cost per request
+                    key.revenue += newRequests * 0.02;//Average cost per request
                 });
                 
                 updateUI();
@@ -1442,17 +1412,13 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start API activity simulation
+        }//Start API activity simulation
         setInterval(simulateApiActivity, 15000);
     </script>
 </body>

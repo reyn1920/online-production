@@ -172,7 +172,8 @@ class WorldBible:
                 "CREATE INDEX IF NOT EXISTS idx_niches_viability ON niches (viability_score DESC)"
             )
             cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_trends_niche_source ON trends (niche_id, source)"
+                "CREATE INDEX IF NOT EXISTS idx_trends_niche_source ON trends (niche_id,
+    source)"
             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_trends_timestamp ON trends (timestamp DESC)"

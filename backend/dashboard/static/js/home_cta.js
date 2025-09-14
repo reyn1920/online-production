@@ -1,26 +1,18 @@
 /**
  * Home CTA Script - Creative Sandbox Floating Action Button
  * Adds a floating action button to the dashboard home page that navigates to the Creative Sandbox
- */
-
-(function () {
-  'use strict';
-
-  // Only run on the home/dashboard page
+ */(function () {
+  'use strict';//Only run on the home/dashboard page
   if (window.location.pathname !== '/' && window.location.pathname !== '/dashboard') {
     return;
-  }
-
-  // Create floating action button
+  }//Create floating action button
   function createFloatingButton() {
     const button = document.createElement('div');
     button.id = 'creative-sandbox-fab';
     button.innerHTML = `
             <div class="fab-icon">🎨</div>
             <div class="fab-text">Creative Sandbox</div>
-        `;
-
-    // Add styles
+        `;//Add styles
     const styles = `
             #creative-sandbox-fab {
                 position: fixed;
@@ -75,10 +67,7 @@
             
             #creative-sandbox-fab:active {
                 transform: translateY(-2px) scale(0.95);
-            }
-            
-            /* Pulse animation for attention */
-            @keyframes fab-pulse {
+            }/* Pulse animation for attention */@keyframes fab-pulse {
                 0% {
                     box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
                 }
@@ -92,10 +81,7 @@
             
             #creative-sandbox-fab.pulse {
                 animation: fab-pulse 2s infinite;
-            }
-            
-            /* Mobile responsive */
-            @media (max-width: 768px) {
+            }/* Mobile responsive */@media (max-width: 768px) {
                 #creative-sandbox-fab {
                     bottom: 20px;
                     right: 20px;
@@ -116,31 +102,20 @@
                     display: none;
                 }
             }
-        `;
-
-    // Add styles to document
+        `;//Add styles to document
     const styleSheet = document.createElement('style');
     styleSheet.textContent = styles;
-    document.head.appendChild(styleSheet);
-
-    // Add click handler
-    button.addEventListener('click', function () {
-      // Add click animation
+    document.head.appendChild(styleSheet);//Add click handler
+    button.addEventListener('click', function () {//Add click animation
       button.style.transform = 'translateY(-2px) scale(0.95)';
 
       setTimeout(() => {
         window.location.href = '/sandbox';
       }, 150);
-    });
-
-    // Add to page
-    document.body.appendChild(button);
-
-    // Add pulse animation after a delay to draw attention
+    });//Add to page
+    document.body.appendChild(button);//Add pulse animation after a delay to draw attention
     setTimeout(() => {
-      button.classList.add('pulse');
-
-      // Remove pulse after user hovers
+      button.classList.add('pulse');//Remove pulse after user hovers
       button.addEventListener(
         'mouseenter',
         () => {
@@ -151,11 +126,8 @@
     }, 3000);
 
     return button;
-  }
-
-  // Initialize when DOM is ready
-  function init() {
-    // Check if we're on a page that should show the FAB
+  }//Initialize when DOM is ready
+  function init() {//Check if we're on a page that should show the FAB
     const shouldShowFab =
       window.location.pathname === '/' ||
       window.location.pathname === '/dashboard' ||
@@ -163,39 +135,25 @@
 
     if (!shouldShowFab) {
       return;
-    }
-
-    // Don't show if we're already on the sandbox page
+    }//Don't show if we're already on the sandbox page
     if (window.location.pathname.includes('sandbox')) {
       return;
-    }
-
-    // Create the button
-    createFloatingButton();
-
-    // Log for debugging
+    }//Create the button
+    createFloatingButton();//Log for debugging
     console.log('Creative Sandbox FAB initialized');
-  }
-
-  // Wait for DOM to be ready
+  }//Wait for DOM to be ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
-  }
-
-  // Also initialize on page navigation (for SPAs)
+  }//Also initialize on page navigation (for SPAs)
   window.addEventListener('popstate', init);
-})();
-
-// Export for manual initialization if needed
+})();//Export for manual initialization if needed
 window.initCreativeSandboxFAB = function () {
   const existingFab = document.getElementById('creative-sandbox-fab');
   if (existingFab) {
     existingFab.remove();
-  }
-
-  // Re-run initialization
+  }//Re-run initialization
   setTimeout(() => {
     const event = new Event('DOMContentLoaded');
     document.dispatchEvent(event);

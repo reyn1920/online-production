@@ -211,9 +211,7 @@
     <script src="js/places-status.js"></script>
     
     <script>
-        let autoRefreshEnabled = true;
-        
-        // Initialize dashboard when page loads
+        let autoRefreshEnabled = true;//Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await initPlacesStatus();
@@ -222,9 +220,7 @@
                 console.error('Failed to initialize places status:', error);
                 showError('Failed to load places status. Please try refreshing the page.');
             }
-        });
-        
-        // Update overview cards with summary statistics
+        });//Update overview cards with summary statistics
         function updateOverviewCards() {
             if (!placesStatusDashboard) return;
             
@@ -237,7 +233,7 @@
                 const card = document.createElement('div');
                 card.className = 'overview-card';
                 
-                const healthPercentage = Math.round((group.green / group.total) * 100);
+                const healthPercentage = Math.round((group.green/group.total) * 100);
                 
                 card.innerHTML = `
                     <h3>${group.name}</h3>
@@ -263,9 +259,7 @@
                 
                 overviewContainer.appendChild(card);
             });
-        }
-        
-        // Toggle auto-refresh functionality
+        }//Toggle auto-refresh functionality
         function toggleAutoRefresh() {
             if (!placesStatusDashboard) return;
             
@@ -277,14 +271,10 @@
             } else {
                 placesStatusDashboard.stopAutoRefresh();
                 showNotification('Auto-refresh disabled', 'info');
-            }
-            
-            // Update button text
+            }//Update button text
             const button = document.querySelector('.btn-secondary');
             button.textContent = autoRefreshEnabled ? 'Disable Auto-Refresh' : 'Enable Auto-Refresh';
-        }
-        
-        // Enhanced refresh function
+        }//Enhanced refresh function
         window.refreshPlacesStatus = async () => {
             try {
                 showNotification('Refreshing status...', 'info');
@@ -295,17 +285,12 @@
                 console.error('Refresh failed:', error);
                 showNotification('Failed to refresh status', 'error');
             }
-        };
-        
-        // Show error message
+        };//Show error message
         function showError(message) {
             const container = document.getElementById('places-status-container');
             container.innerHTML = `<div class="places-status-error">${message}</div>`;
-        }
-        
-        // Show notification (simple implementation)
-        function showNotification(message, type = 'info') {
-            // Create notification element
+        }//Show notification (simple implementation)
+        function showNotification(message, type = 'info') {//Create notification element
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
@@ -317,9 +302,7 @@
                 font-weight: 500;
                 z-index: 1000;
                 animation: slideIn 0.3s ease;
-            `;
-            
-            // Set background color based on type
+            `;//Set background color based on type
             const colors = {
                 success: '#27ae60',
                 error: '#e74c3c',
@@ -330,9 +313,7 @@
             notification.style.background = colors[type] || colors.info;
             notification.textContent = message;
             
-            document.body.appendChild(notification);
-            
-            // Remove after 3 seconds
+            document.body.appendChild(notification);//Remove after 3 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => {
@@ -341,9 +322,7 @@
                     }
                 }, 300);
             }, 3000);
-        }
-        
-        // Add CSS animations for notifications
+        }//Add CSS animations for notifications
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideIn {

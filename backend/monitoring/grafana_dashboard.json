@@ -145,7 +145,7 @@
         "gridPos": {"h": 8, "w": 6, "x": 12, "y": 1},
         "targets": [
           {
-            "expr": "(system_memory_usage_bytes{type=\"used\"} / system_memory_usage_bytes{type=\"total\"}) * 100",
+            "expr": "(system_memory_usage_bytes{type=\"used\"}/system_memory_usage_bytes{type=\"total\"}) * 100",
             "legendFormat": "Memory Usage %"
           }
         ],
@@ -174,7 +174,7 @@
         "gridPos": {"h": 8, "w": 6, "x": 18, "y": 1},
         "targets": [
           {
-            "expr": "(system_disk_usage_bytes{type=\"used\"} / system_disk_usage_bytes{type=\"total\"}) * 100",
+            "expr": "(system_disk_usage_bytes{type=\"used\"}/system_disk_usage_bytes{type=\"total\"}) * 100",
             "legendFormat": "Disk Usage % - {{device}}"
           }
         ],
@@ -288,7 +288,7 @@
         "gridPos": {"h": 8, "w": 6, "x": 0, "y": 19},
         "targets": [
           {
-            "expr": "(rate(scraping_requests_total{status=\"success\"}[10m]) / rate(scraping_requests_total[10m])) * 100",
+            "expr": "(rate(scraping_requests_total{status=\"success\"}[10m])/rate(scraping_requests_total[10m])) * 100",
             "legendFormat": "Success Rate %"
           }
         ],
@@ -395,7 +395,7 @@
         "gridPos": {"h": 8, "w": 9, "x": 6, "y": 28},
         "targets": [
           {
-            "expr": "(rate(api_discovery_total{status=\"validated\"}[10m]) / rate(api_discovery_total[10m])) * 100",
+            "expr": "(rate(api_discovery_total{status=\"validated\"}[10m])/rate(api_discovery_total[10m])) * 100",
             "legendFormat": "Validation Success Rate % - {{source}}"
           }
         ],
@@ -444,7 +444,7 @@
         "gridPos": {"h": 8, "w": 6, "x": 0, "y": 37},
         "targets": [
           {
-            "expr": "(rate(cache_operations_total{result=\"hit\"}[10m]) / rate(cache_operations_total[10m])) * 100",
+            "expr": "(rate(cache_operations_total{result=\"hit\"}[10m])/rate(cache_operations_total[10m])) * 100",
             "legendFormat": "Cache Hit Rate %"
           }
         ],

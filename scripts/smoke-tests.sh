@@ -108,7 +108,7 @@ run_test "No Sensitive Data Exposure" "
 
 # Test 7: Performance check (response time < 5 seconds)
 run_test "Performance Check" "
-    response_time=\$(curl -s -w '%{time_total}' -o /dev/null --max-time $TIMEOUT '$STAGING_URL' 2>/dev/null)
+    response_time=\$(curl -s -w '%{time_total}' -o/dev/null --max-time $TIMEOUT '$STAGING_URL' 2>/dev/null)
     awk 'BEGIN { exit (\"'\$response_time'\" < 5.0) ? 0 : 1 }'
 "
 

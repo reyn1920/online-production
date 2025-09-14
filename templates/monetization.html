@@ -545,44 +545,30 @@
 
     <script>
         let activeJobs = new Set();
-        let jobPollingInterval;
-
-        // Tab switching
-        function showTab(tabName) {
-            // Hide all tabs
+        let jobPollingInterval;//Tab switching
+        function showTab(tabName) {//Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
-            });
-            
-            // Remove active class from all nav tabs
+            });//Remove active class from all nav tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
-            });
-            
-            // Show selected tab
+            });//Show selected tab
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            
-            // Load data for specific tabs
+            event.target.classList.add('active');//Load data for specific tabs
             if (tabName === 'dashboard') {
                 loadDashboard();
             }
-        }
-
-        // Load dashboard data
+        }//Load dashboard data
         async function loadDashboard() {
-            try {
-                // Load revenue stats
-                const statsResponse = await fetch('/api/monetization/revenue/stats');
+            try {//Load revenue stats
+                const statsResponse = await fetch("/api/monetization/revenue/stats');
                 const stats = await statsResponse.json();
                 
                 document.getElementById('totalRevenue').textContent = `$${stats.total_revenue.toLocaleString()}`;
                 document.getElementById('productsSold').textContent = stats.products_sold.toLocaleString();
                 document.getElementById('activeCampaigns').textContent = stats.active_campaigns;
-                document.getElementById('ebookRevenue').textContent = `$${stats.ebook_revenue.toLocaleString()}`;
-                
-                // Load products
-                const productsResponse = await fetch('/api/monetization/products');
+                document.getElementById('ebookRevenue').textContent = `$${stats.ebook_revenue.toLocaleString()}`;//Load products
+                const productsResponse = await fetch("/api/monetization/products');
                 const productsData = await productsResponse.json();
                 
                 const productList = document.getElementById('productList');
@@ -606,9 +592,7 @@
             } catch (error) {
                 console.error('Error loading dashboard:', error);
             }
-        }
-
-        // Form submissions
+        }//Form submissions
         document.getElementById('ebookForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             await submitForm('/api/monetization/ebook/generate', new FormData(e.target), 'Ebook generation');
@@ -642,16 +626,12 @@
                 include_affiliate_links: formData.get('include_affiliate_links') === 'on'
             };
             await submitForm('/api/monetization/blog/publish', data, 'Blog publishing');
-        });
-
-        // Generic form submission
+        });//Generic form submission
         async function submitForm(url, data, taskName) {
             try {
                 const submitButton = event.target.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
-                submitButton.textContent = 'Processing...';
-                
-                // Convert FormData to object if needed
+                submitButton.textContent = 'Processing...';//Convert FormData to object if needed
                 let requestData = data;
                 if (data instanceof FormData) {
                     requestData = {};
@@ -690,9 +670,7 @@
                 submitButton.disabled = false;
                 submitButton.textContent = submitButton.textContent.replace('Processing...', submitButton.dataset.originalText || 'Submit');
             }
-        }
-
-        // Job polling
+        }//Job polling
         function startJobPolling() {
             if (jobPollingInterval) return;
             
@@ -749,9 +727,7 @@
                 } catch (error) {
                     console.error(`Error fetching job ${jobId}:`, error);
                 }
-            }
-            
-            // Remove completed jobs from active set after a delay
+            }//Remove completed jobs from active set after a delay
             setTimeout(() => {
                 completedJobs.forEach(jobId => activeJobs.delete(jobId));
             }, 10000);
@@ -759,9 +735,7 @@
 
         function refreshJobs() {
             updateJobStatuses();
-        }
-
-        // Alert system
+        }//Alert system
         function showAlert(message, type) {
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
@@ -772,9 +746,7 @@
             setTimeout(() => {
                 alert.remove();
             }, 5000);
-        }
-
-        // Initialize dashboard on load
+        }//Initialize dashboard on load
         document.addEventListener('DOMContentLoaded', () => {
             loadDashboard();
         });

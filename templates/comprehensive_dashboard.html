@@ -314,10 +314,7 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Enhanced Responsive Design */
-        @media (max-width: 1200px) {
+        }/* Enhanced Responsive Design */@media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -439,10 +436,7 @@
             .card-status {
                 align-self: flex-end;
             }
-        }
-        
-        /* Touch-friendly improvements */
-        @media (hover: none) and (pointer: coarse) {
+        }/* Touch-friendly improvements */@media (hover: none) and (pointer: coarse) {
             .tab {
                 min-height: 44px;
                 display: flex;
@@ -762,45 +756,28 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
+    <script>//Global variables
         let socket;
         let charts = {};
-        let dashboardData = {};
-
-        // Initialize dashboard
+        let dashboardData = {};//Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             initializeCharts();
             initializeWebSocket();
             loadInitialData();
-            startTimeUpdater();
-            
-            // Auto-refresh every 30 seconds
+            startTimeUpdater();//Auto-refresh every 30 seconds
             setInterval(refreshDashboard, 30000);
-        });
-
-        // Tab switching
-        function showTab(tabName) {
-            // Hide all tab contents
+        });//Tab switching
+        function showTab(tabName) {//Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
-            });
-            
-            // Remove active class from all tabs
+            });//Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked tab
+            });//Show selected tab content
+            document.getElementById(tabName).classList.add('active');//Add active class to clicked tab
             event.target.classList.add('active');
-        }
-
-        // Initialize charts
-        function initializeCharts() {
-            // System performance chart
+        }//Initialize charts
+        function initializeCharts() {//System performance chart
             const systemCtx = document.getElementById('system-chart').getContext('2d');
             charts.system = new Chart(systemCtx, {
                 type: 'line',
@@ -831,9 +808,7 @@
                         y: { ticks: { color: '#ccc' }, beginAtZero: true, max: 100 }
                     }
                 }
-            });
-
-            // Revenue chart
+            });//Revenue chart
             const revenueCtx = document.getElementById('revenue-chart').getContext('2d');
             charts.revenue = new Chart(revenueCtx, {
                 type: 'doughnut',
@@ -858,9 +833,7 @@
                         }
                     }
                 }
-            });
-
-            // Revenue analytics chart
+            });//Revenue analytics chart
             const revenueAnalyticsCtx = document.getElementById('revenue-analytics-chart').getContext('2d');
             charts.revenueAnalytics = new Chart(revenueAnalyticsCtx, {
                 type: 'bar',
@@ -885,9 +858,7 @@
                         y: { ticks: { color: '#ccc' }, beginAtZero: true }
                     }
                 }
-            });
-
-            // Performance trends chart
+            });//Performance trends chart
             const performanceTrendsCtx = document.getElementById('performance-trends-chart').getContext('2d');
             charts.performanceTrends = new Chart(performanceTrendsCtx, {
                 type: 'line',
@@ -912,9 +883,7 @@
                         y: { ticks: { color: '#ccc' }, beginAtZero: true }
                     }
                 }
-            });
-
-            // Conversion funnel chart
+            });//Conversion funnel chart
             const conversionFunnelCtx = document.getElementById('conversion-funnel-chart').getContext('2d');
             charts.conversionFunnel = new Chart(conversionFunnelCtx, {
                 type: 'bar',
@@ -942,9 +911,7 @@
                         y: { ticks: { color: '#ccc' }, beginAtZero: true }
                     }
                 }
-            });
-
-            // Traffic sources chart
+            });//Traffic sources chart
             const trafficSourcesCtx = document.getElementById('traffic-sources-chart').getContext('2d');
             charts.trafficSources = new Chart(trafficSourcesCtx, {
                 type: 'pie',
@@ -968,9 +935,7 @@
                     }
                 }
             });
-        }
-
-        // Initialize WebSocket connection
+        }//Initialize WebSocket connection
         function initializeWebSocket() {
             try {
                 socket = io();
@@ -996,36 +961,26 @@
                 console.error('WebSocket initialization failed:', error);
                 updateSystemStatus('error');
             }
-        }
-
-        // Load initial data
+        }//Load initial data
         async function loadInitialData() {
             try {
-                showRefreshIndicator();
-                
-                // Load system metrics
-                const systemResponse = await fetch('/api/system/metrics');
+                showRefreshIndicator();//Load system metrics
+                const systemResponse = await fetch("/api/system/metrics');
                 if (systemResponse.ok) {
                     const systemData = await systemResponse.json();
                     updateSystemMetrics(systemData);
-                }
-
-                // Load revenue data
-                const revenueResponse = await fetch('/api/revenue/dashboard');
+                }//Load revenue data
+                const revenueResponse = await fetch("/api/revenue/dashboard');
                 if (revenueResponse.ok) {
                     const revenueData = await revenueResponse.json();
                     updateRevenueData(revenueData);
-                }
-
-                // Load services status
-                const servicesResponse = await fetch('/api/services/status');
+                }//Load services status
+                const servicesResponse = await fetch("/api/services/status');
                 if (servicesResponse.ok) {
                     const servicesData = await servicesResponse.json();
                     updateServicesStatus(servicesData);
-                }
-
-                // Load integrations status
-                const integrationsResponse = await fetch('/api/integrations/status');
+                }//Load integrations status
+                const integrationsResponse = await fetch("/api/integrations/status');
                 if (integrationsResponse.ok) {
                     const integrationsData = await integrationsResponse.json();
                     updateIntegrationsStatus(integrationsData);
@@ -1037,9 +992,7 @@
                 showAlert('Failed to load dashboard data', 'error');
                 hideRefreshIndicator();
             }
-        }
-
-        // Update dashboard with new data
+        }//Update dashboard with new data
         function updateDashboard(data) {
             showRefreshIndicator();
             
@@ -1051,34 +1004,22 @@
             document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
             
             setTimeout(hideRefreshIndicator, 1000);
-        }
-
-        // Update system metrics
+        }//Update system metrics
         function updateSystemMetrics(data) {
             document.getElementById('cpu-usage').textContent = data.cpu_percent?.toFixed(1) + '%' || '--';
             document.getElementById('memory-usage').textContent = data.memory_percent?.toFixed(1) + '%' || '--';
             document.getElementById('disk-usage').textContent = data.disk_percent?.toFixed(1) + '%' || '--';
             document.getElementById('active-connections').textContent = data.active_connections || '--';
-            document.getElementById('system-uptime').textContent = formatUptime(data.uptime_seconds);
-            
-            // Update health score
+            document.getElementById('system-uptime').textContent = formatUptime(data.uptime_seconds);//Update health score
              const currentHealthScore = data.health_score || calculateHealthScore(data);
-             document.getElementById('health-score').textContent = currentHealthScore.toFixed(0);
-            
-            // Update dashboard health status
-            updateDashboardHealth(data);
-            
-            // Update alerts if present
+             document.getElementById('health-score').textContent = currentHealthScore.toFixed(0);//Update dashboard health status
+            updateDashboardHealth(data);//Update alerts if present
             if (data.alerts) {
                 updateSystemAlerts(data.alerts);
-            }
-            
-            // Update health components if present
+            }//Update health components if present
             if (data.components) {
                 updateHealthComponents(data.components);
-            }
-
-            // Update system chart
+            }//Update system chart
             if (charts.system && data.cpu_percent !== undefined) {
                 const now = new Date().toLocaleTimeString();
                 charts.system.data.labels.push(now);
@@ -1092,24 +1033,16 @@
                 }
 
                 charts.system.update('none');
-            }
-
-            // Update system health status
+            }//Update system health status
             const healthScore = calculateHealthScore(data);
             updateSystemHealth(healthScore);
-        }
-
-        // Update revenue data
+        }//Update revenue data
         function updateRevenueData(data) {
             document.getElementById('total-revenue').textContent = '$' + (data.total_current_revenue?.toFixed(2) || '0');
             document.getElementById('monthly-target').textContent = '$' + (data.total_monthly_target?.toFixed(2) || '0');
             document.getElementById('revenue-progress').textContent = (data.overall_progress?.toFixed(1) || '0') + '%';
-            document.getElementById('active-streams').textContent = Object.keys(data.revenue_by_stream || {}).length;
-
-            // Update revenue streams
-            updateRevenueStreams(data.revenue_by_stream || {});
-
-            // Update revenue chart
+            document.getElementById('active-streams').textContent = Object.keys(data.revenue_by_stream || {}).length;//Update revenue streams
+            updateRevenueStreams(data.revenue_by_stream || {});//Update revenue chart
             if (charts.revenue && data.revenue_by_stream) {
                 const streams = Object.keys(data.revenue_by_stream);
                 const revenues = streams.map(stream => data.revenue_by_stream[stream].current);
@@ -1117,9 +1050,7 @@
                 charts.revenue.data.labels = streams.map(s => s.replace('_', ' ').toUpperCase());
                 charts.revenue.data.datasets[0].data = revenues;
                 charts.revenue.update('none');
-            }
-
-            // Update revenue analytics chart
+            }//Update revenue analytics chart
             if (charts.revenueAnalytics && data.recent_revenue) {
                 const streams = Object.keys(data.recent_revenue);
                 const revenues = Object.values(data.recent_revenue);
@@ -1127,9 +1058,7 @@
                 charts.revenueAnalytics.data.labels = streams.map(s => s.replace('_', ' ').toUpperCase());
                 charts.revenueAnalytics.data.datasets[0].data = revenues;
                 charts.revenueAnalytics.update('none');
-            }
-
-            // Update revenue status
+            }//Update revenue status
             const progressPercent = data.overall_progress || 0;
             let status = 'On Track';
             let statusClass = 'status-healthy';
@@ -1145,9 +1074,7 @@
             const revenueStatusEl = document.getElementById('revenue-status');
             revenueStatusEl.textContent = status;
             revenueStatusEl.className = 'card-status ' + statusClass;
-        }
-
-        // Update revenue streams display
+        }//Update revenue streams display
         function updateRevenueStreams(streams) {
             const container = document.getElementById('revenue-streams');
             container.innerHTML = '';
@@ -1167,16 +1094,12 @@
                 `;
                 container.appendChild(streamDiv);
             });
-        }
-
-        // Update services status
+        }//Update services status
         function updateServicesStatus(services) {
             const servicesList = document.getElementById('services-list');
             const appServicesList = document.getElementById('app-services-list');
             const paymentServicesList = document.getElementById('payment-services-list');
-            const analyticsServicesList = document.getElementById('analytics-services-list');
-
-            // Clear existing content
+            const analyticsServicesList = document.getElementById('analytics-services-list');//Clear existing content
             [servicesList, appServicesList, paymentServicesList, analyticsServicesList].forEach(list => {
                 if (list) list.innerHTML = '';
             });
@@ -1206,12 +1129,8 @@
                         </div>
                     </div>
                     <div class="card-status ${statusClass}">${serviceData.status}</div>
-                `;
-
-                // Add to appropriate service list
-                if (servicesList) servicesList.appendChild(serviceDiv.cloneNode(true));
-                
-                // Categorize services
+                `;//Add to appropriate service list
+                if (servicesList) servicesList.appendChild(serviceDiv.cloneNode(true));//Categorize services
                 if (serviceName.includes('app') || serviceName.includes('web') || serviceName.includes('api')) {
                     if (appServicesList) appServicesList.appendChild(serviceDiv.cloneNode(true));
                 } else if (serviceName.includes('payment') || serviceName.includes('stripe') || serviceName.includes('paypal')) {
@@ -1219,9 +1138,7 @@
                 } else if (serviceName.includes('analytics') || serviceName.includes('tracking')) {
                     if (analyticsServicesList) analyticsServicesList.appendChild(serviceDiv.cloneNode(true));
                 }
-            });
-
-            // Update services status
+            });//Update services status
             const servicesStatusEl = document.getElementById('services-status');
             if (servicesStatusEl) {
                 if (healthyCount === totalCount) {
@@ -1235,17 +1152,13 @@
                     servicesStatusEl.className = 'card-status status-error';
                 }
             }
-        }
-
-        // Update integrations status
+        }//Update integrations status
         function updateIntegrationsStatus(integrations) {
             const integrationsGrid = document.getElementById('integrations-grid');
             const paymentIntegrations = document.getElementById('payment-integrations');
             const ecommerceIntegrations = document.getElementById('ecommerce-integrations');
             const marketingIntegrations = document.getElementById('marketing-integrations');
-            const affiliateIntegrations = document.getElementById('affiliate-integrations');
-
-            // Clear existing content
+            const affiliateIntegrations = document.getElementById('affiliate-integrations');//Clear existing content
             [integrationsGrid, paymentIntegrations, ecommerceIntegrations, marketingIntegrations, affiliateIntegrations].forEach(grid => {
                 if (grid) grid.innerHTML = '';
             });
@@ -1266,12 +1179,8 @@
                     <div class="integration-icon">${getIntegrationIcon(integrationName)}</div>
                     <div class="integration-name">${integrationName}</div>
                     <div class="card-status ${statusClass}">${integrationData.status}</div>
-                `;
-
-                // Add to main grid
-                if (integrationsGrid) integrationsGrid.appendChild(integrationDiv.cloneNode(true));
-
-                // Categorize integrations
+                `;//Add to main grid
+                if (integrationsGrid) integrationsGrid.appendChild(integrationDiv.cloneNode(true));//Categorize integrations
                 if (integrationName.toLowerCase().includes('stripe') || integrationName.toLowerCase().includes('paypal') || integrationName.toLowerCase().includes('payment')) {
                     if (paymentIntegrations) paymentIntegrations.appendChild(integrationDiv.cloneNode(true));
                 } else if (integrationName.toLowerCase().includes('shopify') || integrationName.toLowerCase().includes('woocommerce') || integrationName.toLowerCase().includes('ecommerce')) {
@@ -1281,9 +1190,7 @@
                 } else if (integrationName.toLowerCase().includes('affiliate') || integrationName.toLowerCase().includes('commission')) {
                     if (affiliateIntegrations) affiliateIntegrations.appendChild(integrationDiv.cloneNode(true));
                 }
-            });
-
-            // Update integrations status
+            });//Update integrations status
             const integrationsStatusEl = document.getElementById('integrations-status');
             if (integrationsStatusEl) {
                 if (connectedCount === totalCount) {
@@ -1297,9 +1204,7 @@
                     integrationsStatusEl.className = 'card-status status-error';
                 }
             }
-        }
-
-        // Utility functions
+        }//Utility functions
         function getStatusClass(status) {
             switch (status?.toLowerCase()) {
                 case 'healthy':
@@ -1375,15 +1280,11 @@
         function updateSystemStatus(status) {
             const statusEl = document.getElementById('system-status');
             statusEl.className = 'status-indicator ' + getStatusClass(status);
-        }
-
-        // Update dashboard health
+        }//Update dashboard health
         function updateDashboardHealth(data) {
             const healthStatus = document.getElementById('health-status');
             const healthIcon = document.getElementById('health-icon');
-            const healthScoreElement = document.getElementById('health-score');
-            
-            // Update health score if available
+            const healthScoreElement = document.getElementById('health-score');//Update health score if available
             if (data.health_score !== undefined) {
                 healthScoreElement.textContent = `Score: ${Math.round(data.health_score)}`;
             }
@@ -1409,9 +1310,9 @@
 
         function formatUptime(seconds) {
             if (!seconds) return '--';
-            const days = Math.floor(seconds / 86400);
-            const hours = Math.floor((seconds % 86400) / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
+            const days = Math.floor(seconds/86400);
+            const hours = Math.floor((seconds % 86400)/3600);
+            const minutes = Math.floor((seconds % 3600)/60);
             return `${days}d ${hours}h ${minutes}m`;
         }
 
@@ -1445,9 +1346,7 @@
 
         function refreshDashboard() {
             loadInitialData();
-        }
-
-        // Update system alerts
+        }//Update system alerts
         function updateSystemAlerts(alerts) {
             const alertsContainer = document.getElementById('alerts-container');
             const alertsStatus = document.getElementById('alerts-status');
@@ -1494,9 +1393,7 @@
                 `;
                 
                 alertsContainer.appendChild(alertDiv);
-            });
-            
-            // Update alerts status
+            });//Update alerts status
             if (criticalCount > 0) {
                 alertsStatus.textContent = `${criticalCount} Critical`;
                 alertsStatus.className = 'card-status status-error';
@@ -1507,9 +1404,7 @@
                 alertsStatus.textContent = 'No Issues';
                 alertsStatus.className = 'card-status status-healthy';
             }
-        }
-        
-        // Update health components
+        }//Update health components
         function updateHealthComponents(components) {
             const componentsGrid = document.getElementById('components-grid');
             const componentsStatus = document.getElementById('components-status');
@@ -1532,9 +1427,7 @@
                 `;
                 
                 componentsGrid.appendChild(componentDiv);
-            });
-            
-            // Update components status
+            });//Update components status
             if (healthyCount === totalCount) {
                 componentsStatus.textContent = 'All Healthy';
                 componentsStatus.className = 'card-status status-healthy';
@@ -1565,15 +1458,11 @@
                 }
             }
             return '⚙️';
-        }
-
-        // Error handling
+        }//Error handling
         window.addEventListener('error', function(e) {
             console.error('Dashboard error:', e.error);
             showAlert('Dashboard error occurred', 'error');
-        });
-
-        // Handle visibility change
+        });//Handle visibility change
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden) {
                 refreshDashboard();

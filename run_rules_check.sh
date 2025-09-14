@@ -188,7 +188,7 @@ check_quality() {
     PYTHON_FILES=$(find "$PROJECT_ROOT" -name "*.py" -not -path "*/venv/*" -not -path "*/.git/*" | wc -l)
     if [ "$PYTHON_FILES" -gt 0 ]; then
         UNDOCUMENTED=$(grep -L "\"\"\"" $(find "$PROJECT_ROOT" -name "*.py" -not -path "*/venv/*" -not -path "*/.git/*") | wc -l || echo "0")
-        COVERAGE=$(( (PYTHON_FILES - UNDOCUMENTED) * 100 / PYTHON_FILES ))
+        COVERAGE=$(( (PYTHON_FILES - UNDOCUMENTED) * 100/PYTHON_FILES ))
         if [ "$COVERAGE" -ge 80 ]; then
             log_success "Docstring coverage: $COVERAGE%"
         else

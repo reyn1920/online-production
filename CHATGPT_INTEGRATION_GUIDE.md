@@ -86,7 +86,7 @@ DASHBOARD_PORT=8080
 ### 1. Content Generation
 
 ```http
-POST /api/v1/content/generate
+POST/api/v1/content/generate
 Content-Type: application/json
 Authorization: Bearer {TRAE_MASTER_KEY}
 
@@ -101,7 +101,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 ### 2. Research Intelligence
 
 ```http
-POST /api/v1/research/analyze
+POST/api/v1/research/analyze
 Content-Type: application/json
 Authorization: Bearer {TRAE_MASTER_KEY}
 
@@ -115,7 +115,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 ### 3. Video Production
 
 ```http
-POST /api/v1/video/create
+POST/api/v1/video/create
 Content-Type: application/json
 Authorization: Bearer {TRAE_MASTER_KEY}
 
@@ -130,7 +130,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 ### 4. System Status
 
 ```http
-GET /api/v1/system/status
+GET/api/v1/system/status
 Authorization: Bearer {TRAE_MASTER_KEY}
 ```
 
@@ -188,7 +188,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/webhook/trae-ai', methods=['POST'])
+@app.route("/webhook/trae-ai', methods=['POST'])
 def handle_trae_webhook():
     data = request.json
     task_id = data.get('task_id')

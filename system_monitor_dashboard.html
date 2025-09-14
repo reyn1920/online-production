@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Resource Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .dashboard {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            min-width: 400px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+
+        .metric {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        .metric:last-child {
+            border-left-color: #e74c3c;
+        }
+
+        .metric-label {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .progress-container {
+            background: #ecf0f1;
+            border-radius: 25px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 25px;
+            transition: width 0.3s ease;
+            position: relative;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+
+        .memory .progress-bar {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-size: 0.9em;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .last-update {
+            text-align: center;
+            margin-top: 15px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1 class="title">System Resource Monitor</h1>
+        
+        <div class="metric cpu">
+            <div class="metric-label">CPU Usage</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="cpu-progress" style="width: 0%">
+                    <div class="progress-text" id="cpu-text">0%</div>
+                </div>
+            </div>
+            <div class="metric-value" id="cpu-value">Loading...</div>
+        </div>
+
+        <div class="metric memory">
+            <div class="metric-label">Memory Usage</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="memory-progress" style="width: 0%">
+                    <div class="progress-text" id="memory-text">0%</div>
+                </div>
+            </div>
+            <div class="metric-value" id="memory-value">Loading...</div>
+        </div>
+
+        <div class="status" id="connection-status">Connecting...</div>
+        <div class="last-update" id="last-update">Never updated</div>
+    </div>
+
+    <script>
+        class SystemMonitor {
+            constructor() {
+                this.apiUrl = 'http://localhost:5001/api/system-stats';
+                this.updateInterval = 1000; // 1 second
+                this.isConnected = false;
+                this.lastUpdateTime = null;
+                
+                // DOM elements
+                this.elements = {
+                    cpuProgress: document.getElementById('cpu-progress'),
+                    cpuText: document.getElementById('cpu-text'),
+                    cpuValue: document.getElementById('cpu-value'),
+                    memoryProgress: document.getElementById('memory-progress'),
+                    memoryText: document.getElementById('memory-text'),
+                    memoryValue: document.getElementById('memory-value'),
+                    status: document.getElementById('connection-status'),
+                    lastUpdate: document.getElementById('last-update')
+                };
+                
+                this.init();
+            }
+
+            init() {
+                console.log('System Monitor initialized');
+                this.startMonitoring();
+            }
+
+            async fetchSystemStats() {
+                try {
+                    const response = await fetch(this.apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        // Add timeout
+                        signal: AbortSignal.timeout(5000)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching system stats:', error);
+                    throw error;
+                }
+            }
+
+            updateUI(data) {
+                const { cpu_percent, memory_percent } = data;
+                
+                // Update CPU
+                this.elements.cpuProgress.style.width = `${cpu_percent}%`;
+                this.elements.cpuText.textContent = `${cpu_percent}%`;
+                this.elements.cpuValue.textContent = `${cpu_percent}%`;
+                
+                // Update Memory
+                this.elements.memoryProgress.style.width = `${memory_percent}%`;
+                this.elements.memoryText.textContent = `${memory_percent}%`;
+                this.elements.memoryValue.textContent = `${memory_percent}%`;
+                
+                // Update connection status
+                this.updateConnectionStatus(true);
+                
+                // Update last update time
+                this.lastUpdateTime = new Date();
+                this.elements.lastUpdate.textContent = `Last updated: ${this.lastUpdateTime.toLocaleTimeString()}`;
+                
+                console.log(`Updated: CPU ${cpu_percent}%, Memory ${memory_percent}%`);
+            }
+
+            updateConnectionStatus(connected) {
+                this.isConnected = connected;
+                const statusElement = this.elements.status;
+                
+                if (connected) {
+                    statusElement.textContent = 'Connected';
+                    statusElement.className = 'status connected';
+                } else {
+                    statusElement.textContent = 'Disconnected - Retrying...';
+                    statusElement.className = 'status disconnected';
+                }
+            }
+
+            handleError(error) {
+                console.error('System monitor error:', error);
+                this.updateConnectionStatus(false);
+                
+                // Show error in UI
+                this.elements.cpuValue.textContent = 'Error';
+                this.elements.memoryValue.textContent = 'Error';
+            }
+
+            async updateStats() {
+                try {
+                    const data = await this.fetchSystemStats();
+                    this.updateUI(data);
+                } catch (error) {
+                    this.handleError(error);
+                }
+            }
+
+            startMonitoring() {
+                console.log('Starting system monitoring...');
+                
+                // Initial update
+                this.updateStats();
+                
+                // Set up interval for continuous updates
+                setInterval(() => {
+                    this.updateStats();
+                }, this.updateInterval);
+            }
+        }
+
+        // Initialize the system monitor when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SystemMonitor();
+        });
+
+        // Handle page visibility changes to pause/resume monitoring
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('Page hidden - monitoring continues in background');
+            } else {
+                console.log('Page visible - monitoring active');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Places Locator - Interactive Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <!-- Leaflet.markercluster -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
     <style>
         * {
             margin: 0;
@@ -346,16 +346,11 @@
                 this.loadProviderStatus();
             }
             
-            initMap() {
-                // Initialize map centered on San Francisco
-                this.map = L.map('map').setView([37.7749, -122.4194], 12);
-                
-                // Add OpenStreetMap tiles
+            initMap() {//Initialize map centered on San Francisco
+                this.map = L.map('map').setView([37.7749, -122.4194], 12);//Add OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors'
-                }).addTo(this.map);
-                
-                // NEW: Initialize marker cluster group
+                }).addTo(this.map);//NEW: Initialize marker cluster group
                 this.markerCluster = L.markerClusterGroup({
                     chunkedLoading: true,
                     maxClusterRadius: 50
@@ -372,7 +367,7 @@
             
             async loadProviderStatus() {
                 try {
-                    const response = await fetch('/api/places/providers/status');
+                    const response = await fetch("/api/places/providers/status');
                     if (response.ok) {
                         this.providerStatus = await response.json();
                         this.updateProviderStatusDisplay();
@@ -465,14 +460,11 @@
                 resultsContainer.style.display = 'block';
             }
             
-            updateMapWithResults(results) {
-                // Clear existing markers from cluster
+            updateMapWithResults(results) {//Clear existing markers from cluster
                 this.markerCluster.clearLayers();
                 this.markers = [];
                 
-                if (results.length === 0) return;
-                
-                // Add markers for each result to cluster group
+                if (results.length === 0) return;//Add markers for each result to cluster group
                 results.forEach((result, index) => {
                     if (result.lat && result.lon) {
                         const marker = L.marker([result.lat, result.lon])
@@ -484,35 +476,26 @@
                         
                         marker.on('click', () => {
                             this.selectResult(index);
-                        });
-                        
-                        // Add marker to cluster group instead of directly to map
+                        });//Add marker to cluster group instead of directly to map
                         this.markerCluster.addLayer(marker);
                         this.markers.push(marker);
                     }
-                });
-                
-                // Fit map to show all markers
+                });//Fit map to show all markers
                 if (this.markers.length > 0) {
                     const group = new L.featureGroup(this.markers);
                     this.map.fitBounds(group.getBounds().pad(0.1));
                 }
             }
             
-            selectResult(index) {
-                // Remove previous selection
+            selectResult(index) {//Remove previous selection
                 document.querySelectorAll('.result-item').forEach(item => {
                     item.classList.remove('selected');
-                });
-                
-                // Select new item
+                });//Select new item
                 const resultItems = document.querySelectorAll('.result-item');
                 if (resultItems[index]) {
                     resultItems[index].classList.add('selected');
                     resultItems[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-                
-                // Open marker popup
+                }//Open marker popup
                 if (this.markers[index]) {
                     this.markers[index].openPopup();
                 }
@@ -543,9 +526,7 @@
                 const errorElement = document.getElementById('errorMessage');
                 errorElement.classList.remove('show');
             }
-        }
-        
-        // Initialize the application
+        }//Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
             new PlacesLocator();
         });

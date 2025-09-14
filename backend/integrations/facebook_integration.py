@@ -1,58 +1,36 @@
 from __future__ import annotations
-
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Dict, Any
+from ._base_social import BaseSocialClient
 
-@dataclass
-
-
-class FacebookClient:
-    page_access_token: Optional[str] = None
-    app_id: Optional[str] = None
-    app_secret: Optional[str] = None
+class FacebookClient(BaseSocialClient):
+    name = "facebook"
 
     @classmethod
+    def from_env(cls) -> FacebookClient:
+        """Create FacebookClient instance from environment variables"""
+        return cls()
 
+    def _check_ready(self) -> bool:
+        # Minimum: Page token
+        return bool(self.env.get("FACEBOOK_PAGE_ACCESS_TOKEN"))
 
-    def from_env(cls) -> "FacebookClient":
-        return cls(
-            page_access_token = os.getenv("FB_PAGE_ACCESS_TOKEN"),
-                app_id = os.getenv("FB_APP_ID"),
-                app_secret = os.getenv("FB_APP_SECRET"),
-                )
+    def is_configured(self) -> bool:
+        """Check if Facebook integration is configured"""
+        return self.ready()
 
-
-    def ready(self) -> bool:
-        # OFF by default: returns True only when creds exist
-        return bool(self.page_access_token or (self.app_id and self.app_secret))
-
-    # --- Stubs (no network calls yet) ---
-
-
-        def post_message(self, message: str, media_url: str = "") -> Dict[str, Any]:
+    async def post_message(self, message: str, link: str | None = None) -> Dict[str, Any]:
+        """Post a message to Facebook"""
         if not self.ready():
-            raise RuntimeError("Facebook not configured")
-        return {
-            "ok": True,
-                "id": "fb_post_stub",
-                "message": message,
-                "media": media_url,
-                }
+            return {"ok": False, "error": "Facebook not configured"}
+        # TODO: Use Facebook Graph API with PAGE token
+        # Placeholder for real call (intentionally not calling any API here).
+        return {"ok": True, "provider": "facebook", "message_len": len(message), "link": link}
 
-
-    def post_photo(self, caption: str, photo_url: str) -> Dict[str, Any]:
+    def post(self, message: str, link: str | None = None) -> Dict[str, Any]:
+        """Legacy method for backward compatibility"""
         if not self.ready():
-            raise RuntimeError("Facebook not configured")
-        return {
-            "ok": True,
-                "id": "fb_photo_stub",
-                "caption": caption,
-                "media": photo_url,
-                }
-
-
-    def insights(self) -> Dict[str, Any]:
-        if not self.ready():
-            raise RuntimeError("Facebook not configured")
-        return {"ok": True, "followers": 0, "reach": 0, "impressions": 0}
+            return {"ok": False, "reason": "facebook_not_configured"}
+        # TODO: Use Facebook Graph API with PAGE token
+        # Placeholder for real call (intentionally not calling any API here).
+        return {"ok": True, "provider": "facebook", "message_len": len(message), "link": link}

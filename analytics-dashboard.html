@@ -416,18 +416,14 @@
     <div id="root"></div>
     
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        
-        // Real-time data fetching
+        const { useState, useEffect, useRef } = React;//Real-time data fetching
         const fetchAnalyticsData = async () => {
             try {
-                const response = await fetch('/api/revenue/analytics');
+                const response = await fetch("/api/revenue/analytics');
                 if (!response.ok) {
                     throw new Error('Failed to fetch analytics data');
                 }
-                const data = await response.json();
-                
-                // Transform API data to expected format
+                const data = await response.json();//Transform API data to expected format
                 return {
                     overview: {
                         totalRevenue: data.total_revenue || 0,
@@ -450,8 +446,7 @@
                     insights: data.insights || []
                 };
             } catch (error) {
-                console.error('Error fetching analytics data:', error);
-                // Fallback data in case of API failure
+                console.error('Error fetching analytics data:', error);//Fallback data in case of API failure
                 return {
                     overview: {
                         totalRevenue: 0,
@@ -499,13 +494,11 @@
             useEffect(() => {
                 if (data) {
                     initializeCharts();
-                }
-                
-                // Real-time updates
+                }//Real-time updates
                 const interval = setInterval(async () => {
                     const updatedData = await fetchAnalyticsData();
                     setData(updatedData);
-                }, 30000); // Update every 30 seconds
+                }, 30000);//Update every 30 seconds
                 
                 return () => clearInterval(interval);
             }, [data]);
@@ -514,8 +507,7 @@
                 updateCharts();
             }, [data, activeChart]);
             
-            const initializeCharts = () => {
-                // Revenue Chart
+            const initializeCharts = () => {//Revenue Chart
                 if (revenueChartRef.current) {
                     const ctx = revenueChartRef.current.getContext('2d');
                     
@@ -560,9 +552,7 @@
                             }
                         }
                     });
-                }
-                
-                // Platform Distribution Chart
+                }//Platform Distribution Chart
                 if (platformChartRef.current) {
                     const ctx = platformChartRef.current.getContext('2d');
                     
@@ -654,9 +644,9 @@
             
             const formatNumber = (num) => {
                 if (num >= 1000000) {
-                    return (num / 1000000).toFixed(1) + 'M';
+                    return (num/1000000).toFixed(1) + 'M';
                 } else if (num >= 1000) {
-                    return (num / 1000).toFixed(1) + 'K';
+                    return (num/1000).toFixed(1) + 'K';
                 }
                 return num.toLocaleString();
             };
@@ -924,7 +914,7 @@
             );
         }
         
-        ReactDOM.render(<AnalyticsDashboard />, document.getElementById('root'));
+        ReactDOM.render(<AnalyticsDashboard/>, document.getElementById('root'));
     </script>
 </body>
 </html>

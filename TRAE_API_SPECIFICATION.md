@@ -23,14 +23,14 @@ X-Request-ID: {unique_request_id}
 
 ### 1. System Status and Health
 
-#### GET /system/status
+#### GET/system/status
 
 **Description**: Get current system status and health metrics
 
 **Request**:
 
 ```http
-GET /api/v1/system/status
+GET/api/v1/system/status
 Authorization: Bearer {TRAE_MASTER_KEY}
 ```
 
@@ -73,7 +73,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 }
 ```
 
-#### GET /system/agents
+#### GET/system/agents
 
 **Description**: Get detailed information about all active agents
 
@@ -101,7 +101,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 
 ### 2. Content Generation
 
-#### POST /content/generate
+#### POST/content/generate
 
 **Description**: Generate various types of content (video, text, audio)
 
@@ -169,7 +169,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 }
 ```
 
-#### GET /content/templates
+#### GET/content/templates
 
 **Description**: Get available content templates and styles
 
@@ -199,7 +199,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 
 ### 3. Research and Intelligence
 
-#### POST /research/analyze
+#### POST/research/analyze
 
 **Description**: Perform intelligent research and analysis on topics
 
@@ -257,7 +257,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 }
 ```
 
-#### GET /research/sources
+#### GET/research/sources
 
 **Description**: Get available research sources and their capabilities
 
@@ -280,7 +280,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 
 ### 4. Video Production
 
-#### POST /video/create
+#### POST/video/create
 
 **Description**: Create videos with advanced customization options
 
@@ -342,7 +342,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 }
 ```
 
-#### GET /video/progress/{task_id}
+#### GET/video/progress/{task_id}
 
 **Description**: Get video production progress
 
@@ -368,7 +368,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 
 ### 5. Task Management
 
-#### GET /tasks/{task_id}
+#### GET/tasks/{task_id}
 
 **Description**: Get detailed information about a specific task
 
@@ -394,7 +394,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 }
 ```
 
-#### GET /tasks
+#### GET/tasks
 
 **Description**: List tasks with filtering options
 
@@ -429,7 +429,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 }
 ```
 
-#### DELETE /tasks/{task_id}
+#### DELETE/tasks/{task_id}
 
 **Description**: Cancel a pending or processing task
 
@@ -445,7 +445,7 @@ Authorization: Bearer {TRAE_MASTER_KEY}
 
 ### 6. File Management
 
-#### GET /files/{file_id}
+#### GET/files/{file_id}
 
 **Description**: Download generated content files
 
@@ -459,7 +459,7 @@ X-File-ID: file_123
 X-Generated-At: 2024-01-15T10:35:00Z
 ```
 
-#### GET /files/{file_id}/metadata
+#### GET/files/{file_id}/metadata
 
 **Description**: Get file metadata without downloading
 
@@ -542,7 +542,7 @@ X-TRAE-Delivery: delivery_uuid
       "request_id": "req_67890"
     },
     "recovery_suggestions": [
-      "Check system status at /api/v1/system/status",
+      "Check system status at/api/v1/system/status",
       "Verify your API key is valid",
       "Retry the request with exponential backoff"
     ]
@@ -707,18 +707,12 @@ class TraeAIClient {
 
     return await response.json();
   }
-}
-
-// Usage example
-const client = new TraeAIClient('your_api_key_here');
-
-// Check system status
+}//Usage example
+const client = new TraeAIClient('your_api_key_here');//Check system status
 client
   .getSystemStatus()
   .then(status => console.log(`System status: ${status.status}`))
-  .catch(error => console.error('Error:', error));
-
-// Generate content
+  .catch(error => console.error('Error:', error));//Generate content
 client
   .generateContent('video', 'AI Automation Basics', {
     duration_seconds: 300,

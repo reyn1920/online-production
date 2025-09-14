@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Safe Mode Manager - Environment Snapshot and Rollback System
 
@@ -19,15 +19,13 @@ import sqlite3
 import subprocess
 import sys
 import tarfile
-import tempfile
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
+
 
 @dataclass
-
-
 class EnvironmentSnapshot:
     """Represents a snapshot of the system environment."""
 
@@ -40,9 +38,8 @@ class EnvironmentSnapshot:
     description: str
     is_valid: bool = True
 
+
 @dataclass
-
-
 class RollbackResult:
     """Result of a rollback operation."""
 
@@ -57,7 +54,6 @@ class RollbackResult:
 class SafeModeManager:
     """Manages environment snapshots and rollback operations."""
 
-
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.db_path = config.get("db_path", "right_perspective.db")
@@ -69,12 +65,11 @@ class SafeModeManager:
         self.logger = logging.getLogger(__name__)
         self._init_safe_mode()
 
-
     def _init_safe_mode(self):
         """Initialize safe mode directories and database tables."""
         try:
             # Create snapshots directory
-            self.snapshots_dir.mkdir(exist_ok = True)
+            self.snapshots_dir.mkdir(exist_ok=True)
 
             # Initialize database table for snapshots
             with sqlite3.connect(self.db_path) as conn:
@@ -120,7 +115,6 @@ class SafeModeManager:
             self.logger.error(f"Failed to initialize Safe Mode Manager: {e}")
             raise
 
-
     def create_snapshot(
         self, description: str = "Pre - repair snapshot"
     ) -> Optional[EnvironmentSnapshot]:
@@ -151,14 +145,14 @@ class SafeModeManager:
 
             # 5. Create snapshot object
             snapshot = EnvironmentSnapshot(
-                snapshot_id = snapshot_id,
-                    timestamp = timestamp,
-                    git_commit_hash = git_commit,
-                    venv_backup_path = venv_backup_path,
-                    requirements_hash = requirements_hash,
-                    system_state = system_state,
-                    description = description,
-                    )
+                snapshot_id=snapshot_id,
+                timestamp=timestamp,
+                git_commit_hash=git_commit,
+                venv_backup_path=venv_backup_path,
+                requirements_hash=requirements_hash,
+                system_state=system_state,
+                description=description,
+            )
 
             # 6. Store snapshot in database
             self._store_snapshot(snapshot)
@@ -166,15 +160,12 @@ class SafeModeManager:
             # 7. Cleanup old snapshots
             self._cleanup_old_snapshots()
 
-            self.logger.info(
-                f"Environment snapshot created successfully: {snapshot_id}"
-            )
+            self.logger.info(f"Environment snapshot created successfully: {snapshot_id}")
             return snapshot
 
         except Exception as e:
             self.logger.error(f"Failed to create environment snapshot: {e}")
             return None
-
 
     def rollback_to_snapshot(
         self, snapshot_id: str, reason: str = "Automated rollback"
@@ -189,12 +180,12 @@ class SafeModeManager:
             snapshot = self._get_snapshot(snapshot_id)
             if not snapshot:
                 return RollbackResult(
-                    success = False,
-                        snapshot_id = snapshot_id,
-                        restored_commit="",
-                        restored_venv = False,
-                        error_message="Snapshot not found",
-                        )
+                    success=False,
+                    snapshot_id=snapshot_id,
+                    restored_commit="",
+                    restored_venv=False,
+                    error_message="Snapshot not found",
+                )
 
             # 2. Rollback Git to snapshot commit
             git_success = self._rollback_git(snapshot.git_commit_hash)
@@ -209,17 +200,15 @@ class SafeModeManager:
             duration = (datetime.now() - start_time).total_seconds()
 
             result = RollbackResult(
-                success = success,
-                    snapshot_id = snapshot_id,
-                    restored_commit = snapshot.git_commit_hash if git_success else "",
-                    restored_venv = venv_success,
-                    duration = duration,
-                    )
+                success=success,
+                snapshot_id=snapshot_id,
+                restored_commit=snapshot.git_commit_hash if git_success else "",
+                restored_venv=venv_success,
+                duration=duration,
+            )
 
             if not success:
-                result.error_message = (
-                    "Rollback partially failed - manual intervention required"
-                )
+                result.error_message = "Rollback partially failed - manual intervention required"
 
             # 5. Log rollback attempt
             self._log_rollback_attempt(result, reason)
@@ -234,58 +223,53 @@ class SafeModeManager:
         except Exception as e:
             duration = (datetime.now() - start_time).total_seconds()
             result = RollbackResult(
-                success = False,
-                    snapshot_id = snapshot_id,
-                    restored_commit="",
-                    restored_venv = False,
-                    error_message = str(e),
-                    duration = duration,
-                    )
+                success=False,
+                snapshot_id=snapshot_id,
+                restored_commit="",
+                restored_venv=False,
+                error_message=str(e),
+                duration=duration,
+            )
 
             self._log_rollback_attempt(result, reason)
             self.logger.error(f"Rollback exception: {e}")
             return result
 
-
     def _generate_snapshot_id(self) -> str:
         """Generate unique snapshot ID."""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        hash_suffix = hashlib.md5(str(datetime.now().timestamp()).encode()).hexdigest()[
-            :8
-        ]
+        timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
+        hash_suffix = hashlib.md5(str(datetime.now().timestamp()).encode()).hexdigest()[:8]
         return f"snapshot_{timestamp}_{hash_suffix}"
-
 
     def _create_git_snapshot(self, snapshot_id: str, description: str) -> Optional[str]:
         """Create Git commit for current state."""
         try:
             # Add all changes to staging
-            subprocess.run(["git", "add", "."], cwd = self.project_root, check = True)
+            subprocess.run(["git", "add", "."], cwd=self.project_root, check=True)
 
             # Create commit
             commit_message = f"Safe Mode Snapshot: {snapshot_id} - {description}"
             result = subprocess.run(
                 ["git", "commit", "-m", commit_message],
-                    cwd = self.project_root,
-                    capture_output = True,
-                    text = True,
-                    )
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+            )
 
             # Get current commit hash
             hash_result = subprocess.run(
                 ["git", "rev - parse", "HEAD"],
-                    cwd = self.project_root,
-                    capture_output = True,
-                    text = True,
-                    check = True,
-                    )
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                check=True,
+            )
 
             return hash_result.stdout.strip()
 
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Git snapshot failed: {e}")
             return None
-
 
     def _backup_virtual_environment(self, snapshot_id: str) -> Optional[str]:
         """Create backup of virtual environment."""
@@ -300,7 +284,6 @@ class SafeModeManager:
         except Exception as e:
             self.logger.error(f"Virtual environment backup failed: {e}")
             return None
-
 
     def _calculate_requirements_hash(self) -> str:
         """Calculate hash of current requirements."""
@@ -320,39 +303,36 @@ class SafeModeManager:
             self.logger.error(f"Requirements hash calculation failed: {e}")
             return "unknown"
 
-
     def _capture_system_state(self) -> Dict[str, Any]:
         """Capture current system state."""
         try:
             return {
                 "python_version": sys.version,
-                    "python_executable": sys.executable,
-                    "working_directory": os.getcwd(),
-                    "environment_variables": dict(os.environ),
-                    "installed_packages": self._get_installed_packages(),
-                    "system_info": {
+                "python_executable": sys.executable,
+                "working_directory": os.getcwd(),
+                "environment_variables": dict(os.environ),
+                "installed_packages": self._get_installed_packages(),
+                "system_info": {
                     "platform": sys.platform,
-                        "architecture": sys.maxsize > 2**32 and "64bit" or "32bit",
-                        },
-                    }
+                    "architecture": sys.maxsize > 2**32 and "64bit" or "32bit",
+                },
+            }
         except Exception as e:
             self.logger.error(f"System state capture failed: {e}")
             return {}
-
 
     def _get_installed_packages(self) -> List[str]:
         """Get list of installed Python packages."""
         try:
             result = subprocess.run(
                 [sys.executable, "-m", "pip", "freeze"],
-                    capture_output = True,
-                    text = True,
-                    check = True,
-                    )
-            return result.stdout.strip().split("\n")
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            return result.stdout.strip().split("\\n")
         except Exception:
             return []
-
 
     def _store_snapshot(self, snapshot: EnvironmentSnapshot):
         """Store snapshot metadata in database."""
@@ -367,16 +347,15 @@ class SafeModeManager:
             """,
                 (
                     snapshot.snapshot_id,
-                        snapshot.git_commit_hash,
-                        snapshot.venv_backup_path,
-                        snapshot.requirements_hash,
-                        json.dumps(snapshot.system_state),
-                        snapshot.description,
-                        snapshot.timestamp,
-                        ),
-                    )
+                    snapshot.git_commit_hash,
+                    snapshot.venv_backup_path,
+                    snapshot.requirements_hash,
+                    json.dumps(snapshot.system_state),
+                    snapshot.description,
+                    snapshot.timestamp,
+                ),
+            )
             conn.commit()
-
 
     def _get_snapshot(self, snapshot_id: str) -> Optional[EnvironmentSnapshot]:
         """Retrieve snapshot from database."""
@@ -386,40 +365,38 @@ class SafeModeManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     "SELECT * FROM environment_snapshots WHERE snapshot_id = ?",
-                        (snapshot_id,),
-                        )
+                    (snapshot_id,),
+                )
                 row = cursor.fetchone()
 
                 if row:
                     return EnvironmentSnapshot(
-                        snapshot_id = row["snapshot_id"],
-                            timestamp = datetime.fromisoformat(row["timestamp"]),
-                            git_commit_hash = row["git_commit_hash"],
-                            venv_backup_path = row["venv_backup_path"],
-                            requirements_hash = row["requirements_hash"],
-                            system_state = json.loads(row["system_state"]),
-                            description = row["description"],
-                            is_valid = bool(row["is_valid"]),
-                            )
+                        snapshot_id=row["snapshot_id"],
+                        timestamp=datetime.fromisoformat(row["timestamp"]),
+                        git_commit_hash=row["git_commit_hash"],
+                        venv_backup_path=row["venv_backup_path"],
+                        requirements_hash=row["requirements_hash"],
+                        system_state=json.loads(row["system_state"]),
+                        description=row["description"],
+                        is_valid=bool(row["is_valid"]),
+                    )
                 return None
         except Exception as e:
             self.logger.error(f"Failed to retrieve snapshot: {e}")
             return None
-
 
     def _rollback_git(self, commit_hash: str) -> bool:
         """Rollback Git to specific commit."""
         try:
             subprocess.run(
                 ["git", "reset", "--hard", commit_hash],
-                    cwd = self.project_root,
-                    check = True,
-                    )
+                cwd=self.project_root,
+                check=True,
+            )
             return True
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Git rollback failed: {e}")
             return False
-
 
     def _restore_virtual_environment(self, backup_path: str) -> bool:
         """Restore virtual environment from backup."""
@@ -437,18 +414,17 @@ class SafeModeManager:
             self.logger.error(f"Virtual environment restore failed: {e}")
             return False
 
-
     def _verify_system_integrity(self, snapshot: EnvironmentSnapshot) -> bool:
         """Verify system integrity after rollback."""
         try:
             # Check if Git commit matches
             result = subprocess.run(
                 ["git", "rev - parse", "HEAD"],
-                    cwd = self.project_root,
-                    capture_output = True,
-                    text = True,
-                    check = True,
-                    )
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                check=True,
+            )
 
             current_commit = result.stdout.strip()
             if current_commit != snapshot.git_commit_hash:
@@ -466,7 +442,6 @@ class SafeModeManager:
             self.logger.error(f"System integrity check failed: {e}")
             return False
 
-
     def _log_rollback_attempt(self, result: RollbackResult, reason: str):
         """Log rollback attempt to database."""
         try:
@@ -481,18 +456,17 @@ class SafeModeManager:
                 """,
                     (
                         result.snapshot_id,
-                            reason,
-                            result.success,
-                            result.restored_commit,
-                            result.restored_venv,
-                            result.error_message,
-                            result.duration,
-                            ),
-                        )
+                        reason,
+                        result.success,
+                        result.restored_commit,
+                        result.restored_venv,
+                        result.error_message,
+                        result.duration,
+                    ),
+                )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to log rollback attempt: {e}")
-
 
     def _cleanup_old_snapshots(self):
         """Remove old snapshots to maintain storage limits."""
@@ -511,9 +485,7 @@ class SafeModeManager:
 
                 # Remove excess snapshots
                 if len(snapshots) > self.max_snapshots:
-                    for snapshot_id, venv_backup_path in snapshots[
-                        self.max_snapshots :
-                    ]:
+                    for snapshot_id, venv_backup_path in snapshots[self.max_snapshots :]:
                         # Remove backup file
                         backup_path = Path(venv_backup_path)
                         if backup_path.exists():
@@ -522,14 +494,13 @@ class SafeModeManager:
                         # Remove from database
                         cursor.execute(
                             "DELETE FROM environment_snapshots WHERE snapshot_id = ?",
-                                (snapshot_id,),
-                                )
+                            (snapshot_id,),
+                        )
 
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Snapshot cleanup failed: {e}")
-
 
     def get_available_snapshots(self) -> List[EnvironmentSnapshot]:
         """Get list of available snapshots."""
@@ -549,15 +520,15 @@ class SafeModeManager:
                 for row in cursor.fetchall():
                     snapshots.append(
                         EnvironmentSnapshot(
-                            snapshot_id = row["snapshot_id"],
-                                timestamp = datetime.fromisoformat(row["timestamp"]),
-                                git_commit_hash = row["git_commit_hash"],
-                                venv_backup_path = row["venv_backup_path"],
-                                requirements_hash = row["requirements_hash"],
-                                system_state = json.loads(row["system_state"]),
-                                description = row["description"],
-                                is_valid = bool(row["is_valid"]),
-                                )
+                            snapshot_id=row["snapshot_id"],
+                            timestamp=datetime.fromisoformat(row["timestamp"]),
+                            git_commit_hash=row["git_commit_hash"],
+                            venv_backup_path=row["venv_backup_path"],
+                            requirements_hash=row["requirements_hash"],
+                            system_state=json.loads(row["system_state"]),
+                            description=row["description"],
+                            is_valid=bool(row["is_valid"]),
+                        )
                     )
 
                 return snapshots
@@ -566,17 +537,18 @@ class SafeModeManager:
             self.logger.error(f"Failed to get available snapshots: {e}")
             return []
 
+
 if __name__ == "__main__":
     # Test the Safe Mode Manager
-    logging.basicConfig(level = logging.INFO)
+    logging.basicConfig(level=logging.INFO)
 
     config = {
         "db_path": "right_perspective.db",
-            "snapshots_dir": "./snapshots",
-            "venv_path": "./venv",
-            "project_root": ".",
-            "max_snapshots": 5,
-            }
+        "snapshots_dir": "./snapshots",
+        "venv_path": "./venv",
+        "project_root": ".",
+        "max_snapshots": 5,
+    }
 
     manager = SafeModeManager(config)
 

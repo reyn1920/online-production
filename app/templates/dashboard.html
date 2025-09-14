@@ -20,10 +20,7 @@
         @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .gpu-accelerated { transform: translateZ(0); will-change: transform; }
         .optimized-scroll { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
-        .d-none { display: none !important; }
-        
-        /* Avatar Styles */
-        .avatar-container {
+        .d-none { display: none !important; }/* Avatar Styles */.avatar-container {
             display: flex;
             align-items: center;
             background: rgba(255, 255, 255, 0.1);
@@ -614,8 +611,7 @@
     
     <script src="/static/js/dashboard.js?v=1.1"></script>
     <script src="/static/js/paste_avatar_ui.js"></script>
-    <script>
-        // Dashboard Personal Assistant Avatar
+    <script>//Dashboard Personal Assistant Avatar
         class DashboardAvatar {
             constructor() {
                 this.avatarUI = null;
@@ -625,30 +621,22 @@
                 this.init();
             }
             
-            async init() {
-                // Initialize avatar UI when needed
+            async init() {//Initialize avatar UI when needed
                 document.getElementById('generate-dashboard-avatar').addEventListener('click', () => {
                     this.generateAvatar();
                 });
                 
                 document.getElementById('avatar-settings').addEventListener('click', () => {
                     this.showAvatarSettings();
-                });
-                
-                // Add chat functionality
-                this.initializeChat();
-                
-                // Load existing avatar if available
+                });//Add chat functionality
+                this.initializeChat();//Load existing avatar if available
                 this.loadExistingAvatar();
             }
             
-            initializeChat() {
-                // Add click handler to avatar for chat
+            initializeChat() {//Add click handler to avatar for chat
                 document.getElementById('avatar-preview-mini').addEventListener('click', () => {
                     this.toggleChat();
-                });
-                
-                // Create chat interface
+                });//Create chat interface
                 this.createChatInterface();
             }
             
@@ -681,9 +669,7 @@
                         </div>
                     </div>
                 `;
-                document.body.appendChild(chatInterface);
-                
-                // Add welcome message
+                document.body.appendChild(chatInterface);//Add welcome message
                 this.addChatMessage('assistant', 'Hello! I\'m your personal assistant. I can help you with system status, tasks, and answer questions about your dashboard.');
             }
             
@@ -700,18 +686,13 @@
                 const input = document.getElementById('chat-input');
                 const message = input.value.trim();
                 
-                if (!message) return;
-                
-                // Add user message to chat
+                if (!message) return;//Add user message to chat
                 this.addChatMessage('user', message);
-                input.value = '';
-                
-                // Show typing indicator
+                input.value = '';//Show typing indicator
                 this.showTypingIndicator();
                 
-                try {
-                    // Send to AI chat endpoint
-                    const response = await fetch('/chat/ai', {
+                try {//Send to AI chat endpoint
+                    const response = await fetch("/chat/ai', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -749,8 +730,7 @@
                 return `As a personal assistant for the TRAE.AI dashboard, please help with: ${message}\n\nCurrent dashboard context: ${JSON.stringify(context)}`;
             }
             
-            getDashboardContext() {
-                // Gather current dashboard state
+            getDashboardContext() {//Gather current dashboard state
                 const activeTab = document.querySelector('.tab-button.active')?.textContent || 'overview';
                 const systemStatus = document.querySelector('.status-indicator')?.textContent || 'unknown';
                 
@@ -779,7 +759,7 @@
             
             async sendSystemStatusUpdate() {
                 try {
-                    const response = await fetch('/dashboard/api/status');
+                    const response = await fetch("/dashboard/api/status');
                     const status = await response.json();
                     
                     const statusMessage = `System Status:\n• Uptime: ${status.uptime || 'Unknown'}\n• Active Sessions: ${status.active_sessions || 0}\n• API Calls: ${status.api_calls || 0}\n• Status: ${status.status || 'Running'}`;
@@ -840,12 +820,10 @@
                 
                 try {
                     btn.disabled = true;
-                    preview.classList.add('avatar-generating');
-                    
-                    // Get sample content for avatar generation
+                    preview.classList.add('avatar-generating');//Get sample content for avatar generation
                     const sampleContent = "Welcome to the dashboard! I'm your AI assistant ready to help you manage your system.";
                     
-                    const response = await fetch('/paste/avatar/generate', {
+                    const response = await fetch("/paste/avatar/generate', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -878,9 +856,7 @@
             
             displayAvatar(avatarUrl) {
                 const preview = document.getElementById('avatar-preview-mini');
-                preview.innerHTML = `<img src="${avatarUrl}" alt="Dashboard Avatar" />`;
-                
-                // Store avatar URL for persistence
+                preview.innerHTML = `<img src="${avatarUrl}" alt="Dashboard Avatar"/>`;//Store avatar URL for persistence
                 localStorage.setItem('dashboard_avatar_url', avatarUrl);
             }
             
@@ -891,8 +867,7 @@
                 }
             }
             
-            showAvatarSettings() {
-                // Create a simple settings modal
+            showAvatarSettings() {//Create a simple settings modal
                 const modal = document.createElement('div');
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
                 modal.innerHTML = `
@@ -938,9 +913,7 @@
             
             applySettings() {
                 const style = document.getElementById('avatar-style-select').value;
-                const voice = document.getElementById('voice-style-select').value;
-                
-                // Store settings
+                const voice = document.getElementById('voice-style-select').value;//Store settings
                 localStorage.setItem('avatar_style', style);
                 localStorage.setItem('avatar_voice', voice);
                 
@@ -962,14 +935,10 @@
                     setTimeout(() => notification.remove(), 300);
                 }, 3000);
             }
-        }
-        
-        // Initialize dashboard avatar when page loads
+        }//Initialize dashboard avatar when page loads
         document.addEventListener('DOMContentLoaded', () => {
             window.dashboardAvatar = new DashboardAvatar();
-        });
-        
-        // Function to run dashboard tests
+        });//Function to run dashboard tests
         function runDashboardTests() {
             if (window.dashboardTester) {
                 console.clear();
@@ -984,8 +953,7 @@
         }
     </script>
     
-    <script>
-        // Enhanced Dashboard Initialization
+    <script>//Enhanced Dashboard Initialization
         document.addEventListener('DOMContentLoaded', function() {
             initializeDashboard();
         });
@@ -996,9 +964,7 @@
             
             setupTabNavigation();
             initializeCharts();
-            loadDashboardData();
-            
-            // Auto-refresh data every 30 seconds
+            loadDashboardData();//Auto-refresh data every 30 seconds
             setInterval(loadDashboardData, 30000);
         }
 
@@ -1016,14 +982,11 @@
             });
         }
 
-        function switchTab(tabName) {
-            // Update active tab
+        function switchTab(tabName) {//Update active tab
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            
-            // Show/hide tab content
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');//Show/hide tab content
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.add('hidden');
             });
@@ -1033,9 +996,9 @@
         async function loadDashboardData() {
             try {
                 const [metrics, services, systemInfo] = await Promise.all([
-                    fetch('/dashboard/api/metrics').then(r => r.json()),
-                    fetch('/dashboard/api/services').then(r => r.json()),
-                    fetch('/dashboard/api/system-info').then(r => r.json())
+                    fetch("/dashboard/api/metrics').then(r => r.json()),
+                    fetch("/dashboard/api/services').then(r => r.json()),
+                    fetch("/dashboard/api/system-info').then(r => r.json())
                 ]);
                 
                 updateMetrics(metrics.metrics);
@@ -1104,8 +1067,7 @@
             `;
         }
 
-        function initializeCharts() {
-            // API Usage Chart
+        function initializeCharts() {//API Usage Chart
             const apiCtx = document.getElementById('apiUsageChart')?.getContext('2d');
             if (apiCtx) {
                 new Chart(apiCtx, {
@@ -1126,9 +1088,7 @@
                         scales: { y: { beginAtZero: true } }
                     }
                 });
-            }
-
-            // Performance Chart
+            }//Performance Chart
             const perfCtx = document.getElementById('performanceChart')?.getContext('2d');
             if (perfCtx) {
                 new Chart(perfCtx, {
@@ -1146,9 +1106,7 @@
                     }
                 });
             }
-        }
-
-        // Quick Action Functions
+        }//Quick Action Functions
         async function refreshAllData() {
             await loadDashboardData();
             showNotification('Data refreshed successfully', 'success');
@@ -1156,7 +1114,7 @@
 
         async function runHealthCheck() {
             try {
-                const response = await fetch('/dashboard/health');
+                const response = await fetch("/dashboard/health');
                 const result = await response.json();
                 showNotification(`Health check: ${result.status}`, 'success');
             } catch (error) {
@@ -1180,22 +1138,17 @@
             setTimeout(() => {
                 notification.remove();
             }, 3000);
-        }
-
-        // File Manager Functions
+        }//File Manager Functions
         function showFileManager() {
             document.getElementById('file-manager-modal').classList.remove('hidden');
             loadDownloadsFiles();
             setupFileManagerEvents();
         }
 
-        function setupFileManagerEvents() {
-            // Close modal
+        function setupFileManagerEvents() {//Close modal
             document.getElementById('close-file-manager').onclick = () => {
                 document.getElementById('file-manager-modal').classList.add('hidden');
-            };
-
-            // File upload
+            };//File upload
             const fileInput = document.getElementById('file-upload');
             const dropZone = document.getElementById('drop-zone');
 
@@ -1203,9 +1156,7 @@
 
             fileInput.onchange = (e) => {
                 handleFileUpload(e.target.files);
-            };
-
-            // Drag and drop
+            };//Drag and drop
             dropZone.ondragover = (e) => {
                 e.preventDefault();
                 dropZone.classList.add('border-blue-500', 'bg-blue-50');
@@ -1219,9 +1170,7 @@
                 e.preventDefault();
                 dropZone.classList.remove('border-blue-500', 'bg-blue-50');
                 handleFileUpload(e.dataTransfer.files);
-            };
-
-            // Refresh files
+            };//Refresh files
             document.getElementById('refresh-files').onclick = loadDownloadsFiles;
         }
 
@@ -1239,7 +1188,7 @@
 
                 try {
                     statusText.textContent = `Uploading ${file.name}...`;
-                    progressBar.style.width = `${((i + 1) / files.length) * 100}%`;
+                    progressBar.style.width = `${((i + 1)/files.length) * 100}%`;
 
                     const response = await fetch('http://localhost:5000/upload', {
                         method: 'POST',
@@ -1353,28 +1302,19 @@
                 </div>
             `;
             document.body.appendChild(modal);
-        }
-
-        // Paste Integration Functions
+        }//Paste Integration Functions
         function showPasteIntegration() {
             document.getElementById('paste-integration-modal').classList.remove('hidden');
             setupPasteIntegrationEvents();
             checkPasteServiceStatus();
         }
 
-        function setupPasteIntegrationEvents() {
-            // Close modal
+        function setupPasteIntegrationEvents() {//Close modal
             document.getElementById('close-paste-integration').onclick = () => {
                 document.getElementById('paste-integration-modal').classList.add('hidden');
-            };
-
-            // Save paste
-            document.getElementById('save-paste').onclick = savePasteContent;
-
-            // Load from file
-            document.getElementById('load-from-file').onclick = loadFromDownloadsFile;
-
-            // Generate avatar
+            };//Save paste
+            document.getElementById('save-paste').onclick = savePasteContent;//Load from file
+            document.getElementById('load-from-file').onclick = loadFromDownloadsFile;//Generate avatar
             document.getElementById('generate-avatar').onclick = generateAvatar;
         }
 
@@ -1413,9 +1353,7 @@
                     if (textFiles.length === 0) {
                         showNotification('No text files found in Downloads', 'error');
                         return;
-                    }
-
-                    // For simplicity, load the first text file
+                    }//For simplicity, load the first text file
                     const file = textFiles[0];
                     const fileResponse = await fetch('http://localhost:5000/downloads/process', {
                         method: 'POST',
@@ -1485,9 +1423,7 @@
                 indicator.className = 'w-3 h-3 rounded-full bg-red-500';
                 text.textContent = 'Paste service is not available';
             }
-        }
-
-        // Utility functions
+        }//Utility functions
         function getFileIcon(extension) {
             const icons = {
                 '.pdf': '-pdf',
@@ -1512,8 +1448,8 @@
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            const i = Math.floor(Math.log(bytes)/Math.log(k));
+            return parseFloat((bytes/Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
     </script>
     

@@ -74,9 +74,9 @@ echo -e "${GREEN}✅ Dependencies installed${NC}"
 echo ""
 
 # 1. Unit Tests with Coverage
-if [ -d "tests" ] && command -v pytest &> /dev/null; then
+if [ -d "tests" ] && command -v pytest &>/dev/null; then
     run_test_suite "Unit Tests with Coverage" \
-        "pytest tests/ -v --tb=short --cov=. --cov-report=html:$TEST_RESULTS_DIR/coverage-html --cov-report=xml:$TEST_RESULTS_DIR/coverage.xml --cov-report=term-missing --cov-fail-under=$COVERAGE_THRESHOLD --junitxml=$TEST_RESULTS_DIR/pytest-results.xml" \
+        "pytest tests/-v --tb=short --cov=. --cov-report=html:$TEST_RESULTS_DIR/coverage-html --cov-report=xml:$TEST_RESULTS_DIR/coverage.xml --cov-report=term-missing --cov-fail-under=$COVERAGE_THRESHOLD --junitxml=$TEST_RESULTS_DIR/pytest-results.xml" \
         true
 else
     echo -e "${YELLOW}⚠️  Pytest not available or no tests directory found${NC}"
@@ -84,14 +84,14 @@ else
 fi
 
 # 2. Security Scan - Bandit
-if command -v bandit &> /dev/null; then
+if command -v bandit &>/dev/null; then
     run_test_suite "Security Scan (Bandit)" \
         "bandit -r . -f json -o $TEST_RESULTS_DIR/bandit-report.json -f txt -o $TEST_RESULTS_DIR/bandit-report.txt" \
         true
 else
     echo -e "${YELLOW}⚠️  Bandit not available, installing...${NC}"
     pip install bandit
-    if command -v bandit &> /dev/null; then
+    if command -v bandit &>/dev/null; then
         run_test_suite "Security Scan (Bandit)" \
             "bandit -r . -f json -o $TEST_RESULTS_DIR/bandit-report.json -f txt -o $TEST_RESULTS_DIR/bandit-report.txt" \
             true
@@ -99,14 +99,14 @@ else
 fi
 
 # 3. Dependency Vulnerability Scan - Safety
-if command -v safety &> /dev/null; then
+if command -v safety &>/dev/null; then
     run_test_suite "Dependency Vulnerability Scan (Safety)" \
         "safety check --json --output $TEST_RESULTS_DIR/safety-report.json" \
         false  # Non-critical, as some vulnerabilities might be acceptable
 else
     echo -e "${YELLOW}⚠️  Safety not available, installing...${NC}"
     pip install safety
-    if command -v safety &> /dev/null; then
+    if command -v safety &>/dev/null; then
         run_test_suite "Dependency Vulnerability Scan (Safety)" \
             "safety check --json --output $TEST_RESULTS_DIR/safety-report.json" \
             false
@@ -114,7 +114,7 @@ else
 fi
 
 # 4. Secret Detection - Gitleaks (if available)
-if command -v gitleaks &> /dev/null; then
+if command -v gitleaks &>/dev/null; then
     run_test_suite "Secret Detection (Gitleaks)" \
         "gitleaks detect --source . --report-format json --report-path $TEST_RESULTS_DIR/gitleaks-report.json" \
         true
@@ -124,7 +124,7 @@ else
 fi
 
 # 5. Code Quality - Flake8 (if available)
-if command -v flake8 &> /dev/null; then
+if command -v flake8 &>/dev/null; then
     run_test_suite "Code Quality (Flake8)" \
         "flake8 . --output-file=$TEST_RESULTS_DIR/flake8-report.txt --tee" \
         false  # Non-critical
@@ -159,7 +159,7 @@ cat > "$TEST_RESULTS_DIR/test-summary.json" << EOF
     "total_test_suites": $TOTAL_TESTS,
     "passed_test_suites": $PASSED_TESTS,
     "failed_test_suites": $FAILED_TESTS,
-    "success_rate": "$(echo "scale=2; $PASSED_TESTS * 100 / $TOTAL_TESTS" | bc -l)%"
+    "success_rate": "$(echo "scale=2; $PASSED_TESTS * 100/$TOTAL_TESTS" | bc -l)%"
   },
   "environment": {
     "python_version": "$(python --version 2>&1)",
@@ -180,7 +180,7 @@ echo "Test Run ID: $TIMESTAMP"
 echo "Total Test Suites: $TOTAL_TESTS"
 echo -e "${GREEN}Passed: $PASSED_TESTS${NC}"
 echo -e "${RED}Failed: $FAILED_TESTS${NC}"
-echo "Success Rate: $(echo "scale=2; $PASSED_TESTS * 100 / $TOTAL_TESTS" | bc -l)%"
+echo "Success Rate: $(echo "scale=2; $PASSED_TESTS * 100/$TOTAL_TESTS" | bc -l)%"
 echo "Results Directory: $TEST_RESULTS_DIR"
 echo ""
 

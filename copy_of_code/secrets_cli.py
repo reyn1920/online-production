@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Secrets Management CLI
 
@@ -6,16 +6,17 @@ Command - line interface for managing encrypted secrets in the TRAE.AI system.
 Provides secure operations for adding, retrieving, listing, and deleting secrets.
 
 Usage:
-    python scripts / secrets_cli.py add <key_name> <secret_value>
-    python scripts / secrets_cli.py get <key_name>
-    python scripts / secrets_cli.py list
-    python scripts / secrets_cli.py delete <key_name>
-    python scripts / secrets_cli.py exists <key_name>
-    python scripts / secrets_cli.py backup <backup_path>
+    python scripts/secrets_cli.py add <key_name> <secret_value>
+    python scripts/secrets_cli.py get <key_name>
+    python scripts/secrets_cli.py list
+    python scripts/secrets_cli.py delete <key_name>
+    python scripts/secrets_cli.py exists <key_name>
+    python scripts/secrets_cli.py backup <backup_path>
 
 Environment Variables:
     TRAE_MASTER_KEY: Master password for encryption (required)
-    TRAE_SECRETS_DB: Path to secrets database (optional, defaults to data / secrets.sqlite)
+    TRAE_SECRETS_DB: Path to secrets database (optional,
+    defaults to data/secrets.sqlite)
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -45,7 +46,7 @@ class SecretsCLI:
 
 
     def __init__(self):
-        self.db_path = os.getenv("TRAE_SECRETS_DB", "data / secrets.sqlite")
+        self.db_path = os.getenv("TRAE_SECRETS_DB", "data/secrets.sqlite")
         self.master_password = None
 
 
@@ -60,7 +61,7 @@ class SecretsCLI:
             SystemExit: If no password is available
         """
         if self.master_password:
-            return self.master_password
+        return self.master_password
 
         # Try environment variable first
         password = os.getenv("TRAE_MASTER_KEY")
@@ -70,7 +71,7 @@ class SecretsCLI:
             try:
                 password = getpass.getpass("Enter master password: ")
             except KeyboardInterrupt:
-                print("\nOperation cancelled.")
+                print("\\nOperation cancelled.")
                 sys.exit(1)
 
         if not password:
@@ -90,7 +91,9 @@ class SecretsCLI:
             SecretStore: Initialized secret store
         """
         try:
-            return SecretStore(self.db_path, self._get_master_password())
+        except Exception as e:
+            pass
+        return SecretStore(self.db_path, self._get_master_password())
         except SecretStoreError as e:
             print(f"Error initializing secret store: {e}")
             sys.exit(1)
@@ -124,7 +127,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error storing secret: {e}")
         except KeyboardInterrupt:
-            print("\nOperation cancelled.")
+            print("\\nOperation cancelled.")
 
 
     def get_secret(self, key_name: str, show_value: bool = True) -> None:
@@ -171,19 +174,19 @@ class SecretsCLI:
                     print(json.dumps(secrets, indent = 2))
                 else:
                     # Table format
-                    print(f"\n{'Key Name':<30} {'Created':<20} {'Updated':<20}")
+                    print(f"\\n{'Key Name':<30} {'Created':<20} {'Updated':<20}")
                     print("-" * 70)
 
                     for secret in secrets:
                         created = (
-                            secret["created_at"][:19] if secret["created_at"] else "N / A"
+                            secret["created_at"][:19] if secret["created_at"] else "N/A"
                         )
                         updated = (
-                            secret["updated_at"][:19] if secret["updated_at"] else "N / A"
+                            secret["updated_at"][:19] if secret["updated_at"] else "N/A"
                         )
                         print(f"{secret['key_name']:<30} {created:<20} {updated:<20}")
 
-                    print(f"\nTotal: {len(secrets)} secrets")
+                    print(f"\\nTotal: {len(secrets)} secrets")
 
         except SecretStoreError as e:
             print(f"Error listing secrets: {e}")
@@ -200,7 +203,7 @@ class SecretsCLI:
         try:
             if not confirm:
                 response = input(
-                    f"Are you sure you want to delete secret '{key_name}'? (y / N): "
+                    f"Are you sure you want to delete secret '{key_name}'? (y/N): "
                 )
                 if response.lower() not in ["y", "yes"]:
                     print("Operation cancelled.")
@@ -217,7 +220,7 @@ class SecretsCLI:
         except SecretStoreError as e:
             print(f"Error deleting secret: {e}")
         except KeyboardInterrupt:
-            print("\nOperation cancelled.")
+            print("\\nOperation cancelled.")
 
 
     def check_exists(self, key_name: str) -> None:
@@ -264,12 +267,12 @@ class SecretsCLI:
         """
         Start interactive mode for secret management.
         """
-        print("\n=== TRAE.AI Secrets Management (Interactive Mode) ===")
+        print("\\n=== TRAE.AI Secrets Management (Interactive Mode) ===")
         print("Commands: add, get, list, delete, exists, backup, help, quit")
 
         while True:
             try:
-                command = input("\nsecrets> ").strip().split()
+                command = input("\\nsecrets> ").strip().split()
 
                 if not command:
                     continue
@@ -327,10 +330,10 @@ class SecretsCLI:
                     )
 
             except KeyboardInterrupt:
-                print("\nGoodbye!")
+                print("\\nGoodbye!")
                 break
             except EOFError:
-                print("\nGoodbye!")
+                print("\\nGoodbye!")
                 break
 
 
@@ -370,7 +373,7 @@ Examples:
   %(prog)s list
   %(prog)s delete api_key
   %(prog)s exists api_key
-  %(prog)s backup /path / to / backup.sqlite
+  %(prog)s backup/path/to/backup.sqlite
   %(prog)s interactive
 
 Environment Variables:

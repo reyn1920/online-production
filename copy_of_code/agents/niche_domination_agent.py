@@ -1,8 +1,8 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Proactive Niche Domination Agent
 
-Autonomously monitors growth metrics and expands into new channels / niches
+Autonomously monitors growth metrics and expands into new channels/niches
 when opportunities are detected. Implements strategic market penetration
 with data - driven decision making.
 
@@ -186,7 +186,8 @@ class ProactiveNicheDominationAgent(BaseAgent):
 
                 # Create indexes
                 cursor.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_growth_metrics_channel_niche ON growth_metrics(channel, niche)"
+                    "CREATE INDEX IF NOT EXISTS idx_growth_metrics_channel_niche ON growth_metrics(channel,
+    niche)"
                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_opportunities_score ON niche_opportunities(opportunity_score DESC)"
@@ -240,7 +241,8 @@ class ProactiveNicheDominationAgent(BaseAgent):
         ]
 
         # Sort by opportunity score
-        qualified_opportunities.sort(key = lambda x: x.opportunity_score, reverse = True)
+        qualified_opportunities.sort(key = lambda x: x.opportunity_score,
+    reverse = True)
 
         # Store opportunities in database
         for opp in qualified_opportunities:
@@ -299,7 +301,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
         return metrics
 
 
-    def _identify_high_performers(
+    def _identify_high_performers(:
         self, metrics: List[GrowthMetrics]
     ) -> List[NicheOpportunity]:
         """Identify high - performing niches suitable for expansion."""
@@ -308,9 +310,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
         for metric in metrics:
             # Calculate opportunity score based on performance
             performance_score = (
-                min(metric.engagement_rate / self.engagement_threshold, 1.0) * 0.3
-                + min(metric.subscriber_growth / self.growth_threshold, 1.0) * 0.25
-                + min(metric.view_velocity / 1000, 1.0) * 0.2  # Normalize view velocity
+                min(metric.engagement_rate/self.engagement_threshold, 1.0) * 0.3
+                + min(metric.subscriber_growth/self.growth_threshold, 1.0) * 0.25
+                + min(metric.view_velocity/1000, 1.0) * 0.2  # Normalize view velocity
                 + min(metric.revenue_per_view * 1000, 1.0) * 0.25  # Normalize revenue
             )
 
@@ -491,7 +493,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
                 opportunity, content_strategy
             )
 
-            # 3. Set up channel / platform presence
+            # 3. Set up channel/platform presence
             channel_setup = self._setup_channel_presence(opportunity)
 
             # 4. Deploy initial content
@@ -514,25 +516,35 @@ class ProactiveNicheDominationAgent(BaseAgent):
                 # Record successful expansion
                 self._record_expansion(opportunity)
                 self.logger.info(f"Successfully expanded into {opportunity.niche_name}")
-                return True
+        except Exception as e:
+            pass
+        return True
             else:
                 self.logger.error(f"Expansion into {opportunity.niche_name} failed")
-                return False
+        return False
 
         except Exception as e:
             self.logger.error(f"Expansion execution failed: {e}")
-            return False
+        return False
 
 
     def _generate_market_gap_prompt(self) -> str:
         """Generate AI prompt for market gap analysis."""
         return """
-Analyze the current digital content landscape and identify 5 underserved market niches with high growth potential.
+Analyze the current digital content landscape \
+    and identify 5 underserved market niches with high growth potential.
 
 For each niche, provide:
 1. Niche name and description
-2. Best platform / channel (youtube, tiktok, instagram, twitter, linkedin, podcast, blog, newsletter)
-3. Market size estimate (search volume / audience size)
+2. Best platform/channel (youtube,
+    tiktok,
+    instagram,
+    twitter,
+    linkedin,
+    podcast,
+    blog,
+    newsletter)
+3. Market size estimate (search volume/audience size)
 4. Competition level (0.0 - 1.0, where 1.0 is highly competitive)
 5. Entry difficulty (0.0 - 1.0, where 1.0 is very difficult)
 6. Revenue potential (0.0 - 1.0, where 1.0 is highest)
@@ -555,11 +567,14 @@ Format as JSON array with these fields.
         """Parse AI response for market gap opportunities."""
         try:
             # Extract JSON from AI response
+
             import re
 
-            json_match = re.search(r"\[.*\]", ai_response, re.DOTALL)
+            json_match = re.search(r"\\[.*\\]", ai_response, re.DOTALL)
             if json_match:
-                return json.loads(json_match.group())
+        except Exception as e:
+            pass
+        return json.loads(json_match.group())
         except Exception as e:
             self.logger.error(f"Failed to parse market gaps: {e}")
 
@@ -598,7 +613,7 @@ Format as JSON array with these fields.
     def _evaluate_trend_opportunity(self, trend: Dict) -> float:
         """Evaluate a trending topic for content opportunity."""
         # Calculate opportunity score based on multiple factors
-        volume_score = min(trend["search_volume"] / 100000, 1.0)  # Normalize to 100k
+        volume_score = min(trend["search_volume"]/100000, 1.0)  # Normalize to 100k
         competition_score = 1.0 - trend["competition"]  # Lower competition is better
         monetization_score = trend["monetization_potential"]
         trend_strength_score = trend["trend_strength"]
@@ -634,18 +649,20 @@ Format as JSON array with these fields.
 
                     trends.append(
                         {
-                            "topic": trend,
-                                "search_volume": int(
+            "topic": trend,
+            "search_volume": int(
                                 avg_interest * 1000
                             ),  # Estimate volume
-                            "competition": 0.5,  # Default competition
-                            "best_channel": "youtube",
-                                "monetization_potential": 0.6,
-                                "content_types": ["tutorials", "news", "analysis"],
-                                "strategy": "Capitalize on trending interest",
-                                "trend_strength": min(avg_interest / 100, 1.0),
-                                "source": "google_trends",
-                                }
+            "competition": 0.5,  # Default competition
+            "best_channel": "youtube",
+            "monetization_potential": 0.6,
+            "content_types": ["tutorials", "news", "analysis"],
+            "strategy": "Capitalize on trending interest",
+            "trend_strength": min(avg_interest/100, 1.0),
+            "source": "google_trends",
+        except Exception as e:
+            pass
+        }
                     )
 
         except Exception as e:
@@ -668,7 +685,9 @@ Format as JSON array with these fields.
 
                 if not all([api_key, api_secret, access_token, access_token_secret]):
                     self.logger.warning("Twitter API credentials not found")
-                    return trends
+        except Exception as e:
+            pass
+        return trends
 
                 # Initialize Twitter API
                 auth = tweepy.OAuthHandler(api_key, api_secret)
@@ -684,18 +703,18 @@ Format as JSON array with these fields.
                     if trend["tweet_volume"]:  # Only trends with volume data
                         trends.append(
                             {
-                                "topic": trend["name"].replace("#", ""),
-                                    "search_volume": trend["tweet_volume"],
-                                    "competition": 0.7,  # Twitter trends are competitive
-                                "best_channel": "twitter",
-                                    "monetization_potential": 0.5,
-                                    "content_types": ["tweets", "threads", "commentary"],
-                                    "strategy": "Real - time engagement with trending topics",
-                                    "trend_strength": min(
-                                    trend["tweet_volume"] / 100000, 1.0
+            "topic": trend["name"].replace("#", ""),
+            "search_volume": trend["tweet_volume"],
+            "competition": 0.7,  # Twitter trends are competitive
+            "best_channel": "twitter",
+            "monetization_potential": 0.5,
+            "content_types": ["tweets", "threads", "commentary"],
+            "strategy": "Real - time engagement with trending topics",
+            "trend_strength": min(
+                                    trend["tweet_volume"]/100000, 1.0
                                 ),
-                                    "source": "twitter_trends",
-                                    }
+            "source": "twitter_trends",
+        }
                         )
 
         except Exception as e:
@@ -715,17 +734,19 @@ Format as JSON array with these fields.
 
                 if not api_key:
                     self.logger.warning("YouTube API key not found")
-                    return trends
+        except Exception as e:
+            pass
+        return trends
 
                 # Fetch trending videos
-                url = "https://www.googleapis.com / youtube / v3 / videos"
+                url = "https://www.googleapis.com/youtube/v3/videos"
                 params = {
-                    "part": "snippet,statistics",
-                        "chart": "mostPopular",
-                        "regionCode": "US",
-                        "maxResults": 20,
-                        "key": api_key,
-                        }
+            "part": "snippet,statistics",
+            "chart": "mostPopular",
+            "regionCode": "US",
+            "maxResults": 20,
+            "key": api_key,
+        }
 
                 response = requests.get(url, params = params)
                 response.raise_for_status()
@@ -753,17 +774,16 @@ Format as JSON array with these fields.
                 )[:10]:
                     trends.append(
                         {
-                            "topic": topic.title(),
-                                "search_volume": view_count
-                            // 100,  # Estimate search volume
-                            "competition": 0.8,  # YouTube is competitive
-                            "best_channel": "youtube",
-                                "monetization_potential": 0.8,
-                                "content_types": ["videos", "shorts", "tutorials"],
-                                "strategy": "Create content around trending video topics",
-                                "trend_strength": min(view_count / 10000000, 1.0),
-                                "source": "youtube_trending",
-                                }
+            "topic": topic.title(),
+            "search_volume": view_count//100,  # Estimate search volume
+            "competition": 0.8,  # YouTube is competitive
+            "best_channel": "youtube",
+            "monetization_potential": 0.8,
+            "content_types": ["videos", "shorts", "tutorials"],
+            "strategy": "Create content around trending video topics",
+            "trend_strength": min(view_count/10000000, 1.0),
+            "source": "youtube_trending",
+        }
                     )
 
         except Exception as e:
@@ -781,7 +801,7 @@ Format as JSON array with these fields.
             subreddits = ["all", "popular", "trending"]
 
             for subreddit in subreddits:
-                url = f"https://www.reddit.com / r/{subreddit}/hot.json"
+                url = f"https://www.reddit.com/r/{subreddit}/hot.json"
                 headers = {"User - Agent": "TRAE.AI Trend Analyzer 1.0"}
 
                 response = requests.get(url, headers = headers)
@@ -793,17 +813,19 @@ Format as JSON array with these fields.
 
                     trends.append(
                         {
-                            "topic": post_data["title"][:50],  # Truncate long titles
-                            "search_volume": post_data["score"]
+            "topic": post_data["title"][:50],  # Truncate long titles
+            "search_volume": post_data["score"]
                             * 10,  # Estimate volume from score
-                            "competition": 0.6,
-                                "best_channel": "blog",
-                                "monetization_potential": 0.4,
-                                "content_types": ["articles", "discussions", "analysis"],
-                                "strategy": "Create content around Reddit discussions",
-                                "trend_strength": min(post_data["score"] / 10000, 1.0),
-                                "source": "reddit_trends",
-                                }
+            "competition": 0.6,
+            "best_channel": "blog",
+            "monetization_potential": 0.4,
+            "content_types": ["articles", "discussions", "analysis"],
+            "strategy": "Create content around Reddit discussions",
+            "trend_strength": min(post_data["score"]/10000, 1.0),
+            "source": "reddit_trends",
+        except Exception as e:
+            pass
+        }
                     )
 
         except Exception as e:
@@ -816,27 +838,27 @@ Format as JSON array with these fields.
         """Fallback trending topics when APIs are unavailable."""
         return [
             {
-                "topic": "Technology Reviews",
-                    "search_volume": 45000,
-                    "competition": 0.7,
-                    "best_channel": "youtube",
-                    "monetization_potential": 0.8,
-                    "content_types": ["reviews", "comparisons", "tutorials"],
-                    "strategy": "Product reviews with affiliate links",
-                    "trend_strength": 0.8,
-                    "source": "fallback",
-                    },
+            "topic": "Technology Reviews",
+            "search_volume": 45000,
+            "competition": 0.7,
+            "best_channel": "youtube",
+            "monetization_potential": 0.8,
+            "content_types": ["reviews", "comparisons", "tutorials"],
+            "strategy": "Product reviews with affiliate links",
+            "trend_strength": 0.8,
+            "source": "fallback",
+        },
                 {
-                "topic": "Health and Wellness",
-                    "search_volume": 35000,
-                    "competition": 0.6,
-                    "best_channel": "instagram",
-                    "monetization_potential": 0.7,
-                    "content_types": ["tips", "workouts", "nutrition"],
-                    "strategy": "Wellness content with product partnerships",
-                    "trend_strength": 0.75,
-                    "source": "fallback",
-                    },
+            "topic": "Health and Wellness",
+            "search_volume": 35000,
+            "competition": 0.6,
+            "best_channel": "instagram",
+            "monetization_potential": 0.7,
+            "content_types": ["tips", "workouts", "nutrition"],
+            "strategy": "Wellness content with product partnerships",
+            "trend_strength": 0.75,
+            "source": "fallback",
+        },
                 ]
 
 
@@ -867,7 +889,7 @@ Format as JSON array with these fields.
                 10: ["Halloween", "Fall Decorating", "Holiday Planning"],
                 11: ["Thanksgiving", "Black Friday", "Holiday Shopping"],
                 12: ["Christmas", "New Year Planning", "Gift Guides"],
-                }
+        }
 
         seasonal_topics = seasonal_calendar.get(month, [])
         opportunities = []
@@ -875,21 +897,21 @@ Format as JSON array with these fields.
         for topic in seasonal_topics:
             opportunities.append(
                 {
-                    "niche": topic,
-                        "channel": "youtube",  # Default channel
-                    "score": 0.8,  # High seasonal relevance
-                    "seasonal_volume": 25000,
-                        "competition": 0.7,  # Seasonal content is competitive
-                    "timing_difficulty": 0.3,  # Timing is crucial but manageable
-                    "seasonal_revenue": 0.75,
-                        "content_calendar": [
+            "niche": topic,
+            "channel": "youtube",  # Default channel
+            "score": 0.8,  # High seasonal relevance
+            "seasonal_volume": 25000,
+            "competition": 0.7,  # Seasonal content is competitive
+            "timing_difficulty": 0.3,  # Timing is crucial but manageable
+            "seasonal_revenue": 0.75,
+            "content_calendar": [
                         f"{topic} guide",
                             f"{topic} tips",
                             f"{topic} reviews",
                             ],
-                        "timing_strategy": f"Create {topic} content 2 - 4 weeks before peak demand",
-                        "predictability": 0.9,  # Seasonal trends are predictable
-                }
+            "timing_strategy": f"Create {topic} content 2 - 4 weeks before peak demand",
+            "predictability": 0.9,  # Seasonal trends are predictable
+        }
             )
 
         return opportunities
@@ -907,7 +929,7 @@ Format as JSON array with these fields.
                 ChannelType.PODCAST: 15000,
                 ChannelType.BLOG: 25000,
                 ChannelType.NEWSLETTER: 10000,
-                }
+        }
 
         return base_sizes.get(channel_type, 50000)
 
@@ -923,12 +945,12 @@ Format as JSON array with these fields.
                 ChannelType.PODCAST: 0.6,  # Technical setup required
             ChannelType.BLOG: 0.4,
                 ChannelType.NEWSLETTER: 0.3,
-                }
+        }
 
         return difficulty_scores.get(channel_type, 0.5)
 
 
-    def _get_content_requirements(
+    def _get_content_requirements(:
         self, niche: str, channel_type: ChannelType
     ) -> List[str]:
         """Get content requirements for a niche on a specific channel."""
@@ -946,12 +968,12 @@ Format as JSON array with these fields.
                 ChannelType.PODCAST: ["audio content", "show notes", "transcripts"],
                 ChannelType.BLOG: ["articles", "SEO optimization", "images"],
                 ChannelType.NEWSLETTER: ["email content", "subject lines", "CTAs"],
-                }
+        }
 
         return channel_requirements.get(channel_type, ["content"])
 
 
-    def _generate_expansion_strategy(
+    def _generate_expansion_strategy(:
         self, metric: GrowthMetrics, channel_type: ChannelType
     ) -> str:
         """Generate expansion strategy for a high - performing niche."""
@@ -996,12 +1018,14 @@ Format as JSON array with these fields.
         return True
 
 
-    def _generate_initial_content(
+    def _generate_initial_content(:
         self, opportunity: NicheOpportunity, strategy: Any
     ) -> bool:
         """Generate initial content batch for expansion."""
         # Use the automated content generator
             try:
+            except Exception as e:
+                pass
             content_count = 5  # Initial batch size
             for i in range(content_count):
                 content = self.content_generator.generate_content(
@@ -1013,11 +1037,11 @@ Format as JSON array with these fields.
                     ),
                         )
                 if not content:
-                    return False
-            return True
+        return False
+        return True
         except Exception as e:
             self.logger.error(f"Content generation failed: {e}")
-            return False
+        return False
 
 
     def _setup_channel_presence(self, opportunity: NicheOpportunity) -> bool:
@@ -1026,7 +1050,7 @@ Format as JSON array with these fields.
         return True
 
 
-    def _deploy_initial_content(
+    def _deploy_initial_content(:
         self, opportunity: NicheOpportunity, content: Any
     ) -> bool:
         """Deploy initial content to the target channel."""
@@ -1084,18 +1108,22 @@ Format as JSON array with these fields.
                 # Get opportunity summary
                 cursor.execute(
                     """
-                    SELECT status, COUNT(*) as count, AVG(opportunity_score) as avg_score
+                    SELECT status,
+    COUNT(*) as count,
+    AVG(opportunity_score) as avg_score
                     FROM niche_opportunities
                     GROUP BY status
                 """
                 )
                 opportunity_summary = {
                     row["status"]: {
-                        "count": row["count"],
-                            "avg_score": row["avg_score"],
-                            }
+            "count": row["count"],
+            "avg_score": row["avg_score"],
+        except Exception as e:
+            pass
+        }
                     for row in cursor.fetchall()
-                }
+        }
 
                 # Get active expansions
                 cursor.execute(
@@ -1121,15 +1149,15 @@ Format as JSON array with these fields.
                 )
                 top_opportunities = [dict(row) for row in cursor.fetchall()]
 
-                return {
-                    "timestamp": datetime.now().isoformat(),
-                        "opportunity_summary": opportunity_summary,
-                        "active_expansions": active_expansions,
-                        "top_opportunities": top_opportunities,
-                        "total_opportunities": sum(
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "opportunity_summary": opportunity_summary,
+            "active_expansions": active_expansions,
+            "top_opportunities": top_opportunities,
+            "total_opportunities": sum(
                         s["count"] for s in opportunity_summary.values()
                     ),
-                        }
+        }
         except Exception as e:
             self.logger.error(f"Failed to generate expansion report: {e}")
-            return {"error": str(e), "timestamp": datetime.now().isoformat()}
+        return {"error": str(e), "timestamp": datetime.now().isoformat()}

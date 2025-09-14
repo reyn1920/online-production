@@ -1,0 +1,1227 @@
+#!/usr / bin / env python3
+"""
+Email Service Manager
+Centralized email service integration for SendGrid, Mailchimp, and SMTP
+"""
+
+import os
+import logging
+import smtplib
+import time
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Union
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+from pathlib import Path
+
+# Optional imports - gracefully handle missing dependencies
+SENDGRID_AVAILABLE = False
+MAILCHIMP_AVAILABLE = False
+SendGridAPIClient = None
+Mail = None
+mailchimp3 = None
+
+try:
+    import requests
+
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    REQUESTS_AVAILABLE = False
+    requests = None
+
+
+class SendGridService:
+    """SendGrid email service integration using HTTP requests"""
+
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.is_available = REQUESTS_AVAILABLE and bool(api_key)
+        self.base_url = "https://api.sendgrid.com / v3 / mail / send"
+
+        if self.is_available:
+            logger.info("SendGrid service initialized successfully")
+
+    def send_email(
+        self,
+        to_email: str,
+        subject: str,
+        html_content: str,
+        plain_content: str = None,
+        from_email: str = None,
+    ) -> bool:
+        """Send email via SendGrid API"""
+        if not self.is_available:
+            logger.error("SendGrid service not available (missing requests or API key)")
+            return False
+
+        try:
+            from_email = from_email or os.getenv("FROM_EMAIL", "noreply@example.com")
+
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content - Type": "application / json",
+            }
+
+            data = {
+                "personalizations": [{"to": [{"email": to_email}], "subject": subject}],
+                "from": {"email": from_email},
+                "content": [{"type": "text / html", "value": html_content}],
+            }
+
+            if plain_content:
+                data["content"].insert(0, {"type": "text / plain", "value": plain_content})
+
+            response = requests.post(self.base_url, headers=headers, json=data)
+
+            if response.status_code in [200, 202]:
+                logger.info(f"Email sent successfully via SendGrid to {to_email}")
+                return True
+            else:
+                logger.error(f"SendGrid API error: {response.status_code} - {response.text}")
+                return False
+
+        except Exception as e:
+            logger.error(f"Failed to send email via SendGrid: {e}")
+            return False
+
+
+class MailchimpService:
+    """Mailchimp email service integration using HTTP requests"""
+
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.is_available = REQUESTS_AVAILABLE and bool(api_key)
+
+        if self.is_available and api_key:
+            # Extract datacenter from API key
+            try:
+                self.datacenter = api_key.split("-")[-1]
+                self.base_url = f"https://{self.datacenter}.api.mailchimp.com / 3.0"
+                logger.info("Mailchimp service initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to parse Mailchimp API key: {e}")
+                self.is_available = False
+
+    def create_campaign(
+        self,
+        subject: str,
+        list_id: str,
+        from_name: str = "TRAE.AI",
+        from_email: str = None,
+    ) -> dict:
+        """Create a new campaign"""
+        if not self.is_available:
+            logger.error("Mailchimp service not available")
+            return None
+
+        try:
+            from_email = from_email or os.getenv("FROM_EMAIL", "noreply@example.com")
+
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content - Type": "application / json",
+            }
+
+            data = {
+                "type": "regular",
+                "recipients": {"list_id": list_id},
+                "settings": {
+                    "subject_line": subject,
+                    "from_name": from_name,
+                    "reply_to": from_email,
+                    "title": f"Campaign {int(time.time())}",
+                },
+            }
+
+            response = requests.post(f"{self.base_url}/campaigns", headers=headers, json=data)
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                logger.error(
+                    f"Mailchimp campaign creation error: {response.status_code} - {response.text}"
+                )
+                return None
+
+        except Exception as e:
+            logger.error(f"Failed to create Mailchimp campaign: {e}")
+            return None
+
+    def set_campaign_content(
+        self, campaign_id: str, html_content: str, plain_content: str = None
+    ) -> bool:
+        """Set campaign content"""
+        if not self.is_available:
+            return False
+
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content - Type": "application / json",
+            }
+
+            data = {"html": html_content, "plain_text": plain_content or html_content}
+
+            response = requests.put(
+                f"{self.base_url}/campaigns/{campaign_id}/content",
+                headers=headers,
+                json=data,
+            )
+
+            return response.status_code == 200
+
+        except Exception as e:
+            logger.error(f"Failed to set Mailchimp campaign content: {e}")
+            return False
+
+    def send_campaign(self, campaign_id: str) -> bool:
+        """Send campaign"""
+        if not self.is_available:
+            return False
+
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content - Type": "application / json",
+            }
+
+            response = requests.post(
+                f"{self.base_url}/campaigns/{campaign_id}/actions / send",
+                headers=headers,
+            )
+
+            return response.status_code == 204
+
+        except Exception as e:
+            logger.error(f"Failed to send Mailchimp campaign: {e}")
+            return False
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+class EmailServiceManager:
+    """Comprehensive email service manager with multiple providers \
+    and TubeBuddy / VidIQ - like YouTube marketing capabilities"""
+
+    def __init__(self):
+        self.sendgrid_client = None
+        self.mailchimp_client = None
+        self.smtp_config = {}
+
+        # YouTube Marketing Services (TubeBuddy / VidIQ - like features)
+        self.youtube_seo_optimizer = YouTubeSEOOptimizer()
+        self.competitor_analyzer = CompetitorAnalyzer()
+        self.video_analytics = VideoAnalytics()
+        self.bulk_processor = BulkProcessor()
+        self.thumbnail_tester = ThumbnailTester()
+
+        self.setup_clients()
+
+    def setup_clients(self):
+        """Initialize all available email clients"""
+        try:
+            # SendGrid setup
+            sendgrid_key = os.getenv("SENDGRID_API_KEY")
+            if (
+                sendgrid_key
+                and sendgrid_key != "SG.production - sendgrid - api - key - placeholder"
+                and SENDGRID_AVAILABLE
+            ):
+                self.sendgrid_client = SendGridAPIClient(api_key=sendgrid_key)
+                logger.info("✅ SendGrid client initialized")
+            elif sendgrid_key:
+                logger.warning("⚠️ SendGrid API key found but library not available")
+
+            # Mailchimp setup
+            mailchimp_key = os.getenv("MAILCHIMP_API_KEY")
+            if (
+                mailchimp_key
+                and mailchimp_key != "your_mailchimp_api_key_here"
+                and MAILCHIMP_AVAILABLE
+            ):
+                self.mailchimp_client = mailchimp3.MailChimp(mc_api=mailchimp_key)
+                logger.info("✅ Mailchimp client initialized")
+            elif mailchimp_key:
+                logger.warning("⚠️ Mailchimp API key found but library not available")
+
+            # SMTP setup
+            self.smtp_config = {
+                "server": os.getenv("SMTP_SERVER", "smtp.gmail.com"),
+                "port": int(os.getenv("SMTP_PORT", "587")),
+                "username": os.getenv("SMTP_USERNAME", ""),
+                "password": os.getenv("SMTP_PASSWORD", ""),
+                "from_email": os.getenv("FROM_EMAIL", ""),
+            }
+
+            if self.smtp_config["username"] and self.smtp_config["password"]:
+                logger.info("✅ SMTP configuration loaded")
+
+        except Exception as e:
+            logger.error(f"❌ Failed to setup email clients: {e}")
+
+    def get_service_status(self) -> Dict[str, Any]:
+        """Get status of all email services"""
+        return {
+            "sendgrid": {
+                "available": self.sendgrid_client is not None,
+                "library_installed": SENDGRID_AVAILABLE,
+                "api_key_configured": bool(os.getenv("SENDGRID_API_KEY")),
+            },
+            "mailchimp": {
+                "available": self.mailchimp_client is not None,
+                "library_installed": MAILCHIMP_AVAILABLE,
+                "api_key_configured": bool(os.getenv("MAILCHIMP_API_KEY")),
+            },
+            "smtp": {
+                "available": bool(
+                    self.smtp_config.get("username") and self.smtp_config.get("password")
+                ),
+                "server": self.smtp_config.get("server"),
+                "port": self.smtp_config.get("port"),
+            },
+        }
+
+    def send_transactional_email(
+        self,
+        to_email: str,
+        subject: str,
+        content: str,
+        html_content: str = None,
+        from_email: str = None,
+        attachments: List[str] = None,
+    ) -> Dict[str, Any]:
+        """Send transactional email using best available service"""
+
+        # Try SendGrid first (best for transactional)
+        if self.sendgrid_client:
+            return self._send_via_sendgrid(to_email, subject, content, html_content, from_email)
+
+        # Fallback to SMTP
+        elif self.smtp_config.get("username"):
+            return self._send_via_smtp(
+                to_email, subject, content, html_content, from_email, attachments
+            )
+
+        else:
+            return {
+                "success": False,
+                "error": "No email service available",
+                "provider": "none",
+            }
+
+    def send_marketing_campaign(
+        self,
+        subject: str,
+        content: str,
+        recipients: List[str],
+        html_content: str = None,
+        list_id: str = None,
+    ) -> Dict[str, Any]:
+        """Send marketing campaign using best available service"""
+
+        # Try Mailchimp first (best for marketing)
+        if self.mailchimp_client and len(recipients) > 10:
+            return self._send_campaign_via_mailchimp(
+                subject, content, recipients, html_content, list_id
+            )
+
+        # Fallback to SendGrid for smaller campaigns
+        elif self.sendgrid_client:
+            return self._send_bulk_via_sendgrid(subject, content, recipients, html_content)
+
+        # Last resort: SMTP (not recommended for bulk)
+        elif self.smtp_config.get("username") and len(recipients) <= 50:
+            return self._send_bulk_via_smtp(subject, content, recipients, html_content)
+
+        else:
+            return {
+                "success": False,
+                "error": "No suitable email service for marketing campaign",
+                "provider": "none",
+            }
+
+    def _send_via_sendgrid(
+        self,
+        to_email: str,
+        subject: str,
+        content: str,
+        html_content: str = None,
+        from_email: str = None,
+    ) -> Dict[str, Any]:
+        """Send email via SendGrid"""
+        try:
+            from_addr = from_email or self.smtp_config.get("from_email", "noreply@trae.ai")
+
+            message = Mail(
+                from_email=from_addr,
+                to_emails=to_email,
+                subject=subject,
+                plain_text_content=content,
+                html_content=html_content or content,
+            )
+
+            response = self.sendgrid_client.send(message)
+
+            return {
+                "success": response.status_code in [200, 202],
+                "status_code": response.status_code,
+                "provider": "sendgrid",
+                "message_id": response.headers.get("X - Message - Id", ""),
+            }
+
+        except Exception as e:
+            logger.error(f"SendGrid error: {e}")
+            return {"success": False, "error": str(e), "provider": "sendgrid"}
+
+    def _send_via_smtp(
+        self,
+        to_email: str,
+        subject: str,
+        content: str,
+        html_content: str = None,
+        from_email: str = None,
+        attachments: List[str] = None,
+    ) -> Dict[str, Any]:
+        """Send email via SMTP"""
+        try:
+            from_addr = from_email or self.smtp_config["from_email"]
+
+            msg = MIMEMultipart("alternative")
+            msg["From"] = from_addr
+            msg["To"] = to_email
+            msg["Subject"] = subject
+
+            # Add text content
+            msg.attach(MIMEText(content, "plain"))
+
+            # Add HTML content if provided
+            if html_content:
+                msg.attach(MIMEText(html_content, "html"))
+
+            # Add attachments if provided
+            if attachments:
+                for file_path in attachments:
+                    if os.path.exists(file_path):
+                        with open(file_path, "rb") as attachment:
+                            part = MIMEBase("application", "octet - stream")
+                            part.set_payload(attachment.read())
+                            encoders.encode_base64(part)
+                            part.add_header(
+                                "Content - Disposition",
+                                f"attachment; filename= {os.path.basename(file_path)}",
+                            )
+                            msg.attach(part)
+
+            # Send email
+            server = smtplib.SMTP(self.smtp_config["server"], self.smtp_config["port"])
+            server.starttls()
+            server.login(self.smtp_config["username"], self.smtp_config["password"])
+            server.send_message(msg)
+            server.quit()
+
+            return {
+                "success": True,
+                "provider": "smtp",
+                "message": "Email sent successfully",
+            }
+
+        except Exception as e:
+            logger.error(f"SMTP error: {e}")
+            return {"success": False, "error": str(e), "provider": "smtp"}
+
+    def _send_campaign_via_mailchimp(
+        self,
+        subject: str,
+        content: str,
+        recipients: List[str],
+        html_content: str = None,
+        list_id: str = None,
+    ) -> Dict[str, Any]:
+        """Send marketing campaign via Mailchimp"""
+        try:
+            # Create campaign
+            campaign_data = {
+                "type": "regular",
+                "settings": {
+                    "subject_line": subject,
+                    "from_name": "TRAE.AI",
+                    "reply_to": self.smtp_config.get("from_email", "noreply@trae.ai"),
+                    "title": f"Campaign {int(time.time())}",
+                },
+            }
+
+            # Add list_id if provided
+            if list_id:
+                campaign_data["recipients"] = {"list_id": list_id}
+
+            campaign = self.mailchimp_client.campaigns.create(campaign_data)
+            campaign_id = campaign["id"]
+
+            # Set campaign content
+            content_data = {
+                "html": html_content or f"<html><body>{content}</body></html>",
+                "plain_text": content,
+            }
+
+            self.mailchimp_client.campaigns.content.update(campaign_id, content_data)
+
+            # Send campaign
+            self.mailchimp_client.campaigns.actions.send(campaign_id)
+
+            return {
+                "success": True,
+                "campaign_id": campaign_id,
+                "provider": "mailchimp",
+                "recipients_count": len(recipients),
+            }
+
+        except Exception as e:
+            logger.error(f"Mailchimp error: {e}")
+            return {"success": False, "error": str(e), "provider": "mailchimp"}
+
+    def _send_bulk_via_sendgrid(
+        self,
+        subject: str,
+        content: str,
+        recipients: List[str],
+        html_content: str = None,
+    ) -> Dict[str, Any]:
+        """Send bulk emails via SendGrid"""
+        try:
+            results = []
+            campaign_id = f"sg_bulk_{int(time.time())}"
+
+            for recipient in recipients:
+                result = self._send_via_sendgrid(recipient, subject, content, html_content)
+                results.append(result["success"])
+
+                # Rate limiting
+                time.sleep(0.1)
+
+            success_count = sum(results)
+
+            return {
+                "success": success_count > 0,
+                "campaign_id": campaign_id,
+                "sent_count": success_count,
+                "total_count": len(recipients),
+                "delivery_rate": success_count / len(recipients) if recipients else 0,
+                "provider": "sendgrid",
+            }
+
+        except Exception as e:
+            logger.error(f"SendGrid bulk error: {e}")
+            return {"success": False, "error": str(e), "provider": "sendgrid"}
+
+    def _send_bulk_via_smtp(
+        self,
+        subject: str,
+        content: str,
+        recipients: List[str],
+        html_content: str = None,
+    ) -> Dict[str, Any]:
+        """Send bulk emails via SMTP (limited use)"""
+        try:
+            results = []
+            campaign_id = f"smtp_bulk_{int(time.time())}"
+
+            for recipient in recipients:
+                result = self._send_via_smtp(recipient, subject, content, html_content)
+                results.append(result["success"])
+
+                # Rate limiting for SMTP
+                time.sleep(1)
+
+            success_count = sum(results)
+
+            return {
+                "success": success_count > 0,
+                "campaign_id": campaign_id,
+                "sent_count": success_count,
+                "total_count": len(recipients),
+                "delivery_rate": success_count / len(recipients) if recipients else 0,
+                "provider": "smtp",
+            }
+
+        except Exception as e:
+            logger.error(f"SMTP bulk error: {e}")
+            return {"success": False, "error": str(e), "provider": "smtp"}
+
+    def create_mailchimp_list(
+        self, name: str, from_email: str, from_name: str = "TRAE.AI"
+    ) -> Dict[str, Any]:
+        """Create a new Mailchimp mailing list"""
+        if not self.mailchimp_client:
+            return {"success": False, "error": "Mailchimp not available"}
+
+        try:
+            list_data = {
+                "name": name,
+                "contact": {
+                    "company": "TRAE.AI",
+                    "address1": "123 Main St",
+                    "city": "San Francisco",
+                    "state": "CA",
+                    "zip": "94102",
+                    "country": "US",
+                },
+                "permission_reminder": f"You are receiving this email because you signed up for {name}.",
+                "campaign_defaults": {
+                    "from_name": from_name,
+                    "from_email": from_email,
+                    "subject": "",
+                    "language": "en",
+                },
+                "email_type_option": True,
+            }
+
+            result = self.mailchimp_client.lists.create(list_data)
+
+            return {
+                "success": True,
+                "list_id": result["id"],
+                "list_name": result["name"],
+                "provider": "mailchimp",
+            }
+
+        except Exception as e:
+            logger.error(f"Mailchimp list creation error: {e}")
+            return {"success": False, "error": str(e), "provider": "mailchimp"}
+
+    def add_subscriber(
+        self, email: str, list_id: str = None, merge_fields: Dict[str, str] = None
+    ) -> Dict[str, Any]:
+        """Add subscriber to Mailchimp list"""
+        if not self.mailchimp_client or not list_id:
+            return {"success": False, "error": "Mailchimp or list_id not available"}
+
+        try:
+            subscriber_data = {"email_address": email, "status": "subscribed"}
+
+            if merge_fields:
+                subscriber_data["merge_fields"] = merge_fields
+
+            result = self.mailchimp_client.lists.members.create(list_id, subscriber_data)
+
+            return {
+                "success": True,
+                "subscriber_id": result["id"],
+                "email": result["email_address"],
+                "provider": "mailchimp",
+            }
+
+        except Exception as e:
+            logger.error(f"Mailchimp subscriber error: {e}")
+            return {"success": False, "error": str(e), "provider": "mailchimp"}
+
+    def test_all_services(self) -> Dict[str, Any]:
+        """Test all configured email services"""
+        results = {}
+        test_email = self.smtp_config.get("from_email", "test@example.com")
+
+        # Test SendGrid
+        if self.sendgrid_client:
+            try:
+                # Just validate the API key without sending
+                results["sendgrid"] = {
+                    "available": True,
+                    "status": "API key configured",
+                    "test_result": "Ready to send",
+                }
+            except Exception as e:
+                results["sendgrid"] = {
+                    "available": False,
+                    "status": "Error",
+                    "test_result": str(e),
+                }
+        else:
+            results["sendgrid"] = {
+                "available": False,
+                "status": "Not configured",
+                "test_result": "API key missing or invalid",
+            }
+
+        # Test Mailchimp
+        if self.mailchimp_client:
+            try:
+                # Test by getting account info
+                account = self.mailchimp_client.root.get()
+                results["mailchimp"] = {
+                    "available": True,
+                    "status": "Connected",
+                    "test_result": f"Account: {account.get('account_name', 'Unknown')}",
+                }
+            except Exception as e:
+                results["mailchimp"] = {
+                    "available": False,
+                    "status": "Error",
+                    "test_result": str(e),
+                }
+        else:
+            results["mailchimp"] = {
+                "available": False,
+                "status": "Not configured",
+                "test_result": "API key missing or invalid",
+            }
+
+        # Test SMTP
+        if self.smtp_config.get("username"):
+            try:
+                server = smtplib.SMTP(self.smtp_config["server"], self.smtp_config["port"])
+                server.starttls()
+                server.login(self.smtp_config["username"], self.smtp_config["password"])
+                server.quit()
+
+                results["smtp"] = {
+                    "available": True,
+                    "status": "Connected",
+                    "test_result": f"Connected to {self.smtp_config['server']}",
+                }
+            except Exception as e:
+                results["smtp"] = {
+                    "available": False,
+                    "status": "Error",
+                    "test_result": str(e),
+                }
+        else:
+            results["smtp"] = {
+                "available": False,
+                "status": "Not configured",
+                "test_result": "Credentials missing",
+            }
+
+        return results
+
+
+class YouTubeSEOOptimizer:
+    """TubeBuddy / VidIQ - like SEO optimization for YouTube videos."""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def optimize_title(self, title: str, keywords: List[str]) -> Dict[str, Any]:
+        """Optimize video title for SEO like TubeBuddy."""
+        try:
+            # Title optimization logic
+            optimized_title = title
+            seo_score = 0
+
+            # Check title length (optimal: 60 - 70 characters)
+            if 60 <= len(title) <= 70:
+                seo_score += 20
+
+            # Check keyword inclusion
+            title_lower = title.lower()
+            keywords_found = [kw for kw in keywords if kw.lower() in title_lower]
+            seo_score += min(len(keywords_found) * 15, 60)
+
+            # Check for power words
+            power_words = [
+                "ultimate",
+                "complete",
+                "guide",
+                "tutorial",
+                "tips",
+                "secrets",
+                "best",
+                "top",
+            ]
+            power_words_found = [pw for pw in power_words if pw.lower() in title_lower]
+            seo_score += min(len(power_words_found) * 10, 20)
+
+            return {
+                "original_title": title,
+                "optimized_title": optimized_title,
+                "seo_score": min(seo_score, 100),
+                "keywords_found": keywords_found,
+                "power_words_found": power_words_found,
+                "recommendations": self._generate_title_recommendations(title, keywords),
+            }
+        except Exception as e:
+            self.logger.error(f"Error optimizing title: {e}")
+            return {"error": str(e)}
+
+    def _generate_title_recommendations(self, title: str, keywords: List[str]) -> List[str]:
+        """Generate title optimization recommendations."""
+        recommendations = []
+
+        if len(title) < 60:
+            recommendations.append("Consider making your title longer (60 - 70 characters optimal)")
+        elif len(title) > 70:
+            recommendations.append("Consider shortening your title (60 - 70 characters optimal)")
+
+        title_lower = title.lower()
+        missing_keywords = [kw for kw in keywords[:3] if kw.lower() not in title_lower]
+        if missing_keywords:
+            recommendations.append(
+                f"Consider including these keywords: {', '.join(missing_keywords)}"
+            )
+
+        return recommendations
+
+    def research_keywords(self, topic: str, niche: str = None) -> List[Dict[str, Any]]:
+        """Research keywords for video topic like VidIQ."""
+        try:
+            # Mock keyword research - in production would use real APIs
+            base_keywords = [
+                {
+                    "keyword": f"{topic} tutorial",
+                    "volume": 10000,
+                    "competition": "medium",
+                    "trend": "rising",
+                },
+                {
+                    "keyword": f"{topic} guide",
+                    "volume": 8500,
+                    "competition": "low",
+                    "trend": "stable",
+                },
+                {
+                    "keyword": f"{topic} tips",
+                    "volume": 12000,
+                    "competition": "high",
+                    "trend": "rising",
+                },
+                {
+                    "keyword": f"how to {topic}",
+                    "volume": 15000,
+                    "competition": "medium",
+                    "trend": "stable",
+                },
+                {
+                    "keyword": f"{topic} for beginners",
+                    "volume": 7500,
+                    "competition": "low",
+                    "trend": "rising",
+                },
+            ]
+
+            if niche:
+                base_keywords.extend(
+                    [
+                        {
+                            "keyword": f"{niche} {topic}",
+                            "volume": 5000,
+                            "competition": "low",
+                            "trend": "stable",
+                        },
+                        {
+                            "keyword": f"{topic} {niche}",
+                            "volume": 4500,
+                            "competition": "low",
+                            "trend": "rising",
+                        },
+                    ]
+                )
+
+            return base_keywords
+        except Exception as e:
+            self.logger.error(f"Error researching keywords: {e}")
+            return []
+
+    def analyze_tags(self, tags: List[str]) -> Dict[str, Any]:
+        """Analyze video tags effectiveness like TubeBuddy."""
+        try:
+            analysis = {
+                "total_tags": len(tags),
+                "optimal_count": 10 <= len(tags) <= 15,
+                "tag_analysis": [],
+                "recommendations": [],
+            }
+
+            for tag in tags:
+                tag_data = {
+                    "tag": tag,
+                    "length": len(tag),
+                    "word_count": len(tag.split()),
+                    "effectiveness": "good" if 2 <= len(tag.split()) <= 4 else "poor",
+                }
+                analysis["tag_analysis"].append(tag_data)
+
+            if len(tags) < 10:
+                analysis["recommendations"].append("Add more tags (10 - 15 recommended)")
+            elif len(tags) > 15:
+                analysis["recommendations"].append("Consider reducing tags (10 - 15 optimal)")
+
+            return analysis
+        except Exception as e:
+            self.logger.error(f"Error analyzing tags: {e}")
+            return {"error": str(e)}
+
+
+class CompetitorAnalyzer:
+    """TubeBuddy / VidIQ - like competitor analysis."""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def analyze_competitor_channel(self, channel_id: str) -> Dict[str, Any]:
+        """Analyze competitor channel like VidIQ."""
+        try:
+            # Mock competitor analysis - in production would use YouTube API
+            analysis = {
+                "channel_id": channel_id,
+                "subscriber_count": 125000,
+                "avg_views": 15000,
+                "upload_frequency": 3.5,  # videos per week
+                "engagement_rate": 4.2,
+                "top_performing_content": [
+                    {
+                        "title": "How to Master YouTube SEO",
+                        "views": 45000,
+                        "engagement": 5.8,
+                    },
+                    {
+                        "title": "Ultimate Guide to Video Marketing",
+                        "views": 38000,
+                        "engagement": 4.9,
+                    },
+                ],
+                "content_themes": ["tutorials", "marketing tips", "SEO guides"],
+                "optimal_posting_times": [
+                    "Tuesday 2PM",
+                    "Thursday 10AM",
+                    "Saturday 6PM",
+                ],
+                "keyword_strategy": [
+                    "youtube seo",
+                    "video marketing",
+                    "content creation",
+                ],
+                "growth_rate": 12.5,  # monthly percentage
+                "competitive_advantages": [
+                    "Consistent upload schedule",
+                    "High - quality thumbnails",
+                    "Strong SEO optimization",
+                ],
+                "opportunities": [
+                    "Underutilized trending topics",
+                    "Limited community engagement",
+                    "Missing short - form content",
+                ],
+            }
+
+            return analysis
+        except Exception as e:
+            self.logger.error(f"Error analyzing competitor: {e}")
+            return {"error": str(e)}
+
+    def track_competitor_rankings(
+        self, keywords: List[str], competitors: List[str]
+    ) -> Dict[str, Any]:
+        """Track competitor rankings for keywords like TubeBuddy."""
+        try:
+            rankings = {}
+
+            for keyword in keywords:
+                rankings[keyword] = {"your_rank": None, "competitors": {}}
+
+                for i, competitor in enumerate(competitors):
+                    rankings[keyword]["competitors"][competitor] = {
+                        "rank": i + 2,  # Mock ranking
+                        "video_title": f"Top {keyword} Guide",
+                        "views": 25000 - (i * 3000),
+                        "upload_date": "2024 - 01 - 15",
+                    }
+
+            return rankings
+        except Exception as e:
+            self.logger.error(f"Error tracking rankings: {e}")
+            return {"error": str(e)}
+
+
+class VideoAnalytics:
+    """TubeBuddy / VidIQ - like video analytics and insights."""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def analyze_video_performance(self, video_id: str) -> Dict[str, Any]:
+        """Analyze video performance like VidIQ."""
+        try:
+            # Mock video analytics - in production would use YouTube Analytics API
+            analytics = {
+                "video_id": video_id,
+                "views": 12500,
+                "watch_time_hours": 850,
+                "avg_view_duration": "4:32",
+                "click_through_rate": 8.5,
+                "engagement_rate": 6.2,
+                "subscriber_conversion": 2.1,
+                "traffic_sources": {
+                    "youtube_search": 45,
+                    "suggested_videos": 30,
+                    "external": 15,
+                    "direct": 10,
+                },
+                "audience_retention": {
+                    "0 - 25%": 100,
+                    "25 - 50%": 75,
+                    "50 - 75%": 45,
+                    "75 - 100%": 25,
+                },
+                "demographics": {
+                    "age_groups": {
+                        "18 - 24": 25,
+                        "25 - 34": 40,
+                        "35 - 44": 20,
+                        "45+": 15,
+                    },
+                    "gender": {"male": 65, "female": 35},
+                    "top_countries": ["US", "UK", "Canada", "Australia"],
+                },
+                "seo_score": 78,
+                "optimization_opportunities": [
+                    "Improve thumbnail click - through rate",
+                    "Add more engaging hooks in first 15 seconds",
+                    "Optimize end screen for better retention",
+                ],
+            }
+
+            return analytics
+        except Exception as e:
+            self.logger.error(f"Error analyzing video: {e}")
+            return {"error": str(e)}
+
+    def get_best_publish_times(self, channel_id: str) -> Dict[str, Any]:
+        """Get optimal publish times like TubeBuddy."""
+        try:
+            # Mock optimal timing analysis
+            timing_data = {
+                "channel_id": channel_id,
+                "optimal_times": {
+                    "monday": ["2:00 PM", "7:00 PM"],
+                    "tuesday": ["10:00 AM", "3:00 PM"],
+                    "wednesday": ["1:00 PM", "6:00 PM"],
+                    "thursday": ["11:00 AM", "4:00 PM"],
+                    "friday": ["12:00 PM", "8:00 PM"],
+                    "saturday": ["9:00 AM", "6:00 PM"],
+                    "sunday": ["11:00 AM", "5:00 PM"],
+                },
+                "timezone": "UTC",
+                "audience_activity": {
+                    "peak_hours": ["2 - 4 PM", "7 - 9 PM"],
+                    "peak_days": ["Tuesday", "Thursday", "Saturday"],
+                },
+                "recommendations": [
+                    "Tuesday 2 PM shows highest engagement",
+                    "Avoid Monday mornings and Friday evenings",
+                    "Weekend content performs well with lifestyle topics",
+                ],
+            }
+
+            return timing_data
+        except Exception as e:
+            self.logger.error(f"Error getting publish times: {e}")
+            return {"error": str(e)}
+
+
+class BulkProcessor:
+    """TubeBuddy - like bulk processing capabilities."""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def bulk_update_descriptions(self, video_ids: List[str], template: str) -> Dict[str, Any]:
+        """Bulk update video descriptions like TubeBuddy."""
+        try:
+            results = {
+                "total_videos": len(video_ids),
+                "successful_updates": 0,
+                "failed_updates": 0,
+                "results": [],
+            }
+
+            for video_id in video_ids:
+                try:
+                    # Mock bulk update - in production would use YouTube API
+                    result = {
+                        "video_id": video_id,
+                        "status": "success",
+                        "updated_description": template.replace("{video_id}", video_id),
+                    }
+                    results["successful_updates"] += 1
+                except Exception as e:
+                    result = {"video_id": video_id, "status": "failed", "error": str(e)}
+                    results["failed_updates"] += 1
+
+                results["results"].append(result)
+
+            return results
+        except Exception as e:
+            self.logger.error(f"Error in bulk update: {e}")
+            return {"error": str(e)}
+
+    def bulk_add_cards(self, video_ids: List[str], card_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Bulk add cards to videos like TubeBuddy."""
+        try:
+            results = {"total_videos": len(video_ids), "cards_added": 0, "results": []}
+
+            for video_id in video_ids:
+                # Mock card addition
+                result = {
+                    "video_id": video_id,
+                    "cards_added": card_config.get("count", 1),
+                    "status": "success",
+                }
+                results["cards_added"] += card_config.get("count", 1)
+                results["results"].append(result)
+
+            return results
+        except Exception as e:
+            self.logger.error(f"Error adding cards: {e}")
+            return {"error": str(e)}
+
+    def bulk_schedule_videos(self, video_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Bulk schedule videos like TubeBuddy."""
+        try:
+            results = {"total_videos": len(video_data), "scheduled": 0, "results": []}
+
+            for video in video_data:
+                result = {
+                    "video_id": video.get("video_id"),
+                    "scheduled_time": video.get("publish_time"),
+                    "status": "scheduled",
+                }
+                results["scheduled"] += 1
+                results["results"].append(result)
+
+            return results
+        except Exception as e:
+            self.logger.error(f"Error scheduling videos: {e}")
+            return {"error": str(e)}
+
+
+class ThumbnailTester:
+    """VidIQ - like thumbnail A / B testing."""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def create_ab_test(self, video_id: str, thumbnails: List[str]) -> Dict[str, Any]:
+        """Create A / B test for thumbnails like VidIQ."""
+        try:
+            test_data = {
+                "test_id": f"test_{video_id}_{int(time.time())}",
+                "video_id": video_id,
+                "thumbnails": [
+                    {"id": f"thumb_a", "url": thumbnails[0], "performance": None},
+                    {"id": f"thumb_b", "url": thumbnails[1], "performance": None},
+                ],
+                "test_duration": "7 days",
+                "status": "active",
+                "created_at": datetime.now().isoformat(),
+            }
+
+            return test_data
+        except Exception as e:
+            self.logger.error(f"Error creating A / B test: {e}")
+            return {"error": str(e)}
+
+    def get_test_results(self, test_id: str) -> Dict[str, Any]:
+        """Get A / B test results like VidIQ."""
+        try:
+            # Mock test results
+            results = {
+                "test_id": test_id,
+                "status": "completed",
+                "winner": "thumb_a",
+                "results": {
+                    "thumb_a": {
+                        "impressions": 15000,
+                        "clicks": 1200,
+                        "ctr": 8.0,
+                        "confidence": 95,
+                    },
+                    "thumb_b": {
+                        "impressions": 15000,
+                        "clicks": 900,
+                        "ctr": 6.0,
+                        "confidence": 95,
+                    },
+                },
+                "improvement": "33.3% higher CTR",
+                "recommendation": "Use thumbnail A for better performance",
+            }
+
+            return results
+        except Exception as e:
+            self.logger.error(f"Error getting test results: {e}")
+            return {"error": str(e)}
+
+    def analyze_thumbnail_performance(self, thumbnail_url: str) -> Dict[str, Any]:
+        """Analyze thumbnail performance like VidIQ."""
+        try:
+            # Mock thumbnail analysis
+            analysis = {
+                "thumbnail_url": thumbnail_url,
+                "visual_score": 85,
+                "text_readability": 78,
+                "color_contrast": 92,
+                "face_detection": True,
+                "emotion_detected": "excited",
+                "text_elements": ["ULTIMATE GUIDE", "FREE"],
+                "recommendations": [
+                    "Good use of contrasting colors",
+                    "Text is clearly readable",
+                    "Consider adding arrows or highlights for better CTR",
+                ],
+                "predicted_ctr": 7.2,
+            }
+
+            return analysis
+        except Exception as e:
+            self.logger.error(f"Error analyzing thumbnail: {e}")
+            return {"error": str(e)}
+
+
+# Global instance
+email_manager = EmailServiceManager()
+
+
+def get_email_manager() -> EmailServiceManager:
+    """Get the global email manager instance"""
+    return email_manager
+
+
+if __name__ == "__main__":
+    # Test the email service manager with YouTube features
+    manager = EmailServiceManager()
+
+    print("\\n=== Email Service Manager Test ===")
+    print("\\n📧 Service Status:")
+    status = manager.get_service_status()
+    for service, info in status.items():
+        print(f"  {service.upper()}: {'✅' if info['available'] else '❌'} Available")
+
+    print("\\n🧪 Testing Services:")
+    test_results = manager.test_all_services()
+    for service, result in test_results.items():
+        status_icon = "✅" if result["available"] else "❌"
+        print(f"  {service.upper()}: {status_icon} {result['status']} - {result['test_result']}")
+
+    print("\\n✅ Email Service Manager initialized successfully!")
+
+    # Test YouTube SEO features
+    print("\\n🎥 Testing YouTube SEO Optimizer...")
+    seo_result = manager.youtube_seo_optimizer.optimize_title(
+        "How to Make Money Online", ["make money", "online income", "passive income"]
+    )
+    print(f"SEO Score: {seo_result.get('seo_score', 0)}/100")
+
+    # Test competitor analysis
+    print("\\n📊 Testing Competitor Analysis...")
+    competitor_data = manager.competitor_analyzer.analyze_competitor_channel("UC_competitor_123")
+    print(f"Competitor Growth Rate: {competitor_data.get('growth_rate', 0)}%")
+
+    # Test video analytics
+    print("\\n📈 Testing Video Analytics...")
+    video_analytics = manager.video_analytics.analyze_video_performance("video_123")
+    print(f"Video SEO Score: {video_analytics.get('seo_score', 0)}/100")
+
+    print("\\n🚀 YouTube marketing features integrated successfully!")

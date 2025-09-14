@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Base Agentic Framework
 
@@ -29,6 +29,7 @@ from typing import Any, Dict, List, Optional, Union
 from utils.logger import PerformanceTimer, get_logger
 
 # Import TRAE.AI utilities
+
 from backend.secret_store import SecretStore
 
 
@@ -193,7 +194,7 @@ class BaseAgent(abc.ABC):
             + self.performance_metrics["tasks_failed"]
         )
         self.performance_metrics["success_rate"] = (
-            self.performance_metrics["tasks_completed"] / total_tasks
+            self.performance_metrics["tasks_completed"]/total_tasks
             if total_tasks > 0
             else 0.0
         )
@@ -201,7 +202,7 @@ class BaseAgent(abc.ABC):
         # Update average execution time
         if len(self.task_history) > 0:
             total_time = sum(record["execution_time"] for record in self.task_history)
-            self.performance_metrics["average_execution_time"] = total_time / len(
+            self.performance_metrics["average_execution_time"] = total_time/len(
                 self.task_history
             )
 
@@ -248,12 +249,17 @@ class BaseAgent(abc.ABC):
 
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(agent_id='{self.agent_id}', name='{self.name}', status='{self.status.value}')"
+        return f"{self.__class__.__name__}(agent_id='{self.agent_id}',
+    name='{self.name}',
+    status='{self.status.value}')"
 
 
 class PlannerAgent(BaseAgent):
     """
-    PlannerAgent implements the OODA loop (Observe, Orient, Decide, Act) strategic doctrine.
+    PlannerAgent implements the OODA loop (Observe,
+    Orient,
+    Decide,
+    Act) strategic doctrine.
 
     This agent serves as the system's brain, using the OODA loop methodology to:
     - Observe: Gather data from ResearchAgent and system state
@@ -507,7 +513,8 @@ class PlannerAgent(BaseAgent):
                 "resource_constraints": self._identify_constraints(observations),
                 "strategic_alignment": self._check_strategic_alignment(requirements),
                 "risk_factors": self._identify_risks(requirements, observations),
-                "opportunities": self._identify_opportunities(requirements, observations),
+                "opportunities": self._identify_opportunities(requirements,
+    observations),
                 }
         return orientation
 
@@ -994,7 +1001,8 @@ class PlannerAgent(BaseAgent):
         try:
             pending_tasks = task_queue_manager.get_tasks(status="pending")
             in_progress_tasks = task_queue_manager.get_tasks(status="in_progress")
-            completed_tasks = task_queue_manager.get_tasks(status="completed", limit = 50)
+            completed_tasks = task_queue_manager.get_tasks(status="completed",
+    limit = 50)
 
             return {
                 "pending_count": len(pending_tasks),
@@ -1301,7 +1309,8 @@ class PlannerAgent(BaseAgent):
                         "payload": {
                         "action": "twitter_promotion",
                             "promotion_type": "youtube_upload",
-                            "content_count": content_performance.get("new_videos_count", 0),
+                            "content_count": content_performance.get("new_videos_count",
+    0),
                             },
                         "assigned_agent": "MarketingAgent",
                         }
@@ -1481,20 +1490,27 @@ class ExecutorAgent(BaseAgent):
         try:
             # Content Creation Tools
             # Marketing Tools
+
             from backend.agents.marketing_tools import (AffiliateManager,
+
                 CrossPromotionManager,
                                                             DayOneBlitzStrategy,
                                                             RelentlessOptimizationLoop)
             # Research Tools
+
             from backend.agents.research_tools import (BreakingNewsWatcher,
+
                 CompetitorAnalyzer,
                                                            MarketValidator)
             # Web Automation Tools
+
             from backend.agents.web_automation_tools import (AffiliateSignupAutomator,
+
                 SpecheloPro,
                                                                  StealthOperations,
                                                                  ThumbnailBlaster,
                                                                  WebAutomationAgent)
+
             from backend.content.ai_inpainting import AIInpainting
             from backend.content.ai_video_editor import AIVideoEditor
                 from backend.content.animate_avatar import AnimateAvatar
@@ -1812,10 +1828,11 @@ class ExecutorAgent(BaseAgent):
         Args:
             duration: Duration to wait in seconds
         """
+
         import asyncio
 
         # Simulate work with a shorter wait for testing
-        await asyncio.sleep(min(duration / 100, 0.1))  # Scale down for testing
+        await asyncio.sleep(min(duration/100, 0.1))  # Scale down for testing
 
 
 class AuditorAgent(BaseAgent):
@@ -1961,7 +1978,7 @@ class AuditorAgent(BaseAgent):
                 audit_results["performance_score"],
                 audit_results["security_score"],
                 ]
-        audit_results["overall_score"] = sum(scores) / len(scores)
+        audit_results["overall_score"] = sum(scores)/len(scores)
 
         # Determine if audit passed
         audit_results["passed"] = (
@@ -2041,10 +2058,9 @@ class AuditorAgent(BaseAgent):
                     "issues": issues,
                     "metrics": {
                     "completion_status": target.get("status"),
-                        "output_completeness": len(actual_outputs)
-                    / max(1, len(required_outputs)),
+                        "output_completeness": len(actual_outputs)/max(1, len(required_outputs)),
                         "execution_efficiency": (
-                        min(1.0, expected_time / max(1, execution_time))
+                        min(1.0, expected_time/max(1, execution_time))
                         if expected_time > 0
                         else 1.0
                     ),
@@ -2125,8 +2141,7 @@ class AuditorAgent(BaseAgent):
                     - len([f for f in required_fields if f not in target]),
                         "workflow_completion": len(
                         [s for s in workflow_steps if s.get("completed")]
-                    )
-                    / max(1, len(workflow_steps)),
+                    )/max(1, len(workflow_steps)),
                         "approval_status": (
                         "approved"
                         if target.get("approved_by")
@@ -2159,7 +2174,7 @@ class AuditorAgent(BaseAgent):
             estimated_time = target.get("estimated_time", 0)
 
             if estimated_time > 0:
-                time_ratio = execution_time / estimated_time
+                time_ratio = execution_time/estimated_time
                 if time_ratio > 2.0:
                     issues.append(
                         f"Execution time ({execution_time}s) significantly exceeded estimate ({estimated_time}s)"
@@ -2191,17 +2206,17 @@ class AuditorAgent(BaseAgent):
 
             if quality_metrics and execution_time > 0:
                 avg_quality = (
-                    sum(quality_metrics.values()) / len(quality_metrics)
+                    sum(quality_metrics.values())/len(quality_metrics)
                     if quality_metrics
                     else 0
                 )
-                efficiency_ratio = avg_quality / (
-                    execution_time / 60
+                efficiency_ratio = avg_quality/(
+                    execution_time/60
                 )  # Quality per minute
 
                 if efficiency_ratio < 0.1:
                     issues.append(
-                        f"Low efficiency ratio: {efficiency_ratio:.3f} quality / minute"
+                        f"Low efficiency ratio: {efficiency_ratio:.3f} quality/minute"
                     )
                     performance_score -= 0.15
 
@@ -2238,12 +2253,12 @@ class AuditorAgent(BaseAgent):
                     "performance_metrics": {
                     "execution_time": execution_time,
                         "time_efficiency": (
-                        min(1.0, estimated_time / max(1, execution_time))
+                        min(1.0, estimated_time/max(1, execution_time))
                         if estimated_time > 0
                         else 1.0
                     ),
                         "resource_efficiency": (
-                        1.0 - (cpu_usage / 100) * 0.5 if cpu_usage else 1.0
+                        1.0 - (cpu_usage/100) * 0.5 if cpu_usage else 1.0
                     ),
                         "retry_rate": retry_count,
                         "bottleneck_count": len(bottlenecks),
@@ -2462,11 +2477,12 @@ class AuditorAgent(BaseAgent):
 
         elif output_key in ["date", "timestamp"] and isinstance(output_value, str):
             try:
+
                 from datetime import datetime
 
                 datetime.fromisoformat(output_value.replace("Z", "+00:00"))
             except ValueError:
-                issues.append(f"Invalid date / timestamp format: {output_value}")
+                issues.append(f"Invalid date/timestamp format: {output_value}")
                 valid = False
 
         return {"valid": valid, "issues": issues}
@@ -2478,11 +2494,11 @@ class AuditorAgent(BaseAgent):
             data = str(data)
 
         sensitive_patterns = [
-            r"\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b",  # Credit card numbers
-            r"\b\d{3}-\d{2}-\d{4}\b",  # SSN
-            r"\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\.[A - Z|a - z]{2,}\b",  # Email addresses
-            r"\b(?:password|pwd|pass|secret|key|token)\s*[:=]\s*\S+\b",  # Passwords / keys
-            r"\b(?:api[_-]?key|access[_-]?token|auth[_-]?token)\s*[:=]\s*\S+\b",  # API keys
+            r"\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b",  # Credit card numbers
+            r"\\b\\d{3}-\\d{2}-\\d{4}\\b",  # SSN
+            r"\\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\\.[A - Z|a - z]{2,}\\b",  # Email addresses
+            r"\\b(?:password|pwd|pass|secret|key|token)\\s*[:=]\\s*\\S+\\b",  # Passwords/keys
+            r"\\b(?:api[_-]?key|access[_-]?token|auth[_-]?token)\\s*[:=]\\s*\\S+\\b",  # API keys
         ]
 
         import re
@@ -2503,9 +2519,9 @@ class AuditorAgent(BaseAgent):
         dangerous_patterns = [
             r"<script[^>]*>.*?</script>",  # Script tags
             r"javascript:",  # JavaScript URLs
-            r"on\w+\s*=",  # Event handlers
-            r"\b(union|select|insert|update|delete|drop|create|alter)\b",  # SQL keywords
-            r"[\'\";]",  # SQL injection characters
+            r"on\\w+\\s*=",  # Event handlers
+            r"\\b(union|select|insert|update|delete|drop|create|alter)\\b",  # SQL keywords
+            r"[\\'\\";]",  # SQL injection characters
         ]
 
         import re
@@ -2524,11 +2540,11 @@ class AuditorAgent(BaseAgent):
 
         # Look for unparameterized queries with user input
         risky_patterns = [
-            r"'\s*\+\s*",  # String concatenation
-            r'"\s*\+\s*',  # String concatenation
-            r"\$\{.*?\}",  # Template literals
+            r"'\\s*\\+\\s*",  # String concatenation
+            r'"\\s*\\+\\s*',  # String concatenation
+            r"\\$\\{.*?\\}",  # Template literals
             r"%s.*%s",  # Python string formatting
-            r"\?.*\?",  # Suspicious parameter patterns
+            r"\\?.*\\?",  # Suspicious parameter patterns
         ]
 
         import re
@@ -2546,16 +2562,16 @@ class AuditorAgent(BaseAgent):
         operation_type = operation.get("type", "")
 
         # Check for directory traversal
-        if "../" in path or "..\\" in path:
+        if "../" in path or "..\\\\" in path:
             return False
 
         # Check for access to sensitive system files
         sensitive_paths = [
-            "/etc / passwd",
-                "/etc / shadow",
-                "/etc / hosts",
-                "C:\\Windows\\System32",
-                "C:\\Windows\\SysWOW64",
+            "/etc/passwd",
+                "/etc/shadow",
+                "/etc/hosts",
+                "C:\\\\Windows\\\\System32",
+                "C:\\\\Windows\\\\SysWOW64",
                 "/proc/",
                 "/sys/",
                 "/dev/",
@@ -2570,9 +2586,9 @@ class AuditorAgent(BaseAgent):
             system_dirs = [
                 "/bin/",
                     "/sbin/",
-                    "/usr / bin/",
-                    "/usr / sbin/",
-                    "C:\\Program Files",
+                    "/usr/bin/",
+                    "/usr/sbin/",
+                    "C:\\\\Program Files",
                     ]
             for sys_dir in system_dirs:
                 if path.startswith(sys_dir):
@@ -2589,7 +2605,7 @@ class AuditorAgent(BaseAgent):
         xss_patterns = [
             r"<script[^>]*>.*?</script>",
                 r"javascript:",
-                r'on\w+\s*=\s*["\'][^"\'>]*["\']',
+                r'on\\w+\\s*=\\s*["\\'][^"\\'>]*["\\']',
                 r"<iframe[^>]*>.*?</iframe>",
                 r"<object[^>]*>.*?</object>",
                 r"<embed[^>]*>.*?</embed>",

@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 100
+extend-exclude = '''
+(
+  ^url_fix_backups/
+  | ^copy_of_code/
+  | ^venv/
+  | ^venv_stable/
+  | ^venv_creative/
+  | ^.venv/
+  | ^node_modules/
+)
+'''
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [
+  "url_fix_backups",
+  "venv",
+  "venv_stable",
+  "venv_creative",
+  ".venv",
+  "node_modules"
+]

@@ -1,20 +1,17 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Manifest Contract Test
 Verifies API endpoints conform to expected schemas and contracts.
 """
 
-import json
 import sys
-from datetime import datetime
-from typing import Any, Dict, List
 
 import requests
 
 
 def validate_version_endpoint(base_url: str) -> bool:
     """
-    Validate /api / version endpoint contract.
+    Validate/api/version endpoint contract.
 
     Expected schema:
     {
@@ -26,7 +23,7 @@ def validate_version_endpoint(base_url: str) -> bool:
     }
     """
     try:
-        response = requests.get(f"{base_url}/api / version", timeout = 5)
+        response = requests.get(f"{base_url}/api/version", timeout=5)
 
         if response.status_code != 200:
             print(f"❌ Version endpoint returned {response.status_code}")
@@ -36,22 +33,20 @@ def validate_version_endpoint(base_url: str) -> bool:
 
         required_fields = [
             "service",
-                "version",
-                "commit",
-                "build_time",
-                "python_version",
-                ]
+            "version",
+            "commit",
+            "build_time",
+            "python_version",
+        ]
         for field in required_fields:
             if field not in data:
                 print(f"❌ Version endpoint missing field: {field}")
                 return False
             if not isinstance(data[field], str):
-                print(
-                    f"❌ Version field '{field}' should be string, got {type(data[field])}"
-                )
+                print(f"❌ Version field '{field}' should be string, got {type(data[field])}")
                 return False
 
-        print(f"✅ Version endpoint contract valid")
+        print("✅ Version endpoint contract valid")
         return True
 
     except Exception as e:
@@ -61,7 +56,7 @@ def validate_version_endpoint(base_url: str) -> bool:
 
 def validate_metrics_schema(base_url: str) -> bool:
     """
-    Validate /api / metrics endpoint schema.
+    Validate/api/metrics endpoint schema.
 
     Expected top - level structure:
     {
@@ -75,7 +70,7 @@ def validate_metrics_schema(base_url: str) -> bool:
     }
     """
     try:
-        response = requests.get(f"{base_url}/api / metrics", timeout = 10)
+        response = requests.get(f"{base_url}/api/metrics", timeout=10)
 
         if response.status_code != 200:
             print(f"❌ Metrics endpoint returned {response.status_code}")
@@ -117,7 +112,7 @@ def validate_metrics_schema(base_url: str) -> bool:
             print(f"❌ Timestamp should be number, got {type(timestamp)}")
             return False
 
-        print(f"✅ Metrics endpoint schema valid")
+        print("✅ Metrics endpoint schema valid")
         return True
 
     except Exception as e:
@@ -127,10 +122,10 @@ def validate_metrics_schema(base_url: str) -> bool:
 
 def validate_dashboard_schema(base_url: str) -> bool:
     """
-    Validate /api / dashboard endpoint schema.
+    Validate/api/dashboard endpoint schema.
     """
     try:
-        response = requests.get(f"{base_url}/api / dashboard", timeout = 10)
+        response = requests.get(f"{base_url}/api/dashboard", timeout=10)
 
         if response.status_code != 200:
             print(f"❌ Dashboard endpoint returned {response.status_code}")
@@ -150,7 +145,7 @@ def validate_dashboard_schema(base_url: str) -> bool:
                 print(f"❌ Dashboard timestamp should be number, got {type(timestamp)}")
                 return False
 
-        print(f"✅ Dashboard endpoint schema valid")
+        print("✅ Dashboard endpoint schema valid")
         return True
 
     except Exception as e:
@@ -160,15 +155,15 @@ def validate_dashboard_schema(base_url: str) -> bool:
 
 def validate_readiness_endpoint(base_url: str) -> bool:
     """
-    Validate readiness / health endpoint.
+    Validate readiness/health endpoint.
     """
     try:
         # Try common health check endpoints
-        endpoints = ["/health", "/ready", "/api / health", "/api / ready"]
+        endpoints = ["/health", "/ready", "/api/health", "/api/ready"]
 
         for endpoint in endpoints:
             try:
-                response = requests.get(f"{base_url}{endpoint}", timeout = 5)
+                response = requests.get(f"{base_url}{endpoint}", timeout=5)
                 if response.status_code == 200:
                     print(f"✅ Readiness endpoint {endpoint} available")
                     return True
@@ -176,12 +171,12 @@ def validate_readiness_endpoint(base_url: str) -> bool:
                 continue
 
         # If no dedicated health endpoint, check if main service responds
-        response = requests.get(f"{base_url}/api / version", timeout = 5)
+        response = requests.get(f"{base_url}/api/version", timeout=5)
         if response.status_code == 200:
-            print(f"✅ Service readiness confirmed via version endpoint")
+            print("✅ Service readiness confirmed via version endpoint")
             return True
 
-        print(f"❌ No readiness endpoint found")
+        print("❌ No readiness endpoint found")
         return False
 
     except Exception as e:
@@ -204,14 +199,14 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
 
     tests = [
         ("Version Endpoint", lambda: validate_version_endpoint(base_url)),
-            ("Metrics Schema", lambda: validate_metrics_schema(base_url)),
-            ("Dashboard Schema", lambda: validate_dashboard_schema(base_url)),
-            ("Readiness Check", lambda: validate_readiness_endpoint(base_url)),
-            ]
+        ("Metrics Schema", lambda: validate_metrics_schema(base_url)),
+        ("Dashboard Schema", lambda: validate_dashboard_schema(base_url)),
+        ("Readiness Check", lambda: validate_readiness_endpoint(base_url)),
+    ]
 
     results = []
     for test_name, test_func in tests:
-        print(f"\n🧪 Testing {test_name}...")
+        print(f"\\n🧪 Testing {test_name}...")
         try:
             result = test_func()
             results.append(result)
@@ -226,7 +221,7 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
     passed = sum(results)
     total = len(results)
 
-    print(f"\n{'='*50}")
+    print(f"\\n{'='*50}")
     print(f"Manifest Contract Tests: {passed}/{total} passed")
 
     if passed == total:
@@ -235,6 +230,7 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
     else:
         print(f"💥 {total - passed} manifest contract tests failed")
         return False
+
 
 if __name__ == "__main__":
     base_url = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8083"

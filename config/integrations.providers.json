@@ -28,16 +28,16 @@
       "docs_url": "https://blog.gdeltproject.org/gdelt-2-0-our-global-world-in-realtime/",
       "health": {},
       "usage": {},
-      "status": "red",
-      "last_error": "",
+      "status": "green",
+      "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:44:04Z"
+      "last_ok": "2025-09-14T07:45:40Z"
     },
     {
       "id": "wikimedia",
       "kind": "knowledge",
-      "name": "Wikipedia / MediaWiki API",
+      "name": "Wikipedia/MediaWiki API",
       "enabled": true,
       "requires_key": false,
       "key_env": null,
@@ -45,11 +45,11 @@
       "docs_url": "https://www.mediawiki.org/wiki/API:Main_page",
       "health": {},
       "usage": {},
-      "status": "red",
-      "last_error": "",
+      "status": "green",
+      "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:45:50Z"
+      "last_ok": "2025-09-14T07:45:40Z"
     },
     {
       "id": "hackernews",
@@ -62,11 +62,11 @@
       "docs_url": "https://github.com/HackerNews/API",
       "health": {},
       "usage": {},
-      "status": "red",
-      "last_error": "",
+      "status": "green",
+      "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:45:54Z"
+      "last_ok": "2025-09-14T07:45:41Z"
     },
     {
       "id": "newsapi",
@@ -185,7 +185,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:45:55Z"
+      "last_ok": "2025-09-14T07:45:41Z"
     },
     {
       "id": "nominatim_osm",
@@ -202,7 +202,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-10T07:45:58Z"
+      "last_ok": "2025-09-14T07:45:42Z"
     },
     {
       "id": "opencage",
@@ -236,7 +236,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:00Z"
+      "last_ok": "2025-09-14T07:45:42Z"
     },
     {
       "id": "overpass_kumi",
@@ -253,7 +253,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:03Z"
+      "last_ok": "2025-09-14T07:45:43Z"
     },
     {
       "id": "overpass_fr",
@@ -270,7 +270,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:05Z"
+      "last_ok": "2025-09-14T07:45:44Z"
     },
     {
       "id": "foursquare",
@@ -406,7 +406,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:06Z"
+      "last_ok": "2025-09-14T07:45:44Z"
     },
     {
       "id": "nominatim",
@@ -423,7 +423,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:07Z"
+      "last_ok": "2025-09-14T07:45:45Z"
     },
     {
       "id": "openmeteo_geo",
@@ -440,7 +440,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:09Z"
+      "last_ok": "2025-09-14T07:45:45Z"
     },
     {
       "id": "geojs",
@@ -457,7 +457,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:09Z"
+      "last_ok": "2025-09-14T07:45:45Z"
     },
     {
       "id": "coingecko",
@@ -695,7 +695,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:11Z"
+      "last_ok": "2025-09-14T07:45:46Z"
     },
     {
       "id": "github",
@@ -712,7 +712,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:12Z"
+      "last_ok": "2025-09-14T07:45:46Z"
     },
     {
       "id": "producthunt",
@@ -763,7 +763,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:13Z"
+      "last_ok": "2025-09-14T07:45:47Z"
     },
     {
       "id": "petfinder",
@@ -800,7 +800,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:13Z"
+      "last_ok": "2025-09-14T07:45:47Z"
     },
     {
       "id": "thecatapi",
@@ -817,7 +817,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:16Z"
+      "last_ok": "2025-09-14T07:45:47Z"
     },
     {
       "id": "paperswithcode",
@@ -851,7 +851,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-10T07:46:17Z"
+      "last_ok": "2025-09-14T07:45:47Z"
     }
   ]
 }

@@ -346,8 +346,7 @@
         </div>
     </div>
 
-    <script>
-        // Revenue stream configurations
+    <script>//Revenue stream configurations
         const revenueStreams = {
             youtube_ads: {
                 name: 'YouTube Ad Revenue',
@@ -439,9 +438,7 @@
                 autoStart: false,
                 testEndpoints: ['/api/events/registration', '/api/events/streaming', '/api/events/payments']
             }
-        };
-
-        // Initialize the revenue streams display
+        };//Initialize the revenue streams display
         function initializeRevenueStreams() {
             const grid = document.getElementById('revenueGrid');
             grid.innerHTML = '';
@@ -453,9 +450,7 @@
             });
 
             updateTotalRevenue();
-        }
-
-        // Create individual revenue stream card
+        }//Create individual revenue stream card
         function createRevenueCard(streamId, stream) {
             const card = document.createElement('div');
             card.className = `revenue-card ${stream.isActive ? 'active' : 'inactive'}`;
@@ -487,9 +482,7 @@
                 </div>
             `;
             return card;
-        }
-
-        // Toggle stream on/off
+        }//Toggle stream on/off
         function toggleStream(streamId) {
             const stream = revenueStreams[streamId];
             stream.isActive = !stream.isActive;
@@ -501,9 +494,7 @@
             }
             
             initializeRevenueStreams();
-        }
-
-        // Start individual stream
+        }//Start individual stream
         async function startStream(streamId) {
             const stream = revenueStreams[streamId];
             console.log(`Starting ${stream.name}...`);
@@ -527,9 +518,7 @@
             }
             
             initializeRevenueStreams();
-        }
-
-        // Stop individual stream
+        }//Stop individual stream
         async function stopStream(streamId) {
             const stream = revenueStreams[streamId];
             console.log(`Stopping ${stream.name}...`);
@@ -551,9 +540,7 @@
             }
             
             initializeRevenueStreams();
-        }
-
-        // Test individual stream
+        }//Test individual stream
         async function testStream(streamId) {
             const stream = revenueStreams[streamId];
             console.log(`Testing ${stream.name}...`);
@@ -569,9 +556,7 @@
                 console.error(`Error testing ${stream.name}:`, error);
                 showNotification(`Failed to test ${stream.name}`, 'error');
             }
-        }
-
-        // Configure stream settings
+        }//Configure stream settings
         function configureStream(streamId) {
             const stream = revenueStreams[streamId];
             document.getElementById('modalTitle').textContent = `Configure ${stream.name}`;
@@ -598,15 +583,11 @@
             `;
             
             document.getElementById('configModal').style.display = 'block';
-        }
-
-        // Save stream configuration
+        }//Save stream configuration
         function saveStreamConfig(streamId) {
             const stream = revenueStreams[streamId];
             stream.monthlyTarget = parseInt(document.getElementById('monthlyTarget').value);
-            stream.autoStart = document.getElementById('autoStart').checked;
-            
-            // Save to backend
+            stream.autoStart = document.getElementById('autoStart').checked;//Save to backend
             fetch(`/api/revenue/config/${streamId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -619,9 +600,7 @@
             closeModal();
             initializeRevenueStreams();
             showNotification('Configuration saved successfully!', 'success');
-        }
-
-        // Start all active streams
+        }//Start all active streams
         async function startAllStreams() {
             const activeStreams = Object.keys(revenueStreams).filter(id => revenueStreams[id].autoStart);
             
@@ -630,9 +609,7 @@
             }
             
             showNotification(`Started ${activeStreams.length} revenue streams`, 'success');
-        }
-
-        // Stop all streams
+        }//Stop all streams
         async function stopAllStreams() {
             const activeStreams = Object.keys(revenueStreams).filter(id => revenueStreams[id].isActive);
             
@@ -641,14 +618,12 @@
             }
             
             showNotification(`Stopped ${activeStreams.length} revenue streams`, 'success');
-        }
-
-        // Run comprehensive tests on all systems
+        }//Run comprehensive tests on all systems
         async function runGlobalTests() {
             console.log('Running global system tests...');
             
             try {
-                const response = await fetch('/api/revenue/test/all', {
+                const response = await fetch("/api/revenue/test/all', {
                     method: 'POST'
                 });
                 
@@ -658,9 +633,7 @@
                 console.error('Error running global tests:', error);
                 showNotification('Failed to run global tests', 'error');
             }
-        }
-
-        // Show test results modal
+        }//Show test results modal
         function showTestResults(systemName, results) {
             const testResults = document.getElementById('testResults');
             testResults.innerHTML = `
@@ -676,17 +649,12 @@
             `;
             
             document.getElementById('testModal').style.display = 'block';
-        }
-
-        // Update total revenue display
+        }//Update total revenue display
         function updateTotalRevenue() {
             const total = Object.values(revenueStreams).reduce((sum, stream) => sum + stream.currentRevenue, 0);
             document.getElementById('totalRevenue').textContent = `$${total.toLocaleString()}`;
-        }
-
-        // Show notification
-        function showNotification(message, type) {
-            // Create notification element
+        }//Show notification
+        function showNotification(message, type) {//Create notification element
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
@@ -706,36 +674,26 @@
             setTimeout(() => {
                 notification.remove();
             }, 3000);
-        }
-
-        // Modal functions
+        }//Modal functions
         function closeModal() {
             document.getElementById('configModal').style.display = 'none';
         }
 
         function closeTestModal() {
             document.getElementById('testModal').style.display = 'none';
-        }
-
-        // Initialize on page load
+        }//Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            initializeRevenueStreams();
-            
-            // Auto-start streams that are configured for auto-start
+            initializeRevenueStreams();//Auto-start streams that are configured for auto-start
             Object.keys(revenueStreams).forEach(streamId => {
                 if (revenueStreams[streamId].autoStart) {
                     startStream(streamId);
                 }
-            });
-            
-            // Refresh revenue data every 30 seconds
+            });//Refresh revenue data every 30 seconds
             setInterval(updateRevenueData, 30000);
-        });
-
-        // Update revenue data from backend
+        });//Update revenue data from backend
         async function updateRevenueData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 Object.keys(data.streams).forEach(streamId => {

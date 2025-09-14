@@ -8,11 +8,8 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsx from 'eslint-plugin-jsx-a11y';
 
-export default [
-  // Base JavaScript configuration
-  js.configs.recommended,
-
-  // Global settings
+export default [//Base JavaScript configuration
+  js.configs.recommended,//Global settings
   {
     languageOptions: {
       globals: {
@@ -23,9 +20,7 @@ export default [
       ecmaVersion: 2022,
       sourceType: 'module',
     },
-  },
-
-  // TypeScript configuration
+  },//TypeScript configuration
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -50,9 +45,7 @@ export default [
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-non-null-assertion': 'warn',
     },
-  },
-
-  // React configuration
+  },//React configuration
   {
     files: ['**/*.{jsx,tsx}'],
     plugins: {
@@ -81,9 +74,7 @@ export default [
       'react/jsx-uses-react': 'off',
       'react/jsx-uses-vars': 'error',
     },
-  },
-
-  // Security configuration
+  },//Security configuration
   {
     plugins: {
       security,
@@ -98,9 +89,7 @@ export default [
       'security/detect-non-literal-regexp': 'warn',
       'security/detect-unsafe-regex': 'error',
     },
-  },
-
-  // Import/Export configuration
+  },//Import/Export configuration
   {
     plugins: {
       import: importPlugin,
@@ -125,12 +114,9 @@ export default [
         },
       ],
     },
-  },
-
-  // General rules for all files
+  },//General rules for all files
   {
-    rules: {
-      // Code quality
+    rules: {//Code quality
       'no-console': 'warn',
       'no-debugger': 'error',
       'no-alert': 'error',
@@ -140,15 +126,11 @@ export default [
       'prefer-const': 'error',
       'prefer-arrow-callback': 'error',
       'arrow-spacing': 'error',
-      'no-duplicate-imports': 'error',
-
-      // Security
+      'no-duplicate-imports': 'error',//Security
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
-      'no-script-url': 'error',
-
-      // Best practices
+      'no-script-url': 'error',//Best practices
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'dot-notation': 'error',
@@ -161,9 +143,7 @@ export default [
           ignoreArrayIndexes: true,
           enforceConst: true,
         },
-      ],
-
-      // Style (handled by Prettier, but some logical rules)
+      ],//Style (handled by Prettier, but some logical rules)
       'max-len': [
         'error',
         {
@@ -177,9 +157,7 @@ export default [
       'max-nested-callbacks': ['error', 3],
       complexity: ['warn', 10],
     },
-  },
-
-  // Ignore patterns
+  },//Ignore patterns
   {
     ignores: [
       'node_modules/**',

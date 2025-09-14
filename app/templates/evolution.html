@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Evolution Agent - AI Content Evolution Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       .evolution-header {
@@ -285,31 +285,24 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Load dashboard data
+    <script>//Load dashboard data
       async function loadDashboardData() {
         try {
-          const response = await fetch('/api/evolution/dashboard');
-          const data = await response.json();
-
-          // Update metrics
+          const response = await fetch("/api/evolution/dashboard');
+          const data = await response.json();//Update metrics
           document.getElementById('evolutionScore').textContent = data.trend_monitoring.evolution_score;
           document.getElementById('trendsDetected').textContent = data.trend_monitoring.trends_detected;
           document.getElementById('formatsAnalyzed').textContent = data.trend_monitoring.formats_analyzed;
           document.getElementById('adaptationsMade').textContent = data.system_evolution.adaptations_made;
-          document.getElementById('capabilitiesAdded').textContent = data.system_evolution.capabilities_added;
-
-          // Update platform insights
+          document.getElementById('capabilitiesAdded').textContent = data.system_evolution.capabilities_added;//Update platform insights
           updatePlatformInsights(data.platform_insights);
         } catch (error) {
           console.error('Error loading dashboard data:', error);
         }
-      }
-
-      // Load trending formats
+      }//Load trending formats
       async function loadTrendingFormats() {
         try {
-          const response = await fetch('/api/evolution/trends');
+          const response = await fetch("/api/evolution/trends');
           const data = await response.json();
 
           const container = document.getElementById('trendingFormats');
@@ -334,22 +327,16 @@
                         </div>
                     `;
             container.appendChild(formatCard);
-          });
-
-          // Update algorithm changes
+          });//Update algorithm changes
           updateAlgorithmChanges(data.platform_algorithm_changes);
         } catch (error) {
           console.error('Error loading trending formats:', error);
         }
-      }
-
-      // Load capabilities
+      }//Load capabilities
       async function loadCapabilities() {
         try {
-          const response = await fetch('/api/evolution/capabilities');
-          const data = await response.json();
-
-          // Update current capabilities
+          const response = await fetch("/api/evolution/capabilities');
+          const data = await response.json();//Update current capabilities
           const currentContainer = document.getElementById('currentCapabilities');
           currentContainer.innerHTML = '';
 
@@ -363,9 +350,7 @@
                         </div>
                     `;
             currentContainer.appendChild(capabilityDiv);
-          });
-
-          // Update evolving capabilities
+          });//Update evolving capabilities
           const evolvingContainer = document.getElementById('evolvingCapabilities');
           evolvingContainer.innerHTML = '';
 
@@ -387,9 +372,7 @@
         } catch (error) {
           console.error('Error loading capabilities:', error);
         }
-      }
-
-      // Update platform insights
+      }//Update platform insights
       function updatePlatformInsights(insights) {
         const container = document.getElementById('platformInsights');
         container.innerHTML = '';
@@ -418,9 +401,7 @@
                 `;
           container.appendChild(platformDiv);
         });
-      }
-
-      // Update algorithm changes
+      }//Update algorithm changes
       function updateAlgorithmChanges(changes) {
         const container = document.getElementById('algorithmChanges');
         container.innerHTML = '';
@@ -440,15 +421,13 @@
                 `;
           container.appendChild(changeDiv);
         });
-      }
-
-      // Initiate format adaptation
+      }//Initiate format adaptation
       async function initiateAdaptation() {
         const formatType = document.getElementById('formatType').value;
         const adaptationStrategy = document.getElementById('adaptationStrategy').value;
 
         try {
-          const response = await fetch('/api/evolution/adapt', {
+          const response = await fetch("/api/evolution/adapt', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -459,9 +438,7 @@
             }),
           });
 
-          const result = await response.json();
-
-          // Show success message
+          const result = await response.json();//Show success message
           const alert = document.createElement('div');
           alert.className = 'alert alert-success alert-dismissible fade show';
           alert.innerHTML = `
@@ -470,9 +447,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 `;
 
-          document.querySelector('.container').insertBefore(alert, document.querySelector('.container').firstChild);
-
-          // Auto-dismiss after 5 seconds
+          document.querySelector('.container').insertBefore(alert, document.querySelector('.container').firstChild);//Auto-dismiss after 5 seconds
           setTimeout(() => {
             if (alert.parentNode) {
               alert.remove();
@@ -482,15 +457,11 @@
           console.error('Error initiating adaptation:', error);
           alert('Error initiating adaptation. Please try again.');
         }
-      }
-
-      // Initialize dashboard
+      }//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         loadDashboardData();
         loadTrendingFormats();
-        loadCapabilities();
-
-        // Refresh data every 30 seconds
+        loadCapabilities();//Refresh data every 30 seconds
         setInterval(() => {
           loadDashboardData();
           loadTrendingFormats();

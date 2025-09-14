@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Self Repair Agent Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
     <style>
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -238,12 +238,12 @@
             </div>
             <div class="card-body">
               <div class="form-check mb-2">
-                <input class="form-check-input" type="checkbox" id="auto-repair-enabled" checked />
+                <input class="form-check-input" type="checkbox" id="auto-repair-enabled" checked/>
                 <label class="form-check-label" for="auto-repair-enabled">Auto Repair Enabled</label>
               </div>
               <div class="form-group">
                 <label for="monitoring-interval">Monitoring Interval (seconds):</label>
-                <input type="number" class="form-control" id="monitoring-interval" value="30" />
+                <input type="number" class="form-control" id="monitoring-interval" value="30"/>
               </div>
               <button class="btn btn-secondary btn-sm" id="save-settings">
                 <i class="fas fa-save"></i>
@@ -257,19 +257,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        // Load dashboard data
+      document.addEventListener('DOMContentLoaded', function () {//Load dashboard data
         loadDashboardData();
         loadComponentStatus();
         loadRecentRepairs();
-        initializeHealthChart();
-
-        // Event listeners
+        initializeHealthChart();//Event listeners
         document.getElementById('refresh-status').addEventListener('click', loadComponentStatus);
         document.getElementById('execute-repair').addEventListener('click', executeRepair);
-        document.getElementById('save-settings').addEventListener('click', saveSettings);
-
-        // Auto-refresh every 30 seconds
+        document.getElementById('save-settings').addEventListener('click', saveSettings);//Auto-refresh every 30 seconds
         setInterval(() => {
           loadDashboardData();
           loadComponentStatus();
@@ -277,7 +272,7 @@
       });
 
       function loadDashboardData() {
-        fetch('/api/self-repair/dashboard')
+        fetch("/api/self-repair/dashboard')
           .then(response => response.json())
           .then(data => {
             if (data.system_health) {
@@ -291,7 +286,7 @@
       }
 
       function loadComponentStatus() {
-        fetch('/api/self-repair/dashboard')
+        fetch("/api/self-repair/dashboard')
           .then(response => response.json())
           .then(data => {
             const statusList = document.getElementById('component-status-list');
@@ -328,7 +323,7 @@
       }
 
       function loadRecentRepairs() {
-        fetch('/api/self-repair/dashboard')
+        fetch("/api/self-repair/dashboard')
           .then(response => response.json())
           .then(data => {
             const repairLog = document.getElementById('repair-log');
@@ -381,7 +376,7 @@
         const action = document.getElementById('action-select').value;
         const resultDiv = document.getElementById('repair-result');
 
-        fetch('/api/self-repair/repair-action', {
+        fetch("/api/self-repair/repair-action', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -396,8 +391,7 @@
                         ${data.message}<br>
                         <small>Repair ID: ${data.repair_id}</small>
                     </div>
-                `;
-            // Refresh status after repair
+                `;//Refresh status after repair
             setTimeout(loadComponentStatus, 2000);
           })
           .catch(error => {
@@ -415,7 +409,7 @@
           monitoring_interval: parseInt(document.getElementById('monitoring-interval').value),
         };
 
-        fetch('/api/self-repair/settings', {
+        fetch("/api/self-repair/settings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

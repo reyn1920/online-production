@@ -70,7 +70,7 @@ health_monitor() {
     
     # Check if dashboard is running
     local dashboard_port=${DASHBOARD_PORT:-8083}
-    if curl -s "http://127.0.0.1:$dashboard_port/api/status" > /dev/null 2>&1; then
+    if curl -s "http://127.0.0.1:$dashboard_port/api/status" >/dev/null 2>&1; then
         log_success "Dashboard health check passed"
     else
         log_error "Dashboard health check failed"
@@ -294,7 +294,7 @@ collect_metrics() {
         "log_files": $(find "$LOG_DIR" -name "*.log" | wc -l),
         "backup_count": $(find "$PROJECT_ROOT/backups" -maxdepth 1 -type d -name "backup_*" 2>/dev/null | wc -l || echo 0),
         "database_exists": $([ -f "trae_ai.db" ] && echo true || echo false),
-        "dashboard_responsive": $(curl -s "http://127.0.0.1:${DASHBOARD_PORT:-8083}/api/status" > /dev/null 2>&1 && echo true || echo false)
+        "dashboard_responsive": $(curl -s "http://127.0.0.1:${DASHBOARD_PORT:-8083}/api/status" >/dev/null 2>&1 && echo true || echo false)
     }
 }
 EOF

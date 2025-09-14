@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Chat Integration Router
 
@@ -14,44 +14,64 @@ Features:
 - Rich media support (images, links, embeds)
 """
 
-import asyncio
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Union
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 import httpx
-from fastapi import (APIRouter, Body, Depends, HTTPException, Query, WebSocket,
-    WebSocketDisconnect)
-from fastapi.responses import JSONResponse
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Query,
+    WebSocket,
+    WebSocketDisconnect,
+)
+
 from pydantic import BaseModel, Field
 
 # Import chat persistence
 try:
-    from backend.database.chat_db import (add_message, chat_db, create_conversation,
-        get_conversations, get_messages)
+
+    from backend.database.chat_db import (
+        add_message,
+        chat_db,
+        create_conversation,
+        get_conversations,
+        get_messages,
+    )
 except ImportError:
     # Fallback for different import paths
     try:
-        from database.chat_db import (add_message, chat_db, create_conversation,
-            get_conversations, get_messages)
+
+        from database.chat_db import (
+            add_message,
+            chat_db,
+            create_conversation,
+            get_conversations,
+            get_messages,
+        )
     except ImportError:
         logger.warning("Chat persistence not available - running without database")
         chat_db = None
 
 # Import existing integrations
 try:
+
     from integrations_hub import _providers, get_secret
+
 except ImportError:
     _providers = {}
-
 
     def get_secret(key: str) -> Optional[str]:
         return None
 
+
 try:
+
     from content_sources import router as content_router
+
 except ImportError:
     content_router = None
 
@@ -65,22 +85,22 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 class ChatMessage(BaseModel):
-    id: str = Field(default_factory = lambda: str(uuid4()))
+    id: str = Field(default_factory=lambda: str(uuid4()))
     user_id: str
     content: str
     message_type: str = "text"  # text, image, system, ai_response
-    timestamp: datetime = Field(default_factory = datetime.utcnow)
-    metadata: Dict[str, Any] = Field(default_factory = dict)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    metadata: Dict[str, Any] = Field(default_factory=dict)
     integration_data: Optional[Dict[str, Any]] = None
 
 
 class ChatRoom(BaseModel):
-    id: str = Field(default_factory = lambda: str(uuid4()))
+    id: str = Field(default_factory=lambda: str(uuid4()))
     name: str
-    created_at: datetime = Field(default_factory = datetime.utcnow)
-    participants: List[str] = Field(default_factory = list)
-    last_activity: datetime = Field(default_factory = datetime.utcnow)
-    settings: Dict[str, Any] = Field(default_factory = dict)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    participants: List[str] = Field(default_factory=list)
+    last_activity: datetime = Field(default_factory=datetime.utcnow)
+    settings: Dict[str, Any] = Field(default_factory=dict)
 
 
 class AIRequest(BaseModel):
@@ -95,18 +115,17 @@ class IntegrationRequest(BaseModel):
     query: str
     parameters: Optional[Dict[str, Any]] = None
 
+
 # Connection Manager
 
 
 class ConnectionManager:
-
 
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
         self.room_connections: Dict[str, List[str]] = {}
         self.user_rooms: Dict[str, List[str]] = {}
         self.user_conversations: Dict[str, str] = {}  # user_id -> conversation_id
-
 
     async def connect(
         self, websocket: WebSocket, user_id: str, room_id: str = "general"
@@ -134,7 +153,6 @@ class ConnectionManager:
         logger.info(f"User {user_id} connected to room {room_id}")
         return connection_id
 
-
     def disconnect(self, connection_id: str):
         if connection_id in self.active_connections:
             del self.active_connections[connection_id]
@@ -147,12 +165,10 @@ class ConnectionManager:
 
             logger.info(f"Connection {connection_id} disconnected")
 
-
     async def send_personal_message(self, message: str, connection_id: str):
         if connection_id in self.active_connections:
             websocket = self.active_connections[connection_id]
             await websocket.send_text(message)
-
 
     async def broadcast_to_room(
         self, message: str, room_id: str, exclude_connection: Optional[str] = None
@@ -170,7 +186,6 @@ class ConnectionManager:
                         logger.error(f"Error broadcasting to {connection_id}: {e}")
                         self.disconnect(connection_id)
 
-
     async def broadcast_to_all(self, message: str):
         for connection_id, websocket in self.active_connections.items():
             try:
@@ -178,6 +193,7 @@ class ConnectionManager:
             except Exception as e:
                 logger.error(f"Error broadcasting to {connection_id}: {e}")
                 self.disconnect(connection_id)
+
 
 # Global connection manager
 manager = ConnectionManager()
@@ -215,20 +231,21 @@ async def get_openai_response(message: str, context: Optional[Dict] = None) -> s
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "https://api.openai.com / v1 / chat / completions",
-                headers={"Authorization": f"Bearer {api_key}"},
-                json={
+            "https://api.openai.com/v1/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
                 "model": "gpt - 3.5 - turbo",
-                    "messages": [
+                "messages": [
                     {
                         "role": "system",
-                            "content": "You are a helpful assistant integrated into TRAE.AI production system. Be concise and helpful.",
-                            },
-                        {"role": "user", "content": message},
-                        ],
-                    "max_tokens": 500,
+                        "content": "You are a helpful assistant integrated into TRAE.AI production system. Be concise \
+    and helpful.",
                     },
-                )
+                    {"role": "user", "content": message},
+                ],
+                "max_tokens": 500,
+            },
+        )
 
         if response.status_code == 200:
             data = response.json()
@@ -245,14 +262,14 @@ async def get_anthropic_response(message: str, context: Optional[Dict] = None) -
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "https://api.anthropic.com / v1 / messages",
-                headers={"x - api - key": api_key, "anthropic - version": "2023 - 06 - 01"},
-                json={
-                "model": "claude - 3-sonnet - 20240229",
-                    "max_tokens": 500,
-                    "messages": [{"role": "user", "content": message}],
-                    },
-                )
+            "https://api.anthropic.com/v1/messages",
+            headers={"x - api - key": api_key, "anthropic - version": "2023 - 06 - 01"},
+            json={
+                "model": "claude - 3 - sonnet - 20240229",
+                "max_tokens": 500,
+                "messages": [{"role": "user", "content": message}],
+            },
+        )
 
         if response.status_code == 200:
             data = response.json()
@@ -269,18 +286,19 @@ async def get_gemini_response(message: str, context: Optional[Dict] = None) -> s
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"https://generativelanguage.googleapis.com / v1beta / models / gemini - pro:generateContent?key={api_key}",
-                json={
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini - pro:generateContent?key={api_key}",
+            json={
                 "contents": [{"parts": [{"text": message}]}],
-                    "generationConfig": {"maxOutputTokens": 500},
-                    },
-                )
+                "generationConfig": {"maxOutputTokens": 500},
+            },
+        )
 
         if response.status_code == 200:
             data = response.json()
             return data["candidates"][0]["content"]["parts"][0]["text"]
         else:
             return f"Gemini API error: {response.status_code}"
+
 
 # Integration Functions
 
@@ -315,19 +333,19 @@ async def get_weather_data(
 
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"https://api.openweathermap.org / data / 2.5 / weather?q={query}&appid={api_key}&units = metric"
+            f"https://api.openweathermap.org/data/2.5/weather?q={query}&appid={api_key}&units = metric"
         )
 
         if response.status_code == 200:
             data = response.json()
             return {
                 "type": "weather",
-                    "location": data["name"],
-                    "temperature": data["main"]["temp"],
-                    "description": data["weather"][0]["description"],
-                    "humidity": data["main"]["humidity"],
-                    "wind_speed": data["wind"]["speed"],
-                    }
+                "location": data["name"],
+                "temperature": data["main"]["temp"],
+                "description": data["weather"][0]["description"],
+                "humidity": data["main"]["humidity"],
+                "wind_speed": data["wind"]["speed"],
+            }
         else:
             return {"error": f"Weather API error: {response.status_code}"}
 
@@ -342,7 +360,7 @@ async def get_news_data(
 
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"https://newsapi.org / v2 / everything?q={query}&apiKey={api_key}&pageSize = 5"
+            f"https://newsapi.org/v2/everything?q={query}&apiKey={api_key}&pageSize = 5"
         )
 
         if response.status_code == 200:
@@ -352,10 +370,10 @@ async def get_news_data(
                 articles.append(
                     {
                         "title": article["title"],
-                            "description": article["description"],
-                            "url": article["url"],
-                            "source": article["source"]["name"],
-                            }
+                        "description": article["description"],
+                        "url": article["url"],
+                        "source": article["source"]["name"],
+                    }
                 )
             return {"type": "news", "articles": articles}
         else:
@@ -372,9 +390,9 @@ async def get_image_data(
 
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"https://api.unsplash.com / search / photos?query={query}&per_page = 3",
-                headers={"Authorization": f"Client - ID {api_key}"},
-                )
+            f"https://api.unsplash.com/search/photos?query={query}&per_page = 3",
+            headers={"Authorization": f"Client - ID {api_key}"},
+        )
 
         if response.status_code == 200:
             data = response.json()
@@ -383,9 +401,9 @@ async def get_image_data(
                 images.append(
                     {
                         "url": photo["urls"]["small"],
-                            "description": photo["alt_description"],
-                            "photographer": photo["user"]["name"],
-                            }
+                        "description": photo["alt_description"],
+                        "photographer": photo["user"]["name"],
+                    }
                 )
             return {"type": "images", "images": images}
         else:
@@ -398,7 +416,7 @@ async def get_pet_data(query: str, parameters: Optional[Dict] = None) -> Dict[st
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"http://localhost:8000 / pets / search?animal={query}&limit = 3"
+                f"http://localhost:8000/pets/search?animal={query}&limit = 3"
             )
 
             if response.status_code == 200:
@@ -409,10 +427,9 @@ async def get_pet_data(query: str, parameters: Optional[Dict] = None) -> Dict[st
     except Exception as e:
         return {"error": f"Pet data error: {str(e)}"}
 
+
 # WebSocket endpoint
 @router.websocket("/ws/{user_id}")
-
-
 async def websocket_endpoint(
     websocket: WebSocket, user_id: str, room_id: str = Query("general")
 ):
@@ -422,9 +439,10 @@ async def websocket_endpoint(
     # Send welcome message
     welcome_msg = {
         "type": "system",
-            "content": f"Welcome to {rooms.get(room_id, {}).get('name', room_id)}! You can ask me about weather, news, images, or pets.",
-            "timestamp": datetime.utcnow().isoformat(),
-            }
+        "content": f"Welcome to {rooms.get(room_id, {}).get('name', room_id)}! You can ask me about weather, news, images, \
+    or pets.",
+        "timestamp": datetime.utcnow().isoformat(),
+    }
     await manager.send_personal_message(json.dumps(welcome_msg), connection_id)
 
     try:
@@ -438,11 +456,11 @@ async def websocket_endpoint(
             if message_type == "message":
                 # Create chat message
                 chat_message = ChatMessage(
-                    user_id = user_id,
-                        content = content,
-                        message_type="text",
-                        metadata = message_data.get("metadata", {}),
-                        )
+                    user_id=user_id,
+                    content=content,
+                    message_type="text",
+                    metadata=message_data.get("metadata", {}),
+                )
 
                 # Store message in memory
                 if room_id not in chat_history:
@@ -453,26 +471,26 @@ async def websocket_endpoint(
                 if chat_db and conversation_id:
                     add_message(
                         conversation_id,
-                            "user",
-                            content,
-                            "text",
-                            {"room_id": room_id, "user_id": user_id},
-                            )
+                        "user",
+                        content,
+                        "text",
+                        {"room_id": room_id, "user_id": user_id},
+                    )
 
                 # Broadcast message to room
                 broadcast_data = {
                     "type": "message",
-                        "user_id": user_id,
-                        "content": chat_message.content,
-                        "message_type": chat_message.message_type,
-                        "timestamp": chat_message.timestamp.isoformat(),
-                        "id": chat_message.id,
-                        }
+                    "user_id": user_id,
+                    "content": chat_message.content,
+                    "message_type": chat_message.message_type,
+                    "timestamp": chat_message.timestamp.isoformat(),
+                    "id": chat_message.id,
+                }
                 await manager.broadcast_to_room(
                     json.dumps(broadcast_data),
-                        room_id,
-                        exclude_connection = connection_id,
-                        )
+                    room_id,
+                    exclude_connection=connection_id,
+                )
 
                 # Check for AI triggers or integration requests
                 content_lower = content.lower()
@@ -489,7 +507,7 @@ async def websocket_endpoint(
                     # Weather request
                     location = content_lower.replace("/weather ", "")
                     weather_data = await get_weather_data(location)
-                    response = f"Weather in {weather_data.get('location', location)}: {weather_data.get('description', 'N / A')}, {weather_data.get('temperature', 'N / A')}°C"
+                    response = f"Weather in {weather_data.get('location', location)}: {weather_data.get('description', 'N/A')}, {weather_data.get('temperature', 'N/A')}°C"
                     response_type = "integration_response"
 
                 elif content_lower.startswith("/news "):
@@ -498,7 +516,7 @@ async def websocket_endpoint(
                     news_data = await get_news_data(query)
                     if "articles" in news_data:
                         articles = news_data["articles"][:3]
-                        response = "Latest news:\n" + "\n".join(
+                        response = "Latest news:\\n" + "\\n".join(
                             [f"• {article['title']}" for article in articles]
                         )
                     else:
@@ -533,43 +551,43 @@ async def websocket_endpoint(
                         )
                     response_type = "integration_response"
 
-                # Send AI / integration response
+                # Send AI/integration response
                 if response:
                     # Save assistant response to database
                     if chat_db and conversation_id:
                         add_message(
                             conversation_id,
-                                "assistant",
-                                response,
-                                response_type,
-                                {
+                            "assistant",
+                            response,
+                            response_type,
+                            {
                                 "room_id": room_id,
-                                    "command": (
+                                "command": (
                                     content.split()[0]
                                     if content.startswith("/")
                                     else None
                                 ),
-                                    },
-                                )
+                            },
+                        )
 
                     ai_message = {
                         "type": response_type,
-                            "user_id": "assistant",
-                            "content": response,
-                            "timestamp": datetime.utcnow().isoformat(),
-                            "id": str(uuid4()),
-                            }
+                        "user_id": "assistant",
+                        "content": response,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "id": str(uuid4()),
+                    }
                     await manager.broadcast_to_room(json.dumps(ai_message), room_id)
 
             elif message_type == "get_history":
                 # Send chat history to user
                 if chat_db and conversation_id:
-                    messages = get_messages(conversation_id, limit = 50)
+                    messages = get_messages(conversation_id, limit=50)
                     history_data = {
                         "type": "history",
-                            "messages": messages,
-                            "conversation_id": conversation_id,
-                            }
+                        "messages": messages,
+                        "conversation_id": conversation_id,
+                    }
                     await websocket.send_text(json.dumps(history_data))
 
             elif message_type == "ping":
@@ -585,31 +603,28 @@ async def websocket_endpoint(
         # Notify room of disconnection
         disconnect_msg = {
             "type": "system",
-                "content": f"User {user_id} has left the chat",
-                "timestamp": datetime.utcnow().isoformat(),
-                }
+            "content": f"User {user_id} has left the chat",
+            "timestamp": datetime.utcnow().isoformat(),
+        }
         await manager.broadcast_to_room(json.dumps(disconnect_msg), room_id)
+
 
 # REST API Endpoints
 @router.get("/rooms")
-
-
 async def get_rooms():
     """Get all chat rooms"""
     return {"rooms": list(rooms.values())}
 
+
 @router.post("/rooms")
-
-
 async def create_room(room: ChatRoom):
     """Create a new chat room"""
     rooms[room.id] = room
     return {"message": "Room created", "room": room}
 
+
 @router.get("/rooms/{room_id}/history")
-
-
-async def get_chat_history(room_id: str, limit: int = Query(50, ge = 1, le = 200)):
+async def get_chat_history(room_id: str, limit: int = Query(50, ge=1, le=200)):
     """Get chat history for a room"""
     if room_id not in chat_history:
         return {"messages": []}
@@ -617,9 +632,8 @@ async def get_chat_history(room_id: str, limit: int = Query(50, ge = 1, le = 200
     messages = chat_history[room_id][-limit:]
     return {"messages": [msg.dict() for msg in messages]}
 
+
 @router.post("/ai")
-
-
 async def ai_chat(request: AIRequest):
     """Get AI response via REST API"""
     provider = request.provider or "openai"
@@ -627,62 +641,58 @@ async def ai_chat(request: AIRequest):
 
     return {
         "response": response,
-            "provider": provider,
-            "timestamp": datetime.utcnow().isoformat(),
-            }
+        "provider": provider,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
 
 @router.post("/integrations")
-
-
 async def integration_request(request: IntegrationRequest):
     """Get data from integrations via REST API"""
     data = await get_integration_data(request.type, request.query, request.parameters)
 
     return {
         "type": request.type,
-            "query": request.query,
-            "data": data,
-            "timestamp": datetime.utcnow().isoformat(),
-            }
+        "query": request.query,
+        "data": data,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
 
 @router.get("/status")
-
-
 async def chat_status():
     """Get chat system status"""
     return {
         "active_connections": len(manager.active_connections),
-            "rooms": len(rooms),
-            "total_messages": sum(len(messages) for messages in chat_history.values()),
-            "integrations_available": {
+        "rooms": len(rooms),
+        "total_messages": sum(len(messages) for messages in chat_history.values()),
+        "integrations_available": {
             "ai_providers": [
                 "openai" if get_secret("OPENAI_API_KEY") else None,
-                    "anthropic" if get_secret("ANTHROPIC_API_KEY") else None,
-                    "google_gemini" if get_secret("GOOGLE_API_KEY") else None,
-                    ],
-                "weather": bool(get_secret("OPENWEATHER_KEY")),
-                "news": bool(get_secret("NEWSAPI_KEY")),
-                "images": bool(get_secret("UNSPLASH_KEY")),
-                "pets": True,  # Uses internal API
+                "anthropic" if get_secret("ANTHROPIC_API_KEY") else None,
+                "google_gemini" if get_secret("GOOGLE_API_KEY") else None,
+            ],
+            "weather": bool(get_secret("OPENWEATHER_KEY")),
+            "news": bool(get_secret("NEWSAPI_KEY")),
+            "images": bool(get_secret("UNSPLASH_KEY")),
+            "pets": True,  # Uses internal API
         },
-            "timestamp": datetime.utcnow().isoformat(),
-            }
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
 
 @router.delete("/rooms/{room_id}/history")
-
-
 async def clear_chat_history(room_id: str):
     """Clear chat history for a room"""
     if room_id in chat_history:
         chat_history[room_id] = []
         return {"message": f"Chat history cleared for room {room_id}"}
     else:
-        raise HTTPException(status_code = 404, detail="Room not found")
+        raise HTTPException(status_code=404, detail="Room not found")
+
 
 # Health check
 @router.get("/health")
-
-
 async def health_check():
     """Health check endpoint"""
     stats = {}
@@ -691,155 +701,150 @@ async def health_check():
 
     return {
         "status": "healthy",
-            "timestamp": datetime.now().isoformat(),
-            "active_connections": len(manager.active_connections),
-            "rooms": list(manager.room_connections.keys()),
-            "database_stats": stats,
-            }
+        "timestamp": datetime.now().isoformat(),
+        "active_connections": len(manager.active_connections),
+        "rooms": list(manager.room_connections.keys()),
+        "database_stats": stats,
+    }
+
 
 # Chat History and Conversation Management Endpoints
 
+
 @router.get("/conversations/{user_id}")
-
-
 async def get_user_conversations(user_id: str, limit: int = 50):
     """Get conversations for a user"""
     if not chat_db:
-        raise HTTPException(status_code = 503, detail="Chat persistence not available")
+        raise HTTPException(status_code=503, detail="Chat persistence not available")
 
     try:
         conversations = get_conversations(user_id, limit)
         return {
             "user_id": user_id,
-                "conversations": conversations,
-                "total": len(conversations),
-                }
+            "conversations": conversations,
+            "total": len(conversations),
+        }
     except Exception as e:
         logger.error(f"Failed to get conversations for user {user_id}: {e}")
-        raise HTTPException(status_code = 500, detail="Failed to retrieve conversations")
+        raise HTTPException(status_code=500, detail="Failed to retrieve conversations")
+
 
 @router.get("/conversations/{user_id}/{conversation_id}/messages")
-
-
 async def get_conversation_messages(
     user_id: str, conversation_id: str, limit: int = 100
 ):
     """Get messages for a specific conversation"""
     if not chat_db:
-        raise HTTPException(status_code = 503, detail="Chat persistence not available")
+        raise HTTPException(status_code=503, detail="Chat persistence not available")
 
     try:
         messages = get_messages(conversation_id, limit)
         return {
             "conversation_id": conversation_id,
-                "user_id": user_id,
-                "messages": messages,
-                "total": len(messages),
-                }
+            "user_id": user_id,
+            "messages": messages,
+            "total": len(messages),
+        }
     except Exception as e:
         logger.error(f"Failed to get messages for conversation {conversation_id}: {e}")
-        raise HTTPException(status_code = 500, detail="Failed to retrieve messages")
+        raise HTTPException(status_code=500, detail="Failed to retrieve messages")
+
 
 @router.post("/conversations/{user_id}")
-
-
 async def create_new_conversation(user_id: str, title: str = None):
     """Create a new conversation for a user"""
     if not chat_db:
-        raise HTTPException(status_code = 503, detail="Chat persistence not available")
+        raise HTTPException(status_code=503, detail="Chat persistence not available")
 
     try:
         conversation_id = create_conversation(user_id, title)
         return {
             "conversation_id": conversation_id,
-                "user_id": user_id,
-                "title": title or f"Chat {datetime.now().strftime('%Y-%m-%d %H:%M')}",
-                "created_at": datetime.now().isoformat(),
-                }
+            "user_id": user_id,
+            "title": title or f"Chat {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+            "created_at": datetime.now().isoformat(),
+        }
     except Exception as e:
         logger.error(f"Failed to create conversation for user {user_id}: {e}")
-        raise HTTPException(status_code = 500, detail="Failed to create conversation")
+        raise HTTPException(status_code=500, detail="Failed to create conversation")
+
 
 @router.put("/conversations/{conversation_id}/title")
-
-
 async def update_conversation_title(conversation_id: str, title: str):
     """Update conversation title"""
     if not chat_db:
-        raise HTTPException(status_code = 503, detail="Chat persistence not available")
+        raise HTTPException(status_code=503, detail="Chat persistence not available")
 
     try:
         success = chat_db.update_conversation_title(conversation_id, title)
         if not success:
-            raise HTTPException(status_code = 404, detail="Conversation not found")
+            raise HTTPException(status_code=404, detail="Conversation not found")
 
         return {
             "conversation_id": conversation_id,
-                "title": title,
-                "updated_at": datetime.now().isoformat(),
-                }
+            "title": title,
+            "updated_at": datetime.now().isoformat(),
+        }
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Failed to update conversation title {conversation_id}: {e}")
         raise HTTPException(
-            status_code = 500, detail="Failed to update conversation title"
+            status_code=500, detail="Failed to update conversation title"
         )
 
+
 @router.delete("/conversations/{conversation_id}")
-
-
 async def delete_conversation(conversation_id: str):
     """Delete a conversation and all its messages"""
     if not chat_db:
-        raise HTTPException(status_code = 503, detail="Chat persistence not available")
+        raise HTTPException(status_code=503, detail="Chat persistence not available")
 
     try:
         success = chat_db.delete_conversation(conversation_id)
         if not success:
-            raise HTTPException(status_code = 404, detail="Conversation not found")
+            raise HTTPException(status_code=404, detail="Conversation not found")
 
         return {
             "conversation_id": conversation_id,
-                "deleted": True,
-                "deleted_at": datetime.now().isoformat(),
-                }
+            "deleted": True,
+            "deleted_at": datetime.now().isoformat(),
+        }
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Failed to delete conversation {conversation_id}: {e}")
-        raise HTTPException(status_code = 500, detail="Failed to delete conversation")
+        raise HTTPException(status_code=500, detail="Failed to delete conversation")
+
 
 @router.get("/search/{user_id}")
-
-
 async def search_user_messages(user_id: str, q: str, limit: int = 50):
     """Search messages for a user"""
     if not chat_db:
-        raise HTTPException(status_code = 503, detail="Chat persistence not available")
+        raise HTTPException(status_code=503, detail="Chat persistence not available")
 
     if not q or len(q.strip()) < 2:
         raise HTTPException(
-            status_code = 400, detail="Search query must be at least 2 characters"
+            status_code=400, detail="Search query must be at least 2 characters"
         )
 
     try:
+
         from backend.database.chat_db import search_chat
 
         results = search_chat(q.strip(), user_id, limit)
         return {
             "query": q,
-                "user_id": user_id,
-                "results": results,
-                "total": len(results),
-                }
+            "user_id": user_id,
+            "results": results,
+            "total": len(results),
+        }
     except Exception as e:
         logger.error(f"Failed to search messages for user {user_id}: {e}")
-        raise HTTPException(status_code = 500, detail="Failed to search messages")
+        raise HTTPException(status_code=500, detail="Failed to search messages")
+
 
 @router.get("/stats")
-
-
 async def get_chat_stats():
     """Get chat system statistics"""
     if not chat_db:
@@ -853,4 +858,4 @@ async def get_chat_stats():
         return stats
     except Exception as e:
         logger.error(f"Failed to get chat stats: {e}")
-        raise HTTPException(status_code = 500, detail="Failed to retrieve statistics")
+        raise HTTPException(status_code=500, detail="Failed to retrieve statistics")

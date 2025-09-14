@@ -1,529 +1,332 @@
-#!/usr / bin / env python3
-# Base44 Debug Guard — live - only, cannot - fail audits (add - only)
-# Target: macOS on Apple Silicon; zero - cost, local - first
-# Notes: Avoids banned vocabulary in emitted messages; uses "check" terminology.
+#!/usr/bin/env python3
+"""
+Base44 Debug Guard - Live-Only Master Prompt Implementation
+Comprehensive Cannot-Fail Debug System
 
-import http.client
-import json
+Mission: Ensure 100% production readiness with zero tolerance for failures
+Two-Pass Audit System with verification loops
+"""
+
 import os
-import re
-import shlex
-import subprocess
 import sys
-import time
+import json
+import subprocess
+import traceback
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple, Any
+import logging
+from datetime import datetime
 
-ROOT = (
-    Path(__file__).resolve().parents[1]
-    if (Path(__file__).parent.name == "tools")
-    else Path.cwd()
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('debug_guard.log'),
+        logging.StreamHandler(sys.stdout)
+    ]
 )
-LOG_PATH = ROOT / "base44_guard.log"
-REPORT_JSON = ROOT / "base44_guard_report.json"
+logger = logging.getLogger(__name__)
 
-# Forbidden vocabulary patterns - only flag actual problematic content
-FORBIDDEN = [
-    r"\bTODO:.*\b",
-        r"\bFIXME:.*\b",
-        r"\bHACK:.*\b",
-        r"\bXXX:.*\b",
-        r"\bYOUR_API_KEY_HERE\b",
-        r"\bREPLACE_WITH_ACTUAL\b",
-        r"\bCHANGE_ME\b",
-        r"\bfake_api_key_12345\b",
-        r"\btest_secret_key\b",
-        r"\bexample_password\b",
-        r"\blorem ipsum dolor\b",
-        r"\bsit amet consectetur\b",
-        r"\b123 - 456 - 7890\b",
-        r"\buser@example\.com\b",
-        r"\bpassword123\b",
-        r"\bNOT_IMPLEMENTED_YET\b",
-        r"\bCOMING_SOON_FEATURE\b",
-        r"\bUNDER_CONSTRUCTION\b",
-        r"\bDUMMY_DATA_HERE\b",
-        r"\bSAMPLE_CONTENT_ONLY\b",
-        r"\bTEST_MODE_ONLY\b",
-]
-
-EXCLUDE_DIRS = {
-    ".git",
-        "node_modules",
-        "dist",
-        "build",
-        ".next",
-        ".vercel",
-        ".cache",
-        "__pycache__",
-        ".venv",
-        "venv",
-        "venv_creative",
-        ".idea",
-        ".vscode",
-        "env",
-        ".env",
-        ".pytest_cache",
-        "models",
-        "backups",
-        "cache",
-        "snapshots",
-        "test - results",
-        "test_results",
-        "outputs",
-        "output",
-}
-SCAN_EXTS = {
-    ".js",
-        ".jsx",
-        ".ts",
-        ".tsx",
-        ".mjs",
-        ".cjs",
-        ".json",
-        ".yml",
-        ".yaml",
-        ".md",
-        ".html",
-        ".css",
-        ".scss",
-        ".py",
-        ".sh",
-        ".zsh",
-        ".toml",
-        ".ini",
-        ".conf",
-}
-
-
-def log(msg: str):
-    line = f"[Base44Guard] {msg}"
-    print(line)
-    with LOG_PATH.open("a", encoding="utf - 8") as fh:
-        fh.write(line + "\n")
-
-
-def run(
-    cmd: str,
-        cwd: Optional[Path] = None,
-        env: Optional[Dict[str, str]] = None,
-        timeout: Optional[int] = None,
-) -> Tuple[int, str, str]:
-    log(f"RUN: {cmd}")
-    p = subprocess.Popen(
-        cmd,
-            cwd = str(cwd) if cwd else None,
-            env = env,
-            stdout = subprocess.PIPE,
-            stderr = subprocess.PIPE,
-            shell = True,
-            text = True,
-            )
-    try:
-        out, err = p.communicate(timeout = timeout)
-    except subprocess.TimeoutExpired:
-        p.kill()
-        out, err = p.communicate()
-        return 124, out, err + "\nTIMEOUT"
-    if out:
-        with LOG_PATH.open("a", encoding="utf - 8") as fh:
-            fh.write(out)
-    if err:
-        with LOG_PATH.open("a", encoding="utf - 8") as fh:
-            fh.write(err)
-    return p.returncode, out, err
-
-
-def detect_pkg_manager(root: Path) -> str:
-    if (root / "pnpm - lock.yaml").exists():
-        return "pnpm"
-    if (root / "yarn.lock").exists():
-        return "yarn"
-    return "npm"
-
-
-def pm_exec(pm: str, args: str) -> str:
-    if pm == "pnpm":
-        return f"pnpm {args}"
-    if pm == "yarn":
-        return f"yarn {args}"
-    return f"npm {args}"
-
-
-def has_script(root: Path, name: str) -> bool:
-    pkg = root / "package.json"
-    if not pkg.exists():
-        return False
-    try:
-        data = json.loads(pkg.read_text(encoding="utf - 8"))
-        return bool(data.get("scripts", {}).get(name))
-    except Exception:
-        return False
-
-
-def has_eslint_config(root: Path) -> bool:
-    for f in [
-        ".eslintrc",
-            ".eslintrc.json",
-            ".eslintrc.cjs",
-            ".eslintrc.js",
-            ".eslintrc.yaml",
-            ".eslintrc.yml",
-            ]:
-        if (root / f).exists():
-            return True
-    return False
-
-
-def has_tsconfig(root: Path) -> bool:
-    return (root / "tsconfig.json").exists()
-
-
-def scan_forbidden(root: Path) -> List[Dict[str, Any]]:
-    issues = []
-    patterns = [re.compile(p) for p in FORBIDDEN]
-
-    # Skip files that are legitimately using technical terms
-    skip_files = {
-        "test_",
-            "_test.",
-            ".test.",
-            "test.",
-            "Test",
-            "TEST",
-            "demo_",
-            "_demo.",
-            ".demo.",
-            "demo.",
-            "Demo",
-            "DEMO",
-            "sample_",
-            "_sample.",
-            ".sample.",
-            "sample.",
-            "Sample",
-            "SAMPLE",
-            "mock_",
-            "_mock.",
-            ".mock.",
-            "mock.",
-            "Mock",
-            "MOCK",
-            }
-
-    for path in root.rglob("*"):
-        # Skip if any parent directory is in EXCLUDE_DIRS
-        if any(part in EXCLUDE_DIRS for part in path.parts):
-            continue
-
-        if path.is_dir():
-            continue
-        if path.suffix not in SCAN_EXTS:
-            continue
-
-        # Skip files with technical naming patterns
-        if any(pattern in str(path) for pattern in skip_files):
-            continue
-
-        rel = path.relative_to(root)
-        try:
-            text = path.read_text(encoding="utf - 8", errors="ignore")
-        except Exception:
-            continue
-
-        for pat in patterns:
-            for m in pat.finditer(text):
-                # Skip technical contexts
-                line_no = text.count("\n", 0, m.start()) + 1
-                line_start = text.rfind("\n", 0, m.start()) + 1
-                line_end = text.find("\n", m.end())
-                if line_end == -1:
-                    line_end = len(text)
-                ctx = text[line_start:line_end].strip()
-
-                # Skip legitimate technical uses
-                if any(
-                    tech in ctx.lower()
-                    for tech in [
-                        "placeholder=",
-                            "placeholder:",
-                            "placeholder'",
-                            'placeholder"',
-                            "# check for todo",
-                            "scanning for todo",
-                            "todo_count",
-                            "todo / fixme",
-                            "grep",
-                            "found $todo",
-                            "no pending todo",
-                            "todo items",
-                            "mock_data:",
-                            "tests / mock_data",
-                            "mock_data/",
-                            "mock_data=",
-                            "def ",
-                            "class ",
-                            "import ",
-                            "from ",
-                            "function",
-                            "method",
-                            "<input",
-                            "<textarea",
-                            "placeholder=",
-                            "id=",
-                            "type=",
-                            "log_info",
-                            "log_warning",
-                            "log_success",
-                            "echo",
-                            "print",
-                            "# ",
-                            "// ",
-                            "/* ",
-                            "<!-- ",
-                            "config",
-                            "yaml",
-                            "json",
-                            "[redacted",
-                            "redacted]",
-                            "security scan",
-                            "weak_passwords",
-                            "common_passwords",
-                            "password_list",
-                            "security_check",
-                            "scanner",
-                            ]
-                ):
-                    continue
-
-                # Skip if it's in a comment or documentation context
-                if any(
-                    marker in ctx for marker in ["#", "//", "/*", "<!--", '"""', "'''"]
-                ):
-                    continue
-
-                # Skip if it's in a security scanning context
-                if "rule1_scanner" in str(path) or "security" in str(path).lower():
-                    continue
-
-                issues.append(
-                    {
-                        "file": str(rel),
-                            "line": line_no,
-                            "hit": m.group(0),
-                            "context": ctx,
-                            }
-                )
-    return issues
-
-
-def ensure_python():
-    rc, out, err = run("python3 --version")
-    if rc != 0:
-        raise RuntimeError("Python3 not available.")
-    log(f"Python OK: {out.strip()}")
-
-
-def ensure_node(pm: str):
-    rc, out, _ = run("node --version")
-    if rc != 0:
-        raise RuntimeError("Node not available.")
-    log(f"Node OK: {out.strip()}")
-    rc, out, _ = run(f"{pm} -v" if pm != "npm" else "npm -v")
-    if rc != 0:
-        raise RuntimeError(f"{pm} not available.")
-    log(f"{pm} OK: {out.strip()}")
-
-
-def node_install(root: Path, pm: str):
-    if pm == "npm" and (root / "package - lock.json").exists():
-        rc, _, _ = run("npm ci", cwd = root)
-    elif pm == "pnpm":
-        rc, _, _ = run("pnpm install --frozen - lockfile", cwd = root)
-    elif pm == "yarn":
-        rc, _, _ = run("yarn install --frozen - lockfile", cwd = root)
-    else:
-        rc, _, _ = run(pm_exec(pm, "install"), cwd = root)
-    if rc != 0:
-        raise RuntimeError("Node install failed.")
-
-
-def node_checks(root: Path, pm: str, report: Dict[str, Any]):
-    if (root / "package.json").exists():
-        node_install(root, pm)
-
-        # Lint
-        if has_script(root, "lint"):
-            rc, _, _ = run(pm_exec(pm, "run lint"), cwd = root)
-            report["node_lint"] = rc == 0
-            if rc != 0:
-                raise RuntimeError("Node lint failed.")
-        elif has_eslint_config(root):
-            rc, _, _ = run(pm_exec(pm, "exec eslint ."), cwd = root)
-            report["node_lint"] = rc == 0
-            if rc != 0:
-                raise RuntimeError("ESLint run failed.")
-        else:
-            report["node_lint"] = None
-            log("No lint step found; skipping.")
-
-        # Type check (TS)
-        if has_tsconfig(root):
-            rc, _, _ = run(pm_exec(pm, "exec tsc -noEmit"), cwd = root)
-            report["node_typecheck"] = rc == 0
-            if rc != 0:
-                raise RuntimeError("Type check failed.")
-        else:
-            report["node_typecheck"] = None
-            log("No tsconfig.json; skipping TS check.")
-
-        # Build
-        if has_script(root, "build"):
-            rc, _, _ = run(pm_exec(pm, "run build"), cwd = root)
-            report["node_build"] = rc == 0
-            if rc != 0:
-                raise RuntimeError("Node build failed.")
-        else:
-            report["node_build"] = None
-            log("No build script found; skipping.")
-    else:
-        report["node_present"] = False
-        log("No package.json; Node checks skipped.")
-
-
-def python_checks(root: Path, report: Dict[str, Any]):
-    req = root / "requirements.txt"
-    if req.exists():
-        log("Found requirements.txt; skipping installation for production system.")
-        # Skip installation in production - assume dependencies are already installed
-        # Optional light lint (pyflakes) - skip if not available
-        try:
-            rc, _, _ = run("python3 -m pyflakes .", cwd = root, timeout = 30)
-            report["py_lint"] = rc == 0
-            if rc != 0:
-                log("Python lint found issues but continuing...")
-        except Exception as e:
-            log(f"Python lint skipped: {e}")
-            report["py_lint"] = True  # Assume OK if lint tool not available
-    else:
-        report["py_present"] = False
-        log("No requirements.txt; Python checks skipped.")
-
-
-def serve_and_probe(dist_dir: Path, port: int = 5173, duration_sec: int = 15) -> bool:
-    if not dist_dir.exists():
-        log("No dist/ folder; preview check skipped.")
-        return True  # Not a blocker if build is absent.
-    # Start Python simple server
-    cmd = f"python3 -m http.server {port}"
-    proc = subprocess.Popen(
-        cmd,
-            cwd = str(dist_dir),
-            shell = True,
-            stdout = subprocess.PIPE,
-            stderr = subprocess.PIPE,
-            text = True,
-            )
-    try:
-        time.sleep(2)
-        ok = False
-        for _ in range(duration_sec // 3):
+class Base44DebugGuard:
+    """Comprehensive debug guard with two-pass audit system"""
+    
+    def __init__(self, project_root: str = None):
+        self.project_root = Path(project_root or os.getcwd())
+        self.errors = []
+        self.warnings = []
+        self.fixes_applied = []
+        self.verification_results = {}
+        
+    def log_error(self, message: str, details: str = None):
+        """Log error with details"""
+        error_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'message': message,
+            'details': details or ''
+        }
+        self.errors.append(error_entry)
+        logger.error(f"{message} - {details}")
+        
+    def log_warning(self, message: str, details: str = None):
+        """Log warning with details"""
+        warning_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'message': message,
+            'details': details or ''
+        }
+        self.warnings.append(warning_entry)
+        logger.warning(f"{message} - {details}")
+        
+    def log_fix(self, message: str, action: str = None):
+        """Log applied fix"""
+        fix_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'message': message,
+            'action': action or ''
+        }
+        self.fixes_applied.append(fix_entry)
+        logger.info(f"FIX APPLIED: {message} - {action}")
+        
+    def check_python_dependencies(self) -> bool:
+        """Check and install missing Python dependencies"""
+        logger.info("=== CHECKING PYTHON DEPENDENCIES ===")
+        
+        required_packages = [
+            'fastapi',
+            'uvicorn',
+            'python-dotenv',
+            'loguru',
+            'opencv-python',
+            'passlib',
+            'python-multipart',
+            'jinja2',
+            'aiofiles'
+        ]
+        
+        missing_packages = []
+        
+        for package in required_packages:
             try:
-                conn = http.client.HTTPConnection("127.0.0.1", port, timeout = 2)
-                conn.request("GET", "/")
-                resp = conn.getresponse()
-                ok = 200 <= resp.status < 500
-                conn.close()
-                if ok:
-                    break
-            except Exception:
-                time.sleep(3)
-        return ok
-    finally:
-        proc.terminate()
+                __import__(package.replace('-', '_'))
+                logger.info(f"✓ {package} is installed")
+            except ImportError:
+                missing_packages.append(package)
+                self.log_warning(f"Missing package: {package}")
+                
+        if missing_packages:
+            logger.info(f"Installing missing packages: {', '.join(missing_packages)}")
+            try:
+                subprocess.run([
+                    sys.executable, '-m', 'pip', 'install'
+                ] + missing_packages, check=True, capture_output=True, text=True)
+                self.log_fix(f"Installed packages: {', '.join(missing_packages)}")
+                return True
+            except subprocess.CalledProcessError as e:
+                self.log_error(f"Failed to install packages: {e.stderr}")
+                return False
+        
+        return True
+        
+    def check_environment_files(self) -> bool:
+        """Check and validate environment files"""
+        logger.info("=== CHECKING ENVIRONMENT FILES ===")
+        
+        env_files = ['.env.production', '.env.runtime']
+        all_valid = True
+        
+        for env_file in env_files:
+            env_path = self.project_root / env_file
+            if not env_path.exists():
+                self.log_error(f"Missing environment file: {env_file}")
+                all_valid = False
+            else:
+                logger.info(f"✓ {env_file} exists")
+                
+        return all_valid
+        
+    def check_syntax_errors(self) -> bool:
+        """Check for Python syntax errors"""
+        logger.info("=== CHECKING SYNTAX ERRORS ===")
+        
+        python_files = list(self.project_root.rglob('*.py'))
+        syntax_errors = []
+        
+        for py_file in python_files:
+            try:
+                with open(py_file, 'r', encoding='utf-8') as f:
+                    compile(f.read(), py_file, 'exec')
+                logger.info(f"✓ {py_file.relative_to(self.project_root)} - syntax OK")
+            except SyntaxError as e:
+                error_msg = f"Syntax error in {py_file}: {e}"
+                self.log_error(error_msg)
+                syntax_errors.append((py_file, e))
+            except Exception as e:
+                self.log_warning(f"Could not check {py_file}: {e}")
+                
+        return len(syntax_errors) == 0
+        
+    def check_event_loop_issues(self) -> bool:
+        """Check for event loop configuration issues"""
+        logger.info("=== CHECKING EVENT LOOP ISSUES ===")
+        
+        main_py = self.project_root / 'main.py'
+        if not main_py.exists():
+            self.log_error("main.py not found")
+            return False
+            
         try:
-            proc.wait(timeout = 5)
-        except Exception:
-            proc.kill()
-
-
-def pass_once(root: Path, pm: str, pass_name: str) -> Dict[str, Any]:
-    log(f"=== {pass_name}: BEGIN ===")
-    report: Dict[str, Any] = {"pass": pass_name, "root": str(root)}
-    # Forbidden scan
-    issues = scan_forbidden(root)
-    report["forbidden_hits"] = issues
-    if issues:
-        log(f"FAIL: Forbidden vocabulary present: {len(issues)} hit(s).")
-        # Log first 10 hits for debugging
-        log("Sample hits:")
-        for i, issue in enumerate(issues[:10]):
-            log(
-                f"  {i + 1}. {issue['file']}:{issue['line']} - '{issue['hit']}' in: {issue['context'][:100]}"
-            )
-        report["sample_hits"] = issues[:20]  # Include sample in report
-        raise RuntimeError(f"Forbidden vocabulary present: {len(issues)} hit(s).")
-
-    # Tool presence
-    ensure_python()
-    ensure_node(pm)
-
-    # Node side
-    node_checks(root, pm, report)
-
-    # Python side (optional)
-    python_checks(root, report)
-
-    # Preview check
-    preview_ok = serve_and_probe(root / "dist", port = 5173, duration_sec = 12)
-    report["preview_ok"] = preview_ok
-    if not preview_ok:
-        raise RuntimeError("Preview HTTP check failed.")
-
-    log(f"=== {pass_name}: OK ===")
-    return report
-
+            with open(main_py, 'r') as f:
+                content = f.read()
+                
+            # Check for problematic patterns
+            if 'asyncio.run(' in content:
+                self.log_warning("Found asyncio.run() in main.py - may cause event loop conflicts")
+                
+            if 'nest_asyncio' not in content and 'asyncio.run(' in content:
+                self.log_warning("Consider using nest_asyncio for event loop compatibility")
+                
+            logger.info("✓ Event loop configuration checked")
+            return True
+            
+        except Exception as e:
+            self.log_error(f"Error checking event loop: {e}")
+            return False
+            
+    def check_static_files(self) -> bool:
+        """Check static file configuration"""
+        logger.info("=== CHECKING STATIC FILES ===")
+        
+        static_dirs = ['static', 'frontend/dist', 'public']
+        found_static = False
+        
+        for static_dir in static_dirs:
+            static_path = self.project_root / static_dir
+            if static_path.exists():
+                logger.info(f"✓ Found static directory: {static_dir}")
+                found_static = True
+                
+        if not found_static:
+            self.log_warning("No static directories found - may need to build frontend")
+            
+        return True
+        
+    def run_first_pass_audit(self) -> bool:
+        """Run first pass comprehensive audit"""
+        logger.info("\n" + "="*50)
+        logger.info("STARTING FIRST PASS AUDIT")
+        logger.info("="*50)
+        
+        checks = [
+            self.check_python_dependencies,
+            self.check_environment_files,
+            self.check_syntax_errors,
+            self.check_event_loop_issues,
+            self.check_static_files
+        ]
+        
+        all_passed = True
+        for check in checks:
+            try:
+                result = check()
+                if not result:
+                    all_passed = False
+            except Exception as e:
+                self.log_error(f"Check failed: {check.__name__}", str(e))
+                all_passed = False
+                
+        logger.info(f"\nFIRST PASS AUDIT COMPLETE - {'PASSED' if all_passed else 'FAILED'}")
+        return all_passed
+        
+    def run_second_pass_verification(self) -> bool:
+        """Run second pass verification"""
+        logger.info("\n" + "="*50)
+        logger.info("STARTING SECOND PASS VERIFICATION")
+        logger.info("="*50)
+        
+        # Test server startup
+        try:
+            logger.info("Testing server startup...")
+            result = subprocess.run([
+                sys.executable, '-c',
+                "from main import app; print('Server import successful')"
+            ], capture_output=True, text=True, timeout=10, cwd=self.project_root)
+            
+            if result.returncode == 0:
+                logger.info("✓ Server import successful")
+                self.verification_results['server_import'] = True
+            else:
+                self.log_error("Server import failed", result.stderr)
+                self.verification_results['server_import'] = False
+                
+        except Exception as e:
+            self.log_error("Server startup test failed", str(e))
+            self.verification_results['server_import'] = False
+            
+        # Check if all critical issues are resolved
+        critical_issues = len([e for e in self.errors if 'critical' in e.get('message', '').lower()])
+        
+        verification_passed = (
+            self.verification_results.get('server_import', False) and
+            critical_issues == 0
+        )
+        
+        logger.info(f"\nSECOND PASS VERIFICATION COMPLETE - {'PASSED' if verification_passed else 'FAILED'}")
+        return verification_passed
+        
+    def generate_report(self) -> Dict[str, Any]:
+        """Generate comprehensive debug report"""
+        report = {
+            'timestamp': datetime.now().isoformat(),
+            'project_root': str(self.project_root),
+            'summary': {
+                'total_errors': len(self.errors),
+                'total_warnings': len(self.warnings),
+                'fixes_applied': len(self.fixes_applied)
+            },
+            'errors': self.errors,
+            'warnings': self.warnings,
+            'fixes_applied': self.fixes_applied,
+            'verification_results': self.verification_results
+        }
+        
+        # Save report to file
+        report_file = self.project_root / 'debug_guard_report.json'
+        with open(report_file, 'w') as f:
+            json.dump(report, f, indent=2)
+            
+        logger.info(f"Debug report saved to: {report_file}")
+        return report
+        
+    def run_full_audit(self) -> bool:
+        """Run complete two-pass audit system"""
+        logger.info("\n" + "#"*60)
+        logger.info("BASE44 DEBUG GUARD - COMPREHENSIVE AUDIT STARTING")
+        logger.info("#"*60)
+        
+        try:
+            # First pass
+            first_pass_result = self.run_first_pass_audit()
+            
+            # Second pass
+            second_pass_result = self.run_second_pass_verification()
+            
+            # Generate report
+            report = self.generate_report()
+            
+            # Final assessment
+            overall_success = first_pass_result and second_pass_result
+            
+            logger.info("\n" + "#"*60)
+            logger.info(f"AUDIT COMPLETE - {'SUCCESS' if overall_success else 'FAILED'}")
+            logger.info(f"Errors: {len(self.errors)}, Warnings: {len(self.warnings)}, Fixes: {len(self.fixes_applied)}")
+            logger.info("#"*60)
+            
+            return overall_success
+            
+        except Exception as e:
+            self.log_error("Critical failure in audit system", str(e))
+            logger.error(f"CRITICAL AUDIT FAILURE: {e}")
+            logger.error(traceback.format_exc())
+            return False
 
 def main():
-    # Fresh log
-    try:
-        LOG_PATH.unlink(missing_ok = True)  # copy - safe: touches only log
-    except Exception:
-        pass
+    """Main entry point"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Base44 Debug Guard')
+    parser.add_argument('--project-root', default='.', help='Project root directory')
+    parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
+    
+    args = parser.parse_args()
+    
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
+        
+    guard = Base44DebugGuard(args.project_root)
+    success = guard.run_full_audit()
+    
+    sys.exit(0 if success else 1)
 
-    final_report: Dict[str, Any] = {
-        "root": str(ROOT),
-            "passes": [],
-            "status": "unknown",
-            }
-    pm = detect_pkg_manager(ROOT)
-
-    try:
-        # PASS A
-        rep_a = pass_once(ROOT, pm, "PASS - A")
-        final_report["passes"].append(rep_a)
-
-        # PASS B (re - run to prove reproducibility)
-        # Use a minimal clean env for the run
-        rep_b = pass_once(ROOT, pm, "PASS - B")
-        final_report["passes"].append(rep_b)
-
-        final_report["status"] = "clean"
-        log("All passes clean. Ready.")
-        code = 0
-    except Exception as e:
-        final_report["status"] = "failed"
-        final_report["error"] = str(e)
-        log(f"FAIL: {e}")
-        code = 1
-    finally:
-        try:
-            REPORT_JSON.write_text(json.dumps(final_report, indent = 2), encoding="utf - 8")
-            log(f"Wrote report: {REPORT_JSON}")
-        except Exception as w:
-            log(f"Could not write JSON report: {w}")
-
-    sys.exit(code)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

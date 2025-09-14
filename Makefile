@@ -1,7 +1,15 @@
 # TRAE.AI Production Makefile
 # Convenient commands for managing the complete AI-powered platform
 
-.PHONY: help install build start stop restart logs status clean test deploy backup restore
+# Go-Live Configuration
+PYTHON = python3
+VENV = venv
+VENV_PYTHON = $(VENV)/bin/python
+VENV_PIP = $(VENV)/bin/pip
+VENV_FLASK = $(VENV)/bin/flask
+PORT ?= 8000
+
+.PHONY: help install build start stop restart logs status clean test deploy backup restore go-live no-launch fix-syntax venv-clean deps-install
 
 # Default target
 help:
@@ -45,6 +53,13 @@ help:
 	@echo "  make clean       - Clean up containers and images"
 	@echo "  make clean-all   - Deep clean (remove volumes too)"
 	@echo "  make update      - Update all dependencies"
+	@echo ""
+	@echo "🚀 Go-Live Commands:"
+	@echo "  make go-live     - Run full go-live prep + launch (Flask server)"
+	@echo "  make no-launch   - Run go-live prep but skip app launch"
+	@echo "  make fix-syntax  - Fix Python syntax issues only"
+	@echo "  make venv-clean  - Remove venv and __pycache__"
+	@echo "  make deps-install - Install requirements (M1 optimized)"
 	@echo ""
 
 # Setup & Installation
@@ -383,7 +398,41 @@ welcome:
 	@echo "  2. make setup-env  # Configure environment"
 	@echo "  3. make start      # Launch the platform"
 	@echo ""
+	@echo "Go-Live Quick Start:"
+	@echo "  1. make go-live    # Full production preparation + launch"
+	@echo "  2. make no-launch  # Prepare for production without launching"
+	@echo ""
 	@echo "For help: make help"
 	@echo ""
 	@echo "Transform your ideas into revenue-generating content automatically! 🎯"
 	@echo ""
+
+# Go-Live Commands
+go-live:
+	@echo "🚀 Running full go-live preparation..."
+	@$(PYTHON) fix_python_syntax.py --go-live --port $(PORT)
+
+no-launch:
+	@echo "🚀 Running go-live preparation without launch..."
+	@$(PYTHON) fix_python_syntax.py --go-live --no-launch
+
+fix-syntax:
+	@echo "🔧 Fixing Python syntax issues..."
+	@$(PYTHON) fix_python_syntax.py .
+
+venv-clean:
+	@echo "🧹 Cleaning virtualenv and caches..."
+	@rm -rf $(VENV)
+	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+
+deps-install:
+	@echo "📦 Installing dependencies..."
+	@if [ -f requirements-m1.txt ]; then \
+		echo "Installing Apple Silicon optimized dependencies..."; \
+		$(VENV_PIP) install -U pip setuptools wheel; \
+		$(VENV_PIP) install -r requirements-m1.txt; \
+	else \
+		echo "Installing requirements.txt..."; \
+		$(VENV_PIP) install -U pip setuptools wheel; \
+		$(VENV_PIP) install -r requirements.txt; \
+	fi

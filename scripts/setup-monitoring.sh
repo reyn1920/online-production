@@ -201,12 +201,8 @@ scrape_configs:
 EOF
 
 # Copy alert rules to Prometheus directory
-cp monitoring/alert-rules.yml monitoring/prometheus/
-
-# Copy AlertManager configuration
-cp monitoring/alertmanager.yml monitoring/alertmanager/
-
-# Create Grafana provisioning configuration
+cp monitoring/alert-rules.yml monitoring/prometheus/# Copy AlertManager configuration
+cp monitoring/alertmanager.yml monitoring/alertmanager/# Create Grafana provisioning configuration
 mkdir -p monitoring/grafana/provisioning/datasources
 mkdir -p monitoring/grafana/provisioning/dashboards
 
@@ -234,13 +230,11 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /var/lib/grafana/dashboards
+      path:/var/lib/grafana/dashboards
 EOF
 
 # Copy dashboard to Grafana directory
-cp monitoring/grafana_dashboards.json monitoring/grafana/dashboards/
-
-# Create environment file for monitoring
+cp monitoring/grafana_dashboards.json monitoring/grafana/dashboards/# Create environment file for monitoring
 cat > .env.monitoring << EOF
 # Monitoring Configuration
 GRAFANA_ADMIN_PASSWORD=$GRAFANA_ADMIN_PASSWORD
@@ -350,7 +344,7 @@ echo "AlertManager status: $alertmanager_status"
 
 # Test scaling service
 echo "⚖️  Testing scaling service..."
-if pgrep -f "scaling-policies.py" > /dev/null; then
+if pgrep -f "scaling-policies.py" >/dev/null; then
     echo "✅ Scaling service is running"
 else
     echo "❌ Scaling service is not running"
@@ -402,10 +396,7 @@ echo -e "${BLUE}🔧 Final setup steps...${NC}"
 mkdir -p logs/monitoring
 
 # Set proper permissions
-chmod -R 755 monitoring/
-chmod -R 755 scripts/
-
-# Create monitoring documentation
+chmod -R 755 monitoring/chmod -R 755 scripts/# Create monitoring documentation
 cat > monitoring/README.md << 'EOF'
 # TRAE AI Monitoring Setup
 

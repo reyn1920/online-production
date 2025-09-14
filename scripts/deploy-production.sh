@@ -83,8 +83,8 @@ fi
 
 # Run comprehensive tests
 echo -e "${BLUE}🧪 Running test suite...${NC}"
-if [ -f "pytest.ini" ] && command -v pytest &> /dev/null; then
-    pytest tests/ -v --tb=short --cov=. --cov-report=term-missing || {
+if [ -f "pytest.ini" ] && command -v pytest &>/dev/null; then
+    pytest tests/-v --tb=short --cov=. --cov-report=term-missing || {
         echo -e "${RED}❌ Tests failed! Aborting production deployment.${NC}"
         exit 1
     }
@@ -95,7 +95,7 @@ fi
 
 # Security scanning
 echo -e "${BLUE}🛡️  Running security scans...${NC}"
-if command -v bandit &> /dev/null; then
+if command -v bandit &>/dev/null; then
     bandit -r . -f json -o bandit-production-report.json || {
         echo -e "${RED}❌ Security scan failed! Please review and fix issues.${NC}"
         exit 1
@@ -103,14 +103,14 @@ if command -v bandit &> /dev/null; then
     echo -e "${GREEN}✅ Security scan passed${NC}"
 fi
 
-if command -v safety &> /dev/null; then
+if command -v safety &>/dev/null; then
     safety check --json --output safety-production-report.json || {
         echo -e "${YELLOW}⚠️  Dependency vulnerabilities detected. Review safety-production-report.json${NC}"
     }
 fi
 
 # Check for secrets
-if command -v gitleaks &> /dev/null; then
+if command -v gitleaks &>/dev/null; then
     gitleaks detect --source . --report-format json --report-path gitleaks-production-report.json || {
         echo -e "${RED}❌ Secrets detected in codebase! Aborting deployment.${NC}"
         exit 1
@@ -123,9 +123,9 @@ echo ""
 
 # Backup current production deployment
 echo -e "${BLUE}💾 Creating deployment backup...${NC}"
-if command -v netlify &> /dev/null; then
+if command -v netlify &>/dev/null; then
     # Get current production deployment info
-    CURRENT_DEPLOY=$(netlify api listSiteDeploys --data='{"site_id":"'$PRODUCTION_SITE_ID'"}' | jq -r '.[0].id // "unknown"')
+    CURRENT_DEPLOY=$(netlify api listSiteDeploys --data='{"site_id":"'$PRODUCTION_SITE_ID'"}' | jq -r '.[0].id//"unknown"')
     echo "Current production deployment: $CURRENT_DEPLOY"
     echo "$CURRENT_DEPLOY" > .last-production-deploy
 fi
@@ -156,7 +156,7 @@ echo "$NETLIFY_AUTH_TOKEN" | netlify auth:login --auth-token
 netlify deploy --prod --site="$PRODUCTION_SITE_ID" --dir=. --message="Production deployment: $COMMIT_SHA at $DEPLOYMENT_TIME"
 
 # Get deployment URL
-PRODUCTION_URL=$(netlify status --json | jq -r '.site.url // .site.ssl_url // "Unknown"')
+PRODUCTION_URL=$(netlify status --json | jq -r '.site.url//.site.ssl_url//"Unknown"')
 
 echo ""
 echo -e "${GREEN}🎉 Production deployment successful!${NC}"

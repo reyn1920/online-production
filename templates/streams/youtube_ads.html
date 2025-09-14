@@ -237,7 +237,7 @@
         }
 
         .config-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -272,7 +272,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -519,32 +519,25 @@
                 revenueShare: 55,
                 contentCategory: 'technology'
             }
-        };
-
-        // Initialize the page
+        };//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             loadStreamData();
             setupEventListeners();
             startRealtimeUpdates();
         });
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
-            });
-
-            // Configuration inputs
+            });//Configuration inputs
             const configInputs = ['channelId', 'apiKey', 'minCpm', 'targetViews', 'revenueShare', 'contentCategory'];
             configInputs.forEach(inputId => {
                 document.getElementById(inputId).addEventListener('change', function() {
@@ -555,7 +548,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.youtube_ads) {
@@ -573,8 +566,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -588,21 +580,13 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('currentRevenue').textContent = '$' + streamData.currentRevenue.toFixed(2);
-            document.getElementById('monthlyTarget').textContent = '$' + streamData.monthlyTarget.toFixed(2);
-            
-            // Update progress
-            const progress = (streamData.currentRevenue / streamData.monthlyTarget) * 100;
+            document.getElementById('monthlyTarget').textContent = '$' + streamData.monthlyTarget.toFixed(2);//Update progress
+            const progress = (streamData.currentRevenue/streamData.monthlyTarget) * 100;
             document.getElementById('progressFill').style.width = Math.min(progress, 100) + '%';
-            document.getElementById('progressText').textContent = progress.toFixed(1) + '% Complete';
-
-            // Update configuration inputs
+            document.getElementById('progressText').textContent = progress.toFixed(1) + '% Complete';//Update configuration inputs
             Object.keys(streamData.config).forEach(key => {
                 const element = document.getElementById(key);
                 if (element) {
@@ -624,9 +608,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -650,9 +632,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -761,7 +741,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.youtube_ads) {
@@ -770,9 +750,7 @@
                         streamData.status = stream.status;
                         streamData.currentRevenue = stream.currentRevenue;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -790,8 +768,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -805,30 +782,23 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Simulate real-time revenue updates for demo
+        }//Simulate real-time revenue updates for demo
         function simulateRevenueUpdates() {
-            if (streamData.status === 'active') {
-                // Simulate small revenue increases
+            if (streamData.status === 'active') {//Simulate small revenue increases
                 const increase = Math.random() * 5;
-                streamData.currentRevenue += increase;
-                
-                // Update CPM and views
+                streamData.currentRevenue += increase;//Update CPM and views
                 const cpmElement = document.getElementById('cpmRate');
                 const viewsElement = document.getElementById('totalViews');
                 
                 if (cpmElement && viewsElement) {
                     const newCpm = (2.0 + Math.random() * 2).toFixed(2);
-                    const newViews = Math.floor(streamData.currentRevenue / parseFloat(newCpm) * 1000);
+                    const newViews = Math.floor(streamData.currentRevenue/parseFloat(newCpm) * 1000);
                     
                     cpmElement.textContent = '$' + newCpm;
                     viewsElement.textContent = newViews.toLocaleString();
@@ -836,9 +806,7 @@
                 
                 updateUI();
             }
-        }
-
-        // Start revenue simulation
+        }//Start revenue simulation
         setInterval(simulateRevenueUpdates, 10000);
     </script>
 </body>

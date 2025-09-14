@@ -223,7 +223,7 @@ check_file_sizes() {
         if [ -f "$PROJECT_ROOT/$file" ]; then
             local size=$(stat -f%z "$PROJECT_ROOT/$file" 2>/dev/null || stat -c%s "$PROJECT_ROOT/$file" 2>/dev/null || echo 0)
             if [ $size -gt $max_size ]; then
-                log_warning "Large file detected: $file ($(($size / 1024))KB)"
+                log_warning "Large file detected: $file ($(($size/1024))KB)"
                 ((large_files++))
             fi
         fi

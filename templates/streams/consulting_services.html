@@ -241,7 +241,7 @@
         }
 
         .clients-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -399,7 +399,7 @@
         }
 
         .new-client-form {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -441,7 +441,7 @@
         }
 
         .services-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -518,7 +518,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -709,7 +709,7 @@
                         <div class="progress-fill" id="revenueGoalFill" style="width: 0%"></div>
                     </div>
                     <div style="text-align: center; margin-top: 5px;">
-                        <span id="revenueGoalText">$0 / $50,000 goal</span>
+                        <span id="revenueGoalText">$0/$50,000 goal</span>
                     </div>
                 </div>
             </div>
@@ -770,7 +770,7 @@
                         <input type="number" id="clientHours" placeholder="40" min="1" max="1000">
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Project Description</label>
                         <textarea id="clientDescription" placeholder="Describe the consulting project..."></textarea>
                     </div>
@@ -913,9 +913,7 @@
                 totalRevenue: 0,
                 activeClients: 0
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             loadStreamData();
@@ -929,22 +927,19 @@
             streamData.activeClients = streamData.clients.filter(c => c.status === 'active').length;
             streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
             streamData.totalHours = streamData.clients.reduce((sum, c) => sum + c.hoursWorked, 0);
-            streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue / streamData.totalHours : 0;
+            streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
             renderClients();
             renderServices();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
@@ -1046,7 +1041,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.consulting_services) {
@@ -1066,8 +1061,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -1081,21 +1075,15 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('activeClients').textContent = streamData.activeClients;
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
             document.getElementById('totalHours').textContent = streamData.totalHours;
-            document.getElementById('avgHourlyRate').textContent = '$' + Math.round(streamData.avgHourlyRate);
-            
-            // Update revenue goal progress
-            const goalPercent = Math.min(100, (streamData.monthlyRevenue / streamData.revenueGoal) * 100);
+            document.getElementById('avgHourlyRate').textContent = '$' + Math.round(streamData.avgHourlyRate);//Update revenue goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
-            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRevenue.toFixed(2)} / $${streamData.revenueGoal.toLocaleString()} goal`;
+            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRevenue.toFixed(2)}/$${streamData.revenueGoal.toLocaleString()} goal`;
         }
 
         async function startStream() {
@@ -1111,9 +1099,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -1137,9 +1123,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1200,14 +1184,12 @@
 
         function showNewClientForm() {
             document.getElementById('newClientForm').style.display = 'block';
-            document.getElementById('clientName').focus();
-            // Set default start date to today
+            document.getElementById('clientName').focus();//Set default start date to today
             document.getElementById('clientStartDate').value = new Date().toISOString().split('T')[0];
         }
 
         function hideNewClientForm() {
-            document.getElementById('newClientForm').style.display = 'none';
-            // Clear form
+            document.getElementById('newClientForm').style.display = 'none';//Clear form
             document.getElementById('clientName').value = '';
             document.getElementById('clientService').value = 'strategy';
             document.getElementById('clientRate').value = '';
@@ -1253,7 +1235,7 @@
                     created: new Date().toISOString()
                 };
 
-                const response = await fetch('/api/consulting/clients/create', {
+                const response = await fetch("/api/consulting/clients/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1267,9 +1249,7 @@
                     streamData.clients.unshift(newClient);
                     renderClients();
                     hideNewClientForm();
-                    showAlert('Client added successfully', 'success');
-                    
-                    // Update metrics
+                    showAlert('Client added successfully', 'success');//Update metrics
                     streamData.activeClients = streamData.clients.filter(c => c.status === 'active').length;
                     updateUI();
                 } else {
@@ -1287,11 +1267,9 @@
                 const newRate = prompt(`Enter new hourly rate for "${client.name}":`, client.hourlyRate);
                 if (newRate && !isNaN(newRate) && newRate >= 50 && newRate <= 1000) {
                     client.hourlyRate = parseFloat(newRate);
-                    client.revenue = client.hoursWorked * client.hourlyRate;
-                    
-                    // Update totals
+                    client.revenue = client.hoursWorked * client.hourlyRate;//Update totals
                     streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
-                    streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue / streamData.totalHours : 0;
+                    streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
                     
                     renderClients();
                     updateUI();
@@ -1314,15 +1292,11 @@
                     
                     if (client.status === 'pending') {
                         client.status = 'active';
-                    }
-                    
-                    // Update totals
+                    }//Update totals
                     streamData.totalHours = streamData.clients.reduce((sum, c) => sum + c.hoursWorked, 0);
                     streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
-                    streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue / streamData.totalHours : 0;
-                    streamData.activeClients = streamData.clients.filter(c => c.status === 'active').length;
-                    
-                    // Update service stats
+                    streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
+                    streamData.activeClients = streamData.clients.filter(c => c.status === 'active').length;//Update service stats
                     const service = streamData.services.find(s => s.id === client.service);
                     if (service) {
                         service.hoursThisMonth += additionalHours;
@@ -1405,7 +1379,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.consulting_services) {
@@ -1417,9 +1391,7 @@
                         streamData.totalHours = stream.totalHours;
                         streamData.avgHourlyRate = stream.avgHourlyRate;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1437,8 +1409,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1448,28 +1419,23 @@
         }
 
         function simulateConsultingActivity() {
-            if (streamData.status === 'active') {
-                // Simulate consulting work progress
+            if (streamData.status === 'active') {//Simulate consulting work progress
                 streamData.clients.forEach(client => {
                     if (client.status === 'active' && Math.random() < 0.3) {
-                        const additionalHours = Math.random() * 2 + 0.5; // 0.5 to 2.5 hours
+                        const additionalHours = Math.random() * 2 + 0.5;//0.5 to 2.5 hours
                         client.hoursWorked = Math.min(client.estimatedHours, client.hoursWorked + additionalHours);
                         client.revenue = client.hoursWorked * client.hourlyRate;
-                        client.lastActivity = new Date().toISOString().split('T')[0];
-                        
-                        // Update service stats
+                        client.lastActivity = new Date().toISOString().split('T')[0];//Update service stats
                         const service = streamData.services.find(s => s.id === client.service);
                         if (service) {
                             service.hoursThisMonth += additionalHours;
                             service.totalRevenue += additionalHours * client.hourlyRate;
                         }
                     }
-                });
-                
-                // Update totals
+                });//Update totals
                 streamData.totalHours = streamData.clients.reduce((sum, c) => sum + c.hoursWorked, 0);
                 streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
-                streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue / streamData.totalHours : 0;
+                streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
                 
                 updateUI();
                 renderClients();
@@ -1483,17 +1449,13 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start consulting activity simulation
+        }//Start consulting activity simulation
         setInterval(simulateConsultingActivity, 25000);
     </script>
 </body>

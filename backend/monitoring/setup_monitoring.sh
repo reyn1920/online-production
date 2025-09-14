@@ -175,7 +175,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /var/lib/grafana/dashboards
+      path:/var/lib/grafana/dashboards
 EOF
     
     # Create blackbox exporter configuration
@@ -219,11 +219,11 @@ server:
   grpc_listen_port: 9096
 
 common:
-  path_prefix: /loki
+  path_prefix:/loki
   storage:
     filesystem:
-      chunks_directory: /loki/chunks
-      rules_directory: /loki/rules
+      chunks_directory:/loki/chunks
+      rules_directory:/loki/rules
   replication_factor: 1
   ring:
     instance_addr: 127.0.0.1
@@ -258,7 +258,7 @@ server:
   grpc_listen_port: 0
 
 positions:
-  filename: /tmp/positions.yaml
+  filename:/tmp/positions.yaml
 
 clients:
   - url: http://loki:3100/loki/api/v1/push
@@ -270,7 +270,7 @@ scrape_configs:
           - localhost
         labels:
           job: varlogs
-          __path__: /var/log/*log
+          __path__:/var/log/*log
           
   - job_name: containers
     static_configs:
@@ -278,7 +278,7 @@ scrape_configs:
           - localhost
         labels:
           job: containerlogs
-          __path__: /var/lib/docker/containers/*/*log
+          __path__:/var/lib/docker/containers/*/*log
           
   - job_name: trae-app
     static_configs:
@@ -286,7 +286,7 @@ scrape_configs:
           - localhost
         labels:
           job: trae-app
-          __path__: /app/logs/*.log
+          __path__:/app/logs/*.log
 EOF
     
     # Create Nginx configuration
@@ -313,7 +313,7 @@ http {
         server_name localhost;
         
         # Enable nginx status for monitoring
-        location /nginx_status {
+        location/nginx_status {
             stub_status on;
             access_log off;
             allow 127.0.0.1;
@@ -322,14 +322,14 @@ http {
         }
         
         # Health check endpoint
-        location /health {
+        location/health {
             access_log off;
             return 200 "healthy\n";
             add_header Content-Type text/plain;
         }
         
         # Grafana
-        location /grafana/ {
+        location/grafana/{
             proxy_pass http://grafana/;
             proxy_set_header Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
@@ -338,7 +338,7 @@ http {
         }
         
         # Prometheus
-        location /prometheus/ {
+        location/prometheus/{
             proxy_pass http://prometheus/;
             proxy_set_header Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
@@ -347,7 +347,7 @@ http {
         }
         
         # Application
-        location / {
+        location/{
             proxy_pass http://app;
             proxy_set_header Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
@@ -574,11 +574,11 @@ mkdir -p "$BACKUP_DIR"
 
 # Backup Prometheus data
 echo "Backing up Prometheus data..."
-docker run --rm -v trae-prometheus-data:/data -v "$BACKUP_DIR":/backup alpine tar czf /backup/prometheus-data.tar.gz -C /data .
+docker run --rm -v trae-prometheus-data:/data -v "$BACKUP_DIR":/backup alpine tar czf/backup/prometheus-data.tar.gz -C/data .
 
 # Backup Grafana data
 echo "Backing up Grafana data..."
-docker run --rm -v trae-grafana-data:/data -v "$BACKUP_DIR":/backup alpine tar czf /backup/grafana-data.tar.gz -C /data .
+docker run --rm -v trae-grafana-data:/data -v "$BACKUP_DIR":/backup alpine tar czf/backup/grafana-data.tar.gz -C/data .
 
 # Backup configuration files
 echo "Backing up configuration files..."

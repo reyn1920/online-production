@@ -18,7 +18,7 @@ echo
 # ACTIONS Check
 echo "⚡ ACTIONS:"
 curl -s http://127.0.0.1:8083/api/actions \
-| jq -r '"✅ Actions: \(.count // (.actions|length)) available",
+| jq -r '"✅ Actions: \(.count//(.actions|length)) available",
          (.actions[] | "  - " + .name)' 2>/dev/null || echo "❌ Actions endpoint failed"
 echo
 
@@ -51,7 +51,7 @@ echo
 # FastAPI Backend Check (if running on 8080)
 echo "🚀 FASTAPI BACKEND:"
 for endpoint in "/api/health" "/api/actions" "/api/system/status" "/api/metrics"; do
-    status=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:8080$endpoint" 2>/dev/null || echo "000")
+    status=$(curl -s -o/dev/null -w "%{http_code}" "http://127.0.0.1:8080$endpoint" 2>/dev/null || echo "000")
     if [ "$status" = "200" ]; then
         echo "  ✅ $endpoint (200 OK)"
     else

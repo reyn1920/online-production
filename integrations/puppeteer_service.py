@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Puppeteer Service for Web AI Integration
 Handles browser automation for interacting with web AI platforms
@@ -55,7 +55,8 @@ class PuppeteerService:
                         "--no - zygote",
                         "--disable - gpu",
                         "--disable - blink - features = AutomationControlled",
-                        "--user - agent = Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
+                        "--user - agent = Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
+    like Gecko) Chrome/120.0.0.0 Safari/537.36",
                         ],
                     "ignoreDefaultArgs": ["--disable - extensions"],
                     "slowMo": 100,
@@ -108,6 +109,7 @@ class PuppeteerService:
             self.logger.info(f"Navigating to {platform} at {url}")
 
             # Use MCP Puppeteer to navigate
+
             from integrations.mcp_client import MCPClient
 
             mcp = MCPClient()
@@ -218,6 +220,7 @@ class PuppeteerService:
     async def take_screenshot(self, session_id: str, name: str = None) -> str:
         """Take screenshot of current page"""
         try:
+
             from integrations.mcp_client import MCPClient
 
             mcp = MCPClient()
@@ -243,6 +246,7 @@ class PuppeteerService:
     async def evaluate_script(self, session_id: str, script: str) -> Any:
         """Execute JavaScript in browser context"""
         try:
+
             from integrations.mcp_client import MCPClient
 
             mcp = MCPClient()
@@ -259,6 +263,7 @@ class PuppeteerService:
     async def wait_for_element(self, selector: str, timeout: int = 10000) -> bool:
         """Wait for element to appear on page"""
         try:
+
             from integrations.mcp_client import MCPClient
 
             mcp = MCPClient()
@@ -315,6 +320,7 @@ class PuppeteerService:
         """Check service health"""
         try:
             # Test MCP connection
+
             from integrations.mcp_client import MCPClient
 
             mcp = MCPClient()

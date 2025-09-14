@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Autonomous Content Format Evolution Agent
 
@@ -38,7 +38,7 @@ class ContentFormat(Enum):
     PODCAST = "podcast"  # Audio content
     NEWSLETTER = "newsletter"  # Email content
     INTERACTIVE = "interactive"  # Polls, quizzes, AR filters
-    STORY = "story"  # Instagram / Facebook Stories
+    STORY = "story"  # Instagram/Facebook Stories
     BLOG_POST = "blog_post"  # Traditional long - form content
 
 
@@ -54,7 +54,7 @@ class TrendSignal(Enum):
 class AdaptationStrategy(Enum):
     IMMEDIATE = "immediate"  # Deploy within 24 hours
     GRADUAL = "gradual"  # Phase in over 1 - 2 weeks
-    EXPERIMENTAL = "experimental"  # A / B test first
+    EXPERIMENTAL = "experimental"  # A/B test first
     SEASONAL = "seasonal"  # Time with seasonal trends
 
 @dataclass
@@ -203,10 +203,12 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
                 # Create indexes
                 cursor.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_trends_platform_format ON format_trends(platform, format_type)"
+                    "CREATE INDEX IF NOT EXISTS idx_trends_platform_format ON format_trends(platform,
+    format_type)"
                 )
                 cursor.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_performance_format_platform ON format_performance(format_type, platform)"
+                    "CREATE INDEX IF NOT EXISTS idx_performance_format_platform ON format_performance(format_type,
+    platform)"
                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_experiments_status ON evolution_experiments(status)"
@@ -310,20 +312,22 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
     def _fetch_youtube_data(self) -> Dict[str, Any]:
         """Fetch YouTube Analytics data."""
+
         from backend.secret_store import SecretStore
 
         try:
             with SecretStore(
-                self.config.get("secrets_db", "data / secrets.sqlite")
+                self.config.get("secrets_db", "data/secrets.sqlite")
             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     raise ValueError("YouTube API key not configured")
 
                 # YouTube Data API v3 calls
+
                 import requests
 
-                base_url = "https://www.googleapis.com / youtube / v3"
+                base_url = "https://www.googleapis.com/youtube/v3"
 
                 # Get trending videos to analyze format performance
                 trending_response = requests.get(
@@ -352,11 +356,12 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
     def _fetch_tiktok_data(self) -> Dict[str, Any]:
         """Fetch TikTok Analytics data."""
+
         from backend.secret_store import SecretStore
 
         try:
             with SecretStore(
-                self.config.get("secrets_db", "data / secrets.sqlite")
+                self.config.get("secrets_db", "data/secrets.sqlite")
             ) as store:
                 client_key = store.get_secret("TIKTOK_CLIENT_KEY")
                 access_token = store.get_secret("TIKTOK_ACCESS_TOKEN")
@@ -365,16 +370,17 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     raise ValueError("TikTok API credentials not configured")
 
                 # TikTok Research API calls
+
                 import requests
 
                 headers = {
                     "Authorization": f"Bearer {access_token}",
-                        "Content - Type": "application / json",
+                        "Content - Type": "application/json",
                         }
 
                 # Get trending hashtags and analyze performance
                 trending_response = requests.post(
-                    "https://open.tiktokapis.com / v2 / research / trending / hashtag/",
+                    "https://open.tiktokapis.com/v2/research/trending/hashtag/",
                         headers = headers,
                         json={"region_code": "US", "period": 7},
                         )
@@ -394,11 +400,12 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
     def _fetch_instagram_data(self) -> Dict[str, Any]:
         """Fetch Instagram Analytics data."""
+
         from backend.secret_store import SecretStore
 
         try:
             with SecretStore(
-                self.config.get("secrets_db", "data / secrets.sqlite")
+                self.config.get("secrets_db", "data/secrets.sqlite")
             ) as store:
                 access_token = store.get_secret("INSTAGRAM_ACCESS_TOKEN")
 
@@ -406,13 +413,14 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     raise ValueError("Instagram API credentials not configured")
 
                 # Instagram Graph API calls
+
                 import requests
 
                 base_url = "https://graph.instagram.com"
 
                 # Get account insights
                 insights_response = requests.get(
-                    f"{base_url}/me / insights",
+                    f"{base_url}/me/insights",
                         params={
                         "metric": "reach,impressions,profile_views",
                             "period": "day",
@@ -436,6 +444,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
     def _fetch_twitter_data(self) -> Dict[str, Any]:
         """Fetch Twitter Analytics data."""
         try:
+
             from backend.integrations.twitter_integration import TwitterIntegration
 
             twitter = TwitterIntegration()
@@ -514,7 +523,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return {
                 "shorts_performance": {
                     "growth": (
-                        sum(shorts_metrics) / len(shorts_metrics)
+                        sum(shorts_metrics)/len(shorts_metrics)
                         if shorts_metrics
                         else 0.5
                     ),
@@ -522,7 +531,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         },
                     "long_form_performance": {
                     "growth": (
-                        sum(long_form_metrics) / len(long_form_metrics)
+                        sum(long_form_metrics)/len(long_form_metrics)
                         if long_form_metrics
                         else 0.3
                     ),
@@ -546,12 +555,12 @@ class ContentFormatEvolutionAgent(BaseAgent):
             trending_formats = []
 
             for hashtag in hashtags:
-                score = hashtag.get("publish_cnt", 0) / 1000  # Normalize
+                score = hashtag.get("publish_cnt", 0)/1000  # Normalize
                 performance_scores.append(min(score, 2.0))  # Cap at 2.0
                 trending_formats.append(hashtag.get("hashtag_name", "general"))
 
             avg_performance = (
-                sum(performance_scores) / len(performance_scores)
+                sum(performance_scores)/len(performance_scores)
                 if performance_scores
                 else 0.6
             )
@@ -590,15 +599,15 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         [v.get("value", 0) for v in data_point.get("values", [])]
                     )
 
-            avg_reach = sum(reach_values) / len(reach_values) if reach_values else 1000
+            avg_reach = sum(reach_values)/len(reach_values) if reach_values else 1000
             avg_impressions = (
-                sum(impression_values) / len(impression_values)
+                sum(impression_values)/len(impression_values)
                 if impression_values
                 else 1500
             )
 
             engagement_rate = (
-                avg_reach / avg_impressions if avg_impressions > 0 else 0.5
+                avg_reach/avg_impressions if avg_impressions > 0 else 0.5
             )
 
             return {
@@ -638,7 +647,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 likes = metrics.get("like_count", 0)
                 replies = metrics.get("reply_count", 0)
 
-                engagement_score = (retweets * 2 + likes + replies * 3) / 1000
+                engagement_score = (retweets * 2 + likes + replies * 3)/1000
                 engagement_scores.append(min(engagement_score, 2.0))
 
                 # Determine format based on tweet content
@@ -649,7 +658,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     trending_formats.append("tweet")
 
             avg_engagement = (
-                sum(engagement_scores) / len(engagement_scores)
+                sum(engagement_scores)/len(engagement_scores)
                 if engagement_scores
                 else 0.4
             )
@@ -675,9 +684,10 @@ class ContentFormatEvolutionAgent(BaseAgent):
         """Determine if a YouTube video is a Short based on duration."""
         try:
             # Parse ISO 8601 duration (PT1M30S)
+
             import re
 
-            match = re.match(r"PT(?:(\d+)M)?(?:(\d+)S)?", duration)
+            match = re.match(r"PT(?:(\\d+)M)?(?:(\\d+)S)?", duration)
             if match:
                 minutes = int(match.group(1) or 0)
                 seconds = int(match.group(2) or 0)
@@ -696,7 +706,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
             comments = int(stats.get("commentCount", 0))
 
             if views > 0:
-                engagement = (likes + comments * 2) / views
+                engagement = (likes + comments * 2)/views
                 return min(engagement * 100, 2.0)  # Cap at 2.0
             return 0.5
         except Exception:
@@ -722,6 +732,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 formats.append("general")
 
         # Return top 3 most common formats
+
         from collections import Counter
 
         return [fmt for fmt, _ in Counter(formats).most_common(3)]
@@ -1079,7 +1090,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
 
     def _start_adaptation_experiment(self, adaptation: ContentAdaptation) -> bool:
-        """Start an A / B test experiment for the adaptation."""
+        """Start an A/B test experiment for the adaptation."""
         try:
             # Check if we have capacity for more experiments
             active_experiments = self._count_active_experiments()
@@ -1202,8 +1213,18 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return f"""
 Analyze current content format trends across social media platforms, focusing on {platform}.
 
-Identify emerging content formats that are gaining traction and provide analysis including:
-1. Format type (short_video, long_video, carousel_post, thread, live_stream, podcast, newsletter, interactive, story, blog_post)
+Identify emerging content formats that are gaining traction \
+    and provide analysis including:
+1. Format type (short_video,
+    long_video,
+    carousel_post,
+    thread,
+    live_stream,
+    podcast,
+    newsletter,
+    interactive,
+    story,
+    blog_post)
 2. Trend strength (0.0 - 1.0)
 3. Growth velocity (rate of adoption)
 4. Engagement multiplier vs baseline
@@ -1213,7 +1234,8 @@ Identify emerging content formats that are gaining traction and provide analysis
 8. Predicted trend lifespan in days
 9. Confidence score (0.0 - 1.0)
 
-Focus on formats that show strong cross - platform adoption and have sustainable growth potential.
+Focus on formats that show strong cross - platform adoption \
+    and have sustainable growth potential.
 
 Format response as JSON array with these fields.
 """
@@ -1222,7 +1244,7 @@ Format response as JSON array with these fields.
     def _parse_cross_platform_trends(self, ai_response: str) -> List[Dict]:
         """Parse AI response for cross - platform trends."""
         try:
-            json_match = re.search(r"\[.*\]", ai_response, re.DOTALL)
+            json_match = re.search(r"\\[.*\\]", ai_response, re.DOTALL)
             if json_match:
                 return json.loads(json_match.group())
         except Exception as e:
@@ -1256,7 +1278,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
     def _parse_adaptation_response(self, ai_response: str) -> Dict:
         """Parse AI response for adaptation strategy."""
         try:
-            json_match = re.search(r"\{.*\}", ai_response, re.DOTALL)
+            json_match = re.search(r"\\{.*\\}", ai_response, re.DOTALL)
             if json_match:
                 return json.loads(json_match.group())
         except Exception as e:
@@ -1282,7 +1304,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    SELECT audience_segments, AVG(engagement_multiplier) as avg_engagement
+                    SELECT audience_segments,
+    AVG(engagement_multiplier) as avg_engagement
                     FROM format_trends
                     WHERE platform = ? AND format_type = ?
                     GROUP BY audience_segments
@@ -1703,7 +1726,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 if after_performance and before_performance and before_performance[0]:
                     lift = (
                         after_performance[0] - before_performance[0]
-                    ) / before_performance[0]
+                    )/before_performance[0]
                     return lift
 
         except Exception as e:

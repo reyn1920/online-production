@@ -31,7 +31,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/critical-cpu"
           
       - alert: HighMemoryUsage
-        expr: (system_memory_usage_bytes{type="used"} / system_memory_usage_bytes{type="total"}) * 100 > 85
+        expr: (system_memory_usage_bytes{type="used"}/system_memory_usage_bytes{type="total"}) * 100 > 85
         for: 5m
         labels:
           severity: warning
@@ -43,7 +43,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/high-memory"
           
       - alert: CriticalMemoryUsage
-        expr: (system_memory_usage_bytes{type="used"} / system_memory_usage_bytes{type="total"}) * 100 > 95
+        expr: (system_memory_usage_bytes{type="used"}/system_memory_usage_bytes{type="total"}) * 100 > 95
         for: 2m
         labels:
           severity: critical
@@ -55,7 +55,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/critical-memory"
           
       - alert: DiskSpaceLow
-        expr: (system_disk_usage_bytes{type="used"} / system_disk_usage_bytes{type="total"}) * 100 > 90
+        expr: (system_disk_usage_bytes{type="used"}/system_disk_usage_bytes{type="total"}) * 100 > 90
         for: 10m
         labels:
           severity: error
@@ -67,7 +67,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/disk-space"
           
       - alert: DiskSpaceCritical
-        expr: (system_disk_usage_bytes{type="used"} / system_disk_usage_bytes{type="total"}) * 100 > 95
+        expr: (system_disk_usage_bytes{type="used"}/system_disk_usage_bytes{type="total"}) * 100 > 95
         for: 5m
         labels:
           severity: critical
@@ -143,7 +143,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/very-slow-response"
           
       - alert: LowCacheHitRate
-        expr: (rate(cache_operations_total{result="hit"}[10m]) / rate(cache_operations_total[10m])) * 100 < 50
+        expr: (rate(cache_operations_total{result="hit"}[10m])/rate(cache_operations_total[10m])) * 100 < 50
         for: 10m
         labels:
           severity: warning
@@ -155,7 +155,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/low-cache-hit"
           
       - alert: VeryLowCacheHitRate
-        expr: (rate(cache_operations_total{result="hit"}[10m]) / rate(cache_operations_total[10m])) * 100 < 20
+        expr: (rate(cache_operations_total{result="hit"}[10m])/rate(cache_operations_total[10m])) * 100 < 20
         for: 5m
         labels:
           severity: error
@@ -259,7 +259,7 @@ groups:
           runbook_url: "https://docs.company.com/runbooks/no-api-discovery"
           
       - alert: LowAPIDiscoverySuccess
-        expr: (rate(api_discovery_total{status="validated"}[30m]) / rate(api_discovery_total[30m])) * 100 < 30
+        expr: (rate(api_discovery_total{status="validated"}[30m])/rate(api_discovery_total[30m])) * 100 < 30
         for: 30m
         labels:
           severity: warning
@@ -463,7 +463,7 @@ groups:
     interval: 300s
     rules:
       - alert: DiskSpaceWillFillSoon
-        expr: predict_linear(system_disk_usage_bytes{type="used"}[6h], 24*3600) / system_disk_usage_bytes{type="total"} > 0.9
+        expr: predict_linear(system_disk_usage_bytes{type="used"}[6h], 24*3600)/system_disk_usage_bytes{type="total"} > 0.9
         for: 1h
         labels:
           severity: warning

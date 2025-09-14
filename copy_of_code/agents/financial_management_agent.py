@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Autonomous Financial Management Agent
 
@@ -53,7 +53,7 @@ class RevenueStream(Enum):
 
 class AllocationStrategy(Enum):
     AGGRESSIVE_GROWTH = "aggressive_growth"  # High - risk, high - reward
-    BALANCED_GROWTH = "balanced_growth"  # Moderate risk / reward
+    BALANCED_GROWTH = "balanced_growth"  # Moderate risk/reward
     CONSERVATIVE_GROWTH = "conservative_growth"  # Low - risk, steady growth
     DEFENSIVE = "defensive"  # Protect existing revenue
     EXPERIMENTAL = "experimental"  # Test new opportunities
@@ -150,7 +150,7 @@ class AutonomousFinancialAgent(BaseAgent):
         )  # Min 5 channels
         self.risk_tolerance = config.get(
             "risk_tolerance", "balanced"
-        )  # conservative / balanced / aggressive
+        )  # conservative/balanced/aggressive
 
         self.logger = logging.getLogger(__name__)
         self._init_database()
@@ -317,9 +317,9 @@ class AutonomousFinancialAgent(BaseAgent):
                     total_revenue = sum(revenue_data.values())
                     total_expenses = sum(expense_data.values())
                     net_profit = total_revenue - total_expenses
-                    roi = (net_profit / total_expenses) if total_expenses > 0 else 0
+                    roi = (net_profit/total_expenses) if total_expenses > 0 else 0
                     profit_margin = (
-                        (net_profit / total_revenue) if total_revenue > 0 else 0
+                        (net_profit/total_revenue) if total_revenue > 0 else 0
                     )
 
                     # Calculate growth rate
@@ -340,7 +340,8 @@ class AutonomousFinancialAgent(BaseAgent):
                             revenue_streams={
                             RevenueStream(k): v for k, v in revenue_data.items()
                         },
-                            expenses={ResourceType(k): v for k, v in expense_data.items()},
+                            expenses={ResourceType(k): v for k,
+    v in expense_data.items()},
                             total_revenue = total_revenue,
                             total_expenses = total_expenses,
                             net_profit = net_profit,
@@ -395,7 +396,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
                 # Only recommend changes above threshold
                 if (
-                    abs(change / current) >= self.reallocation_threshold
+                    abs(change/current) >= self.reallocation_threshold
                     if current > 0
                     else abs(change) > 100
                 ):
@@ -535,7 +536,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    SELECT AVG(total_revenue) as avg_revenue, AVG(total_expenses) as avg_expenses
+                    SELECT AVG(total_revenue) as avg_revenue,
+    AVG(total_expenses) as avg_expenses
                     FROM channel_financials
                     WHERE analysis_date > datetime('now', '-90 days')
                 """
@@ -558,7 +560,7 @@ class AutonomousFinancialAgent(BaseAgent):
         projected_revenue = avg_revenue * growth_factor
             projected_expenses = avg_expenses * 1.03  # Assume 3% expense growth
         net_profit = projected_revenue - projected_expenses
-        roi = (net_profit / projected_expenses) if projected_expenses > 0 else 0
+        roi = (net_profit/projected_expenses) if projected_expenses > 0 else 0
 
         # Create default revenue and expense projections
         revenue_projection = {
@@ -681,6 +683,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
         try:
             # Import secret store for API credentials
+
             from backend.secret_store import SecretStore
 
             with SecretStore() as store:
@@ -738,6 +741,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
         try:
             # Import secret store for API credentials
+
             from backend.secret_store import SecretStore
 
             with SecretStore() as store:
@@ -810,7 +814,7 @@ class AutonomousFinancialAgent(BaseAgent):
                 previous = cursor.fetchone()[0] or 0
 
                 if previous > 0:
-                    return (current - previous) / previous
+                    return (current - previous)/previous
         except Exception as e:
             self.logger.error(f"Failed to calculate growth rate: {e}")
 
@@ -828,13 +832,13 @@ class AutonomousFinancialAgent(BaseAgent):
         total_revenue = sum(revenue_data.values())
         if total_revenue > 0:
             max_stream = max(revenue_data.values())
-            concentration = max_stream / total_revenue
+            concentration = max_stream/total_revenue
             risk_factors.append(concentration)  # High concentration = high risk
 
         # Expense efficiency risk
         total_expenses = sum(expense_data.values())
         if total_revenue > 0:
-            expense_ratio = total_expenses / total_revenue
+            expense_ratio = total_expenses/total_revenue
             risk_factors.append(min(expense_ratio, 1.0))  # High expenses = high risk
 
         # Platform dependency risk - analyze based on platform characteristics
@@ -849,7 +853,7 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Instagram has moderate stability
                 platform_risk = 0.45
             elif "twitter" in channel["id"].lower() or "x.com" in channel["id"].lower():
-                # Twitter / X has policy and ownership volatility
+                # Twitter/X has policy and ownership volatility
                 platform_risk = 0.55
             else:
                 # Default for unknown platforms
@@ -871,7 +875,8 @@ class AutonomousFinancialAgent(BaseAgent):
     def _assess_channel_opportunity(
         self, channel: Dict, revenue_data: Dict, expense_data: Dict
     ) -> float:
-        """Assess opportunity score for a channel (0.0 = low opportunity, 1.0 = high opportunity)."""
+        """Assess opportunity score for a channel (0.0 = low opportunity,
+    1.0 = high opportunity)."""
         opportunity_factors = []
 
         # Growth potential based on current performance
@@ -879,7 +884,7 @@ class AutonomousFinancialAgent(BaseAgent):
         total_expenses = sum(expense_data.values())
 
         if total_expenses > 0:
-            roi = (total_revenue - total_expenses) / total_expenses
+            roi = (total_revenue - total_expenses)/total_expenses
             # Higher ROI suggests more opportunity for scaling
             opportunity_factors.append(min(roi, 1.0))
 
@@ -896,13 +901,13 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Instagram has good monetization opportunities
                 market_opportunity = 0.80
             elif "twitter" in channel["id"].lower() or "x.com" in channel["id"].lower():
-                # Twitter / X has moderate monetization potential
+                # Twitter/X has moderate monetization potential
                 market_opportunity = 0.65
             else:
                 # Default for other platforms
                 market_opportunity = 0.60
 
-            # Adjust based on subscriber / follower count if available
+            # Adjust based on subscriber/follower count if available
             if "subscribers" in channel and channel["subscribers"] > 100000:
                 market_opportunity += 0.1
             elif "subscribers" in channel and channel["subscribers"] > 10000:
@@ -998,7 +1003,9 @@ class AutonomousFinancialAgent(BaseAgent):
         optimal_allocations = {}
 
         # Sort channels by ROI
-        sorted_channels = sorted(channel_financials, key = lambda x: x.roi, reverse = True)
+        sorted_channels = sorted(channel_financials,
+    key = lambda x: x.roi,
+    reverse = True)
 
         for resource_type, current_amount in current_allocations.items():
             # Allocate more to high - ROI, low - risk channels
@@ -1052,6 +1059,7 @@ class AutonomousFinancialAgent(BaseAgent):
     def _adjust_advertising_budget(self, allocation: ResourceAllocation) -> bool:
         """Adjust advertising budget allocation across ad platforms."""
         try:
+
             from backend.secret_store import SecretStore
 
             success_count = 0
@@ -1097,6 +1105,7 @@ class AutonomousFinancialAgent(BaseAgent):
     def _adjust_content_budget(self, allocation: ResourceAllocation) -> bool:
         """Adjust content creation budget allocation."""
         try:
+
             from backend.secret_store import SecretStore
 
             success_operations = 0
@@ -1142,6 +1151,7 @@ class AutonomousFinancialAgent(BaseAgent):
     def _adjust_tool_subscriptions(self, allocation: ResourceAllocation) -> bool:
         """Adjust tool subscription allocations."""
         try:
+
             from backend.secret_store import SecretStore
 
             success_adjustments = 0
@@ -1225,9 +1235,10 @@ Format as JSON with resource types as keys.
     def _parse_optimization_response(self, ai_response: str) -> Dict[str, Dict]:
         """Parse AI optimization response."""
         try:
+
             import re
 
-            json_match = re.search(r"\{.*\}", ai_response, re.DOTALL)
+            json_match = re.search(r"\\{.*\\}", ai_response, re.DOTALL)
             if json_match:
                 return json.loads(json_match.group())
         except Exception as e:
@@ -1364,7 +1375,8 @@ Format as JSON with resource types as keys.
                 # Get active allocations
                 cursor.execute(
                     """
-                    SELECT resource_type, SUM(recommended_allocation) as total_allocation,
+                    SELECT resource_type,
+    SUM(recommended_allocation) as total_allocation,
                         AVG(expected_roi_impact) as avg_roi_impact
                     FROM resource_allocations
                     WHERE status = 'implemented'
@@ -1392,7 +1404,7 @@ Format as JSON with resource types as keys.
                     float(ch.get("total_expenses", 0)) for ch in channel_performance
                 )
                 overall_roi = (
-                    (total_revenue - total_expenses) / total_expenses
+                    (total_revenue - total_expenses)/total_expenses
                     if total_expenses > 0
                     else 0
                 )

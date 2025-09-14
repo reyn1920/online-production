@@ -1,21 +1,17 @@
-import asyncio
 import json
 import logging
-import os
 import sqlite3
-from contextlib import asynccontextmanager
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-import aiohttp
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Configure logging
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Database setup
@@ -119,9 +115,8 @@ class Platform(str, Enum):
     SENDOWL = "sendowl"
     GUMROAD = "gumroad"
 
+
 @dataclass
-
-
 class MarketOpportunity:
     trend_topic: str
     niche: str
@@ -131,9 +126,8 @@ class MarketOpportunity:
     analysis_data: Dict[str, Any]
     created_at: datetime = None
 
+
 @dataclass
-
-
 class BusinessInstance:
     business_type: str
     niche: str
@@ -148,14 +142,12 @@ class BusinessInstance:
 class TrendAnalysisAgent:
     """Agent responsible for identifying market trends and opportunities"""
 
-
     def __init__(self):
         self.trending_sources = [
-            "https://trends.google.com / trends / api",
-                "https://api.reddit.com / r/entrepreneur",
-                "https://api.twitter.com / 2/tweets / search",
-                ]
-
+            "https://trends.google.com/trends/api",
+            "https://api.reddit.com/r/entrepreneur",
+            "https://api.twitter.com/2/tweets/search",
+        ]
 
     async def get_trending_topics(self) -> List[str]:
         """Fetch current trending topics from various sources"""
@@ -163,24 +155,21 @@ class TrendAnalysisAgent:
         # In production, this would integrate with real APIs
         trending_topics = [
             "sustainable living",
-                "remote work productivity",
-                "mental health awareness",
-                "AI automation tools",
-                "minimalist design",
-                "plant - based nutrition",
-                "digital nomad lifestyle",
-                "cryptocurrency education",
-                "home fitness equipment",
-                "eco - friendly products",
-                ]
+            "remote work productivity",
+            "mental health awareness",
+            "AI automation tools",
+            "minimalist design",
+            "plant - based nutrition",
+            "digital nomad lifestyle",
+            "cryptocurrency education",
+            "home fitness equipment",
+            "eco - friendly products",
+        ]
 
         logger.info(f"Identified {len(trending_topics)} trending topics")
         return trending_topics
 
-
-    async def analyze_monetization_potential(
-        self, topics: List[str]
-    ) -> List[MarketOpportunity]:
+    async def analyze_monetization_potential(self, topics: List[str]) -> List[MarketOpportunity]:
         """Analyze each topic for monetization potential"""
         opportunities = []
 
@@ -193,27 +182,26 @@ class TrendAnalysisAgent:
             recommended_models = self._recommend_business_models(topic)
 
             opportunity = MarketOpportunity(
-                trend_topic = topic,
-                    niche = f"{topic}_niche",
-                    monetization_potential = potential_score,
-                    competition_level = competition,
-                    recommended_business_models = recommended_models,
-                    analysis_data={
+                trend_topic=topic,
+                niche=f"{topic}_niche",
+                monetization_potential=potential_score,
+                competition_level=competition,
+                recommended_business_models=recommended_models,
+                analysis_data={
                     "search_volume": hash(topic) % 10000 + 1000,
-                        "social_mentions": hash(topic) % 5000 + 500,
-                        "market_size": f"${hash(topic) % 1000000 + 100000}",
-                        },
-                    created_at = datetime.now(),
-                    )
+                    "social_mentions": hash(topic) % 5000 + 500,
+                    "market_size": f"${hash(topic) % 1000000 + 100000}",
+                },
+                created_at=datetime.now(),
+            )
 
             opportunities.append(opportunity)
 
         # Sort by monetization potential
-        opportunities.sort(key = lambda x: x.monetization_potential, reverse = True)
+        opportunities.sort(key=lambda x: x.monetization_potential, reverse=True)
         logger.info(f"Analyzed {len(opportunities)} market opportunities")
 
         return opportunities
-
 
     def _recommend_business_models(self, topic: str) -> List[str]:
         """Recommend suitable business models for a topic"""
@@ -234,19 +222,17 @@ class TrendAnalysisAgent:
 class ContentRepurposingAgent:
     """Agent responsible for repurposing content across different formats"""
 
-
     def __init__(self):
         self.supported_formats = [
             "blog_post",
-                "social_media",
-                "video_script",
-                "podcast_outline",
-                "infographic",
-                "ebook_chapter",
-                "presentation_slides",
-                "email_sequence",
-                ]
-
+            "social_media",
+            "video_script",
+            "podcast_outline",
+            "infographic",
+            "ebook_chapter",
+            "presentation_slides",
+            "email_sequence",
+        ]
 
     async def repurpose_content(
         self, source_content: str, target_formats: List[str]
@@ -257,22 +243,21 @@ class ContentRepurposingAgent:
         for format_type in target_formats:
             if format_type in self.supported_formats:
                 # Simulated content repurposing - in production, use AI models
-                repurposed_content[format_type] = (
-                    f"Repurposed {format_type}: {source_content[:100]}..."
-                )
+                repurposed_content[
+                    format_type
+                ] = f"Repurposed {format_type}: {source_content[:100]}..."
 
         logger.info(f"Repurposed content into {len(repurposed_content)} formats")
         return repurposed_content
-
 
     async def optimize_for_platform(self, content: str, platform: str) -> str:
         """Optimize content for specific platform requirements"""
         platform_optimizations = {
             "etsy": "SEO - optimized with trending keywords",
-                "paddle": "Professional B2B focused content",
-                "sendowl": "Direct - to - consumer appeal",
-                "gumroad": "Creator - focused messaging",
-                }
+            "paddle": "Professional B2B focused content",
+            "sendowl": "Direct - to - consumer appeal",
+            "gumroad": "Creator - focused messaging",
+        }
 
         optimization = platform_optimizations.get(platform, "Generic optimization")
         return f"{content} [{optimization}]"
@@ -281,64 +266,60 @@ class ContentRepurposingAgent:
 class SalesFunnelAgent:
     """Agent responsible for managing and optimizing sales funnels"""
 
-
     def __init__(self):
         self.funnel_stages = [
             "awareness",
-                "interest",
-                "consideration",
-                "purchase",
-                "retention",
-                ]
-
+            "interest",
+            "consideration",
+            "purchase",
+            "retention",
+        ]
 
     async def analyze_funnel_performance(self, business_id: int) -> Dict[str, float]:
         """Analyze conversion rates at each funnel stage"""
         # Simulated funnel analysis
         performance = {
             "awareness": 0.85,
-                "interest": 0.65,
-                "consideration": 0.45,
-                "purchase": 0.25,
-                "retention": 0.80,
-                }
+            "interest": 0.65,
+            "consideration": 0.45,
+            "purchase": 0.25,
+            "retention": 0.80,
+        }
 
         logger.info(f"Analyzed funnel performance for business {business_id}")
         return performance
-
 
     async def optimize_funnel_stage(self, business_id: int, stage: str) -> List[str]:
         """Generate optimization recommendations for a funnel stage"""
         optimizations = {
             "awareness": [
                 "Improve SEO",
-                    "Increase social media presence",
-                    "Content marketing",
-                    ],
-                "interest": [
+                "Increase social media presence",
+                "Content marketing",
+            ],
+            "interest": [
                 "Better product descriptions",
-                    "Add customer testimonials",
-                    "Improve visuals",
-                    ],
-                "consideration": [
+                "Add customer testimonials",
+                "Improve visuals",
+            ],
+            "consideration": [
                 "Offer free samples",
-                    "Create comparison charts",
-                    "Add urgency",
-                    ],
-                "purchase": ["Simplify checkout", "Offer payment plans", "Reduce friction"],
-                "retention": [
+                "Create comparison charts",
+                "Add urgency",
+            ],
+            "purchase": ["Simplify checkout", "Offer payment plans", "Reduce friction"],
+            "retention": [
                 "Follow - up emails",
-                    "Loyalty program",
-                    "Upsell opportunities",
-                    ],
-                }
+                "Loyalty program",
+                "Upsell opportunities",
+            ],
+        }
 
         return optimizations.get(stage, ["General optimization"])
 
 
 class MasterOrchestrator:
     """Main orchestrator class that coordinates all agents and business operations"""
-
 
     def __init__(self):
         self.trend_analyzer = TrendAnalysisAgent()
@@ -348,7 +329,6 @@ class MasterOrchestrator:
 
         # Initialize database
         init_database()
-
 
     async def analyze_market_opportunities(self) -> List[MarketOpportunity]:
         """Identify and analyze market opportunities"""
@@ -369,30 +349,27 @@ class MasterOrchestrator:
             """,
                 (
                     opp.trend_topic,
-                        opp.niche,
-                        opp.monetization_potential,
-                        opp.competition_level,
-                        json.dumps(opp.recommended_business_models),
-                        json.dumps(opp.analysis_data),
-                        ),
-                    )
+                    opp.niche,
+                    opp.monetization_potential,
+                    opp.competition_level,
+                    json.dumps(opp.recommended_business_models),
+                    json.dumps(opp.analysis_data),
+                ),
+            )
 
         conn.commit()
         conn.close()
 
         return opportunities
 
-
-    async def launch_business_model(
-        self, business_type: str, niche: str, platform: str
-    ) -> int:
+    async def launch_business_model(self, business_type: str, niche: str, platform: str) -> int:
         """Launch a new business model instance"""
         business = BusinessInstance(
-            business_type = business_type,
-                niche = niche,
-                platform = platform,
-                created_at = datetime.now(),
-                )
+            business_type=business_type,
+            niche=niche,
+            platform=platform,
+            created_at=datetime.now(),
+        )
 
         # Store in database
         conn = sqlite3.connect(DB_PATH)
@@ -406,11 +383,11 @@ class MasterOrchestrator:
         """,
             (
                 business.business_type,
-                    business.niche,
-                    business.platform,
-                    json.dumps(business.performance_metrics or {}),
-                    ),
-                )
+                business.niche,
+                business.platform,
+                json.dumps(business.performance_metrics or {}),
+            ),
+        )
 
         business_id = cursor.lastrowid
         conn.commit()
@@ -421,19 +398,18 @@ class MasterOrchestrator:
         logger.info(f"Launched {business_type} business for {niche} on {platform}")
         return business_id
 
-
     async def optimize_all_businesses(self) -> Dict[int, Dict[str, Any]]:
         """Optimize all active businesses"""
         optimization_results = {}
 
         for business_id in self.active_businesses.keys():
             # Analyze funnel performance
-            funnel_performance = (
-                await self.sales_funnel_manager.analyze_funnel_performance(business_id)
+            funnel_performance = await self.sales_funnel_manager.analyze_funnel_performance(
+                business_id
             )
 
             # Find weakest stage
-            weakest_stage = min(funnel_performance.items(), key = lambda x: x[1])[0]
+            weakest_stage = min(funnel_performance.items(), key=lambda x: x[1])[0]
 
             # Get optimization recommendations
             optimizations = await self.sales_funnel_manager.optimize_funnel_stage(
@@ -442,12 +418,11 @@ class MasterOrchestrator:
 
             optimization_results[business_id] = {
                 "funnel_performance": funnel_performance,
-                    "weakest_stage": weakest_stage,
-                    "optimizations": optimizations,
-                    }
+                "weakest_stage": weakest_stage,
+                "optimizations": optimizations,
+            }
 
         return optimization_results
-
 
     async def get_performance_dashboard(self) -> Dict[str, Any]:
         """Generate comprehensive performance dashboard"""
@@ -481,31 +456,33 @@ class MasterOrchestrator:
 
         return {
             "active_businesses": active_count,
-                "total_revenue": total_revenue,
-                "total_products": total_products,
-                "recent_opportunities": recent_opportunities,
-                "last_updated": datetime.now().isoformat(),
-                }
+            "total_revenue": total_revenue,
+            "total_products": total_products,
+            "recent_opportunities": recent_opportunities,
+            "last_updated": datetime.now().isoformat(),
+        }
+
 
 # FastAPI app setup
 app = FastAPI(
     title="Master Orchestrator AI CEO",
-        description="Central intelligence system for automated business management",
-        version="1.0.0",
+    description="Central intelligence system for automated business management",
+    version="1.0.0",
 )
 
 app.add_middleware(
     CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials = True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Global orchestrator instance
 orchestrator = MasterOrchestrator()
 
 # Create router for integration with main app
+
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -525,39 +502,33 @@ class OptimizationResult(BaseModel):
     weakest_stage: str
     optimizations: List[str]
 
+
 @router.get("/")
-
-
 async def root():
     return {"message": "Master Orchestrator AI CEO is running", "status": "active"}
 
+
 @router.get("/health")
-
-
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
-@router.post("/analyze - market")
 
-
+@router.post("/analyze-market")
 async def analyze_market():
     """Analyze current market opportunities"""
     try:
         opportunities = await orchestrator.analyze_market_opportunities()
         return {
             "status": "success",
-                "opportunities_count": len(opportunities),
-                "opportunities": [
-                asdict(opp) for opp in opportunities[:10]
-            ],  # Return top 10
+            "opportunities_count": len(opportunities),
+            "opportunities": [asdict(opp) for opp in opportunities[:10]],  # Return top 10
         }
     except Exception as e:
         logger.error(f"Error analyzing market: {str(e)}")
-        raise HTTPException(status_code = 500, detail = str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/launch - business")
-
-
 async def launch_business(request: LaunchBusinessRequest):
     """Launch a new business model"""
     try:
@@ -566,32 +537,30 @@ async def launch_business(request: LaunchBusinessRequest):
         )
         return {
             "status": "success",
-                "business_id": business_id,
-                "message": f"Launched {request.business_type.value} business for {request.niche}",
-                }
+            "business_id": business_id,
+            "message": f"Launched {request.business_type.value} business for {request.niche}",
+        }
     except Exception as e:
         logger.error(f"Error launching business: {str(e)}")
-        raise HTTPException(status_code = 500, detail = str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/optimize - businesses")
-
-
 async def optimize_businesses():
     """Optimize all active businesses"""
     try:
         results = await orchestrator.optimize_all_businesses()
         return {
             "status": "success",
-                "optimized_count": len(results),
-                "results": results,
-                }
+            "optimized_count": len(results),
+            "results": results,
+        }
     except Exception as e:
         logger.error(f"Error optimizing businesses: {str(e)}")
-        raise HTTPException(status_code = 500, detail = str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/dashboard")
-
-
 async def get_dashboard():
     """Get performance dashboard"""
     try:
@@ -599,11 +568,10 @@ async def get_dashboard():
         return {"status": "success", "dashboard": dashboard}
     except Exception as e:
         logger.error(f"Error getting dashboard: {str(e)}")
-        raise HTTPException(status_code = 500, detail = str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/businesses")
-
-
 async def get_active_businesses():
     """Get all active businesses"""
     try:
@@ -624,14 +592,14 @@ async def get_active_businesses():
             businesses.append(
                 {
                     "id": row[0],
-                        "business_type": row[1],
-                        "niche": row[2],
-                        "platform": row[3],
-                        "status": row[4],
-                        "revenue_generated": row[5],
-                        "products_created": row[6],
-                        "created_at": row[7],
-                        }
+                    "business_type": row[1],
+                    "niche": row[2],
+                    "platform": row[3],
+                    "status": row[4],
+                    "revenue_generated": row[5],
+                    "products_created": row[6],
+                    "created_at": row[7],
+                }
             )
 
         conn.close()
@@ -639,7 +607,8 @@ async def get_active_businesses():
         return {"status": "success", "businesses": businesses}
     except Exception as e:
         logger.error(f"Error getting businesses: {str(e)}")
-        raise HTTPException(status_code = 500, detail = str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # Include router in the app for standalone operation
 app.include_router(router)
@@ -647,4 +616,4 @@ app.include_router(router)
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port = 8005)
+    uvicorn.run(app, host="0.0.0.0", port=8005)

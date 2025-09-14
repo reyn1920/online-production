@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Performance Analytics Dashboard</title>
     <style>
       * {
@@ -387,7 +387,7 @@
           <div class="prediction-form">
             <div class="form-group">
               <label for="content-title">Content Title</label>
-              <input type="text" id="content-title" placeholder="Enter your content title..." />
+              <input type="text" id="content-title" placeholder="Enter your content title..."/>
             </div>
             <div class="form-group">
               <label for="content-description">Description</label>
@@ -395,11 +395,11 @@
             </div>
             <div class="form-group">
               <label for="content-duration">Duration (minutes)</label>
-              <input type="number" id="content-duration" placeholder="10" min="1" max="120" />
+              <input type="number" id="content-duration" placeholder="10" min="1" max="120"/>
             </div>
             <div class="form-group">
               <label for="content-tags">Tags (comma-separated)</label>
-              <input type="text" id="content-tags" placeholder="AI, tutorial, technology" />
+              <input type="text" id="content-tags" placeholder="AI, tutorial, technology"/>
             </div>
             <button class="btn" onclick="predictPerformance()">🎯 Predict Performance</button>
           </div>
@@ -453,26 +453,19 @@
       </div>
     </div>
 
-    <script>
-      // Global variables
-      let dashboardData = null;
-
-      // Initialize dashboard
+    <script>//Global variables
+      let dashboardData = null;//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         loadDashboardData();
-      });
-
-      // Load dashboard data
+      });//Load dashboard data
       async function loadDashboardData() {
         try {
-          const response = await fetch('/api/performance-analytics/dashboard');
+          const response = await fetch("/api/performance-analytics/dashboard');
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          dashboardData = await response.json();
-
-          // Update all dashboard sections
+          dashboardData = await response.json();//Update all dashboard sections
           updateOverview(dashboardData.overview);
           updateTrends(dashboardData.trends);
           updateInsights(dashboardData.insights);
@@ -481,9 +474,7 @@
           console.error('Error loading dashboard data:', error);
           showError('Failed to load dashboard data. Please try again later.');
         }
-      }
-
-      // Update performance overview
+      }//Update performance overview
       function updateOverview(overview) {
         const content = document.getElementById('overview-content');
 
@@ -512,9 +503,7 @@
                     </div>
                 </div>
             `;
-      }
-
-      // Update trends
+      }//Update trends
       function updateTrends(trends) {
         const content = document.getElementById('trends-content');
 
@@ -541,9 +530,7 @@
           .join('');
 
         content.innerHTML = trendsHtml;
-      }
-
-      // Update insights
+      }//Update insights
       function updateInsights(insights) {
         const content = document.getElementById('insights-content');
 
@@ -570,9 +557,7 @@
           .join('');
 
         content.innerHTML = insightsHtml;
-      }
-
-      // Update model metrics
+      }//Update model metrics
       function updateModelMetrics(modelMetrics) {
         const content = document.getElementById('models-content');
 
@@ -593,9 +578,7 @@
           .join('');
 
         content.innerHTML = `<div class="model-metrics">${metricsHtml}</div>`;
-      }
-
-      // Predict content performance
+      }//Predict content performance
       async function predictPerformance() {
         const title = document.getElementById('content-title').value;
         const description = document.getElementById('content-description').value;
@@ -613,7 +596,7 @@
           '<div class="loading"><div class="spinner"></div><span>Predicting performance...</span></div>';
 
         try {
-          const response = await fetch('/api/performance-analytics/predict', {
+          const response = await fetch("/api/performance-analytics/predict', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -640,9 +623,7 @@
           console.error('Prediction error:', error);
           resultDiv.innerHTML = '<div class="error">Failed to predict performance. Please try again.</div>';
         }
-      }
-
-      // Display prediction result
+      }//Display prediction result
       function displayPredictionResult(prediction) {
         const resultDiv = document.getElementById('prediction-result');
 
@@ -668,14 +649,12 @@
                     </div>
                 </div>
             `;
-      }
-
-      // Utility functions
+      }//Utility functions
       function formatNumber(num) {
         if (num >= 1000000) {
-          return (num / 1000000).toFixed(1) + 'M';
+          return (num/1000000).toFixed(1) + 'M';
         } else if (num >= 1000) {
-          return (num / 1000).toFixed(1) + 'K';
+          return (num/1000).toFixed(1) + 'K';
         }
         return num.toString();
       }
@@ -695,15 +674,12 @@
         return arrows[direction] || '➡️';
       }
 
-      function showError(message) {
-        // Show error in all loading sections
+      function showError(message) {//Show error in all loading sections
         const loadingSections = document.querySelectorAll('.loading');
         loadingSections.forEach(section => {
           section.innerHTML = `<div class="error">${message}</div>`;
         });
-      }
-
-      // Auto-refresh dashboard every 5 minutes
+      }//Auto-refresh dashboard every 5 minutes
       setInterval(loadDashboardData, 5 * 60 * 1000);
     </script>
   </body>

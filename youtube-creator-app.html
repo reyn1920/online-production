@@ -298,9 +298,7 @@
     <div id="root"></div>
     
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        // Mock data based on research findings
+        const { useState, useEffect } = React;//Mock data based on research findings
         const mockData = {
             youtubeMetrics: {
                 subscribers: 8500,
@@ -342,8 +340,8 @@
             const [data, setData] = useState(mockData);
             
             const calculateYPPProgress = () => {
-                const subscriberProgress = Math.min((data.youtubeMetrics.subscribers / 1000) * 100, 100);
-                const watchTimeProgress = Math.min((data.youtubeMetrics.watchHours / 4000) * 100, 100);
+                const subscriberProgress = Math.min((data.youtubeMetrics.subscribers/1000) * 100, 100);
+                const watchTimeProgress = Math.min((data.youtubeMetrics.watchHours/4000) * 100, 100);
                 return { subscriberProgress, watchTimeProgress };
             };
             
@@ -361,14 +359,14 @@
                         </div>
                         <div className="metric">
                             <span className="metric-label">Subscribers</span>
-                            <span className="metric-value">{data.youtubeMetrics.subscribers.toLocaleString()} / 1,000</span>
+                            <span className="metric-value">{data.youtubeMetrics.subscribers.toLocaleString()}/1,000</span>
                         </div>
                         <div className="progress-bar">
                             <div className="progress-fill" style={{width: `${subscriberProgress}%`}}></div>
                         </div>
                         <div className="metric">
                             <span className="metric-label">Watch Hours (12 months)</span>
-                            <span className="metric-value">{data.youtubeMetrics.watchHours.toLocaleString()} / 4,000</span>
+                            <span className="metric-value">{data.youtubeMetrics.watchHours.toLocaleString()}/4,000</span>
                         </div>
                         <div className="progress-bar">
                             <div className="progress-fill" style={{width: `${watchTimeProgress}%`}}></div>
@@ -543,10 +541,10 @@
             
             const renderActiveTab = () => {
                 switch(activeTab) {
-                    case 'overview': return <OverviewTab />;
-                    case 'affiliate': return <AffiliateTab />;
-                    case 'brands': return <BrandTab />;
-                    default: return <OverviewTab />;
+                    case 'overview': return <OverviewTab/>;
+                    case 'affiliate': return <AffiliateTab/>;
+                    case 'brands': return <BrandTab/>;
+                    default: return <OverviewTab/>;
                 }
             };
             
@@ -583,7 +581,7 @@
             );
         }
         
-        ReactDOM.render(<YouTubeCreatorApp />, document.getElementById('root'));
+        ReactDOM.render(<YouTubeCreatorApp/>, document.getElementById('root'));
     </script>
 </body>
 </html>

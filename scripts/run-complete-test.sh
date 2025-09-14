@@ -35,7 +35,7 @@ check_service() {
     echo -e "${YELLOW}⏳ Checking $service_name...${NC}"
     
     while [ $attempt -le $max_attempts ]; do
-        if curl -f -s $url > /dev/null 2>&1; then
+        if curl -f -s $url >/dev/null 2>&1; then
             echo -e "${GREEN}✅ $service_name is ready${NC}"
             return 0
         fi
@@ -130,9 +130,9 @@ echo -e "${GREEN}✅ Baseline test completed${NC}"
 echo -e "${BLUE}📊 Step 6: Capturing Initial Metrics${NC}"
 
 # Capture initial CPU and memory usage
-initial_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1] // "0"')
-initial_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1] // "0"')
-initial_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1] // "0"')
+initial_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
+initial_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
+initial_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1]//"0"')
 
 echo -e "${BLUE}Initial Metrics:${NC}"
 echo -e "  CPU Usage: ${initial_cpu}%"
@@ -167,9 +167,9 @@ for i in {1..10}; do
     echo -e "\n${YELLOW}📊 Metrics Check $i/10 ($(date))${NC}"
     
     # Get current metrics
-    current_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1] // "0"')
-    current_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1] // "0"')
-    current_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1] // "0"')
+    current_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
+    current_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
+    current_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1]//"0"')
     
     # Check for scaling events
     scaling_events=$(curl -s 'http://localhost:9090/api/v1/query?query=increase(scaling_events_total[1m])' | jq -r '.data.result | length')
@@ -223,10 +223,10 @@ echo -e "${GREEN}✅ Scaling validation completed${NC}"
 echo -e "${BLUE}📋 Step 11: Generating Comprehensive Report${NC}"
 
 # Capture final metrics
-final_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1] // "0"')
-final_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1] // "0"')
-final_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1] // "0"')
-total_scaling_events=$(curl -s 'http://localhost:9090/api/v1/query?query=scaling_events_total' | jq -r '.data.result[0].value[1] // "0"')
+final_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
+final_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
+final_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1]//"0"')
+total_scaling_events=$(curl -s 'http://localhost:9090/api/v1/query?query=scaling_events_total' | jq -r '.data.result[0].value[1]//"0"')
 total_alerts=$(curl -s 'http://localhost:9093/api/v1/alerts' | jq -r '.data | length')
 
 # Create comprehensive report
@@ -272,7 +272,7 @@ $(cat $LOG_DIR/scaling-validation.json | jq -r '.scaling_validation.scaling_dete
 
 ## Recommendations
 
-$(cat $LOG_DIR/scaling-validation.json | jq -r '.scaling_validation.scaling_detected.recommendations[]?' | sed 's/^/- /')
+$(cat $LOG_DIR/scaling-validation.json | jq -r '.scaling_validation.scaling_detected.recommendations[]?' | sed 's/^/-/')
 
 ## Service Health
 

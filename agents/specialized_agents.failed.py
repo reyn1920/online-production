@@ -1,0 +1,1 @@
+Run with 'trae -' to read from stdin (e.g. 'ps aux | grep code | trae -').

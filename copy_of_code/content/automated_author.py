@@ -1,10 +1,12 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Automated Author - Long - Form Content Generation System
 
-This module implements an advanced writing system for creating books and digital products
+This module implements an advanced writing system for creating books \
+    and digital products
 using "Ghostwriter Persona" and "Checkpointed Writing" protocols. It supports
-resumable writing sessions, persona - based writing styles, and structured content generation.
+resumable writing sessions, persona - based writing styles, \
+    and structured content generation.
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -19,15 +21,15 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional
 
 import requests
 
 # Import TRAE.AI utilities
 try:
     from utils.logger import get_logger
-except ImportError:
 
+except ImportError:
 
     def get_logger(name):
         return logging.getLogger(name)
@@ -69,9 +71,8 @@ class PersonaType(Enum):
     AUTHORITATIVE = "authoritative"
     INSPIRATIONAL = "inspirational"
 
+
 @dataclass
-
-
 class GhostwriterPersona:
     """Defines a ghostwriter persona with specific characteristics."""
 
@@ -85,7 +86,6 @@ class GhostwriterPersona:
     voice_characteristics: List[str]
     example_phrases: List[str]
     avoid_patterns: List[str]
-
 
     def to_prompt(self) -> str:
         """Convert persona to a system prompt."""
@@ -111,9 +111,8 @@ Patterns to Avoid:
 Maintain this persona consistently throughout all writing.
 """
 
+
 @dataclass
-
-
 class Chapter:
     """Represents a chapter or section in the content."""
 
@@ -123,15 +122,14 @@ class Chapter:
     content: str = ""
     word_count: int = 0
     status: str = "pending"  # pending, in_progress, completed, reviewed
-    research_notes: List[str] = field(default_factory = list)
-    key_points: List[str] = field(default_factory = list)
+    research_notes: List[str] = field(default_factory=list)
+    key_points: List[str] = field(default_factory=list)
     estimated_length: int = 0
     actual_length: int = 0
     last_modified: Optional[datetime] = None
 
+
 @dataclass
-
-
 class WritingProject:
     """Represents a complete writing project."""
 
@@ -141,20 +139,19 @@ class WritingProject:
     target_word_count: int
     persona: GhostwriterPersona
     outline: str
-    chapters: List[Chapter] = field(default_factory = list)
-    research_data: Dict[str, Any] = field(default_factory = dict)
-    style_guide: Dict[str, str] = field(default_factory = dict)
-    metadata: Dict[str, Any] = field(default_factory = dict)
+    chapters: List[Chapter] = field(default_factory=list)
+    research_data: Dict[str, Any] = field(default_factory=dict)
+    style_guide: Dict[str, str] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory=dict)
     current_stage: WritingStage = WritingStage.OUTLINE
     progress_percentage: float = 0.0
     total_word_count: int = 0
-    created_at: datetime = field(default_factory = datetime.now)
+    created_at: datetime = field(default_factory=datetime.now)
     last_checkpoint: Optional[datetime] = None
     checkpoint_hash: Optional[str] = None
 
+
 @dataclass
-
-
 class WritingCheckpoint:
     """Represents a checkpoint in the writing process."""
 
@@ -171,38 +168,34 @@ class WritingCheckpoint:
 class OllamaClient:
     """Client for interacting with local Ollama LLM."""
 
-
-    def __init__(
-        self, base_url: str = "http://localhost:11434", model: str = "llama3.2"
-    ):
+    def __init__(self, base_url: str = "http://localhost:11434", model: str = "llama3.2"):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.logger = get_logger(self.__class__.__name__)
 
-
     def generate(
         self,
-            prompt: str,
-            system_prompt: Optional[str] = None,
-            temperature: float = 0.7,
-            max_tokens: int = 4000,
-            ) -> str:
+        prompt: str,
+        system_prompt: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: int = 4000,
+    ) -> str:
         """Generate text using Ollama API."""
         try:
             payload = {
                 "model": self.model,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {"temperature": temperature, "num_predict": max_tokens},
-                    }
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": temperature, "num_predict": max_tokens},
+            }
 
             if system_prompt:
                 payload["system"] = system_prompt
 
             response = requests.post(
-                f"{self.base_url}/api / generate",
-                    json = payload,
-                    timeout = 180,  # Longer timeout for long - form content
+                f"{self.base_url}/api/generate",
+                json=payload,
+                timeout=180,  # Longer timeout for long - form content
             )
             response.raise_for_status()
 
@@ -220,160 +213,157 @@ class OllamaClient:
 class AutomatedAuthor:
     """Main Automated Author class for long - form content generation."""
 
-
     def __init__(
         self,
-            ollama_url: str = "http://localhost:11434",
-            ollama_model: str = "llama3.2",
-            checkpoint_dir: str = "./checkpoints",
-            ):
+        ollama_url: str = "http://localhost:11434",
+        ollama_model: str = "llama3.2",
+        checkpoint_dir: str = "./checkpoints",
+    ):
         self.ollama = OllamaClient(ollama_url, ollama_model)
         self.checkpoint_dir = Path(checkpoint_dir)
-        self.checkpoint_dir.mkdir(parents = True, exist_ok = True)
+        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         self.logger = get_logger(self.__class__.__name__)
 
         # Built - in personas
         self.personas = self._create_default_personas()
-
 
     def _create_default_personas(self) -> Dict[str, GhostwriterPersona]:
         """Create default ghostwriter personas."""
         return {
             "academic": GhostwriterPersona(
                 name="Dr. Alexandra Reed",
-                    persona_type = PersonaType.ACADEMIC,
-                    writing_style="Scholarly and methodical",
-                    tone="Formal and authoritative",
-                    vocabulary_level="Advanced academic",
-                    sentence_structure="Complex, well - structured sentences with proper citations",
-                    expertise_areas=[
+                persona_type=PersonaType.ACADEMIC,
+                writing_style="Scholarly and methodical",
+                tone="Formal and authoritative",
+                vocabulary_level="Advanced academic",
+                sentence_structure="Complex, well - structured sentences with proper citations",
+                expertise_areas=[
                     "Research methodology",
-                        "Critical analysis",
-                        "Theoretical frameworks",
-                        ],
-                    voice_characteristics=[
+                    "Critical analysis",
+                    "Theoretical frameworks",
+                ],
+                voice_characteristics=[
                     "Uses evidence - based arguments",
-                        "Employs academic terminology appropriately",
-                        "Structures arguments logically",
-                        "References credible sources",
-                        ],
-                    example_phrases=[
+                    "Employs academic terminology appropriately",
+                    "Structures arguments logically",
+                    "References credible sources",
+                ],
+                example_phrases=[
                     "The empirical evidence suggests that...",
-                        "According to recent research...",
-                        "This phenomenon can be understood through the lens of...",
-                        "The implications of this finding are significant because...",
-                        ],
-                    avoid_patterns=[
+                    "According to recent research...",
+                    "This phenomenon can be understood through the lens of...",
+                    "The implications of this finding are significant because...",
+                ],
+                avoid_patterns=[
                     "Overly casual language",
-                        "Unsupported claims",
-                        "Personal anecdotes without context",
-                        ],
-                    ),
-                "business": GhostwriterPersona(
+                    "Unsupported claims",
+                    "Personal anecdotes without context",
+                ],
+            ),
+            "business": GhostwriterPersona(
                 name="Marcus Sterling",
-                    persona_type = PersonaType.BUSINESS,
-                    writing_style="Strategic and results - oriented",
-                    tone="Professional and confident",
-                    vocabulary_level="Business professional",
-                    sentence_structure="Clear, direct sentences with actionable insights",
-                    expertise_areas=[
+                persona_type=PersonaType.BUSINESS,
+                writing_style="Strategic and results - oriented",
+                tone="Professional and confident",
+                vocabulary_level="Business professional",
+                sentence_structure="Clear, direct sentences with actionable insights",
+                expertise_areas=[
                     "Strategy",
-                        "Leadership",
-                        "Market analysis",
-                        "Operations",
-                        ],
-                    voice_characteristics=[
+                    "Leadership",
+                    "Market analysis",
+                    "Operations",
+                ],
+                voice_characteristics=[
                     "Focuses on ROI and business value",
-                        "Uses data to support arguments",
-                        "Provides actionable recommendations",
-                        "Speaks to business outcomes",
-                        ],
-                    example_phrases=[
+                    "Uses data to support arguments",
+                    "Provides actionable recommendations",
+                    "Speaks to business outcomes",
+                ],
+                example_phrases=[
                     "The bottom line is...",
-                        "This strategy will drive...",
-                        "Market data indicates...",
-                        "The competitive advantage lies in...",
-                        ],
-                    avoid_patterns=[
+                    "This strategy will drive...",
+                    "Market data indicates...",
+                    "The competitive advantage lies in...",
+                ],
+                avoid_patterns=[
                     "Overly technical jargon",
-                        "Theoretical concepts without practical application",
-                        "Vague recommendations",
-                        ],
-                    ),
-                "creative": GhostwriterPersona(
+                    "Theoretical concepts without practical application",
+                    "Vague recommendations",
+                ],
+            ),
+            "creative": GhostwriterPersona(
                 name="Luna Blackwood",
-                    persona_type = PersonaType.CREATIVE,
-                    writing_style="Imaginative and engaging",
-                    tone="Warm and inspiring",
-                    vocabulary_level="Rich and varied",
-                    sentence_structure="Varied sentence lengths with creative flourishes",
-                    expertise_areas=[
+                persona_type=PersonaType.CREATIVE,
+                writing_style="Imaginative and engaging",
+                tone="Warm and inspiring",
+                vocabulary_level="Rich and varied",
+                sentence_structure="Varied sentence lengths with creative flourishes",
+                expertise_areas=[
                     "Storytelling",
-                        "Creative expression",
-                        "Emotional engagement",
-                        ],
-                    voice_characteristics=[
+                    "Creative expression",
+                    "Emotional engagement",
+                ],
+                voice_characteristics=[
                     "Uses vivid imagery and metaphors",
-                        "Creates emotional connections",
-                        "Employs narrative techniques",
-                        "Balances creativity with clarity",
-                        ],
-                    example_phrases=[
+                    "Creates emotional connections",
+                    "Employs narrative techniques",
+                    "Balances creativity with clarity",
+                ],
+                example_phrases=[
                     "Imagine a world where...",
-                        "Picture this scenario...",
-                        "The story unfolds like...",
-                        "This reminds me of...",
-                        ],
-                    avoid_patterns=[
+                    "Picture this scenario...",
+                    "The story unfolds like...",
+                    "This reminds me of...",
+                ],
+                avoid_patterns=[
                     "Overly dry or technical language",
-                        "Lack of emotional resonance",
-                        "Monotonous sentence structure",
-                        ],
-                    ),
-                "technical": GhostwriterPersona(
+                    "Lack of emotional resonance",
+                    "Monotonous sentence structure",
+                ],
+            ),
+            "technical": GhostwriterPersona(
                 name="Dr. Samuel Chen",
-                    persona_type = PersonaType.TECHNICAL,
-                    writing_style="Precise and systematic",
-                    tone="Clear and instructional",
-                    vocabulary_level="Technical but accessible",
-                    sentence_structure="Step - by - step, logical progression",
-                    expertise_areas=[
+                persona_type=PersonaType.TECHNICAL,
+                writing_style="Precise and systematic",
+                tone="Clear and instructional",
+                vocabulary_level="Technical but accessible",
+                sentence_structure="Step - by - step, logical progression",
+                expertise_areas=[
                     "Technology",
-                        "Engineering",
-                        "Systems design",
-                        "Problem - solving",
-                        ],
-                    voice_characteristics=[
+                    "Engineering",
+                    "Systems design",
+                    "Problem - solving",
+                ],
+                voice_characteristics=[
                     "Explains complex concepts clearly",
-                        "Uses examples and analogies",
-                        "Provides step - by - step instructions",
-                        "Focuses on practical implementation",
-                        ],
-                    example_phrases=[
+                    "Uses examples and analogies",
+                    "Provides step - by - step instructions",
+                    "Focuses on practical implementation",
+                ],
+                example_phrases=[
                     "Let's break this down step by step...",
-                        "The key principle here is...",
-                        "To implement this, you would...",
-                        "This works because...",
-                        ],
-                    avoid_patterns=[
+                    "The key principle here is...",
+                    "To implement this, you would...",
+                    "This works because...",
+                ],
+                avoid_patterns=[
                     "Overly complex explanations",
-                        "Assumptions about prior knowledge",
-                        "Lack of practical examples",
-                        ],
-                    ),
-                }
-
+                    "Assumptions about prior knowledge",
+                    "Lack of practical examples",
+                ],
+            ),
+        }
 
     def create_project(
         self,
-            title: str,
-            content_type: ContentType,
-            target_audience: str,
-            target_word_count: int,
-            persona_name: str,
-            topic: str,
-            key_themes: List[str],
-            ) -> WritingProject:
+        title: str,
+        content_type: ContentType,
+        target_audience: str,
+        target_word_count: int,
+        persona_name: str,
+        topic: str,
+        key_themes: List[str],
+    ) -> WritingProject:
         """Create a new writing project."""
         self.logger.info(f"Creating new project: {title}")
 
@@ -388,39 +378,36 @@ class AutomatedAuthor:
         )
 
         project = WritingProject(
-            title = title,
-                content_type = content_type,
-                target_audience = target_audience,
-                target_word_count = target_word_count,
-                persona = persona,
-                outline = outline,
-                metadata={
+            title=title,
+            content_type=content_type,
+            target_audience=target_audience,
+            target_word_count=target_word_count,
+            persona=persona,
+            outline=outline,
+            metadata={
                 "topic": topic,
-                    "key_themes": key_themes,
-                    "created_by": "AutomatedAuthor",
-                    "version": "1.0.0",
-                    },
-                )
+                "key_themes": key_themes,
+                "created_by": "AutomatedAuthor",
+                "version": "1.0.0",
+            },
+        )
 
         # Create chapters from outline
-        project.chapters = self._create_chapters_from_outline(
-            outline, target_word_count
-        )
+        project.chapters = self._create_chapters_from_outline(outline, target_word_count)
 
         # Save initial checkpoint
         self._save_checkpoint(project)
 
         return project
 
-
     def _generate_outline(
         self,
-            topic: str,
-            key_themes: List[str],
-            content_type: ContentType,
-            target_word_count: int,
-            persona: GhostwriterPersona,
-            ) -> str:
+        topic: str,
+        key_themes: List[str],
+        content_type: ContentType,
+        target_word_count: int,
+        persona: GhostwriterPersona,
+    ) -> str:
         """Generate a detailed outline for the content."""
         self.logger.info("Generating content outline")
 
@@ -439,7 +426,7 @@ Create a comprehensive outline that:
 1. Has a logical flow and structure
 2. Covers all key themes thoroughly
 3. Is appropriate for the target word count
-4. Includes chapter / section titles and brief descriptions
+4. Includes chapter/section titles and brief descriptions
 5. Maintains your persona's expertise and style
 6. Provides clear learning objectives or value propositions
 
@@ -448,25 +435,20 @@ Format the outline with clear headings and subheadings.
 Outline:
 """
 
-        return self.ollama.generate(prompt, system_prompt, temperature = 0.6)
+        return self.ollama.generate(prompt, system_prompt, temperature=0.6)
 
-
-    def _create_chapters_from_outline(
-        self, outline: str, target_word_count: int
-    ) -> List[Chapter]:
+    def _create_chapters_from_outline(self, outline: str, target_word_count: int) -> List[Chapter]:
         """Extract chapters from the generated outline."""
         # Simple parsing - in production, this could be more sophisticated
-        lines = outline.split("\n")
+        lines = outline.split("\\n")
         chapters = []
         current_chapter = None
         chapter_num = 0
 
         estimated_words_per_chapter = target_word_count // max(
             1,
-                len(
-                [l for l in lines if l.strip().startswith(("Chapter", "Section", "#"))]
-            ),
-                )
+            len([l for l in lines if l.strip().startswith(("Chapter", "Section", "#"))]),
+        )
 
         for line in lines:
             line = line.strip()
@@ -477,13 +459,13 @@ Outline:
                 chapter_num += 1
                 title = line.split(":", 1)[1].strip() if ":" in line else line
                 current_chapter = Chapter(
-                    number = chapter_num,
-                        title = title,
-                        outline = line,
-                        estimated_length = estimated_words_per_chapter,
-                        )
+                    number=chapter_num,
+                    title=title,
+                    outline=line,
+                    estimated_length=estimated_words_per_chapter,
+                )
             elif current_chapter and line:
-                current_chapter.outline += f"\n{line}"
+                current_chapter.outline += f"\\n{line}"
 
         if current_chapter:
             chapters.append(current_chapter)
@@ -492,34 +474,33 @@ Outline:
         if not chapters:
             chapters = [
                 Chapter(
-                    number = 1,
-                        title="Introduction",
-                        outline="Introduction to the topic",
-                        estimated_length = target_word_count // 3,
-                        ),
-                    Chapter(
-                    number = 2,
-                        title="Main Content",
-                        outline="Core content and analysis",
-                        estimated_length = target_word_count // 3,
-                        ),
-                    Chapter(
-                    number = 3,
-                        title="Conclusion",
-                        outline="Summary and final thoughts",
-                        estimated_length = target_word_count // 3,
-                        ),
-                    ]
+                    number=1,
+                    title="Introduction",
+                    outline="Introduction to the topic",
+                    estimated_length=target_word_count // 3,
+                ),
+                Chapter(
+                    number=2,
+                    title="Main Content",
+                    outline="Core content and analysis",
+                    estimated_length=target_word_count // 3,
+                ),
+                Chapter(
+                    number=3,
+                    title="Conclusion",
+                    outline="Summary and final thoughts",
+                    estimated_length=target_word_count // 3,
+                ),
+            ]
 
         return chapters
 
-
     def write_chapter(
         self,
-            project: WritingProject,
-            chapter_number: int,
-            research_context: Optional[str] = None,
-            ) -> str:
+        project: WritingProject,
+        chapter_number: int,
+        research_context: Optional[str] = None,
+    ) -> str:
         """Write a specific chapter using the ghostwriter persona."""
         if chapter_number > len(project.chapters):
             raise ValueError(f"Chapter {chapter_number} does not exist")
@@ -534,9 +515,7 @@ Outline:
         # Build context from previous chapters
         previous_context = ""
         if chapter_number > 1:
-            prev_chapters = [
-                c for c in project.chapters[: chapter_number - 1] if c.content
-            ]
+            prev_chapters = [c for c in project.chapters[: chapter_number - 1] if c.content]
             if prev_chapters:
                 previous_context = f"""
 Previous chapters context:
@@ -582,9 +561,7 @@ Write engaging, high - quality content that:
 Chapter Content:
 """
 
-        content = self.ollama.generate(
-            prompt, system_prompt, temperature = 0.7, max_tokens = 6000
-        )
+        content = self.ollama.generate(prompt, system_prompt, temperature=0.7, max_tokens=6000)
 
         # Update chapter
         chapter.content = content
@@ -600,7 +577,6 @@ Chapter Content:
         self._save_checkpoint(project)
 
         return content
-
 
     def write_complete_project(
         self, project: WritingProject, research_data: Optional[Dict[str, str]] = None
@@ -623,9 +599,7 @@ Chapter Content:
             project.current_stage = WritingStage.DRAFT
             self._update_project_progress(project)
 
-            self.logger.info(
-                f"Project writing completed: {project.total_word_count:,} words"
-            )
+            self.logger.info(f"Project writing completed: {project.total_word_count:,} words")
             return project
 
         except Exception as e:
@@ -633,7 +607,6 @@ Chapter Content:
             # Save checkpoint before raising
             self._save_checkpoint(project)
             raise
-
 
     def _update_project_progress(self, project: WritingProject) -> None:
         """Update project progress metrics."""
@@ -645,39 +618,36 @@ Chapter Content:
         )
         project.total_word_count = sum(c.word_count for c in project.chapters)
 
-
     def _save_checkpoint(self, project: WritingProject) -> None:
         """Save a checkpoint of the current project state."""
         try:
-            project_id = hashlib.md5(
-                f"{project.title}_{project.created_at}".encode()
-            ).hexdigest()[:8]
+            project_id = hashlib.md5(f"{project.title}_{project.created_at}".encode()).hexdigest()[
+                :8
+            ]
 
             # Create checkpoint data
             checkpoint_data = {
                 "project": asdict(project),
-                    "timestamp": datetime.now().isoformat(),
-                    }
+                "timestamp": datetime.now().isoformat(),
+            }
 
             # Calculate content hash
-            content_str = json.dumps(checkpoint_data, sort_keys = True, default = str)
+            content_str = json.dumps(checkpoint_data, sort_keys=True, default=str)
             content_hash = hashlib.sha256(content_str.encode()).hexdigest()[:16]
 
             # Save checkpoint
             checkpoint = WritingCheckpoint(
-                project_id = project_id,
-                    timestamp = datetime.now(),
-                    stage = project.current_stage,
-                    chapter_number = None,
-                    content_hash = content_hash,
-                    word_count = project.total_word_count,
-                    progress_data = checkpoint_data,
-                    recovery_data = pickle.dumps(project),
-                    )
-
-            checkpoint_file = (
-                self.checkpoint_dir / f"{project_id}_{content_hash}.checkpoint"
+                project_id=project_id,
+                timestamp=datetime.now(),
+                stage=project.current_stage,
+                chapter_number=None,
+                content_hash=content_hash,
+                word_count=project.total_word_count,
+                progress_data=checkpoint_data,
+                recovery_data=pickle.dumps(project),
             )
+
+            checkpoint_file = self.checkpoint_dir / f"{project_id}_{content_hash}.checkpoint"
             with open(checkpoint_file, "wb") as f:
                 pickle.dump(checkpoint, f)
 
@@ -689,26 +659,19 @@ Chapter Content:
         except Exception as e:
             self.logger.error(f"Failed to save checkpoint: {e}")
 
-
     def load_checkpoint(
         self, project_id: str, checkpoint_hash: Optional[str] = None
     ) -> WritingProject:
         """Load a project from checkpoint."""
         try:
             if checkpoint_hash:
-                checkpoint_file = (
-                    self.checkpoint_dir / f"{project_id}_{checkpoint_hash}.checkpoint"
-                )
+                checkpoint_file = self.checkpoint_dir / f"{project_id}_{checkpoint_hash}.checkpoint"
             else:
                 # Find latest checkpoint for project
-                checkpoints = list(
-                    self.checkpoint_dir.glob(f"{project_id}_*.checkpoint")
-                )
+                checkpoints = list(self.checkpoint_dir.glob(f"{project_id}_*.checkpoint"))
                 if not checkpoints:
-                    raise FileNotFoundError(
-                        f"No checkpoints found for project {project_id}"
-                    )
-                checkpoint_file = max(checkpoints, key = lambda p: p.stat().st_mtime)
+                    raise FileNotFoundError(f"No checkpoints found for project {project_id}")
+                checkpoint_file = max(checkpoints, key=lambda p: p.stat().st_mtime)
 
             with open(checkpoint_file, "rb") as f:
                 checkpoint = pickle.load(f)
@@ -722,14 +685,13 @@ Chapter Content:
             self.logger.error(f"Failed to load checkpoint: {e}")
             raise
 
-
     def export_project(
         self, project: WritingProject, output_path: str, format_type: str = "markdown"
     ) -> None:
         """Export the completed project to various formats."""
         try:
             output_dir = Path(output_path).parent
-            output_dir.mkdir(parents = True, exist_ok = True)
+            output_dir.mkdir(parents=True, exist_ok=True)
 
             if format_type.lower() == "markdown":
                 self._export_markdown(project, output_path)
@@ -746,51 +708,49 @@ Chapter Content:
             self.logger.error(f"Export failed: {e}")
             raise
 
-
     def _export_markdown(self, project: WritingProject, output_path: str) -> None:
         """Export project as Markdown."""
         with open(output_path, "w", encoding="utf - 8") as f:
-            f.write(f"# {project.title}\n\n")
-            f.write(f"**Content Type:** {project.content_type.value}\n")
-            f.write(f"**Target Audience:** {project.target_audience}\n")
-            f.write(f"**Word Count:** {project.total_word_count:,}\n")
+            f.write(f"# {project.title}\\n\\n")
+            f.write(f"**Content Type:** {project.content_type.value}\\n")
+            f.write(f"**Target Audience:** {project.target_audience}\\n")
+            f.write(f"**Word Count:** {project.total_word_count:,}\\n")
             f.write(
-                f"**Generated by:** {project.persona.name} ({project.persona.persona_type.value})\n\n"
+                f"**Generated by:** {project.persona.name} ({project.persona.persona_type.value})\\n\\n"
             )
 
-            f.write("## Outline\n\n")
-            f.write(f"{project.outline}\n\n")
+            f.write("## Outline\\n\\n")
+            f.write(f"{project.outline}\\n\\n")
 
             for chapter in project.chapters:
-                f.write(f"## Chapter {chapter.number}: {chapter.title}\n\n")
+                f.write(f"## Chapter {chapter.number}: {chapter.title}\\n\\n")
                 if chapter.content:
-                    f.write(f"{chapter.content}\n\n")
+                    f.write(f"{chapter.content}\\n\\n")
                 else:
-                    f.write("*[Content not yet generated]*\n\n")
-
+                    f.write("*[Content not yet generated]*\\n\\n")
 
     def _export_json(self, project: WritingProject, output_path: str) -> None:
         """Export project as JSON."""
         with open(output_path, "w", encoding="utf - 8") as f:
-            json.dump(asdict(project), f, indent = 2, default = str)
-
+            json.dump(asdict(project), f, indent=2, default=str)
 
     def _export_text(self, project: WritingProject, output_path: str) -> None:
         """Export project as plain text."""
         with open(output_path, "w", encoding="utf - 8") as f:
-            f.write(f"{project.title}\n")
-            f.write("=" * len(project.title) + "\n\n")
+            f.write(f"{project.title}\\n")
+            f.write("=" * len(project.title) + "\\n\\n")
 
             for chapter in project.chapters:
-                f.write(f"Chapter {chapter.number}: {chapter.title}\n")
-                f.write("-" * (len(chapter.title) + 20) + "\n\n")
+                f.write(f"Chapter {chapter.number}: {chapter.title}\\n")
+                f.write("-" * (len(chapter.title) + 20) + "\\n\\n")
                 if chapter.content:
-                    f.write(f"{chapter.content}\n\n")
+                    f.write(f"{chapter.content}\\n\\n")
+
 
 # Example usage and testing
 if __name__ == "__main__":
     # Configure logging
-    logging.basicConfig(level = logging.INFO)
+    logging.basicConfig(level=logging.INFO)
 
     # Create AutomatedAuthor instance
     author = AutomatedAuthor()
@@ -799,19 +759,19 @@ if __name__ == "__main__":
     try:
         project = author.create_project(
             title="The Complete Guide to Machine Learning",
-                content_type = ContentType.GUIDE,
-                target_audience="Software developers and data scientists",
-                target_word_count = 15000,
-                persona_name="technical",
-                topic="Machine Learning Fundamentals and Applications",
-                key_themes=[
+            content_type=ContentType.GUIDE,
+            target_audience="Software developers and data scientists",
+            target_word_count=15000,
+            persona_name="technical",
+            topic="Machine Learning Fundamentals and Applications",
+            key_themes=[
                 "Introduction to ML concepts",
-                    "Types of machine learning",
-                    "Popular algorithms and techniques",
-                    "Real - world applications",
-                    "Best practices and implementation",
-                    ],
-                )
+                "Types of machine learning",
+                "Popular algorithms and techniques",
+                "Real - world applications",
+                "Best practices and implementation",
+            ],
+        )
 
         print(f"Project created: {project.title}")
         print(f"Chapters: {len(project.chapters)}")
@@ -820,10 +780,10 @@ if __name__ == "__main__":
 
         # Write first chapter as example
         first_chapter = author.write_chapter(project, 1)
-        print(f"\nFirst chapter written: {len(first_chapter.split())} words")
+        print(f"\\nFirst chapter written: {len(first_chapter.split())} words")
 
         # Export project
-        author.export_project(project, "./output / ml_guide.md", "markdown")
+        author.export_project(project, "./output/ml_guide.md", "markdown")
         print("Project exported successfully")
 
     except Exception as e:

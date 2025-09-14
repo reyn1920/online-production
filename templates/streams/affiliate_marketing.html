@@ -237,7 +237,7 @@
         }
 
         .affiliate-programs {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -324,7 +324,7 @@
         }
 
         .config-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -359,7 +359,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -675,9 +675,7 @@
                 apiKey: '',
                 trackingId: ''
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializePrograms();
             loadStreamData();
@@ -690,23 +688,18 @@
             renderPrograms();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
-            });
-
-            // Configuration inputs
+            });//Configuration inputs
             const configInputs = ['commissionRate', 'targetConversionRate', 'cookieDuration', 'trackingMethod', 'minPayout', 'payoutSchedule'];
             configInputs.forEach(inputId => {
                 document.getElementById(inputId).addEventListener('change', function() {
@@ -761,7 +754,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.affiliate_marketing) {
@@ -779,8 +772,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -794,23 +786,15 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('currentRevenue').textContent = '$' + streamData.currentRevenue.toFixed(2);
             document.getElementById('monthlyTarget').textContent = '$' + streamData.monthlyTarget.toFixed(2);
             document.getElementById('conversionRate').textContent = streamData.conversionRate.toFixed(1) + '%';
-            document.getElementById('totalClicks').textContent = streamData.totalClicks.toLocaleString();
-            
-            // Update progress
-            const progress = (streamData.currentRevenue / streamData.monthlyTarget) * 100;
+            document.getElementById('totalClicks').textContent = streamData.totalClicks.toLocaleString();//Update progress
+            const progress = (streamData.currentRevenue/streamData.monthlyTarget) * 100;
             document.getElementById('progressFill').style.width = Math.min(progress, 100) + '%';
-            document.getElementById('progressText').textContent = progress.toFixed(1) + '% Complete';
-
-            // Update configuration inputs
+            document.getElementById('progressText').textContent = progress.toFixed(1) + '% Complete';//Update configuration inputs
             Object.keys(streamData.config).forEach(key => {
                 const element = document.getElementById(key);
                 if (element) {
@@ -832,9 +816,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -858,9 +840,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -925,8 +905,7 @@
                 if (program.status === 'connected') {
                     program.status = 'disconnected';
                     showAlert(`${program.name} disconnected`, 'warning');
-                } else {
-                    // In production, this would validate API credentials
+                } else {//In production, this would validate API credentials
                     program.status = 'connected';
                     showAlert(`${program.name} connected successfully`, 'success');
                 }
@@ -1021,7 +1000,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.affiliate_marketing) {
@@ -1030,9 +1009,7 @@
                         streamData.status = stream.status;
                         streamData.currentRevenue = stream.currentRevenue;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1050,8 +1027,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1061,30 +1037,25 @@
         }
 
         function simulateAffiliateActivity() {
-            if (streamData.status === 'active') {
-                // Simulate clicks and conversions
+            if (streamData.status === 'active') {//Simulate clicks and conversions
                 const newClicks = Math.floor(Math.random() * 10);
                 const newConversions = Math.floor(Math.random() * 2);
                 
-                streamData.totalClicks += newClicks;
-                
-                // Update program stats
+                streamData.totalClicks += newClicks;//Update program stats
                 streamData.programs.forEach(program => {
                     if (program.status === 'connected') {
-                        program.clicks += Math.floor(newClicks / streamData.programs.length);
+                        program.clicks += Math.floor(newClicks/streamData.programs.length);
                         
-                        if (Math.random() < 0.1) { // 10% chance of conversion
+                        if (Math.random() < 0.1) {//10% chance of conversion
                             program.conversions += 1;
-                            const revenue = Math.random() * 50 + 10; // $10-60 per conversion
+                            const revenue = Math.random() * 50 + 10;//$10-60 per conversion
                             program.revenue += revenue;
                             streamData.currentRevenue += revenue;
                         }
                     }
-                });
-                
-                // Update conversion rate
+                });//Update conversion rate
                 streamData.conversionRate = streamData.totalClicks > 0 ? 
-                    (streamData.programs.reduce((sum, p) => sum + p.conversions, 0) / streamData.totalClicks) * 100 : 0;
+                    (streamData.programs.reduce((sum, p) => sum + p.conversions, 0)/streamData.totalClicks) * 100 : 0;
                 
                 updateUI();
                 renderPrograms();
@@ -1097,17 +1068,13 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start affiliate activity simulation
+        }//Start affiliate activity simulation
         setInterval(simulateAffiliateActivity, 15000);
     </script>
 </body>

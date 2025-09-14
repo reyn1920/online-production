@@ -233,9 +233,7 @@ python3 system_dashboard.py
 
 ## 📋 Complete File Structure
 
-```
-/Users/thomasbrianreynolds/online production/
-├── main.py                           # Main FastAPI application
+```/Users/thomasbrianreynolds/online production/├── main.py                           # Main FastAPI application
 ├── requirements.txt                  # Python dependencies
 ├── package.json                      # Node.js dependencies
 ├── startup_system.py                 # Automated startup system
@@ -243,11 +241,11 @@ python3 system_dashboard.py
 ├── system_dashboard.py               # Web management dashboard
 ├── SYSTEM_REQUIREMENTS.md            # Detailed requirements
 ├── COMPLETE_SETUP_GUIDE.md           # This guide
-├── venv/                             # Python virtual environment
-├── templates/                        # Dashboard HTML templates
-├── static/                           # Static assets
-├── logs/                             # Log files
-└── config/                           # Configuration files
+├── venv/# Python virtual environment
+├── templates/# Dashboard HTML templates
+├── static/# Static assets
+├── logs/# Log files
+└── config/# Configuration files
 ```
 
 ## 🎯 Success Verification

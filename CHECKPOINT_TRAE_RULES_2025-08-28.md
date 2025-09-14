@@ -71,10 +71,10 @@ Port 5000: Copy Dashboard (copy_of_code/dashboard.py)
 ### Protected Directories
 
 ```
-tools/dnd/          # Do Not Delete - Critical system files
-tools/audits/       # Security and compliance scanning
-tools/hooks/        # Git workflow automation
-.trae/rules/        # Trae AI specific configurations
+tools/dnd/# Do Not Delete - Critical system files
+tools/audits/# Security and compliance scanning
+tools/hooks/# Git workflow automation
+.trae/rules/# Trae AI specific configurations
 ```
 
 ### Configuration Files

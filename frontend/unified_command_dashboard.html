@@ -27,7 +27,7 @@
         }
 
         .header {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -888,23 +888,18 @@
         </div>
     </div>
 
-    <script>
-        // Dashboard functionality
+    <script>//Dashboard functionality
         let currentSection = 'overview';
         let systemData = {
             revenue: 12847,
             videos: 247,
             campaigns: 12,
             uptime: 99.8
-        };
-
-        // Initialize dashboard
+        };//Initialize dashboard
         function initDashboard() {
             updateTime();
             setInterval(updateTime, 1000);
-            setInterval(updateMetrics, 5000);
-            
-            // Add navigation event listeners
+            setInterval(updateMetrics, 5000);//Add navigation event listeners
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const section = item.dataset.section;
@@ -918,8 +913,7 @@
             document.getElementById('currentTime').textContent = now.toLocaleTimeString();
         }
 
-        function updateMetrics() {
-            // Simulate real-time data updates
+        function updateMetrics() {//Simulate real-time data updates
             systemData.revenue += Math.floor(Math.random() * 100);
             systemData.videos += Math.floor(Math.random() * 3);
             
@@ -927,14 +921,9 @@
             document.getElementById('videosCreated').textContent = systemData.videos;
         }
 
-        function switchSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            
-            // Show selected section
-            document.getElementById(`${section}-section`).classList.remove('hidden');
-            
-            // Update navigation
+        function switchSection(section) {//Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));//Show selected section
+            document.getElementById(`${section}-section`).classList.remove('hidden');//Update navigation
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.section === section) {
@@ -946,9 +935,7 @@
         }
 
         function controlModule(module, action) {
-            console.log(`${action} ${module} module`);
-            
-            // Simulate API call
+            console.log(`${action} ${module} module`);//Simulate API call
             fetch(`/api/modules/${module}/${action}`, {
                 method: 'POST',
                 headers: {
@@ -1081,8 +1068,7 @@
             document.getElementById('modal').classList.add('hidden');
         }
 
-        function submitModal() {
-            // Handle form submission based on current modal
+        function submitModal() {//Handle form submission based on current modal
             const title = document.getElementById('modalTitle').textContent;
             
             if (title.includes('Campaign')) {
@@ -1112,8 +1098,7 @@
             }
         }
 
-        function showNotification(message, type = 'info') {
-            // Create notification element
+        function showNotification(message, type = 'info') {//Create notification element
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
@@ -1125,9 +1110,7 @@
                 font-weight: 500;
                 z-index: 10000;
                 animation: slideIn 0.3s ease;
-            `;
-            
-            // Set background color based on type
+            `;//Set background color based on type
             const colors = {
                 success: '#00ff88',
                 error: '#ff4444',
@@ -1138,18 +1121,14 @@
             notification.style.background = colors[type] || colors.info;
             notification.textContent = message;
             
-            document.body.appendChild(notification);
-            
-            // Remove notification after 3 seconds
+            document.body.appendChild(notification);//Remove notification after 3 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => {
                     document.body.removeChild(notification);
                 }, 300);
             }, 3000);
-        }
-
-        // Add CSS animations
+        }//Add CSS animations
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideIn {
@@ -1162,9 +1141,7 @@
                 to { transform: translateX(100%); opacity: 0; }
             }
         `;
-        document.head.appendChild(style);
-
-        // Initialize dashboard when page loads
+        document.head.appendChild(style);//Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>

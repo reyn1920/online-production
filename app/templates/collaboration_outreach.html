@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Collaboration & Partnership Outreach - TRAE AI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <style>
       :root {
         --primary-color: #2563eb;
@@ -483,8 +483,7 @@
                       class="form-control form-control-custom"
                       id="nicheInput"
                       placeholder="e.g., technology, gaming, lifestyle"
-                      required
-                    />
+                      required/>
                   </div>
                   <div class="col-md-4 mb-3">
                     <label for="platformSelect" class="form-label">Platform (Optional)</label>
@@ -503,8 +502,7 @@
                       class="form-control form-control-custom"
                       id="minFollowersInput"
                       value="1000"
-                      min="0"
-                    />
+                      min="0"/>
                   </div>
                 </div>
                 <button type="submit" class="btn btn-primary-custom btn-custom">
@@ -608,19 +606,15 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-      // Global variables
+    <script>//Global variables
       let dashboardData = {};
-      let currentCampaignFilter = 'all';
-
-      // Initialize dashboard
+      let currentCampaignFilter = 'all';//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         loadDashboardData();
         setupEventListeners();
       });
 
-      function setupEventListeners() {
-        // Discovery form
+      function setupEventListeners() {//Discovery form
         document.getElementById('discoveryForm').addEventListener('submit', function (e) {
           e.preventDefault();
           discoverCreators();
@@ -629,7 +623,7 @@
 
       async function loadDashboardData() {
         try {
-          const response = await fetch('/api/collaboration-outreach/dashboard');
+          const response = await fetch("/api/collaboration-outreach/dashboard');
           if (!response.ok) {
             throw new Error('Failed to load dashboard data');
           }
@@ -642,28 +636,19 @@
         }
       }
 
-      function updateDashboard() {
-        // Update metrics
+      function updateDashboard() {//Update metrics
         const metrics = dashboardData.metrics || {};
         document.getElementById('totalOutreach').textContent = metrics.total_outreach || 0;
         document.getElementById('responseRate').textContent = `${(metrics.response_rate * 100).toFixed(1)}%`;
         document.getElementById('successRate').textContent = `${(metrics.acceptance_rate * 100).toFixed(1)}%`;
-        document.getElementById('activeCollaborations').textContent = metrics.successful_collaborations || 0;
-
-        // Update performance metrics
+        document.getElementById('activeCollaborations').textContent = metrics.successful_collaborations || 0;//Update performance metrics
         document.getElementById('monthlyGrowth').textContent = `${(metrics.monthly_growth * 100).toFixed(1)}%`;
         document.getElementById('monthlyGrowthBar').style.width = `${Math.min(metrics.monthly_growth * 100, 100)}%`;
         document.getElementById('roiEstimate').textContent = `${metrics.roi_estimate.toFixed(1)}x`;
         document.getElementById('roiBar').style.width = `${Math.min(metrics.roi_estimate * 20, 100)}%`;
-        document.getElementById('avgResponseTime').textContent = `${metrics.average_response_time.toFixed(1)} days`;
-
-        // Update top approaches
-        updateTopApproaches(metrics.top_performing_approaches || []);
-
-        // Update recent discoveries
-        updateRecentDiscoveries(dashboardData.recent_discoveries || []);
-
-        // Update active campaigns
+        document.getElementById('avgResponseTime').textContent = `${metrics.average_response_time.toFixed(1)} days`;//Update top approaches
+        updateTopApproaches(metrics.top_performing_approaches || []);//Update recent discoveries
+        updateRecentDiscoveries(dashboardData.recent_discoveries || []);//Update active campaigns
         updateActiveCampaigns(dashboardData.active_campaigns || []);
       }
 
@@ -859,14 +844,11 @@
       }
 
       function filterCampaigns(status) {
-        currentCampaignFilter = status;
-        // Update active button
+        currentCampaignFilter = status;//Update active button
         document.querySelectorAll('.btn-group button').forEach(btn => {
           btn.classList.remove('active');
         });
-        event.target.classList.add('active');
-
-        // Filter and display campaigns
+        event.target.classList.add('active');//Filter and display campaigns
         const campaigns = dashboardData.active_campaigns || [];
         const filtered = status === 'all' ? campaigns : campaigns.filter(c => c.status === status);
         updateCampaignsList(filtered);
@@ -927,14 +909,12 @@
             `
           )
           .join('');
-      }
-
-      // Utility functions
+      }//Utility functions
       function formatNumber(num) {
         if (num >= 1000000) {
-          return (num / 1000000).toFixed(1) + 'M';
+          return (num/1000000).toFixed(1) + 'M';
         } else if (num >= 1000) {
-          return (num / 1000).toFixed(1) + 'K';
+          return (num/1000).toFixed(1) + 'K';
         }
         return num.toString();
       }
@@ -950,14 +930,12 @@
         return 'score-low';
       }
 
-      function showError(message) {
-        // Simple error display - could be enhanced with a modal or toast
+      function showError(message) {//Simple error display - could be enhanced with a modal or toast
         console.error(message);
         alert(message);
       }
 
-      function showOpportunityModal(opportunities) {
-        // Simple alert for now - could be enhanced with a proper modal
+      function showOpportunityModal(opportunities) {//Simple alert for now - could be enhanced with a proper modal
         const summary = opportunities
           .map(opp => `${opp.collaboration_type}: ${(opp.success_probability * 100).toFixed(0)}% success probability`)
           .join('\n');
@@ -965,14 +943,12 @@
         alert(`Collaboration Opportunities:\n\n${summary}`);
       }
 
-      function viewCampaign(campaignId) {
-        // Simple alert for now - could be enhanced with a detailed view
+      function viewCampaign(campaignId) {//Simple alert for now - could be enhanced with a detailed view
         alert(`Viewing campaign: ${campaignId}`);
       }
 
       function sendCampaign(campaignId) {
-        if (confirm('Are you sure you want to send this campaign?')) {
-          // API call to send campaign
+        if (confirm('Are you sure you want to send this campaign?')) {//API call to send campaign
           fetch(`/api/collaboration-outreach/send-campaign`, {
             method: 'POST',
             headers: {

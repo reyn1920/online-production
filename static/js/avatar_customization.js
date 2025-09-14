@@ -21,50 +21,39 @@ class AvatarCustomizer {
         this.loadChannels();
     }
     
-    initializeEventListeners() {
-        // Style selection
+    initializeEventListeners() {//Style selection
         document.querySelectorAll('.style-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 this.selectStyle(card.dataset.style);
             });
-        });
-        
-        // Color scheme selection
+        });//Color scheme selection
         document.querySelectorAll('.color-picker').forEach(picker => {
             picker.addEventListener('click', (e) => {
                 this.selectColorScheme(picker.dataset.scheme);
             });
-        });
-        
-        // Sliders
+        });//Sliders
         document.getElementById('complexitySlider').addEventListener('input', (e) => {
-            this.currentConfig.customizations.complexity = e.target.value / 100;
+            this.currentConfig.customizations.complexity = e.target.value/100;
             this.updatePreview();
         });
         
         document.getElementById('symmetrySlider').addEventListener('input', (e) => {
-            this.currentConfig.customizations.symmetry = e.target.value / 100;
+            this.currentConfig.customizations.symmetry = e.target.value/100;
             this.updatePreview();
         });
         
         document.getElementById('goldenRatioSlider').addEventListener('input', (e) => {
-            this.currentConfig.customizations.golden_ratio_emphasis = e.target.value / 100;
+            this.currentConfig.customizations.golden_ratio_emphasis = e.target.value/100;
             this.updatePreview();
-        });
-        
-        // Size selection
+        });//Size selection
         document.getElementById('sizeSelect').addEventListener('change', (e) => {
             this.currentConfig.size = parseInt(e.target.value);
             this.updatePreview();
-        });
-        
-        // Transparent background toggle
+        });//Transparent background toggle
         document.getElementById('transparentBg').addEventListener('change', (e) => {
             this.currentConfig.customizations.transparency = e.target.checked;
             this.updatePreview();
-        });
-        
-        // Action buttons
+        });//Action buttons
         document.getElementById('generateBtn').addEventListener('click', () => {
             this.generateAvatar();
         });
@@ -83,9 +72,7 @@ class AvatarCustomizer {
         
         document.getElementById('saveBtn').addEventListener('click', () => {
             this.showChannelModal();
-        });
-        
-        // File upload
+        });//File upload
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('imageUpload');
         
@@ -115,9 +102,7 @@ class AvatarCustomizer {
             if (e.target.files.length > 0) {
                 this.handleFileUpload(e.target.files[0]);
             }
-        });
-        
-        // Channel modal
+        });//Channel modal
         document.getElementById('cancelChannelBtn').addEventListener('click', () => {
             this.hideChannelModal();
         });
@@ -127,34 +112,27 @@ class AvatarCustomizer {
         });
     }
     
-    selectStyle(style) {
-        // Remove previous selection
+    selectStyle(style) {//Remove previous selection
         document.querySelectorAll('.style-card').forEach(card => {
             card.classList.remove('selected');
-        });
-        
-        // Add selection to clicked card
+        });//Add selection to clicked card
         document.querySelector(`[data-style="${style}"]`).classList.add('selected');
         
         this.currentConfig.style = style;
         this.updatePreview();
     }
     
-    selectColorScheme(scheme) {
-        // Remove previous selection
+    selectColorScheme(scheme) {//Remove previous selection
         document.querySelectorAll('.color-picker').forEach(picker => {
             picker.classList.remove('selected');
-        });
-        
-        // Add selection to clicked picker
+        });//Add selection to clicked picker
         document.querySelector(`[data-scheme="${scheme}"]`).classList.add('selected');
         
         this.currentConfig.color_scheme = scheme;
         this.updatePreview();
     }
     
-    async updatePreview() {
-        // Debounce the preview updates
+    async updatePreview() {//Debounce the preview updates
         clearTimeout(this.previewTimeout);
         this.previewTimeout = setTimeout(() => {
             this.generateAvatar(true);
@@ -171,7 +149,7 @@ class AvatarCustomizer {
         }
         
         try {
-            const response = await fetch('/api/avatar/generate', {
+            const response = await fetch("/api/avatar/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -219,12 +197,9 @@ class AvatarCustomizer {
         const loadingIndicator = document.getElementById('loadingIndicator');
         loadingIndicator.classList.remove('hidden');
         
-        try {
-            // Convert file to base64
-            const base64 = await this.fileToBase64(file);
-            
-            // Process the image (remove background)
-            const response = await fetch('/api/avatar/process-upload', {
+        try {//Convert file to base64
+            const base64 = await this.fileToBase64(file);//Process the image (remove background)
+            const response = await fetch("/api/avatar/process-upload', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -268,35 +243,26 @@ class AvatarCustomizer {
     
     randomizeSettings() {
         const styles = ['geometric', 'organic', 'professional', 'artistic', 'minimal', 'golden_ratio'];
-        const colorSchemes = ['monochrome', 'complementary', 'triadic', 'warm', 'cool', 'vibrant'];
-        
-        // Randomize style
+        const colorSchemes = ['monochrome', 'complementary', 'triadic', 'warm', 'cool', 'vibrant'];//Randomize style
         const randomStyle = styles[Math.floor(Math.random() * styles.length)];
-        this.selectStyle(randomStyle);
-        
-        // Randomize color scheme
+        this.selectStyle(randomStyle);//Randomize color scheme
         const randomColorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
-        this.selectColorScheme(randomColorScheme);
-        
-        // Randomize sliders
+        this.selectColorScheme(randomColorScheme);//Randomize sliders
         const complexitySlider = document.getElementById('complexitySlider');
         const symmetrySlider = document.getElementById('symmetrySlider');
         const goldenRatioSlider = document.getElementById('goldenRatioSlider');
         
         complexitySlider.value = Math.floor(Math.random() * 100);
         symmetrySlider.value = Math.floor(Math.random() * 100);
-        goldenRatioSlider.value = Math.floor(Math.random() * 100);
-        
-        // Update config
-        this.currentConfig.customizations.complexity = complexitySlider.value / 100;
-        this.currentConfig.customizations.symmetry = symmetrySlider.value / 100;
-        this.currentConfig.customizations.golden_ratio_emphasis = goldenRatioSlider.value / 100;
+        goldenRatioSlider.value = Math.floor(Math.random() * 100);//Update config
+        this.currentConfig.customizations.complexity = complexitySlider.value/100;
+        this.currentConfig.customizations.symmetry = symmetrySlider.value/100;
+        this.currentConfig.customizations.golden_ratio_emphasis = goldenRatioSlider.value/100;
         
         this.updatePreview();
     }
     
-    resetSettings() {
-        // Reset to default configuration
+    resetSettings() {//Reset to default configuration
         this.currentConfig = {
             style: 'geometric',
             color_scheme: 'monochrome',
@@ -309,9 +275,7 @@ class AvatarCustomizer {
                 border_style: 'none',
                 texture: 'smooth'
             }
-        };
-        
-        // Reset UI elements
+        };//Reset UI elements
         this.selectStyle('geometric');
         this.selectColorScheme('monochrome');
         
@@ -319,9 +283,7 @@ class AvatarCustomizer {
         document.getElementById('symmetrySlider').value = 80;
         document.getElementById('goldenRatioSlider').value = 80;
         document.getElementById('sizeSelect').value = '400';
-        document.getElementById('transparentBg').checked = true;
-        
-        // Reset preview
+        document.getElementById('transparentBg').checked = true;//Reset preview
         const previewContainer = document.getElementById('avatarPreview');
         previewContainer.innerHTML = `
             <div class="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center">
@@ -338,8 +300,7 @@ class AvatarCustomizer {
             return;
         }
         
-        try {
-            // Create download link
+        try {//Create download link
             const link = document.createElement('a');
             link.href = this.currentAvatarData.base64_image || this.currentAvatarData.processed_image;
             link.download = `avatar_${Date.now()}.png`;
@@ -357,7 +318,7 @@ class AvatarCustomizer {
     
     async loadChannels() {
         try {
-            const response = await fetch('/api/channels');
+            const response = await fetch("/api/channels');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -378,9 +339,7 @@ class AvatarCustomizer {
         }
         
         const modal = document.getElementById('channelModal');
-        const channelList = document.getElementById('channelList');
-        
-        // Populate channel list
+        const channelList = document.getElementById('channelList');//Populate channel list
         channelList.innerHTML = '';
         
         if (this.channels && this.channels.length > 0) {
@@ -430,7 +389,7 @@ class AvatarCustomizer {
         try {
             const imageData = this.currentAvatarData.base64_image || this.currentAvatarData.processed_image;
             
-            const response = await fetch('/api/avatar/save', {
+            const response = await fetch("/api/avatar/save', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -469,8 +428,7 @@ class AvatarCustomizer {
         this.showNotification(message, 'success');
     }
     
-    showNotification(message, type = 'info') {
-        // Create notification element
+    showNotification(message, type = 'info') {//Create notification element
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
         
@@ -485,14 +443,10 @@ class AvatarCustomizer {
             notification.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
         }
         
-        document.body.appendChild(notification);
-        
-        // Animate in
+        document.body.appendChild(notification);//Animate in
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
-        }, 100);
-        
-        // Auto remove after 5 seconds
+        }, 100);//Auto remove after 5 seconds
         setTimeout(() => {
             notification.classList.add('translate-x-full');
             setTimeout(() => {
@@ -502,14 +456,10 @@ class AvatarCustomizer {
             }, 300);
         }, 5000);
     }
-}
-
-// Initialize the avatar customizer when the page loads
+}//Initialize the avatar customizer when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new AvatarCustomizer();
-});
-
-// Export for potential external use
+});//Export for potential external use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = AvatarCustomizer;
 }

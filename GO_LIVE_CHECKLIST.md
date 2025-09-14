@@ -85,7 +85,7 @@ This checklist ensures a secure, reliable, and production-ready deployment of th
 ### Phase 1: Pre-Deployment Validation
 1. **Run Go-Live Preparation Script**
    ```bash
-   cd /Users/thomasbrianreynolds/online production
+   cd/Users/thomasbrianreynolds/online production
    python scripts/go_live_preparation.py
    ```
 
@@ -547,7 +547,7 @@ curl http://localhost:8080/api/system-status
 
 **Checklist Completed By**: ________________  
 **Date**: ________________  
-**Overall Status**: ⏳ Pending / ✅ Approved / ❌ Rejected  
+**Overall Status**: ⏳ Pending/✅ Approved/❌ Rejected  
 **Go-Live Date**: ________________  
 **Deployment Window**: ________________  
 

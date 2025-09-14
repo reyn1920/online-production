@@ -35,7 +35,7 @@ if [ -z "$PRODUCTION_SITE_ID" ]; then
 fi
 
 # Check if Netlify CLI is installed
-if ! command -v netlify &> /dev/null; then
+if ! command -v netlify &>/dev/null; then
     echo -e "${RED}❌ Error: Netlify CLI not found${NC}"
     echo "Please install: npm install -g netlify-cli"
     exit 1
@@ -59,9 +59,9 @@ echo -e "${YELLOW}Available deployments for rollback:${NC}"
 echo "====================================="
 
 # Get current deployment
-CURRENT_DEPLOY=$(echo "$DEPLOYMENTS" | jq -r '.[0].id // "unknown"')
-CURRENT_COMMIT=$(echo "$DEPLOYMENTS" | jq -r '.[0].commit_ref // "unknown"')
-CURRENT_TIME=$(echo "$DEPLOYMENTS" | jq -r '.[0].created_at // "unknown"')
+CURRENT_DEPLOY=$(echo "$DEPLOYMENTS" | jq -r '.[0].id//"unknown"')
+CURRENT_COMMIT=$(echo "$DEPLOYMENTS" | jq -r '.[0].commit_ref//"unknown"')
+CURRENT_TIME=$(echo "$DEPLOYMENTS" | jq -r '.[0].created_at//"unknown"')
 
 echo -e "${MAGENTA}CURRENT (Active):${NC}"
 echo "  ID: $CURRENT_DEPLOY"
@@ -71,7 +71,7 @@ echo ""
 
 # Show previous deployments
 echo -e "${BLUE}PREVIOUS DEPLOYMENTS:${NC}"
-echo "$DEPLOYMENTS" | jq -r '.[1:6][] | "  [" + (.created_at | split("T")[0]) + "] " + .id + " (" + (.commit_ref // "unknown")[0:7] + ")"' | nl
+echo "$DEPLOYMENTS" | jq -r '.[1:6][] | "  [" + (.created_at | split("T")[0]) + "] " + .id + " (" + (.commit_ref//"unknown")[0:7] + ")"' | nl
 
 echo ""
 
@@ -96,9 +96,9 @@ echo ""
 case $ROLLBACK_OPTION in
     1)
         # Rollback to previous deployment
-        TARGET_DEPLOY=$(echo "$DEPLOYMENTS" | jq -r '.[1].id // ""')
-        TARGET_COMMIT=$(echo "$DEPLOYMENTS" | jq -r '.[1].commit_ref // "unknown"')
-        TARGET_TIME=$(echo "$DEPLOYMENTS" | jq -r '.[1].created_at // "unknown"')
+        TARGET_DEPLOY=$(echo "$DEPLOYMENTS" | jq -r '.[1].id//""')
+        TARGET_COMMIT=$(echo "$DEPLOYMENTS" | jq -r '.[1].commit_ref//"unknown"')
+        TARGET_TIME=$(echo "$DEPLOYMENTS" | jq -r '.[1].created_at//"unknown"')
         ROLLBACK_TYPE="previous"
         ;;
     2)
@@ -167,7 +167,7 @@ else
 fi
 
 # Get current production URL
-PRODUCTION_URL=$(netlify status --json | jq -r '.site.url // .site.ssl_url // "Unknown"')
+PRODUCTION_URL=$(netlify status --json | jq -r '.site.url//.site.ssl_url//"Unknown"')
 
 echo ""
 echo -e "${GREEN}🎉 Production rollback completed!${NC}"

@@ -97,13 +97,10 @@
         </p>
     </div>
     
-    <script>
-        // Auto-redirect to main dashboard after 3 seconds if no interaction
+    <script>//Auto-redirect to main dashboard after 3 seconds if no interaction
         let redirectTimer = setTimeout(() => {
             window.location.href = '/app/static/index.html';
-        }, 5000);
-        
-        // Cancel redirect if user interacts with page
+        }, 5000);//Cancel redirect if user interacts with page
         document.addEventListener('click', () => {
             clearTimeout(redirectTimer);
         });

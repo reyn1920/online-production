@@ -27,10 +27,21 @@ class LinkedInClient:
         # OFF by default: returns True only when creds exist
         return bool(self.access_token or (self.client_id and self.client_secret))
 
+    def is_configured(self) -> bool:
+        """Check if LinkedIn integration is configured"""
+        return self.ready()
+
+    async def post_content(self, text: str, url: str | None = None) -> Dict[str, Any]:
+        """Post content to LinkedIn"""
+        if not self.ready():
+            return {"ok": False, "error": "LinkedIn not configured"}
+        # TODO: Use LinkedIn API
+        # Placeholder for real call (intentionally not calling any API here).
+        return {"ok": True, "provider": "linkedin", "text_len": len(text), "url": url}
+
     # --- Stubs (no network calls yet) ---
 
-
-        def post_text(self, text: str, media_url: str = "") -> Dict[str, Any]:
+    def post_text(self, text: str, media_url: str = "") -> Dict[str, Any]:
         if not self.ready():
             raise RuntimeError("LinkedIn not configured")
         return {"ok": True, "id": "li_post_stub", "text": text, "media": media_url}
@@ -52,5 +63,5 @@ class LinkedInClient:
 
     def insights(self) -> Dict[str, Any]:
         if not self.ready():
-            raise RuntimeError("LinkedIn not configured")
+            return {"error": "LinkedIn integration not configured"}
         return {"ok": True, "followers": 0, "impressions": 0, "engagement": 0}

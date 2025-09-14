@@ -101,8 +101,8 @@ show_progress() {
     local total="$2"
     local task="$3"
     
-    local percent=$((current * 100 / total))
-    local filled=$((percent / 2))
+    local percent=$((current * 100/total))
+    local filled=$((percent/2))
     local empty=$((50 - filled))
     
     printf "\r${BLUE}[%3d%%]${NC} [" "$percent"

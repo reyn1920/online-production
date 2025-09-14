@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 YouTube Scraper for The Right Perspective
 Scrapes conservative YouTube channels and content for analysis
@@ -30,7 +30,8 @@ class YouTubeScraperForRightPerspective:
         self.session = requests.Session()
         self.session.headers.update(
             {
-                "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
+                "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
+    like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             }
         )
 
@@ -218,8 +219,8 @@ class YouTubeScraperForRightPerspective:
     def extract_video_id(self, url: str) -> Optional[str]:
         """Extract YouTube video ID from URL"""
         patterns = [
-            r"(?:youtube\.com / watch\?v=|youtu\.be/)([a - zA - Z0 - 9_-]{11})",
-                r"youtube\.com / embed/([a - zA - Z0 - 9_-]{11})",
+            r"(?:youtube\\.com/watch\\?v=|youtu\\.be/)([a - zA - Z0 - 9_-]{11})",
+                r"youtube\\.com/embed/([a - zA - Z0 - 9_-]{11})",
                 ]
 
         for pattern in patterns:
@@ -309,7 +310,7 @@ class YouTubeScraperForRightPerspective:
                         "published_at": video_data.get(
                         "published_at", datetime.now().isoformat()
                     ),
-                        "video_url": f"https://youtube.com / watch?v={video_data['video_id']}",
+                        "video_url": f"https://youtube.com/watch?v={video_data['video_id']}",
                         "style_analysis": json.dumps(style_analysis),
                         "humor_score": style_analysis["humor_score"],
                         "relevance_score": style_analysis["relevance_score"],
@@ -338,7 +339,8 @@ class YouTubeScraperForRightPerspective:
                 {
                     "video_id": "gut001",
                         "title": "Gutfeld!: Democrats flip - flop on border security AGAIN",
-                        "description": "Greg Gutfeld breaks down the latest Democratic hypocrisy on immigration policy with his signature humor and panel discussion.",
+                        "description": "Greg Gutfeld breaks down the latest Democratic hypocrisy on immigration policy with his signature humor \
+    and panel discussion.",
                         "view_count": 850000,
                         "like_count": 45000,
                         },
@@ -374,7 +376,8 @@ class YouTubeScraperForRightPerspective:
                 {
                     "video_id": "bon001",
                         "title": "The Dan Bongino Show: Schumer's MASSIVE hypocrisy exposed",
-                        "description": "Dan breaks down Chuck Schumer's complete 180 on immigration enforcement with receipts and documentation.",
+                        "description": "Dan breaks down Chuck Schumer's complete 180 on immigration enforcement with receipts \
+    and documentation.",
                         "view_count": 450000,
                         "like_count": 28000,
                         },
@@ -392,7 +395,8 @@ class YouTubeScraperForRightPerspective:
                 {
                     "video_id": "cro001",
                         "title": "Change My Mind: Democrats Are Hypocrites on Immigration",
-                        "description": "Steven sits down with college students to discuss Democratic flip - flops on border security with humor and facts.",
+                        "description": "Steven sits down with college students to discuss Democratic flip - flops on border security with humor \
+    and facts.",
                         "view_count": 1200000,
                         "like_count": 75000,
                         },
@@ -410,14 +414,16 @@ class YouTubeScraperForRightPerspective:
                 {
                     "video_id": "trp001",
                         "title": "Gaming Industry Goes Woke, Goes Broke",
-                        "description": "Conservative gamer perspective on how political correctness is ruining video games and entertainment.",
+                        "description": "Conservative gamer perspective on how political correctness is ruining video games \
+    and entertainment.",
                         "view_count": 15000,
                         "like_count": 1200,
                         },
                     {
                     "video_id": "trp002",
                         "title": "Why Conservatives Need to Fight Back in Gaming",
-                        "description": "Non - commie perspective on standing up to liberal bias in gaming culture and media.",
+                        "description": "Non - commie perspective on standing up to liberal bias in gaming culture \
+    and media.",
                         "view_count": 12000,
                         "like_count": 980,
                         },
@@ -572,7 +578,9 @@ class YouTubeScraperForRightPerspective:
         for element in successful_elements:
             element_counts[element] = element_counts.get(element, 0) + 1
 
-        top_elements = sorted(element_counts.items(), key = lambda x: x[1], reverse = True)[
+        top_elements = sorted(element_counts.items(),
+    key = lambda x: x[1],
+    reverse = True)[
             :10
         ]
 
@@ -601,32 +609,32 @@ def main():
     # Scrape all channels
     results = scraper.scrape_all_channels()
 
-    print(f"\n📊 YouTube Scraping Results:")
+    print(f"\\n📊 YouTube Scraping Results:")
     print(f"Total videos analyzed: {results['total_videos']}")
     print(f"High - potential content: {results['high_potential']}")
 
     # Get style inspiration
     inspiration = scraper.get_style_inspiration(10)
 
-    print(f"\n🎭 Top Style Inspiration for The Right Perspective:")
+    print(f"\\n🎭 Top Style Inspiration for The Right Perspective:")
     for i, video in enumerate(inspiration, 1):
         print(f"{i}. [{video['channel_name']}] {video['title']}")
         print(
             f"   Humor Score: {video['humor_score']}, Relevance: {video['relevance_score']}"
         )
         print(f"   URL: {video['video_url']}")
-        print(f"   Elements: {video['style_elements']}\n")
+        print(f"   Elements: {video['style_elements']}\\n")
 
     # Generate recommendations
     recommendations = scraper.generate_content_recommendations()
 
-    print(f"\n💡 Content Recommendations for The Right Perspective:")
+    print(f"\\n💡 Content Recommendations for The Right Perspective:")
     print(f"Recommended Style: {recommendations['recommended_style']}")
-    print(f"\nContent Suggestions:")
+    print(f"\\nContent Suggestions:")
     for suggestion in recommendations["content_suggestions"]:
         print(f"• {suggestion}")
 
-    print(f"\nMost Effective Elements:")
+    print(f"\\nMost Effective Elements:")
     for element, count in recommendations["most_effective_elements"]:
         print(f"• {element}: {count} occurrences")
 

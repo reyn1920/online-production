@@ -155,7 +155,7 @@ User-Agent: ChatGPT-Integration/1.0
 # 3. Handle retries (max 3 attempts)
 # 4. Process within 30 seconds
 
-@app.route('/webhook/trae-ai', methods=['POST'])
+@app.route("/webhook/trae-ai', methods=['POST'])
 def handle_webhook():
     # REQUIRED: Verify webhook signature
     signature = request.headers.get('X-TRAE-Signature')

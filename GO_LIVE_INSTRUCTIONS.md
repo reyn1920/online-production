@@ -215,10 +215,7 @@ Once deployed, verify these endpoints are working:
 ### Support Resources
 
 - **GitHub Actions Documentation**: https://docs.github.com/en/actions
-- **Netlify Deployment Guide**: https://docs.netlify.com/site-deploys/
-- **Security Best Practices**: https://owasp.org/www-project-top-ten/
-
-## 🎉 Success Criteria
+- **Netlify Deployment Guide**: https://docs.netlify.com/site-deploys/- **Security Best Practices**: https://owasp.org/www-project-top-ten/## 🎉 Success Criteria
 
 Your application is successfully live when:
 

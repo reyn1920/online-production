@@ -1,9 +1,7 @@
 /**
  * Places Status Dashboard Styles
  * Extends the existing status-indicators.css system
- */
-
-.places-status-title {
+ */.places-status-title {
   color: #2c3e50;
   font-size: 1.8rem;
   font-weight: 600;
@@ -129,10 +127,7 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #e9ecef;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
+}/* Responsive design */@media (max-width: 768px) {
   .clinic-groups-container {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -161,10 +156,7 @@
   .status-text {
     align-self: flex-end;
   }
-}
-
-/* Loading states */
-.places-status-loading {
+}/* Loading states */.places-status-loading {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -187,10 +179,7 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Error states */
-.places-status-error {
+}/* Error states */.places-status-error {
   background: #f8d7da;
   color: #721c24;
   padding: 1rem;
@@ -198,10 +187,7 @@
   border: 1px solid #f5c6cb;
   text-align: center;
   margin: 1rem 0;
-}
-
-/* Refresh button */
-.refresh-button {
+}/* Refresh button */.refresh-button {
   background: #3498db;
   color: white;
   border: none;
@@ -221,10 +207,7 @@
 
 .refresh-button:active {
   transform: translateY(1px);
-}
-
-/* Summary cards for quick overview */
-.group-summary {
+}/* Summary cards for quick overview */.group-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -244,10 +227,7 @@
 .summary-stat .dot {
   width: 8px;
   height: 8px;
-}
-
-/* Animation for status changes */
-.provider-item.status-changed {
+}/* Animation for status changes */.provider-item.status-changed {
   animation: statusChange 0.5s ease;
 }
 

@@ -168,7 +168,7 @@ Run security scans before deployment:
 ./scripts/run-tests.sh
 
 # Run specific security tools
-bandit -r app/ -f json -o security-report.json
+bandit -r app/-f json -o security-report.json
 safety check --json --output safety-report.json
 gitleaks detect --source . --verbose
 ```
@@ -329,9 +329,7 @@ netlify logs --site-id=<your-site-id>
 
 # Local build test
 npm run build
-python -m pytest tests/
-
-# Clear cache and rebuild
+python -m pytest tests/# Clear cache and rebuild
 rm -rf node_modules package-lock.json
 npm install
 npm run build
@@ -428,7 +426,7 @@ npm update
 pip install --upgrade -r requirements.txt
 
 # Clean up old logs
-find logs/ -name "*.log" -mtime +30 -delete
+find logs/-name "*.log" -mtime +30 -delete
 
 # Database maintenance
 python -c "from app.database import cleanup_old_records; cleanup_old_records()"
@@ -447,8 +445,7 @@ python -c "from app.database import backup_database; backup_database('backup_$(d
 tar -czf config_backup_$(date +%Y%m%d).tar.gz .env.example netlify.toml
 
 # Backup logs
-tar -czf logs_backup_$(date +%Y%m%d).tar.gz logs/
-```
+tar -czf logs_backup_$(date +%Y%m%d).tar.gz logs/```
 
 ## Security Best Practices
 

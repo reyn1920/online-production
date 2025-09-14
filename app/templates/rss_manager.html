@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>RSS Manager - TRAE.AI Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -210,11 +210,11 @@
             <form id="add-feed-form">
               <div class="mb-3">
                 <label for="feed-name" class="form-label">Feed Name</label>
-                <input type="text" class="form-control" id="feed-name" placeholder="Enter feed name" />
+                <input type="text" class="form-control" id="feed-name" placeholder="Enter feed name"/>
               </div>
               <div class="mb-3">
                 <label for="feed-url" class="form-label">RSS URL</label>
-                <input type="url" class="form-control" id="feed-url" placeholder="https://example.com/feed.xml" />
+                <input type="url" class="form-control" id="feed-url" placeholder="https://example.com/feed.xml"/>
               </div>
               <div class="mb-3">
                 <label for="feed-category" class="form-label">Category</label>
@@ -228,7 +228,7 @@
               </div>
               <div class="mb-3">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="auto-sync" checked />
+                  <input class="form-check-input" type="checkbox" id="auto-sync" checked/>
                   <label class="form-check-label" for="auto-sync">Auto-sync every hour</label>
                 </div>
               </div>
@@ -251,7 +251,7 @@
                 <small class="text-muted">Items Today</small>
               </div>
             </div>
-            <hr />
+            <hr/>
             <div class="row text-center">
               <div class="col-6">
                 <div class="h4 text-info">1.2k</div>
@@ -268,8 +268,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Add feed form handler
+    <script>//Add feed form handler
       document.getElementById('add-feed-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -281,17 +280,11 @@
         if (!name || !url) {
           alert('Please fill in all required fields');
           return;
-        }
-
-        // Here you would typically send the data to your backend
-        console.log('Adding feed:', { name, url, category, autoSync });
-
-        // Reset form
+        }//Here you would typically send the data to your backend
+        console.log('Adding feed:', { name, url, category, autoSync });//Reset form
         this.reset();
         alert('Feed added successfully!');
-      });
-
-      // Refresh feed handlers
+      });//Refresh feed handlers
       document.querySelectorAll('.btn-custom').forEach(btn => {
         if (btn.textContent.trim() === 'Refresh') {
           btn.addEventListener('click', function () {

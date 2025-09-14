@@ -454,9 +454,7 @@
     <div id="root"></div>
     
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        
-        // Mock data for affiliate marketing
+        const { useState, useEffect, useRef } = React;//Mock data for affiliate marketing
         const mockData = {
             overview: {
                 totalEarnings: 2847.50,
@@ -842,8 +840,7 @@
                                         className="form-input"
                                         value={newLink.title}
                                         onChange={(e) => setNewLink({...newLink, title: e.target.value})}
-                                        placeholder="Enter product title"
-                                    />
+                                        placeholder="Enter product title"/>
                                 </div>
                                 
                                 <div className="form-group">
@@ -853,8 +850,7 @@
                                         className="form-input"
                                         value={newLink.url}
                                         onChange={(e) => setNewLink({...newLink, url: e.target.value})}
-                                        placeholder="https://..."
-                                    />
+                                        placeholder="https://..."/>
                                 </div>
                                 
                                 <div className="form-group">
@@ -877,8 +873,7 @@
                                         className="form-input"
                                         value={newLink.category}
                                         onChange={(e) => setNewLink({...newLink, category: e.target.value})}
-                                        placeholder="e.g., Tech, Fashion, Home"
-                                    />
+                                        placeholder="e.g., Tech, Fashion, Home"/>
                                 </div>
                                 
                                 <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px'}}>
@@ -896,7 +891,7 @@
             );
         }
         
-        ReactDOM.render(<AffiliateMarketingHub />, document.getElementById('root'));
+        ReactDOM.render(<AffiliateMarketingHub/>, document.getElementById('root'));
     </script>
 </body>
 </html>

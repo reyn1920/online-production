@@ -8,8 +8,8 @@
     "analyze:css": "tailwindcss -i ./app/static/css/tailwind.css -o ./app/static/css/build.css --minify --verbose",
     "build": "npm run build:css",
     "start": "python3 app.py",
-    "test": "python3 -m pytest tests/ -v",
-    "lint": "python3 -m flake8 app/ scripts/",
+    "test": "python3 -m pytest tests/-v",
+    "lint": "python3 -m flake8 app/scripts/",
     "validate": "python3 scripts/environment_validator.py"
   },
   "devDependencies": {

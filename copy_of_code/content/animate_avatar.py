@@ -1,8 +1,9 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Animate Avatar - Talking Head Video Generation System
 
-This module implements avatar animation using Linly - Talker or similar open - source models
+This module implements avatar animation using Linly - Talker \
+    or similar open - source models
 to generate talking head videos from a source image and audio file. It supports
 batch processing, quality settings, and integration with the content pipeline.
 
@@ -30,7 +31,9 @@ from PIL import Image
 
 # Import TRAE.AI utilities
 try:
+
     from utils.logger import get_logger
+
 except ImportError:
 
 
@@ -102,7 +105,7 @@ class LinlyTalkerEngine:
 
 
     def __init__(self, model_path: Optional[str] = None, device: str = "cuda"):
-        self.model_path = model_path or "./models / linly_talker"
+        self.model_path = model_path or "./models/linly_talker"
         self.device = device
         self.logger = get_logger(self.__class__.__name__)
         self.is_initialized = False
@@ -119,6 +122,7 @@ class LinlyTalkerEngine:
 
             # Try to import required libraries
             try:
+
                 import torch
                 import torchvision
 
@@ -292,7 +296,7 @@ class FallbackEngine:
                     "-show_entries",
                     "format = duration",
                     "-of",
-                    "csv = p=0",
+                    "csv = p = 0",
                     audio_file,
                     ]
             result = subprocess.run(cmd, capture_output = True, text = True)
@@ -321,7 +325,7 @@ class AnimateAvatar:
 
         # Setup temp directory
         self.temp_dir = (
-            Path(self.config.temp_dir or tempfile.gettempdir()) / "animate_avatar"
+            Path(self.config.temp_dir or tempfile.gettempdir())/"animate_avatar"
         )
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
@@ -447,7 +451,7 @@ class AnimateAvatar:
                 image = self._enhance_face(image)
 
             # Save processed image
-            processed_path = self.temp_dir / f"processed_{Path(image_path).name}"
+            processed_path = self.temp_dir/f"processed_{Path(image_path).name}"
             cv2.imwrite(str(processed_path), image)
 
             return str(processed_path)
@@ -461,7 +465,7 @@ class AnimateAvatar:
         """Preprocess audio for animation."""
         try:
             # Convert audio to required format
-            processed_path = self.temp_dir / f"processed_{Path(audio_path).stem}.wav"
+            processed_path = self.temp_dir/f"processed_{Path(audio_path).stem}.wav"
 
             cmd = [
                 "ffmpeg",
@@ -706,9 +710,9 @@ if __name__ == "__main__":
     try:
         # Create animation job
         job = animator.create_animation_job(
-            source_image="./assets / avatar.jpg",
-                audio_file="./assets / speech.wav",
-                output_path="./output / animated_avatar.mp4",
+            source_image="./assets/avatar.jpg",
+                audio_file="./assets/speech.wav",
+                output_path="./output/animated_avatar.mp4",
                 )
 
         print(f"Animation job created: {job.job_id}")

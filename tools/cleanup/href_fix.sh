@@ -141,7 +141,7 @@ check_file_exists() {
     local base_dir="$2"
     
     # Handle different types of paths
-    if [[ "$file_path" =~ ^https?:// ]]; then
+    if [[ "$file_path" =~ ^https?://]]; then
         # External URL - skip for now
         return 1
     elif [[ "$file_path" =~ ^mailto: ]]; then
@@ -153,7 +153,7 @@ check_file_exists() {
     elif [[ "$file_path" =~ ^# ]]; then
         # Anchor link - skip
         return 1
-    elif [[ "$file_path" =~ ^/ ]]; then
+    elif [[ "$file_path" =~ ^/]]; then
         # Absolute path from root
         local full_path="$PROJECT_ROOT$file_path"
     else
@@ -249,7 +249,7 @@ scan_file_for_hrefs() {
                             fix_href_in_file "$file" "$href" "$suggestion"
                         fi
                     else
-                        suggest_href_fix "$href" "$file_dir" > /dev/null
+                        suggest_href_fix "$href" "$file_dir" >/dev/null
                     fi
                 fi
             fi

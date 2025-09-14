@@ -1,7 +1,10 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
-TRAE.AI Monetization Bundle - Complete Revenue Generation System
-Handles ebook creation, product publishing, newsletter automation, merch design, and affiliate marketing
+TRAE.AI Monetization Bundle
+
+Comprehensive monetization system for content creators and digital entrepreneurs.
+Provides automated tools for creating and selling digital products, managing
+newsletters, merchandise, and blog content with integrated analytics.
 """
 
 import asyncio
@@ -17,16 +20,12 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import cv2
-# Email and marketing
 import mailchimp3
-# from weasyprint import HTML, CSS  # Optional dependency
 import markdown
 import numpy as np
 import pandas as pd
 import requests
-# E - commerce
 import stripe
-# Content publishing
 from bs4 import BeautifulSoup
 from docx import Document
 from docx.shared import Inches
@@ -34,11 +33,9 @@ from dotenv import load_dotenv
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
 from jinja2 import Template
 from loguru import logger
-# Image processing
 from PIL import Image, ImageDraw, ImageFont
 from pydantic import BaseModel
 from reportlab.lib import colors
-# Document generation
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -48,126 +45,101 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from sqlalchemy import (Boolean, Column, DateTime, Float, Integer, String, Text,
-    create_engine)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 
-# Load environment variables
 load_dotenv()
 
 Base = declarative_base()
 
 
 class MonetizationConfig:
-    """Configuration for the monetization bundle"""
-
+    """Configuration class for monetization services"""
 
     def __init__(self):
-
-        # E - commerce APIs
         self.gumroad_access_token = os.getenv("GUMROAD_ACCESS_TOKEN")
-        self.stripe_api_key = os.getenv("STRIPE_API_KEY")
-        self.paypal_client_id = os.getenv("PAYPAL_CLIENT_ID")
-        self.paypal_client_secret = os.getenv("PAYPAL_CLIENT_SECRET")
-
-        # Print - on - Demand
-            self.printful_api_key = os.getenv("PRINTFUL_API_KEY")
-        self.teespring_api_key = os.getenv("TEESPRING_API_KEY")
-
-        # Email Marketing
-        self.mailchimp_api_key = os.getenv("MAILCHIMP_API_KEY")
         self.sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
-        self.convertkit_api_key = os.getenv("CONVERTKIT_API_KEY")
-
-        # Content Publishing
-        self.wordpress_api_url = os.getenv("WORDPRESS_API_URL")
-        self.wordpress_username = os.getenv("WORDPRESS_USERNAME")
-        self.wordpress_password = os.getenv("WORDPRESS_PASSWORD")
-        self.medium_access_token = os.getenv("MEDIUM_ACCESS_TOKEN")
-
-        # AI Services
-        self.openai_api_key = os.getenv("OPENAI_API_KEY")
-
-        # Database
-        self.database_url = os.getenv("DATABASE_URL", "sqlite:///monetization.db")
-
-        # Directories
-        self.output_dir = Path("./output")
-        self.data_dir = Path("./data")
-        self.templates_dir = Path("./templates")
-        self.log_level = os.getenv("LOG_LEVEL", "INFO")
-
-        # Ensure directories exist
-        self.output_dir.mkdir(exist_ok = True)
-        self.data_dir.mkdir(exist_ok = True)
-        self.templates_dir.mkdir(exist_ok = True)
-
-# Database Models
+        self.mailchimp_api_key = os.getenv("MAILCHIMP_API_KEY")
+        self.printful_api_key = os.getenv("PRINTFUL_API_KEY")
+        self.wordpress_api_key = os.getenv("WORDPRESS_API_KEY")
+        self.wordpress_url = os.getenv("WORDPRESS_URL")
+        self.medium_token = os.getenv("MEDIUM_TOKEN")
+        self.stripe_api_key = os.getenv("STRIPE_API_KEY")
+        self.database_url = os.getenv(
+            "MONETIZATION_DB_URL", "sqlite:///monetization.db"
+        )
 
 
 class Product(Base):
     __tablename__ = "products"
 
-    id = Column(Integer, primary_key = True)
-    name = Column(String(255), nullable = False)
-    product_type = Column(String(100), nullable = False)  # ebook, course, merch, etc.
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    product_type = Column(String(100), nullable=False)
     description = Column(Text)
-    price = Column(Float, nullable = False)
-    platform = Column(String(100))  # gumroad, stripe, etc.
+    price = Column(Float, nullable=False)
+    platform = Column(String(100))
     platform_id = Column(String(255))
     file_path = Column(String(500))
-    sales_count = Column(Integer, default = 0)
-    revenue = Column(Float, default = 0.0)
+    sales_count = Column(Integer, default=0)
+    revenue = Column(Float, default=0.0)
     status = Column(String(50), default="draft")
-    created_at = Column(DateTime, default = datetime.utcnow)
-    updated_at = Column(DateTime, default = datetime.utcnow, onupdate = datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class Newsletter(Base):
     __tablename__ = "newsletters"
 
-    id = Column(Integer, primary_key = True)
-    subject = Column(String(255), nullable = False)
-    content = Column(Text, nullable = False)
-    subscriber_count = Column(Integer, default = 0)
-    open_rate = Column(Float, default = 0.0)
-    click_rate = Column(Float, default = 0.0)
-    revenue_generated = Column(Float, default = 0.0)
+    id = Column(Integer, primary_key=True)
+    subject = Column(String(255), nullable=False)
+    content = Column(Text, nullable=False)
+    subscriber_count = Column(Integer, default=0)
+    open_rate = Column(Float, default=0.0)
+    click_rate = Column(Float, default=0.0)
+    revenue_generated = Column(Float, default=0.0)
     sent_at = Column(DateTime)
-    created_at = Column(DateTime, default = datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 class MerchDesign(Base):
     __tablename__ = "merch_designs"
 
-    id = Column(Integer, primary_key = True)
-    name = Column(String(255), nullable = False)
-    design_type = Column(String(100))  # tshirt, mug, poster, etc.
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    design_type = Column(String(100))
     image_path = Column(String(500))
-    platform = Column(String(100))  # printful, teespring, etc.
+    platform = Column(String(100))
     platform_id = Column(String(255))
     price = Column(Float)
-    sales_count = Column(Integer, default = 0)
-    revenue = Column(Float, default = 0.0)
-    created_at = Column(DateTime, default = datetime.utcnow)
+    sales_count = Column(Integer, default=0)
+    revenue = Column(Float, default=0.0)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 class BlogPost(Base):
     __tablename__ = "blog_posts"
 
-    id = Column(Integer, primary_key = True)
-    title = Column(String(255), nullable = False)
-    content = Column(Text, nullable = False)
-    platform = Column(String(100))  # wordpress, medium, etc.
+    id = Column(Integer, primary_key=True)
+    title = Column(String(255), nullable=False)
+    content = Column(Text, nullable=False)
+    platform = Column(String(100))
     platform_id = Column(String(255))
     url = Column(String(500))
-    views = Column(Integer, default = 0)
-    affiliate_revenue = Column(Float, default = 0.0)
+    views = Column(Integer, default=0)
+    affiliate_revenue = Column(Float, default=0.0)
     published_at = Column(DateTime)
-    created_at = Column(DateTime, default = datetime.utcnow)
-
-# Request / Response Models
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 class EbookRequest(BaseModel):
@@ -176,7 +148,7 @@ class EbookRequest(BaseModel):
     author: str = "TRAE.AI"
     price: float = 9.99
     cover_image_url: Optional[str] = None
-    format: str = "pdf"  # pdf, epub, docx
+    format: str = "pdf"
 
 
 class NewsletterRequest(BaseModel):
@@ -189,7 +161,7 @@ class NewsletterRequest(BaseModel):
 
 class MerchRequest(BaseModel):
     design_name: str
-    product_type: str  # tshirt, mug, poster
+    product_type: str
     design_prompt: str
     price: float = 19.99
     platform: str = "printful"
@@ -204,12 +176,10 @@ class BlogPostRequest(BaseModel):
 
 
 class EbookGenerator:
-    """Generates professional ebooks from content"""
-
+    """Generate ebooks in various formats"""
 
     def __init__(self, config: MonetizationConfig):
         self.config = config
-
 
     async def generate_ebook(
         self, title: str, content: str, author: str, format: str = "pdf"
@@ -224,267 +194,182 @@ class EbookGenerator:
                 return await self._generate_docx_ebook(title, content, author)
             else:
                 raise ValueError(f"Unsupported format: {format}")
-
         except Exception as e:
-            logger.error(f"Ebook generation failed: {e}")
+            logging.getLogger(__name__).error(f"Ebook generation failed: {e}")
             raise
 
-
     async def _generate_pdf_ebook(self, title: str, content: str, author: str) -> str:
-        """Generate PDF ebook using ReportLab"""
-        filename = f"ebook_{int(datetime.now().timestamp())}.pdf"
-        filepath = self.config.output_dir / filename
+        """Generate PDF ebook"""
+        output_path = f"output/ebooks/{title.replace(' ', '_')}.pdf"
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-        # Create PDF document
-        doc = SimpleDocTemplate(str(filepath), pagesize = A4)
+        doc = SimpleDocTemplate(output_path, pagesize=letter)
         styles = getSampleStyleSheet()
-
-        # Custom styles
-        title_style = ParagraphStyle(
-            "CustomTitle",
-                parent = styles["Heading1"],
-                fontSize = 24,
-                spaceAfter = 30,
-                alignment = 1,  # Center
-            textColor = colors.darkblue,
-                )
-
-        author_style = ParagraphStyle(
-            "CustomAuthor",
-                parent = styles["Normal"],
-                fontSize = 14,
-                spaceAfter = 30,
-                alignment = 1,  # Center
-            textColor = colors.grey,
-                )
-
-        content_style = ParagraphStyle(
-            "CustomContent",
-                parent = styles["Normal"],
-                fontSize = 12,
-                spaceAfter = 12,
-                alignment = 0,  # Left
-            leftIndent = 20,
-                rightIndent = 20,
-                )
-
-        # Build document content
         story = []
 
-        # Title page
-        story.append(Spacer(1, 2 * inch))
+        # Title
+        title_style = ParagraphStyle(
+            "CustomTitle",
+            parent=styles["Heading1"],
+            fontSize=24,
+            spaceAfter=30,
+            alignment=1,
+        )
         story.append(Paragraph(title, title_style))
-        story.append(Spacer(1, 0.5 * inch))
-        story.append(Paragraph(f"by {author}", author_style))
-        story.append(Spacer(1, 1 * inch))
+        story.append(Spacer(1, 12))
+
+        # Author
+        author_style = ParagraphStyle(
+            "Author", parent=styles["Normal"], fontSize=14, alignment=1
+        )
+        story.append(Paragraph(f"By {author}", author_style))
+        story.append(Spacer(1, 24))
 
         # Content
-        # Convert markdown to paragraphs
-        html_content = markdown.markdown(content)
-        soup = BeautifulSoup(html_content, "html.parser")
+        content_paragraphs = content.split("\n\n")
+        for paragraph in content_paragraphs:
+            if paragraph.strip():
+                story.append(Paragraph(paragraph, styles["Normal"]))
+                story.append(Spacer(1, 12))
 
-        for element in soup.find_all(["p", "h1", "h2", "h3"]):
-            if element.name in ["h1", "h2", "h3"]:
-                story.append(Spacer(1, 0.3 * inch))
-                story.append(Paragraph(element.get_text(), styles["Heading2"]))
-            else:
-                story.append(Paragraph(element.get_text(), content_style))
-
-        # Build PDF
         doc.build(story)
-
-        logger.info(f"✅ PDF ebook generated: {filepath}")
-        return str(filepath)
-
+        return output_path
 
     async def _generate_epub_ebook(self, title: str, content: str, author: str) -> str:
         """Generate EPUB ebook"""
-        # For now, create a simple HTML version
-        filename = f"ebook_{int(datetime.now().timestamp())}.html"
-        filepath = self.config.output_dir / filename
+        output_path = f"output/ebooks/{title.replace(' ', '_')}.epub"
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-        html_template = """
+        # Simple EPUB generation (would need proper EPUB library in production)
+        html_content = f"""
         <!DOCTYPE html>
         <html>
         <head>
-            <title>{{ title }}</title>
-            <meta charset="UTF - 8">
-            <style>
-                body { font - family: Georgia, serif; max - width: 800px; margin: 0 auto; padding: 20px; }
-                h1 { color: #2c3e50; text - align: center; }
-                .author { text - align: center; color: #7f8c8d; margin - bottom: 40px; }
-                .content { line - height: 1.6; }
-            </style>
+            <title>{title}</title>
+            <meta charset="utf-8">
         </head>
         <body>
-            <h1>{{ title }}</h1>
-            <p class="author">by {{ author }}</p>
-            <div class="content">
-                {{ content_html }}
-            </div>
+            <h1>{title}</h1>
+            <p><em>By {author}</em></p>
+            <div>{markdown.markdown(content)}</div>
         </body>
         </html>
         """
 
-        template = Template(html_template)
-        content_html = markdown.markdown(content)
+        with open(output_path.replace(".epub", ".html"), "w", encoding="utf-8") as f:
+            f.write(html_content)
 
-        html_output = template.render(
-            title = title, author = author, content_html = content_html
-        )
-
-        with open(filepath, "w", encoding="utf - 8") as f:
-            f.write(html_output)
-
-        logger.info(f"✅ HTML ebook generated: {filepath}")
-        return str(filepath)
-
+        return output_path
 
     async def _generate_docx_ebook(self, title: str, content: str, author: str) -> str:
         """Generate DOCX ebook"""
-        filename = f"ebook_{int(datetime.now().timestamp())}.docx"
-        filepath = self.config.output_dir / filename
+        output_path = f"output/ebooks/{title.replace(' ', '_')}.docx"
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         doc = Document()
 
         # Title
-        title_para = doc.add_heading(title, 0)
-        title_para.alignment = 1  # Center
+        title_paragraph = doc.add_heading(title, 0)
+        title_paragraph.alignment = 1
 
         # Author
-            author_para = doc.add_paragraph(f"by {author}")
-        author_para.alignment = 1  # Center
+        author_paragraph = doc.add_paragraph(f"By {author}")
+        author_paragraph.alignment = 1
 
         doc.add_page_break()
 
         # Content
-        paragraphs = content.split("\n\n")
-        for para in paragraphs:
-            if para.strip():
-                if para.startswith("#"):
-                    # Heading
-                    level = min(para.count("#"), 3)
-                    text = para.lstrip("#").strip()
-                    doc.add_heading(text, level)
-                else:
-                    # Regular paragraph
-                    doc.add_paragraph(para.strip())
+        content_paragraphs = content.split("\n\n")
+        for paragraph in content_paragraphs:
+            if paragraph.strip():
+                doc.add_paragraph(paragraph)
 
-        doc.save(str(filepath))
-
-        logger.info(f"✅ DOCX ebook generated: {filepath}")
-        return str(filepath)
+        doc.save(output_path)
+        return output_path
 
 
 class GumroadPublisher:
-    """Publishes products to Gumroad"""
-
+    """Publish products to Gumroad"""
 
     def __init__(self, config: MonetizationConfig):
         self.config = config
-        self.base_url = "https://api.gumroad.com / v2"
-
+        self.access_token = config.gumroad_access_token
 
     async def publish_product(
         self, name: str, price: float, file_path: str, description: str = ""
     ) -> Dict[str, Any]:
         """Publish product to Gumroad"""
-        if not self.config.gumroad_access_token:
-            logger.error("Gumroad access token not configured")
-            raise ValueError("Gumroad access token is required for publishing")
+        if not self.access_token:
+            raise ValueError("Gumroad access token is required")
 
         try:
             # Upload file and create product
-            headers = {"Authorization": f"Bearer {self.config.gumroad_access_token}"}
-
-            # Create product
-            product_data = {
-                "name": name,
-                    "price": price,
-                    "description": description,
-                    "published": True,
-                    }
-
-            # Upload file
             with open(file_path, "rb") as f:
                 files = {"file": f}
-                response = requests.post(
-                    f"{self.base_url}/products",
-                        headers = headers,
-                        data = product_data,
-                        files = files,
-                        )
+                data = {
+                    "name": name,
+                    "price": price,
+                    "description": description,
+                    "access_token": self.access_token,
+                }
 
-            if response.status_code == 200:
-                result = response.json()
-                return {
-                    "success": True,
+                response = requests.post(
+                    "https://api.gumroad.com/v2/products",
+                    data=data,
+                    files=files,
+                    timeout=30,
+                )
+
+                if response.status_code == 200:
+                    result = response.json()
+                    return {
+                        "success": True,
                         "product_id": result["product"]["id"],
                         "url": result["product"]["short_url"],
-                        "name": name,
-                        "price": price,
-                        }
-            else:
-                logger.error(f"Gumroad API error: {response.text}")
-                raise HTTPException(
-                    status_code = response.status_code,
-                        detail = f"Gumroad API error: {response.text}",
-                        )
-
+                    }
+                else:
+                    raise HTTPException(
+                        status_code=response.status_code,
+                        detail=f"Gumroad API error: {response.text}",
+                    )
         except Exception as e:
-            logger.error(f"Gumroad publishing failed: {e}")
+            logging.getLogger(__name__).error(f"Gumroad publishing failed: {e}")
             raise
 
 
 class NewsletterBot:
-    """Automated newsletter creation and sending"""
-
+    """Manage newsletter creation and sending"""
 
     def __init__(self, config: MonetizationConfig):
         self.config = config
-        self.mailchimp_client = None
         self.sendgrid_client = None
+        self.mailchimp_client = None
         self._initialize_email_clients()
 
-
     def _initialize_email_clients(self):
-        """Initialize email clients"""
+        """Initialize email service clients"""
         try:
-            if self.config.mailchimp_api_key:
-                self.mailchimp_client = mailchimp3.MailChimp(
-                    mc_api = self.config.mailchimp_api_key
-                )
-                logger.info("✅ Mailchimp client initialized")
-
             if self.config.sendgrid_api_key:
                 self.sendgrid_client = SendGridAPIClient(
-                    api_key = self.config.sendgrid_api_key
+                    api_key=self.config.sendgrid_api_key
                 )
-                logger.info("✅ SendGrid client initialized")
-            else:
-                # Check if we're in development mode
-                environment = os.getenv("ENVIRONMENT", "development")
-                if environment == "production":
-                    logger.error("SendGrid API key not configured")
-                    raise ValueError("SendGrid API key is required for production mode")
-                else:
-                    logger.warning(
-                        "SendGrid API key not configured - email features disabled in development mode"
-                    )
-                    self.sendgrid_client = None
 
+            if self.config.mailchimp_api_key:
+                self.mailchimp_client = mailchimp3.MailChimp(
+                    mc_api=self.config.mailchimp_api_key
+                )
         except Exception as e:
-            logger.error(f"Failed to initialize email clients: {e}")
-            raise
-
+            logging.getLogger(__name__).warning(
+                f"Email client initialization failed: {e}"
+            )
 
     async def create_and_send_newsletter(
         self,
-            subject: str,
-            content: str,
-            subscribers: List[str],
-            include_affiliate_links: bool = True,
-            ) -> Dict[str, Any]:
+        subject: str,
+        content: str,
+        subscribers: List[str],
+        include_affiliate_links: bool = True,
+    ) -> Dict[str, Any]:
         """Create and send newsletter with affiliate links"""
         try:
             # Inject affiliate links if requested
@@ -496,7 +381,7 @@ class NewsletterBot:
 
             # Send newsletter
             if not self.sendgrid_client:
-                logger.error("SendGrid client not configured")
+                logging.getLogger(__name__).error("SendGrid client not configured")
                 raise ValueError("SendGrid API key is required for sending newsletters")
 
             sent_count = 0
@@ -504,179 +389,167 @@ class NewsletterBot:
                 try:
                     message = Mail(
                         from_email="newsletter@trae.ai",
-                            to_emails = subscriber,
-                            subject = subject,
-                            html_content = html_content,
-                            )
+                        to_emails=subscriber,
+                        subject=subject,
+                        html_content=html_content,
+                    )
 
                     response = self.sendgrid_client.send(message)
                     if response.status_code == 202:
                         sent_count += 1
 
                 except Exception as e:
-                    logger.warning(f"Failed to send to {subscriber}: {e}")
+                    logging.getLogger(__name__).warning(
+                        f"Failed to send to {subscriber}: {e}"
+                    )
 
             return {
                 "success": True,
-                    "sent_count": sent_count,
-                    "total_subscribers": len(subscribers),
-                    "subject": subject,
-                    }
+                "sent_count": sent_count,
+                "total_subscribers": len(subscribers),
+                "subject": subject,
+            }
 
         except Exception as e:
-            logger.error(f"Newsletter sending failed: {e}")
+            logging.getLogger(__name__).error(f"Newsletter sending failed: {e}")
             raise
-
 
     async def _inject_affiliate_links(self, content: str) -> str:
         """Inject affiliate links into content"""
-        # Simple affiliate link injection
-        affiliate_products = {
-            "AI tools": "https://amazon.com / ai - tools?tag = traeai - 20",
-                "automation software": "https://amazon.com / automation?tag = traeai - 20",
-                "productivity apps": "https://amazon.com / productivity?tag = traeai - 20",
-                }
-
-        for keyword, link in affiliate_products.items():
-            if keyword in content.lower():
-                content = content.replace(
-                    keyword, f'<a href="{link}" target="_blank">{keyword}</a>'
-                )
-
+        affiliate_links = {
+            "amazon": "https://amazon.com/?tag=traeai-20",
+            "course": "https://course-platform.com/?ref=traeai",
+        }
+        
+        for keyword, link in affiliate_links.items():
+            content = content.replace(keyword, f'<a href="{link}">{keyword}</a>')
+        
         return content
-
 
     async def _create_newsletter_html(self, subject: str, content: str) -> str:
         """Create HTML newsletter template"""
-        template = """
+        template = Template(
+            """
         <!DOCTYPE html>
         <html>
         <head>
-            <meta charset="UTF - 8">
             <title>{{ subject }}</title>
             <style>
-                body { font - family: Arial, sans - serif; max - width: 600px; margin: 0 auto; }
-                .header { background: #2c3e50; color: white; padding: 20px; text - align: center; }
-                .content { padding: 20px; line - height: 1.6; }
-                .footer { background: #ecf0f1; padding: 20px; text - align: center; font - size: 12px; }
-                a { color: #3498db; }
+                body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; }
+                .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
+                .content { padding: 20px; }
+                .footer { background-color: #e9ecef; padding: 10px; text-align: center; font-size: 12px; }
             </style>
         </head>
         <body>
             <div class="header">
-                <h1 > TRAE.AI Newsletter</h1>
+                <h1>{{ subject }}</h1>
             </div>
             <div class="content">
-                {{ content }}
+                {{ content | safe }}
             </div>
             <div class="footer">
-                <p > Powered by TRAE.AI | <a href="#">Unsubscribe</a></p>
+                <p>Powered by TRAE.AI</p>
             </div>
         </body>
         </html>
         """
-
-        jinja_template = Template(template)
-        content_html = markdown.markdown(content)
-
-        return jinja_template.render(subject = subject, content = content_html)
+        )
+        return template.render(subject=subject, content=content)
 
 
 class MerchBot:
-    """Automated merchandise design and publishing"""
-
+    """Create and manage merchandise"""
 
     def __init__(self, config: MonetizationConfig):
         self.config = config
-
 
     async def create_merch_design(
         self, design_name: str, product_type: str, design_prompt: str
     ) -> str:
         """Create merchandise design"""
         try:
-            # For now, create a simple text - based design
+            # For now, create a simple text-based design
             return await self._create_text_design(
                 design_name, product_type, design_prompt
             )
-
         except Exception as e:
-            logger.error(f"Merch design creation failed: {e}")
+            logging.getLogger(__name__).error(f"Merch design creation failed: {e}")
             raise
-
 
     async def _create_text_design(
         self, design_name: str, product_type: str, design_prompt: str
     ) -> str:
-        """Create simple text - based design"""
-        # Create image with text
-        width, height = 1000, 1000
-        image = Image.new("RGB", (width, height), color="white")
-        draw = ImageDraw.Draw(image)
+        """Create simple text-based design"""
+        output_path = f"output/designs/{design_name.replace(' ', '_')}.png"
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-        # Try to load a font, fallback to default
+        # Create simple text design
+        img = Image.new("RGB", (800, 600), color="white")
+        draw = ImageDraw.Draw(img)
+        
         try:
-            font = ImageFont.truetype(
-                "/usr / share / fonts / truetype / dejavu / DejaVuSans - Bold.ttf", 60
-            )
-        except Exception:
+            font = ImageFont.truetype("arial.ttf", 40)
+        except OSError:
             font = ImageFont.load_default()
-
-        # Draw text
-        text = design_prompt[:50]  # Limit text length
-        bbox = draw.textbbox((0, 0), text, font = font)
-        text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
-
-        x = (width - text_width) // 2
-        y = (height - text_height) // 2
-
-        draw.text((x, y), text, fill="black", font = font)
-
-        # Save image
-        filename = f"merch_design_{int(datetime.now().timestamp())}.png"
-        filepath = self.config.output_dir / filename
-        image.save(filepath)
-
-        logger.info(f"✅ Merch design created: {filepath}")
-        return str(filepath)
-
+        
+        draw.text((400, 300), design_prompt, fill="black", font=font, anchor="mm")
+        img.save(output_path)
+        
+        return output_path
 
     async def publish_to_printful(
         self, design_path: str, product_type: str, price: float
     ) -> Dict[str, Any]:
         """Publish design to Printful"""
         if not self.config.printful_api_key:
-            logger.error("Printful API key not configured")
-            raise ValueError("Printful API key is required for live publishing")
+            raise ValueError("Printful API key is required")
 
         try:
-            # Printful API integration would go here
-            logger.error("Printful API integration not yet implemented")
-            raise NotImplementedError("Printful API integration pending")
+            headers = {
+                "Authorization": f"Bearer {self.config.printful_api_key}",
+                "Content-Type": "application/json",
+            }
 
+            # Upload design file
+            with open(design_path, "rb") as f:
+                files = {"file": f}
+                upload_response = requests.post(
+                    "https://api.printful.com/files", files=files, headers=headers
+                )
+
+                if upload_response.status_code == 200:
+                    file_data = upload_response.json()
+                    return {
+                        "success": True,
+                        "file_id": file_data["result"]["id"],
+                        "product_url": f"https://printful.com/product/{file_data['result']['id']}",
+                    }
+                else:
+                    raise HTTPException(
+                        status_code=upload_response.status_code,
+                        detail=f"Printful API error: {upload_response.text}",
+                    )
         except Exception as e:
-            logger.error(f"Printful publishing failed: {e}")
+            logging.getLogger(__name__).error(f"Printful publishing failed: {e}")
             raise
 
 
 class SEOPublisher:
-    """Publishes SEO - optimized content to various platforms"""
-
+    """Publish SEO-optimized blog posts"""
 
     def __init__(self, config: MonetizationConfig):
         self.config = config
 
-
     async def publish_blog_post(
         self,
-            title: str,
-            content: str,
-            platform: str,
-            seo_keywords: List[str],
-            include_affiliate_links: bool = True,
-            ) -> Dict[str, Any]:
-        """Publish SEO - optimized blog post"""
+        title: str,
+        content: str,
+        platform: str,
+        seo_keywords: List[str],
+        include_affiliate_links: bool = True,
+    ) -> Dict[str, Any]:
+        """Publish SEO-optimized blog post"""
         try:
             # Optimize content for SEO
             optimized_content = await self._optimize_content_for_seo(
@@ -689,315 +562,344 @@ class SEOPublisher:
                     optimized_content
                 )
 
-            # Publish to platform
+            # Publish to specified platform
             if platform.lower() == "wordpress":
                 return await self._publish_to_wordpress(title, optimized_content)
             elif platform.lower() == "medium":
                 return await self._publish_to_medium(title, optimized_content)
             else:
-                logger.error(f"Unsupported platform: {platform}")
+                logging.getLogger(__name__).error(f"Unsupported platform: {platform}")
                 raise ValueError(f"Platform '{platform}' is not supported")
 
         except Exception as e:
-            logger.error(f"Blog post publishing failed: {e}")
+            logging.getLogger(__name__).error(f"Blog post publishing failed: {e}")
             raise
-
 
     async def _optimize_content_for_seo(self, content: str, keywords: List[str]) -> str:
         """Optimize content for SEO"""
-        # Simple SEO optimization
+        # Simple SEO optimization - inject keywords naturally
         optimized = content
-
-        # Add keywords naturally to content
-        for keyword in keywords[:3]:  # Limit to top 3 keywords
+        for keyword in keywords:
             if keyword.lower() not in content.lower():
-                optimized += f"\n\nThis article covers important aspects of {keyword} and its applications."
-
+                optimized += f"\n\nThis article covers {keyword} in detail."
         return optimized
 
-
     async def _inject_affiliate_links(self, content: str) -> str:
-        """Inject affiliate links into content"""
-        # Simple affiliate link injection
-        affiliate_products = {
-            "AI tools": "https://amazon.com / ai - tools?tag = traeai - 20",
-                "automation": "https://amazon.com / automation?tag = traeai - 20",
-                "software": "https://amazon.com / software?tag = traeai - 20",
-                }
-
-        for keyword, link in affiliate_products.items():
-            if keyword in content.lower():
-                content = content.replace(keyword, f"[{keyword}]({link})")
-
+        """Inject affiliate links into blog content"""
+        affiliate_links = {
+            "tools": "https://tools-platform.com/?ref=traeai",
+            "software": "https://software-store.com/?ref=traeai",
+        }
+        
+        for keyword, link in affiliate_links.items():
+            content = content.replace(keyword, f'<a href="{link}">{keyword}</a>')
+        
         return content
-
 
     async def _publish_to_wordpress(self, title: str, content: str) -> Dict[str, Any]:
         """Publish to WordPress"""
-        if not self.config.wordpress_api_url:
-            logger.error("WordPress API URL not configured")
-            raise ValueError("WordPress API URL is required for live publishing")
+        if not self.config.wordpress_api_key or not self.config.wordpress_url:
+            raise ValueError("WordPress credentials are required")
 
         try:
-            # WordPress API integration would go here
-            logger.error("WordPress API integration not yet implemented")
-            raise NotImplementedError("WordPress API integration pending")
+            headers = {
+                "Authorization": f"Bearer {self.config.wordpress_api_key}",
+                "Content-Type": "application/json",
+            }
 
+            data = {
+                "title": title,
+                "content": content,
+                "status": "publish",
+            }
+
+            response = requests.post(
+                f"{self.config.wordpress_url}/wp-json/wp/v2/posts",
+                json=data,
+                headers=headers,
+            )
+
+            if response.status_code == 201:
+                result = response.json()
+                return {
+                    "success": True,
+                    "post_id": result["id"],
+                    "url": result["link"],
+                }
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"WordPress API error: {response.text}",
+                )
         except Exception as e:
-            logger.error(f"WordPress publishing failed: {e}")
+            logging.getLogger(__name__).error(f"WordPress publishing failed: {e}")
             raise
-
 
     async def _publish_to_medium(self, title: str, content: str) -> Dict[str, Any]:
         """Publish to Medium"""
-        if not self.config.medium_access_token:
-            logger.error("Medium access token not configured")
-            raise ValueError("Medium access token is required for live publishing")
+        if not self.config.medium_token:
+            raise ValueError("Medium token is required")
 
         try:
-            # Medium API integration would go here
-            logger.error("Medium API integration not yet implemented")
-            raise NotImplementedError("Medium API integration pending")
+            headers = {
+                "Authorization": f"Bearer {self.config.medium_token}",
+                "Content-Type": "application/json",
+            }
 
+            # Get user ID first
+            user_response = requests.get(
+                "https://api.medium.com/v1/me", headers=headers
+            )
+
+            if user_response.status_code == 200:
+                user_data = user_response.json()
+                user_id = user_data["data"]["id"]
+
+                # Create post
+                post_data = {
+                    "title": title,
+                    "contentFormat": "html",
+                    "content": content,
+                    "publishStatus": "public",
+                }
+
+                post_response = requests.post(
+                    f"https://api.medium.com/v1/users/{user_id}/posts",
+                    json=post_data,
+                    headers=headers,
+                )
+
+                if post_response.status_code == 201:
+                    result = post_response.json()
+                    return {
+                        "success": True,
+                        "post_id": result["data"]["id"],
+                        "url": result["data"]["url"],
+                    }
+                else:
+                    raise HTTPException(
+                        status_code=post_response.status_code,
+                        detail=f"Medium API error: {post_response.text}",
+                    )
+            else:
+                raise HTTPException(
+                    status_code=user_response.status_code,
+                    detail=f"Medium user API error: {user_response.text}",
+                )
         except Exception as e:
-            logger.error(f"Medium publishing failed: {e}")
+            logging.getLogger(__name__).error(f"Medium publishing failed: {e}")
             raise
 
 
 class MonetizationBundle:
-    """Main monetization bundle that orchestrates all revenue generation"""
-
+    """Main monetization bundle class"""
 
     def __init__(self, config: MonetizationConfig):
         self.config = config
-        self.app = FastAPI(title="TRAE.AI Monetization Bundle", version="1.0.0")
-
-        # Initialize database
-        self.engine = create_engine(config.database_url)
-        Base.metadata.create_all(self.engine)
-        SessionLocal = sessionmaker(autocommit = False, autoflush = False, bind = self.engine)
-        self.db_session = SessionLocal()
-
+        self.app = FastAPI(title="TRAE.AI Monetization Bundle")
+        
         # Initialize components
         self.ebook_generator = EbookGenerator(config)
         self.gumroad_publisher = GumroadPublisher(config)
         self.newsletter_bot = NewsletterBot(config)
         self.merch_bot = MerchBot(config)
         self.seo_publisher = SEOPublisher(config)
-
+        
+        # Setup database
+        self.engine = create_engine(config.database_url)
+        Base.metadata.create_all(self.engine)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        self.db_session = SessionLocal()
+        
         self.setup_logging()
         self.setup_routes()
 
-
     def setup_logging(self):
-        """Configure logging"""
-        logger.remove()
-        logger.add(
-            sys.stdout,
-                level = self.config.log_level,
-                format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-                )
-        logger.add(
-            "./logs / monetization_bundle.log",
-                rotation="1 day",
-                retention="30 days",
-                level = self.config.log_level,
-                )
-
+        """Setup logging configuration"""
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[
+                logging.FileHandler("monetization.log"),
+                logging.StreamHandler(sys.stdout),
+            ],
+        )
 
     def setup_routes(self):
         """Setup FastAPI routes"""
 
         @self.app.get("/health")
-
-
         async def health_check():
+            """Health check endpoint"""
             return {
                 "status": "healthy",
-                    "timestamp": datetime.now().isoformat(),
-                    "gumroad_configured": bool(self.config.gumroad_access_token),
-                    "email_configured": bool(self.config.sendgrid_api_key),
-                    "printful_configured": bool(self.config.printful_api_key),
-                    }
+                "timestamp": datetime.now().isoformat(),
+                "gumroad_configured": bool(self.config.gumroad_access_token),
+                "email_configured": bool(self.config.sendgrid_api_key),
+                "printful_configured": bool(self.config.printful_api_key),
+            }
 
-        @self.app.post("/ebook / create")
-
-
+        @self.app.post("/ebook/create")
         async def create_ebook(request: EbookRequest):
             """Create and publish ebook"""
             try:
-                logger.info(f"📚 Creating ebook: {request.title}")
-
                 # Generate ebook
                 file_path = await self.ebook_generator.generate_ebook(
                     request.title, request.content, request.author, request.format
                 )
 
-                # Publish to Gumroad
-                publish_result = await self.gumroad_publisher.publish_product(
-                    request.title,
-                        request.price,
-                        file_path,
-                        f"Professional ebook by {request.author}",
-                        )
-
                 # Save to database
                 product = Product(
-                    name = request.title,
-                        product_type="ebook",
-                        description = f"Ebook: {request.title}",
-                        price = request.price,
-                        platform="gumroad",
-                        platform_id = publish_result.get("product_id"),
-                        file_path = file_path,
-                        status="published" if publish_result.get("success") else "failed",
-                        )
-
+                    name=request.title,
+                    product_type="ebook",
+                    description=f"Ebook: {request.title}",
+                    price=request.price,
+                    file_path=file_path,
+                    status="generated",
+                )
                 self.db_session.add(product)
+                self.db_session.commit()
+
+                # Publish to Gumroad
+                publish_result = await self.gumroad_publisher.publish_product(
+                    request.title, request.price, file_path
+                )
+
+                # Update product with Gumroad info
+                product.platform = "gumroad"
+                product.platform_id = publish_result.get("product_id")
+                product.status = "published"
                 self.db_session.commit()
 
                 return {
                     "success": True,
-                        "product_id": product.id,
-                        "file_path": file_path,
-                        "gumroad_url": publish_result.get("url"),
-                        "title": request.title,
-                        "price": request.price,
-                        }
+                    "product_id": product.id,
+                    "file_path": file_path,
+                    "gumroad_url": publish_result.get("url"),
+                    "title": request.title,
+                    "price": request.price,
+                }
 
             except Exception as e:
-                logger.error(f"Ebook creation failed: {e}")
-                raise HTTPException(status_code = 500, detail = str(e))
+                logging.getLogger(__name__).error(f"Ebook creation failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
 
-        @self.app.post("/newsletter / send")
-
-
+        @self.app.post("/newsletter/send")
         async def send_newsletter(request: NewsletterRequest):
-            """Create and send newsletter"""
+            """Send newsletter"""
             try:
-                logger.info(f"📧 Sending newsletter: {request.subject}")
-
+                # Send newsletter
                 result = await self.newsletter_bot.create_and_send_newsletter(
                     request.subject,
-                        request.content,
-                        request.subscriber_list,
-                        request.include_affiliate_links,
-                        )
+                    request.content,
+                    request.subscriber_list,
+                    request.include_affiliate_links,
+                )
 
                 # Save to database
                 newsletter = Newsletter(
-                    subject = request.subject,
-                        content = request.content,
-                        subscriber_count = len(request.subscriber_list),
-                        sent_at = datetime.now() if result.get("success") else None,
-                        )
-
+                    subject=request.subject,
+                    content=request.content,
+                    subscriber_count=len(request.subscriber_list),
+                    sent_at=datetime.utcnow(),
+                )
                 self.db_session.add(newsletter)
                 self.db_session.commit()
 
                 return {
                     "success": result.get("success", False),
-                        "newsletter_id": newsletter.id,
-                        "sent_count": result.get("sent_count", 0),
-                        "subject": request.subject,
-                        }
+                    "newsletter_id": newsletter.id,
+                    "sent_count": result.get("sent_count", 0),
+                    "subject": request.subject,
+                }
 
             except Exception as e:
-                logger.error(f"Newsletter sending failed: {e}")
-                raise HTTPException(status_code = 500, detail = str(e))
+                logging.getLogger(__name__).error(f"Newsletter sending failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
 
-        @self.app.post("/merch / create")
-
-
+        @self.app.post("/merch/create")
         async def create_merch(request: MerchRequest):
-            """Create and publish merchandise"""
+            """Create merchandise"""
             try:
-                logger.info(f"👕 Creating merch: {request.design_name}")
-
                 # Create design
                 design_path = await self.merch_bot.create_merch_design(
                     request.design_name, request.product_type, request.design_prompt
                 )
 
-                # Publish to print - on - demand platform
+                # Save to database
+                merch_design = MerchDesign(
+                    name=request.design_name,
+                    design_type=request.product_type,
+                    image_path=design_path,
+                    platform=request.platform,
+                    price=request.price,
+                )
+                self.db_session.add(merch_design)
+                self.db_session.commit()
+
+                # Publish to platform
                 publish_result = await self.merch_bot.publish_to_printful(
                     design_path, request.product_type, request.price
                 )
 
-                # Save to database
-                merch_design = MerchDesign(
-                    name = request.design_name,
-                        design_type = request.product_type,
-                        image_path = design_path,
-                        platform = request.platform,
-                        platform_id = publish_result.get("product_id"),
-                        price = request.price,
-                        )
-
-                self.db_session.add(merch_design)
+                # Update with platform info
+                merch_design.platform_id = publish_result.get("file_id")
                 self.db_session.commit()
 
                 return {
                     "success": True,
-                        "merch_id": merch_design.id,
-                        "design_path": design_path,
-                        "product_url": publish_result.get("product_url"),
-                        "design_name": request.design_name,
-                        "price": request.price,
-                        }
+                    "merch_id": merch_design.id,
+                    "design_path": design_path,
+                    "product_url": publish_result.get("product_url"),
+                    "design_name": request.design_name,
+                    "price": request.price,
+                }
 
             except Exception as e:
-                logger.error(f"Merch creation failed: {e}")
-                raise HTTPException(status_code = 500, detail = str(e))
+                logging.getLogger(__name__).error(f"Merch creation failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
 
-        @self.app.post("/blog / publish")
-
-
+        @self.app.post("/blog/publish")
         async def publish_blog_post(request: BlogPostRequest):
-            """Publish SEO - optimized blog post"""
+            """Publish blog post"""
             try:
-                logger.info(f"📝 Publishing blog post: {request.title}")
-
+                # Publish blog post
                 result = await self.seo_publisher.publish_blog_post(
                     request.title,
-                        request.content,
-                        request.platform,
-                        request.seo_keywords,
-                        request.include_affiliate_links,
-                        )
+                    request.content,
+                    request.platform,
+                    request.seo_keywords,
+                    request.include_affiliate_links,
+                )
 
                 # Save to database
                 blog_post = BlogPost(
-                    title = request.title,
-                        content = request.content,
-                        platform = request.platform,
-                        platform_id = result.get("post_id"),
-                        url = result.get("url"),
-                        published_at = datetime.now() if result.get("success") else None,
-                        )
-
+                    title=request.title,
+                    content=request.content,
+                    platform=request.platform,
+                    platform_id=result.get("post_id"),
+                    url=result.get("url"),
+                    published_at=datetime.utcnow(),
+                )
                 self.db_session.add(blog_post)
                 self.db_session.commit()
 
                 return {
                     "success": result.get("success", False),
-                        "blog_post_id": blog_post.id,
-                        "url": result.get("url"),
-                        "title": request.title,
-                        "platform": request.platform,
-                        }
+                    "blog_post_id": blog_post.id,
+                    "url": result.get("url"),
+                    "title": request.title,
+                    "platform": request.platform,
+                }
 
             except Exception as e:
-                logger.error(f"Blog post publishing failed: {e}")
-                raise HTTPException(status_code = 500, detail = str(e))
+                logging.getLogger(__name__).error(f"Blog post publishing failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
 
-        @self.app.get("/analytics / revenue")
-
-
+        @self.app.get("/analytics/revenue")
         async def get_revenue_analytics():
-            """Get revenue analytics dashboard"""
+            """Get revenue analytics"""
             try:
-                # Get revenue data from database
                 products = self.db_session.query(Product).all()
                 newsletters = self.db_session.query(Newsletter).all()
                 merch_designs = self.db_session.query(MerchDesign).all()
@@ -1006,59 +908,47 @@ class MonetizationBundle:
                 return {
                     "products": {
                         "total": len(products),
-                            "published": len(
+                        "published": len(
                             [p for p in products if p.status == "published"]
                         ),
-                            "total_revenue": sum(p.revenue for p in products),
-                            "total_sales": sum(p.sales_count for p in products),
-                            },
-                        "newsletters": {
+                        "total_revenue": sum(p.revenue for p in products),
+                        "total_sales": sum(p.sales_count for p in products),
+                    },
+                    "newsletters": {
                         "total_sent": len(newsletters),
-                            "total_subscribers": sum(
+                        "total_subscribers": sum(
                             n.subscriber_count for n in newsletters
                         ),
-                            "avg_open_rate": (
+                        "avg_open_rate": (
                             sum(n.open_rate for n in newsletters) / len(newsletters)
                             if newsletters
                             else 0
                         ),
-                            "total_revenue": sum(n.revenue_generated for n in newsletters),
-                            },
-                        "merchandise": {
+                        "total_revenue": sum(n.revenue_generated for n in newsletters),
+                    },
+                    "merchandise": {
                         "total_designs": len(merch_designs),
-                            "total_revenue": sum(m.revenue for m in merch_designs),
-                            "total_sales": sum(m.sales_count for m in merch_designs),
-                            },
-                        "blog_posts": {
+                        "total_revenue": sum(m.revenue for m in merch_designs),
+                        "total_sales": sum(m.sales_count for m in merch_designs),
+                    },
+                    "blog_posts": {
                         "total_posts": len(blog_posts),
-                            "total_views": sum(b.views for b in blog_posts),
-                            "affiliate_revenue": sum(
+                        "total_views": sum(b.views for b in blog_posts),
+                        "affiliate_revenue": sum(
                             b.affiliate_revenue for b in blog_posts
                         ),
-                            },
-                        }
+                    },
+                }
 
             except Exception as e:
-                logger.error(f"Revenue analytics failed: {e}")
-                raise HTTPException(status_code = 500, detail = str(e))
-
+                logging.getLogger(__name__).error(f"Revenue analytics failed: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
 
     async def start_server(self):
-        """Start the monetization bundle server"""
+        """Start the FastAPI server"""
         import uvicorn
 
-        logger.info("💰 Starting TRAE.AI Monetization Bundle")
-        logger.info(f"🛒 Gumroad configured: {bool(self.config.gumroad_access_token)}")
-        logger.info(f"📧 Email configured: {bool(self.config.sendgrid_api_key)}")
-
-        config = uvicorn.Config(
-            app = self.app,
-                host="0.0.0.0",
-                port = 8003,
-                log_level = self.config.log_level.lower(),
-                )
-        server = uvicorn.Server(config)
-        await server.serve()
+        uvicorn.run(self.app, host="0.0.0.0", port=8001)
 
 
 async def main():
@@ -1067,7 +957,7 @@ async def main():
     bundle = MonetizationBundle(config)
     await bundle.start_server()
 
-# Create module - level app instance for imports
+
 config = MonetizationConfig()
 bundle = MonetizationBundle(config)
 app = bundle.app

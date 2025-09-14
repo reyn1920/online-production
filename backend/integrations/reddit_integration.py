@@ -1,68 +1,34 @@
 from __future__ import annotations
-
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Dict, Any
+from ._base_social import BaseSocialClient
 
-@dataclass
-
-
-class RedditClient:
-    client_id: Optional[str] = None
-    client_secret: Optional[str] = None
-    username: Optional[str] = None
-    password: Optional[str] = None
-    user_agent: Optional[str] = None
+class RedditClient(BaseSocialClient):
+    name = "reddit"
 
     @classmethod
+    def from_env(cls) -> RedditClient:
+        """Create RedditClient instance from environment variables"""
+        return cls()
 
+    def _check_ready(self) -> bool:
+        need = ["REDDIT_CLIENT_ID","REDDIT_CLIENT_SECRET","REDDIT_USERNAME","REDDIT_PASSWORD","REDDIT_USER_AGENT"]
+        return all(self.env.get(k) for k in need)
 
-    def from_env(cls) -> "RedditClient":
-        return cls(
-            client_id = os.getenv("REDDIT_CLIENT_ID"),
-                client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
-                username = os.getenv("REDDIT_USERNAME"),
-                password = os.getenv("REDDIT_PASSWORD"),
-                user_agent = os.getenv("REDDIT_USER_AGENT", "MyApp / 1.0"),
-                )
+    def is_configured(self) -> bool:
+        """Check if Reddit integration is configured"""
+        return self.ready()
 
-
-    def ready(self) -> bool:
-        # OFF by default: returns True only when creds exist
-        return bool(
-            self.client_id and self.client_secret and self.username and self.password
-        )
-
-    # --- Stubs (no network calls yet) ---
-
-
-        def submit_post(
-        self, subreddit: str, title: str, text: str = "", url: str = ""
-    ) -> Dict[str, Any]:
+    async def submit_post(self, subreddit: str, title: str, text: str | None = None, url: str | None = None) -> Dict[str, Any]:
+        """Submit a post to Reddit"""
         if not self.ready():
-            raise RuntimeError("Reddit not configured")
-        return {
-            "ok": True,
-                "id": "reddit_post_stub",
-                "subreddit": subreddit,
-                "title": title[:300],
-                "text": text,
-                "url": url,
-                }
+            return {"ok": False, "error": "Reddit not configured"}
+        # TODO: PRAW or Reddit API call
+        return {"ok": True, "provider": "reddit", "subreddit": subreddit, "title_len": len(title), "mode": "self" if text else "link"}
 
-
-    def submit_comment(self, post_id: str, text: str) -> Dict[str, Any]:
+    def post(self, subreddit: str, title: str, text: str | None = None, url: str | None = None) -> Dict[str, Any]:
+        """Legacy method for backward compatibility"""
         if not self.ready():
-            raise RuntimeError("Reddit not configured")
-        return {
-            "ok": True,
-                "id": "reddit_comment_stub",
-                "post_id": post_id,
-                "text": text,
-                }
-
-
-    def insights(self) -> Dict[str, Any]:
-        if not self.ready():
-            raise RuntimeError("Reddit not configured")
-        return {"ok": True, "karma": 0, "posts": 0, "comments": 0}
+            return {"ok": False, "reason": "reddit_not_configured"}
+        # TODO: PRAW or Reddit API call
+        return {"ok": True, "provider": "reddit", "subreddit": subreddit, "title_len": len(title), "mode": "self" if text else "link"}

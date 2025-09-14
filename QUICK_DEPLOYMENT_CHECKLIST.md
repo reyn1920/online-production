@@ -26,8 +26,7 @@ netlify init
 ```
 
 **Option B: Via Netlify Dashboard**
-1. Go to https://app.netlify.com/
-2. Click "Add new site" → "Import an existing project"
+1. Go to https://app.netlify.com/2. Click "Add new site" → "Import an existing project"
 3. Connect GitHub and select your repository
 4. Build settings:
    - Build command: `npm run build`

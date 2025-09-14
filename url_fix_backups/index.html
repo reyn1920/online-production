@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRAE.AI Dashboard - Production</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .dashboard-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .dashboard-link {
+            display: block;
+            padding: 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .dashboard-link:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #48bb78;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status">🟢 Production Ready</div>
+        <h1>TRAE.AI Dashboard</h1>
+        <p>Welcome to your AI-powered content creation and monetization platform</p>
+        
+        <div class="dashboard-links">
+            <a href="/app/static/index.html" class="dashboard-link">
+                📊 Main Dashboard
+            </a>
+            <a href="/analytics-dashboard.html" class="dashboard-link">
+                📈 Analytics
+            </a>
+            <a href="/youtube-creator-app.html" class="dashboard-link">
+                🎥 YouTube Creator
+            </a>
+            <a href="/seasonal-ai-automation.html" class="dashboard-link">
+                🤖 AI Automation
+            </a>
+            <a href="/affiliate-marketing-tools.html" class="dashboard-link">
+                💰 Affiliate Tools
+            </a>
+            <a href="/brand-partnership-tracker.html" class="dashboard-link">
+                🤝 Brand Partnerships
+            </a>
+        </div>
+        
+        <p style="margin-top: 2rem; font-size: 0.9rem; color: #888;">
+            Server running on port 8080 | All systems operational
+        </p>
+    </div>
+    
+    <script>
+        // Auto-redirect to main dashboard after 3 seconds if no interaction
+        let redirectTimer = setTimeout(() => {
+            window.location.href = '/app/static/index.html';
+        }, 5000);
+        
+        // Cancel redirect if user interacts with page
+        document.addEventListener('click', () => {
+            clearTimeout(redirectTimer);
+        });
+        
+        document.addEventListener('keydown', () => {
+            clearTimeout(redirectTimer);
+        });
+    </script>
+</body>
+</html>

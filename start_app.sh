@@ -38,7 +38,7 @@ info() {
 is_running() {
     if [ -f "$PID_FILE" ]; then
         local pid=$(cat "$PID_FILE")
-        if ps -p "$pid" > /dev/null 2>&1; then
+        if ps -p "$pid" >/dev/null 2>&1; then
             return 0
         else
             rm -f "$PID_FILE"
@@ -62,17 +62,17 @@ start_app() {
     fi
     
     # Start Ollama if not running
-    if ! pgrep -f "ollama serve" > /dev/null; then
+    if ! pgrep -f "ollama serve" >/dev/null; then
         log "🤖 Starting Ollama service..."
         if command -v ollama >/dev/null 2>&1; then
-            ollama serve > /dev/null 2>&1 &
+            ollama serve >/dev/null 2>&1 &
             sleep 3
             log "✅ Ollama service started"
         else
             warn "⚠️  Ollama not found, attempting to install via Homebrew..."
             if command -v brew >/dev/null 2>&1; then
                 brew install ollama
-                ollama serve > /dev/null 2>&1 &
+                ollama serve >/dev/null 2>&1 &
                 sleep 3
                 log "✅ Ollama installed and started"
             else
@@ -84,7 +84,7 @@ start_app() {
     fi
     
     # Start Chrome with essential tabs if not running
-    if ! pgrep -f "Google Chrome" > /dev/null; then
+    if ! pgrep -f "Google Chrome" >/dev/null; then
         log "🌐 Starting Chrome with essential tabs..."
         open -a "Google Chrome"
         sleep 2
@@ -118,7 +118,7 @@ start_app() {
     # Wait a moment and check if it started successfully
     sleep 3
     
-    if ps -p "$pid" > /dev/null 2>&1; then
+    if ps -p "$pid" >/dev/null 2>&1; then
         log "✅ Application started successfully (PID: $pid)"
         log "🌐 Application should be available at: http://localhost:8000"
         log "📊 Health check: http://localhost:8000/health"
@@ -150,13 +150,13 @@ stop_app() {
     
     # Wait for graceful shutdown
     local count=0
-    while [ $count -lt 30 ] && ps -p "$pid" > /dev/null 2>&1; do
+    while [ $count -lt 30 ] && ps -p "$pid" >/dev/null 2>&1; do
         sleep 1
         count=$((count + 1))
     done
     
     # Force kill if still running
-    if ps -p "$pid" > /dev/null 2>&1; then
+    if ps -p "$pid" >/dev/null 2>&1; then
         warn "Graceful shutdown failed, force killing..."
         kill -KILL "$pid" 2>/dev/null || true
         sleep 2
@@ -199,7 +199,7 @@ status_app() {
         
         # Check if web server is responding
         echo -e "\n${BLUE}Service Health:${NC}"
-        if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health | grep -q "200"; then
+        if curl -s -o/dev/null -w "%{http_code}" http://localhost:8000/health | grep -q "200"; then
             log "✅ Web server is responding"
         else
             warn "⚠️ Web server is not responding"

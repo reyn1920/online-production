@@ -25,8 +25,8 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /tmp
-      - /var/run/postgresql
+      -/tmp
+      -/var/run/postgresql
 
   redis:
     image: redis:7-alpine
@@ -47,7 +47,7 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /tmp
+      -/tmp
 
   # Message Queue
   rabbitmq:
@@ -114,8 +114,8 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /tmp
-      - /var/cache
+      -/tmp
+      -/var/cache
     volumes:
       - ./logs:/app/logs:rw
 

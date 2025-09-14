@@ -101,10 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_api_registry_capability ON api_registry(capabilit
 CREATE INDEX IF NOT EXISTS idx_api_registry_active ON api_registry(is_active);
 CREATE INDEX IF NOT EXISTS idx_api_registry_health_status ON api_registry(last_health_status);
 
--- Indexes for affiliate_programs
-CREATE INDEX IF NOT EXISTS idx_affiliate_programs_active ON affiliate_programs(is_active);
-CREATE INDEX IF NOT EXISTS idx_affiliate_programs_health_status ON affiliate_programs(last_health_status);
-CREATE INDEX IF NOT EXISTS idx_affiliate_programs_status ON affiliate_programs(status);
+-- Note: affiliate_programs indexes are created after the table definition
 
 -- Indexes for api_suggestions
 CREATE INDEX IF NOT EXISTS idx_api_suggestions_status ON api_suggestions(status);
@@ -1665,6 +1662,16 @@ CREATE TABLE IF NOT EXISTS generated_reports (
     report_data JSON,
     generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     file_path TEXT
+);
+
+-- Reports Table
+-- Simple reports storage for legacy compatibility
+CREATE TABLE IF NOT EXISTS reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    report_type TEXT,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'active'
 );
 
 -- Performance Metrics

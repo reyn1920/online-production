@@ -9,9 +9,10 @@ logging.basicConfig(level = logging.INFO, format = LOG_FORMAT)
 
 VENV_PATH = "venv_creative"
 REQUIREMENTS_FILE = "requirements_creative.txt"
-HOMEBREW_URL = "https://raw.githubusercontent.com / Homebrew / install / HEAD / install.sh"
+HOMEBREW_URL = "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 
-# System dependencies required by Python packages (key: package name, value: brew formula)
+# System dependencies required by Python packages (key: package name,
+    value: brew formula)
 SYS_DEPS = {
     "py3exiv2": "boost",
         # Add other known system dependencies here
@@ -23,7 +24,10 @@ SYS_DEPS = {
 def check_command(command):
     """Checks if a command - line tool is available."""
     return (
-        subprocess.run(["which", command], capture_output = True, text = True).returncode
+        subprocess.run(["which",
+    command],
+    capture_output = True,
+    text = True).returncode
         == 0
     )
 
@@ -38,7 +42,7 @@ def check_prerequisites():
         logging.info(
             "Please install Homebrew by running the following command, then run this script again:"
         )
-        print(f'\n / bin / bash -c "$(curl -fsSL {HOMEBREW_URL})"\n')
+        print(f'\\n/bin/bash -c "$(curl -fsSL {HOMEBREW_URL})"\\n')
         return False
     logging.info("✅ Homebrew is installed.")
     return True
@@ -61,7 +65,7 @@ def check_system_libraries():
         logging.info(
             "Please install them by running this command, then run this script again:"
         )
-        print(f"\nbrew install {' '.join(missing_libs)}\n")
+        print(f"\\nbrew install {' '.join(missing_libs)}\\n")
         return False
 
     logging.info("✅ All required system libraries are installed.")
@@ -117,7 +121,8 @@ def install_dependencies():
             f"Failed to install dependencies. pip exited with status {e.returncode}."
         )
         logging.error(
-            f"Please check the error messages above. You may need to modify '{REQUIREMENTS_FILE}' to resolve version conflicts or remove incompatible packages like 'open3d'."
+            f"Please check the error messages above. You may need to modify '{REQUIREMENTS_FILE}' to resolve version conflicts \
+    or remove incompatible packages like 'open3d'."
         )
         return False
 
@@ -139,7 +144,7 @@ def main():
         logging.error("❌ Creative environment setup failed.")
         return
 
-    logging.info("\n--- ✅ Creative Environment is Ready! ---")
+    logging.info("\\n--- ✅ Creative Environment is Ready! ---")
     logging.info("You can now test the video and avatar features.")
 
 if __name__ == "__main__":

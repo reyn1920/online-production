@@ -241,7 +241,7 @@
         }
 
         .courses-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -394,7 +394,7 @@
         }
 
         .new-course-form {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -436,7 +436,7 @@
         }
 
         .students-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -513,7 +513,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -704,7 +704,7 @@
                         <div class="progress-fill" id="revenueGoalFill" style="width: 0%"></div>
                     </div>
                     <div style="text-align: center; margin-top: 5px;">
-                        <span id="revenueGoalText">$0 / $25,000 goal</span>
+                        <span id="revenueGoalText">$0/$25,000 goal</span>
                     </div>
                 </div>
             </div>
@@ -765,7 +765,7 @@
                         <input type="number" id="courseLessons" placeholder="25" min="1" max="200">
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Course Description</label>
                         <textarea id="courseDescription" placeholder="Describe what students will learn..."></textarea>
                     </div>
@@ -923,9 +923,7 @@
                 enrolled: '2024-02-05',
                 lastActive: '2024-02-11'
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             loadStreamData();
@@ -939,22 +937,19 @@
             streamData.totalCourses = streamData.courses.length;
             streamData.totalStudents = streamData.courses.reduce((sum, c) => sum + c.students, 0);
             streamData.monthlyRevenue = streamData.courses.reduce((sum, c) => sum + c.revenue, 0);
-            streamData.avgRating = streamData.courses.filter(c => c.rating > 0).reduce((sum, c, _, arr) => sum + c.rating / arr.length, 0);
+            streamData.avgRating = streamData.courses.filter(c => c.rating > 0).reduce((sum, c, _, arr) => sum + c.rating/arr.length, 0);
             renderCourses();
             renderStudents();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
@@ -1065,7 +1060,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.online_courses) {
@@ -1085,8 +1080,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -1100,21 +1094,15 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('totalCourses').textContent = streamData.totalCourses;
             document.getElementById('totalStudents').textContent = streamData.totalStudents.toLocaleString();
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toLocaleString();
-            document.getElementById('avgRating').textContent = streamData.avgRating.toFixed(1);
-            
-            // Update revenue goal progress
-            const goalPercent = Math.min(100, (streamData.monthlyRevenue / streamData.revenueGoal) * 100);
+            document.getElementById('avgRating').textContent = streamData.avgRating.toFixed(1);//Update revenue goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
-            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRevenue.toLocaleString()} / $${streamData.revenueGoal.toLocaleString()} goal`;
+            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyRevenue.toLocaleString()}/$${streamData.revenueGoal.toLocaleString()} goal`;
         }
 
         async function startStream() {
@@ -1130,9 +1118,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -1156,9 +1142,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1223,8 +1207,7 @@
         }
 
         function hideNewCourseForm() {
-            document.getElementById('newCourseForm').style.display = 'none';
-            // Clear form
+            document.getElementById('newCourseForm').style.display = 'none';//Clear form
             document.getElementById('courseTitle').value = '';
             document.getElementById('courseCategory').value = 'programming';
             document.getElementById('coursePrice').value = '';
@@ -1271,7 +1254,7 @@
                     lastUpdated: new Date().toISOString().split('T')[0]
                 };
 
-                const response = await fetch('/api/courses/create', {
+                const response = await fetch("/api/courses/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1304,13 +1287,9 @@
                 if (newPrice && !isNaN(newPrice) && newPrice >= 9 && newPrice <= 999) {
                     const oldPrice = course.price;
                     course.price = parseFloat(newPrice);
-                    course.lastUpdated = new Date().toISOString().split('T')[0];
-                    
-                    // Update revenue proportionally
-                    const priceRatio = course.price / oldPrice;
-                    course.revenue = Math.round(course.revenue * priceRatio);
-                    
-                    // Update totals
+                    course.lastUpdated = new Date().toISOString().split('T')[0];//Update revenue proportionally
+                    const priceRatio = course.price/oldPrice;
+                    course.revenue = Math.round(course.revenue * priceRatio);//Update totals
                     streamData.monthlyRevenue = streamData.courses.reduce((sum, c) => sum + c.revenue, 0);
                     
                     renderCourses();
@@ -1331,8 +1310,8 @@ Course Analytics for "${course.title}":
 • Students: ${course.students.toLocaleString()}
 • Revenue: $${course.revenue.toLocaleString()}
 • Rating: ${course.rating > 0 ? course.rating.toFixed(1) + '/5.0' : 'No ratings yet'}
-• Conversion Rate: ${((course.students / 10000) * 100).toFixed(2)}%
-• Revenue per Student: $${course.students > 0 ? (course.revenue / course.students).toFixed(2) : '0.00'}
+• Conversion Rate: ${((course.students/10000) * 100).toFixed(2)}%
+• Revenue per Student: $${course.students > 0 ? (course.revenue/course.students).toFixed(2) : '0.00'}
 • Status: ${course.status.charAt(0).toUpperCase() + course.status.slice(1)}
 • Last Updated: ${new Date(course.lastUpdated).toLocaleDateString()}`;
                 
@@ -1399,7 +1378,7 @@ Course Analytics for "${course.title}":
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.online_courses) {
@@ -1411,9 +1390,7 @@ Course Analytics for "${course.title}":
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.avgRating = stream.avgRating;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1431,8 +1408,7 @@ Course Analytics for "${course.title}":
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1442,35 +1418,28 @@ Course Analytics for "${course.title}":
         }
 
         function simulateCourseActivity() {
-            if (streamData.status === 'active') {
-                // Simulate new enrollments and progress
+            if (streamData.status === 'active') {//Simulate new enrollments and progress
                 streamData.courses.forEach(course => {
                     if (course.status === 'published' && Math.random() < 0.4) {
                         const newStudents = Math.floor(Math.random() * 5) + 1;
                         course.students += newStudents;
-                        course.revenue += newStudents * course.price;
-                        
-                        // Slight rating fluctuation
+                        course.revenue += newStudents * course.price;//Slight rating fluctuation
                         if (course.rating > 0 && Math.random() < 0.2) {
                             course.rating = Math.max(3.0, Math.min(5.0, course.rating + (Math.random() - 0.5) * 0.2));
                         }
                     }
-                });
-                
-                // Update student progress
+                });//Update student progress
                 streamData.students.forEach(student => {
                     if (student.progress < 100 && Math.random() < 0.3) {
                         const progressIncrease = Math.floor(Math.random() * 5) + 1;
                         student.progress = Math.min(100, student.progress + progressIncrease);
-                        student.completedLessons = Math.floor((student.progress / 100) * student.totalLessons);
+                        student.completedLessons = Math.floor((student.progress/100) * student.totalLessons);
                         student.lastActive = new Date().toISOString().split('T')[0];
                     }
-                });
-                
-                // Update totals
+                });//Update totals
                 streamData.totalStudents = streamData.courses.reduce((sum, c) => sum + c.students, 0);
                 streamData.monthlyRevenue = streamData.courses.reduce((sum, c) => sum + c.revenue, 0);
-                streamData.avgRating = streamData.courses.filter(c => c.rating > 0).reduce((sum, c, _, arr) => sum + c.rating / arr.length, 0);
+                streamData.avgRating = streamData.courses.filter(c => c.rating > 0).reduce((sum, c, _, arr) => sum + c.rating/arr.length, 0);
                 
                 updateUI();
                 renderCourses();
@@ -1484,17 +1453,13 @@ Course Analytics for "${course.title}":
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start course activity simulation
+        }//Start course activity simulation
         setInterval(simulateCourseActivity, 20000);
     </script>
 </body>

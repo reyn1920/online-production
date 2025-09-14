@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Conservative Research System - Security Scanner
 
@@ -48,7 +48,7 @@ class SeverityLevel(Enum):
 class IssueType(Enum):
     """Security issue types"""
 
-    HARDCODED_SECRET = "hardcoded_secret"
+    HARDCODED_SECRET = os.getenv("SECURITY_SCANNER_SECRET", "development_secret")
     WEAK_PERMISSION = "weak_permission"
     VULNERABLE_DEPENDENCY = "vulnerable_dependency"
     INSECURE_CODE = "insecure_code"
@@ -97,19 +97,19 @@ class SecurityScanner:
         # Secret patterns for detection
         self.secret_patterns = {
             "api_key": {
-                "pattern": r'(?i)(api[_-]?key|apikey)\s*[=:]\s*["\']?([a - zA - Z0 - 9_\-]{20,})["\']?',
+                "pattern": r'(?i)(api[_-]?key|apikey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.HIGH,
                     },
                 "secret_key": {
-                "pattern": r'(?i)(secret[_-]?key|secretkey)\s*[=:]\s*["\']?([a - zA - Z0 - 9_\-]{20,})["\']?',
+                "pattern": r'(?i)(secret[_-]?key|secretkey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.CRITICAL,
                     },
                 "password": {
-                "pattern": r'(?i)(password|passwd|pwd)\s*[=:]\s*["\']([^"\s]{8,})["\']',
+                "pattern": r'(?i)(password|passwd|pwd)\\s*[=:]\\s*["\\']([^"\\s]{8,})["\\']',
                     "severity": SeverityLevel.HIGH,
                     },
                 "token": {
-                "pattern": r'(?i)(token|auth[_-]?token)\s*[=:]\s*["\']?([a - zA - Z0 - 9_\-]{20,})["\']?',
+                "pattern": r'(?i)(token|auth[_-]?token)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.HIGH,
                     },
                 "private_key": {
@@ -133,7 +133,7 @@ class SecurityScanner:
                     "severity": SeverityLevel.CRITICAL,
                     },
                 "paypal_key": {
-                "pattern": r'(?i)(paypal[_-]?(client[_-]?)?secret)\s*[=:]\s*["\']?([a - zA - Z0 - 9_\-]{20,})["\']?',
+                "pattern": r'(?i)(paypal[_-]?(client[_-]?)?secret)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.HIGH,
                     },
                 }
@@ -141,27 +141,27 @@ class SecurityScanner:
         # Insecure code patterns
         self.insecure_patterns = {
             "sql_injection": {
-                "pattern": r'(?i)(execute|query)\s*\(\s*["\'][^"\']*(\+|%|format|f["\'])',
+                "pattern": r'(?i)(execute|query)\\s*\\(\\s*["\\'][^"\\']*(\\+|%|format|f["\\'])',
                     "severity": SeverityLevel.HIGH,
                     "description": "Potential SQL injection vulnerability",
                     },
                 "command_injection": {
-                "pattern": r"(?i)(os\.system|subprocess\.(call|run|Popen))\s*\([^)]*\+",
+                "pattern": r"(?i)(os\\.system|subprocess\\.(call|run|Popen))\\s*\\([^)]*\\+",
                     "severity": SeverityLevel.HIGH,
                     "description": "Potential command injection vulnerability",
                     },
                 "eval_usage": {
-                "pattern": r"\beval\s*\(",
+                "pattern": r"\\beval\\s*\\(",
                     "severity": SeverityLevel.MEDIUM,
                     "description": "Use of eval() function can be dangerous",
                     },
                 "debug_mode": {
-                "pattern": r"(?i)debug\s*=\s * true",
+                "pattern": r"(?i)debug\\s*=\\s * true",
                     "severity": SeverityLevel.MEDIUM,
                     "description": "Debug mode enabled in production",
                     },
                 "hardcoded_ip": {
-                "pattern": r"\b(?:[0 - 9]{1,3}\.){3}[0 - 9]{1,3}\b",
+                "pattern": r"\\b(?:[0 - 9]{1,3}\\.){3}[0 - 9]{1,3}\\b",
                     "severity": SeverityLevel.LOW,
                     "description": "Hardcoded IP address found",
                     },
@@ -198,7 +198,7 @@ class SecurityScanner:
             try:
                 with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                     content = f.read()
-                    lines = content.split("\n")
+                    lines = content.split("\\n")
 
                     for line_num, line in enumerate(lines, 1):
                         self._check_line_for_secrets(file_path, line_num, line)
@@ -249,7 +249,8 @@ class SecurityScanner:
                                 file_path = str(file_path.relative_to(self.project_root)),
                                 line_number = line_num,
                                 code_snippet = line.strip(),
-                                recommendation = f"Move {secret_type} to environment variables or secure vault",
+                                recommendation = f"Move {secret_type} to environment variables \
+    or secure vault",
                                 confidence = confidence,
                                 )
                     )
@@ -323,7 +324,7 @@ class SecurityScanner:
             try:
                 with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                     content = f.read()
-                    lines = content.split("\n")
+                    lines = content.split("\\n")
 
                     for line_num, line in enumerate(lines, 1):
                         self._check_line_for_insecure_patterns(
@@ -448,7 +449,7 @@ class SecurityScanner:
                 ]
 
         for config_file in config_files:
-            file_path = self.project_root / config_file
+            file_path = self.project_root/config_file
             if file_path.exists():
                 self._scan_config_file(file_path)
 
@@ -499,7 +500,7 @@ class SecurityScanner:
 
     def _scan_docker_config(self, file_path: Path, content: str):
         """Scan Docker configuration for security issues"""
-        lines = content.split("\n")
+        lines = content.split("\\n")
 
         for line_num, line in enumerate(lines, 1):
             line = line.strip().upper()
@@ -525,12 +526,12 @@ class SecurityScanner:
         logger.info("🔍 Scanning dependencies for vulnerabilities...")
 
         # Check Python dependencies
-        requirements_file = self.project_root / "requirements.txt"
+        requirements_file = self.project_root/"requirements.txt"
         if requirements_file.exists():
             self._scan_python_dependencies()
 
         # Check Node.js dependencies
-        package_json = self.project_root / "package.json"
+        package_json = self.project_root/"package.json"
         if package_json.exists():
             self._scan_nodejs_dependencies()
 
@@ -644,9 +645,9 @@ class SecurityScanner:
 
         # Look for common endpoint patterns in source files
         endpoint_patterns = [
-            r'@app\.route\(["\']([^"\']*)["\'\)]',  # Flask routes
-            r'app\.(get|post|put|delete)\(["\']([^"\']*)["\'\)]',  # Express routes
-            r'router\.(get|post|put|delete)\(["\']([^"\']*)["\'\)]',  # Router patterns
+            r'@app\\.route\\(["\\']([^"\\']*)["\\'\\)]',  # Flask routes
+            r'app\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Express routes
+            r'router\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Router patterns
         ]
 
         for file_path in self._get_source_files():
@@ -676,7 +677,7 @@ class SecurityScanner:
                                         ]
                             ):
 
-                                line_num = content[: match.start()].count("\n") + 1
+                                line_num = content[: match.start()].count("\\n") + 1
 
                                 self.issues.append(
                                     SecurityIssue(
@@ -688,7 +689,8 @@ class SecurityScanner:
                                             file_path.relative_to(self.project_root)
                                         ),
                                             line_number = line_num,
-                                            recommendation="Ensure proper authentication and authorization",
+                                            recommendation="Ensure proper authentication \
+    and authorization",
                                             confidence = 0.6,
                                             )
                                 )
@@ -853,7 +855,8 @@ class SecurityScanner:
 
         if type_counts.get(IssueType.VULNERABLE_DEPENDENCY, 0) > 0:
             recommendations.append(
-                "📦 Update vulnerable dependencies: run 'npm audit fix' and 'pip - audit --fix'"
+                "📦 Update vulnerable dependencies: run 'npm audit fix' \
+    and 'pip - audit --fix'"
             )
 
         if type_counts.get(IssueType.INSECURE_CODE, 0) > 0:
@@ -868,7 +871,8 @@ class SecurityScanner:
 
         if type_counts.get(IssueType.EXPOSED_ENDPOINT, 0) > 0:
             recommendations.append(
-                "🌐 Secure exposed endpoints with proper authentication and authorization"
+                "🌐 Secure exposed endpoints with proper authentication \
+    and authorization"
             )
 
         if not recommendations:
@@ -880,6 +884,7 @@ class SecurityScanner:
 
 # CLI Interface
 if __name__ == "__main__":
+
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -928,14 +933,14 @@ if __name__ == "__main__":
         print(json.dumps(report, indent = 2))
     else:
         # Text output
-        print(f"\n🔒 Security Scan Report")
+        print(f"\\n🔒 Security Scan Report")
         print(f"{'=' * 50}")
         print(f"Overall Status: {report['overall_status']}")
         print(f"Risk Score: {report['risk_score']}")
         print(f"Files Scanned: {report['scan_summary']['files_scanned']}")
         print(f"Total Issues: {report['scan_summary']['total_issues']}")
 
-        print(f"\nSeverity Breakdown:")
+        print(f"\\nSeverity Breakdown:")
         for severity, count in report["scan_summary"]["severity_breakdown"].items():
             if count > 0:
                 emoji = {
@@ -948,7 +953,7 @@ if __name__ == "__main__":
                 print(f"  {emoji.get(severity, '•')} {severity.title()}: {count}")
 
         if filtered_issues:
-            print(f"\nSecurity Issues (>= {args.severity}):")
+            print(f"\\nSecurity Issues (>= {args.severity}):")
             for i, issue in enumerate(filtered_issues, 1):
                 severity_emoji = {
                     "critical": "🚨",
@@ -958,7 +963,7 @@ if __name__ == "__main__":
                         "info": "ℹ️",
                         }
                 print(
-                    f"\n{i}. {
+                    f"\\n{i}. {
                         severity_emoji.get(
                             issue['severity'],
                                 '•')} {
@@ -980,7 +985,7 @@ if __name__ == "__main__":
                     print(f"   💡 Fix: {issue['recommendation']}")
 
         if report["recommendations"]:
-            print(f"\nRecommendations:")
+            print(f"\\nRecommendations:")
             for rec in report["recommendations"]:
                 print(f"  {rec}")
 

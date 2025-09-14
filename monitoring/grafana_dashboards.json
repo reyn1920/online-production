@@ -299,7 +299,7 @@
         ],
         "yAxes": [
           {
-            "label": "Connections / Time (s)",
+            "label": "Connections/Time (s)",
             "min": 0
           }
         ],
@@ -324,13 +324,13 @@
             "legendFormat": "Cache Misses/sec - {{cache_type}}"
           },
           {
-            "expr": "rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) * 100",
+            "expr": "rate(cache_hits_total[5m])/(rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) * 100",
             "legendFormat": "Hit Rate % - {{cache_type}}"
           }
         ],
         "yAxes": [
           {
-            "label": "Rate / Percentage",
+            "label": "Rate/Percentage",
             "min": 0
           }
         ],

@@ -15,7 +15,7 @@
 # Created: 2024
 #
 # Usage: Add to crontab for daily execution:
-# 0 2 * * * /path/to/run_daily_cycle.sh >> /var/log/trae_daily.log 2>&1
+# 0 2 * * */path/to/run_daily_cycle.sh >>/var/log/trae_daily.log 2>&1
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 

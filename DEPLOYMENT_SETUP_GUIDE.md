@@ -61,8 +61,7 @@ Navigate to your GitHub repository → Settings → Secrets and variables → Ac
 1. **Via Netlify Dashboard:**
    ```bash
    # Option 1: Manual site creation
-   # 1. Go to https://app.netlify.com/
-   # 2. Click "Add new site" → "Import an existing project"
+   # 1. Go to https://app.netlify.com/# 2. Click "Add new site" → "Import an existing project"
    # 3. Connect to GitHub and select your repository
    # 4. Build settings:
    #    - Build command: npm run build

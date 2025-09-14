@@ -131,8 +131,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/trae_ai_db
       - REDIS_URL=redis://redis:6379/0
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - WORKER_PROCESSES=4
       - MAX_REQUESTS=1000
       - MAX_REQUESTS_JITTER=100
@@ -140,7 +139,7 @@ services:
     volumes:
       - .:/code
       - api_logs:/var/log/api
-    working_dir: /code
+    working_dir:/code
     networks:
       - trae-network
     healthcheck:
@@ -173,8 +172,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/trae_ai_db
       - REDIS_URL=redis://redis:6379
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - CONTENT_AGENT_URL=http://content-agent:8001
       - MARKETING_AGENT_URL=http://marketing-agent:8002
       - MONETIZATION_AGENT_URL=http://monetization-bundle:8003
@@ -223,8 +221,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER=redis://redis:6379/1
       - CELERY_BACKEND=redis://redis:6379/1
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - USE_MOCK=false
       - PROMETHEUS_METRICS_PORT=9092
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -277,8 +274,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER=redis://redis:6379/1
       - CELERY_BACKEND=redis://redis:6379/1
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - USE_MOCK=false
       - CONTENT_AGENT_URL=http://content-agent:8001
       - PROMETHEUS_METRICS_PORT=9093
@@ -378,9 +374,9 @@ services:
     ports:
       - "9100:9100"
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
+      -/proc:/host/proc:ro
+      -/sys:/host/sys:ro
+      -/:/rootfs:ro
     networks:
       - trae-network
     restart: unless-stopped
@@ -390,10 +386,10 @@ services:
     ports:
       - "8081:8080"
     volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
+      -/:/rootfs:ro
+      -/var/run:/var/run:rw
+      -/sys:/sys:ro
+      -/var/lib/docker/:/var/lib/docker:ro
     networks:
       - trae-network
     restart: unless-stopped
@@ -413,7 +409,7 @@ services:
       - MIN_REPLICAS=1
       - MAX_REPLICAS=10
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      -/var/run/docker.sock:/var/run/docker.sock
       - ./monitoring/scaling-rules.yaml:/app/config/scaling-rules.yaml
     networks:
       - trae-network

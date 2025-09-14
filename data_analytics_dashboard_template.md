@@ -50,56 +50,56 @@ This template provides a complete framework for building a professional marketin
 
 **Subscriber Growth Rate:**
 ```
-=(New Subscribers This Month / Total Subscribers Last Month) * 100
+=(New Subscribers This Month/Total Subscribers Last Month) * 100
 ```
 
 **Average View Duration:**
 ```
-=Total Watch Time / Total Views
+=Total Watch Time/Total Views
 ```
 
 **Engagement Rate:**
 ```
-=(Likes + Comments + Shares) / Views * 100
+=(Likes + Comments + Shares)/Views * 100
 ```
 
 **Revenue Per Mille (RPM):**
 ```
-=(Total Revenue / Total Views) * 1000
+=(Total Revenue/Total Views) * 1000
 ```
 
 **Click-Through Rate (CTR):**
 ```
-=(Clicks / Impressions) * 100
+=(Clicks/Impressions) * 100
 ```
 
 ### 2.2 Website Analytics
 
 **Conversion Rate:**
 ```
-=(Conversions / Total Visitors) * 100
+=(Conversions/Total Visitors) * 100
 ```
 
 **Bounce Rate:**
 ```
-=(Single Page Sessions / Total Sessions) * 100
+=(Single Page Sessions/Total Sessions) * 100
 ```
 
 **Average Session Duration:**
 ```
-=Total Session Duration / Total Sessions
+=Total Session Duration/Total Sessions
 ```
 
 **Pages Per Session:**
 ```
-=Total Pageviews / Total Sessions
+=Total Pageviews/Total Sessions
 ```
 
 ### 2.3 Revenue Metrics
 
 **Return on Investment (ROI):**
 ```
-=((Revenue - Investment) / Investment) * 100
+=((Revenue - Investment)/Investment) * 100
 ```
 
 **Customer Lifetime Value (CLV):**
@@ -109,12 +109,12 @@ This template provides a complete framework for building a professional marketin
 
 **Cost Per Acquisition (CPA):**
 ```
-=Total Marketing Spend / Number of New Customers
+=Total Marketing Spend/Number of New Customers
 ```
 
 **Affiliate Conversion Rate:**
 ```
-=(Affiliate Sales / Affiliate Clicks) * 100
+=(Affiliate Sales/Affiliate Clicks) * 100
 ```
 
 ## 3. Data Collection Setup
@@ -207,25 +207,20 @@ Yellow: Values within 10% of target
 ### 4.2 Automated Data Import
 
 **Google Analytics Connector:**
-```javascript
-// Google Apps Script for GA4 data import
+```javascript//Google Apps Script for GA4 data import
 function importGA4Data() {
   const propertyId = 'YOUR_GA4_PROPERTY_ID';
   const request = AnalyticsData.Properties.runReport({
     'dateRanges': [{'startDate': '30daysAgo', 'endDate': 'today'}],
     'dimensions': [{'name': 'date'}],
     'metrics': [{'name': 'sessions'}, {'name': 'users'}]
-  }, 'properties/' + propertyId);
-  
-  // Process and write to sheet
-  const sheet = SpreadsheetApp.getActiveSheet();
-  // Implementation details...
+  }, 'properties/' + propertyId);//Process and write to sheet
+  const sheet = SpreadsheetApp.getActiveSheet();//Implementation details...
 }
 ```
 
 **YouTube Analytics Connector:**
-```javascript
-// Google Apps Script for YouTube data import
+```javascript//Google Apps Script for YouTube data import
 function importYouTubeData() {
   const channelId = 'YOUR_CHANNEL_ID';
   const analytics = YouTube.Analytics.Reports.query({
@@ -233,10 +228,7 @@ function importYouTubeData() {
     'start-date': '30daysAgo',
     'end-date': 'today',
     'metrics': 'views,estimatedMinutesWatched,subscribersGained'
-  });
-  
-  // Process and write to sheet
-  // Implementation details...
+  });//Process and write to sheet//Implementation details...
 }
 ```
 

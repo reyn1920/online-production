@@ -322,7 +322,7 @@ scrape_interval: 30s
 # Enable query logging
 # Add to prometheus.yml
 global:
-  query_log_file: /prometheus/query.log
+  query_log_file:/prometheus/query.log
 ```
 
 ## 📚 Advanced Configuration

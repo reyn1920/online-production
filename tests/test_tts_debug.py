@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TTS Engine Debug Test
 """
@@ -10,7 +10,7 @@ from pathlib import Path
 # Add backend to path
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 try:
     from backend.tts_engine import TTSEngine, VoiceConfig
@@ -27,14 +27,13 @@ try:
         # List first few models
         if engine.available_models:
             print("🎤 Sample models:")
-            for i, (model_name, model_info) in enumerate(
-                list(engine.available_models.items())[:3]
-            ):
+            for i, (model_name, model_info) in enumerate(list(engine.available_models.items())[:3]):
                 print(f"  {i + 1}. {model_name}")
 
     except Exception as e:
         print(f"❌ TTS Engine initialization failed: {e}")
         print(f"Error type: {type(e).__name__}")
+
         import traceback
 
         traceback.print_exc()

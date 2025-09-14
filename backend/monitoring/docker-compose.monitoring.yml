@@ -68,9 +68,9 @@ services:
     ports:
       - "9100:9100"
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
+      -/proc:/host/proc:ro
+      -/sys:/host/sys:ro
+      -/:/rootfs:ro
     command:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
@@ -90,14 +90,14 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
+      -/:/rootfs:ro
+      -/var/run:/var/run:ro
+      -/sys:/sys:ro
+      -/var/lib/docker/:/var/lib/docker:ro
+      -/dev/disk/:/dev/disk:ro
     privileged: true
     devices:
-      - /dev/kmsg
+      -/dev/kmsg
     networks:
       - monitoring
     restart: unless-stopped
@@ -176,8 +176,7 @@ services:
   # Trae AI Application (placeholder - replace with your actual app)
   trae-app:
     build:
-      context: ../../
-      dockerfile: Dockerfile
+      context: ../../dockerfile: Dockerfile
     container_name: trae-application
     ports:
       - "8000:8000"
@@ -263,7 +262,7 @@ services:
     container_name: trae-promtail
     volumes:
       - ./promtail-config.yml:/etc/promtail/config.yml:ro
-      - /var/log:/var/log:ro
+      -/var/log:/var/log:ro
       - app_logs:/app/logs:ro
       - nginx_logs:/nginx/logs:ro
     command: -config.file=/etc/promtail/config.yml

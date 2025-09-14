@@ -307,7 +307,7 @@
         }
 
         .full-width {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
         }
 
         .alert {
@@ -600,55 +600,39 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
+    <script>//Global variables
         let currentRenderJob = null;
-        let activityLogs = [];
-
-        // Initialize the application
+        let activityLogs = [];//Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             refreshStatus();
             loadVoiceSamples();
             loadColorPresets();
             loadProjects();
-            loadIntegrationSummary();
-            
-            // Set up form handlers
+            loadIntegrationSummary();//Set up form handlers
             setupFormHandlers();
-        });
-
-        // Tab switching functionality
-        function switchTab(section, tab) {
-            // Hide all tab contents for this section
+        });//Tab switching functionality
+        function switchTab(section, tab) {//Hide all tab contents for this section
             const tabContents = document.querySelectorAll(`#${section}-${tab.split('-')[0]} .tab-content, [id^="${section}-"]`);
             tabContents.forEach(content => {
                 if (content.classList.contains('tab-content')) {
                     content.classList.remove('active');
                 }
-            });
-            
-            // Remove active class from all tabs in this section
+            });//Remove active class from all tabs in this section
             const tabs = document.querySelectorAll(`#${section}-${tab.split('-')[0]} .tab, .panel h2:contains('${section}') + .tabs .tab`);
             const parentPanel = document.querySelector(`#${section}-${tab}`)?.closest('.panel');
             if (parentPanel) {
                 const sectionTabs = parentPanel.querySelectorAll('.tab');
-                sectionTabs.forEach(t => t.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                event.target.classList.add('active');
-                
-                // Show the corresponding tab content
+                sectionTabs.forEach(t => t.classList.remove('active'));//Add active class to clicked tab
+                event.target.classList.add('active');//Show the corresponding tab content
                 const targetContent = document.getElementById(`${section}-${tab}`);
                 if (targetContent) {
                     targetContent.classList.add('active');
                 }
             }
-        }
-
-        // Status checking
+        }//Status checking
         async function refreshStatus() {
             try {
-                const response = await fetch('/api/davinci/status');
+                const response = await fetch("/api/davinci/status');
                 const status = await response.json();
                 
                 updateStatusIndicator('resolve-status', 'resolve-status-text', 
@@ -671,19 +655,13 @@
             
             indicator.className = `status-indicator ${isOnline ? 'online' : ''}`;
             textElement.textContent = text;
-        }
-
-        // Voice samples management
+        }//Voice samples management
         async function loadVoiceSamples() {
             try {
-                const response = await fetch('/api/davinci/voice/samples');
-                const data = await response.json();
-                
-                // Update voice sample grids
+                const response = await fetch("/api/davinci/voice/samples');
+                const data = await response.json();//Update voice sample grids
                 const grid = document.getElementById('voice-samples-grid');
-                grid.innerHTML = '';
-                
-                // Update voice selects
+                grid.innerHTML = '';//Update voice selects
                 const voiceSelects = ['voice-name', 'batch-voice-name'];
                 voiceSelects.forEach(selectId => {
                     const select = document.getElementById(selectId);
@@ -693,9 +671,7 @@
                         const option = document.createElement('option');
                         option.value = sample.name;
                         option.textContent = `${sample.name} (${sample.type})`;
-                        select.appendChild(option);
-                        
-                        // Add to grid
+                        select.appendChild(option);//Add to grid
                         const sampleDiv = document.createElement('div');
                         sampleDiv.className = 'voice-sample';
                         sampleDiv.innerHTML = `
@@ -712,12 +688,10 @@
                 console.error('Error loading voice samples:', error);
                 logActivity('Error loading voice samples', 'error');
             }
-        }
-
-        // Color presets management
+        }//Color presets management
         async function loadColorPresets() {
             try {
-                const response = await fetch('/api/davinci/color/presets');
+                const response = await fetch("/api/davinci/color/presets');
                 const data = await response.json();
                 
                 const grid = document.getElementById('color-presets-grid');
@@ -726,17 +700,14 @@
                 grid.innerHTML = '';
                 select.innerHTML = '<option value="">Select a preset...</option>';
                 
-                Object.entries(data.presets).forEach(([key, preset]) => {
-                    // Add to grid
+                Object.entries(data.presets).forEach(([key, preset]) => {//Add to grid
                     const presetDiv = document.createElement('div');
                     presetDiv.className = 'color-preset';
                     presetDiv.innerHTML = `
                         <h4>${preset.name}</h4>
                         <p>${preset.category}</p>
                     `;
-                    grid.appendChild(presetDiv);
-                    
-                    // Add to select
+                    grid.appendChild(presetDiv);//Add to select
                     const option = document.createElement('option');
                     option.value = key;
                     option.textContent = preset.name;
@@ -748,12 +719,10 @@
                 console.error('Error loading color presets:', error);
                 logActivity('Error loading color presets', 'error');
             }
-        }
-
-        // Project management
+        }//Project management
         async function loadProjects() {
             try {
-                const response = await fetch('/api/davinci/projects');
+                const response = await fetch("/api/davinci/projects');
                 const data = await response.json();
                 
                 const list = document.getElementById('project-list');
@@ -780,12 +749,10 @@
                 console.error('Error loading projects:', error);
                 logActivity('Error loading projects', 'error');
             }
-        }
-
-        // Integration summary
+        }//Integration summary
         async function loadIntegrationSummary() {
             try {
-                const response = await fetch('/api/davinci/summary');
+                const response = await fetch("/api/davinci/summary');
                 const data = await response.json();
                 
                 const summary = document.getElementById('integration-summary');
@@ -815,22 +782,17 @@
                 console.error('Error loading integration summary:', error);
                 logActivity('Error loading integration summary', 'error');
             }
-        }
-
-        // Form handlers setup
-        function setupFormHandlers() {
-            // Project creation form
+        }//Form handlers setup
+        function setupFormHandlers() {//Project creation form
             document.getElementById('create-project-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
-                const data = Object.fromEntries(formData.entries());
-                
-                // Parse resolution
+                const data = Object.fromEntries(formData.entries());//Parse resolution
                 data.resolution = data.resolution.split(',').map(Number);
                 data.frame_rate = parseFloat(data.frame_rate);
                 
                 try {
-                    const response = await fetch('/api/davinci/projects', {
+                    const response = await fetch("/api/davinci/projects', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -847,16 +809,14 @@
                     showAlert('Error creating project', 'error');
                     logActivity('Error creating project', 'error');
                 }
-            });
-
-            // Voice cloning form
+            });//Voice cloning form
             document.getElementById('voice-clone-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
                 
                 try {
-                    const response = await fetch('/api/davinci/voice/clone', {
+                    const response = await fetch("/api/davinci/voice/clone', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -871,9 +831,7 @@
                     showAlert('Error cloning voice', 'error');
                     logActivity('Error cloning voice', 'error');
                 }
-            });
-
-            // Batch voice cloning form
+            });//Batch voice cloning form
             document.getElementById('batch-voice-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
@@ -881,7 +839,7 @@
                 data.texts = data.texts.split('\n').filter(text => text.trim());
                 
                 try {
-                    const response = await fetch('/api/davinci/voice/batch-clone', {
+                    const response = await fetch("/api/davinci/voice/batch-clone', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -896,16 +854,14 @@
                     showAlert('Error in batch voice cloning', 'error');
                     logActivity('Error in batch voice cloning', 'error');
                 }
-            });
-
-            // Color grading form
+            });//Color grading form
             document.getElementById('color-grade-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
                 
                 try {
-                    const response = await fetch('/api/davinci/color/apply', {
+                    const response = await fetch("/api/davinci/color/apply', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -920,9 +876,7 @@
                     showAlert('Error applying color grade', 'error');
                     logActivity('Error applying color grade', 'error');
                 }
-            });
-
-            // Render form
+            });//Render form
             document.getElementById('render-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
@@ -947,9 +901,7 @@
                     logActivity('Error starting render', 'error');
                 }
             });
-        }
-
-        // Utility functions
+        }//Utility functions
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
@@ -985,9 +937,7 @@
 
         function showRenderProgress() {
             const progressDiv = document.getElementById('render-progress');
-            progressDiv.style.display = 'block';
-            
-            // Simulate progress updates
+            progressDiv.style.display = 'block';//Simulate progress updates
             let progress = 0;
             const interval = setInterval(() => {
                 progress += Math.random() * 10;
@@ -1023,7 +973,7 @@
             formData.append('asset_type', file.type.split('/')[0]);
             
             try {
-                const response = await fetch('/api/davinci/assets/upload', {
+                const response = await fetch("/api/davinci/assets/upload', {
                     method: 'POST',
                     body: formData
                 });

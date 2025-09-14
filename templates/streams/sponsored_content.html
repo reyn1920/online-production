@@ -241,7 +241,7 @@
         }
 
         .campaigns-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -386,7 +386,7 @@
         }
 
         .new-campaign-form {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -428,7 +428,7 @@
         }
 
         .brands-section {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -502,7 +502,7 @@
         }
 
         .test-results {
-            grid-column: 1 / -1;
+            grid-column: 1/-1;
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
@@ -693,7 +693,7 @@
                         <div class="progress-fill" id="revenueGoalFill" style="width: 0%"></div>
                     </div>
                     <div style="text-align: center; margin-top: 5px;">
-                        <span id="revenueGoalText">$0 / $5,000 goal</span>
+                        <span id="revenueGoalText">$0/$5,000 goal</span>
                     </div>
                 </div>
             </div>
@@ -740,12 +740,12 @@
                         <input type="date" id="campaignDeadline">
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Campaign Description</label>
                         <textarea id="campaignDescription" placeholder="Describe the sponsored content requirements..."></textarea>
                     </div>
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group" style="grid-column: 1/-1;">
                         <label>Brand Contact Email</label>
                         <input type="email" id="campaignContact" placeholder="brand@example.com">
                     </div>
@@ -885,9 +885,7 @@
                 status: 'pending',
                 campaigns: 0
             }
-        ];
-
-        // Initialize the page
+        ];//Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             loadStreamData();
@@ -903,17 +901,14 @@
             renderBrands();
         }
 
-        function setupEventListeners() {
-            // Stream toggle
+        function setupEventListeners() {//Stream toggle
             document.getElementById('streamToggle').addEventListener('change', function() {
                 if (this.checked) {
                     startStream();
                 } else {
                     stopStream();
                 }
-            });
-
-            // Auto-start toggle
+            });//Auto-start toggle
             document.getElementById('autoStartToggle').addEventListener('change', function() {
                 streamData.autoStart = this.checked;
                 updateStreamConfig();
@@ -994,7 +989,7 @@
 
         async function loadStreamData() {
             try {
-                const response = await fetch('/api/revenue/status');
+                const response = await fetch("/api/revenue/status');
                 const data = await response.json();
                 
                 if (data.success && data.streams.sponsored_content) {
@@ -1014,8 +1009,7 @@
             }
         }
 
-        function updateUI() {
-            // Update status indicator
+        function updateUI() {//Update status indicator
             const statusIndicator = document.getElementById('statusIndicator');
             const streamToggle = document.getElementById('streamToggle');
             const streamStatus = document.getElementById('streamStatus');
@@ -1029,21 +1023,15 @@
             streamStatus.textContent = streamData.status.charAt(0).toUpperCase() + streamData.status.slice(1);
 
             startBtn.disabled = streamData.status === 'active' || streamData.status === 'starting';
-            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';
-
-            // Update auto-start toggle
-            document.getElementById('autoStartToggle').checked = streamData.autoStart;
-
-            // Update metrics
+            stopBtn.disabled = streamData.status === 'inactive' || streamData.status === 'stopping';//Update auto-start toggle
+            document.getElementById('autoStartToggle').checked = streamData.autoStart;//Update metrics
             document.getElementById('activeCampaigns').textContent = streamData.activeCampaigns.toLocaleString();
             document.getElementById('monthlyEarnings').textContent = '$' + streamData.monthlyEarnings.toFixed(2);
             document.getElementById('totalViews').textContent = streamData.totalViews.toLocaleString();
-            document.getElementById('engagementRate').textContent = streamData.engagementRate.toFixed(1) + '%';
-            
-            // Update revenue goal progress
-            const goalPercent = Math.min(100, (streamData.monthlyEarnings / streamData.revenueGoal) * 100);
+            document.getElementById('engagementRate').textContent = streamData.engagementRate.toFixed(1) + '%';//Update revenue goal progress
+            const goalPercent = Math.min(100, (streamData.monthlyEarnings/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
-            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyEarnings.toFixed(2)} / $${streamData.revenueGoal.toLocaleString()} goal`;
+            document.getElementById('revenueGoalText').textContent = `$${streamData.monthlyEarnings.toFixed(2)}/$${streamData.revenueGoal.toLocaleString()} goal`;
         }
 
         async function startStream() {
@@ -1059,9 +1047,7 @@
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to start stream: ' + result.error, 'error');
@@ -1085,9 +1071,7 @@
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
-                    showAlert(result.message, 'success');
-                    
-                    // Poll for status updates
+                    showAlert(result.message, 'success');//Poll for status updates
                     pollStreamStatus();
                 } else {
                     showAlert('Failed to stop stream: ' + result.error, 'error');
@@ -1152,8 +1136,7 @@
         }
 
         function hideNewCampaignForm() {
-            document.getElementById('newCampaignForm').style.display = 'none';
-            // Clear form
+            document.getElementById('newCampaignForm').style.display = 'none';//Clear form
             document.getElementById('campaignBrand').value = '';
             document.getElementById('campaignType').value = 'blog_post';
             document.getElementById('campaignPayment').value = '';
@@ -1191,7 +1174,7 @@
                     created: new Date().toISOString()
                 };
 
-                const response = await fetch('/api/campaigns/create', {
+                const response = await fetch("/api/campaigns/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1235,7 +1218,7 @@
                 try {
                     showAlert(`Testing "${campaign.brand}" campaign...`, 'warning');
                     
-                    const response = await fetch('/api/test/campaign', {
+                    const response = await fetch("/api/test/campaign', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1311,7 +1294,7 @@
         function pollStreamStatus() {
             const pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/revenue/status');
+                    const response = await fetch("/api/revenue/status');
                     const data = await response.json();
                     
                     if (data.success && data.streams.sponsored_content) {
@@ -1323,9 +1306,7 @@
                         streamData.totalViews = stream.totalViews;
                         streamData.engagementRate = stream.engagementRate;
                         
-                        updateUI();
-                        
-                        // Stop polling if status is stable
+                        updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
                             
@@ -1343,8 +1324,7 @@
             }, 2000);
         }
 
-        function startRealtimeUpdates() {
-            // Update metrics every 30 seconds
+        function startRealtimeUpdates() {//Update metrics every 30 seconds
             setInterval(async () => {
                 if (streamData.status === 'active') {
                     await loadStreamData();
@@ -1354,8 +1334,7 @@
         }
 
         function simulateCampaignActivity() {
-            if (streamData.status === 'active') {
-                // Simulate campaign performance
+            if (streamData.status === 'active') {//Simulate campaign performance
                 streamData.campaigns.forEach(campaign => {
                     if (campaign.status === 'active') {
                         const newViews = Math.floor(Math.random() * 500) + 100;
@@ -1364,12 +1343,10 @@
                         campaign.views += newViews;
                         campaign.engagement = Math.max(0, campaign.engagement + engagementIncrease);
                     }
-                });
-                
-                // Update totals
+                });//Update totals
                 streamData.totalViews = streamData.campaigns.reduce((sum, c) => sum + c.views, 0);
                 streamData.engagementRate = streamData.campaigns.length > 0 ? 
-                    streamData.campaigns.reduce((sum, c) => sum + c.engagement, 0) / streamData.campaigns.length : 0;
+                    streamData.campaigns.reduce((sum, c) => sum + c.engagement, 0)/streamData.campaigns.length : 0;
                 streamData.monthlyEarnings = streamData.campaigns
                     .filter(c => c.status === 'completed')
                     .reduce((sum, c) => sum + c.payment, 0);
@@ -1385,17 +1362,13 @@
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             
-            container.appendChild(alert);
-            
-            // Remove alert after 5 seconds
+            container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
-        }
-
-        // Start campaign activity simulation
+        }//Start campaign activity simulation
         setInterval(simulateCampaignActivity, 25000);
     </script>
 </body>

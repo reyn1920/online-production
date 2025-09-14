@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 News Scraper for The Right Perspective
 Scrapes conservative and mainstream news sources for content analysis
@@ -32,7 +32,8 @@ class NewsScraperForRightPerspective:
         self.session = requests.Session()
         self.session.headers.update(
             {
-                "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
+                "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
+    like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             }
         )
 
@@ -59,7 +60,7 @@ class NewsScraperForRightPerspective:
                         },
                     "daily_wire": {
                     "base_url": "https://www.dailywire.com",
-                        "sections": ["/news / politics", "/news"],
+                        "sections": ["/news/politics", "/news"],
                         "article_selector": ".field - title a",
                         "content_selector": ".field - body p",
                         },
@@ -305,7 +306,13 @@ class NewsScraperForRightPerspective:
                 cursor.execute(
                     """
                     INSERT OR IGNORE INTO scraped_articles
-                    (title, url, source, source_type, content, relevance_score, right_perspective_potential)
+                    (title,
+    url,
+    source,
+    source_type,
+    content,
+    relevance_score,
+    right_perspective_potential)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
@@ -432,7 +439,7 @@ class NewsScraperForRightPerspective:
                 "by_source_type": by_source_type,
                 "top_sources_for_content": top_sources[:5],
                 "potential_percentage": (
-                round((high_potential / total_articles * 100), 2)
+                round((high_potential/total_articles * 100), 2)
                 if total_articles > 0
                 else 0
             ),
@@ -448,7 +455,7 @@ def main():
     # Scrape all sources
     results = scraper.scrape_all_sources()
 
-    print(f"\n📊 Scraping Results:")
+    print(f"\\n📊 Scraping Results:")
     print(f"Conservative sources: {results['conservative']} articles")
     print(f"Mainstream sources: {results['mainstream']} articles")
     print(f"Total articles: {results['total']} articles")
@@ -456,17 +463,17 @@ def main():
     # Get high potential articles
     high_potential = scraper.get_high_potential_articles(10)
 
-    print(f"\n🎯 Top High - Potential Articles for The Right Perspective:")
+    print(f"\\n🎯 Top High - Potential Articles for The Right Perspective:")
     for i, article in enumerate(high_potential, 1):
         print(
             f"{i}. [{article['source']}] {article['title']} (Score: {article['relevance_score']})"
         )
         print(f"   URL: {article['url']}")
-        print(f"   Preview: {article['content'][:100]}...\n")
+        print(f"   Preview: {article['content'][:100]}...\\n")
 
     # Generate summary
     summary = scraper.generate_content_summary()
-    print(f"\n📈 Content Summary:")
+    print(f"\\n📈 Content Summary:")
     print(f"Total articles scraped: {summary['total_articles']}")
     print(
         f"High - potential articles: {summary['high_potential_articles']} ({summary['potential_percentage']}%)"

@@ -1,12 +1,12 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Production Secrets Setup Script
 
 This script helps configure all production API keys and secrets needed
-to replace fake / mock data with real API integrations.
+to replace fake/mock data with real API integrations.
 
 Usage:
-    python scripts / setup_production_secrets.py
+    python scripts/setup_production_secrets.py
 
 Author: TRAE.AI System
 Version: 1.0.0
@@ -25,7 +25,7 @@ from secret_store import SecretStore
 
 def setup_twitter_credentials(store: SecretStore):
     """Setup Twitter API credentials."""
-    print("\n=== Twitter API Configuration ===")
+    print("\\n=== Twitter API Configuration ===")
     print("You need to obtain these from https://developer.twitter.com/")
     print("Required credentials:")
     print("1. API Key (Consumer Key)")
@@ -37,14 +37,14 @@ def setup_twitter_credentials(store: SecretStore):
     # Check if credentials already exist
     existing_creds = [
         store.secret_exists("TWITTER_API_KEY"),
-            store.secret_exists("TWITTER_API_SECRET"),
-            store.secret_exists("TWITTER_ACCESS_TOKEN"),
-            store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
-            ]
+        store.secret_exists("TWITTER_API_SECRET"),
+        store.secret_exists("TWITTER_ACCESS_TOKEN"),
+        store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
+    ]
 
     if all(existing_creds):
         print("✓ Twitter credentials already configured")
-        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -73,7 +73,7 @@ def setup_twitter_credentials(store: SecretStore):
 
 def setup_youtube_credentials(store: SecretStore):
     """Setup YouTube Data API and OAuth credentials."""
-    print("\n=== YouTube API Configuration ===")
+    print("\\n=== YouTube API Configuration ===")
     print("You need to obtain these from https://console.cloud.google.com/")
     print("Required credentials:")
     print("1. YouTube Data API v3 Key")
@@ -85,13 +85,13 @@ def setup_youtube_credentials(store: SecretStore):
     # Check if credentials already exist
     existing_creds = [
         store.secret_exists("YOUTUBE_API_KEY"),
-            store.secret_exists("YOUTUBE_CLIENT_ID"),
-            store.secret_exists("YOUTUBE_CLIENT_SECRET"),
-            ]
+        store.secret_exists("YOUTUBE_CLIENT_ID"),
+        store.secret_exists("YOUTUBE_CLIENT_SECRET"),
+    ]
 
     if all(existing_creds):
         print("✓ YouTube credentials already configured")
-        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -112,9 +112,7 @@ def setup_youtube_credentials(store: SecretStore):
         if channel_id:
             store.store_secret("YOUTUBE_CHANNEL_ID", channel_id)
         print("✓ YouTube credentials stored successfully")
-        print(
-            "\n⚠️  Note: You'll need to complete OAuth flow to get access / refresh tokens"
-        )
+        print("\\n⚠️  Note: You'll need to complete OAuth flow to get access/refresh tokens")
         print("   Run the YouTube integration setup after this to authorize the app")
         return True
     except Exception as e:
@@ -124,7 +122,7 @@ def setup_youtube_credentials(store: SecretStore):
 
 def setup_instagram_credentials(store: SecretStore):
     """Setup Instagram Basic Display API credentials."""
-    print("\n=== Instagram API Configuration ===")
+    print("\\n=== Instagram API Configuration ===")
     print("You need to obtain these from https://developers.facebook.com/")
     print("Required credentials:")
     print("1. Instagram App ID")
@@ -134,13 +132,13 @@ def setup_instagram_credentials(store: SecretStore):
 
     existing_creds = [
         store.secret_exists("INSTAGRAM_APP_ID"),
-            store.secret_exists("INSTAGRAM_APP_SECRET"),
-            store.secret_exists("INSTAGRAM_ACCESS_TOKEN"),
-            ]
+        store.secret_exists("INSTAGRAM_APP_SECRET"),
+        store.secret_exists("INSTAGRAM_ACCESS_TOKEN"),
+    ]
 
     if all(existing_creds):
         print("✓ Instagram credentials already configured")
-        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -165,7 +163,7 @@ def setup_instagram_credentials(store: SecretStore):
 
 def setup_tiktok_credentials(store: SecretStore):
     """Setup TikTok API credentials."""
-    print("\n=== TikTok API Configuration ===")
+    print("\\n=== TikTok API Configuration ===")
     print("You need to obtain these from https://developers.tiktok.com/")
     print("Required credentials:")
     print("1. TikTok Client Key")
@@ -175,13 +173,13 @@ def setup_tiktok_credentials(store: SecretStore):
 
     existing_creds = [
         store.secret_exists("TIKTOK_CLIENT_KEY"),
-            store.secret_exists("TIKTOK_CLIENT_SECRET"),
-            store.secret_exists("TIKTOK_ACCESS_TOKEN"),
-            ]
+        store.secret_exists("TIKTOK_CLIENT_SECRET"),
+        store.secret_exists("TIKTOK_ACCESS_TOKEN"),
+    ]
 
     if all(existing_creds):
         print("✓ TikTok credentials already configured")
-        update = input("Update existing credentials? (y / N): ").lower().startswith("y")
+        update = input("Update existing credentials? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -206,14 +204,14 @@ def setup_tiktok_credentials(store: SecretStore):
 
 def setup_google_trends_credentials(store: SecretStore):
     """Setup Google Trends API credentials."""
-    print("\n=== Google Trends API Configuration ===")
+    print("\\n=== Google Trends API Configuration ===")
     print("You need to obtain this from https://console.cloud.google.com/")
     print("Required: Google Trends API Key")
     print()
 
     if store.secret_exists("GOOGLE_TRENDS_API_KEY"):
         print("✓ Google Trends API key already configured")
-        update = input("Update existing key? (y / N): ").lower().startswith("y")
+        update = input("Update existing key? (y/N): ").lower().startswith("y")
         if not update:
             return
 
@@ -234,12 +232,11 @@ def setup_google_trends_credentials(store: SecretStore):
 
 def test_twitter_connection(store: SecretStore):
     """Test Twitter API connection."""
-    print("\n=== Testing Twitter Connection ===")
+    print("\\n=== Testing Twitter Connection ===")
 
     try:
-        sys.path.insert(
-            0, str(Path(__file__).parent.parent / "backend" / "integrations")
-        )
+        sys.path.insert(0, str(Path(__file__).parent.parent / "backend" / "integrations"))
+
         from twitter_integration import TwitterIntegration
 
         twitter = TwitterIntegration()
@@ -259,7 +256,7 @@ def main():
     print("TRAE.AI Production Secrets Setup")
     print("=" * 40)
     print("This script will help you configure production API credentials")
-    print("to replace mock / fake data with real platform integrations.")
+    print("to replace mock/fake data with real platform integrations.")
     print()
 
     # Check for master key
@@ -272,7 +269,7 @@ def main():
     # Initialize secret store
     try:
         db_path = Path(__file__).parent.parent / "data" / "secrets.sqlite"
-        db_path.parent.mkdir(exist_ok = True)
+        db_path.parent.mkdir(exist_ok=True)
 
         with SecretStore(str(db_path)) as store:
             print(f"✓ Connected to secret store: {db_path}")
@@ -280,26 +277,26 @@ def main():
             # Setup each service
             services = [
                 ("Twitter", setup_twitter_credentials),
-                    ("YouTube", setup_youtube_credentials),
-                    ("Instagram", setup_instagram_credentials),
-                    ("TikTok", setup_tiktok_credentials),
-                    ("Google Trends", setup_google_trends_credentials),
-                    ]
+                ("YouTube", setup_youtube_credentials),
+                ("Instagram", setup_instagram_credentials),
+                ("TikTok", setup_tiktok_credentials),
+                ("Google Trends", setup_google_trends_credentials),
+            ]
 
             for service_name, setup_func in services:
                 try:
                     setup_func(store)
                 except KeyboardInterrupt:
-                    print(f"\n❌ Setup cancelled for {service_name}")
+                    print(f"\\n❌ Setup cancelled for {service_name}")
                     break
                 except Exception as e:
                     print(f"❌ Error setting up {service_name}: {e}")
 
             # Test connections
-            print("\n=== Testing Connections ===")
+            print("\\n=== Testing Connections ===")
             test_twitter_connection(store)
 
-            print("\n=== Setup Complete ===")
+            print("\\n=== Setup Complete ===")
             print("Your production secrets have been configured.")
             print("The system will now use real API data instead of mock data.")
 
@@ -308,6 +305,7 @@ def main():
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

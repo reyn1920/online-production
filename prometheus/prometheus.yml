@@ -27,28 +27,28 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
 
   # Node Exporter for system metrics
   - job_name: "node-exporter"
     static_configs:
       - targets: ["node-exporter:9100"]
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
 
   # cAdvisor for container metrics
   - job_name: "cadvisor"
     static_configs:
       - targets: ["cadvisor:8080"]
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
 
   # Nginx metrics
   - job_name: "nginx"
     static_configs:
       - targets: ["nginx:8080"]
     scrape_interval: 30s
-    metrics_path: /nginx-status
+    metrics_path:/nginx-status
     params:
       format: ["prometheus"]
 
@@ -57,21 +57,21 @@ scrape_configs:
     static_configs:
       - targets: ["postgres-exporter:9187"]
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
 
   # Redis metrics
   - job_name: "redis"
     static_configs:
       - targets: ["redis-exporter:9121"]
     scrape_interval: 30s
-    metrics_path: /metrics
+    metrics_path:/metrics
 
   # Orchestrator service
   - job_name: "orchestrator"
     static_configs:
       - targets: ["orchestrator:8000"]
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 10s
     honor_labels: true
     params:
@@ -82,7 +82,7 @@ scrape_configs:
     static_configs:
       - targets: ["content_agent:8001"]
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 10s
     honor_labels: true
     params:
@@ -93,7 +93,7 @@ scrape_configs:
     static_configs:
       - targets: ["marketing_agent:8002"]
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 10s
     honor_labels: true
     params:
@@ -104,7 +104,7 @@ scrape_configs:
     static_configs:
       - targets: ["monetization_bundle:8003"]
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 10s
     honor_labels: true
     params:
@@ -115,7 +115,7 @@ scrape_configs:
     static_configs:
       - targets: ["revenue_tracker:8004"]
     scrape_interval: 15s
-    metrics_path: /metrics
+    metrics_path:/metrics
     scrape_timeout: 10s
     honor_labels: true
     params:
@@ -131,7 +131,7 @@ scrape_configs:
           - "monetization_bundle:8003"
           - "revenue_tracker:8004"
     scrape_interval: 30s
-    metrics_path: /health
+    metrics_path:/health
     scrape_timeout: 5s
 
   # Custom business metrics
@@ -139,7 +139,7 @@ scrape_configs:
     static_configs:
       - targets: ["orchestrator:8000"]
     scrape_interval: 60s
-    metrics_path: /api/metrics/business
+    metrics_path:/api/metrics/business
     scrape_timeout: 30s
 
   # API performance metrics
@@ -152,7 +152,7 @@ scrape_configs:
           - "monetization_bundle:8003"
           - "revenue_tracker:8004"
     scrape_interval: 30s
-    metrics_path: /api/metrics/performance
+    metrics_path:/api/metrics/performance
     scrape_timeout: 15s
 
   # Content generation metrics
@@ -160,7 +160,7 @@ scrape_configs:
     static_configs:
       - targets: ["content_agent:8001"]
     scrape_interval: 60s
-    metrics_path: /api/metrics/content
+    metrics_path:/api/metrics/content
     scrape_timeout: 30s
 
   # Marketing campaign metrics
@@ -168,7 +168,7 @@ scrape_configs:
     static_configs:
       - targets: ["marketing_agent:8002"]
     scrape_interval: 60s
-    metrics_path: /api/metrics/campaigns
+    metrics_path:/api/metrics/campaigns
     scrape_timeout: 30s
 
   # Revenue and monetization metrics
@@ -178,7 +178,7 @@ scrape_configs:
           - "monetization_bundle:8003"
           - "revenue_tracker:8004"
     scrape_interval: 300s # 5 minutes for revenue data
-    metrics_path: /api/metrics/revenue
+    metrics_path:/api/metrics/revenue
     scrape_timeout: 60s
 
   # YouTube Analytics (via Revenue Tracker)
@@ -186,7 +186,7 @@ scrape_configs:
     static_configs:
       - targets: ["revenue_tracker:8004"]
     scrape_interval: 300s
-    metrics_path: /api/metrics/youtube
+    metrics_path:/api/metrics/youtube
     scrape_timeout: 60s
 
   # Social Media Metrics (via Marketing Agent)
@@ -194,7 +194,7 @@ scrape_configs:
     static_configs:
       - targets: ["marketing_agent:8002"]
     scrape_interval: 300s
-    metrics_path: /api/metrics/social
+    metrics_path:/api/metrics/social
     scrape_timeout: 60s
 
   # Email Marketing Metrics
@@ -202,7 +202,7 @@ scrape_configs:
     static_configs:
       - targets: ["marketing_agent:8002"]
     scrape_interval: 300s
-    metrics_path: /api/metrics/email
+    metrics_path:/api/metrics/email
     scrape_timeout: 60s
 
   # SEO and Content Performance
@@ -210,7 +210,7 @@ scrape_configs:
     static_configs:
       - targets: ["marketing_agent:8002"]
     scrape_interval: 600s # 10 minutes
-    metrics_path: /api/metrics/seo
+    metrics_path:/api/metrics/seo
     scrape_timeout: 60s
 
   # Affiliate Marketing Performance
@@ -218,7 +218,7 @@ scrape_configs:
     static_configs:
       - targets: ["marketing_agent:8002"]
     scrape_interval: 300s
-    metrics_path: /api/metrics/affiliate
+    metrics_path:/api/metrics/affiliate
     scrape_timeout: 60s
 
   # E-book and Digital Product Sales
@@ -226,7 +226,7 @@ scrape_configs:
     static_configs:
       - targets: ["monetization_bundle:8003"]
     scrape_interval: 300s
-    metrics_path: /api/metrics/products
+    metrics_path:/api/metrics/products
     scrape_timeout: 60s
 
   # Newsletter Performance
@@ -234,7 +234,7 @@ scrape_configs:
     static_configs:
       - targets: ["monetization_bundle:8003"]
     scrape_interval: 300s
-    metrics_path: /api/metrics/newsletter
+    metrics_path:/api/metrics/newsletter
     scrape_timeout: 60s
 
   # Print-on-Demand Metrics
@@ -242,7 +242,7 @@ scrape_configs:
     static_configs:
       - targets: ["monetization_bundle:8003"]
     scrape_interval: 600s
-    metrics_path: /api/metrics/pod
+    metrics_path:/api/metrics/pod
     scrape_timeout: 60s
 
   # AI Model Performance
@@ -252,7 +252,7 @@ scrape_configs:
           - "content_agent:8001"
           - "marketing_agent:8002"
     scrape_interval: 60s
-    metrics_path: /api/metrics/ai
+    metrics_path:/api/metrics/ai
     scrape_timeout: 30s
 
   # Database Performance
@@ -260,7 +260,7 @@ scrape_configs:
     static_configs:
       - targets: ["orchestrator:8000"]
     scrape_interval: 60s
-    metrics_path: /api/metrics/database
+    metrics_path:/api/metrics/database
     scrape_timeout: 30s
 
   # Cache Performance (Redis)
@@ -268,7 +268,7 @@ scrape_configs:
     static_configs:
       - targets: ["orchestrator:8000"]
     scrape_interval: 60s
-    metrics_path: /api/metrics/cache
+    metrics_path:/api/metrics/cache
     scrape_timeout: 30s
 
   # Task Queue Metrics
@@ -276,7 +276,7 @@ scrape_configs:
     static_configs:
       - targets: ["orchestrator:8000"]
     scrape_interval: 30s
-    metrics_path: /api/metrics/queue
+    metrics_path:/api/metrics/queue
     scrape_timeout: 15s
 
   # Error Rate and Alerting Metrics
@@ -289,7 +289,7 @@ scrape_configs:
           - "monetization_bundle:8003"
           - "revenue_tracker:8004"
     scrape_interval: 30s
-    metrics_path: /api/metrics/errors
+    metrics_path:/api/metrics/errors
     scrape_timeout: 15s
 
   # Security Metrics
@@ -297,7 +297,7 @@ scrape_configs:
     static_configs:
       - targets: ["orchestrator:8000"]
     scrape_interval: 60s
-    metrics_path: /api/metrics/security
+    metrics_path:/api/metrics/security
     scrape_timeout: 30s
 
   # Custom Application Metrics
@@ -310,7 +310,7 @@ scrape_configs:
           - "monetization_bundle:8003"
           - "revenue_tracker:8004"
     scrape_interval: 60s
-    metrics_path: /api/metrics/custom
+    metrics_path:/api/metrics/custom
     scrape_timeout: 30s
 
 # Remote write configuration (for long-term storage)
@@ -346,8 +346,8 @@ query:
 
 # Web configuration
 web:
-  console.templates: /etc/prometheus/consoles
-  console.libraries: /etc/prometheus/console_libraries
+  console.templates:/etc/prometheus/consoles
+  console.libraries:/etc/prometheus/console_libraries
   enable-lifecycle: true
   enable-admin-api: true
   max-connections: 512

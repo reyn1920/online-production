@@ -463,13 +463,13 @@ print(f"  Avg Cost/Request: ${analytics['avg_cost_per_request']:.4f}")
 routing_stats = analytics['routing']
 print(f"\nModel Usage:")
 for model, count in routing_stats['model_usage_distribution'].items():
-    percentage = (count / routing_stats['total_routing_decisions']) * 100
+    percentage = (count/routing_stats['total_routing_decisions']) * 100
     print(f"  {model}: {count} requests ({percentage:.1f}%)")
 
 # Task type distribution
 print(f"\nTask Types:")
 for task, count in routing_stats['task_type_distribution'].items():
-    percentage = (count / routing_stats['total_routing_decisions']) * 100
+    percentage = (count/routing_stats['total_routing_decisions']) * 100
     print(f"  {task}: {count} requests ({percentage:.1f}%)")
 ```
 

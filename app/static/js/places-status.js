@@ -1,19 +1,15 @@
 /**
  * Places Status Dashboard
  * Displays clinic groups with provider status indicators
- */
-
-const CLINIC_GROUPS = [
+ */const CLINIC_GROUPS = [
   { name: "Geocoding", ids: ["opencage", "nominatim_osm"] },
   { name: "Vet Clinics", ids: ["overpass_main", "overpass_kumi", "overpass_fr", "foursquare", "google_places", "yelp"] },
-  { name: "Hospitals / Clinics", ids: ["overpass_main", "overpass_kumi", "overpass_fr", "foursquare", "google_places", "yelp"] },
-];
-
-// For each provider id, pull status from /integrations registry
+  { name: "Hospitals/Clinics", ids: ["overpass_main", "overpass_kumi", "overpass_fr", "foursquare", "google_places", "yelp"] },
+];//For each provider id, pull status from/integrations registry
 function dotClass(status) {
   if (status === "green") return "dot green";
   if (status === "red") return "dot red";
-  return "dot purple"; // default/needs key or disabled
+  return "dot purple";//default/needs key or disabled
 }
 
 class PlacesStatusDashboard {
@@ -30,10 +26,8 @@ class PlacesStatusDashboard {
 
   async fetchProviders() {
     try {
-      const response = await fetch('/places/providers');
-      const data = await response.json();
-      
-      // Store providers in a map for quick lookup
+      const response = await fetch("/places/providers');
+      const data = await response.json();//Store providers in a map for quick lookup
       this.providers.clear();
       data.providers.forEach(provider => {
         this.providers.set(provider.id, provider);
@@ -134,9 +128,7 @@ class PlacesStatusDashboard {
       groupsContainer.appendChild(groupElement);
     });
 
-    container.appendChild(groupsContainer);
-    
-    // Add last updated timestamp
+    container.appendChild(groupsContainer);//Add last updated timestamp
     const timestamp = document.createElement('div');
     timestamp.className = 'last-updated';
     timestamp.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
@@ -191,22 +183,14 @@ class PlacesStatusDashboard {
       ...this.getGroupSummary(group.name)
     }));
   }
-}
-
-// Global instance
-let placesStatusDashboard = null;
-
-// Initialize when DOM is ready
+}//Global instance
+let placesStatusDashboard = null;//Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   placesStatusDashboard = new PlacesStatusDashboard();
-});
-
-// Export for use in other scripts
+});//Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { PlacesStatusDashboard, CLINIC_GROUPS, dotClass };
-}
-
-// Global functions for manual control
+}//Global functions for manual control
 window.refreshPlacesStatus = async () => {
   if (placesStatusDashboard) {
     await placesStatusDashboard.refresh();

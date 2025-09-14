@@ -45,10 +45,7 @@ def load_routers_dynamically(app: FastAPI):
 ```
 
 ### Fix 2: Remove Auto-Refresh
-```javascript
-// Replace auto-refresh with manual refresh button
-// Remove: setTimeout(() => location.reload(), 30000);
-// Add: <button onclick="location.reload()">Refresh Dashboard</button>
+```javascript//Replace auto-refresh with manual refresh button//Remove: setTimeout(() => location.reload(), 30000);//Add: <button onclick="location.reload()">Refresh Dashboard</button>
 ```
 
 ### Fix 3: Simplify Production Init

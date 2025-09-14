@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Simple VidScriptPro Test
 """
@@ -10,7 +10,7 @@ from pathlib import Path
 # Add backend to path
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 try:
     from backend.content.vidscript_pro import VidScriptPro
@@ -25,7 +25,7 @@ try:
     print(f"📊 Available attributes: {attrs[:10]}...")  # Show first 10
 
     # Test simple script generation
-    print("\n🎬 Testing script generation...")
+    print("\\n🎬 Testing script generation...")
     try:
         result = script_gen.generate_logline("A day in the life of an AI assistant")
         print(f"✅ Logline generation successful: {len(result)} characters")
@@ -35,6 +35,7 @@ try:
 
 except Exception as e:
     print(f"❌ Test failed: {e}")
+
     import traceback
 
     traceback.print_exc()

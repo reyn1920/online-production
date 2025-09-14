@@ -1,0 +1,60 @@
+#!/usr/bin/env zsh
+# Base44 Pre-commit Hook - Security and Do-Not-Delete Enforcement
+# This hook runs before each commit to ensure code quality and compliance
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+HOOKS_DIR="$ROOT/tools/hooks"
+GUARD_SCRIPT="$ROOT/tools/base44_debug_guard.py"
+
+echo "🔒 Base44 Pre-commit Hook: Running security and compliance checks..."
+
+# Check if Base44 Debug Guard exists
+if [[ ! -f "$GUARD_SCRIPT" ]]; then
+    echo "❌ Base44 Debug Guard not found at $GUARD_SCRIPT"
+    echo "Please ensure the debug guard is properly installed."
+    exit 1
+fi
+
+# Run the Base44 Debug Guard
+echo "🛡️ Running Base44 Debug Guard (two-pass audit)..."
+if python3 "$GUARD_SCRIPT"; then
+    echo "✅ All security and compliance checks passed!"
+    echo "📋 Check base44_guard_report.json for detailed results"
+else
+    echo "❌ Security or compliance issues detected!"
+    echo "📋 Check base44_guard.log and base44_guard_report.json for details"
+    echo "🚫 Commit blocked until issues are resolved"
+    exit 1
+fi
+
+# Additional quick checks for staged files only
+echo "📁 Checking staged files for immediate issues..."
+
+# Get list of staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [[ -n "$STAGED_FILES" ]]; then
+    # Quick forbidden token check on staged files only
+    FORBIDDEN_FOUND=false
+    
+    while IFS= read -r file; do
+        if [[ -f "$ROOT/$file" ]]; then
+            # Check for forbidden tokens in staged files
+            if grep -E '\b(production|Production|PRODUCTION|simulation|placeholder|theoretical|demo|mock|fake|sample|test)\b' "$ROOT/$file" >/dev/null 2>&1; then
+                echo "⚠️ Forbidden vocabulary found in: $file"
+                FORBIDDEN_FOUND=true
+            fi
+        fi
+    done <<< "$STAGED_FILES"
+    
+    if [[ "$FORBIDDEN_FOUND" == "true" ]]; then
+        echo "❌ Forbidden vocabulary detected in staged files!"
+        echo "Please remove banned terms before committing"
+        exit 1
+    fi
+fi
+
+echo "🎉 Pre-commit checks completed successfully!"
+echo "✨ Ready to commit"

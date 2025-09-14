@@ -1,9 +1,11 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Marketing & Monetization Engine
 
 Autonomous revenue generation system that creates and manages multiple income streams
+
 from content created by the Hollywood Creative Pipeline. Implements the 11 - point
+
 marketing and monetization strategy from the TRAE.AI framework.
 
 Revenue Streams:
@@ -13,10 +15,10 @@ Revenue Streams:
 4. Merchandise
 5. Newsletter Monetization
 6. Sponsored Content
-7. Membership / Subscription
+7. Membership/Subscription
 8. Consulting Services
 9. Software Tools
-10. Live Events / Webinars
+10. Live Events/Webinars
 11. Licensing & Partnerships
 
 Follows TRAE.AI System Constitution:
@@ -29,31 +31,19 @@ Author: TRAE.AI System
 Version: 1.0.0
 """
 
-import asyncio
-import hashlib
 import json
-import logging
 import os
-import smtplib
 import sqlite3
-import subprocess
 import sys
 import threading
 import time
 import uuid
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timedelta
-from email import encoders
-from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-from urllib.parse import quote, urlencode
+from typing import Any, Dict, List
 
-import requests
 
 # Add project root to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -117,9 +107,8 @@ class MonetizationStatus(Enum):
     COMPLETED = "completed"
     FAILED = "failed"
 
+
 @dataclass
-
-
 class RevenueTarget:
     """Revenue target for a specific stream."""
 
@@ -131,9 +120,8 @@ class RevenueTarget:
     optimization_score: float
     last_updated: datetime
 
+
 @dataclass
-
-
 class MarketingCampaign:
     """Marketing campaign configuration."""
 
@@ -152,9 +140,8 @@ class MarketingCampaign:
     roi: float
     conversion_tracking: Dict[str, Any]
 
+
 @dataclass
-
-
 class DigitalProduct:
     """Digital product for monetization."""
 
@@ -174,9 +161,8 @@ class DigitalProduct:
     refund_rate: float
     customer_satisfaction: float
 
+
 @dataclass
-
-
 class AffiliateProgram:
     """Affiliate program configuration."""
 
@@ -194,9 +180,8 @@ class AffiliateProgram:
     gravity_score: float
     is_active: bool
 
+
 @dataclass
-
-
 class NewsletterCampaign:
     """Newsletter campaign for monetization."""
 
@@ -220,8 +205,7 @@ class MarketingMonetizationEngine:
     automation, affiliate management, and revenue optimization.
     """
 
-
-    def __init__(self, db_path: str = "data / marketing_monetization.sqlite"):
+    def __init__(self, db_path: str = "data/marketing_monetization.sqlite"):
         self.logger = setup_logger("marketing_monetization_engine")
         self.db_path = db_path
         self.secret_store = SecretStore()
@@ -259,10 +243,9 @@ class MarketingMonetizationEngine:
 
         self.logger.info("Marketing & Monetization Engine initialized")
 
-
     def _init_database(self) -> None:
         """Initialize the marketing and monetization database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -433,7 +416,6 @@ class MarketingMonetizationEngine:
 
         self.logger.info("Marketing & monetization database initialized")
 
-
     def _load_revenue_targets(self) -> None:
         """Load revenue targets from database."""
         conn = sqlite3.connect(self.db_path)
@@ -445,14 +427,14 @@ class MarketingMonetizationEngine:
         for row in rows:
             stream = RevenueStream(row[0])
             target = RevenueTarget(
-                stream = stream,
-                    monthly_target = row[1],
-                    current_revenue = row[2],
-                    conversion_rate = row[3],
-                    traffic_required = row[4],
-                    optimization_score = row[5],
-                    last_updated = datetime.fromisoformat(row[6]),
-                    )
+                stream=stream,
+                monthly_target=row[1],
+                current_revenue=row[2],
+                conversion_rate=row[3],
+                traffic_required=row[4],
+                optimization_score=row[5],
+                last_updated=datetime.fromisoformat(row[6]),
+            )
             self.revenue_targets[stream] = target
 
         conn.close()
@@ -461,26 +443,24 @@ class MarketingMonetizationEngine:
         if not self.revenue_targets:
             self._set_default_revenue_targets()
 
-
     def _set_default_revenue_targets(self) -> None:
         """Set default revenue targets for all streams."""
         default_targets = {
             RevenueStream.YOUTUBE_ADS: 1000.0,
-                RevenueStream.AFFILIATE_MARKETING: 2000.0,
-                RevenueStream.DIGITAL_PRODUCTS: 3000.0,
-                RevenueStream.MERCHANDISE: 500.0,
-                RevenueStream.NEWSLETTER: 800.0,
-                RevenueStream.SPONSORED_CONTENT: 1500.0,
-                RevenueStream.MEMBERSHIP: 2500.0,
-                RevenueStream.CONSULTING: 4000.0,
-                RevenueStream.SOFTWARE_TOOLS: 5000.0,
-                RevenueStream.LIVE_EVENTS: 1200.0,
-                RevenueStream.LICENSING: 800.0,
-                }
+            RevenueStream.AFFILIATE_MARKETING: 2000.0,
+            RevenueStream.DIGITAL_PRODUCTS: 3000.0,
+            RevenueStream.MERCHANDISE: 500.0,
+            RevenueStream.NEWSLETTER: 800.0,
+            RevenueStream.SPONSORED_CONTENT: 1500.0,
+            RevenueStream.MEMBERSHIP: 2500.0,
+            RevenueStream.CONSULTING: 4000.0,
+            RevenueStream.SOFTWARE_TOOLS: 5000.0,
+            RevenueStream.LIVE_EVENTS: 1200.0,
+            RevenueStream.LICENSING: 800.0,
+        }
 
         for stream, target_amount in default_targets.items():
             self.set_revenue_target(stream, target_amount)
-
 
     def _load_affiliate_programs(self) -> None:
         """Load affiliate programs from database."""
@@ -492,80 +472,70 @@ class MarketingMonetizationEngine:
 
         for row in rows:
             program = AffiliateProgram(
-                program_id = row[0],
-                    company_name = row[1],
-                    product_name = row[2],
-                    commission_rate = row[3],
-                    cookie_duration_days = row[4],
-                    affiliate_link = row[5],
-                    tracking_code = row[6],
-                    minimum_payout = row[7],
-                    payment_schedule = row[8],
-                    conversion_rate = row[9],
-                    epc = row[10],
-                    gravity_score = row[11],
-                    is_active = bool(row[12]),
-                    )
+                program_id=row[0],
+                company_name=row[1],
+                product_name=row[2],
+                commission_rate=row[3],
+                cookie_duration_days=row[4],
+                affiliate_link=row[5],
+                tracking_code=row[6],
+                minimum_payout=row[7],
+                payment_schedule=row[8],
+                conversion_rate=row[9],
+                epc=row[10],
+                gravity_score=row[11],
+                is_active=bool(row[12]),
+            )
             self.affiliate_programs[program.program_id] = program
 
         conn.close()
 
-
     def _start_automation_threads(self) -> None:
         """Start background automation threads."""
         # Email automation thread
-        email_thread = threading.Thread(target = self._email_automation_loop, daemon = True)
+        email_thread = threading.Thread(target=self._email_automation_loop, daemon=True)
         email_thread.start()
 
         # Social media automation thread
-        social_thread = threading.Thread(
-            target = self._social_media_automation_loop, daemon = True
-        )
+        social_thread = threading.Thread(target=self._social_media_automation_loop, daemon=True)
         social_thread.start()
 
         # Revenue optimization thread
-        optimization_thread = threading.Thread(
-            target = self._revenue_optimization_loop, daemon = True
-        )
+        optimization_thread = threading.Thread(target=self._revenue_optimization_loop, daemon=True)
         optimization_thread.start()
 
         # Analytics collection thread
-        analytics_thread = threading.Thread(
-            target = self._analytics_collection_loop, daemon = True
-        )
+        analytics_thread = threading.Thread(target=self._analytics_collection_loop, daemon=True)
         analytics_thread.start()
 
         self.logger.info("Started automation threads")
-
 
     def create_marketing_campaign(self, campaign_config: Dict[str, Any]) -> str:
         """Create a new marketing campaign."""
         campaign_id = f"campaign_{int(time.time())}_{uuid.uuid4().hex[:8]}"
 
         campaign = MarketingCampaign(
-            campaign_id = campaign_id,
-                name = campaign_config["name"],
-                campaign_type = CampaignType(campaign_config["type"]),
-                channels=[MarketingChannel(ch) for ch in campaign_config["channels"]],
-                target_audience = campaign_config.get("target_audience", "general"),
-                budget = campaign_config.get("budget", 0.0),
-                duration_days = campaign_config.get("duration_days", 7),
-                start_date = datetime.now(),
-                end_date = datetime.now()
-            + timedelta(days = campaign_config.get("duration_days", 7)),
-                kpis = campaign_config.get("kpis", {}),
-                content_assets = campaign_config.get("content_assets", []),
-                status = MonetizationStatus.PLANNING,
-                roi = 0.0,
-                conversion_tracking={},
-                )
+            campaign_id=campaign_id,
+            name=campaign_config["name"],
+            campaign_type=CampaignType(campaign_config["type"]),
+            channels=[MarketingChannel(ch) for ch in campaign_config["channels"]],
+            target_audience=campaign_config.get("target_audience", "general"),
+            budget=campaign_config.get("budget", 0.0),
+            duration_days=campaign_config.get("duration_days", 7),
+            start_date=datetime.now(),
+            end_date=datetime.now() + timedelta(days=campaign_config.get("duration_days", 7)),
+            kpis=campaign_config.get("kpis", {}),
+            content_assets=campaign_config.get("content_assets", []),
+            status=MonetizationStatus.PLANNING,
+            roi=0.0,
+            conversion_tracking={},
+        )
 
         self.active_campaigns[campaign_id] = campaign
         self._save_campaign_to_db(campaign)
 
         self.logger.info(f"Created marketing campaign: {campaign_id}")
         return campaign_id
-
 
     def launch_campaign(self, campaign_id: str) -> bool:
         """Launch a marketing campaign."""
@@ -591,7 +561,6 @@ class MarketingMonetizationEngine:
             self.logger.error(f"Failed to launch campaign {campaign_id}: {e}")
             return False
 
-
     def _execute_channel_campaign(
         self, campaign: MarketingCampaign, channel: MarketingChannel
     ) -> None:
@@ -607,7 +576,6 @@ class MarketingMonetizationEngine:
         else:
             self.logger.info(f"Channel {channel.value} execution not implemented yet")
 
-
     def _execute_email_campaign(self, campaign: MarketingCampaign) -> None:
         """Execute email marketing campaign."""
         # Generate email content based on campaign type
@@ -615,24 +583,23 @@ class MarketingMonetizationEngine:
 
         # Create newsletter campaign
         newsletter_campaign = NewsletterCampaign(
-            campaign_id = f"{campaign.campaign_id}_email",
-                subject_line = email_content["subject"],
-                content = email_content["body"],
-                subscriber_segment = campaign.target_audience,
-                send_date = datetime.now(),
-                open_rate = 0.0,
-                click_rate = 0.0,
-                conversion_rate = 0.0,
-                revenue_generated = 0.0,
-                unsubscribe_rate = 0.0,
-                spam_score = 0.0,
-                )
+            campaign_id=f"{campaign.campaign_id}_email",
+            subject_line=email_content["subject"],
+            content=email_content["body"],
+            subscriber_segment=campaign.target_audience,
+            send_date=datetime.now(),
+            open_rate=0.0,
+            click_rate=0.0,
+            conversion_rate=0.0,
+            revenue_generated=0.0,
+            unsubscribe_rate=0.0,
+            spam_score=0.0,
+        )
 
         # Send email (placeholder - would integrate with email service)
         self._send_newsletter_campaign(newsletter_campaign)
 
         self.logger.info(f"Executed email campaign for {campaign.campaign_id}")
-
 
     def _execute_twitter_campaign(self, campaign: MarketingCampaign) -> None:
         """Execute Twitter marketing campaign."""
@@ -644,17 +611,14 @@ class MarketingMonetizationEngine:
             self.social_media_queue.append(
                 {
                     "platform": "twitter",
-                        "content": tweet,
-                        "campaign_id": campaign.campaign_id,
-                        "scheduled_time": datetime.now()
-                    + timedelta(minutes = len(self.social_media_queue) * 30),
-                        }
+                    "content": tweet,
+                    "campaign_id": campaign.campaign_id,
+                    "scheduled_time": datetime.now()
+                    + timedelta(minutes=len(self.social_media_queue) * 30),
+                }
             )
 
-        self.logger.info(
-            f"Scheduled {len(tweets)} tweets for campaign {campaign.campaign_id}"
-        )
-
+        self.logger.info(f"Scheduled {len(tweets)} tweets for campaign {campaign.campaign_id}")
 
     def _execute_youtube_campaign(self, campaign: MarketingCampaign) -> None:
         """Execute YouTube marketing campaign."""
@@ -664,10 +628,7 @@ class MarketingMonetizationEngine:
         # - Shorts creation
         # - Playlist management
 
-        self.logger.info(
-            f"YouTube campaign execution for {campaign.campaign_id} (placeholder)"
-        )
-
+        self.logger.info(f"YouTube campaign execution for {campaign.campaign_id} (placeholder)")
 
     def _execute_blog_campaign(self, campaign: MarketingCampaign) -> None:
         """Execute blog marketing campaign."""
@@ -675,36 +636,35 @@ class MarketingMonetizationEngine:
         blog_content = self._generate_blog_content(campaign)
 
         # Save blog post
-        blog_file = Path("data / blog_posts") / f"{campaign.campaign_id}_blog.md"
-        blog_file.parent.mkdir(parents = True, exist_ok = True)
+        blog_file = Path("data/blog_posts") / f"{campaign.campaign_id}_blog.md"
+        blog_file.parent.mkdir(parents=True, exist_ok=True)
 
         with open(blog_file, "w") as f:
             f.write(blog_content)
 
         self.logger.info(f"Generated blog post for campaign {campaign.campaign_id}")
 
-
     def create_digital_product(self, product_config: Dict[str, Any]) -> str:
         """Create a new digital product for monetization."""
         product_id = f"product_{int(time.time())}_{uuid.uuid4().hex[:8]}"
 
         product = DigitalProduct(
-            product_id = product_id,
-                name = product_config["name"],
-                description = product_config.get("description", ""),
-                product_type = product_config["type"],
-                price = product_config["price"],
-                cost_to_produce = product_config.get("cost_to_produce", 0.0),
-                target_market = product_config.get("target_market", "general"),
-                sales_page_url="",
-                download_url="",
-                affiliate_commission = product_config.get("affiliate_commission", 0.3),
-                launch_date = datetime.now(),
-                total_sales = 0,
-                total_revenue = 0.0,
-                refund_rate = 0.0,
-                customer_satisfaction = 0.0,
-                )
+            product_id=product_id,
+            name=product_config["name"],
+            description=product_config.get("description", ""),
+            product_type=product_config["type"],
+            price=product_config["price"],
+            cost_to_produce=product_config.get("cost_to_produce", 0.0),
+            target_market=product_config.get("target_market", "general"),
+            sales_page_url="",
+            download_url="",
+            affiliate_commission=product_config.get("affiliate_commission", 0.3),
+            launch_date=datetime.now(),
+            total_sales=0,
+            total_revenue=0.0,
+            refund_rate=0.0,
+            customer_satisfaction=0.0,
+        )
 
         # Generate product content based on type
         if product.product_type == "ebook":
@@ -726,33 +686,32 @@ class MarketingMonetizationEngine:
         self.logger.info(f"Created digital product: {product_id}")
         return product_id
 
-
     def _generate_ebook(self, product: DigitalProduct, config: Dict[str, Any]) -> None:
         """Generate an eBook based on content."""
         # This would use AI to generate comprehensive eBook content
         # For now, create a placeholder structure
 
-        ebook_dir = Path("data / digital_products") / product.product_id
-        ebook_dir.mkdir(parents = True, exist_ok = True)
+        ebook_dir = Path("data/digital_products") / product.product_id
+        ebook_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate eBook content
         chapters = config.get(
             "chapters",
-                [
+            [
                 "Introduction",
-                    "Getting Started",
-                    "Advanced Techniques",
-                    "Case Studies",
-                    "Conclusion",
-                    ],
-                )
+                "Getting Started",
+                "Advanced Techniques",
+                "Case Studies",
+                "Conclusion",
+            ],
+        )
 
-        ebook_content = f"# {product.name}\n\n"
-        ebook_content += f"{product.description}\n\n"
+        ebook_content = f"# {product.name}\\n\\n"
+        ebook_content += f"{product.description}\\n\\n"
 
         for i, chapter in enumerate(chapters, 1):
-            ebook_content += f"## Chapter {i}: {chapter}\n\n"
-            ebook_content += f"Content for {chapter} chapter...\n\n"
+            ebook_content += f"## Chapter {i}: {chapter}\\n\\n"
+            ebook_content += f"Content for {chapter} chapter...\\n\\n"
 
         # Save eBook
         ebook_file = ebook_dir / f"{product.name.replace(' ', '_')}.md"
@@ -763,58 +722,54 @@ class MarketingMonetizationEngine:
 
         self.logger.info(f"Generated eBook: {product.name}")
 
-
     def _generate_course(self, product: DigitalProduct, config: Dict[str, Any]) -> None:
         """Generate an online course."""
-        course_dir = Path("data / digital_products") / product.product_id
-        course_dir.mkdir(parents = True, exist_ok = True)
+        course_dir = Path("data/digital_products") / product.product_id
+        course_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate course structure
         modules = config.get(
             "modules",
-                [
+            [
                 "Module 1: Foundations",
-                    "Module 2: Implementation",
-                    "Module 3: Optimization",
-                    "Module 4: Advanced Strategies",
-                    ],
-                )
+                "Module 2: Implementation",
+                "Module 3: Optimization",
+                "Module 4: Advanced Strategies",
+            ],
+        )
 
         course_structure = {
             "title": product.name,
-                "description": product.description,
-                "modules": [],
-                }
+            "description": product.description,
+            "modules": [],
+        }
 
         for module in modules:
             course_structure["modules"].append(
                 {
                     "title": module,
-                        "lessons": [
+                    "lessons": [
                         f"{module} - Lesson 1",
-                            f"{module} - Lesson 2",
-                            f"{module} - Lesson 3",
-                            ],
-                        "resources": ["Worksheet", "Video Tutorial", "Case Study"],
-                        }
+                        f"{module} - Lesson 2",
+                        f"{module} - Lesson 3",
+                    ],
+                    "resources": ["Worksheet", "Video Tutorial", "Case Study"],
+                }
             )
 
         # Save course structure
         course_file = course_dir / "course_structure.json"
         with open(course_file, "w") as f:
-            json.dump(course_structure, f, indent = 2)
+            json.dump(course_structure, f, indent=2)
 
         product.download_url = str(course_file)
 
         self.logger.info(f"Generated course: {product.name}")
 
-
-    def _generate_template(
-        self, product: DigitalProduct, config: Dict[str, Any]
-    ) -> None:
+    def _generate_template(self, product: DigitalProduct, config: Dict[str, Any]) -> None:
         """Generate a template product."""
-        template_dir = Path("data / digital_products") / product.product_id
-        template_dir.mkdir(parents = True, exist_ok = True)
+        template_dir = Path("data/digital_products") / product.product_id
+        template_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate template files based on type
         template_type = config.get("template_type", "general")
@@ -830,93 +785,83 @@ class MarketingMonetizationEngine:
 
         self.logger.info(f"Generated template: {product.name}")
 
-
-    def _generate_social_media_templates(
-        self, template_dir: Path, product: DigitalProduct
-    ) -> None:
+    def _generate_social_media_templates(self, template_dir: Path, product: DigitalProduct) -> None:
         """Generate social media templates."""
         templates = {
             "instagram_post.json": {
                 "caption_templates": [
                     "🚀 Ready to {action}? Here's how to {benefit}...",
-                        "💡 Pro tip: {tip} will help you {outcome}",
-                        "🔥 {number} ways to {achieve_goal}",
-                        ],
-                    "hashtag_groups": {
+                    "💡 Pro tip: {tip} will help you {outcome}",
+                    "🔥 {number} ways to {achieve_goal}",
+                ],
+                "hashtag_groups": {
                     "general": ["#motivation", "#success", "#entrepreneur"],
-                        "business": ["#business", "#marketing", "#growth"],
-                        "tech": ["#technology", "#innovation", "#ai"],
-                        },
-                    },
-                "twitter_threads.json": {
+                    "business": ["#business", "#marketing", "#growth"],
+                    "tech": ["#technology", "#innovation", "#ai"],
+                },
+            },
+            "twitter_threads.json": {
                 "thread_starters": [
                     "🧵 Thread: Everything you need to know about {topic}",
-                        "📚 I've learned {number} things about {subject}. Here they are:",
-                        "🎯 Want to {goal}? Follow this step - by - step guide:",
-                        ]
+                    "📚 I've learned {number} things about {subject}. Here they are:",
+                    "🎯 Want to {goal}? Follow this step - by - step guide:",
+                ]
             },
-                }
+        }
 
         for filename, content in templates.items():
             with open(template_dir / filename, "w") as f:
-                json.dump(content, f, indent = 2)
+                json.dump(content, f, indent=2)
 
-
-    def _generate_email_templates(
-        self, template_dir: Path, product: DigitalProduct
-    ) -> None:
+    def _generate_email_templates(self, template_dir: Path, product: DigitalProduct) -> None:
         """Generate email templates."""
         templates = {
             "welcome_sequence.json": {
                 "email_1": {
                     "subject": "Welcome to {product_name}!",
-                        "body": "Thank you for joining us! Here's what to expect...",
-                        },
-                    "email_2": {
+                    "body": "Thank you for joining us! Here's what to expect...",
+                },
+                "email_2": {
                     "subject": "Your first step to {benefit}",
-                        "body": "Let's get started with your journey...",
-                        },
-                    },
-                "sales_sequence.json": {
+                    "body": "Let's get started with your journey...",
+                },
+            },
+            "sales_sequence.json": {
                 "email_1": {
                     "subject": "Special offer: {discount}% off {product}",
-                        "body": "Limited time offer for our valued subscribers...",
-                        }
-            },
+                    "body": "Limited time offer for our valued subscribers...",
                 }
+            },
+        }
 
         for filename, content in templates.items():
             with open(template_dir / filename, "w") as f:
-                json.dump(content, f, indent = 2)
+                json.dump(content, f, indent=2)
 
-
-    def _generate_presentation_templates(
-        self, template_dir: Path, product: DigitalProduct
-    ) -> None:
+    def _generate_presentation_templates(self, template_dir: Path, product: DigitalProduct) -> None:
         """Generate presentation templates."""
         # Create PowerPoint - style template structure
         template_structure = {
             "slides": [
                 {"type": "title", "content": "Title Slide Template"},
-                    {"type": "agenda", "content": "Agenda Slide Template"},
-                    {"type": "content", "content": "Content Slide Template"},
-                    {"type": "conclusion", "content": "Conclusion Slide Template"},
-                    ],
-                "themes": {
+                {"type": "agenda", "content": "Agenda Slide Template"},
+                {"type": "content", "content": "Content Slide Template"},
+                {"type": "conclusion", "content": "Conclusion Slide Template"},
+            ],
+            "themes": {
                 "professional": {"colors": ["#1f4e79", "#ffffff", "#f2f2f2"]},
-                    "modern": {"colors": ["#2c3e50", "#3498db", "#ecf0f1"]},
-                    "creative": {"colors": ["#e74c3c", "#f39c12", "#2ecc71"]},
-                    },
-                }
+                "modern": {"colors": ["#2c3e50", "#3498db", "#ecf0f1"]},
+                "creative": {"colors": ["#e74c3c", "#f39c12", "#2ecc71"]},
+            },
+        }
 
         with open(template_dir / "presentation_template.json", "w") as f:
-            json.dump(template_structure, f, indent = 2)
-
+            json.dump(template_structure, f, indent=2)
 
     def _create_sales_page(self, product: DigitalProduct) -> None:
         """Create a sales page for the digital product."""
-        sales_page_dir = Path("data / sales_pages") / product.product_id
-        sales_page_dir.mkdir(parents = True, exist_ok = True)
+        sales_page_dir = Path("data/sales_pages") / product.product_id
+        sales_page_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate sales page HTML
         sales_page_html = f"""
@@ -976,58 +921,55 @@ class MarketingMonetizationEngine:
 
         self.logger.info(f"Created sales page for {product.name}")
 
-
     def _setup_product_affiliate_program(self, product: DigitalProduct) -> None:
         """Set up affiliate program for a digital product."""
         affiliate_id = f"affiliate_{product.product_id}"
 
         affiliate_program = AffiliateProgram(
-            program_id = affiliate_id,
-                company_name="TRAE.AI",
-                product_name = product.name,
-                commission_rate = product.affiliate_commission,
-                cookie_duration_days = 60,
-                affiliate_link = f"https://example.com / affiliate/{product.product_id}",
-                tracking_code = f"TRAE_{product.product_id.upper()}",
-                minimum_payout = 25.0,
-                payment_schedule="monthly",
-                conversion_rate = 0.0,
-                epc = 0.0,
-                gravity_score = 0.0,
-                is_active = True,
-                )
+            program_id=affiliate_id,
+            company_name="TRAE.AI",
+            product_name=product.name,
+            commission_rate=product.affiliate_commission,
+            cookie_duration_days=60,
+            affiliate_link=f"https://example.com/affiliate/{product.product_id}",
+            tracking_code=f"TRAE_{product.product_id.upper()}",
+            minimum_payout=25.0,
+            payment_schedule="monthly",
+            conversion_rate=0.0,
+            epc=0.0,
+            gravity_score=0.0,
+            is_active=True,
+        )
 
         self.affiliate_programs[affiliate_id] = affiliate_program
         self._save_affiliate_program_to_db(affiliate_program)
 
         self.logger.info(f"Set up affiliate program for {product.name}")
 
-
     def set_revenue_target(self, stream: RevenueStream, monthly_target: float) -> None:
         """Set revenue target for a specific stream."""
         target = RevenueTarget(
-            stream = stream,
-                monthly_target = monthly_target,
-                current_revenue = 0.0,
-                conversion_rate = 0.0,
-                traffic_required = 0,
-                optimization_score = 0.0,
-                last_updated = datetime.now(),
-                )
+            stream=stream,
+            monthly_target=monthly_target,
+            current_revenue=0.0,
+            conversion_rate=0.0,
+            traffic_required=0,
+            optimization_score=0.0,
+            last_updated=datetime.now(),
+        )
 
         self.revenue_targets[stream] = target
         self._save_revenue_target_to_db(target)
 
         self.logger.info(f"Set revenue target for {stream.value}: ${monthly_target}")
 
-
     def track_revenue(
         self,
-            stream: RevenueStream,
-            amount: float,
-            source: str = None,
-            metadata: Dict[str, Any] = None,
-            ) -> None:
+        stream: RevenueStream,
+        amount: float,
+        source: str = None,
+        metadata: Dict[str, Any] = None,
+    ) -> None:
         """Track revenue from a specific stream."""
         # Update current revenue
         if stream in self.revenue_targets:
@@ -1044,27 +986,26 @@ class MarketingMonetizationEngine:
             (date, revenue_stream, amount, source, metadata_json)
             VALUES (?, ?, ?, ?, ?)
             """,
-                (
+            (
                 datetime.now().date(),
-                    stream.value,
-                    amount,
-                    source,
-                    json.dumps(metadata or {}),
-                    ),
-                )
+                stream.value,
+                amount,
+                source,
+                json.dumps(metadata or {}),
+            ),
+        )
 
         conn.commit()
         conn.close()
 
         self.logger.info(f"Tracked revenue: ${amount} from {stream.value}")
 
-
     def _generate_email_content(self, campaign: MarketingCampaign) -> Dict[str, str]:
         """Generate email content for a campaign."""
         if campaign.campaign_type == CampaignType.PRODUCT_LAUNCH:
             return {
                 "subject": f"🚀 Introducing {campaign.name} - Limited Time Offer!",
-                    "body": f"""
+                "body": f"""
                 Hi there!
 
                 We're excited to announce the launch of {campaign.name}!
@@ -1078,11 +1019,11 @@ class MarketingMonetizationEngine:
                 Best regards,
                     The TRAE.AI Team
                 """,
-                    }
+            }
         elif campaign.campaign_type == CampaignType.CONTENT_PROMOTION:
             return {
                 "subject": f"📺 New Video: {campaign.name}",
-                    "body": f"""
+                "body": f"""
                 Hey!
 
                 Just dropped a new video that I think you'll love: {campaign.name}
@@ -1099,13 +1040,12 @@ class MarketingMonetizationEngine:
                 Cheers,
                     TRAE.AI
                 """,
-                    }
+            }
         else:
             return {
                 "subject": f"📧 {campaign.name}",
-                    "body": f"Content for {campaign.campaign_type.value} campaign: {campaign.name}",
-                    }
-
+                "body": f"Content for {campaign.campaign_type.value} campaign: {campaign.name}",
+            }
 
     def _generate_twitter_content(self, campaign: MarketingCampaign) -> List[str]:
         """Generate Twitter content for a campaign."""
@@ -1114,23 +1054,23 @@ class MarketingMonetizationEngine:
         if campaign.campaign_type == CampaignType.PRODUCT_LAUNCH:
             tweets = [
                 f"🚀 LAUNCH DAY! {campaign.name} is finally here! Get 50% off for the next 24 hours. Link in bio! #ProductLaunch #AI #Automation",
-                    f"🧵 Thread: Why I created {campaign.name} and how it can transform your {campaign.target_audience} (1 / 5)",
-                    f"💡 Pro tip: The secret to success with {campaign.name} is consistency. Here's how to get started... #Tips #Success",
-                    ]
+                f"🧵 Thread: Why I created {campaign.name} \
+    and how it can transform your {campaign.target_audience} (1/5)",
+                f"💡 Pro tip: The secret to success with {campaign.name} is consistency. Here's how to get started... #Tips #Success",
+            ]
         elif campaign.campaign_type == CampaignType.CONTENT_PROMOTION:
             tweets = [
                 f"📺 New video is live! {campaign.name} - everything you need to know about {campaign.target_audience}. Link in bio!",
-                    f"🔥 This video took me 20 hours to create, but it will save you 200 hours. Watch: {campaign.name}",
-                    f"💬 What's your biggest challenge with {campaign.target_audience}? Answered it all in my latest video!",
-                    ]
+                f"🔥 This video took me 20 hours to create, but it will save you 200 hours. Watch: {campaign.name}",
+                f"💬 What's your biggest challenge with {campaign.target_audience}? Answered it all in my latest video!",
+            ]
         else:
             tweets = [
                 f"📢 {campaign.name} - check it out! #Marketing #AI",
-                    f"🎯 Excited to share: {campaign.name}. What do you think?",
-                    ]
+                f"🎯 Excited to share: {campaign.name}. What do you think?",
+            ]
 
         return tweets
-
 
     def _generate_blog_content(self, campaign: MarketingCampaign) -> str:
         """Generate blog content for a campaign."""
@@ -1163,9 +1103,9 @@ To begin your journey with {campaign.name}, follow these steps:
 
 ---
 
-*Want to learn more? Check out our latest video on this topic and don't forget to subscribe to our newsletter for more insights!*
+*Want to learn more? Check out our latest video on this topic \
+    and don't forget to subscribe to our newsletter for more insights!*
 """
-
 
     def _send_newsletter_campaign(self, campaign: NewsletterCampaign) -> None:
         """Send newsletter campaign (placeholder implementation)."""
@@ -1190,22 +1130,21 @@ To begin your journey with {campaign.name}, follow these steps:
                 open_rate, click_rate, conversion_rate, revenue_generated)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-                (
+            (
                 campaign.campaign_id,
-                    campaign.subject_line,
-                    campaign.content,
-                    campaign.subscriber_segment,
-                    campaign.send_date,
-                    campaign.open_rate,
-                    campaign.click_rate,
-                    campaign.conversion_rate,
-                    campaign.revenue_generated,
-                    ),
-                )
+                campaign.subject_line,
+                campaign.content,
+                campaign.subscriber_segment,
+                campaign.send_date,
+                campaign.open_rate,
+                campaign.click_rate,
+                campaign.conversion_rate,
+                campaign.revenue_generated,
+            ),
+        )
 
         conn.commit()
         conn.close()
-
 
     def _email_automation_loop(self) -> None:
         """Background loop for email automation."""
@@ -1220,7 +1159,6 @@ To begin your journey with {campaign.name}, follow these steps:
             except Exception as e:
                 self.logger.error(f"Email automation error: {e}")
                 time.sleep(60)
-
 
     def _social_media_automation_loop(self) -> None:
         """Background loop for social media automation."""
@@ -1245,12 +1183,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 self.logger.error(f"Social media automation error: {e}")
                 time.sleep(60)
 
-
     def _send_social_media_post(self, post: Dict[str, Any]) -> None:
         """Send a social media post."""
         # This would integrate with social media APIs
         self.logger.info(f"Posted to {post['platform']}: {post['content'][:50]}...")
-
 
     def _revenue_optimization_loop(self) -> None:
         """Background loop for revenue optimization."""
@@ -1258,7 +1194,7 @@ To begin your journey with {campaign.name}, follow these steps:
             try:
                 # Analyze conversion rates
                 # Optimize pricing
-                # A / B test campaigns
+                # A/B test campaigns
                 # Update recommendations
 
                 self._optimize_revenue_streams()
@@ -1269,15 +1205,12 @@ To begin your journey with {campaign.name}, follow these steps:
                 self.logger.error(f"Revenue optimization error: {e}")
                 time.sleep(300)
 
-
     def _optimize_revenue_streams(self) -> None:
         """Optimize revenue streams based on performance data."""
         for stream, target in self.revenue_targets.items():
             # Calculate optimization score
             progress = (
-                target.current_revenue / target.monthly_target
-                if target.monthly_target > 0
-                else 0
+                target.current_revenue / target.monthly_target if target.monthly_target > 0 else 0
             )
             target.optimization_score = min(progress, 1.0)
 
@@ -1285,7 +1218,6 @@ To begin your journey with {campaign.name}, follow these steps:
             self._save_revenue_target_to_db(target)
 
         self.logger.info("Revenue streams optimized")
-
 
     def _analytics_collection_loop(self) -> None:
         """Background loop for analytics collection."""
@@ -1303,12 +1235,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 self.logger.error(f"Analytics collection error: {e}")
                 time.sleep(300)
 
-
     def _collect_analytics(self) -> None:
         """Collect and update analytics data."""
         # This would integrate with various analytics APIs
         self.logger.info("Analytics data collected")
-
 
     def _save_campaign_to_db(self, campaign: MarketingCampaign) -> None:
         """Save marketing campaign to database."""
@@ -1323,27 +1253,26 @@ To begin your journey with {campaign.name}, follow these steps:
                  content_assets_json, conversion_tracking_json)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-                (
+            (
                 campaign.campaign_id,
-                    campaign.name,
-                    campaign.campaign_type.value,
-                    json.dumps([ch.value for ch in campaign.channels]),
-                    campaign.target_audience,
-                    campaign.budget,
-                    campaign.duration_days,
-                    campaign.start_date,
-                    campaign.end_date,
-                    campaign.status.value,
-                    campaign.roi,
-                    json.dumps(campaign.kpis),
-                    json.dumps(campaign.content_assets),
-                    json.dumps(campaign.conversion_tracking),
-                    ),
-                )
+                campaign.name,
+                campaign.campaign_type.value,
+                json.dumps([ch.value for ch in campaign.channels]),
+                campaign.target_audience,
+                campaign.budget,
+                campaign.duration_days,
+                campaign.start_date,
+                campaign.end_date,
+                campaign.status.value,
+                campaign.roi,
+                json.dumps(campaign.kpis),
+                json.dumps(campaign.content_assets),
+                json.dumps(campaign.conversion_tracking),
+            ),
+        )
 
         conn.commit()
         conn.close()
-
 
     def _update_campaign_in_db(self, campaign: MarketingCampaign) -> None:
         """Update marketing campaign in database."""
@@ -1356,17 +1285,16 @@ To begin your journey with {campaign.name}, follow these steps:
             SET status = ?, roi = ?, conversion_tracking_json = ?
             WHERE campaign_id = ?
             """,
-                (
+            (
                 campaign.status.value,
-                    campaign.roi,
-                    json.dumps(campaign.conversion_tracking),
-                    campaign.campaign_id,
-                    ),
-                )
+                campaign.roi,
+                json.dumps(campaign.conversion_tracking),
+                campaign.campaign_id,
+            ),
+        )
 
         conn.commit()
         conn.close()
-
 
     def _save_product_to_db(self, product: DigitalProduct) -> None:
         """Save digital product to database."""
@@ -1381,28 +1309,27 @@ To begin your journey with {campaign.name}, follow these steps:
                  launch_date, total_sales, total_revenue, refund_rate, customer_satisfaction)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-                (
+            (
                 product.product_id,
-                    product.name,
-                    product.description,
-                    product.product_type,
-                    product.price,
-                    product.cost_to_produce,
-                    product.target_market,
-                    product.sales_page_url,
-                    product.download_url,
-                    product.affiliate_commission,
-                    product.launch_date,
-                    product.total_sales,
-                    product.total_revenue,
-                    product.refund_rate,
-                    product.customer_satisfaction,
-                    ),
-                )
+                product.name,
+                product.description,
+                product.product_type,
+                product.price,
+                product.cost_to_produce,
+                product.target_market,
+                product.sales_page_url,
+                product.download_url,
+                product.affiliate_commission,
+                product.launch_date,
+                product.total_sales,
+                product.total_revenue,
+                product.refund_rate,
+                product.customer_satisfaction,
+            ),
+        )
 
         conn.commit()
         conn.close()
-
 
     def _save_affiliate_program_to_db(self, program: AffiliateProgram) -> None:
         """Save affiliate program to database."""
@@ -1412,31 +1339,34 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor.execute(
             """
             INSERT OR REPLACE INTO affiliate_programs
-            (program_id, company_name, product_name, commission_rate, cookie_duration_days,
+            (program_id,
+    company_name,
+    product_name,
+    commission_rate,
+    cookie_duration_days,
                 affiliate_link, tracking_code, minimum_payout, payment_schedule,
                  conversion_rate, epc, gravity_score, is_active)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-                (
+            (
                 program.program_id,
-                    program.company_name,
-                    program.product_name,
-                    program.commission_rate,
-                    program.cookie_duration_days,
-                    program.affiliate_link,
-                    program.tracking_code,
-                    program.minimum_payout,
-                    program.payment_schedule,
-                    program.conversion_rate,
-                    program.epc,
-                    program.gravity_score,
-                    program.is_active,
-                    ),
-                )
+                program.company_name,
+                program.product_name,
+                program.commission_rate,
+                program.cookie_duration_days,
+                program.affiliate_link,
+                program.tracking_code,
+                program.minimum_payout,
+                program.payment_schedule,
+                program.conversion_rate,
+                program.epc,
+                program.gravity_score,
+                program.is_active,
+            ),
+        )
 
         conn.commit()
         conn.close()
-
 
     def _save_revenue_target_to_db(self, target: RevenueTarget) -> None:
         """Save revenue target to database."""
@@ -1450,23 +1380,22 @@ To begin your journey with {campaign.name}, follow these steps:
                 traffic_required, optimization_score, last_updated)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
-                (
+            (
                 target.stream.value,
-                    target.monthly_target,
-                    target.current_revenue,
-                    target.conversion_rate,
-                    target.traffic_required,
-                    target.optimization_score,
-                    target.last_updated,
-                    ),
-                )
+                target.monthly_target,
+                target.current_revenue,
+                target.conversion_rate,
+                target.traffic_required,
+                target.optimization_score,
+                target.last_updated,
+            ),
+        )
 
         conn.commit()
         conn.close()
 
-
     def get_revenue_dashboard(self) -> Dict[str, Any]:
-        """Get comprehensive revenue dashboard data."""
+        """Get comprehensive revenue dashboard data with Base44 Pack enhancements."""
         total_monthly_target = sum(
             target.monthly_target for target in self.revenue_targets.values()
         )
@@ -1474,28 +1403,32 @@ To begin your journey with {campaign.name}, follow these steps:
             target.current_revenue for target in self.revenue_targets.values()
         )
 
-        # Get revenue by stream
+        # Get revenue by stream with enhanced metrics
         revenue_by_stream = {
             stream.value: {
                 "target": target.monthly_target,
-                    "current": target.current_revenue,
-                    "progress": (
+                "current": target.current_revenue,
+                "progress": (
                     (target.current_revenue / target.monthly_target * 100)
                     if target.monthly_target > 0
                     else 0
                 ),
-                    "optimization_score": target.optimization_score,
-                    }
+                "optimization_score": target.optimization_score,
+                "conversion_rate": target.conversion_rate,
+                "traffic_required": target.traffic_required,
+                "last_updated": target.last_updated.isoformat() if target.last_updated else None,
+            }
             for stream, target in self.revenue_targets.items()
         }
 
-        # Get recent transactions
+        # Get recent transactions with enhanced data
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
             """
-            SELECT revenue_stream, SUM(amount) as total, COUNT(*) as transactions
+            SELECT revenue_stream, SUM(amount) as total, COUNT(*) as transactions,
+                   AVG(amount) as avg_transaction, MAX(date) as last_transaction
             FROM revenue_tracking
             WHERE date >= date('now', '-30 days')
             GROUP BY revenue_stream
@@ -1503,23 +1436,52 @@ To begin your journey with {campaign.name}, follow these steps:
             """
         )
 
-        recent_revenue = dict(cursor.fetchall())
+        recent_revenue_data = cursor.fetchall()
+        recent_revenue = {
+            row[0]: {
+                "total": row[1],
+                "transactions": row[2],
+                "avg_transaction": row[3],
+                "last_transaction": row[4]
+            } for row in recent_revenue_data
+        }
         conn.close()
 
+        # Calculate health metrics
+        health_score = min(100, (total_current_revenue / total_monthly_target * 100) if total_monthly_target > 0 else 0)
+        
         return {
+            "status": "active",
+            "health_score": round(health_score, 2),
             "total_monthly_target": total_monthly_target,
-                "total_current_revenue": total_current_revenue,
-                "overall_progress": (
+            "total_current_revenue": total_current_revenue,
+            "overall_progress": (
                 (total_current_revenue / total_monthly_target * 100)
                 if total_monthly_target > 0
                 else 0
             ),
-                "revenue_by_stream": revenue_by_stream,
-                "recent_revenue": recent_revenue,
+            "revenue_by_stream": revenue_by_stream,
+            "recent_revenue": recent_revenue,
+            "metrics": {
                 "active_campaigns": len(self.active_campaigns),
                 "digital_products": len(self.digital_products),
                 "affiliate_programs": len(self.affiliate_programs),
-                }
+                "total_streams": len(self.revenue_targets),
+            },
+            "performance": {
+                "top_performing_stream": max(
+                    self.revenue_targets.items(),
+                    key=lambda x: x[1].current_revenue,
+                    default=(None, None)
+                )[0].value if self.revenue_targets else None,
+                "optimization_needed": [
+                    stream.value for stream, target in self.revenue_targets.items()
+                    if target.optimization_score < 0.5
+                ],
+            },
+            "timestamp": datetime.now().isoformat(),
+        }
+
 
 # Global engine instance
 _engine_instance = None
@@ -1532,6 +1494,7 @@ def get_marketing_engine() -> MarketingMonetizationEngine:
         _engine_instance = MarketingMonetizationEngine()
     return _engine_instance
 
+
 if __name__ == "__main__":
     # Test the marketing and monetization engine
     engine = MarketingMonetizationEngine()
@@ -1540,12 +1503,12 @@ if __name__ == "__main__":
         # Create a test marketing campaign
         campaign_config = {
             "name": "AI YouTube Automation Launch",
-                "type": "product_launch",
-                "channels": ["email", "twitter", "youtube"],
-                "target_audience": "content creators",
-                "budget": 500.0,
-                "duration_days": 14,
-                }
+            "type": "product_launch",
+            "channels": ["email", "twitter", "youtube"],
+            "target_audience": "content creators",
+            "budget": 500.0,
+            "duration_days": 14,
+        }
 
         campaign_id = engine.create_marketing_campaign(campaign_config)
         print(f"Created campaign: {campaign_id}")
@@ -1557,18 +1520,18 @@ if __name__ == "__main__":
         # Create a test digital product
         product_config = {
             "name": "YouTube Automation Masterclass",
-                "description": "Complete guide to automating your YouTube channel with AI",
-                "type": "course",
-                "price": 97.0,
-                "cost_to_produce": 20.0,
-                "affiliate_commission": 0.4,
-                "modules": [
+            "description": "Complete guide to automating your YouTube channel with AI",
+            "type": "course",
+            "price": 97.0,
+            "cost_to_produce": 20.0,
+            "affiliate_commission": 0.4,
+            "modules": [
                 "Introduction to YouTube Automation",
-                    "Setting Up Your AI Workflow",
-                    "Content Creation at Scale",
-                    "Monetization Strategies",
-                    ],
-                }
+                "Setting Up Your AI Workflow",
+                "Content Creation at Scale",
+                "Monetization Strategies",
+            ],
+        }
 
         product_id = engine.create_digital_product(product_config)
         print(f"Created product: {product_id}")
@@ -1579,9 +1542,7 @@ if __name__ == "__main__":
 
         # Track some test revenue
         engine.track_revenue(RevenueStream.DIGITAL_PRODUCTS, 97.0, "product_sale")
-        engine.track_revenue(
-            RevenueStream.AFFILIATE_MARKETING, 45.0, "affiliate_commission"
-        )
+        engine.track_revenue(RevenueStream.AFFILIATE_MARKETING, 45.0, "affiliate_commission")
 
         # Get revenue dashboard
         dashboard = engine.get_revenue_dashboard()

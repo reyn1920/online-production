@@ -27,26 +27,17 @@ DaVinci Resolve Pro includes an advanced AI Voice Convert tool that:
 Based on industry standards from Microsoft Azure AI Services and Common Voice datasets, organize your voice sample database as follows:
 
 ```
-voice_database/
-├── audio_samples/
-│   ├── speaker_001/
-│   │   ├── utterance_001.wav
+voice_database/├── audio_samples/│   ├── speaker_001/│   │   ├── utterance_001.wav
 │   │   ├── utterance_002.wav
 │   │   └── ...
-│   ├── speaker_002/
-│   └── ...
-├── transcripts/
-│   ├── speaker_001_transcript.txt
+│   ├── speaker_002/│   └── ...
+├── transcripts/│   ├── speaker_001_transcript.txt
 │   ├── speaker_002_transcript.txt
 │   └── ...
-├── metadata/
-│   ├── speaker_demographics.json
+├── metadata/│   ├── speaker_demographics.json
 │   ├── recording_conditions.json
 │   └── dataset_info.yaml
-└── processed/
-    ├── cleaned_audio/
-    └── segmented_utterances/
-```
+└── processed/├── cleaned_audio/└── segmented_utterances/```
 
 ### Audio File Requirements
 

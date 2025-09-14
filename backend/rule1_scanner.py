@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI Rule - 1 Content Scanner and Enforcer
 
@@ -32,9 +32,12 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 # Import our logger
 try:
+
     from utils.logger import get_logger
+
 except ImportError:
     # Fallback if logger not available
+
     import logging
 
 
@@ -112,8 +115,8 @@ class Rule1DeepScanner:
 
     def __init__(
         self,
-            rules_file: str = "data / rule1_patterns.json",
-            db_path: str = "data / rule1_scans.sqlite",
+            rules_file: str = "data/rule1_patterns.json",
+            db_path: str = "data/rule1_scans.sqlite",
             max_workers: int = 4,
             max_file_size: int = 100 * 1024 * 1024,
             ):  # 100MB
@@ -218,7 +221,8 @@ class Rule1DeepScanner:
                         self.logger.warning(f"Invalid regex pattern '{pattern}': {e}")
 
                 self.logger.info(
-                    f"Loaded {len(self.forbidden_terms)} forbidden terms and {len(self.compiled_patterns)} patterns"
+                    f"Loaded {len(self.forbidden_terms)} forbidden terms \
+    and {len(self.compiled_patterns)} patterns"
                 )
 
             except Exception as e:
@@ -249,11 +253,11 @@ class Rule1DeepScanner:
                     "access_token",
                     ],
                 "forbidden_patterns": [
-                r"\b(password|pwd)\s*=\s*['\"][^'\"]{1,}['\"]"  # Password assignments
-                r"\b(api[_-]?key|apikey)\s*[=:]\s*['\"][^'\"]{10,}['\"]"  # API keys
-                r"\b(secret|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]"  # Secrets / tokens
-                r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b"  # Credit card numbers
-                r"\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\.[A - Z|a - z]{2,}\b"  # Email addresses (if sensitive)
+                r"\\b(password|pwd)\\s*=\\s*['\\"][^'\\"]{1,}['\\"]"  # Password assignments
+                r"\\b(api[_-]?key|apikey)\\s*[=:]\\s*['\\"][^'\\"]{10,}['\\"]"  # API keys
+                r"\\b(secret|token)\\s*[=:]\\s*['\\"][^'\\"]{8,}['\\"]"  # Secrets/tokens
+                r"\\b\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}\\b"  # Credit card numbers
+                r"\\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\\.[A - Z|a - z]{2,}\\b"  # Email addresses (if sensitive)
             ],
                 "file_extensions": [
                 ".py",
@@ -304,7 +308,8 @@ class Rule1DeepScanner:
                 self.logger.warning(f"Invalid regex pattern '{pattern}': {e}")
 
         self.logger.info(
-            f"Created default rules with {len(self.forbidden_terms)} terms and {len(self.compiled_patterns)} patterns"
+            f"Created default rules with {len(self.forbidden_terms)} terms \
+    and {len(self.compiled_patterns)} patterns"
         )
 
 
@@ -371,6 +376,7 @@ class Rule1DeepScanner:
         Returns:
             ScanResult: Detailed scan results
         """
+
         import time
 
         start_time = time.time()
@@ -385,7 +391,7 @@ class Rule1DeepScanner:
             file_size = len(content.encode("utf - 8"))
 
             # Scan for forbidden terms
-            lines = content.split("\n")
+            lines = content.split("\\n")
             for line_num, line in enumerate(lines, 1):
                 line_lower = line.lower()
 
@@ -639,9 +645,9 @@ class Rule1Enforcer:
     def __init__(
         self,
             scanner: Rule1DeepScanner,
-            replacements_file: str = "data / rule1_replacements.json",
+            replacements_file: str = "data/rule1_replacements.json",
             create_backups: bool = True,
-            backup_dir: str = "data / backups",
+            backup_dir: str = "data/backups",
             ):
         """
         Initialize the Rule - 1 Enforcer.
@@ -682,7 +688,8 @@ class Rule1Enforcer:
                 )
 
                 self.logger.info(
-                    f"Loaded {len(self.term_replacements)} term replacements and {len(self.pattern_replacements)} pattern replacements"
+                    f"Loaded {len(self.term_replacements)} term replacements \
+    and {len(self.pattern_replacements)} pattern replacements"
                 )
 
             except Exception as e:
@@ -711,10 +718,10 @@ class Rule1Enforcer:
                     "secret": "[REDACTED_SECRET]",
                     },
                 "pattern_replacements": {
-                r"\b(password|pwd)\s*=\s*['\"][^'\"]{1,}['\"]" "$1='[REDACTED]'",
-                    r"\b(api[_-]?key|apikey)\s*[=:]\s*['\"][^'\"]{10,}['\"]"
+                r"\\b(password|pwd)\\s*=\\s*['\\"][^'\\"]{1,}['\\"]" "$1='[REDACTED]'",
+                    r"\\b(api[_-]?key|apikey)\\s*[=:]\\s*['\\"][^'\\"]{10,}['\\"]"
                 "$1='[REDACTED]'",
-                    r"\b(secret|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]" "$1='[REDACTED]'",
+                    r"\\b(secret|token)\\s*[=:]\\s*['\\"][^'\\"]{8,}['\\"]" "$1='[REDACTED]'",
                     },
                 }
 
@@ -743,11 +750,12 @@ class Rule1Enforcer:
             return False
 
         try:
+
             import shutil
 
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
             backup_name = f"{file_path.name}.{timestamp}.backup"
-            backup_path = self.backup_dir / backup_name
+            backup_path = self.backup_dir/backup_name
 
             shutil.copy2(file_path, backup_path)
             self.logger.info(f"Created backup: {backup_path}")
@@ -768,6 +776,7 @@ class Rule1Enforcer:
         Returns:
             EnforcementResult: Detailed enforcement results
         """
+
         import time
 
         start_time = time.time()
@@ -922,6 +931,7 @@ class Rule1Enforcer:
 
 if __name__ == "__main__":
     # Example usage and testing
+
     import os
     import tempfile
 
@@ -930,11 +940,11 @@ if __name__ == "__main__":
         temp_path = Path(temp_dir)
 
         # Create test files with violations
-        test_file1 = temp_path / "test1.py"
+        test_file1 = temp_path/"test1.py"
         test_file1.write_text(
             """
 # This is a test file with violations
-password = "secret123"  # TODO: Remove this
+password = os.getenv("TEST_PASSWORD", "demo-password-for-testing-only")  # TODO: Remove this
 api_key = "sk - 1234567890abcdef"  # FIXME: Use environment variable
 
 
@@ -944,45 +954,45 @@ def main():
         """
         )
 
-        test_file2 = temp_path / "test2.js"
+        test_file2 = temp_path/"test2.js"
         test_file2.write_text(
-            """
-// JavaScript test file
-const password = 'admin123';  // BUG: Hardcoded password
-const token = 'secret_token_here';  // TODO: Load from config
+            """//JavaScript test file
+const password = process.env.TEST_PASSWORD || 'demo-password-for-testing-only';//BUG: Hardcoded password
+const token = process.env.SCANNER_TOKEN || 'development_token'; // Load from config
         """
         )
 
         # Initialize scanner and enforcer
         scanner = Rule1DeepScanner(
-            rules_file = str(temp_path / "rules.json"),
-                db_path = str(temp_path / "scans.sqlite"),
+            rules_file = str(temp_path/"rules.json"),
+                db_path = str(temp_path/"scans.sqlite"),
                 )
 
         enforcer = Rule1Enforcer(
             scanner = scanner,
-                replacements_file = str(temp_path / "replacements.json"),
-                backup_dir = str(temp_path / "backups"),
+                replacements_file = str(temp_path/"replacements.json"),
+                backup_dir = str(temp_path/"backups"),
                 )
 
         # Test scanning
-        print("\n=== Scanning Test Files ===")
+        print("\\n=== Scanning Test Files ===")
         scan_results = scanner.scan_directory(temp_path)
 
         for result in scan_results:
-            print(f"\nFile: {result.file_path}")
+            print(f"\\nFile: {result.file_path}")
             print(f"Violations: {result.violations_found}")
             for violation in result.violations:
                 print(
-                    f"  - {violation['type']}: {violation.get('term', violation.get('pattern', 'N / A'))} at line {violation['line_number']}"
+                    f"  - {violation['type']}: {violation.get('term',
+    violation.get('pattern', 'N/A'))} at line {violation['line_number']}"
                 )
 
         # Test enforcement
-        print("\n=== Enforcing Rule - 1 Compliance ===")
+        print("\\n=== Enforcing Rule - 1 Compliance ===")
         enforcement_results = enforcer.enforce_directory(temp_path)
 
         for result in enforcement_results:
-            print(f"\nFile: {result.file_path}")
+            print(f"\\nFile: {result.file_path}")
             print(f"Replacements: {result.replacements_made}")
             print(f"Backup created: {result.backup_created}")
             for replacement in result.replacements:
@@ -991,9 +1001,9 @@ const token = 'secret_token_here';  // TODO: Load from config
                 )
 
         # Show statistics
-        print("\n=== Statistics ===")
+        print("\\n=== Statistics ===")
         stats = scanner.get_statistics()
         for key, value in stats.items():
             print(f"{key}: {value}")
 
-        print("\n=== Test completed successfully ===")
+        print("\\n=== Test completed successfully ===")

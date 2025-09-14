@@ -38,7 +38,7 @@ if [ -z "$STAGING_SITE_ID" ]; then
 fi
 
 # Check if Netlify CLI is installed
-if ! command -v netlify &> /dev/null; then
+if ! command -v netlify &>/dev/null; then
     echo -e "${YELLOW}📦 Installing Netlify CLI...${NC}"
     npm install -g netlify-cli
 fi
@@ -58,8 +58,8 @@ fi
 
 # Run tests before deployment
 echo -e "${BLUE}🧪 Running tests...${NC}"
-if [ -f "pytest.ini" ] && command -v pytest &> /dev/null; then
-    pytest tests/ -v --tb=short || {
+if [ -f "pytest.ini" ] && command -v pytest &>/dev/null; then
+    pytest tests/-v --tb=short || {
         echo -e "${RED}❌ Tests failed! Aborting deployment.${NC}"
         exit 1
     }
@@ -70,7 +70,7 @@ fi
 
 # Security scan
 echo -e "${BLUE}🔒 Running security scan...${NC}"
-if command -v bandit &> /dev/null; then
+if command -v bandit &>/dev/null; then
     bandit -r . -f json -o bandit-staging-report.json || true
     echo -e "${GREEN}✅ Security scan completed${NC}"
 else
@@ -93,7 +93,7 @@ else
 fi
 
 # Get deployment URL
-DEPLOY_URL=$(netlify status --json | jq -r '.site.url // .site.ssl_url // "Unknown"')
+DEPLOY_URL=$(netlify status --json | jq -r '.site.url//.site.ssl_url//"Unknown"')
 
 echo ""
 echo -e "${GREEN}🎉 Staging deployment successful!${NC}"

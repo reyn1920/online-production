@@ -91,7 +91,7 @@ async def get_cached_data(key: str):
 
 ### [ ] 2.3 Optimize Database Queries
 - [ ] Add database indexes for frequent queries
-- [ ] Use `select_related()` / `prefetch_related()` for ORM
+- [ ] Use `select_related()`/`prefetch_related()` for ORM
 - [ ] Implement query result pagination
 - [ ] Add database query monitoring
 
@@ -101,7 +101,7 @@ async def get_cached_data(key: str):
 
 ### [ ] 3.1 Enable HTTP/2 and Compression
 ```nginx
-# /etc/nginx/sites-available/your-app
+#/etc/nginx/sites-available/your-app
 server {
     listen 443 ssl http2;
     
@@ -121,7 +121,7 @@ server {
 
 ### [ ] 3.2 Optimize Nginx Worker Configuration
 ```nginx
-# /etc/nginx/nginx.conf
+#/etc/nginx/nginx.conf
 worker_processes auto;  # Use all CPU cores
 worker_connections 2048;  # Increase from 1024
 
@@ -147,7 +147,7 @@ limit_req_zone $binary_remote_addr zone=general:10m rate=300r/m;
 
 server {
     # Apply rate limits
-    location /api/ {
+    location/api/{
         limit_req zone=api burst=20 nodelay;
         proxy_pass http://fastapi_backend;
     }
@@ -264,8 +264,8 @@ async def trigger_processing(data: dict):
 ### [ ] 5.3 Optimize Static Asset Delivery
 ```nginx
 # Nginx static file optimization
-location /static/ {
-    alias /path/to/static/files/;
+location/static/{
+    alias/path/to/static/files/;
     expires 1y;
     add_header Cache-Control "public, immutable";
     
@@ -275,7 +275,7 @@ location /static/ {
 }
 
 # CDN integration (optional)
-location /assets/ {
+location/assets/{
     proxy_pass https://your-cdn.com/assets/;
     proxy_cache_valid 200 1d;
 }

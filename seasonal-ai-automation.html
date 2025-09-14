@@ -475,8 +475,7 @@
         </div>
     </div>
 
-    <script>
-        // Seasonal content data
+    <script>//Seasonal content data
         const seasonalContent = {
             winter: {
                 themes: ['Christmas', 'New Year', 'Winter Tech', 'Holiday Shopping'],
@@ -521,9 +520,7 @@
         };
 
         let currentSeason = 'winter';
-        let automationActive = false;
-
-        // Season selection
+        let automationActive = false;//Season selection
         document.querySelectorAll('.season-item').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.season-item').forEach(i => i.classList.remove('active'));
@@ -546,9 +543,7 @@
         }
 
         function generateSeasonalContent() {
-            showNotification('🎨 Generating seasonal content calendar...', 'success');
-            
-            // Simulate AI content generation
+            showNotification('🎨 Generating seasonal content calendar...', 'success');//Simulate AI content generation
             setTimeout(() => {
                 showNotification('✅ Seasonal content calendar generated successfully!', 'success');
                 updateProgressBar(100);
@@ -563,9 +558,7 @@
                 'pikzels': 'Pikzels AI'
             };
             
-            showNotification(`🖼️ Generating thumbnails with ${toolNames[tool]}...`, 'info');
-            
-            // Simulate thumbnail generation
+            showNotification(`🖼️ Generating thumbnails with ${toolNames[tool]}...`, 'info');//Simulate thumbnail generation
             setTimeout(() => {
                 showNotification(`✅ ${Math.floor(Math.random() * 10 + 5)} seasonal thumbnails generated!`, 'success');
             }, 1500);
@@ -575,9 +568,7 @@
             if (automationActive) return;
             
             automationActive = true;
-            showNotification('🚀 Starting full automation pipeline...', 'info');
-            
-            // Simulate automation steps
+            showNotification('🚀 Starting full automation pipeline...', 'info');//Simulate automation steps
             const steps = [
                 '🔍 Analyzing seasonal trends...',
                 '🎨 Generating thumbnails...',
@@ -590,7 +581,7 @@
             steps.forEach((step, index) => {
                 setTimeout(() => {
                     showNotification(step, index === steps.length - 1 ? 'success' : 'info');
-                    updateProgressBar((index + 1) / steps.length * 100);
+                    updateProgressBar((index + 1)/steps.length * 100);
                 }, index * 1000);
             });
         }
@@ -637,8 +628,7 @@
         }
 
         function viewDetailedAnalytics() {
-            showNotification('📊 Opening detailed analytics dashboard...', 'info');
-            // In a real app, this would open the analytics dashboard
+            showNotification('📊 Opening detailed analytics dashboard...', 'info');//In a real app, this would open the analytics dashboard
         }
 
         function deploySeasonalContent() {
@@ -686,9 +676,7 @@
                     document.body.removeChild(notification);
                 }, 300);
             }, 3000);
-        }
-
-        // Add CSS animations
+        }//Add CSS animations
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideInRight {
@@ -706,12 +694,8 @@
                 to { transform: translateY(0); opacity: 1; }
             }
         `;
-        document.head.appendChild(style);
-
-        // Initialize with winter content
-        updateSeasonalContent();
-        
-        // Simulate some initial progress
+        document.head.appendChild(style);//Initialize with winter content
+        updateSeasonalContent();//Simulate some initial progress
         setTimeout(() => updateProgressBar(75), 1000);
     </script>
 </body>

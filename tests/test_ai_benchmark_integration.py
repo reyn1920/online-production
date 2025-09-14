@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Test suite for AI Benchmark Integration System
 """
@@ -11,10 +11,13 @@ from unittest.mock import Mock, patch, AsyncMock
 from datetime import datetime
 
 # Add backend to path for imports
+
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 
 from ai_benchmark_integration import (
+
     AIBenchmarkIntegration,
         BenchmarkProvider,
         QualityMetrics,
@@ -118,15 +121,21 @@ class TestAIBenchmarkIntegration:
         metrics = [
             QualityMetrics(
                 correctness = 80, clarity = 85, professionalism = 75, overall_score = 80,
-                    provider="chatgpt", timestamp = datetime.now(), response_time_ms = 500
+                    provider="chatgpt",
+    timestamp = datetime.now(),
+    response_time_ms = 500
             ),
                 QualityMetrics(
                 correctness = 85, clarity = 80, professionalism = 85, overall_score = 83,
-                    provider="gemini", timestamp = datetime.now(), response_time_ms = 600
+                    provider="gemini",
+    timestamp = datetime.now(),
+    response_time_ms = 600
             ),
                 QualityMetrics(
                 correctness = 75, clarity = 90, professionalism = 80, overall_score = 82,
-                    provider="abacus", timestamp = datetime.now(), response_time_ms = 700
+                    provider="abacus",
+    timestamp = datetime.now(),
+    response_time_ms = 700
             )
         ]
 
@@ -148,7 +157,9 @@ class TestAIBenchmarkIntegration:
         metrics = [
             QualityMetrics(
                 correctness = 60, clarity = 65, professionalism = 55, overall_score = 60,
-                    provider="chatgpt", timestamp = datetime.now(), response_time_ms = 500
+                    provider="chatgpt",
+    timestamp = datetime.now(),
+    response_time_ms = 500
             )
         ]
 
@@ -165,7 +176,9 @@ class TestAIBenchmarkIntegration:
         metrics = [
             QualityMetrics(
                 correctness = 90, clarity = 85, professionalism = 88, overall_score = 88,
-                    provider="chatgpt", timestamp = datetime.now(), response_time_ms = 500
+                    provider="chatgpt",
+    timestamp = datetime.now(),
+    response_time_ms = 500
             )
         ]
 
@@ -180,13 +193,16 @@ class TestAIBenchmarkIntegration:
         metrics = [
             QualityMetrics(
                 correctness = 75, clarity = 80, professionalism = 85, overall_score = 80,
-                    provider="chatgpt", timestamp = datetime.now(), response_time_ms = 500
+                    provider="chatgpt",
+    timestamp = datetime.now(),
+    response_time_ms = 500
             )
         ]
 
         recommendations = self.integration._generate_recommendations(metrics, "code")
 
-        assert any("code" in rec.lower() or "bug" in rec.lower() for rec in recommendations)
+        assert any("code" in rec.lower() \
+    or "bug" in rec.lower() for rec in recommendations)
 
     @pytest.mark.asyncio
 
@@ -234,7 +250,7 @@ class TestAIBenchmarkIntegration:
         """Test Flask app route registration"""
         with self.integration.app.test_client() as client:
             # Test providers endpoint
-            response = client.get('/api / benchmark / providers')
+            response = client.get('/api/benchmark/providers')
             assert response.status_code == 200
 
             data = json.loads(response.data)
@@ -246,9 +262,9 @@ class TestAIBenchmarkIntegration:
     def test_flask_validate_endpoint_missing_content(self):
         """Test validation endpoint with missing content"""
         with self.integration.app.test_client() as client:
-            response = client.post('/api / benchmark / validate',
+            response = client.post('/api/benchmark/validate',
                 json={},
-                                     content_type='application / json')
+                                     content_type='application/json')
 
             assert response.status_code == 400
             data = json.loads(response.data)
@@ -266,7 +282,9 @@ class TestAIBenchmarkIntegration:
                 metrics=[
                 QualityMetrics(
                     correctness = 85, clarity = 90, professionalism = 80, overall_score = 85,
-                        provider="chatgpt", timestamp = datetime.now(), response_time_ms = 500
+                        provider="chatgpt",
+    timestamp = datetime.now(),
+    response_time_ms = 500
                 )
             ],
                 consensus_score = 85.0,
@@ -277,9 +295,9 @@ class TestAIBenchmarkIntegration:
         mock_asyncio_run.return_value = mock_result
 
         with self.integration.app.test_client() as client:
-            response = client.post('/api / benchmark / validate',
+            response = client.post('/api/benchmark/validate',
                 json={'content': self.test_content},
-                                     content_type='application / json')
+                                     content_type='application/json')
 
             assert response.status_code == 200
             data = json.loads(response.data)

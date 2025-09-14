@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Total Access Command Center - TRAE.AI Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
 
@@ -47,13 +47,10 @@
       Show Debug
     </button>
 
-    <script>
-      // Socket.IO Debug Logger - Hard Evidence Collection
+    <script>//Socket.IO Debug Logger - Hard Evidence Collection
       (function () {
         const logEl = document.getElementById('socketio-debug-log');
-        const toggleBtn = document.getElementById('toggle-debug-log');
-
-        // Toggle debug log visibility
+        const toggleBtn = document.getElementById('toggle-debug-log');//Toggle debug log visibility
         toggleBtn.addEventListener('click', function () {
           if (logEl.style.display === 'none') {
             logEl.style.display = 'block';
@@ -70,34 +67,24 @@
           console.log(`[${timestamp}]`, ...args);
           logEl.textContent += `[${timestamp}] ${message}\n`;
           logEl.scrollTop = logEl.scrollHeight;
-        };
-
-        // Enable verbose Socket.IO client logging
+        };//Enable verbose Socket.IO client logging
         try {
           localStorage.debug = 'socket.io-client:*,engine.io-client:*';
           debugLog('[DEBUG] Enabled verbose Socket.IO client logging');
         } catch (e) {
           debugLog('[DEBUG] Could not set localStorage.debug:', e.message);
-        }
-
-        // Global error handlers
+        }//Global error handlers
         window.addEventListener('error', e => {
           debugLog('[WINDOW ERROR]', e.message, 'at', e.filename + ':' + e.lineno);
         });
 
         window.addEventListener('unhandledrejection', e => {
           debugLog('[UNHANDLED REJECTION]', String(e.reason || e));
-        });
-
-        // Store original io function to wrap it
-        window._originalIo = window.io;
-
-        // Wrap io() calls to add debug logging
+        });//Store original io function to wrap it
+        window._originalIo = window.io;//Wrap io() calls to add debug logging
         window.io = function (...args) {
           debugLog('[IO] Creating Socket.IO connection with args:', args);
-          const socket = window._originalIo.apply(this, args);
-
-          // Add comprehensive event logging
+          const socket = window._originalIo.apply(this, args);//Add comprehensive event logging
           socket.on('connect', () => {
             debugLog('[SOCKET] ✅ CONNECTED - ID:', socket.id, 'URL:', socket.io.uri);
             debugLog('[SOCKET] Transport:', socket.io.engine.transport.name);
@@ -132,9 +119,7 @@
 
           socket.on('reconnect_failed', () => {
             debugLog('[SOCKET] 🔄💀 Reconnect failed - giving up');
-          });
-
-          // Log all incoming events
+          });//Log all incoming events
           const originalOn = socket.on.bind(socket);
           socket.on = function (event, handler) {
             return originalOn(event, function (...args) {
@@ -143,9 +128,7 @@
               }
               return handler.apply(this, args);
             });
-          };
-
-          // Log all outgoing events
+          };//Log all outgoing events
           const originalEmit = socket.emit.bind(socket);
           socket.emit = function (event, ...args) {
             if (!['ping', 'pong'].includes(event)) {
@@ -442,7 +425,7 @@
       }
 
       .task-queue {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
       }
 
       .task-list {
@@ -550,10 +533,7 @@
 
       .notification.info {
         background: #4299e1;
-      }
-
-      /* Agent Command Center styles */
-      .agent-grid {
+      }/* Agent Command Center styles */.agent-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
@@ -635,10 +615,7 @@
       .btn-sm {
         padding: 6px 12px;
         font-size: 0.875rem;
-      }
-
-      /* Log viewer styles */
-      .log-viewer {
+      }/* Log viewer styles */.log-viewer {
         background: #1a202c;
         color: #e2e8f0;
         padding: 15px;
@@ -676,10 +653,7 @@
       }
       .log-error {
         color: #fc8181;
-      }
-
-      /* Intelligence Database styles */
-      .table-list {
+      }/* Intelligence Database styles */.table-list {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 15px;
@@ -734,10 +708,7 @@
         min-height: 100px;
         font-family: 'Courier New', monospace;
         font-size: 0.875rem;
-      }
-
-      /* Digital Product Studio styles */
-      .project-grid {
+      }/* Digital Product Studio styles */.project-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 20px;
@@ -839,10 +810,7 @@
       .review-actions {
         display: flex;
         gap: 8px;
-      }
-
-      /* Reporting Engine styles */
-      .report-options {
+      }/* Reporting Engine styles */.report-options {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 15px;
@@ -882,10 +850,7 @@
         border-radius: 8px;
         padding: 20px;
         min-height: 200px;
-      }
-
-      /* Code Backup & Export styles */
-      .codebase-viewer-section {
+      }/* Code Backup & Export styles */.codebase-viewer-section {
         display: flex;
         flex-direction: column;
         gap: 20px;
@@ -1079,10 +1044,7 @@
         text-align: center;
         color: #718096;
         font-style: italic;
-      }
-
-      /* Legacy styles for backward compatibility */
-      .code-viewer-section {
+      }/* Legacy styles for backward compatibility */.code-viewer-section {
         display: flex;
         flex-direction: column;
         gap: 15px;
@@ -1180,10 +1142,7 @@
       .backup-history h3 {
         margin: 0 0 15px 0;
         color: #2d3748;
-      }
-
-      /* Configuration Styles */
-      .config-section {
+      }/* Configuration Styles */.config-section {
         max-width: 800px;
         margin: 0 auto;
       }
@@ -1329,10 +1288,7 @@
 
       .download-btn:hover {
         background: #5a67d8;
-      }
-
-      /* Affiliate Command Center styles */
-      .affiliate-programs-table {
+      }/* Affiliate Command Center styles */.affiliate-programs-table {
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -1478,10 +1434,7 @@
       .api-usage-info {
         font-size: 0.875rem;
         color: #718096;
-      }
-
-      /* API Command Center styles */
-      .api-controls {
+      }/* API Command Center styles */.api-controls {
         display: flex;
         flex-direction: column;
         gap: 15px;
@@ -1660,10 +1613,7 @@
       .api-actions-col {
         display: flex;
         gap: 8px;
-      }
-
-      /* Actions Grid Styles */
-      .actions-grid {
+      }/* Actions Grid Styles */.actions-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 15px;
@@ -1830,9 +1780,7 @@
           padding: 10px 15px;
           font-size: 0.9rem;
         }
-      }
-      /* API Suggestions Styling */
-      .suggestion-card {
+      }/* API Suggestions Styling */.suggestion-card {
         background: #2a2a2a;
         border: 1px solid #444;
         border-radius: 8px;
@@ -1970,10 +1918,7 @@
       .btn-info:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
-      }
-
-      /* Creative Sandbox Styles */
-      .sandbox-panels {
+      }/* Creative Sandbox Styles */.sandbox-panels {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
@@ -2085,7 +2030,7 @@
       }
 
       .production-queue {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
         background: #fff;
         border: 2px solid #e2e8f0;
         border-radius: 12px;
@@ -2160,10 +2105,7 @@
         min-height: 100px;
         max-height: 300px;
         overflow-y: auto;
-      }
-
-      /* Report Center Styles */
-      .report-generation-section {
+      }/* Report Center Styles */.report-generation-section {
         background: #f8fafc;
         border-radius: 8px;
         padding: 20px;
@@ -2387,11 +2329,8 @@
       }
 
       .full-width {
-        grid-column: 1 / -1;
-      }
-
-      /* Audience Management Styles */
-      .stats-grid {
+        grid-column: 1/-1;
+      }/* Audience Management Styles */.stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
@@ -2570,10 +2509,7 @@
         border-radius: 4px;
         font-size: 0.75rem;
         font-weight: 600;
-      }
-
-      /* Smoke Test Styles */
-      .smoke-test-section {
+      }/* Smoke Test Styles */.smoke-test-section {
         background: #f8f9fa;
         border-radius: 12px;
         padding: 25px;
@@ -2750,10 +2686,7 @@
         font-weight: 600;
         font-size: 1.2rem;
         margin-bottom: 15px;
-      }
-
-      /* Runtime Review Audit Styles */
-      .runtime-review-results {
+      }/* Runtime Review Audit Styles */.runtime-review-results {
         margin-top: 20px;
         padding: 20px;
         background: #f8f9fa;
@@ -2983,8 +2916,7 @@
                   type="text"
                   id="topic-input"
                   class="form-input"
-                  placeholder="e.g., 'Latest AI developments in 2024'"
-                />
+                  placeholder="e.g., 'Latest AI developments in 2024'"/>
                 <button class="btn btn-primary" onclick="generateSampleScript()">🤖 Generate Sample Script</button>
               </div>
             </div>
@@ -3033,8 +2965,7 @@
                   type="text"
                   id="wardrobe-input"
                   class="form-input"
-                  placeholder="e.g., 'Professional business attire, navy blue suit'"
-                />
+                  placeholder="e.g., 'Professional business attire, navy blue suit'"/>
               </div>
             </div>
           </div>
@@ -3138,7 +3069,7 @@
           </div>
 
           <!-- Affiliate Programs Table -->
-          <div class="panel" style="grid-column: 1 / -1">
+          <div class="panel" style="grid-column: 1/-1">
             <h2>🔗 Affiliate Programs</h2>
             <div class="affiliate-programs-table" id="affiliate-programs">
               <div class="affiliate-program-row">
@@ -3433,7 +3364,7 @@
           <div class="panel">
             <h2>📧 Campaign Builder</h2>
             <div class="campaign-form">
-              <input type="text" id="campaign-name" placeholder="Campaign Name" class="form-input" />
+              <input type="text" id="campaign-name" placeholder="Campaign Name" class="form-input"/>
               <select id="campaign-type" class="form-select">
                 <option value="email">Email Campaign</option>
                 <option value="sms">SMS Campaign</option>
@@ -3448,7 +3379,7 @@
           <div class="panel">
             <h2>🎯 Audience Segments</h2>
             <div class="segment-builder">
-              <input type="text" id="segment-name" placeholder="Segment Name" class="form-input" />
+              <input type="text" id="segment-name" placeholder="Segment Name" class="form-input"/>
               <textarea
                 id="segment-criteria"
                 placeholder="SQL WHERE clause (e.g., engagement_score > 0.7)"
@@ -3575,11 +3506,11 @@
                 </div>
                 <div class="control-group">
                   <label for="date-range-start">Start Date:</label>
-                  <input type="date" id="date-range-start" class="form-control" />
+                  <input type="date" id="date-range-start" class="form-control"/>
                 </div>
                 <div class="control-group">
                   <label for="date-range-end">End Date:</label>
-                  <input type="date" id="date-range-end" class="form-control" />
+                  <input type="date" id="date-range-end" class="form-control"/>
                 </div>
                 <div class="control-group">
                   <button class="btn btn-primary" onclick="generateReport()">📊 Generate Report Now</button>
@@ -3604,8 +3535,7 @@
                   id="report-search"
                   class="form-control"
                   placeholder="Search reports..."
-                  onkeyup="filterReports()"
-                />
+                  onkeyup="filterReports()"/>
                 <select id="report-type-filter" class="form-control" onchange="filterReports()">
                   <option value="">All Report Types</option>
                   <option value="daily-performance">Daily Performance</option>
@@ -3652,7 +3582,7 @@
       <div id="code-backup" class="module-content">
         <div class="dashboard-grid">
           <!-- Complete Codebase Viewer Panel -->
-          <div class="panel" style="grid-column: 1 / -1">
+          <div class="panel" style="grid-column: 1/-1">
             <h2>📁 Complete Codebase Viewer</h2>
             <div class="codebase-viewer-section">
               <div class="viewer-controls">
@@ -3671,8 +3601,7 @@
                     id="file-search"
                     placeholder="🔍 Search files..."
                     oninput="filterFiles()"
-                    class="search-input"
-                  />
+                    class="search-input"/>
                   <select id="file-type-filter" onchange="filterFiles()" class="filter-select">
                     <option value="">All Files</option>
                     <option value=".py">Python (.py)</option>
@@ -3745,7 +3674,7 @@ Select a file from the project structure to view its content...</pre
       <!-- Configuration Module -->
       <div id="configuration" class="module-content">
         <div class="dashboard-grid">
-          <div class="panel" style="grid-column: 1 / -1">
+          <div class="panel" style="grid-column: 1/-1">
             <h2>⚙️ System Configuration & Toggles</h2>
             <div class="config-section">
               <div class="config-loading" id="config-loading">
@@ -3758,7 +3687,7 @@ Select a file from the project structure to view its content...</pre
                     <h3>🤖 Autonomous Mode</h3>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="autonomous_mode" name="autonomous_mode" />
+                        <input type="checkbox" id="autonomous_mode" name="autonomous_mode"/>
                         <span class="config-label">Enable Autonomous Mode</span>
                         <small>Allow AI to make decisions and execute tasks automatically</small>
                       </label>
@@ -3770,21 +3699,21 @@ Select a file from the project structure to view its content...</pre
                     <h3>💰 Monetization Features</h3>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="affiliate_tracking" name="affiliate_tracking" />
+                        <input type="checkbox" id="affiliate_tracking" name="affiliate_tracking"/>
                         <span class="config-label">Affiliate Tracking</span>
                         <small>Enable affiliate link tracking and commission management</small>
                       </label>
                     </div>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="payment_processing" name="payment_processing" />
+                        <input type="checkbox" id="payment_processing" name="payment_processing"/>
                         <span class="config-label">Payment Processing</span>
                         <small>Enable payment gateway integration</small>
                       </label>
                     </div>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="subscription_management" name="subscription_management" />
+                        <input type="checkbox" id="subscription_management" name="subscription_management"/>
                         <span class="config-label">Subscription Management</span>
                         <small>Enable recurring subscription billing</small>
                       </label>
@@ -3796,21 +3725,21 @@ Select a file from the project structure to view its content...</pre
                     <h3>📝 Content Generation</h3>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="auto_posting" name="auto_posting" />
+                        <input type="checkbox" id="auto_posting" name="auto_posting"/>
                         <span class="config-label">Auto-Posting</span>
                         <small>Automatically post generated content to social media</small>
                       </label>
                     </div>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="content_optimization" name="content_optimization" />
+                        <input type="checkbox" id="content_optimization" name="content_optimization"/>
                         <span class="config-label">Content Optimization</span>
                         <small>Optimize content for engagement and conversion</small>
                       </label>
                     </div>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="seo_enhancement" name="seo_enhancement" />
+                        <input type="checkbox" id="seo_enhancement" name="seo_enhancement"/>
                         <span class="config-label">SEO Enhancement</span>
                         <small>Automatically optimize content for search engines</small>
                       </label>
@@ -3822,21 +3751,21 @@ Select a file from the project structure to view its content...</pre
                     <h3>🔧 System Settings</h3>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="debug_mode" name="debug_mode" />
+                        <input type="checkbox" id="debug_mode" name="debug_mode"/>
                         <span class="config-label">Debug Mode</span>
                         <small>Enable detailed logging and debugging information</small>
                       </label>
                     </div>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="performance_monitoring" name="performance_monitoring" />
+                        <input type="checkbox" id="performance_monitoring" name="performance_monitoring"/>
                         <span class="config-label">Performance Monitoring</span>
                         <small>Monitor system performance and resource usage</small>
                       </label>
                     </div>
                     <div class="config-item">
                       <label>
-                        <input type="checkbox" id="auto_backup" name="auto_backup" />
+                        <input type="checkbox" id="auto_backup" name="auto_backup"/>
                         <span class="config-label">Auto Backup</span>
                         <small>Automatically backup system data and configurations</small>
                       </label>
@@ -3862,7 +3791,7 @@ Select a file from the project structure to view its content...</pre
       <!-- System Integrity & Go-Live Module -->
       <div id="system-integrity" class="module-content">
         <div class="dashboard-grid">
-          <div class="panel" style="grid-column: 1 / -1">
+          <div class="panel" style="grid-column: 1/-1">
             <h2>🚀 System Integrity & Go-Live</h2>
             <p style="margin-bottom: 20px; color: #666">
               Automated system-wide smoke test for production readiness verification
@@ -3928,17 +3857,12 @@ Select a file from the project structure to view its content...</pre
     <!-- Notification Container -->
     <div id="notification" class="notification"></div>
 
-    <script>
-      // Dashboard JavaScript functionality
-      let refreshInterval;
-
-      // Initialize dashboard
+    <script>//Dashboard JavaScript functionality
+      let refreshInterval;//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         refreshDashboard();
         startAutoRefresh();
-      });
-
-      // Workflow functions
+      });//Workflow functions
       async function triggerWorkflow(workflowType) {
         try {
           showNotification('Triggering ' + workflowType + ' workflow...', 'info');
@@ -3965,14 +3889,12 @@ Select a file from the project structure to view its content...</pre
         } catch (error) {
           showNotification(`Error: ${error.message}`, 'error');
         }
-      }
-
-      // Basic Video Generator function
+      }//Basic Video Generator function
       async function triggerBasicVideo() {
         try {
           showNotification('Starting basic video generation...', 'info');
 
-          const response = await fetch('/api/basic-video/generate', {
+          const response = await fetch("/api/basic-video/generate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -3995,12 +3917,10 @@ Select a file from the project structure to view its content...</pre
         } catch (error) {
           showNotification(`Error: ${error.message}`, 'error');
         }
-      }
-
-      // Monetization functions
+      }//Monetization functions
       async function toggleMonetization(feature, enabled) {
         try {
-          const response = await fetch('/api/monetization/toggle', {
+          const response = await fetch("/api/monetization/toggle', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4016,20 +3936,15 @@ Select a file from the project structure to view its content...</pre
           if (response.ok) {
             showNotification(`${feature} ${enabled ? 'enabled' : 'disabled'}`, 'success');
           } else {
-            showNotification(`Failed to toggle ${feature}: ${result.error}`, 'error');
-            // Revert toggle state
+            showNotification(`Failed to toggle ${feature}: ${result.error}`, 'error');//Revert toggle state
             document.getElementById(`${feature}-toggle`).checked = !enabled;
           }
         } catch (error) {
-          showNotification(`Error: ${error.message}`, 'error');
-          // Revert toggle state
+          showNotification(`Error: ${error.message}`, 'error');//Revert toggle state
           document.getElementById(`${feature}-toggle`).checked = !enabled;
         }
-      }
-
-      // Dashboard refresh functions - Updated for modular interface
-      async function refreshDashboard() {
-        // Only refresh if elements exist in current module
+      }//Dashboard refresh functions - Updated for modular interface
+      async function refreshDashboard() {//Only refresh if elements exist in current module
         const activeModule = document.querySelector('.module-content.active');
         if (!activeModule) return;
 
@@ -4053,9 +3968,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshAgentStatus() {
         try {
-          const response = await fetch('/api/agents/status');
-
-          // Check if response is actually JSON
+          const response = await fetch("/api/agents/status');//Check if response is actually JSON
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
             console.warn('Agent API returned non-JSON response:', contentType);
@@ -4082,9 +3995,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshDatabaseStats() {
         try {
-          const response = await fetch('/api/database/stats');
-
-          // Check if response is actually JSON
+          const response = await fetch("/api/database/stats');//Check if response is actually JSON
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
             console.warn('Database API returned non-JSON response:', contentType);
@@ -4111,9 +4022,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshProjectStatus() {
         try {
-          const response = await fetch('/api/projects/status');
-
-          // Check if response is actually JSON
+          const response = await fetch("/api/projects/status');//Check if response is actually JSON
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
             console.warn('API returned non-JSON response:', contentType);
@@ -4140,7 +4049,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshReportStatus() {
         try {
-          const response = await fetch('/api/reports/status');
+          const response = await fetch("/api/reports/status');
           const data = await response.json();
 
           if (response.ok) {
@@ -4153,10 +4062,8 @@ Select a file from the project structure to view its content...</pre
 
       async function checkHealth() {
         try {
-          const response = await fetch('/api/health');
-          const data = await response.json();
-
-          // Only update if health indicators exist in current view
+          const response = await fetch("/api/health');
+          const data = await response.json();//Only update if health indicators exist in current view
           const indicator = document.getElementById('health-indicator');
           const status = document.getElementById('health-status');
 
@@ -4177,12 +4084,10 @@ Select a file from the project structure to view its content...</pre
             status.textContent = 'Offline';
           }
         }
-      }
-
-      // Legacy update functions - Updated with null checks
+      }//Legacy update functions - Updated with null checks
       function updateTaskList(tasks) {
         const taskList = document.getElementById('task-list');
-        if (!taskList) return; // Element doesn't exist in new modular structure
+        if (!taskList) return;//Element doesn't exist in new modular structure
 
         if (tasks.length === 0) {
           taskList.innerHTML =
@@ -4243,14 +4148,12 @@ Select a file from the project structure to view its content...</pre
           if (followersEl) followersEl.textContent = formatNumber(channels.instagram.followers);
           if (postsEl) postsEl.textContent = channels.instagram.posts;
         }
-      }
-
-      // Utility functions
+      }//Utility functions
       function formatNumber(num) {
         if (num >= 1000000) {
-          return (num / 1000000).toFixed(1) + 'M';
+          return (num/1000000).toFixed(1) + 'M';
         } else if (num >= 1000) {
-          return (num / 1000).toFixed(1) + 'K';
+          return (num/1000).toFixed(1) + 'K';
         }
         return num.toString();
       }
@@ -4266,34 +4169,25 @@ Select a file from the project structure to view its content...</pre
       }
 
       function startAutoRefresh() {
-        refreshInterval = setInterval(refreshDashboard, 5000); // Refresh every 5 seconds
+        refreshInterval = setInterval(refreshDashboard, 5000);//Refresh every 5 seconds
       }
 
       function stopAutoRefresh() {
         if (refreshInterval) {
           clearInterval(refreshInterval);
         }
-      }
-
-      // Module tab switching
-      function switchModule(moduleId) {
-        // Hide all module content
+      }//Module tab switching
+      function switchModule(moduleId) {//Hide all module content
         const modules = document.querySelectorAll('.module-content');
         modules.forEach(module => {
           module.classList.remove('active');
-        });
-
-        // Remove active class from all tabs
+        });//Remove active class from all tabs
         const tabs = document.querySelectorAll('.tab-button');
         tabs.forEach(tab => {
           tab.classList.remove('active');
-        });
-
-        // Show selected module and activate tab
+        });//Show selected module and activate tab
         document.getElementById(moduleId).classList.add('active');
-        document.querySelector(`[onclick="switchModule('${moduleId}')"]`).classList.add('active');
-
-        // Load module-specific data
+        document.querySelector(`[onclick="switchModule('${moduleId}')"]`).classList.add('active');//Load module-specific data
         if (moduleId === 'affiliate-center') {
           loadAffiliateStatus();
           loadAffiliatePrograms();
@@ -4314,12 +4208,10 @@ Select a file from the project structure to view its content...</pre
           loadCampaigns();
           loadSegments();
         }
-      }
-
-      // Agent Command Center functions
+      }//Agent Command Center functions
       async function controlAgent(agentId, action) {
         try {
-          const response = await fetch('/api/agents/control', {
+          const response = await fetch("/api/agents/control', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4333,8 +4225,7 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification(`Agent ${agentId} ${action} successful`, 'success');
-            // Refresh agent status
+            showNotification(`Agent ${agentId} ${action} successful`, 'success');//Refresh agent status
             refreshAgentStatus();
           } else {
             showNotification(`Failed to ${action} agent: ${data.error}`, 'error');
@@ -4370,8 +4261,7 @@ Select a file from the project structure to view its content...</pre
         }
       }
 
-      function updateAgentGrid(agents) {
-        // Update agent status display in the Agent Command Center
+      function updateAgentGrid(agents) {//Update agent status display in the Agent Command Center
         const agentGrid = document.getElementById('agent-grid');
 
         if (!agents || agents.length === 0) {
@@ -4379,17 +4269,11 @@ Select a file from the project structure to view its content...</pre
           agentGrid.innerHTML =
             '<div class="agent-card"><div class="agent-header"><h3>No Active Agents</h3><span class="status-indicator status-idle"></span></div><div class="agent-metrics"><p>No agents are currently running. Start the orchestrator to see agent status.</p></div></div>';
           return;
-        }
-
-        // Clear existing agent cards
-        agentGrid.innerHTML = '';
-
-        // Create agent cards dynamically
+        }//Clear existing agent cards
+        agentGrid.innerHTML = '';//Create agent cards dynamically
         agents.forEach(agent => {
           const agentCard = document.createElement('div');
-          agentCard.className = 'agent-card';
-
-          // Map status to appropriate CSS classes
+          agentCard.className = 'agent-card';//Map status to appropriate CSS classes
           let statusClass = 'status-idle';
           let statusText = 'Idle';
 
@@ -4402,13 +4286,9 @@ Select a file from the project structure to view its content...</pre
           } else if (agent.status === 'paused' || agent.status === 'stopped') {
             statusClass = 'status-warning';
             statusText = 'Paused';
-          }
-
-          // Format agent name
+          }//Format agent name
           const agentName = agent.name || agent.id || 'Unknown Agent';
-          const displayName = agentName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-          // Calculate task count
+          const displayName = agentName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());//Calculate task count
           const taskCount = agent.tasks_completed || 0;
 
           agentCard.innerHTML = `
@@ -4441,11 +4321,9 @@ Select a file from the project structure to view its content...</pre
         console.log(`Updated agent grid with ${agents.length} agents`);
       }
 
-      function updateDatabaseStats(stats) {
-        // Update database statistics in the Intelligence Database
+      function updateDatabaseStats(stats) {//Update database statistics in the Intelligence Database
         if (stats.tables) {
-          const tableItems = document.querySelectorAll('.table-item');
-          // Update table counts if available
+          const tableItems = document.querySelectorAll('.table-item');//Update table counts if available
           Object.keys(stats.tables).forEach(tableName => {
             const tableItem = Array.from(tableItems).find(item => item.getAttribute('onclick')?.includes(tableName));
             if (tableItem) {
@@ -4456,12 +4334,10 @@ Select a file from the project structure to view its content...</pre
             }
           });
         }
-      }
-
-      // Audience Management functions
+      }//Audience Management functions
       async function loadAudienceStats() {
         try {
-          const response = await fetch('/api/audience/stats');
+          const response = await fetch("/api/audience/stats');
           const data = await response.json();
 
           if (response.ok) {
@@ -4479,7 +4355,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadContacts() {
         try {
-          const response = await fetch('/api/audience/contacts');
+          const response = await fetch("/api/audience/contacts');
           const data = await response.json();
 
           if (response.ok) {
@@ -4513,14 +4389,13 @@ Select a file from the project structure to view its content...</pre
         }
       }
 
-      async function loadCampaigns() {
-        // Campaign loading will be implemented when needed
+      async function loadCampaigns() {//Campaign loading will be implemented when needed
         console.log('Loading campaigns...');
       }
 
       async function loadSegments() {
         try {
-          const response = await fetch('/api/audience/segments');
+          const response = await fetch("/api/audience/segments');
           const data = await response.json();
 
           if (response.ok) {
@@ -4559,7 +4434,7 @@ Select a file from the project structure to view its content...</pre
 
       async function addContact(name, email) {
         try {
-          const response = await fetch('/api/audience/contacts', {
+          const response = await fetch("/api/audience/contacts', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4571,8 +4446,8 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification('Contact added successfully!', 'success');
-            loadContacts(); // Refresh the contact list
-            loadAudienceStats(); // Refresh stats
+            loadContacts();//Refresh the contact list
+            loadAudienceStats();//Refresh stats
           } else {
             showNotification(`Failed to add contact: ${data.error}`, 'error');
           }
@@ -4592,7 +4467,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch('/api/audience/campaigns', {
+          const response = await fetch("/api/audience/campaigns', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4603,11 +4478,10 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification('Campaign created successfully!', 'success');
-            // Clear form
+            showNotification('Campaign created successfully!', 'success');//Clear form
             document.getElementById('campaign-name').value = '';
             document.getElementById('campaign-content').value = '';
-            loadAudienceStats(); // Refresh stats
+            loadAudienceStats();//Refresh stats
           } else {
             showNotification(`Failed to create campaign: ${data.error}`, 'error');
           }
@@ -4626,7 +4500,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch('/api/audience/segments', {
+          const response = await fetch("/api/audience/segments', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4637,11 +4511,10 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification('Segment created successfully!', 'success');
-            // Clear form
+            showNotification('Segment created successfully!', 'success');//Clear form
             document.getElementById('segment-name').value = '';
             document.getElementById('segment-criteria').value = '';
-            loadSegments(); // Refresh segments
+            loadSegments();//Refresh segments
           } else {
             showNotification(`Failed to create segment: ${data.error}`, 'error');
           }
@@ -4656,9 +4529,7 @@ Select a file from the project structure to view its content...</pre
 
       async function exportContacts() {
         showNotification('Contact export feature coming soon!', 'info');
-      }
-
-      // Intelligence Database functions
+      }//Intelligence Database functions
       async function loadTable(tableName) {
         try {
           const response = await fetch(`/api/database/query`, {
@@ -4691,7 +4562,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch('/api/database/query', {
+          const response = await fetch("/api/database/query', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4718,9 +4589,7 @@ Select a file from the project structure to view its content...</pre
         if (!results || results.length === 0) {
           resultsDiv.innerHTML = '<p>No results found.</p>';
           return;
-        }
-
-        // Create table from results
+        }//Create table from results
         const headers = Object.keys(results[0]);
         const table = `
                 <table style="width: 100%; border-collapse: collapse;">
@@ -4744,12 +4613,10 @@ Select a file from the project structure to view its content...</pre
             `;
 
         resultsDiv.innerHTML = table;
-      }
-
-      // Digital Product Studio functions
+      }//Digital Product Studio functions
       async function loadProjects() {
         try {
-          const response = await fetch('/api/projects');
+          const response = await fetch("/api/projects');
           const data = await response.json();
 
           if (response.ok) {
@@ -4805,17 +4672,14 @@ Select a file from the project structure to view its content...</pre
                 `;
           })
           .join('');
-      }
-
-      // Missing Product Studio functions
+      }//Missing Product Studio functions
       async function reviewProject(projectId) {
         try {
           const response = await fetch(`/api/projects/${projectId}/review`);
           const data = await response.json();
 
           if (response.ok) {
-            showNotification(`Opening review for project ${projectId}`, 'info');
-            // Open review interface
+            showNotification(`Opening review for project ${projectId}`, 'info');//Open review interface
             displayProjectReview(data);
           } else {
             showNotification(`Failed to load project review: ${data.error}`, 'error');
@@ -4827,8 +4691,7 @@ Select a file from the project structure to view its content...</pre
 
       async function updateProject(projectId) {
         try {
-          showNotification(`Opening editor for project ${projectId}`, 'info');
-          // Open project editor interface
+          showNotification(`Opening editor for project ${projectId}`, 'info');//Open project editor interface
           const response = await fetch(`/api/projects/${projectId}`);
           const data = await response.json();
 
@@ -4845,7 +4708,7 @@ Select a file from the project structure to view its content...</pre
       async function createNewProject() {
         try {
           showNotification('Creating new project...', 'info');
-          const response = await fetch('/api/projects/create', {
+          const response = await fetch("/api/projects/create', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4887,8 +4750,7 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification(`Marketing package generation started! Task ID: ${data.task_id}`, 'success');
-            // Optionally refresh the dashboard to show the new task
+            showNotification(`Marketing package generation started! Task ID: ${data.task_id}`, 'success');//Optionally refresh the dashboard to show the new task
             refreshDashboard();
           } else {
             showNotification(`Failed to generate marketing package: ${data.error}`, 'error');
@@ -4919,8 +4781,7 @@ Select a file from the project structure to view its content...</pre
       }
 
       function displayProjectEditor(projectData) {
-        showNotification(`Editor for ${projectData.name || 'project'} would open here`, 'info');
-        // Project editor interface would be implemented here
+        showNotification(`Editor for ${projectData.name || 'project'} would open here`, 'info');//Project editor interface would be implemented here
       }
 
       function updateProjectGrid(projects) {
@@ -4972,12 +4833,10 @@ Select a file from the project structure to view its content...</pre
             `
           )
           .join('');
-      }
-
-      // Reporting Engine functions
+      }//Reporting Engine functions
       async function generateReport(reportType) {
         try {
-          const response = await fetch('/api/reports/generate', {
+          const response = await fetch("/api/reports/generate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5005,12 +4864,10 @@ Select a file from the project structure to view its content...</pre
                 <p><strong>Generated:</strong> ${report.timestamp}</p>
                 <div>${report.content}</div>
             `;
-      }
-
-      // Affiliate Command Center functions
+      }//Affiliate Command Center functions
       async function loadAffiliateStatus() {
         try {
-          const response = await fetch('/api/affiliates/status');
+          const response = await fetch("/api/affiliates/status');
           const data = await response.json();
 
           if (response.ok) {
@@ -5031,7 +4888,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAffiliatePrograms() {
         try {
-          const response = await fetch('/api/affiliates/programs');
+          const response = await fetch("/api/affiliates/programs');
           const data = await response.json();
 
           if (response.ok) {
@@ -5045,9 +4902,7 @@ Select a file from the project structure to view its content...</pre
       }
 
       function displayAffiliatePrograms(data) {
-        const programsBody = document.getElementById('affiliate-programs-body');
-
-        // Handle nested programs structure - API returns {programs: {programs: [...]}}
+        const programsBody = document.getElementById('affiliate-programs-body');//Handle nested programs structure - API returns {programs: {programs: [...]}}
         const programsList = data?.programs?.programs || data?.programs || data || [];
 
         if (!programsList || !Array.isArray(programsList) || programsList.length === 0) {
@@ -5091,7 +4946,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAffiliateOpportunities() {
         try {
-          const response = await fetch('/api/affiliates/opportunities');
+          const response = await fetch("/api/affiliates/opportunities');
           const data = await response.json();
 
           if (response.ok) {
@@ -5133,7 +4988,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAPIStatus() {
         try {
-          const response = await fetch('/api/apis/status');
+          const response = await fetch("/api/apis/status');
           const data = await response.json();
 
           if (response.ok) {
@@ -5175,8 +5030,7 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification(`Opening detailed view for ${data.name}`, 'info');
-            // Detailed view would be implemented here
+            showNotification(`Opening detailed view for ${data.name}`, 'info');//Detailed view would be implemented here
           } else {
             showNotification(`Failed to load program details: ${data.error}`, 'error');
           }
@@ -5186,8 +5040,7 @@ Select a file from the project structure to view its content...</pre
       }
 
       async function updateLinkTemplate(programId) {
-        showNotification('Link template update interface would open here', 'info');
-        // Link template update interface would be implemented here
+        showNotification('Link template update interface would open here', 'info');//Link template update interface would be implemented here
       }
 
       async function toggleProgram(programId, currentStatus) {
@@ -5204,7 +5057,7 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification(`Program ${currentStatus ? 'paused' : 'activated'} successfully`, 'success');
-            loadAffiliatePrograms(); // Refresh the list
+            loadAffiliatePrograms();//Refresh the list
           } else {
             showNotification(`Failed to toggle program: ${data.error}`, 'error');
           }
@@ -5226,19 +5079,17 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification('Stealth Automation Agent has been tasked with signup', 'success');
-            loadAffiliateOpportunities(); // Refresh the list
+            loadAffiliateOpportunities();//Refresh the list
           } else {
             showNotification(`Failed to initiate signup: ${data.error}`, 'error');
           }
         } catch (error) {
           showNotification(`Error initiating signup: ${error.message}`, 'error');
         }
-      }
-
-      // API Command Center functions
+      }//API Command Center functions
       async function loadAPIKPIs() {
         try {
-          const response = await fetch('/api/apis/status');
+          const response = await fetch("/api/apis/status');
           const data = await response.json();
 
           if (response.ok) {
@@ -5260,7 +5111,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAPIRegistry() {
         try {
-          const response = await fetch('/api/apis/registry');
+          const response = await fetch("/api/apis/registry');
           const data = await response.json();
 
           if (response.ok) {
@@ -5333,7 +5184,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAPIOpportunities() {
         try {
-          const response = await fetch('/api/suggestions');
+          const response = await fetch("/api/suggestions');
           const data = await response.json();
 
           if (response.ok) {
@@ -5398,8 +5249,7 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification(`Opening detailed view for ${data.name}`, 'info');
-            // Detailed view would be implemented here
+            showNotification(`Opening detailed view for ${data.name}`, 'info');//Detailed view would be implemented here
           } else {
             showNotification(`Failed to load API details: ${data.error}`, 'error');
           }
@@ -5409,8 +5259,7 @@ Select a file from the project structure to view its content...</pre
       }
 
       async function updateAPIKey(apiId) {
-        showNotification('API key update interface would open here', 'info');
-        // API key update interface would be implemented here
+        showNotification('API key update interface would open here', 'info');//API key update interface would be implemented here
       }
 
       async function toggleAPI(apiId, currentStatus) {
@@ -5427,7 +5276,7 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification(`API ${currentStatus ? 'paused' : 'activated'} successfully`, 'success');
-            loadAPIRegistry(); // Refresh the registry
+            loadAPIRegistry();//Refresh the registry
           } else {
             showNotification(`Failed to toggle API: ${data.error}`, 'error');
           }
@@ -5449,8 +5298,8 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification('✅ API suggestion approved and added to registry!', 'success');
-            loadAPIOpportunities(); // Refresh suggestions
-            loadAPIRegistry(); // Refresh registry
+            loadAPIOpportunities();//Refresh suggestions
+            loadAPIRegistry();//Refresh registry
           } else {
             showNotification(`Failed to approve suggestion: ${data.error}`, 'error');
           }
@@ -5472,7 +5321,7 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification('❌ API suggestion rejected', 'info');
-            loadAPIOpportunities(); // Refresh suggestions
+            loadAPIOpportunities();//Refresh suggestions
           } else {
             showNotification(`Failed to reject suggestion: ${data.error}`, 'error');
           }
@@ -5483,7 +5332,7 @@ Select a file from the project structure to view its content...</pre
 
       async function triggerAPIDiscovery() {
         try {
-          const response = await fetch('/api/discovery/trigger', {
+          const response = await fetch("/api/discovery/trigger', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5493,8 +5342,7 @@ Select a file from the project structure to view its content...</pre
           const data = await response.json();
 
           if (response.ok) {
-            showNotification('🚀 API discovery process initiated!', 'success');
-            // Refresh after a delay to allow discovery to run
+            showNotification('🚀 API discovery process initiated!', 'success');//Refresh after a delay to allow discovery to run
             setTimeout(() => {
               loadAPIOpportunities();
             }, 3000);
@@ -5511,8 +5359,7 @@ Select a file from the project structure to view its content...</pre
           const response = await fetch(`/api/suggestions/${suggestionId}`);
           const data = await response.json();
 
-          if (response.ok) {
-            // Create a modal or detailed view
+          if (response.ok) {//Create a modal or detailed view
             const details = `
                         API Name: ${data.api_name}\n
                         Description: ${data.description}\n
@@ -5521,19 +5368,17 @@ Select a file from the project structure to view its content...</pre
                         Discovery Source: ${data.discovery_source}\n
                         Reasoning: ${data.reasoning || 'Not provided'}
                     `;
-            alert(details); // Simple implementation - could be enhanced with a modal
+            alert(details);//Simple implementation - could be enhanced with a modal
           } else {
             showNotification(`Failed to load suggestion details: ${data.error}`, 'error');
           }
         } catch (error) {
           showNotification(`Error loading suggestion details: ${error.message}`, 'error');
         }
-      }
-
-      // Creative Sandbox Functions
+      }//Creative Sandbox Functions
       async function loadChannels() {
         try {
-          const response = await fetch('/api/sandbox/channels');
+          const response = await fetch("/api/sandbox/channels');
           const data = await response.json();
 
           if (response.ok) {
@@ -5590,27 +5435,19 @@ Select a file from the project structure to view its content...</pre
 
       function onAvatarEngineChange() {
         const engineSelect = document.getElementById('avatar-engine-select');
-        const selectedEngine = engineSelect.value;
-
-        // Update UI to show selected engine
+        const selectedEngine = engineSelect.value;//Update UI to show selected engine
         const engineStatus = document.createElement('div');
         engineStatus.className = 'engine-status';
         engineStatus.innerHTML = `
                 <small style="color: #666; font-style: italic;">
                     ${selectedEngine ? `Using: ${engineSelect.options[engineSelect.selectedIndex].text}` : 'Auto-failsafe enabled'}
                 </small>
-            `;
-
-        // Remove existing status if any
+            `;//Remove existing status if any
         const existingStatus = engineSelect.parentNode.querySelector('.engine-status');
         if (existingStatus) {
           existingStatus.remove();
-        }
-
-        // Add new status
-        engineSelect.parentNode.appendChild(engineStatus);
-
-        // Store selection for later use in avatar generation
+        }//Add new status
+        engineSelect.parentNode.appendChild(engineStatus);//Store selection for later use in avatar generation
         window.selectedAvatarEngine = selectedEngine;
 
         showNotification(
@@ -5623,27 +5460,19 @@ Select a file from the project structure to view its content...</pre
 
       function onWorkflowAvatarEngineChange() {
         const engineSelect = document.getElementById('workflow-avatar-engine');
-        const selectedEngine = engineSelect.value;
-
-        // Update UI to show selected engine
+        const selectedEngine = engineSelect.value;//Update UI to show selected engine
         const engineStatus = document.createElement('div');
         engineStatus.className = 'engine-status';
         engineStatus.innerHTML = `
                 <small style="color: #666; font-style: italic;">
                     ${selectedEngine ? `Using: ${engineSelect.options[engineSelect.selectedIndex].text}` : 'Auto-failsafe enabled'}
                 </small>
-            `;
-
-        // Remove existing status if any
+            `;//Remove existing status if any
         const existingStatus = engineSelect.parentNode.querySelector('.engine-status');
         if (existingStatus) {
           existingStatus.remove();
-        }
-
-        // Add new status
-        engineSelect.parentNode.appendChild(engineStatus);
-
-        // Store selection for later use in workflow operations
+        }//Add new status
+        engineSelect.parentNode.appendChild(engineStatus);//Store selection for later use in workflow operations
         window.selectedWorkflowAvatarEngine = selectedEngine;
 
         showNotification(
@@ -5684,14 +5513,13 @@ Select a file from the project structure to view its content...</pre
         });
       }
 
-      async function generateSampleScript() {
-        // Create a modal dialog instead of using prompt()
+      async function generateSampleScript() {//Create a modal dialog instead of using prompt()
         const topic = await showInputDialog('Enter a topic for script generation:', 'Script Topic');
         if (!topic) return;
 
         try {
           showNotification('Generating sample script...', 'info');
-          const response = await fetch('/api/sandbox/generate-script', {
+          const response = await fetch("/api/sandbox/generate-script', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5723,7 +5551,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating voice preview...', 'info');
-          const response = await fetch('/api/sandbox/generate-voice', {
+          const response = await fetch("/api/sandbox/generate-voice', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5765,7 +5593,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating avatar preview...', 'info');
-          const response = await fetch('/api/sandbox/generate-avatar', {
+          const response = await fetch("/api/sandbox/generate-avatar', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5809,7 +5637,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating full scene preview...', 'info');
-          const response = await fetch('/api/sandbox/generate-scene', {
+          const response = await fetch("/api/sandbox/generate-scene', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5855,7 +5683,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Sending to production queue...', 'info');
-          const response = await fetch('/api/sandbox/send-to-production', {
+          const response = await fetch("/api/sandbox/send-to-production', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5884,7 +5712,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadProductionQueue() {
         try {
-          const response = await fetch('/api/sandbox/production-queue');
+          const response = await fetch("/api/sandbox/production-queue');
           const data = await response.json();
 
           if (response.ok) {
@@ -5920,12 +5748,10 @@ Select a file from the project structure to view its content...</pre
             `
           )
           .join('');
-      }
-
-      // Code Backup & Export functions
+      }//Code Backup & Export functions
       async function loadSystemFiles() {
         try {
-          const response = await fetch('/api/backup/files');
+          const response = await fetch("/api/backup/files');
           const data = await response.json();
 
           if (response.ok) {
@@ -5940,18 +5766,14 @@ Select a file from the project structure to view its content...</pre
 
       function populateFileSelector(files) {
         const fileSelector = document.getElementById('file-selector');
-        fileSelector.innerHTML = '<option value="">Select a file...</option>';
-
-        // Group files by category
+        fileSelector.innerHTML = '<option value="">Select a file...</option>';//Group files by category
         const categories = {};
         files.forEach(file => {
           if (!categories[file.category]) {
             categories[file.category] = [];
           }
           categories[file.category].push(file);
-        });
-
-        // Add options grouped by category
+        });//Add options grouped by category
         Object.keys(categories).forEach(category => {
           const optgroup = document.createElement('optgroup');
           optgroup.label = category;
@@ -6005,23 +5827,19 @@ Select a file from the project structure to view its content...</pre
         } catch (error) {
           showNotification('Failed to copy to clipboard', 'error');
         }
-      }
-
-      // Enhanced Codebase Viewer Functions
+      }//Enhanced Codebase Viewer Functions
       let projectStructure = null;
       let expandedFolders = new Set();
       let selectedFile = null;
 
       async function loadProjectStructure() {
         try {
-          const response = await fetch('/api/backup/project-structure');
+          const response = await fetch("/api/backup/project-structure');
           const data = await response.json();
 
           if (response.ok) {
             projectStructure = data;
-            renderFileTree();
-
-            // Update stats display
+            renderFileTree();//Update stats display
             if (data.statistics) {
               updateProjectStats(data.statistics);
             }
@@ -6071,8 +5889,7 @@ Select a file from the project structure to view its content...</pre
         let html = '';
 
         Object.keys(node)
-          .sort((a, b) => {
-            // Folders first, then files
+          .sort((a, b) => {//Folders first, then files
             if (node[a].type !== node[b].type) {
               return node[a].type === 'folder' ? -1 : 1;
             }
@@ -6160,17 +5977,15 @@ Select a file from the project structure to view its content...</pre
           showNotification(`Error loading file content: ${error.message}`, 'error');
         }
 
-        renderFileTree(); // Re-render to update selection
+        renderFileTree();//Re-render to update selection
       }
 
       function toggleExpandAll() {
         const button = document.getElementById('expand-toggle');
-        if (expandedFolders.size === 0) {
-          // Expand all folders
+        if (expandedFolders.size === 0) {//Expand all folders
           expandAllFolders(projectStructure, '');
           button.textContent = '📁 Collapse All';
-        } else {
-          // Collapse all folders
+        } else {//Collapse all folders
           expandedFolders.clear();
           button.textContent = '📂 Expand All';
         }
@@ -6203,23 +6018,17 @@ Select a file from the project structure to view its content...</pre
         if (bytes === 0) return '0 B';
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        const i = Math.floor(Math.log(bytes)/Math.log(k));
+        return parseFloat((bytes/Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
       }
 
       function filterFiles() {
         const searchTerm = document.getElementById('file-search').value.toLowerCase();
-        const fileTypeFilter = document.getElementById('file-type-filter').value;
-
-        // Store original structure if not already stored
+        const fileTypeFilter = document.getElementById('file-type-filter').value;//Store original structure if not already stored
         if (!window.originalProjectStructure) {
           window.originalProjectStructure = JSON.parse(JSON.stringify(projectStructure));
-        }
-
-        // Apply filters
-        const filteredStructure = applyFilters(window.originalProjectStructure, searchTerm, fileTypeFilter);
-
-        // Update the displayed structure
+        }//Apply filters
+        const filteredStructure = applyFilters(window.originalProjectStructure, searchTerm, fileTypeFilter);//Update the displayed structure
         projectStructure = filteredStructure;
         renderFileTree();
       }
@@ -6230,19 +6039,15 @@ Select a file from the project structure to view its content...</pre
         Object.keys(node).forEach(key => {
           const item = node[key];
 
-          if (item.type === 'folder') {
-            // Recursively filter folder contents
-            const filteredChildren = applyFilters(item.children, searchTerm, fileTypeFilter);
-
-            // Include folder if it has matching children or matches search term
+          if (item.type === 'folder') {//Recursively filter folder contents
+            const filteredChildren = applyFilters(item.children, searchTerm, fileTypeFilter);//Include folder if it has matching children or matches search term
             if (Object.keys(filteredChildren).length > 0 || key.toLowerCase().includes(searchTerm)) {
               filtered[key] = {
                 ...item,
                 children: filteredChildren,
               };
             }
-          } else {
-            // Filter files based on search term and file type
+          } else {//Filter files based on search term and file type
             const matchesSearch =
               key.toLowerCase().includes(searchTerm) || item.path.toLowerCase().includes(searchTerm);
             const matchesType = !fileTypeFilter || key.endsWith(fileTypeFilter);
@@ -6323,7 +6128,7 @@ Select a file from the project structure to view its content...</pre
 
       async function copyAllCodeToClipboard() {
         try {
-          const response = await fetch('/api/backup/all-code');
+          const response = await fetch("/api/backup/all-code');
           const data = await response.json();
 
           if (response.ok) {
@@ -6341,7 +6146,7 @@ Select a file from the project structure to view its content...</pre
         try {
           showNotification('Generating codebase ZIP...', 'info');
 
-          const response = await fetch('/api/backup/code');
+          const response = await fetch("/api/backup/code');
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -6351,9 +6156,7 @@ Select a file from the project structure to view its content...</pre
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.style.display = 'none';
-          a.href = url;
-
-          // Generate filename with timestamp
+          a.href = url;//Generate filename with timestamp
           const now = new Date();
           const timestamp = now.toISOString().slice(0, 19).replace(/[T:]/g, '-');
           a.download = `codebase-backup-${timestamp}.zip`;
@@ -6378,7 +6181,7 @@ Select a file from the project structure to view its content...</pre
         statusDiv.innerHTML = '<div class="backup-status loading">Generating code backup...</div>';
 
         try {
-          const response = await fetch('/api/backup/generate-code', {
+          const response = await fetch("/api/backup/generate-code', {
             method: 'POST',
           });
           const data = await response.json();
@@ -6404,7 +6207,7 @@ Select a file from the project structure to view its content...</pre
         statusDiv.innerHTML = '<div class="backup-status loading">Generating data backup...</div>';
 
         try {
-          const response = await fetch('/api/backup/generate-data', {
+          const response = await fetch("/api/backup/generate-data', {
             method: 'POST',
           });
           const data = await response.json();
@@ -6432,14 +6235,10 @@ Select a file from the project structure to view its content...</pre
                     <div class="filesize">${formatFileSize(size)}</div>
                 </div>
                 <button class="download-btn" onclick="window.open('${downloadUrl}', '_blank')">Download</button>
-            `;
-
-        // Clear the "No backups generated yet..." message if it exists
+            `;//Clear the "No backups generated yet..." message if it exists
         if (historyDiv.textContent.includes('No backups generated yet')) {
           historyDiv.innerHTML = '';
-        }
-
-        // Add to the top of the history
+        }//Add to the top of the history
         const firstChild = historyDiv.querySelector('.download-link');
         if (firstChild) {
           historyDiv.insertBefore(linkDiv, firstChild);
@@ -6452,14 +6251,12 @@ Select a file from the project structure to view its content...</pre
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-      }
-
-      // Actions functionality
+        const i = Math.floor(Math.log(bytes)/Math.log(k));
+        return parseFloat((bytes/Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }//Actions functionality
       async function loadActions() {
         try {
-          const response = await fetch('/api/actions');
+          const response = await fetch("/api/actions');
           const data = await response.json();
 
           if (response.ok) {
@@ -6543,31 +6340,20 @@ Select a file from the project structure to view its content...</pre
           showNotification(`Error executing action: ${error.message}`, 'error');
           console.error('Action execution error:', error);
         }
-      }
-
-      // Initialize dashboard
-      document.addEventListener('DOMContentLoaded', function () {
-        // Set default active module
-        switchModule('agent-center');
-
-        // Load available actions
-        loadActions();
-
-        // Start auto-refresh
+      }//Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {//Set default active module
+        switchModule('agent-center');//Load available actions
+        loadActions();//Start auto-refresh
         refreshDashboard();
         startAutoRefresh();
-      });
-
-      // Handle page visibility changes
+      });//Handle page visibility changes
       document.addEventListener('visibilitychange', function () {
         if (document.hidden) {
           stopAutoRefresh();
         } else {
           startAutoRefresh();
         }
-      });
-
-      // Report Center Functions
+      });//Report Center Functions
       let currentReports = [];
       let currentSortField = 'created_at';
       let currentSortDirection = 'desc';
@@ -6592,7 +6378,7 @@ Select a file from the project structure to view its content...</pre
         statusDiv.style.display = 'block';
 
         try {
-          const response = await fetch('/api/report-center/generate', {
+          const response = await fetch("/api/report-center/generate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -6609,7 +6395,7 @@ Select a file from the project structure to view its content...</pre
           if (response.ok) {
             showNotification('Report generated successfully!', 'success');
             statusDiv.style.display = 'none';
-            loadReports(); // Refresh the reports list
+            loadReports();//Refresh the reports list
           } else {
             showNotification(`Failed to generate report: ${data.error}`, 'error');
             statusDiv.style.display = 'none';
@@ -6622,7 +6408,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadReports() {
         try {
-          const response = await fetch('/api/report-center/reports');
+          const response = await fetch("/api/report-center/reports');
           const data = await response.json();
 
           if (response.ok) {
@@ -6705,19 +6491,14 @@ Select a file from the project structure to view its content...</pre
       function displayReportViewer(report) {
         const archivePanel = document.querySelector('.report-archive-table').closest('.panel');
         const viewerPanel = document.getElementById('report-viewer-panel');
-        const contentDiv = document.getElementById('report-content');
-
-        // Hide archive, show viewer
+        const contentDiv = document.getElementById('report-content');//Hide archive, show viewer
         archivePanel.style.display = 'none';
-        viewerPanel.style.display = 'block';
-
-        // Convert markdown to HTML (basic conversion)
+        viewerPanel.style.display = 'block';//Convert markdown to HTML (basic conversion)
         const htmlContent = markdownToHtml(report.content);
         contentDiv.innerHTML = htmlContent;
       }
 
-      function markdownToHtml(markdown) {
-        // Basic markdown to HTML conversion
+      function markdownToHtml(markdown) {//Basic markdown to HTML conversion
         let html = markdown
           .replace(/^# (.*$)/gim, '<h1>$1</h1>')
           .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -6733,9 +6514,7 @@ Select a file from the project structure to view its content...</pre
 
       function closeReportViewer() {
         const archivePanel = document.querySelector('.report-archive-table').closest('.panel');
-        const viewerPanel = document.getElementById('report-viewer-panel');
-
-        // Show archive, hide viewer
+        const viewerPanel = document.getElementById('report-viewer-panel');//Show archive, hide viewer
         archivePanel.style.display = 'block';
         viewerPanel.style.display = 'none';
         currentViewingReport = null;
@@ -6755,7 +6534,7 @@ Select a file from the project structure to view its content...</pre
 
           if (response.ok) {
             showNotification('Report deleted successfully', 'success');
-            loadReports(); // Refresh the reports list
+            loadReports();//Refresh the reports list
           } else {
             showNotification(`Failed to delete report: ${data.error}`, 'error');
           }
@@ -6825,15 +6604,12 @@ Select a file from the project structure to view its content...</pre
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      }
-
-      // Load reports when Report Center module is activated
+      }//Load reports when Report Center module is activated
       const originalSwitchModule = switchModule;
       switchModule = function (moduleId) {
         originalSwitchModule(moduleId);
         if (moduleId === 'report-center') {
-          loadReports();
-          // Set default date range (last 30 days)
+          loadReports();//Set default date range (last 30 days)
           const endDate = new Date();
           const startDate = new Date();
           startDate.setDate(startDate.getDate() - 30);
@@ -6843,9 +6619,7 @@ Select a file from the project structure to view its content...</pre
         } else if (moduleId === 'configuration') {
           loadConfiguration();
         }
-      };
-
-      // Configuration Management Functions
+      };//Configuration Management Functions
       async function loadConfiguration() {
         const loadingDiv = document.getElementById('config-loading');
         const formDiv = document.getElementById('config-form');
@@ -6856,11 +6630,10 @@ Select a file from the project structure to view its content...</pre
           formDiv.style.display = 'none';
           statusDiv.innerHTML = '';
 
-          const response = await fetch('/api/config');
+          const response = await fetch("/api/config');
           const config = await response.json();
 
-          if (response.ok) {
-            // Populate form with current configuration
+          if (response.ok) {//Populate form with current configuration
             Object.keys(config).forEach(key => {
               const checkbox = document.getElementById(key);
               if (checkbox) {
@@ -6886,19 +6659,15 @@ Select a file from the project structure to view its content...</pre
 
         try {
           saveButton.disabled = true;
-          statusDiv.innerHTML = '<div class="config-status loading">Saving configuration...</div>';
-
-          // Collect form data
+          statusDiv.innerHTML = '<div class="config-status loading">Saving configuration...</div>';//Collect form data
           const formData = new FormData(form);
-          const config = {};
-
-          // Get all checkboxes and set their values
+          const config = {};//Get all checkboxes and set their values
           const checkboxes = form.querySelectorAll('input[type="checkbox"]');
           checkboxes.forEach(checkbox => {
             config[checkbox.name] = checkbox.checked;
           });
 
-          const response = await fetch('/api/config/update', {
+          const response = await fetch("/api/config/update', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -6934,15 +6703,11 @@ Select a file from the project structure to view its content...</pre
 
         try {
           resetButton.disabled = true;
-          statusDiv.innerHTML = '<div class="config-status loading">Resetting configuration...</div>';
-
-          // Reset all checkboxes to unchecked (default state)
+          statusDiv.innerHTML = '<div class="config-status loading">Resetting configuration...</div>';//Reset all checkboxes to unchecked (default state)
           const checkboxes = document.querySelectorAll('#configuration-form input[type="checkbox"]');
           checkboxes.forEach(checkbox => {
             checkbox.checked = false;
-          });
-
-          // Save the reset configuration
+          });//Save the reset configuration
           await saveConfiguration();
 
           statusDiv.innerHTML = '<div class="config-status success">Configuration reset to defaults!</div>';
@@ -6955,40 +6720,28 @@ Select a file from the project structure to view its content...</pre
         } finally {
           resetButton.disabled = false;
         }
-      }
-
-      // Continue to Next Phase Function
-      function continueToNextPhase() {
-        // Show confirmation dialog
+      }//Continue to Next Phase Function
+      function continueToNextPhase() {//Show confirmation dialog
         const confirmed = confirm(
           'Ready to advance to Phase 2? This will unlock advanced automation features and growth strategies.'
         );
 
-        if (confirmed) {
-          // Show loading state
+        if (confirmed) {//Show loading state
           const button = document.querySelector('.btn-continue');
           const originalText = button.textContent;
           button.textContent = 'Initializing Phase 2...';
-          button.disabled = true;
-
-          // Simulate phase transition (in real implementation, this would call backend API)
+          button.disabled = true;//Simulate phase transition (in real implementation, this would call backend API)
           setTimeout(() => {
             alert('🎉 Phase 2 Activated! Advanced features are now available in your dashboard.');
             button.textContent = 'Phase 2 Active ✓';
             button.style.background = '#38a169';
-            button.style.color = 'white';
-
-            // Optionally redirect to advanced dashboard or reload with new features
-            // window.location.reload();
+            button.style.color = 'white';//Optionally redirect to advanced dashboard or reload with new features//window.location.reload();
           }, 2000);
         }
-      }
-
-      // SocketIO Real-time Integration
+      }//SocketIO Real-time Integration
       let socket = null;
 
-      function initializeSocketIO() {
-        // Replace existing socket connection with this:
+      function initializeSocketIO() {//Replace existing socket connection with this:
         const socket = io(window.location.origin, {
           path: '/socket.io',
           transports: ['websocket', 'polling'],
@@ -7003,9 +6756,7 @@ Select a file from the project structure to view its content...</pre
 
         socket.on('connect', () => {
           console.log('✅ Socket.IO connected:', socket.id);
-          updateConnectionStatus(true);
-
-          // Join the dashboard room for real-time updates
+          updateConnectionStatus(true);//Join the dashboard room for real-time updates
           socket.emit('join_room', { room: 'dashboard' });
         });
 
@@ -7014,25 +6765,21 @@ Select a file from the project structure to view its content...</pre
           updateConnectionStatus(false);
         });
 
-        socket.on('error', err => console.error('[socket] error', err));
-
-        // Real-time data handlers
+        socket.on('error', err => console.error('[socket] error', err));//Real-time data handlers
         socket.on('agent_status_update', function (data) {
-          updateConnectionStatus(true); // Defensive: mark connection as live on data receipt
+          updateConnectionStatus(true);//Defensive: mark connection as live on data receipt
           updateAgentStatus(data);
         });
 
         socket.on('system_stats_update', function (data) {
-          updateConnectionStatus(true); // Defensive: mark connection as live on data receipt
+          updateConnectionStatus(true);//Defensive: mark connection as live on data receipt
           updateSystemStats(data);
         });
 
         socket.on('project_status_update', function (data) {
-          updateConnectionStatus(true); // Defensive: mark connection as live on data receipt
+          updateConnectionStatus(true);//Defensive: mark connection as live on data receipt
           updateProjectStatus(data);
-        });
-
-        // Error handling
+        });//Error handling
         socket.on('connect_error', function (error) {
           console.error('SocketIO connection error:', error);
           updateConnectionStatus(false);
@@ -7047,8 +6794,7 @@ Select a file from the project structure to view its content...</pre
         }
       }
 
-      function updateAgentStatus(data) {
-        // Update agent status displays in real-time
+      function updateAgentStatus(data) {//Update agent status displays in real-time
         const agentElements = document.querySelectorAll('[data-agent-id]');
         agentElements.forEach(element => {
           const agentId = element.getAttribute('data-agent-id');
@@ -7063,8 +6809,7 @@ Select a file from the project structure to view its content...</pre
         });
       }
 
-      function updateSystemStats(data) {
-        // Update system statistics in real-time
+      function updateSystemStats(data) {//Update system statistics in real-time
         if (data.memory_usage) {
           const memoryElement = document.getElementById('memory-usage');
           if (memoryElement) {
@@ -7087,8 +6832,7 @@ Select a file from the project structure to view its content...</pre
         }
       }
 
-      function updateProjectStatus(data) {
-        // Update project status displays in real-time
+      function updateProjectStatus(data) {//Update project status displays in real-time
         const projectElements = document.querySelectorAll('[data-project-id]');
         projectElements.forEach(element => {
           const projectId = element.getAttribute('data-project-id');
@@ -7113,22 +6857,16 @@ Select a file from the project structure to view its content...</pre
         if (socket && socket.connected) {
           socket.emit('request_system_stats');
         }
-      }
-
-      // Command Center API Functions
+      }//Command Center API Functions
       async function refreshAPIStatus() {
         try {
-          const response = await fetch('/api/services');
-          const data = await response.json();
-
-          // Update API KPIs
+          const response = await fetch("/api/services');
+          const data = await response.json();//Update API KPIs
           const apis = data.apis || [];
           const healthyApis = apis.filter(api => api.last_health_status === 'healthy').length;
 
           document.getElementById('total-apis').textContent = apis.length;
-          document.getElementById('healthy-apis').textContent = healthyApis;
-
-          // Update API registry table
+          document.getElementById('healthy-apis').textContent = healthyApis;//Update API registry table
           displayAPIRegistry(apis);
           showNotification('API status refreshed successfully', 'success');
         } catch (error) {
@@ -7138,15 +6876,12 @@ Select a file from the project structure to view its content...</pre
       }
 
       async function runHealthCheck() {
-        try {
-          // Trigger health check via system agent
-          const response = await fetch('/api/agents/system/health-check', {
+        try {//Trigger health check via system agent
+          const response = await fetch("/api/agents/system/health-check', {
             method: 'POST',
           });
           const data = await response.json();
-          showNotification('Health check initiated', 'success');
-
-          // Refresh status after a short delay
+          showNotification('Health check initiated', 'success');//Refresh status after a short delay
           setTimeout(() => {
             refreshAPIStatus();
           }, 2000);
@@ -7158,13 +6893,11 @@ Select a file from the project structure to view its content...</pre
 
       async function findNewOpportunities() {
         try {
-          const response = await fetch('/api/discovery/trigger', {
+          const response = await fetch("/api/discovery/trigger', {
             method: 'POST',
           });
           const data = await response.json();
-          showNotification('Opportunity discovery initiated', 'success');
-
-          // Refresh opportunities after a delay
+          showNotification('Opportunity discovery initiated', 'success');//Refresh opportunities after a delay
           setTimeout(() => {
             loadAPIOpportunities();
             loadAffiliateOpportunities();
@@ -7187,7 +6920,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch('/api/services/add', {
+          const response = await fetch("/api/services/add', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7218,7 +6951,7 @@ Select a file from the project structure to view its content...</pre
         if (!newSecret) return;
 
         try {
-          const response = await fetch('/api/services/update_secret', {
+          const response = await fetch("/api/services/update_secret', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7244,7 +6977,7 @@ Select a file from the project structure to view its content...</pre
 
       async function toggleServiceActive(serviceId, currentStatus) {
         try {
-          const response = await fetch('/api/services/toggle_active', {
+          const response = await fetch("/api/services/toggle_active', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7265,11 +6998,8 @@ Select a file from the project structure to view its content...</pre
           console.error('Error toggling service status:', error);
           showNotification('Failed to toggle service status', 'error');
         }
-      }
-
-      // Initialize SocketIO when page loads
-      document.addEventListener('DOMContentLoaded', function () {
-        // Add connection status indicator to header if it doesn't exist
+      }//Initialize SocketIO when page loads
+      document.addEventListener('DOMContentLoaded', function () {//Add connection status indicator to header if it doesn't exist
         const header = document.querySelector('.header');
         if (header && !document.getElementById('connection-status')) {
           const statusDiv = document.createElement('div');
@@ -7281,19 +7011,13 @@ Select a file from the project structure to view its content...</pre
           statusDiv.style.fontWeight = 'bold';
           header.style.position = 'relative';
           header.appendChild(statusDiv);
-        }
-
-        // Initialize SocketIO connection
-        initializeSocketIO();
-
-        // Request initial data
+        }//Initialize SocketIO connection
+        initializeSocketIO();//Request initial data
         setTimeout(() => {
           requestAgentStatus();
           requestSystemStats();
         }, 1000);
-      });
-
-      // Smoke Test Functions
+      });//Smoke Test Functions
       let smokeTestRunning = false;
       let smokeTestSocket = null;
 
@@ -7304,18 +7028,13 @@ Select a file from the project structure to view its content...</pre
         }
 
         smokeTestRunning = true;
-        updateSmokeTestUI('running', 'Running system-wide smoke test...');
-
-        // Clear previous results
+        updateSmokeTestUI('running', 'Running system-wide smoke test...');//Clear previous results
         const resultsDiv = document.getElementById('test-results');
-        resultsDiv.innerHTML = '';
-
-        // Hide summary
+        resultsDiv.innerHTML = '';//Hide summary
         document.getElementById('test-summary').style.display = 'none';
 
-        try {
-          // Start the smoke test
-          const response = await fetch('/api/smoke-test/run', {
+        try {//Start the smoke test
+          const response = await fetch("/api/smoke-test/run', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7327,8 +7046,7 @@ Select a file from the project structure to view its content...</pre
 
           const result = await response.json();
 
-          if (response.ok) {
-            // Connect to WebSocket for real-time updates
+          if (response.ok) {//Connect to WebSocket for real-time updates
             connectSmokeTestSocket(result.test_id);
             showNotification('Smoke test started successfully', 'success');
           } else {
@@ -7345,9 +7063,7 @@ Select a file from the project structure to view its content...</pre
       function connectSmokeTestSocket(testId) {
         if (smokeTestSocket) {
           smokeTestSocket.disconnect();
-        }
-
-        // Use fallback connector for smoke test socket
+        }//Use fallback connector for smoke test socket
         const PATH = '/socket.io';
         const candidates = [window.location.origin, 'http://localhost:5000', 'http://127.0.0.1:5000'];
         let ix = 0;
@@ -7421,7 +7137,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch('/api/smoke-test/stop', {
+          const response = await fetch("/api/smoke-test/stop', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7451,16 +7167,10 @@ Select a file from the project structure to view its content...</pre
         const statusDot = document.getElementById('status-dot');
         const statusText = document.getElementById('status-text');
         const runBtn = document.getElementById('run-smoke-test-btn');
-        const stopBtn = document.getElementById('stop-smoke-test-btn');
-
-        // Remove all status classes
-        statusDot.className = 'status-dot';
-
-        // Add appropriate status class
+        const stopBtn = document.getElementById('stop-smoke-test-btn');//Remove all status classes
+        statusDot.className = 'status-dot';//Add appropriate status class
         statusDot.classList.add(status);
-        statusText.textContent = message;
-
-        // Update button states
+        statusText.textContent = message;//Update button states
         if (status === 'running') {
           runBtn.disabled = true;
           runBtn.style.display = 'none';
@@ -7473,9 +7183,7 @@ Select a file from the project structure to view its content...</pre
       }
 
       function addLogEntry(level, message, timestamp = null) {
-        const resultsDiv = document.getElementById('test-results');
-
-        // Remove placeholder if it exists
+        const resultsDiv = document.getElementById('test-results');//Remove placeholder if it exists
         const placeholder = resultsDiv.querySelector('.log-placeholder');
         if (placeholder) {
           placeholder.remove();
@@ -7521,15 +7229,11 @@ Select a file from the project structure to view its content...</pre
 
         summaryContent.innerHTML = summaryHtml;
         summaryDiv.style.display = 'block';
-      }
-
-      // Runtime Review Functions
+      }//Runtime Review Functions
       async function runRuntimeReviewArchive() {
         const reviewBtn = document.getElementById('runtime-review-archive-btn');
         reviewBtn.disabled = true;
-        reviewBtn.innerHTML = '⏳ Running Review + Archive...';
-
-        // Clear previous results
+        reviewBtn.innerHTML = '⏳ Running Review + Archive...';//Clear previous results
         let reviewResults = document.getElementById('runtime-review-results');
         if (!reviewResults) {
           reviewResults = document.createElement('div');
@@ -7543,9 +7247,8 @@ Select a file from the project structure to view its content...</pre
         reviewResults.innerHTML =
           '<h3>🔍 Runtime Review + Archive in Progress...</h3><div class="review-progress">Running comprehensive audit and creating evidence bundle...</div>';
 
-        try {
-          // Run the runtime review with archive
-          const response = await fetch('/api/audit/runtime-review', {
+        try {//Run the runtime review with archive
+          const response = await fetch("/api/audit/runtime-review', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7559,9 +7262,7 @@ Select a file from the project structure to view its content...</pre
           const result = await response.json();
 
           if (result.success) {
-            displayRuntimeReviewResults(result.audit_results);
-
-            // Show evidence list
+            displayRuntimeReviewResults(result.audit_results);//Show evidence list
             await displayEvidenceList();
 
             showNotification('Runtime Review + Archive completed successfully!', 'success');
@@ -7581,9 +7282,7 @@ Select a file from the project structure to view its content...</pre
       function displayRuntimeReviewResults(results) {
         const reviewResults = document.getElementById('runtime-review-results');
 
-        let html = '<h3>📋 Runtime Review Results</h3>';
-
-        // Rule-1 Scanner Results
+        let html = '<h3>📋 Runtime Review Results</h3>';//Rule-1 Scanner Results
         html += `<div class="audit-section">
                 <h4>🔍 Rule-1 Content Scanner</h4>
                 <div class="audit-result ${results.rule1_scan.violations > 0 ? 'warning' : 'success'}">
@@ -7591,9 +7290,7 @@ Select a file from the project structure to view its content...</pre
                     <strong>Files Scanned:</strong> ${results.rule1_scan.files_scanned}<br>
                     <strong>Violations:</strong> ${results.rule1_scan.violations}
                 </div>
-            </div>`;
-
-        // No-Delete Protection
+            </div>`;//No-Delete Protection
         html += `<div class="audit-section">
                 <h4>🛡️ No-Delete Protection</h4>
                 <div class="audit-result ${results.deletion_protection.protected ? 'success' : 'error'}">
@@ -7601,9 +7298,7 @@ Select a file from the project structure to view its content...</pre
                     <strong>Critical Files:</strong> ${results.deletion_protection.critical_files_count}<br>
                     <strong>Protection Level:</strong> ${results.deletion_protection.protection_level}
                 </div>
-            </div>`;
-
-        // Async Architecture
+            </div>`;//Async Architecture
         html += `<div class="audit-section">
                 <h4>⚡ Async Architecture</h4>
                 <div class="audit-result ${results.async_architecture.compliant ? 'success' : 'warning'}">
@@ -7611,9 +7306,7 @@ Select a file from the project structure to view its content...</pre
                     <strong>Event Loop:</strong> ${results.async_architecture.event_loop_status}<br>
                     <strong>Async Components:</strong> ${results.async_architecture.async_components}
                 </div>
-            </div>`;
-
-        // Database Integrity
+            </div>`;//Database Integrity
         html += `<div class="audit-section">
                 <h4>🗄️ Database Integrity</h4>
                 <div class="audit-result ${results.database_integrity.healthy ? 'success' : 'error'}">
@@ -7628,7 +7321,7 @@ Select a file from the project structure to view its content...</pre
 
       async function displayEvidenceList() {
         try {
-          const response = await fetch('/api/audit/evidence-list');
+          const response = await fetch("/api/audit/evidence-list');
           const evidenceData = await response.json();
 
           if (evidenceData.success && evidenceData.evidence_files.length > 0) {
@@ -7682,16 +7375,14 @@ Select a file from the project structure to view its content...</pre
 
       function downloadBundle(bundlePath) {
         window.open(`/api/audit/download-bundle?path=${encodeURIComponent(bundlePath)}`, '_blank');
-      }
-
-      // SSE Auto-Reconnect for Verdict Stream
+      }//SSE Auto-Reconnect for Verdict Stream
       class VerdictStreamManager {
         constructor() {
           this.eventSource = null;
           this.reconnectAttempts = 0;
           this.maxReconnectAttempts = 10;
-          this.baseDelay = 1000; // 1 second
-          this.maxDelay = 30000; // 30 seconds
+          this.baseDelay = 1000;//1 second
+          this.maxDelay = 30000;//30 seconds
           this.isConnected = false;
           this.shouldReconnect = true;
         }
@@ -7702,7 +7393,7 @@ Select a file from the project structure to view its content...</pre
           }
 
           try {
-            console.log('Creating EventSource connection to /api/audit/verdict/stream');
+            console.log('Creating EventSource connection to/api/audit/verdict/stream');
             this.eventSource = new EventSource('/api/audit/verdict/stream');
 
             this.eventSource.onopen = () => {
@@ -7748,19 +7439,16 @@ Select a file from the project structure to view its content...</pre
           setTimeout(() => this.connect(), delay);
         }
 
-        updateVerdictBadge(data) {
-          // Update live badge with verdict data
+        updateVerdictBadge(data) {//Update live badge with verdict data
           const liveBadge = document.querySelector('.live-badge, #live-status');
           if (liveBadge) {
             liveBadge.textContent = `🟢 LIVE - ${data.verdict.toUpperCase()}`;
             liveBadge.className = `live-badge ${data.system_health === 'green' ? 'status-good' : 'status-warning'}`;
-          }
-
-          // Update system metrics if elements exist
+          }//Update system metrics if elements exist
           const uptimeElement = document.getElementById('system-uptime');
           if (uptimeElement && data.uptime) {
-            const hours = Math.floor(data.uptime / 3600);
-            const minutes = Math.floor((data.uptime % 3600) / 60);
+            const hours = Math.floor(data.uptime/3600);
+            const minutes = Math.floor((data.uptime % 3600)/60);
             uptimeElement.textContent = `${hours}h ${minutes}m`;
           }
 
@@ -7786,12 +7474,9 @@ Select a file from the project structure to view its content...</pre
           }
           this.isConnected = false;
         }
-      }
-
-      // Input dialog function to replace prompt()
+      }//Input dialog function to replace prompt()
       function showInputDialog(message, title = 'Input') {
-        return new Promise(resolve => {
-          // Create modal overlay
+        return new Promise(resolve => {//Create modal overlay
           const overlay = document.createElement('div');
           overlay.style.cssText = `
                     position: fixed;
@@ -7804,9 +7489,7 @@ Select a file from the project structure to view its content...</pre
                     justify-content: center;
                     align-items: center;
                     z-index: 10000;
-                `;
-
-          // Create dialog
+                `;//Create dialog
           const dialog = document.createElement('div');
           dialog.style.cssText = `
                     background: #1a1a1a;
@@ -7828,7 +7511,7 @@ Select a file from the project structure to view its content...</pre
                         background: #2a2a2a;
                         color: #fff;
                         margin-bottom: 15px;
-                    " />
+                    "/>
                     <div style="text-align: right;">
                         <button id="dialog-cancel" style="
                             background: #555;
@@ -7880,21 +7563,15 @@ Select a file from the project structure to view its content...</pre
             } else if (e.key === 'Escape') {
               cancelBtn.click();
             }
-          };
-
-          // Close on overlay click
+          };//Close on overlay click
           overlay.onclick = e => {
             if (e.target === overlay) {
               cancelBtn.click();
             }
           };
         });
-      }
-
-      // Initialize verdict stream manager
-      let verdictStream = null;
-
-      // Mini Locator Functions
+      }//Initialize verdict stream manager
+      let verdictStream = null;//Mini Locator Functions
       function openFullLocator() {
         window.open('/api/places/locator', '_blank');
       }
@@ -7904,35 +7581,25 @@ Select a file from the project structure to view its content...</pre
         if (iframe) {
           iframe.src = iframe.src;
         }
-      }
-
-      // Initialize smoke test UI on page load
+      }//Initialize smoke test UI on page load
       document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('status-dot')) {
           updateSmokeTestUI('ready', 'Ready to run smoke test');
-        }
-
-        // Start verdict stream
+        }//Start verdict stream
         verdictStream = new VerdictStreamManager();
         verdictStream.connect();
-      });
-
-      // Handle page visibility changes to manage connections
+      });//Handle page visibility changes to manage connections
       document.addEventListener('visibilitychange', function () {
         if (verdictStream) {
-          if (document.hidden) {
-            // Page is hidden, optionally pause reconnection
+          if (document.hidden) {//Page is hidden, optionally pause reconnection
             console.log('Page hidden, verdict stream continues');
-          } else {
-            // Page is visible, ensure connection
+          } else {//Page is visible, ensure connection
             if (!verdictStream.isConnected) {
               verdictStream.connect();
             }
           }
         }
-      });
-
-      // Cleanup on page unload
+      });//Cleanup on page unload
       window.addEventListener('beforeunload', function () {
         if (verdictStream) {
           verdictStream.disconnect();

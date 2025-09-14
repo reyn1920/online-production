@@ -261,32 +261,22 @@
             }
             
             setupEventListeners() {
-                var self = this;
-                
-                // Platform tab switching
+                var self = this;//Platform tab switching
                 document.querySelectorAll('.platform-tab').forEach(function(tab) {
                     tab.addEventListener('click', function(e) {
                         var platform = e.currentTarget.dataset.platform;
                         self.switchPlatform(platform);
                     });
-                });
-                
-                // Quality validation
+                });//Quality validation
                 document.getElementById('validate-quality').addEventListener('click', function() {
                     self.showQualityModal();
-                });
-                
-                // Stats
+                });//Stats
                 document.getElementById('show-stats').addEventListener('click', function() {
                     self.showStatsModal();
-                });
-                
-                // Status refresh
+                });//Status refresh
                 document.getElementById('refresh-status').addEventListener('click', function() {
                     self.checkPlatformStatus();
-                });
-                
-                // Modal controls
+                });//Modal controls
                 document.getElementById('close-modal').addEventListener('click', function() {
                     self.hideQualityModal();
                 });
@@ -301,9 +291,7 @@
                 
                 document.getElementById('run-validation').addEventListener('click', function() {
                     self.runValidation();
-                });
-                
-                // External link handlers
+                });//External link handlers
                 document.getElementById('open-external').addEventListener('click', function() {
                     window.open(self.platforms[self.currentPlatform], '_blank');
                 });
@@ -319,7 +307,7 @@
                 this.showLoading();
                 
                 try {
-                    const response = await fetch('/api/switch-platform', {
+                    const response = await fetch("/api/switch-platform', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -361,16 +349,12 @@
                 
                 iframe.addEventListener('error', () => {
                     this.showFallbackMessage();
-                });
-                
-                // Check if iframe loads successfully
+                });//Check if iframe loads successfully
                 iframe.addEventListener('load', () => {
-                    try {
-                        // Try to access iframe content to check for errors
+                    try {//Try to access iframe content to check for errors
                         iframe.contentDocument;
                         this.hideFallbackMessage();
-                    } catch (e) {
-                        // Cross-origin restriction - this is expected
+                    } catch (e) {//Cross-origin restriction - this is expected
                         this.hideFallbackMessage();
                     }
                 });
@@ -378,19 +362,15 @@
             
             async checkPlatformStatus() {
                 try {
-                    const response = await fetch('/api/platform-status');
+                    const response = await fetch("/api/platform-status');
                     const data = await response.json();
                     
                     Object.keys(data.platforms).forEach(platform => {
                         const status = data.platforms[platform].status;
-                        const indicator = document.getElementById(`status-${platform}`);
-                        
-                        // All platforms are always ready - no login required
+                        const indicator = document.getElementById(`status-${platform}`);//All platforms are always ready - no login required
                         indicator.className = `status-indicator status-ready`;
                         indicator.title = data.platforms[platform].note;
-                    });
-                    
-                    // Update platform info if no login required
+                    });//Update platform info if no login required
                     if (data.no_login_required) {
                         console.log('AI platforms are always ready - no login required');
                     }
@@ -412,7 +392,7 @@
                 document.getElementById('stats-modal').classList.remove('hidden');
                 
                 try {
-                    const response = await fetch('/api/dashboard-stats');
+                    const response = await fetch("/api/dashboard-stats');
                     const stats = await response.json();
                     
                     document.getElementById('stats-content').innerHTML = `
@@ -457,7 +437,7 @@
                 }
                 
                 try {
-                    const response = await fetch('/api/validate-quality', {
+                    const response = await fetch("/api/validate-quality', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -509,9 +489,7 @@
             hideFallbackMessage() {
                 document.getElementById('fallback-message').classList.add('hidden');
             }
-        }
-        
-        // Initialize dashboard when page loads
+        }//Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', function() {
             new AIIntegratedDashboard();
         });

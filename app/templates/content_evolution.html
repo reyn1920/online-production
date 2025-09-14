@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Content Evolution Dashboard - TRAE.AI</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -446,8 +446,7 @@
                     class="form-control form-control-custom"
                     id="contentId"
                     placeholder="Enter content ID"
-                    required
-                  />
+                    required/>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="targetFormat" class="form-label">Target Format</label>
@@ -505,26 +504,20 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-      // Global variables
+    <script>//Global variables
       let dashboardData = {};
       let trendStrengthChart = null;
-      let platformChart = null;
-
-      // Initialize dashboard
+      let platformChart = null;//Initialize dashboard
       document.addEventListener('DOMContentLoaded', function () {
         loadDashboardData();
         setupEventListeners();
       });
 
-      function setupEventListeners() {
-        // Adaptation form
+      function setupEventListeners() {//Adaptation form
         document.getElementById('adaptationForm').addEventListener('submit', function (e) {
           e.preventDefault();
           adaptContent();
-        });
-
-        // Tab change events
+        });//Tab change events
         document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
           tab.addEventListener('shown.bs.tab', function (e) {
             const target = e.target.getAttribute('data-bs-target');
@@ -539,7 +532,7 @@
 
       async function loadDashboardData() {
         try {
-          const response = await fetch('/api/content-evolution/dashboard');
+          const response = await fetch("/api/content-evolution/dashboard');
           if (!response.ok) {
             throw new Error('Failed to load dashboard data');
           }
@@ -552,19 +545,14 @@
         }
       }
 
-      function updateDashboard() {
-        // Update metrics
+      function updateDashboard() {//Update metrics
         const metrics = dashboardData.metrics || {};
         document.getElementById('activeTrends').textContent = metrics.active_trends || '0';
         document.getElementById('adaptationRate').textContent = (metrics.adaptation_success_rate || 0) + '%';
         document.getElementById('runningExperiments').textContent = metrics.running_experiments || '0';
-        document.getElementById('performanceLift').textContent = (metrics.avg_performance_lift || 0) + '%';
-
-        // Update charts
+        document.getElementById('performanceLift').textContent = (metrics.avg_performance_lift || 0) + '%';//Update charts
         updateTrendStrengthChart(dashboardData.trend_data || []);
-        updatePlatformChart(dashboardData.platform_data || []);
-
-        // Update recent activity
+        updatePlatformChart(dashboardData.platform_data || []);//Update recent activity
         updateRecentActivity(dashboardData.recent_activity || []);
       }
 
@@ -733,7 +721,7 @@
           const contentId = document.getElementById('contentId').value;
           const targetFormat = document.getElementById('targetFormat').value;
 
-          const response = await fetch('/api/content-evolution/adapt', {
+          const response = await fetch("/api/content-evolution/adapt', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -795,7 +783,7 @@
 
       async function loadExperiments() {
         try {
-          const response = await fetch('/api/content-evolution/experiments');
+          const response = await fetch("/api/content-evolution/experiments');
           if (!response.ok) {
             throw new Error('Failed to load experiments');
           }
@@ -854,9 +842,7 @@
             `
           )
           .join('');
-      }
-
-      // Utility functions
+      }//Utility functions
       function getActivityIcon(type) {
         const icons = {
           trend_detected: 'trending-up',
@@ -889,12 +875,9 @@
         return date.toLocaleDateString();
       }
 
-      function showError(message) {
-        // Simple error display - could be enhanced with a toast library
+      function showError(message) {//Simple error display - could be enhanced with a toast library
         alert(message);
-      }
-
-      // Load initial data
+      }//Load initial data
       loadDashboardData();
     </script>
   </body>

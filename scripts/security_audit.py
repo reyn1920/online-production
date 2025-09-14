@@ -1,267 +1,250 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
-Security Check Script (Rule - 1 friendly)
-- No banned vocabulary in strings / comments / UI.
-- Local, zero - cost scanning; no network calls.
-- Outputs a JSON report and non - zero exit on findings.
-- Integrated with API Discovery System for comprehensive security
-
-Checks:
-1) Secret patterns (AWS keys, private keys, common tokens)
-2) Risky Python calls (subprocess with shell = True)
-3) Loose .env* permissions
-4) Forbidden - token sweep (encoded; no plaintext forbidden tokens appear here)
-5) API key exposure in discovery system
+Base44 Pack Security Audit Script
+Comprehensive security scanning for forbidden tokens, secrets, and risky code patterns.
 """
 
-from __future__ import annotations
-
-import json
 import os
 import re
-import stat
 import sys
-from dataclasses import asdict, dataclass
+import json
+import hashlib
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import List, Dict, Any, Set
+from datetime import datetime
 
-# ---------- Config ----------
-ROOT = Path(__file__).resolve().parents[1]  # project root
-REPORTS_DIR = ROOT / "reports"
-REPORTS_DIR.mkdir(parents = True, exist_ok = True)
-REPORT_PATH = REPORTS_DIR / "security_audit_report.json"
+# Forbidden tokens that should never appear in code
+FORBIDDEN_TOKENS = [
+    # API Keys and Secrets
+    r'sk-[a-zA-Z0-9]{48}',  # OpenAI API keys
+    r'AIza[0-9A-Za-z\-_]{35}',  # Google API keys
+    r'AKIA[0-9A-Z]{16}',  # AWS Access Key IDs
+    r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',  # UUIDs that might be secrets
+    r'ghp_[a-zA-Z0-9]{36}',  # GitHub Personal Access Tokens
+    r'gho_[a-zA-Z0-9]{36}',  # GitHub OAuth tokens
+    r'ghu_[a-zA-Z0-9]{36}',  # GitHub User tokens
+    r'ghs_[a-zA-Z0-9]{36}',  # GitHub Server tokens
+    r'ghr_[a-zA-Z0-9]{36}',  # GitHub Refresh tokens
+    
+    # Database URLs and connection strings
+    r'postgresql://[^\s]+',
+    r'mysql://[^\s]+',
+    r'mongodb://[^\s]+',
+    r'redis://[^\s]+',
+    
+    # JWT tokens
+    r'eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*',
+    
+    # Private keys
+    r'-----BEGIN PRIVATE KEY-----',
+    r'-----BEGIN RSA PRIVATE KEY-----',
+    r'-----BEGIN OPENSSH PRIVATE KEY-----',
+]
 
-@dataclass
+# Risky code patterns
+RISKY_PATTERNS = [
+    r'eval\s*\(',  # eval() calls
+    r'exec\s*\(',  # exec() calls
+    r'__import__\s*\(',  # dynamic imports
+    r'subprocess\.call\s*\(',  # subprocess calls
+    r'os\.system\s*\(',  # os.system calls
+    r'shell=True',  # shell=True in subprocess
+    r'pickle\.loads?\s*\(',  # pickle deserialization
+    r'yaml\.load\s*\(',  # unsafe YAML loading
+    r'input\s*\(',  # input() calls (potential injection)
+    r'raw_input\s*\(',  # raw_input() calls
+]
 
+# Files to exclude from scanning
+EXCLUDE_PATTERNS = [
+    r'\.git/',
+    r'\.venv/',
+    r'venv/',
+    r'node_modules/',
+    r'__pycache__/',
+    r'\.pyc$',
+    r'\.pyo$',
+    r'\.egg-info/',
+    r'\.tox/',
+    r'\.coverage',
+    r'\.pytest_cache/',
+    r'dist/',
+    r'build/',
+    r'\.DS_Store',
+    r'\.log$',
+    r'\.sqlite$',
+    r'\.db$',
+    r'\.pid$',
+    r'security_audit\.py$',  # Don't scan ourselves
+]
 
-class SecurityIssue:
-    """Represents a security issue found during audit."""
-
-    severity: str  # "high", "medium", "low"
-    category: str  # "secrets", "permissions", "subprocess", "api_exposure"
-    file_path: str
-    line_number: Optional[int]
-    description: str
-    recommendation: str
-
-@dataclass
-
-
-class SecurityReport:
-    """Complete security audit report."""
-
-    timestamp: str
-    total_files_scanned: int
-    issues_found: List[SecurityIssue]
-    summary: Dict[str, int]
-
-
-class SecurityAuditor:
-    """Main security auditing class."""
-
-
-    def __init__(self):
-        self.issues: List[SecurityIssue] = []
-        self.files_scanned = 0
-
-        # Secret patterns (common API keys, tokens, etc.)
-        self.secret_patterns = {
-            "aws_access_key": r"AKIA[0 - 9A - Z]{16}",
-                "aws_secret_key": r"[0 - 9a - zA - Z/+]{40}",
-                "github_token": r"ghp_[0 - 9a - zA - Z]{36}",
-                "openai_key": r"sk-[0 - 9a - zA - Z]{48}",
-                "anthropic_key": r"sk - ant-[0 - 9a - zA - Z\-]{95}",
-                "google_api_key": r"AIza[0 - 9A - Za - z\-_]{35}",
-                "private_key": r"-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----",
-                "generic_secret": r'(secret|password|token|key)\s*[=:]\s*["\'][a - zA - Z0 - 9_\-\.]{8,}["\']',
-                }
-
-        # Risky subprocess patterns
-        self.subprocess_patterns = {
-            "shell_true": r"subprocess\.[a - zA - Z_]+\([^)]*shell\s*=\s * True",
-                "os_system": r"os\.system\s*\(",
-                "eval_exec": r"(eval|exec)\s*\(",
-                }
-
-
-    def scan_file(self, file_path: Path) -> None:
-        """Scan a single file for security issues."""
-        if not file_path.is_file():
-            return
-
-        self.files_scanned += 1
-
+class SecurityAudit:
+    def __init__(self, root_path: str = "."):
+        self.root_path = Path(root_path).resolve()
+        self.findings: List[Dict[str, Any]] = []
+        self.scanned_files = 0
+        self.excluded_files = 0
+        
+    def should_exclude_file(self, file_path: Path) -> bool:
+        """Check if file should be excluded from scanning."""
+        relative_path = str(file_path.relative_to(self.root_path))
+        
+        for pattern in EXCLUDE_PATTERNS:
+            if re.search(pattern, relative_path):
+                return True
+                
+        return False
+    
+    def scan_file_for_secrets(self, file_path: Path) -> List[Dict[str, Any]]:
+        """Scan a single file for forbidden tokens and secrets."""
+        findings = []
+        
         try:
-            with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
-                lines = content.splitlines()
-
-            # Check for secrets
-            self._check_secrets(file_path, content, lines)
-
-            # Check for risky subprocess usage
-            self._check_subprocess(file_path, content, lines)
-
-            # Check file permissions for .env files
-            if file_path.name.startswith(".env"):
-                self._check_env_permissions(file_path)
-
+                lines = content.split('\n')
+                
+            # Check for forbidden tokens
+            for i, line in enumerate(lines, 1):
+                for pattern in FORBIDDEN_TOKENS:
+                    matches = re.finditer(pattern, line, re.IGNORECASE)
+                    for match in matches:
+                        findings.append({
+                            'type': 'forbidden_token',
+                            'file': str(file_path.relative_to(self.root_path)),
+                            'line': i,
+                            'column': match.start() + 1,
+                            'pattern': pattern,
+                            'match': match.group(),
+                            'severity': 'critical',
+                            'description': f'Potential secret or API key detected: {match.group()[:20]}...'
+                        })
+                        
+            # Check for risky code patterns
+            for i, line in enumerate(lines, 1):
+                for pattern in RISKY_PATTERNS:
+                    matches = re.finditer(pattern, line, re.IGNORECASE)
+                    for match in matches:
+                        findings.append({
+                            'type': 'risky_code',
+                            'file': str(file_path.relative_to(self.root_path)),
+                            'line': i,
+                            'column': match.start() + 1,
+                            'pattern': pattern,
+                            'match': match.group(),
+                            'severity': 'high',
+                            'description': f'Risky code pattern detected: {match.group()}'
+                        })
+                        
         except Exception as e:
-            self.issues.append(
-                SecurityIssue(
-                    severity="medium",
-                        category="scan_error",
-                        file_path = str(file_path),
-                        line_number = None,
-                        description = f"Failed to scan file: {e}",
-                        recommendation="Investigate file access issues",
-                        )
-            )
-
-
-    def _check_secrets(self, file_path: Path, content: str, lines: List[str]) -> None:
-        """Check for hardcoded secrets and API keys."""
-        for pattern_name, pattern in self.secret_patterns.items():
-            matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
-            for match in matches:
-                line_num = content[: match.start()].count("\n") + 1
-
-                self.issues.append(
-                    SecurityIssue(
-                        severity="high",
-                            category="secrets",
-                            file_path = str(file_path),
-                            line_number = line_num,
-                            description = f"Potential {pattern_name} found",
-                            recommendation="Move secrets to environment variables or secure vault",
-                            )
-                )
-
-
-    def _check_subprocess(
-        self, file_path: Path, content: str, lines: List[str]
-    ) -> None:
-        """Check for risky subprocess usage."""
-        for pattern_name, pattern in self.subprocess_patterns.items():
-            matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
-            for match in matches:
-                line_num = content[: match.start()].count("\n") + 1
-
-                self.issues.append(
-                    SecurityIssue(
-                        severity="medium",
-                            category="subprocess",
-                            file_path = str(file_path),
-                            line_number = line_num,
-                            description = f"Risky {pattern_name} usage detected",
-                            recommendation="Use subprocess with shell = False and validate inputs",
-                            )
-                )
-
-
-    def _check_env_permissions(self, file_path: Path) -> None:
-        """Check .env file permissions."""
-        try:
-            file_stat = file_path.stat()
-            permissions = stat.filemode(file_stat.st_mode)
-
-            # Check if file is readable by others
-            if file_stat.st_mode & stat.S_IROTH:
-                self.issues.append(
-                    SecurityIssue(
-                        severity="high",
-                            category="permissions",
-                            file_path = str(file_path),
-                            line_number = None,
-                            description="Environment file readable by others",
-                            recommendation="Set permissions to 600 (owner read / write only)",
-                            )
-                )
-        except Exception as e:
-            pass  # Skip permission check if it fails
-
-
-    def scan_directory(
-        self, directory: Path, exclude_patterns: List[str] = None
-    ) -> None:
-        """Recursively scan directory for security issues."""
-        if exclude_patterns is None:
-            exclude_patterns = [".git", "__pycache__", "node_modules", ".venv", "venv"]
-
-        for item in directory.rglob("*"):
-            if item.is_file():
-                # Skip excluded directories
-                if any(excluded in str(item) for excluded in exclude_patterns):
+            findings.append({
+                'type': 'scan_error',
+                'file': str(file_path.relative_to(self.root_path)),
+                'error': str(e),
+                'severity': 'medium',
+                'description': f'Error scanning file: {e}'
+            })
+            
+        return findings
+    
+    def scan_directory(self) -> Dict[str, Any]:
+        """Scan entire directory tree for security issues."""
+        print(f"Starting security audit of {self.root_path}")
+        
+        for file_path in self.root_path.rglob('*'):
+            if file_path.is_file():
+                if self.should_exclude_file(file_path):
+                    self.excluded_files += 1
                     continue
-
-                # Only scan text files
-                if item.suffix in [
-                    ".py",
-                        ".js",
-                        ".ts",
-                        ".json",
-                        ".yaml",
-                        ".yml",
-                        ".env",
-                        ".txt",
-                        ".md",
-                        ]:
-                    self.scan_file(item)
-
-
-    def generate_report(self) -> SecurityReport:
-        """Generate comprehensive security report."""
-        from datetime import datetime
-
-        # Count issues by severity and category
+                    
+                self.scanned_files += 1
+                file_findings = self.scan_file_for_secrets(file_path)
+                self.findings.extend(file_findings)
+                
+                if self.scanned_files % 100 == 0:
+                    print(f"Scanned {self.scanned_files} files...")
+        
+        # Generate summary
         summary = {
-            "total_issues": len(self.issues),
-                "high_severity": len([i for i in self.issues if i.severity == "high"]),
-                "medium_severity": len([i for i in self.issues if i.severity == "medium"]),
-                "low_severity": len([i for i in self.issues if i.severity == "low"]),
-                "secrets": len([i for i in self.issues if i.category == "secrets"]),
-                "permissions": len([i for i in self.issues if i.category == "permissions"]),
-                "subprocess": len([i for i in self.issues if i.category == "subprocess"]),
-                }
+            'timestamp': datetime.now().isoformat(),
+            'root_path': str(self.root_path),
+            'scanned_files': self.scanned_files,
+            'excluded_files': self.excluded_files,
+            'total_findings': len(self.findings),
+            'critical_findings': len([f for f in self.findings if f.get('severity') == 'critical']),
+            'high_findings': len([f for f in self.findings if f.get('severity') == 'high']),
+            'medium_findings': len([f for f in self.findings if f.get('severity') == 'medium']),
+            'findings': self.findings
+        }
+        
+        return summary
+    
+    def generate_report(self, output_file: str = None) -> str:
+        """Generate a comprehensive security audit report."""
+        audit_results = self.scan_directory()
+        
+        if output_file:
+            with open(output_file, 'w') as f:
+                json.dump(audit_results, f, indent=2)
+            print(f"Security audit report saved to {output_file}")
+        
+        # Print summary to console
+        print("\n" + "="*60)
+        print("SECURITY AUDIT SUMMARY")
+        print("="*60)
+        print(f"Scanned files: {audit_results['scanned_files']}")
+        print(f"Excluded files: {audit_results['excluded_files']}")
+        print(f"Total findings: {audit_results['total_findings']}")
+        print(f"Critical findings: {audit_results['critical_findings']}")
+        print(f"High risk findings: {audit_results['high_findings']}")
+        print(f"Medium risk findings: {audit_results['medium_findings']}")
+        
+        if audit_results['critical_findings'] > 0:
+            print("\n⚠️  CRITICAL ISSUES FOUND:")
+            for finding in audit_results['findings']:
+                if finding.get('severity') == 'critical':
+                    print(f"  {finding['file']}:{finding['line']} - {finding['description']}")
+        
+        if audit_results['high_findings'] > 0:
+            print("\n🔍 HIGH RISK ISSUES:")
+            for finding in audit_results['findings']:
+                if finding.get('severity') == 'high':
+                    print(f"  {finding['file']}:{finding['line']} - {finding['description']}")
+        
+        # Return status
+        if audit_results['critical_findings'] > 0:
+            return "CRITICAL_ISSUES_FOUND"
+        elif audit_results['high_findings'] > 0:
+            return "HIGH_RISK_ISSUES_FOUND"
+        elif audit_results['medium_findings'] > 0:
+            return "MEDIUM_RISK_ISSUES_FOUND"
+        else:
+            return "CLEAN"
 
-        return SecurityReport(
-            timestamp = datetime.now().isoformat(),
-                total_files_scanned = self.files_scanned,
-                issues_found = self.issues,
-                summary = summary,
-                )
-
-
-def main() -> int:
+def main():
     """Main entry point for security audit."""
-    print("Starting security audit...")
-
-    auditor = SecurityAuditor()
-
-    # Scan the entire project
-    auditor.scan_directory(ROOT)
-
-    # Generate report
-    report = auditor.generate_report()
-
-    # Write JSON report
-    with open(REPORT_PATH, "w") as f:
-        json.dump(asdict(report), f, indent = 2, default = str)
-
-    # Print summary
-    print(f"Security audit complete. Scanned {report.total_files_scanned} files.")
-    print(f"Found {report.summary['total_issues']} issues:")
-    print(f"  High severity: {report.summary['high_severity']}")
-    print(f"  Medium severity: {report.summary['medium_severity']}")
-    print(f"  Low severity: {report.summary['low_severity']}")
-    print(f"Report saved to: {REPORT_PATH}")
-
-    # Exit with non - zero if high severity issues found
-    if report.summary["high_severity"] > 0:
-        print("\nHigh severity security issues detected!")
-        return 1
-
-    return 0
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Base44 Pack Security Audit')
+    parser.add_argument('--path', '-p', default='.', help='Path to scan (default: current directory)')
+    parser.add_argument('--output', '-o', help='Output file for detailed report')
+    parser.add_argument('--quiet', '-q', action='store_true', help='Suppress console output')
+    
+    args = parser.parse_args()
+    
+    auditor = SecurityAudit(args.path)
+    status = auditor.generate_report(args.output)
+    
+    if not args.quiet:
+        print(f"\nAudit Status: {status}")
+    
+    # Exit with appropriate code
+    if status == "CRITICAL_ISSUES_FOUND":
+        sys.exit(2)
+    elif status == "HIGH_RISK_ISSUES_FOUND":
+        sys.exit(1)
+    else:
+        sys.exit(0)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

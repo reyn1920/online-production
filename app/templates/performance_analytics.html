@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Performance Analytics Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -153,7 +153,7 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="content-title">Content Title:</label>
-                      <input type="text" class="form-control" id="content-title" placeholder="Enter content title" />
+                      <input type="text" class="form-control" id="content-title" placeholder="Enter content title"/>
                     </div>
                     <div class="form-group">
                       <label for="content-description">Description:</label>
@@ -168,11 +168,11 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="content-duration">Duration (minutes):</label>
-                      <input type="number" class="form-control" id="content-duration" placeholder="10" min="1" />
+                      <input type="number" class="form-control" id="content-duration" placeholder="10" min="1"/>
                     </div>
                     <div class="form-group">
                       <label for="content-tags">Tags (comma-separated):</label>
-                      <input type="text" class="form-control" id="content-tags" placeholder="tag1, tag2, tag3" />
+                      <input type="text" class="form-control" id="content-tags" placeholder="tag1, tag2, tag3"/>
                     </div>
                   </div>
                 </div>
@@ -217,30 +217,22 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        // Load dashboard data
-        loadDashboardData();
-
-        // Initialize charts
-        initializeCharts();
-
-        // Set up prediction form
-        setupPredictionForm();
-
-        // Refresh data every 30 seconds
+      document.addEventListener('DOMContentLoaded', function () {//Load dashboard data
+        loadDashboardData();//Initialize charts
+        initializeCharts();//Set up prediction form
+        setupPredictionForm();//Refresh data every 30 seconds
         setInterval(loadDashboardData, 30000);
       });
 
       function loadDashboardData() {
-        fetch('/api/performance-analytics/dashboard')
+        fetch("/api/performance-analytics/dashboard')
           .then(response => response.json())
           .then(data => {
             updateMetrics(data);
             updateRecentAnalytics(data.recent_analytics || []);
           })
           .catch(error => {
-            console.error('Error loading dashboard data:', error);
-            // Show mock data for demonstration
+            console.error('Error loading dashboard data:', error);//Show mock data for demonstration
             showMockData();
           });
       }
@@ -254,8 +246,7 @@
 
       function updateRecentAnalytics(analytics) {
         const tableBody = document.getElementById('recent-analytics-table');
-        if (analytics.length === 0) {
-          // Show mock data
+        if (analytics.length === 0) {//Show mock data
           tableBody.innerHTML = `
                     <tr>
                         <td>How to Build a Successful YouTube Channel</td>
@@ -296,8 +287,7 @@
         }
       }
 
-      function initializeCharts() {
-        // Performance Trends Chart
+      function initializeCharts() {//Performance Trends Chart
         const performanceCtx = document.getElementById('performance-chart').getContext('2d');
         new Chart(performanceCtx, {
           type: 'line',
@@ -329,9 +319,7 @@
               },
             },
           },
-        });
-
-        // Content Distribution Chart
+        });//Content Distribution Chart
         const distributionCtx = document.getElementById('content-distribution-chart').getContext('2d');
         new Chart(distributionCtx, {
           type: 'doughnut',
@@ -379,7 +367,7 @@
             upload_date: new Date().toISOString(),
           };
 
-          fetch('/api/performance-analytics/predict', {
+          fetch("/api/performance-analytics/predict', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -391,8 +379,7 @@
               displayPredictionResults(data);
             })
             .catch(error => {
-              console.error('Error predicting performance:', error);
-              // Show mock prediction
+              console.error('Error predicting performance:', error);//Show mock prediction
               displayPredictionResults({
                 predicted_views: Math.floor(Math.random() * 50000) + 10000,
                 predicted_engagement: (Math.random() * 10 + 2).toFixed(1),

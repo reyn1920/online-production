@@ -66,8 +66,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER=redis://redis:6379/1
       - CELERY_BACKEND=redis://redis:6379/1
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - USE_MOCK=false
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
@@ -119,8 +118,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER=redis://redis:6379/1
       - CELERY_BACKEND=redis://redis:6379/1
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - USE_MOCK=false
       - CONTENT_AGENT_URL=http://content-agent:8001
       - FACEBOOK_APP_ID=${FACEBOOK_APP_ID}
@@ -175,8 +173,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER=redis://redis:6379/1
       - CELERY_BACKEND=redis://redis:6379/1
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - USE_MOCK=false
       - CONTENT_AGENT_URL=http://content-agent:8001
       - MARKETING_AGENT_URL=http://marketing-agent:8002
@@ -233,8 +230,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER=redis://redis:6379/1
       - CELERY_BACKEND=redis://redis:6379/1
-      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/
-      - ENVIRONMENT=production
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672/- ENVIRONMENT=production
       - USE_MOCK=false
       - CONTENT_AGENT_URL=http://content-agent:8001
       - MARKETING_AGENT_URL=http://marketing-agent:8002
@@ -335,7 +331,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/code
-    working_dir: /code
+    working_dir:/code
     networks:
       - trae-network
     healthcheck:
@@ -354,7 +350,7 @@ services:
       - "8080:8080"
     volumes:
       - .:/code
-    working_dir: /code
+    working_dir:/code
     networks:
       - trae-network
     healthcheck:

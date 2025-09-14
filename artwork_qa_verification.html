@@ -423,9 +423,7 @@
                 return;
             }
 
-            let response = '<p><strong>Question:</strong> ' + document.getElementById('questionInput').value + '</p>';
-            
-            // Find matching response
+            let response = '<p><strong>Question:</strong> ' + document.getElementById('questionInput').value + '</p>';//Find matching response
             let found = false;
             for (let key in qaDatabase) {
                 if (question.includes(key)) {
@@ -456,12 +454,8 @@
             
             button.disabled = true;
             button.textContent = 'Verifying...';
-            statusText.textContent = 'Verifying...';
-            
-            // Add log entry
-            addLogEntry(`Starting verification for ${channelName}...`);
-            
-            // Simulate verification process
+            statusText.textContent = 'Verifying...';//Add log entry
+            addLogEntry(`Starting verification for ${channelName}...`);//Simulate verification process
             setTimeout(() => {
                 addLogEntry(`✅ ${channelName}: Artwork quality verified (95.5/100)`);
                 addLogEntry(`✅ ${channelName}: Brand consistency confirmed`);
@@ -507,16 +501,12 @@
             entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
-        }
-
-        // Allow Enter key to ask question
+        }//Allow Enter key to ask question
         document.getElementById('questionInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 askQuestion();
             }
-        });
-
-        // Initialize with welcome message
+        });//Initialize with welcome message
         setTimeout(() => {
             addLogEntry('🎨 Artwork Q&A and Verification System Ready');
             addLogEntry('📊 System Status: All pipelines operational');

@@ -303,14 +303,14 @@ pytest
 ### Code Structure
 
 ```
-├── orchestrator/          # Central coordination service
-├── content-agent/         # Content creation service
-├── marketing-agent/       # Marketing automation service
-├── monetization-bundle/   # Revenue generation service
-├── revenue-tracker/       # Analytics and tracking service
-├── nginx/                 # Load balancer configuration
-├── prometheus/            # Monitoring configuration
-├── grafana/              # Dashboard configuration
+├── orchestrator/# Central coordination service
+├── content-agent/# Content creation service
+├── marketing-agent/# Marketing automation service
+├── monetization-bundle/# Revenue generation service
+├── revenue-tracker/# Analytics and tracking service
+├── nginx/# Load balancer configuration
+├── prometheus/# Monitoring configuration
+├── grafana/# Dashboard configuration
 ├── docker-compose.yml    # Service orchestration
 └── .env.example          # Environment template
 ```

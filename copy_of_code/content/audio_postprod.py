@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 Audio Post - Production - Automated Sound Design and Mastering
 
@@ -31,7 +31,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import TRAE.AI utilities
 try:
+
     from utils.logger import get_logger
+
 except ImportError:
 
 
@@ -199,9 +201,9 @@ class FFmpegAudioProcessor:
     def _find_ffmpeg(self) -> str:
         """Find FFmpeg executable."""
         possible_paths = [
-            "/usr / local / bin / ffmpeg",
-                "/opt / homebrew / bin / ffmpeg",
-                "/usr / bin / ffmpeg",
+            "/usr/local/bin/ffmpeg",
+                "/opt/homebrew/bin/ffmpeg",
+                "/usr/bin/ffmpeg",
                 "ffmpeg",  # In PATH
         ]
 
@@ -223,7 +225,7 @@ class FFmpegAudioProcessor:
                     )
 
             if result.returncode == 0 and "ffmpeg version" in result.stdout:
-                version_line = result.stdout.split("\n")[0]
+                version_line = result.stdout.split("\\n")[0]
                 self.logger.info(f"FFmpeg found: {version_line}")
                 return True
             else:
@@ -240,7 +242,10 @@ class FFmpegAudioProcessor:
         try:
             cmd = [self.ffmpeg_path, "-i", file_path, "-f", "null", "-"]
 
-            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 30)
+            result = subprocess.run(cmd,
+    capture_output = True,
+    text = True,
+    timeout = 30)
 
             # Parse FFmpeg output for audio info
             info = {
@@ -253,7 +258,7 @@ class FFmpegAudioProcessor:
 
             # Extract duration
             duration_match = re.search(
-                r"Duration: (\d{2}):(\d{2}):(\d{2}\.\d{2})", result.stderr
+                r"Duration: (\\d{2}):(\\d{2}):(\\d{2}\\.\\d{2})", result.stderr
             )
             if duration_match:
                 hours, minutes, seconds = duration_match.groups()
@@ -263,7 +268,7 @@ class FFmpegAudioProcessor:
 
             # Extract audio stream info
             audio_match = re.search(
-                r"Stream #\d+:\d+.*?: Audio: (\w+).*?, (\d+) Hz, (\w+), .*, (\d+) kb / s",
+                r"Stream #\\d+:\\d+.*?: Audio: (\\w+).*?, (\\d+) Hz, (\\w+), .*, (\\d+) kb/s",
                     result.stderr,
                     )
             if audio_match:
@@ -281,7 +286,7 @@ class FFmpegAudioProcessor:
                     info["channels"] = 2
                 else:
                     # Try to extract number from channel layout
-                    channel_match = re.search(r"(\d+)", channel_layout)
+                    channel_match = re.search(r"(\\d+)", channel_layout)
                     if channel_match:
                         info["channels"] = int(channel_match.group(1))
 
@@ -311,7 +316,10 @@ class FFmpegAudioProcessor:
                 output_path,
                     ]
 
-            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 300)
+            result = subprocess.run(cmd,
+    capture_output = True,
+    text = True,
+    timeout = 300)
 
             if result.returncode == 0:
                 self.logger.debug(f"Effect applied: {effect.type.value}")
@@ -372,12 +380,12 @@ class FFmpegAudioProcessor:
 
         elif effect.type == EffectType.FADE_IN:
             duration = params.get("duration", 1.0)
-            return f"afade = t=in:d={duration}"
+            return f"afade = t = in:d={duration}"
 
         elif effect.type == EffectType.FADE_OUT:
             duration = params.get("duration", 1.0)
             start_time = params.get("start_time", 0)
-            return f"afade = t=out:st={start_time}:d={duration}"
+            return f"afade = t = out:st={start_time}:d={duration}"
 
         else:
             self.logger.warning(f"Unsupported effect type: {effect.type}")
@@ -480,7 +488,10 @@ class FFmpegAudioProcessor:
             )
 
             # Execute mixing
-            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 600)
+            result = subprocess.run(cmd,
+    capture_output = True,
+    text = True,
+    timeout = 600)
 
             if result.returncode == 0:
                 self.logger.info(f"Audio mixing completed: {output_path}")
@@ -529,7 +540,10 @@ class AudioDucker:
                     output_path,
                     ]
 
-            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 600)
+            result = subprocess.run(cmd,
+    capture_output = True,
+    text = True,
+    timeout = 600)
 
             if result.returncode == 0:
                 self.logger.info(f"Audio ducking completed: {output_path}")
@@ -547,7 +561,7 @@ class AudioDucker:
         """Build FFmpeg filter for audio ducking."""
         # Sidechaining compressor for ducking
         threshold = config.threshold
-        ratio = 1.0 / config.ratio  # Invert ratio for ducking
+        ratio = 1.0/config.ratio  # Invert ratio for ducking
         attack = config.attack_time
         release = config.release_time
         knee = config.knee
@@ -575,7 +589,7 @@ class AudioPostProduction:
         self.executor = ThreadPoolExecutor(max_workers = 2)
 
         # Setup temp directory
-        self.temp_dir = Path(tempfile.gettempdir()) / "audio_postprod"
+        self.temp_dir = Path(tempfile.gettempdir())/"audio_postprod"
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
 
@@ -643,7 +657,7 @@ class AudioPostProduction:
             job.progress = 40.0
 
             # Step 3: Mix tracks (70% progress)
-            mixed_path = str(self.temp_dir / f"{job_id}_mixed.wav")
+            mixed_path = str(self.temp_dir/f"{job_id}_mixed.wav")
             if not self.processor.mix_tracks(processed_tracks, mixed_path, job.config):
                 raise RuntimeError("Track mixing failed")
             job.progress = 70.0
@@ -705,7 +719,7 @@ class AudioPostProduction:
                         continue
 
                     temp_path = str(
-                        self.temp_dir / f"{job.job_id}_track_{i}_effect_{j}.wav"
+                        self.temp_dir/f"{job.job_id}_track_{i}_effect_{j}.wav"
                     )
 
                     if self.processor.apply_effect(current_path, temp_path, effect):
@@ -729,7 +743,7 @@ class AudioPostProduction:
         if not job.ducking_config:
             return tracks
 
-        # Find voice / trigger track and music / background tracks
+        # Find voice/trigger track and music/background tracks
         voice_tracks = [t for t in tracks if t.track_type in ["voice", "dialogue"]]
         music_tracks = [t for t in tracks if t.track_type in ["music", "ambient"]]
 
@@ -745,7 +759,7 @@ class AudioPostProduction:
                 # Duck this track against the first voice track
                 voice_track = voice_tracks[0]
                 ducked_path = str(
-                    self.temp_dir / f"{job.job_id}_{track.name}_ducked.wav"
+                    self.temp_dir/f"{job.job_id}_{track.name}_ducked.wav"
                 )
 
                 if self.ducker.apply_ducking(
@@ -773,7 +787,7 @@ class AudioPostProduction:
             if not effect.enabled:
                 continue
 
-            temp_path = str(self.temp_dir / f"{job.job_id}_master_effect_{i}.wav")
+            temp_path = str(self.temp_dir/f"{job.job_id}_master_effect_{i}.wav")
 
             if self.processor.apply_effect(current_path, temp_path, effect):
                 current_path = temp_path
@@ -823,7 +837,10 @@ class AudioPostProduction:
 
             cmd.extend(["-y", job.output_path])
 
-            result = subprocess.run(cmd, capture_output = True, text = True, timeout = 300)
+            result = subprocess.run(cmd,
+    capture_output = True,
+    text = True,
+    timeout = 300)
 
             if result.returncode == 0:
                 self.logger.info(f"Output finalized: {job.output_path}")
@@ -965,9 +982,9 @@ if __name__ == "__main__":
     try:
         # Create voice - over mix with ducking
         job_id = audio_post.create_voice_over_mix(
-            voice_file="./assets / narration.wav",
-                music_file="./assets / background_music.mp3",
-                output_path="./output / final_mix.wav",
+            voice_file="./assets/narration.wav",
+                music_file="./assets/background_music.mp3",
+                output_path="./output/final_mix.wav",
                 ducking_strength = 0.4,
                 )
 

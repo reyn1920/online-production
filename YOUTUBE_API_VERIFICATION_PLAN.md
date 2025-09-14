@@ -39,7 +39,7 @@ This document outlines the comprehensive testing and verification steps for the 
 ## 1. OAuth Authentication Flow Testing
 
 ### 1.1 OAuth Initiation Route
-**Endpoint:** `GET /youtube/oauth/start`
+**Endpoint:** `GET/youtube/oauth/start`
 
 **Test Steps:**
 1. Open browser and navigate to: `http://127.0.0.1:8083/youtube/oauth/start`
@@ -55,7 +55,7 @@ This document outlines the comprehensive testing and verification steps for the 
 - ✅ No server errors in logs
 
 ### 1.2 OAuth Callback Route
-**Endpoint:** `GET /oauth2/callback/youtube`
+**Endpoint:** `GET/oauth2/callback/youtube`
 
 **Test Steps:**
 1. Complete the OAuth flow from step 1.1
@@ -72,7 +72,7 @@ This document outlines the comprehensive testing and verification steps for the 
 ## 2. Video Upload Route Testing
 
 ### 2.1 Upload Route Validation
-**Endpoint:** `POST /youtube/upload`
+**Endpoint:** `POST/youtube/upload`
 
 **Test Cases:**
 
@@ -127,7 +127,7 @@ curl -X POST http://127.0.0.1:8083/youtube/upload \
 ## 3. Analytics Route Testing
 
 ### 3.1 Analytics Summary Route
-**Endpoint:** `GET /youtube/analytics/summary`
+**Endpoint:** `GET/youtube/analytics/summary`
 
 **Test Cases:**
 
@@ -165,7 +165,7 @@ curl -X GET "http://127.0.0.1:8083/youtube/analytics/summary?start_date=invalid-
 ## 4. Webhook Integration Testing
 
 ### 4.1 Webhook Challenge Verification
-**Endpoint:** `GET /youtube/webhook`
+**Endpoint:** `GET/youtube/webhook`
 
 **Test Steps:**
 1. Simulate PubSubHubbub challenge verification:
@@ -179,7 +179,7 @@ curl -X GET "http://127.0.0.1:8083/youtube/webhook?hub.challenge=test_challenge_
 - ✅ Returns 200 status code
 
 ### 4.2 Webhook Notification Handling
-**Endpoint:** `POST /youtube/webhook`
+**Endpoint:** `POST/youtube/webhook`
 
 **Test Steps:**
 1. Simulate webhook notification:
@@ -214,7 +214,7 @@ curl -X POST http://127.0.0.1:8083/youtube/webhook \
 - ✅ Processes XML notification data
 
 ### 4.3 Webhook Subscription Route
-**Endpoint:** `POST /youtube/webhook/subscribe`
+**Endpoint:** `POST/youtube/webhook/subscribe`
 
 **Test Steps:**
 1. Test webhook subscription:

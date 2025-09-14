@@ -1,14 +1,11 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 RouteLL Integration Setup Script
 Initializes and tests the complete RouteLL integration
 """
 
-import asyncio
-import json
 import os
 import sys
-from datetime import datetime
 from pathlib import Path
 
 # Add current directory to path
@@ -17,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def print_banner():
     """Print setup banner"""
-    print("\n" + "=" * 60)
+    print("\\n" + "=" * 60)
     print("🚀 RouteLL API Integration Setup")
     print("   Intelligent LLM Routing with Credit Optimization")
     print("=" * 60)
@@ -25,7 +22,7 @@ def print_banner():
 
 def check_dependencies():
     """Check if required dependencies are available"""
-    print("\n📦 Checking dependencies...")
+    print("\\n📦 Checking dependencies...")
 
     required_modules = ["requests", "aiohttp", "flask", "sqlite3"]
 
@@ -40,7 +37,7 @@ def check_dependencies():
             missing_modules.append(module)
 
     if missing_modules:
-        print(f"\n⚠️ Missing dependencies: {', '.join(missing_modules)}")
+        print(f"\\n⚠️ Missing dependencies: {', '.join(missing_modules)}")
         print("Install with: pip install " + " ".join(missing_modules))
         return False
 
@@ -50,13 +47,13 @@ def check_dependencies():
 
 def setup_environment():
     """Setup environment variables"""
-    print("\n🔧 Setting up environment...")
+    print("\\n🔧 Setting up environment...")
 
-    api_key = "s2_f0b00d6897a0431f8367a7fc859b697a"
+    api_key = os.getenv("ROUTELLM_API_KEY", "your_routellm_api_key_here")
 
     # Set environment variable for current session
     os.environ["ROUTELLM_API_KEY"] = api_key
-    print(f"   ✅ ROUTELLM_API_KEY set for current session")
+    print("   ✅ ROUTELLM_API_KEY set for current session")
 
     # Check if .env file exists and update it
     env_file = Path(".env")
@@ -68,29 +65,29 @@ def setup_environment():
 
     if "ROUTELLM_API_KEY" not in env_content:
         with open(env_file, "a") as f:
-            f.write(f"\n# RouteLL API Configuration\n")
-            f.write(f"ROUTELLM_API_KEY={api_key}\n")
-        print(f"   ✅ Added ROUTELLM_API_KEY to .env file")
+            f.write("\\n# RouteLL API Configuration\\n")
+            f.write(f"ROUTELLM_API_KEY={api_key}\\n")
+        print("   ✅ Added ROUTELLM_API_KEY to .env file")
     else:
-        print(f"   ✅ ROUTELLM_API_KEY already in .env file")
+        print("   ✅ ROUTELLM_API_KEY already in .env file")
 
     return True
 
 
 def verify_file_structure():
     """Verify all integration files are in place"""
-    print("\n📁 Verifying file structure...")
+    print("\\n📁 Verifying file structure...")
 
     required_files = [
-        "config / routellm_config.json",
-            "integrations / routellm_client.py",
-            "utils / rate_limiter.py",
-            "routing / model_router.py",
-            "monitoring / routellm_monitor.py",
-            "dashboard / routellm_dashboard.py",
-            "examples / routellm_integration_example.py",
-            "docs / RouteLL_Integration_Guide.md",
-            ]
+        "config/routellm_config.json",
+        "integrations/routellm_client.py",
+        "utils/rate_limiter.py",
+        "routing/model_router.py",
+        "monitoring/routellm_monitor.py",
+        "dashboard/routellm_dashboard.py",
+        "examples/routellm_integration_example.py",
+        "docs/RouteLL_Integration_Guide.md",
+    ]
 
     missing_files = []
 
@@ -102,7 +99,7 @@ def verify_file_structure():
             missing_files.append(file_path)
 
     if missing_files:
-        print(f"\n⚠️ Missing files: {len(missing_files)}")
+        print(f"\\n⚠️ Missing files: {len(missing_files)}")
         return False
 
     print("   ✅ All integration files present")
@@ -111,27 +108,28 @@ def verify_file_structure():
 
 def create_directories():
     """Create necessary directories"""
-    print("\n📂 Creating directories...")
+    print("\\n📂 Creating directories...")
 
     directories = ["logs", "data", "backups"]
 
     for directory in directories:
         dir_path = Path(directory)
         if not dir_path.exists():
-            dir_path.mkdir(parents = True, exist_ok = True)
+            dir_path.mkdir(parents=True, exist_ok=True)
             print(f"   ✅ Created {directory}/")
         else:
-            print(f"   ✅ {directory}/ already exists")
+            print(f"   ✅ {directory}/already exists")
 
     return True
 
 
 def test_integration():
     """Test the RouteLL integration"""
-    print("\n🧪 Testing RouteLL integration...")
+    print("\\n🧪 Testing RouteLL integration...")
 
     try:
         # Import and test basic client
+
         from integrations.routellm_client import RouteLL_Client
 
         client = RouteLL_Client()
@@ -144,11 +142,9 @@ def test_integration():
             api_health = status.get("api_health", {})
 
             if api_health.get("status") == "healthy":
-                print(f"   ✅ API connection successful")
+                print("   ✅ API connection successful")
             else:
-                print(
-                    f"   ⚠️ API connection issue: {api_health.get('reason', 'unknown')}"
-                )
+                print(f"   ⚠️ API connection issue: {api_health.get('reason', 'unknown')}")
         except Exception as e:
             print(f"   ⚠️ API connection failed: {e}")
 
@@ -163,6 +159,7 @@ def test_integration():
 
         # Test model router
         print("   🎯 Testing model router...")
+
         from routing.model_router import ModelRouter
 
         router = ModelRouter()
@@ -178,6 +175,7 @@ def test_integration():
 
         # Test rate limiter
         print("   ⚡ Testing rate limiter...")
+
         from utils.rate_limiter import RateLimiter
 
         rate_limiter = RateLimiter()
@@ -186,6 +184,7 @@ def test_integration():
 
         # Test integrated client
         print("   🔗 Testing integrated client...")
+
         from examples.routellm_integration_example import RouteLL_IntegratedClient
 
         integrated_client = RouteLL_IntegratedClient()
@@ -198,7 +197,7 @@ def test_integration():
         response = client.chat_completion(test_messages)
 
         if response.success:
-            print(f"   ✅ Test request successful")
+            print("   ✅ Test request successful")
             if response.data:
                 data_str = str(response.data)[:100]
                 print(f"   📝 Response preview: {data_str}...")
@@ -221,6 +220,7 @@ def test_integration():
 
     except Exception as e:
         print(f"   ❌ Integration test failed: {e}")
+
         import traceback
 
         traceback.print_exc()
@@ -229,31 +229,29 @@ def test_integration():
 
 def print_next_steps():
     """Print next steps for the user"""
-    print("\n🎉 Setup completed successfully!")
-    print("\n📋 Next Steps:")
-    print("\n1. 📖 Read the documentation:")
-    print("   open docs / RouteLL_Integration_Guide.md")
+    print("\\n🎉 Setup completed successfully!")
+    print("\\n📋 Next Steps:")
+    print("\\n1. 📖 Read the documentation:")
+    print("   open docs/RouteLL_Integration_Guide.md")
 
-    print("\n2. 🧪 Run the example:")
-    print("   python examples / routellm_integration_example.py")
+    print("\\n2. 🧪 Run the example:")
+    print("   python examples/routellm_integration_example.py")
 
-    print("\n3. 📊 Start the dashboard:")
-    print("   python dashboard / routellm_dashboard.py")
+    print("\\n3. 📊 Start the dashboard:")
+    print("   python dashboard/routellm_dashboard.py")
     print("   Then open: http://localhost:5000")
 
-    print("\n4. 🔗 Integrate into your code:")
-    print(
-        "   from examples.routellm_integration_example import RouteLL_IntegratedClient"
-    )
+    print("\\n4. 🔗 Integrate into your code:")
+    print("   from examples.routellm_integration_example import RouteLL_IntegratedClient")
     print("   client = RouteLL_IntegratedClient()")
     print("   response = await client.chat_completion(messages)")
 
-    print("\n5. 📈 Monitor usage:")
+    print("\\n5. 📈 Monitor usage:")
     print("   - Check dashboard for real - time metrics")
-    print("   - Review logs/ directory for detailed logs")
+    print("   - Review logs/directory for detailed logs")
     print("   - Use analytics methods for programmatic monitoring")
 
-    print("\n💡 Key Features Available:")
+    print("\\n💡 Key Features Available:")
     print("   ✅ Intelligent model routing based on task type")
     print("   ✅ Automatic cost optimization")
     print("   ✅ Real - time credit monitoring")
@@ -261,13 +259,13 @@ def print_next_steps():
     print("   ✅ Web dashboard for monitoring")
     print("   ✅ Comprehensive error handling")
 
-    print("\n🔑 Your API Key: s2_f0b00d6897a0431f8367a7fc859b697a")
+    print("\\n🔑 Your API Key: s2_f0b00d6897a0431f8367a7fc859b697a")
     print("   (Already configured in environment)")
 
-    print("\n📚 Resources:")
-    print("   - Integration Guide: docs / RouteLL_Integration_Guide.md")
-    print("   - RouteLL API Docs: https://routellm.abacus.ai / docs")
-    print("   - Example Code: examples / routellm_integration_example.py")
+    print("\\n📚 Resources:")
+    print("   - Integration Guide: docs/RouteLL_Integration_Guide.md")
+    print("   - RouteLL API Docs: https://routellm.abacus.ai/docs")
+    print("   - Example Code: examples/routellm_integration_example.py")
 
 
 def main():
@@ -276,27 +274,27 @@ def main():
 
     # Step 1: Check dependencies
     if not check_dependencies():
-        print("\n❌ Setup failed: Missing dependencies")
+        print("\\n❌ Setup failed: Missing dependencies")
         return False
 
     # Step 2: Setup environment
     if not setup_environment():
-        print("\n❌ Setup failed: Environment setup failed")
+        print("\\n❌ Setup failed: Environment setup failed")
         return False
 
     # Step 3: Verify file structure
     if not verify_file_structure():
-        print("\n❌ Setup failed: Missing integration files")
+        print("\\n❌ Setup failed: Missing integration files")
         return False
 
     # Step 4: Create directories
     if not create_directories():
-        print("\n❌ Setup failed: Directory creation failed")
+        print("\\n❌ Setup failed: Directory creation failed")
         return False
 
     # Step 5: Test integration
     if not test_integration():
-        print("\n❌ Setup failed: Integration test failed")
+        print("\\n❌ Setup failed: Integration test failed")
         return False
 
     # Step 6: Print next steps
@@ -304,20 +302,22 @@ def main():
 
     return True
 
+
 if __name__ == "__main__":
     try:
         success = main()
         if success:
-            print("\n✅ RouteLL integration setup completed successfully!")
+            print("\\n✅ RouteLL integration setup completed successfully!")
             sys.exit(0)
         else:
-            print("\n❌ Setup failed. Please check the errors above.")
+            print("\\n❌ Setup failed. Please check the errors above.")
             sys.exit(1)
     except KeyboardInterrupt:
-        print("\n\n⚠️ Setup interrupted by user")
+        print("\\n\\n⚠️ Setup interrupted by user")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Unexpected error during setup: {e}")
+        print(f"\\n❌ Unexpected error during setup: {e}")
+
         import traceback
 
         traceback.print_exc()

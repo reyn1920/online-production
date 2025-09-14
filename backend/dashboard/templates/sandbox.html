@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Creative Sandbox - TRAE.AI</title>
     <style>
       * {
@@ -354,9 +354,7 @@
 
     <script>
       let currentTaskId = null;
-      let pollInterval = null;
-
-      // Auto-run functionality
+      let pollInterval = null;//Auto-run functionality
       {% if autorun %}
       document.addEventListener('DOMContentLoaded', function() {
           setTimeout(function() {
@@ -381,7 +379,7 @@
           setProgress(10);
 
           try {
-              const response = await fetch('/sandbox/run', {
+              const response = await fetch("/sandbox/run', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json'
@@ -432,8 +430,7 @@
                           setStatus('error', status.error || 'Generation failed');
                           showLog(status.error || 'Unknown error');
                       }
-                  } else {
-                      // Update progress based on status
+                  } else {//Update progress based on status
                       const progress = Math.min(90, 25 + (status.progress || 0) * 0.65);
                       setProgress(progress);
 

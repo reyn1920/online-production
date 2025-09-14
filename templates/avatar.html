@@ -232,18 +232,14 @@
     <!-- JavaScript -->
     <script>
         let currentJobId = null;
-        let statusInterval = null;
-
-        // Load engine status on page load
+        let statusInterval = null;//Load engine status on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadEngineStatus();
             loadRecentJobs();
-        });
-
-        // Load available engines
+        });//Load available engines
         async function loadEngineStatus() {
             try {
-                const response = await fetch('/avatar/engines');
+                const response = await fetch("/avatar/engines');
                 const data = await response.json();
                 
                 const statusContainer = document.getElementById('engine-status');
@@ -272,9 +268,7 @@
                 console.error('Error loading engine status:', error);
                 document.getElementById('engine-status').innerHTML = '<p class="text-red-500 col-span-full text-center">Error loading engine status</p>';
             }
-        }
-
-        // Handle standard avatar form submission
+        }//Handle standard avatar form submission
         document.getElementById('avatar-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -285,13 +279,11 @@
                 gender: formData.get('gender'),
                 voice_settings: {},
                 video_settings: {}
-            };
-            
-            // Handle source image upload if provided
+            };//Handle source image upload if provided
             const sourceImage = document.getElementById('source-image').files[0];
             if (sourceImage) {
                 try {
-                    const uploadResponse = await fetch('/avatar/upload-image', {
+                    const uploadResponse = await fetch("/avatar/upload-image', {
                         method: 'POST',
                         body: (() => {
                             const fd = new FormData();
@@ -309,7 +301,7 @@
             }
             
             try {
-                const response = await fetch('/avatar/generate', {
+                const response = await fetch("/avatar/generate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -327,9 +319,7 @@
                 console.error('Error generating avatar:', error);
                 alert('Error generating avatar. Please try again.');
             }
-        });
-
-        // Handle 3D avatar form submission
+        });//Handle 3D avatar form submission
         document.getElementById('avatar-3d-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -344,7 +334,7 @@
             };
             
             try {
-                const response = await fetch('/avatar/generate-3d', {
+                const response = await fetch("/avatar/generate-3d', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -362,16 +352,12 @@
                 console.error('Error generating 3D avatar:', error);
                 alert('Error generating 3D avatar. Please try again.');
             }
-        });
-
-        // Show generation status
+        });//Show generation status
         function showGenerationStatus(jobId) {
             const statusDiv = document.getElementById('generation-status');
             statusDiv.classList.remove('hidden');
             statusDiv.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Start polling for status updates
+        }//Start polling for status updates
         function startStatusPolling(jobId) {
             if (statusInterval) {
                 clearInterval(statusInterval);
@@ -386,15 +372,13 @@
                     
                     if (status.status === 'completed' || status.status === 'failed') {
                         clearInterval(statusInterval);
-                        loadRecentJobs(); // Refresh recent jobs
+                        loadRecentJobs();//Refresh recent jobs
                     }
                 } catch (error) {
                     console.error('Error checking status:', error);
                 }
             }, 2000);
-        }
-
-        // Update status display
+        }//Update status display
         function updateStatusDisplay(status) {
             const statusContent = document.getElementById('status-content');
             
@@ -437,12 +421,10 @@
                 ${progressBar}
                 ${status.error ? `<p class="text-red-600 mt-2">Error: ${status.error}</p>` : ''}
             `;
-        }
-
-        // Load recent jobs
+        }//Load recent jobs
         async function loadRecentJobs() {
             try {
-                const response = await fetch('/avatar/jobs');
+                const response = await fetch("/avatar/jobs');
                 const data = await response.json();
                 
                 const jobsContainer = document.getElementById('recent-jobs');

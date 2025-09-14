@@ -1,9 +1,7 @@
 /**
  * Paste Avatar UI Integration
  * Connects the paste application with dashboard avatar functionality
- */
-
-class PasteAvatarUI {
+ */class PasteAvatarUI {
     constructor() {
         this.pasteEndpoint = 'http://localhost:5000';
         this.avatarEndpoint = '/paste/avatar';
@@ -12,8 +10,7 @@ class PasteAvatarUI {
     }
 
     async init() {
-        try {
-            // Check if paste service is available
+        try {//Check if paste service is available
             const response = await fetch(`${this.pasteEndpoint}/status`);
             if (response.ok) {
                 this.isInitialized = true;
@@ -27,13 +24,10 @@ class PasteAvatarUI {
         }
     }
 
-    setupEventListeners() {
-        // Listen for avatar generation requests
+    setupEventListeners() {//Listen for avatar generation requests
         document.addEventListener('avatar:generate', (event) => {
             this.handleAvatarGeneration(event.detail);
-        });
-
-        // Listen for paste content updates
+        });//Listen for paste content updates
         document.addEventListener('paste:update', (event) => {
             this.handlePasteUpdate(event.detail);
         });
@@ -62,8 +56,7 @@ class PasteAvatarUI {
 
             const result = await response.json();
             
-            if (result.success) {
-                // Dispatch success event
+            if (result.success) {//Dispatch success event
                 document.dispatchEvent(new CustomEvent('avatar:generated', {
                     detail: result
                 }));
@@ -80,11 +73,8 @@ class PasteAvatarUI {
         }
     }
 
-    async handlePasteUpdate(data) {
-        // Handle paste content updates for avatar integration
-        console.log('Paste content updated:', data);
-        
-        // If avatar is linked to paste content, regenerate
+    async handlePasteUpdate(data) {//Handle paste content updates for avatar integration
+        console.log('Paste content updated:', data);//If avatar is linked to paste content, regenerate
         if (data.autoRegenerate) {
             await this.handleAvatarGeneration({
                 content: data.content,
@@ -172,9 +162,7 @@ class PasteAvatarUI {
             console.error('File processing error:', error);
             throw error;
         }
-    }
-
-    // Utility method to check service status
+    }//Utility method to check service status
     async checkStatus() {
         try {
             const response = await fetch(`${this.pasteEndpoint}/status`);
@@ -182,9 +170,7 @@ class PasteAvatarUI {
         } catch (error) {
             return false;
         }
-    }
-
-    // Method to integrate with dashboard notifications
+    }//Method to integrate with dashboard notifications
     showNotification(message, type = 'info') {
         if (window.Dashboard && window.Dashboard.showAlert) {
             window.Dashboard.showAlert(message, type);
@@ -192,14 +178,10 @@ class PasteAvatarUI {
             console.log(`[${type.toUpperCase()}] ${message}`);
         }
     }
-}
-
-// Initialize when DOM is ready
+}//Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.pasteAvatarUI = new PasteAvatarUI();
-});
-
-// Export for module usage
+});//Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = PasteAvatarUI;
 }

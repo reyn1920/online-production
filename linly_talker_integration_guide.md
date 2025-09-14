@@ -603,7 +603,7 @@ from concurrent.futures import ThreadPoolExecutor
 class OptimizedPipeline(AIVideoProductionPipeline):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.max_workers = mp.cpu_count() // 2
+        self.max_workers = mp.cpu_count()//2
     
     def parallel_processing(self, tasks):
         """

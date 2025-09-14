@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI MacBook Air M1 Performance Optimizer
 
@@ -40,8 +40,11 @@ import psutil
 
 # Import our logger
 try:
+
     from utils.logger import get_logger
+
 except ImportError:
+
     import logging
 
     logging.basicConfig(level = logging.INFO)
@@ -143,10 +146,12 @@ class M1PerformanceOptimizer:
 
         # Executors for different core types
         self.performance_executor = ThreadPoolExecutor(
-            max_workers = self._get_performance_core_count(), thread_name_prefix="M1 - Perf"
+            max_workers=self._get_performance_core_count(),
+            thread_name_prefix="M1-Perf"
         )
         self.efficiency_executor = ThreadPoolExecutor(
-            max_workers = self._get_efficiency_core_count(), thread_name_prefix="M1 - Eff"
+            max_workers=self._get_efficiency_core_count(),
+            thread_name_prefix="M1-Eff"
         )
 
         logger.info(f"M1 Optimizer initialized - M1 System: {self.is_m1}")
@@ -160,13 +165,13 @@ class M1PerformanceOptimizer:
             "memory_pressure_threshold": 85,  # %
             "cpu_throttle_threshold": 90,  # %
             "energy_efficiency_mode": True,
-                "background_task_limit": 3,
-                "performance_monitoring_interval": 1.0,  # seconds
+            "background_task_limit": 3,
+            "performance_monitoring_interval": 1.0,  # seconds
             "task_timeout": 300,  # seconds
             "adaptive_throttling": True,
-                "neural_engine_optimization": True,
-                "gpu_task_scheduling": True,
-                }
+            "neural_engine_optimization": True,
+            "gpu_task_scheduling": True,
+        }
 
 
     def _detect_m1_system(self) -> bool:
@@ -178,9 +183,9 @@ class M1PerformanceOptimizer:
             # Check for Apple Silicon
             result = subprocess.run(
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
-                    capture_output = True,
-                    text = True,
-                    )
+                capture_output=True,
+                text=True,
+            )
 
             cpu_brand = result.stdout.strip()
             is_apple_silicon = "Apple" in cpu_brand
@@ -199,30 +204,30 @@ class M1PerformanceOptimizer:
         """Get number of performance cores (M1 has 4)."""
         if self.is_m1:
             return 4  # M1 has 4 performance cores
-        return max(1, psutil.cpu_count() // 2)
+        return max(1, psutil.cpu_count()//2)
 
 
     def _get_efficiency_core_count(self) -> int:
         """Get number of efficiency cores (M1 has 4)."""
         if self.is_m1:
             return 4  # M1 has 4 efficiency cores
-        return max(1, psutil.cpu_count() // 2)
+        return max(1, psutil.cpu_count()//2)
 
 
     def _calculate_optimal_concurrency(self) -> int:
         """Calculate optimal concurrent task limit for M1."""
         if self.is_m1:
-            # M1 - specific optimization
-            memory_gb = psutil.virtual_memory().total / (1024**3)
+            # M1-specific optimization
+            memory_gb = psutil.virtual_memory().total/(1024**3)
 
             if memory_gb >= 16:
-                return 8  # High - end M1
+                return 8  # High-end M1
             elif memory_gb >= 8:
                 return 6  # Standard M1
             else:
                 return 4  # Base M1
 
-        # Fallback for non - M1 systems
+        # Fallback for non-M1 systems
         return min(8, psutil.cpu_count())
 
 
@@ -234,79 +239,79 @@ class M1PerformanceOptimizer:
             memory = psutil.virtual_memory()
             swap = psutil.swap_memory()
 
-            # M1 - specific metrics
+            # M1-specific metrics
             performance_cores_usage = self._get_performance_cores_usage()
             efficiency_cores_usage = self._get_efficiency_cores_usage()
             thermal_state = self._get_thermal_state()
             memory_pressure = self._get_memory_pressure()
             energy_impact = self._calculate_energy_impact()
 
-            # GPU and Neural Engine (M1 - specific)
+            # GPU and Neural Engine (M1-specific)
             gpu_usage = self._get_gpu_usage()
             neural_engine_usage = self._get_neural_engine_usage()
 
             return M1SystemMetrics(
-                timestamp = datetime.now(),
-                    cpu_percent = cpu_percent,
-                    performance_cores_usage = performance_cores_usage,
-                    efficiency_cores_usage = efficiency_cores_usage,
-                    memory_percent = memory.percent,
-                    memory_pressure = memory_pressure,
-                    thermal_state = thermal_state,
-                    energy_impact = energy_impact,
-                    swap_usage_mb = swap.used / (1024**2),
-                    gpu_usage = gpu_usage,
-                    neural_engine_usage = neural_engine_usage,
-                    active_tasks = len(self.active_tasks),
-                    background_tasks = sum(
+                timestamp=datetime.now(),
+                cpu_percent=cpu_percent,
+                performance_cores_usage=performance_cores_usage,
+                efficiency_cores_usage=efficiency_cores_usage,
+                memory_percent=memory.percent,
+                memory_pressure=memory_pressure,
+                thermal_state=thermal_state,
+                energy_impact=energy_impact,
+                swap_usage_mb=swap.used/(1024**2),
+                gpu_usage=gpu_usage,
+                neural_engine_usage=neural_engine_usage,
+                active_tasks=len(self.active_tasks),
+                background_tasks=sum(
                     1
                     for t in self.active_tasks.values()
                     if t.priority == TaskPriority.LOW
                 ),
-                    )
+            )
 
         except Exception as e:
             logger.error(f"Failed to collect system metrics: {e}")
             # Return minimal metrics on error
-                return M1SystemMetrics(
-                timestamp = datetime.now(),
-                    cpu_percent = 0.0,
-                    performance_cores_usage = 0.0,
-                    efficiency_cores_usage = 0.0,
-                    memory_percent = 0.0,
-                    memory_pressure="unknown",
-                    thermal_state="unknown",
-                    energy_impact = 0.0,
-                    swap_usage_mb = 0.0,
-                    gpu_usage = 0.0,
-                    neural_engine_usage = 0.0,
-                    active_tasks = 0,
-                    background_tasks = 0,
-                    )
+            return M1SystemMetrics(
+                timestamp=datetime.now(),
+                cpu_percent=0.0,
+                performance_cores_usage=0.0,
+                efficiency_cores_usage=0.0,
+                memory_percent=0.0,
+                memory_pressure="unknown",
+                thermal_state="unknown",
+                energy_impact=0.0,
+                swap_usage_mb=0.0,
+                gpu_usage=0.0,
+                neural_engine_usage=0.0,
+                active_tasks=0,
+                background_tasks=0,
+            )
 
 
     def _get_performance_cores_usage(self) -> float:
-        """Get performance cores usage (M1 - specific)."""
+        """Get performance cores usage (M1-specific)."""
         if not self.is_m1:
-            return psutil.cpu_percent() / 2  # Estimate
+            return psutil.cpu_percent()/2  # Estimate
 
         try:
-            # Use powermetrics for M1 - specific core usage
+            # Use powermetrics for M1-specific core usage
             result = subprocess.run(
                 [
                     "sudo",
-                        "powermetrics",
-                        "-n",
-                        "1",
-                        "-i",
-                        "100",
-                        "--samplers",
-                        "cpu_power",
-                        ],
-                    capture_output = True,
-                    text = True,
-                    timeout = 2,
-                    )
+                    "powermetrics",
+                    "-n",
+                    "1",
+                    "-i",
+                    "100",
+                    "--samplers",
+                    "cpu_power",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=2,
+            )
 
             # Parse performance core usage from output
             # This is a simplified implementation
@@ -317,9 +322,9 @@ class M1PerformanceOptimizer:
 
 
     def _get_efficiency_cores_usage(self) -> float:
-        """Get efficiency cores usage (M1 - specific)."""
+        """Get efficiency cores usage (M1-specific)."""
         if not self.is_m1:
-            return psutil.cpu_percent() / 2  # Estimate
+            return psutil.cpu_percent()/2  # Estimate
 
         try:
             # Estimate efficiency core usage
@@ -339,7 +344,7 @@ class M1PerformanceOptimizer:
         try:
             # Use powermetrics to get thermal state
             result = subprocess.run(
-                ["pmset", "-g", "therm"], capture_output = True, text = True, timeout = 2
+                ["pmset", "-g", "therm"], capture_output=True, text=True, timeout=2
             )
 
             output = result.stdout.lower()
@@ -397,7 +402,7 @@ class M1PerformanceOptimizer:
 
 
     def _get_gpu_usage(self) -> float:
-        """Get GPU usage (M1 - specific)."""
+        """Get GPU usage (M1-specific)."""
         if not self.is_m1:
             return 0.0
 
@@ -405,10 +410,10 @@ class M1PerformanceOptimizer:
             # Use ioreg to get GPU usage on M1
             result = subprocess.run(
                 ["ioreg", "-r", "-d", "1", "-w", "0", "-c", "IOAccelerator"],
-                    capture_output = True,
-                    text = True,
-                    timeout = 2,
-                    )
+                capture_output=True,
+                text=True,
+                timeout=2,
+            )
 
             # This is a simplified implementation
             # Real implementation would parse ioreg output
@@ -419,7 +424,7 @@ class M1PerformanceOptimizer:
 
 
     def _get_neural_engine_usage(self) -> float:
-        """Get Neural Engine usage (M1 - specific)."""
+        """Get Neural Engine usage (M1-specific)."""
         if not self.is_m1:
             return 0.0
 
@@ -430,36 +435,36 @@ class M1PerformanceOptimizer:
 
     def add_task(
         self,
-            name: str,
-            callback: Callable,
-            priority: TaskPriority = TaskPriority.MEDIUM,
-            core_preference: CoreType = CoreType.AUTO,
-            estimated_duration: float = 60.0,
-            memory_requirement: int = 100,
-            cpu_intensive: bool = False,
-            gpu_required: bool = False,
-            neural_engine_required: bool = False,
-            *args,
-            **kwargs,
-            ) -> str:
+        name: str,
+        callback: Callable,
+        priority: TaskPriority = TaskPriority.MEDIUM,
+        core_preference: CoreType = CoreType.AUTO,
+        estimated_duration: float = 60.0,
+        memory_requirement: int = 100,
+        cpu_intensive: bool = False,
+        gpu_required: bool = False,
+        neural_engine_required: bool = False,
+        *args,
+        **kwargs,
+    ) -> str:
         """Add a task to the optimization queue."""
 
         task_id = f"task_{int(time.time() * 1000)}_{len(self.task_queue)}"
 
         task = OptimizationTask(
-            id = task_id,
-                name = name,
-                priority = priority,
-                core_preference = core_preference,
-                estimated_duration = estimated_duration,
-                memory_requirement = memory_requirement,
-                cpu_intensive = cpu_intensive,
-                gpu_required = gpu_required,
-                neural_engine_required = neural_engine_required,
-                callback = callback,
-                args = args,
-                kwargs = kwargs,
-                )
+            id=task_id,
+            name=name,
+            priority=priority,
+            core_preference=core_preference,
+            estimated_duration=estimated_duration,
+            memory_requirement=memory_requirement,
+            cpu_intensive=cpu_intensive,
+            gpu_required=gpu_required,
+            neural_engine_required=neural_engine_required,
+            callback=callback,
+            args=args,
+            kwargs=kwargs,
+        )
 
         with self.task_lock:
             # Insert task based on priority
@@ -487,13 +492,13 @@ class M1PerformanceOptimizer:
 
         # Start monitoring thread
         self.monitor_thread = threading.Thread(
-            target = self._monitoring_loop, name="M1 - Monitor", daemon = True
+            target=self._monitoring_loop, name="M1-Monitor", daemon=True
         )
         self.monitor_thread.start()
 
         # Start scheduler thread
         self.scheduler_thread = threading.Thread(
-            target = self._scheduler_loop, name="M1 - Scheduler", daemon = True
+            target=self._scheduler_loop, name="M1-Scheduler", daemon=True
         )
         self.scheduler_thread.start()
 
@@ -505,14 +510,14 @@ class M1PerformanceOptimizer:
         self.running = False
 
         if self.monitor_thread:
-            self.monitor_thread.join(timeout = 5)
+            self.monitor_thread.join(timeout=5)
 
         if self.scheduler_thread:
-            self.scheduler_thread.join(timeout = 5)
+            self.scheduler_thread.join(timeout=5)
 
         # Shutdown executors
-        self.performance_executor.shutdown(wait = True)
-        self.efficiency_executor.shutdown(wait = True)
+        self.performance_executor.shutdown(wait=True)
+        self.efficiency_executor.shutdown(wait=True)
 
         logger.info("M1 Optimization system stopped")
 
@@ -531,9 +536,9 @@ class M1PerformanceOptimizer:
                 self.thermal_history.append(
                     {
                         "timestamp": metrics.timestamp,
-                            "thermal_state": metrics.thermal_state,
-                            "cpu_percent": metrics.cpu_percent,
-                            }
+                        "thermal_state": metrics.thermal_state,
+                        "cpu_percent": metrics.cpu_percent,
+                    }
                 )
 
                 # Adaptive throttling based on conditions
@@ -602,8 +607,7 @@ class M1PerformanceOptimizer:
         # Check memory requirements
         available_memory = (
             (100 - metrics.memory_percent)
-            * psutil.virtual_memory().total
-            / (100 * 1024**2)
+            * psutil.virtual_memory().total / (100 * 1024**2)
         )
         if task.memory_requirement > available_memory:
             return False
@@ -647,16 +651,16 @@ class M1PerformanceOptimizer:
         """Choose the appropriate executor for a task."""
         if task.core_preference == CoreType.PERFORMANCE:
             return self.performance_executor
-                elif task.core_preference == CoreType.EFFICIENCY:
+        elif task.core_preference == CoreType.EFFICIENCY:
             return self.efficiency_executor
-                else:
-            # Auto - choose based on task characteristics
+        else:
+            # Auto-choose based on task characteristics
             if task.cpu_intensive or task.priority in [
-                TaskPriority.URGENT,
-                    TaskPriority.HIGH,
-                    ]:
+                TaskPriority.CRITICAL,
+                TaskPriority.HIGH,
+            ]:
                 return self.performance_executor
-                    else:
+            else:
                 return self.efficiency_executor
 
 
@@ -678,7 +682,7 @@ class M1PerformanceOptimizer:
     def _set_thread_priority(self, priority: TaskPriority):
         """Set thread priority based on task priority."""
         try:
-            if priority == TaskPriority.URGENT:
+            if priority == TaskPriority.CRITICAL:
                 os.nice(-5)  # Higher priority
             elif priority == TaskPriority.LOW:
                 os.nice(10)  # Lower priority
@@ -756,8 +760,8 @@ class M1PerformanceOptimizer:
         """Log performance summary."""
         logger.info(
             f"M1 Performance - CPU: {metrics.cpu_percent:.1f}% "
-            f"(P - cores: {metrics.performance_cores_usage:.1f}%, "
-            f"E - cores: {metrics.efficiency_cores_usage:.1f}%), "
+            f"(P-cores: {metrics.performance_cores_usage:.1f}%, "
+            f"E-cores: {metrics.efficiency_cores_usage:.1f}%), "
             f"Memory: {metrics.memory_percent:.1f}% ({metrics.memory_pressure}), "
             f"Thermal: {metrics.thermal_state}, "
             f"Tasks: {metrics.active_tasks}/{self.max_concurrent_tasks}, "
@@ -781,38 +785,38 @@ class M1PerformanceOptimizer:
 
         return {
             "timestamp": latest_metrics.timestamp.isoformat(),
-                "system_info": {
+            "system_info": {
                 "is_m1": self.is_m1,
-                    "performance_cores": self._get_performance_core_count(),
-                    "efficiency_cores": self._get_efficiency_core_count(),
-                    },
-                "current_metrics": {
+                "performance_cores": self._get_performance_core_count(),
+                "efficiency_cores": self._get_efficiency_core_count(),
+            },
+            "current_metrics": {
                 "cpu_percent": latest_metrics.cpu_percent,
-                    "performance_cores_usage": latest_metrics.performance_cores_usage,
-                    "efficiency_cores_usage": latest_metrics.efficiency_cores_usage,
-                    "memory_percent": latest_metrics.memory_percent,
-                    "memory_pressure": latest_metrics.memory_pressure,
-                    "thermal_state": latest_metrics.thermal_state,
-                    "energy_impact": latest_metrics.energy_impact,
-                    },
-                "averages_5min": {
+                "performance_cores_usage": latest_metrics.performance_cores_usage,
+                "efficiency_cores_usage": latest_metrics.efficiency_cores_usage,
+                "memory_percent": latest_metrics.memory_percent,
+                "memory_pressure": latest_metrics.memory_pressure,
+                "thermal_state": latest_metrics.thermal_state,
+                "energy_impact": latest_metrics.energy_impact,
+            },
+            "averages_5min": {
                 "cpu_percent": avg_cpu,
-                    "memory_percent": avg_memory,
-                    "energy_impact": avg_energy,
-                    },
-                "task_management": {
+                "memory_percent": avg_memory,
+                "energy_impact": avg_energy,
+            },
+            "task_management": {
                 "active_tasks": len(self.active_tasks),
-                    "queued_tasks": len(self.task_queue),
-                    "completed_tasks": len(self.completed_tasks),
-                    "max_concurrent_tasks": self.max_concurrent_tasks,
-                    "current_throttle_level": self.current_throttle_level,
-                    },
-                "optimization_status": {
+                "queued_tasks": len(self.task_queue),
+                "completed_tasks": len(self.completed_tasks),
+                "max_concurrent_tasks": self.max_concurrent_tasks,
+                "current_throttle_level": self.current_throttle_level,
+            },
+            "optimization_status": {
                 "running": self.running,
-                    "energy_mode": self.energy_mode,
-                    "adaptive_throttling": self.config["adaptive_throttling"],
-                    },
-                }
+                "energy_mode": self.energy_mode,
+                "adaptive_throttling": self.config["adaptive_throttling"],
+            },
+        }
 
 # Global optimizer instance
 _optimizer_instance = None
@@ -837,13 +841,13 @@ def optimize_for_m1(func: Callable) -> Callable:
 
         # Add function as a task
         task_id = optimizer.add_task(
-            name = func.__name__,
-                callback = func,
-                priority = TaskPriority.MEDIUM,
-                core_preference = CoreType.AUTO,
-                *args,
-                **kwargs,
-                )
+            name=func.__name__,
+            callback=func,
+            priority=TaskPriority.MEDIUM,
+            core_preference=CoreType.AUTO,
+            *args,
+            **kwargs,
+        )
 
         # Wait for completion (simplified - in real use, this would be async)
         while task_id in optimizer.active_tasks:
@@ -871,8 +875,8 @@ if __name__ == "__main__":
     # Add some test tasks
 
 
-    def cpu_intensive_task(duration = 5):
-        """Simulate CPU - intensive task."""
+    def cpu_intensive_task(duration=5):
+        """Simulate CPU-intensive task."""
         start_time = time.time()
         while time.time() - start_time < duration:
             # Simulate work
@@ -880,8 +884,8 @@ if __name__ == "__main__":
         return f"CPU task completed in {duration}s"
 
 
-    def memory_intensive_task(size_mb = 100):
-        """Simulate memory - intensive task."""
+    def memory_intensive_task(size_mb=100):
+        """Simulate memory-intensive task."""
         data = [0] * (size_mb * 1024 * 256)  # Allocate memory
         time.sleep(2)
         del data
@@ -890,21 +894,21 @@ if __name__ == "__main__":
     # Add tasks
     optimizer.add_task(
         "CPU Task 1",
-            cpu_intensive_task,
-            priority = TaskPriority.HIGH,
-            core_preference = CoreType.PERFORMANCE,
-            cpu_intensive = True,
-            args=(3,),
-            )
+        cpu_intensive_task,
+        priority=TaskPriority.HIGH,
+        core_preference=CoreType.PERFORMANCE,
+        cpu_intensive=True,
+        args=(3,),
+    )
 
     optimizer.add_task(
         "Memory Task 1",
-            memory_intensive_task,
-            priority = TaskPriority.MEDIUM,
-            core_preference = CoreType.EFFICIENCY,
-            memory_requirement = 200,
-            args=(150,),
-            )
+        memory_intensive_task,
+        priority=TaskPriority.MEDIUM,
+        core_preference=CoreType.EFFICIENCY,
+        memory_requirement=200,
+        args=(150,),
+    )
 
     # Run for a while
     try:
@@ -912,7 +916,7 @@ if __name__ == "__main__":
 
         # Get performance report
         report = optimizer.get_performance_report()
-        print(json.dumps(report, indent = 2, default = str))
+        print(json.dumps(report, indent=2, default=str))
 
     finally:
         optimizer.stop_optimization()

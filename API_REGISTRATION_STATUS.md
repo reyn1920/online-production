@@ -87,12 +87,8 @@ Based on analysis of your system configuration, here's the current status of API
    ```
 
 3. **Priority API Registrations** (Free Tiers)
-   - Google AI Studio: https://makersuite.google.com/
-   - Hugging Face: https://huggingface.co/join
-   - Groq Console: https://console.groq.com/
-   - YouTube API: https://console.cloud.google.com/
-
-### Cost Management Strategy
+   - Google AI Studio: https://makersuite.google.com/- Hugging Face: https://huggingface.co/join
+   - Groq Console: https://console.groq.com/- YouTube API: https://console.cloud.google.com/### Cost Management Strategy
 
 - **Focus on FREE tiers only** (as per your API management table)
 - **Avoid paid APIs** until revenue justifies costs

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Places Locator - Embedded Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <!-- Leaflet.markercluster -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
     <style>
         * {
             margin: 0;
@@ -175,21 +175,16 @@
                 this.parseUrlParams();
             }
             
-            initMap() {
-                // Get initial position from URL params or default to San Francisco
+            initMap() {//Get initial position from URL params or default to San Francisco
                 const urlParams = new URLSearchParams(window.location.search);
                 const lat = parseFloat(urlParams.get('lat')) || 37.7749;
                 const lng = parseFloat(urlParams.get('lng')) || -122.4194;
                 const zoom = parseInt(urlParams.get('zoom')) || 12;
                 
-                this.map = L.map('map').setView([lat, lng], zoom);
-                
-                // Add OpenStreetMap tiles
+                this.map = L.map('map').setView([lat, lng], zoom);//Add OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors'
-                }).addTo(this.map);
-                
-                // Initialize marker cluster group
+                }).addTo(this.map);//Initialize marker cluster group
                 this.markerCluster = L.markerClusterGroup({
                     chunkedLoading: true,
                     maxClusterRadius: 50
@@ -199,12 +194,9 @@
             
             parseUrlParams() {
                 const urlParams = new URLSearchParams(window.location.search);
-                const category = urlParams.get('cat');
-                
-                // If category is provided, auto-search
+                const category = urlParams.get('cat');//If category is provided, auto-search
                 if (category) {
-                    document.getElementById('searchQuery').value = category;
-                    // Use current map center as location
+                    document.getElementById('searchQuery').value = category;//Use current map center as location
                     const center = this.map.getCenter();
                     document.getElementById('searchLocation').value = `${center.lat.toFixed(4)},${center.lng.toFixed(4)}`;
                     this.performSearch();
@@ -230,9 +222,7 @@
                 
                 document.getElementById('closeResults').addEventListener('click', () => {
                     document.getElementById('resultsPopup').classList.remove('show');
-                });
-                
-                // Close results when clicking on map
+                });//Close results when clicking on map
                 this.map.on('click', () => {
                     document.getElementById('resultsPopup').classList.remove('show');
                 });
@@ -245,9 +235,7 @@
                 if (!query) {
                     alert('Please enter a search query');
                     return;
-                }
-                
-                // Use current map center if no location specified
+                }//Use current map center if no location specified
                 let searchLocation = location;
                 if (!searchLocation) {
                     const center = this.map.getCenter();
@@ -312,14 +300,11 @@
                 resultsPopup.classList.add('show');
             }
             
-            updateMapWithResults(results) {
-                // Clear existing markers
+            updateMapWithResults(results) {//Clear existing markers
                 this.markerCluster.clearLayers();
                 this.markers = [];
                 
-                if (results.length === 0) return;
-                
-                // Add markers for each result
+                if (results.length === 0) return;//Add markers for each result
                 results.forEach((result, index) => {
                     if (result.lat && result.lon) {
                         const marker = L.marker([result.lat, result.lon])
@@ -336,25 +321,20 @@
                         this.markerCluster.addLayer(marker);
                         this.markers.push(marker);
                     }
-                });
-                
-                // Fit map to show all markers
+                });//Fit map to show all markers
                 if (this.markers.length > 0) {
                     const group = new L.featureGroup(this.markers);
                     this.map.fitBounds(group.getBounds().pad(0.1));
                 }
             }
             
-            selectResult(index) {
-                // Open marker popup
+            selectResult(index) {//Open marker popup
                 if (this.markers[index]) {
                     this.markers[index].openPopup();
                     this.map.setView(this.markers[index].getLatLng(), Math.max(this.map.getZoom(), 15));
                 }
             }
-        }
-        
-        // Initialize the embedded application
+        }//Initialize the embedded application
         document.addEventListener('DOMContentLoaded', () => {
             new EmbeddedPlacesLocator();
         });

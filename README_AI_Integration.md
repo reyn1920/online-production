@@ -66,7 +66,7 @@ The production system uses the **MCP (Model Context Protocol) Puppeteer server**
 |---------|-----|-------------|
 | **Abacus AI** | https://apps.abacus.ai/chatllm/?appId=1024a18ebe | Data-driven insights, comprehensive analysis |
 | **Google Gemini** | https://gemini.google.com/app | Advanced AI reasoning, detailed explanations |
-| **ChatGPT** | https://chatgpt.com/ | Step-by-step guidance, best practices |
+| **ChatGPT** | https://chatgpt.com/| Step-by-step guidance, best practices |
 
 ## 🛠️ Usage Examples
 

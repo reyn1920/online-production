@@ -1,4 +1,4 @@
-#!/usr / bin / env python3
+#!/usr/bin/env python3
 """
 TRAE.AI End - to - End Verification System
 Comprehensive testing suite for the autonomous content empire
@@ -35,12 +35,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import TRAE.AI modules
 try:
+
     from backend.agentic_protocol import AgenticProtocol
     from backend.autonomous_diagnosis_repair import AutonomousDiagnosisRepair
     from backend.hollywood_creative_pipeline import HollywoodCreativePipeline
     from backend.marketing_monetization_engine import MarketingMonetizationEngine
     from backend.trae_ai_orchestrator import TraeAIOrchestrator
         from backend.zero_cost_stack import ZeroCostStackManager
+
 except ImportError as e:
     print(f"Warning: Could not import TRAE.AI modules: {e}")
     print("Some tests may be skipped")
@@ -50,7 +52,7 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[
-        logging.FileHandler("logs / e2e_verification.log"),
+        logging.FileHandler("logs/e2e_verification.log"),
             logging.StreamHandler(),
             ],
 )
@@ -117,7 +119,7 @@ class TraeAIE2EVerification:
     """Main verification system for TRAE.AI"""
 
 
-    def __init__(self, config_path: str = "config / test_config.json"):
+    def __init__(self, config_path: str = "config/test_config.json"):
         self.config_path = config_path
         self.config = self._load_test_config()
         self.results: List[TestResult] = []
@@ -182,7 +184,7 @@ class TraeAIE2EVerification:
     def _init_database(self):
         """Initialize test results database"""
         os.makedirs("data", exist_ok = True)
-        self.db_path = "data / test_results.db"
+        self.db_path = "data/test_results.db"
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
@@ -223,7 +225,7 @@ class TraeAIE2EVerification:
 
         # Create test - specific logger
         self.test_logger = logging.getLogger("trae_ai_tests")
-        handler = logging.FileHandler("logs / test_execution.log")
+        handler = logging.FileHandler("logs/test_execution.log")
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
@@ -370,7 +372,7 @@ class TraeAIE2EVerification:
         start_time = time.time()
         try:
             disk = psutil.disk_usage("/")
-            disk_usage = (disk.used / disk.total) * 100
+            disk_usage = (disk.used/disk.total) * 100
             status = (
                 TestStatus.PASSED
                 if disk_usage < self.config["thresholds"]["disk_usage_max"]
@@ -431,7 +433,7 @@ class TraeAIE2EVerification:
         # Network connectivity test
         start_time = time.time()
         try:
-            response = requests.get("https://httpbin.org / status / 200", timeout = 10)
+            response = requests.get("https://httpbin.org/status/200", timeout = 10)
             status = (
                 TestStatus.PASSED if response.status_code == 200 else TestStatus.FAILED
             )
@@ -669,7 +671,7 @@ class TraeAIE2EVerification:
                     {
                     "initialized_components": initialized_count,
                         "total_components": total_components,
-                        "success_rate": (initialized_count / total_components) * 100,
+                        "success_rate": (initialized_count/total_components) * 100,
                         },
                     )
         except Exception as e:
@@ -693,10 +695,10 @@ class TraeAIE2EVerification:
         try:
             # Common secret patterns
             secret_patterns = [
-                r'api[_-]?key[\s]*[=:][\s]*["\'][a - zA - Z0 - 9+/=]{10,}["\']',
-                    r'secret[_-]?key[\s]*[=:][\s]*["\'][a - zA - Z0 - 9+/=]{10,}["\']',
-                    r'password[\s]*[=:][\s]*["\'][a - zA - Z0 - 9!@#$%^&*]{8,}["\']',
-                    r'token[\s]*[=:][\s]*["\'][a - zA - Z0 - 9+/=]{10,}["\']',
+                r'api[_-]?key[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9+/=]{10,}["\\']',
+                    r'secret[_-]?key[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9+/=]{10,}["\\']',
+                    r'password[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9!@#$%^&*]{8,}["\\']',
+                    r'token[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9+/=]{10,}["\\']',
                     ]
 
             # Scan Python files
@@ -844,7 +846,7 @@ class TraeAIE2EVerification:
                 time.sleep(0.1)  # Small delay to simulate processing
                 completed_steps += 1
 
-            success_rate = (completed_steps / len(workflow_steps)) * 100
+            success_rate = (completed_steps/len(workflow_steps)) * 100
             status = (
                 TestStatus.PASSED
                 if success_rate >= self.config["thresholds"]["success_rate_min"]
@@ -907,7 +909,14 @@ class TraeAIE2EVerification:
                 conn.execute(
                     """
                     INSERT INTO test_results
-                    (test_name, category, status, duration, message, details, timestamp, error_trace)
+                    (test_name,
+    category,
+    status,
+    duration,
+    message,
+    details,
+    timestamp,
+    error_trace)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                         (
@@ -933,7 +942,7 @@ class TraeAIE2EVerification:
         error_tests = len([r for r in self.results if r.status == TestStatus.ERROR])
         skipped_tests = len([r for r in self.results if r.status == TestStatus.SKIPPED])
 
-        success_rate = (passed_tests / total_tests * 100) if total_tests > 0 else 0
+        success_rate = (passed_tests/total_tests * 100) if total_tests > 0 else 0
         duration = (
             (self.end_time - self.start_time).total_seconds()
             if self.end_time and self.start_time
@@ -1072,7 +1081,7 @@ if __name__ == "__main__":
     summary = verifier.run_all_tests()
 
     # Print summary
-    print("\n" + "=" * 60)
+    print("\\n" + "=" * 60)
     print("TRAE.AI END - TO - END VERIFICATION COMPLETE")
     print("=" * 60)
     print(f"Overall Status: {summary['overall_status']}")
@@ -1082,15 +1091,15 @@ if __name__ == "__main__":
 
     # Save JSON report
     Path("reports").mkdir(exist_ok = True)
-    with open("reports / e2e_verification_report.json", "w") as f:
+    with open("reports/e2e_verification_report.json", "w") as f:
         json.dump(summary, f, indent = 2, default = str)
-    print("\nJSON report saved: reports / e2e_verification_report.json")
+    print("\\nJSON report saved: reports/e2e_verification_report.json")
 
     # Generate and save HTML report
     html_report = verifier.generate_html_report(summary)
-    with open("reports / e2e_verification_report.html", "w") as f:
+    with open("reports/e2e_verification_report.html", "w") as f:
         f.write(html_report)
-    print("HTML report saved: reports / e2e_verification_report.html")
+    print("HTML report saved: reports/e2e_verification_report.html")
 
     # Exit with appropriate code
     exit_code = 0 if summary["overall_status"] == "PASSED" else 1

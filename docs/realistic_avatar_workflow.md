@@ -21,7 +21,7 @@ This workflow demonstrates how to create professional-grade, realistic talking a
 
 ```bash
 # Navigate to project directory
-cd /Users/thomasbrianreynolds/online\ production
+cd/Users/thomasbrianreynolds/online\ production
 
 # Generate ultra-realistic avatar
 python scripts/generate_realistic_avatar.py \

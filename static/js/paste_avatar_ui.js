@@ -14,16 +14,30 @@
  * 
  * @version 2.0.0
  * @author TRAE.AI Enhancement System
- */
-
-class PasteAvatarUI {
+ */class PasteAvatarUI {
     constructor() {
         this.apiBase = '/paste/avatar';
         this.currentConfig = this.getDefaultConfig();
         this.templates = {};
         this.personalities = {};
         this.processingQueue = [];
-        this.isProcessing = false;
+        this.isProcessing = false;//AI Assistant features
+        this.aiAssistant = {
+            enabled: true,
+            suggestions: [],
+            userPreferences: {},
+            learningData: [],
+            contextualHelp: true,
+            smartRecommendations: true
+        };
+        
+        this.userBehavior = {
+            interactions: [],
+            preferences: {},
+            successfulConfigs: [],
+            timeSpent: {},
+            errorPatterns: []
+        };
         
         this.init();
     }
@@ -44,16 +58,39 @@ class PasteAvatarUI {
     }
     
     async init() {
-        try {
-            // Load templates and initialize UI
+        try {//Load templates and initialize UI
             await this.loadTemplates();
+            await this.loadUserPreferences();
             this.createUI();
             this.bindEvents();
+            this.initializeAIAssistant();
             
-            console.log('🎬 Paste Avatar UI initialized successfully');
+            console.log('🎬 Paste Avatar UI with AI Assistant initialized successfully');
         } catch (error) {
             console.error('Failed to initialize Paste Avatar UI:', error);
         }
+    }
+    
+    async loadUserPreferences() {
+        try {
+            const stored = localStorage.getItem('pasteAvatarPreferences');
+            if (stored) {
+                this.aiAssistant.userPreferences = JSON.parse(stored);
+                this.userBehavior.preferences = this.aiAssistant.userPreferences;
+            }
+        } catch (error) {
+            console.error('Failed to load user preferences:', error);
+        }
+    }
+    
+    initializeAIAssistant() {
+        if (!this.aiAssistant.enabled) return;//Create AI assistant panel
+        this.createAIAssistantPanel();//Start contextual help system
+        this.startContextualHelp();//Initialize smart recommendations
+        this.initializeSmartRecommendations();//Track user behavior for learning
+        this.startBehaviorTracking();
+        
+        console.log('🤖 AI Assistant features activated');
     }
     
     async loadTemplates() {
@@ -69,8 +106,7 @@ class PasteAvatarUI {
         }
     }
     
-    createUI() {
-        // Create main avatar UI container
+    createUI() {//Create main avatar UI container
         const avatarUI = document.createElement('div');
         avatarUI.id = 'paste-avatar-ui';
         avatarUI.className = 'paste-avatar-container';
@@ -214,16 +250,10 @@ class PasteAvatarUI {
                     <button class="btn btn-secondary" id="cancel-generation">Cancel</button>
                 </div>
             </div>
-        `;
-        
-        // Insert UI into the page
+        `;//Insert UI into the page
         const targetContainer = document.querySelector('.paste-container') || document.body;
-        targetContainer.appendChild(avatarUI);
-        
-        // Populate templates
-        this.populateTemplates();
-        
-        // Add CSS styles
+        targetContainer.appendChild(avatarUI);//Populate templates
+        this.populateTemplates();//Add CSS styles
         this.addStyles();
     }
     
@@ -238,36 +268,41 @@ class PasteAvatarUI {
         });
     }
     
-    bindEvents() {
-        // Configuration change handlers
+    bindEvents() {//Configuration change handlers with AI tracking
         document.querySelectorAll('input[name="avatar_type"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 this.currentConfig.avatar_type = e.target.value;
                 this.updateUI();
+                this.trackUserInteraction('avatar_type_change', e.target.value);
+                this.provideSuggestions('avatar_type', e.target.value);
             });
         });
         
         document.getElementById('voice-style').addEventListener('change', (e) => {
             this.currentConfig.voice_style = e.target.value;
+            this.trackUserInteraction('voice_style_change', e.target.value);
+            this.provideSuggestions('voice_style', e.target.value);
         });
         
         document.getElementById('accent').addEventListener('change', (e) => {
             this.currentConfig.accent = e.target.value;
+            this.trackUserInteraction('accent_change', e.target.value);
         });
         
         document.getElementById('language').addEventListener('change', (e) => {
             this.currentConfig.language = e.target.value;
+            this.trackUserInteraction('language_change', e.target.value);
         });
         
         document.getElementById('template-selector').addEventListener('change', (e) => {
             this.currentConfig.template = e.target.value || null;
+            this.trackUserInteraction('template_change', e.target.value);
+            this.provideSuggestions('template', e.target.value);
         });
         
         document.getElementById('quality-selector').addEventListener('change', (e) => {
             this.currentConfig.quality = e.target.value;
-        });
-        
-        // Checkbox handlers
+        });//Checkbox handlers
         document.getElementById('emotion-detection').addEventListener('change', (e) => {
             this.currentConfig.emotion_detection = e.target.checked;
         });
@@ -278,32 +313,45 @@ class PasteAvatarUI {
         
         document.getElementById('background-removal').addEventListener('change', (e) => {
             this.currentConfig.background_removal = e.target.checked;
-        });
-        
-        // Action button handlers
+        });//Action button handlers with AI tracking
         document.getElementById('analyze-content').addEventListener('click', () => {
             this.analyzeContent();
+            this.trackUserInteraction('analyze_content', this.currentConfig);
         });
         
         document.getElementById('generate-avatar').addEventListener('click', () => {
             this.generateAvatar();
+            this.trackUserInteraction('generate_avatar', this.currentConfig);
         });
         
         document.getElementById('batch-process').addEventListener('click', () => {
             this.showBatchProcessDialog();
-        });
-        
-        // Progress modal handlers
+            this.trackUserInteraction('batch_process', null);
+        });//AI Assistant event handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.ai-suggestion-btn')) {
+                this.applySuggestion(e.target.dataset.suggestion);
+                this.trackUserInteraction('apply_suggestion', e.target.dataset.suggestion);
+            }
+            
+            if (e.target.matches('.ai-help-btn')) {
+                this.showContextualHelp(e.target.dataset.context);
+                this.trackUserInteraction('request_help', e.target.dataset.context);
+            }
+            
+            if (e.target.matches('.ai-dismiss-btn')) {
+                this.dismissSuggestion(e.target.dataset.suggestionId);
+            }
+        });//Progress modal handlers
         document.getElementById('cancel-generation').addEventListener('click', () => {
             this.cancelGeneration();
+            this.trackUserInteraction('cancel_generation', null);
         });
     }
     
     updateUI() {
         const avatarType = this.currentConfig.avatar_type;
-        const qualitySelector = document.getElementById('quality-selector');
-        
-        // Update quality options based on avatar type
+        const qualitySelector = document.getElementById('quality-selector');//Update quality options based on avatar type
         if (avatarType === '3d') {
             qualitySelector.innerHTML = `
                 <option value="preview">Preview (Fast)</option>
@@ -355,9 +403,7 @@ class PasteAvatarUI {
     
     displayAnalysisResults(suggestions) {
         const analysisResults = document.getElementById('analysis-results');
-        const personalitySuggestions = document.getElementById('personality-suggestions');
-        
-        // Display content analysis (mock for now)
+        const personalitySuggestions = document.getElementById('personality-suggestions');//Display content analysis (mock for now)
         analysisResults.innerHTML = `
             <div class="analysis-item">
                 <span class="analysis-label">Content Type:</span>
@@ -371,9 +417,7 @@ class PasteAvatarUI {
                 <span class="analysis-label">Recommended Quality:</span>
                 <span class="analysis-value">High</span>
             </div>
-        `;
-        
-        // Display personality suggestions
+        `;//Display personality suggestions
         personalitySuggestions.innerHTML = suggestions.map(suggestion => `
             <div class="personality-card" data-suggestion='${JSON.stringify(suggestion)}'>
                 <h5>${suggestion.name}</h5>
@@ -381,9 +425,7 @@ class PasteAvatarUI {
                 <p>Template: ${suggestion.template}</p>
                 <button class="btn btn-sm btn-outline-primary apply-suggestion">Apply</button>
             </div>
-        `).join('');
-        
-        // Bind suggestion apply buttons
+        `).join('');//Bind suggestion apply buttons
         document.querySelectorAll('.apply-suggestion').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const suggestionData = JSON.parse(e.target.closest('.personality-card').dataset.suggestion);
@@ -392,12 +434,9 @@ class PasteAvatarUI {
         });
     }
     
-    applySuggestion(suggestion) {
-        // Apply suggestion to current config
+    applySuggestion(suggestion) {//Apply suggestion to current config
         this.currentConfig.template = suggestion.template;
-        this.currentConfig.voice_style = suggestion.voice_style;
-        
-        // Update UI elements
+        this.currentConfig.voice_style = suggestion.voice_style;//Update UI elements
         document.getElementById('template-selector').value = suggestion.template;
         document.getElementById('voice-style').value = suggestion.voice_style;
         
@@ -461,18 +500,14 @@ class PasteAvatarUI {
                 </div>
             `;
             
-            previewControls.style.display = 'block';
-            
-            // Store result for download/share
+            previewControls.style.display = 'block';//Store result for download/share
             this.lastResult = result;
         }
     }
     
     showProgressModal() {
         const modal = document.getElementById('progress-modal');
-        modal.style.display = 'flex';
-        
-        // Simulate progress (in real implementation, this would be WebSocket updates)
+        modal.style.display = 'flex';//Simulate progress (in real implementation, this would be WebSocket updates)
         this.simulateProgress();
     }
     
@@ -498,7 +533,7 @@ class PasteAvatarUI {
         let currentStep = 0;
         const interval = setInterval(() => {
             if (currentStep < steps.length) {
-                const progress = ((currentStep + 1) / steps.length) * 100;
+                const progress = ((currentStep + 1)/steps.length) * 100;
                 progressFill.style.width = `${progress}%`;
                 progressText.textContent = steps[currentStep];
                 currentStep++;
@@ -518,8 +553,7 @@ class PasteAvatarUI {
         this.setStatus('Generation cancelled', 'warning');
     }
     
-    getPasteContent() {
-        // Try to get content from various possible sources
+    getPasteContent() {//Try to get content from various possible sources
         const contentSources = [
             () => document.querySelector('#paste-content')?.value,
             () => document.querySelector('.paste-text')?.textContent,
@@ -548,8 +582,407 @@ class PasteAvatarUI {
     showError(message) {
         this.setStatus(message, 'error');
         console.error('Avatar UI Error:', message);
+    }//AI Assistant Methods
+    createAIAssistantPanel() {
+        const aiPanel = document.createElement('div');
+        aiPanel.className = 'ai-assistant-panel';
+        aiPanel.innerHTML = `
+            <div class="ai-assistant-header">
+                <h4>🤖 AI Assistant</h4>
+                <button class="ai-toggle-btn" data-expanded="true">−</button>
+            </div>
+            <div class="ai-assistant-content">
+                <div class="ai-suggestions" id="ai-suggestions"></div>
+                <div class="ai-contextual-help" id="ai-contextual-help"></div>
+                <div class="ai-quick-actions">
+                    <button class="btn btn-sm ai-help-btn" data-context="general">💡 Get Help</button>
+                    <button class="btn btn-sm ai-optimize-btn">⚡ Optimize Settings</button>
+                </div>
+            </div>
+        `;
+        
+        const targetContainer = document.querySelector('.paste-avatar-container');
+        if (targetContainer) {
+            targetContainer.insertBefore(aiPanel, targetContainer.firstChild);
+        }
     }
     
+    startContextualHelp() {//Monitor user interactions and provide contextual help
+        setInterval(() => {
+            this.analyzeUserBehavior();
+            this.updateContextualHelp();
+        }, 10000);//Check every 10 seconds
+    }
+    
+    initializeSmartRecommendations() {//Load historical successful configurations
+        this.loadSuccessfulConfigs();//Analyze current context and provide recommendations
+        this.generateSmartRecommendations();
+    }
+    
+    startBehaviorTracking() {
+        this.userBehavior.sessionStart = Date.now();//Track time spent on different sections
+        document.addEventListener('focus', (e) => {
+            if (e.target.matches('.config-input, select, input[type="radio"], input[type="checkbox"]')) {
+                this.trackTimeSpent(e.target.name || e.target.id);
+            }
+        }, true);
+    }
+    
+    trackUserInteraction(action, data) {
+        if (!this.aiAssistant.enabled) return;
+        
+        const interaction = {
+            timestamp: Date.now(),
+            action,
+            data,
+            config: { ...this.currentConfig }
+        };
+        
+        this.userBehavior.interactions.push(interaction);//Keep only last 100 interactions
+        if (this.userBehavior.interactions.length > 100) {
+            this.userBehavior.interactions.shift();
+        }//Update AI learning data
+        this.updateAILearning(interaction);
+    }
+    
+    provideSuggestions(field, value) {
+        if (!this.aiAssistant.smartRecommendations) return;
+        
+        const suggestions = this.generateFieldSuggestions(field, value);
+        if (suggestions.length > 0) {
+            this.displaySuggestions(suggestions);
+        }
+    }
+    
+    generateFieldSuggestions(field, value) {
+        const suggestions = [];//Smart suggestions based on field and value
+        switch (field) {
+            case 'avatar_type':
+                if (value === 'professional') {
+                    suggestions.push({
+                        id: 'prof_voice',
+                        text: 'Consider using "authoritative" voice style for professional avatars',
+                        action: () => this.updateConfig('voice_style', 'authoritative')
+                    });
+                }
+                break;
+                
+            case 'voice_style':
+                if (value === 'casual') {
+                    suggestions.push({
+                        id: 'casual_gestures',
+                        text: 'Enable auto-gestures for more natural casual presentation',
+                        action: () => this.updateConfig('auto_gestures', true)
+                    });
+                }
+                break;
+                
+            case 'template':
+                const template = this.templates[value];
+                if (template && template.recommended_settings) {
+                    suggestions.push({
+                        id: 'template_optimize',
+                        text: `Apply recommended settings for ${template.description}`,
+                        action: () => this.applyTemplateSettings(template.recommended_settings)
+                    });
+                }
+                break;
+        }
+        
+        return suggestions;
+    }
+    
+    displaySuggestions(suggestions) {
+        const suggestionsContainer = document.getElementById('ai-suggestions');
+        if (!suggestionsContainer) return;
+        
+        suggestions.forEach(suggestion => {
+            const suggestionEl = document.createElement('div');
+            suggestionEl.className = 'ai-suggestion';
+            suggestionEl.innerHTML = `
+                <div class="suggestion-content">
+                    <span class="suggestion-text">${suggestion.text}</span>
+                    <div class="suggestion-actions">
+                        <button class="btn btn-sm ai-suggestion-btn" data-suggestion="${suggestion.id}">Apply</button>
+                        <button class="btn btn-sm ai-dismiss-btn" data-suggestion-id="${suggestion.id}">×</button>
+                    </div>
+                </div>
+            `;
+            
+            suggestionsContainer.appendChild(suggestionEl);//Auto-remove after 30 seconds
+            setTimeout(() => {
+                if (suggestionEl.parentNode) {
+                    suggestionEl.remove();
+                }
+            }, 30000);
+        });
+    }
+    
+    showContextualHelp(context) {
+        const helpContent = this.getContextualHelpContent(context);
+        const helpContainer = document.getElementById('ai-contextual-help');
+        
+        if (helpContainer && helpContent) {
+            helpContainer.innerHTML = `
+                <div class="contextual-help">
+                    <h5>💡 ${helpContent.title}</h5>
+                    <p>${helpContent.content}</p>
+                    ${helpContent.tips ? `<ul>${helpContent.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>` : ''}
+                    <button class="btn btn-sm" onclick="this.parentElement.remove()">Got it</button>
+                </div>
+            `;
+        }
+    }
+    
+    getContextualHelpContent(context) {
+        const helpContent = {
+            general: {
+                title: 'Getting Started',
+                content: 'Create engaging avatars from your content with AI assistance.',
+                tips: [
+                    'Start by analyzing your content for personalized suggestions',
+                    'Choose avatar type based on your content tone',
+                    'Use templates for quick professional results'
+                ]
+            },
+            avatar_type: {
+                title: 'Choosing Avatar Type',
+                content: 'Select the avatar style that best matches your content and audience.',
+                tips: [
+                    'Professional: Best for business presentations',
+                    'Casual: Great for social media content',
+                    'Educational: Perfect for tutorials and explanations'
+                ]
+            },
+            voice_style: {
+                title: 'Voice Style Guide',
+                content: 'Voice style affects how your avatar communicates your message.',
+                tips: [
+                    'Authoritative: For expert content and presentations',
+                    'Friendly: For approachable, conversational content',
+                    'Energetic: For motivational and exciting content'
+                ]
+            }
+        };
+        
+        return helpContent[context] || helpContent.general;
+    }
+    
+    applySuggestion(suggestionId) {//Find and apply the suggestion
+        const suggestion = this.aiAssistant.suggestions.find(s => s.id === suggestionId);
+        if (suggestion && suggestion.action) {
+            suggestion.action();
+            this.trackUserInteraction('suggestion_applied', suggestionId);
+        }
+    }
+    
+    dismissSuggestion(suggestionId) {
+        const suggestionEl = document.querySelector(`[data-suggestion-id="${suggestionId}"]`);
+        if (suggestionEl) {
+            suggestionEl.closest('.ai-suggestion').remove();
+        }
+    }
+    
+    updateConfig(field, value) {
+        this.currentConfig[field] = value;//Update UI element if it exists
+        const element = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
+        if (element) {
+            if (element.type === 'checkbox') {
+                element.checked = value;
+            } else {
+                element.value = value;
+            }
+        }
+        
+        this.updateUI();
+    }
+    
+    analyzeUserBehavior() {
+        const recentInteractions = this.userBehavior.interactions.slice(-10);//Detect patterns and potential issues
+        const patterns = this.detectBehaviorPatterns(recentInteractions);
+        
+        if (patterns.struggling) {
+            this.offerHelp(patterns.context);
+        }
+        
+        if (patterns.repetitive) {
+            this.suggestOptimization(patterns.suggestion);
+        }
+    }
+    
+    detectBehaviorPatterns(interactions) {
+        const patterns = { struggling: false, repetitive: false };//Check for repeated similar actions (might indicate confusion)
+        const actionCounts = {};
+        interactions.forEach(interaction => {
+            actionCounts[interaction.action] = (actionCounts[interaction.action] || 0) + 1;
+        });
+        
+        Object.entries(actionCounts).forEach(([action, count]) => {
+            if (count > 3 && action.includes('change')) {
+                patterns.repetitive = true;
+                patterns.suggestion = `Consider using a template for ${action.replace('_change', '')} settings`;
+            }
+        });
+        
+        return patterns;
+    }
+    
+    updateAILearning(interaction) {
+        this.aiAssistant.learningData.push({
+            timestamp: interaction.timestamp,
+            action: interaction.action,
+            success: this.determineInteractionSuccess(interaction),
+            context: this.getCurrentContext()
+        });//Update user preferences based on successful interactions
+        if (interaction.action === 'generate_avatar') {
+            this.userBehavior.successfulConfigs.push({ ...this.currentConfig });
+        }//Save preferences
+        this.saveUserPreferences();
+    }
+    
+    determineInteractionSuccess(interaction) {//Simple heuristic: if user proceeds to next step quickly, it was likely successful
+        const nextInteraction = this.userBehavior.interactions[this.userBehavior.interactions.length - 1];
+        return nextInteraction && (nextInteraction.timestamp - interaction.timestamp) < 5000;
+    }
+    
+    getCurrentContext() {
+        return {
+            config: { ...this.currentConfig },
+            timestamp: Date.now(),
+            hasContent: !!this.getPasteContent()
+        };
+    }
+    
+    saveUserPreferences() {
+        try {
+            const preferences = {
+                successfulConfigs: this.userBehavior.successfulConfigs.slice(-10),//Keep last 10
+                preferences: this.userBehavior.preferences,
+                lastUpdated: Date.now()
+            };
+            
+            localStorage.setItem('pasteAvatarPreferences', JSON.stringify(preferences));
+        } catch (error) {
+            console.error('Failed to save user preferences:', error);
+        }
+    }
+    
+    loadSuccessfulConfigs() {
+        try {
+            const stored = localStorage.getItem('pasteAvatarPreferences');
+            if (stored) {
+                const data = JSON.parse(stored);
+                this.userBehavior.successfulConfigs = data.successfulConfigs || [];
+            }
+        } catch (error) {
+            console.error('Failed to load successful configs:', error);
+        }
+    }
+    
+    generateSmartRecommendations() {
+        if (this.userBehavior.successfulConfigs.length === 0) return;//Analyze successful configurations to recommend similar settings
+        const commonSettings = this.findCommonSettings(this.userBehavior.successfulConfigs);
+        
+        if (Object.keys(commonSettings).length > 0) {
+            const recommendation = {
+                id: 'smart_config',
+                text: 'Apply your most successful settings',
+                action: () => this.applyRecommendedSettings(commonSettings)
+            };
+            
+            this.displaySuggestions([recommendation]);
+        }
+    }
+    
+    findCommonSettings(configs) {
+        const settingCounts = {};
+        const totalConfigs = configs.length;
+        
+        configs.forEach(config => {
+            Object.entries(config).forEach(([key, value]) => {
+                const settingKey = `${key}:${value}`;
+                settingCounts[settingKey] = (settingCounts[settingKey] || 0) + 1;
+            });
+        });//Return settings that appear in >50% of successful configs
+        const commonSettings = {};
+        Object.entries(settingCounts).forEach(([setting, count]) => {
+            if (count/totalConfigs > 0.5) {
+                const [key, value] = setting.split(':');
+                commonSettings[key] = value === 'true' ? true : value === 'false' ? false : value;
+            }
+        });
+        
+        return commonSettings;
+    }
+    
+    applyRecommendedSettings(settings) {
+        Object.entries(settings).forEach(([key, value]) => {
+            this.updateConfig(key, value);
+        });
+        
+        this.setStatus('Applied your most successful settings', 'success');
+    }
+    
+    trackTimeSpent(elementId) {
+        const now = Date.now();
+        if (this.userBehavior.timeSpent[elementId]) {
+            this.userBehavior.timeSpent[elementId] += now - (this.userBehavior.lastFocusTime || now);
+        } else {
+            this.userBehavior.timeSpent[elementId] = 0;
+        }
+        this.userBehavior.lastFocusTime = now;
+    }
+    
+    updateContextualHelp() {//Provide contextual help based on current state
+        const helpContainer = document.getElementById('ai-contextual-help');
+        if (!helpContainer) return;
+        
+        const context = this.getCurrentHelpContext();
+        if (context) {
+            this.showContextualHelp(context);
+        }
+    }
+    
+    getCurrentHelpContext() {//Determine what help to show based on current state
+        if (!this.getPasteContent()) {
+            return 'no_content';
+        }
+        
+        if (this.userBehavior.interactions.length === 0) {
+            return 'getting_started';
+        }
+        
+        return null;//No specific help needed
+    }
+    
+    offerHelp(context) {
+        const helpSuggestion = {
+            id: 'contextual_help',
+            text: 'Need help? Click for guidance on current settings',
+            action: () => this.showContextualHelp(context)
+        };
+        
+        this.displaySuggestions([helpSuggestion]);
+    }
+    
+    suggestOptimization(suggestion) {
+        const optimizationSuggestion = {
+            id: 'optimization',
+            text: suggestion,
+            action: () => this.showTemplateSelector()
+        };
+        
+        this.displaySuggestions([optimizationSuggestion]);
+    }
+    
+    showTemplateSelector() {
+        const templateSelector = document.getElementById('template-selector');
+        if (templateSelector) {
+            templateSelector.focus();
+            templateSelector.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     addStyles() {
         const styles = `
             <style>
@@ -795,24 +1228,221 @@ class PasteAvatarUI {
                 .avatar-content {
                     grid-template-columns: 1fr;
                 }
+            }/* AI Assistant Styles */.ai-assistant-panel {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             }
-            </style>
-        `;
+            
+            .ai-assistant-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+            }
+            
+            .ai-assistant-header h4 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+            
+            .ai-toggle-btn {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+            
+            .ai-toggle-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+            
+            .ai-assistant-content {
+                padding: 20px;
+            }
+            
+            .ai-suggestions {
+                margin-bottom: 15px;
+            }
+            
+            .ai-suggestion {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 12px;
+                margin-bottom: 10px;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideInFromTop 0.3s ease-out;
+            }
+            
+            @keyframes slideInFromTop {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .suggestion-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .suggestion-text {
+                flex: 1;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+            
+            .suggestion-actions {
+                display: flex;
+                gap: 8px;
+            }
+            
+            .ai-suggestion-btn, .ai-dismiss-btn {
+                padding: 6px 12px;
+                border: none;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .ai-suggestion-btn {
+                background: rgba(255, 255, 255, 0.9);
+                color: #667eea;
+                font-weight: 600;
+            }
+            
+            .ai-suggestion-btn:hover {
+                background: white;
+                transform: translateY(-1px);
+            }
+            
+            .ai-dismiss-btn {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                width: 24px;
+                height: 24px;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .ai-dismiss-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+            
+            .ai-contextual-help {
+                margin-bottom: 15px;
+            }
+            
+            .contextual-help {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 15px;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .contextual-help h5 {
+                margin: 0 0 10px 0;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            
+            .contextual-help p {
+                margin: 0 0 10px 0;
+                font-size: 13px;
+                line-height: 1.4;
+                opacity: 0.9;
+            }
+            
+            .contextual-help ul {
+                margin: 10px 0;
+                padding-left: 20px;
+                font-size: 12px;
+                opacity: 0.8;
+            }
+            
+            .contextual-help li {
+                margin-bottom: 5px;
+            }
+            
+            .ai-quick-actions {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            
+            .ai-help-btn, .ai-optimize-btn {
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                backdrop-filter: blur(5px);
+            }
+            
+            .ai-help-btn:hover, .ai-optimize-btn:hover {
+                 background: rgba(255, 255, 255, 0.3);
+                 transform: translateY(-1px);
+             }/* Responsive AI Assistant */@media (max-width: 768px) {
+                 .ai-assistant-panel {
+                     margin: 10px;
+                 }
+                 
+                 .suggestion-content {
+                     flex-direction: column;
+                     align-items: flex-start;
+                     gap: 10px;
+                 }
+                 
+                 .suggestion-actions {
+                     align-self: flex-end;
+                 }
+                 
+                 .ai-quick-actions {
+                     justify-content: center;
+                 }
+             }
+             </style>
+         `;
         
         document.head.insertAdjacentHTML('beforeend', styles);
     }
-}
-
-// Auto-initialize when DOM is ready
+}//Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.pasteAvatarUI = new PasteAvatarUI();
     });
 } else {
     window.pasteAvatarUI = new PasteAvatarUI();
-}
-
-// Export for module usage
+}//Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = PasteAvatarUI;
 }

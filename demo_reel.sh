@@ -119,15 +119,15 @@ fi
 get_json_val() {
   # $1=JSON $2=jq expr (safe)
   if have jq; then
-    printf '%s' "$1" | jq -r "$2 // empty" 2>/dev/null || true
+    printf '%s' "$1" | jq -r "$2//empty" 2>/dev/null || true
   else
     echo ""
   fi
 }
 
-MP4="$(get_json_val "$RESP_RUN" '.mp4 // .video // .artifacts.mp4 // .outputs.mp4')"
-PDF="$(get_json_val "$RESP_RUN" '.pdf // .ebook // .artifacts.pdf // .outputs.pdf')"
-OUTDIR="$(get_json_val "$RESP_RUN" '.out_dir // .artifacts_dir // .outputs.dir')"
+MP4="$(get_json_val "$RESP_RUN" '.mp4//.video//.artifacts.mp4//.outputs.mp4')"
+PDF="$(get_json_val "$RESP_RUN" '.pdf//.ebook//.artifacts.pdf//.outputs.pdf')"
+OUTDIR="$(get_json_val "$RESP_RUN" '.out_dir//.artifacts_dir//.outputs.dir')"
 
 echo
 echo "📁 Outputs (if provided):"

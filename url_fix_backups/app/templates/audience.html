@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audience Management - TRAE.AI Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        color: #2d3748;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        color: #718096;
+        font-size: 1.1rem;
+      }
+
+      .nav-link {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 20px;
+        background: #4299e1;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.3s;
+      }
+
+      .nav-link:hover {
+        background: #3182ce;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .dashboard-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      .card-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        opacity: 0.7;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 15px;
+        background: #f7fafc;
+        border-radius: 10px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4299e1;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary {
+        background: #4299e1;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #3182ce;
+      }
+
+      .btn-secondary {
+        background: #e2e8f0;
+        color: #4a5568;
+      }
+
+      .btn-secondary:hover {
+        background: #cbd5e0;
+      }
+
+      .btn-success {
+        background: #48bb78;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #38a169;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #4a5568;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: white;
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .table th {
+        background: #f7fafc;
+        font-weight: 600;
+        color: #4a5568;
+      }
+
+      .table tr:hover {
+        background: #f7fafc;
+      }
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .badge-active {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-inactive {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      .badge-pending {
+        background: #feebc8;
+        color: #7b341e;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background: white;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: #000;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #718096;
+      }
+
+      .error {
+        background: #fed7d7;
+        color: #742a2a;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .success {
+        background: #c6f6d5;
+        color: #22543d;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 20px;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
+      }
+
+      .tab.active {
+        border-bottom-color: #4299e1;
+        color: #4299e1;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: #4299e1;
+        transition: width 0.3s;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 Audience Management</h1>
+        <p>Comprehensive contact management, campaign builder, and audience analytics for the Sovereign Engine</p>
+        <a href="/" class="nav-link">← Back to Dashboard</a>
+      </div>
+
+      <!-- Audience Overview Stats -->
+      <div class="dashboard-card full-width">
+        <h2 class="card-title">📊 Audience Overview</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number" id="total-contacts">0</div>
+            <div class="stat-label">Total Contacts</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="active-contacts">0</div>
+            <div class="stat-label">Active Contacts</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="email-opens">0</div>
+            <div class="stat-label">Email Opens (30d)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="link-clicks">0</div>
+            <div class="stat-label">Link Clicks (30d)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="engagement-rate">0%</div>
+            <div class="stat-label">Engagement Rate</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="active-campaigns">0</div>
+            <div class="stat-label">Active Campaigns</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Tabs -->
+      <div class="dashboard-card full-width">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('contacts')">📋 Contact Management</div>
+          <div class="tab" onclick="switchTab('campaigns')">📧 Campaign Builder</div>
+          <div class="tab" onclick="switchTab('segments')">🎯 Audience Segments</div>
+          <div class="tab" onclick="switchTab('analytics')">📈 Analytics</div>
+        </div>
+
+        <!-- Contact Management Tab -->
+        <div id="contacts-tab" class="tab-content active">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px">
+            <h3>Contact Database</h3>
+            <div>
+              <button class="btn btn-primary" onclick="openModal('add-contact-modal')">+ Add Contact</button>
+              <button class="btn btn-secondary" onclick="importContacts()">📥 Import CSV</button>
+              <button class="btn btn-secondary" onclick="exportContacts()">📤 Export</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 20px">
+            <input
+              type="text"
+              id="contact-search"
+              class="form-input"
+              placeholder="Search contacts by name, email, or tags..."
+              onkeyup="searchContacts()"
+            />
+          </div>
+
+          <div id="contacts-loading" class="loading">Loading contacts...</div>
+          <div id="contacts-error" class="error" style="display: none"></div>
+
+          <table class="table" id="contacts-table" style="display: none">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Tags</th>
+                <th>Last Activity</th>
+                <th>Engagement</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="contacts-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Campaign Builder Tab -->
+        <div id="campaigns-tab" class="tab-content">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px">
+            <h3>Email Campaigns</h3>
+            <button class="btn btn-primary" onclick="openModal('create-campaign-modal')">+ Create Campaign</button>
+          </div>
+
+          <div id="campaigns-loading" class="loading">Loading campaigns...</div>
+          <div id="campaigns-error" class="error" style="display: none"></div>
+
+          <table class="table" id="campaigns-table" style="display: none">
+            <thead>
+              <tr>
+                <th>Campaign Name</th>
+                <th>Status</th>
+                <th>Recipients</th>
+                <th>Open Rate</th>
+                <th>Click Rate</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="campaigns-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Audience Segments Tab -->
+        <div id="segments-tab" class="tab-content">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px">
+            <h3>Audience Segments</h3>
+            <button class="btn btn-primary" onclick="openModal('create-segment-modal')">+ Create Segment</button>
+          </div>
+
+          <div id="segments-loading" class="loading">Loading segments...</div>
+          <div id="segments-error" class="error" style="display: none"></div>
+
+          <div
+            id="segments-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px"
+          ></div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics-tab" class="tab-content">
+          <h3>Audience Analytics</h3>
+
+          <div class="dashboard-grid">
+            <div class="dashboard-card">
+              <h4>Engagement Trends</h4>
+              <canvas id="engagement-chart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="dashboard-card">
+              <h4>Growth Metrics</h4>
+              <canvas id="growth-chart" width="400" height="200"></canvas>
+            </div>
+          </div>
+
+          <div class="dashboard-card full-width">
+            <h4>Campaign Performance</h4>
+            <div id="campaign-analytics-loading" class="loading">Loading analytics...</div>
+            <div id="campaign-analytics-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div id="add-contact-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('add-contact-modal')">&times;</span>
+        <h2>Add New Contact</h2>
+        <form id="add-contact-form">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" id="contact-name" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="contact-email" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone (Optional)</label>
+            <input type="tel" id="contact-phone" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma-separated)</label>
+            <input type="text" id="contact-tags" class="form-input" placeholder="subscriber, lead, customer" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes</label>
+            <textarea
+              id="contact-notes"
+              class="form-textarea"
+              placeholder="Additional notes about this contact..."
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Contact</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('add-contact-modal')">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create Campaign Modal -->
+    <div id="create-campaign-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('create-campaign-modal')">&times;</span>
+        <h2>Create Email Campaign</h2>
+        <form id="create-campaign-form">
+          <div class="form-group">
+            <label class="form-label">Campaign Name</label>
+            <input type="text" id="campaign-name" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject Line</label>
+            <input type="text" id="campaign-subject" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Template</label>
+            <select id="campaign-template" class="form-select" required>
+              <option value="">Select a template...</option>
+              <option value="welcome_sequence">Welcome Sequence</option>
+              <option value="newsletter">Newsletter</option>
+              <option value="product_announcement">Product Announcement</option>
+              <option value="educational_content">Educational Content</option>
+              <option value="promotional_offer">Promotional Offer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Audience</label>
+            <select id="campaign-audience" class="form-select" required>
+              <option value="all">All Contacts</option>
+              <option value="active">Active Subscribers</option>
+              <option value="new">New Subscribers</option>
+              <option value="engaged">Highly Engaged</option>
+              <option value="custom">Custom Segment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Schedule</label>
+            <select id="campaign-schedule" class="form-select" required>
+              <option value="now">Send Now</option>
+              <option value="later">Schedule for Later</option>
+            </select>
+          </div>
+          <div id="schedule-datetime" class="form-group" style="display: none">
+            <label class="form-label">Send Date & Time</label>
+            <input type="datetime-local" id="campaign-datetime" class="form-input" />
+          </div>
+          <button type="submit" class="btn btn-primary">Create Campaign</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('create-campaign-modal')">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create Segment Modal -->
+    <div id="create-segment-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('create-segment-modal')">&times;</span>
+        <h2>Create Audience Segment</h2>
+        <form id="create-segment-form">
+          <div class="form-group">
+            <label class="form-label">Segment Name</label>
+            <input type="text" id="segment-name" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea
+              id="segment-description"
+              class="form-textarea"
+              placeholder="Describe this audience segment..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Criteria</label>
+            <select id="segment-criteria" class="form-select" required>
+              <option value="">Select criteria...</option>
+              <option value="engagement">Engagement Level</option>
+              <option value="activity">Recent Activity</option>
+              <option value="tags">Tags</option>
+              <option value="signup_date">Signup Date</option>
+              <option value="email_opens">Email Opens</option>
+              <option value="link_clicks">Link Clicks</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Value</label>
+            <input type="text" id="segment-value" class="form-input" placeholder="Enter criteria value..." required />
+          </div>
+          <button type="submit" class="btn btn-primary">Create Segment</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('create-segment-modal')">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Global variables
+      let contacts = [];
+      let campaigns = [];
+      let segments = [];
+      let currentTab = 'contacts';
+
+      // Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+        loadAudienceStats();
+        loadContacts();
+        loadCampaigns();
+        loadSegments();
+        setupEventListeners();
+      });
+
+      // Tab switching
+      function switchTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        // Show selected tab content
+        document.getElementById(tabName + '-tab').classList.add('active');
+
+        // Add active class to selected tab
+        event.target.classList.add('active');
+
+        currentTab = tabName;
+
+        // Load data for the selected tab if needed
+        if (tabName === 'analytics') {
+          loadAnalytics();
+        }
+      }
+
+      // Load audience statistics
+      async function loadAudienceStats() {
+        try {
+          const response = await fetch('/api/audience/stats');
+          const stats = await response.json();
+
+          document.getElementById('total-contacts').textContent = stats.total_contacts || 0;
+          document.getElementById('active-contacts').textContent = stats.active_contacts || 0;
+          document.getElementById('email-opens').textContent = stats.email_opens || 0;
+          document.getElementById('link-clicks').textContent = stats.link_clicks || 0;
+          document.getElementById('engagement-rate').textContent = (stats.engagement_rate || 0) + '%';
+          document.getElementById('active-campaigns').textContent = stats.active_campaigns || 0;
+        } catch (error) {
+          console.error('Error loading audience stats:', error);
+        }
+      }
+
+      // Load contacts
+      async function loadContacts() {
+        const loading = document.getElementById('contacts-loading');
+        const error = document.getElementById('contacts-error');
+        const table = document.getElementById('contacts-table');
+
+        try {
+          loading.style.display = 'block';
+          error.style.display = 'none';
+          table.style.display = 'none';
+
+          const response = await fetch('/api/audience/contacts');
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          contacts = data.contacts || [];
+          renderContacts(contacts);
+
+          loading.style.display = 'none';
+          table.style.display = 'table';
+        } catch (err) {
+          loading.style.display = 'none';
+          error.style.display = 'block';
+          error.textContent = 'Error loading contacts: ' + err.message;
+        }
+      }
+
+      // Render contacts table
+      function renderContacts(contactList) {
+        const tbody = document.getElementById('contacts-tbody');
+        tbody.innerHTML = '';
+
+        contactList.forEach(contact => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+                    <td>${contact.name || 'N/A'}</td>
+                    <td>${contact.email}</td>
+                    <td><span class="badge badge-${contact.status === 'active' ? 'active' : 'inactive'}">${contact.status}</span></td>
+                    <td>${contact.tags || 'None'}</td>
+                    <td>${contact.last_activity ? new Date(contact.last_activity).toLocaleDateString() : 'Never'}</td>
+                    <td>${contact.engagement_score || 0}%</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="editContact('${contact.id}')">Edit</button>
+                        <button class="btn btn-secondary" onclick="deleteContact('${contact.id}')">Delete</button>
+                    </td>
+                `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Search contacts
+      function searchContacts() {
+        const searchTerm = document.getElementById('contact-search').value.toLowerCase();
+        const filteredContacts = contacts.filter(
+          contact =>
+            (contact.name && contact.name.toLowerCase().includes(searchTerm)) ||
+            (contact.email && contact.email.toLowerCase().includes(searchTerm)) ||
+            (contact.tags && contact.tags.toLowerCase().includes(searchTerm))
+        );
+        renderContacts(filteredContacts);
+      }
+
+      // Load campaigns
+      async function loadCampaigns() {
+        const loading = document.getElementById('campaigns-loading');
+        const error = document.getElementById('campaigns-error');
+        const table = document.getElementById('campaigns-table');
+
+        try {
+          loading.style.display = 'block';
+          error.style.display = 'none';
+          table.style.display = 'none';
+
+          const response = await fetch('/api/audience/campaigns');
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          campaigns = data.campaigns || [];
+          renderCampaigns(campaigns);
+
+          loading.style.display = 'none';
+          table.style.display = 'table';
+        } catch (err) {
+          loading.style.display = 'none';
+          error.style.display = 'block';
+          error.textContent = 'Error loading campaigns: ' + err.message;
+        }
+      }
+
+      // Render campaigns table
+      function renderCampaigns(campaignList) {
+        const tbody = document.getElementById('campaigns-tbody');
+        tbody.innerHTML = '';
+
+        campaignList.forEach(campaign => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+                    <td>${campaign.name}</td>
+                    <td><span class="badge badge-${campaign.status === 'sent' ? 'active' : campaign.status === 'draft' ? 'pending' : 'inactive'}">${campaign.status}</span></td>
+                    <td>${campaign.recipients || 0}</td>
+                    <td>${campaign.open_rate || 0}%</td>
+                    <td>${campaign.click_rate || 0}%</td>
+                    <td>${new Date(campaign.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="editCampaign('${campaign.id}')">Edit</button>
+                        <button class="btn btn-secondary" onclick="deleteCampaign('${campaign.id}')">Delete</button>
+                    </td>
+                `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Load segments
+      async function loadSegments() {
+        const loading = document.getElementById('segments-loading');
+        const error = document.getElementById('segments-error');
+        const grid = document.getElementById('segments-grid');
+
+        try {
+          loading.style.display = 'block';
+          error.style.display = 'none';
+
+          const response = await fetch('/api/audience/segments');
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          segments = data.segments || [];
+          renderSegments(segments);
+
+          loading.style.display = 'none';
+        } catch (err) {
+          loading.style.display = 'none';
+          error.style.display = 'block';
+          error.textContent = 'Error loading segments: ' + err.message;
+        }
+      }
+
+      // Render segments
+      function renderSegments(segmentList) {
+        const grid = document.getElementById('segments-grid');
+        grid.innerHTML = '';
+
+        segmentList.forEach(segment => {
+          const card = document.createElement('div');
+          card.className = 'dashboard-card';
+          card.innerHTML = `
+                    <h4>${segment.name}</h4>
+                    <p style="color: #718096; margin-bottom: 15px;">${segment.description || 'No description'}</p>
+                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="stat-item">
+                            <div class="stat-number">${segment.contact_count || 0}</div>
+                            <div class="stat-label">Contacts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${segment.engagement_rate || 0}%</div>
+                            <div class="stat-label">Engagement</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-secondary" onclick="editSegment('${segment.id}')">Edit</button>
+                        <button class="btn btn-secondary" onclick="deleteSegment('${segment.id}')">Delete</button>
+                    </div>
+                `;
+          grid.appendChild(card);
+        });
+      }
+
+      // Load analytics
+      async function loadAnalytics() {
+        try {
+          const response = await fetch('/api/audience/analytics');
+          const data = await response.json();
+
+          // Render charts here (would need Chart.js or similar library)
+          console.log('Analytics data:', data);
+        } catch (error) {
+          console.error('Error loading analytics:', error);
+        }
+      }
+
+      // Modal functions
+      function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'block';
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Add contact form
+        document.getElementById('add-contact-form').addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          const contactData = {
+            name: document.getElementById('contact-name').value,
+            email: document.getElementById('contact-email').value,
+            phone: document.getElementById('contact-phone').value,
+            tags: document.getElementById('contact-tags').value,
+            notes: document.getElementById('contact-notes').value,
+          };
+
+          try {
+            const response = await fetch('/api/audience/contacts', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(contactData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              closeModal('add-contact-modal');
+              loadContacts();
+              loadAudienceStats();
+              this.reset();
+            } else {
+              alert('Error adding contact: ' + result.error);
+            }
+          } catch (error) {
+            alert('Error adding contact: ' + error.message);
+          }
+        });
+
+        // Create campaign form
+        document.getElementById('create-campaign-form').addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          const campaignData = {
+            name: document.getElementById('campaign-name').value,
+            subject: document.getElementById('campaign-subject').value,
+            template: document.getElementById('campaign-template').value,
+            audience: document.getElementById('campaign-audience').value,
+            schedule: document.getElementById('campaign-schedule').value,
+            datetime: document.getElementById('campaign-datetime').value,
+          };
+
+          try {
+            const response = await fetch('/api/audience/campaigns', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(campaignData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              closeModal('create-campaign-modal');
+              loadCampaigns();
+              loadAudienceStats();
+              this.reset();
+            } else {
+              alert('Error creating campaign: ' + result.error);
+            }
+          } catch (error) {
+            alert('Error creating campaign: ' + error.message);
+          }
+        });
+
+        // Create segment form
+        document.getElementById('create-segment-form').addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          const segmentData = {
+            name: document.getElementById('segment-name').value,
+            description: document.getElementById('segment-description').value,
+            criteria: document.getElementById('segment-criteria').value,
+            value: document.getElementById('segment-value').value,
+          };
+
+          try {
+            const response = await fetch('/api/audience/segments', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(segmentData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              closeModal('create-segment-modal');
+              loadSegments();
+              this.reset();
+            } else {
+              alert('Error creating segment: ' + result.error);
+            }
+          } catch (error) {
+            alert('Error creating segment: ' + error.message);
+          }
+        });
+
+        // Campaign schedule change
+        document.getElementById('campaign-schedule').addEventListener('change', function () {
+          const datetimeGroup = document.getElementById('schedule-datetime');
+          if (this.value === 'later') {
+            datetimeGroup.style.display = 'block';
+          } else {
+            datetimeGroup.style.display = 'none';
+          }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function (event) {
+          if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+          }
+        });
+      }
+
+      // Contact management functions
+      function editContact(contactId) {
+        // Implementation for editing contacts
+        console.log('Edit contact:', contactId);
+      }
+
+      function deleteContact(contactId) {
+        if (confirm('Are you sure you want to delete this contact?')) {
+          // Implementation for deleting contacts
+          console.log('Delete contact:', contactId);
+        }
+      }
+
+      // Campaign management functions
+      function editCampaign(campaignId) {
+        // Implementation for editing campaigns
+        console.log('Edit campaign:', campaignId);
+      }
+
+      function deleteCampaign(campaignId) {
+        if (confirm('Are you sure you want to delete this campaign?')) {
+          // Implementation for deleting campaigns
+          console.log('Delete campaign:', campaignId);
+        }
+      }
+
+      // Segment management functions
+      function editSegment(segmentId) {
+        // Implementation for editing segments
+        console.log('Edit segment:', segmentId);
+      }
+
+      function deleteSegment(segmentId) {
+        if (confirm('Are you sure you want to delete this segment?')) {
+          // Implementation for deleting segments
+          console.log('Delete segment:', segmentId);
+        }
+      }
+
+      // Import/Export functions
+      function importContacts() {
+        // Implementation for importing contacts from CSV
+        console.log('Import contacts');
+      }
+
+      function exportContacts() {
+        // Implementation for exporting contacts to CSV
+        console.log('Export contacts');
+      }
+    </script>
+  </body>
+</html>

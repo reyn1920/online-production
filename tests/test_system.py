@@ -18,19 +18,19 @@ class TestSystemIntegrity:
         required_files = [
             "launch_live.py",
                 "requirements.txt",
-                "app / static / index.html",
-                "backend / __init__.py",
-                "utils / __init__.py",
+                "app/static/index.html",
+                "backend/__init__.py",
+                "utils/__init__.py",
                 ]
 
         for file_path in required_files:
-            full_path = project_root / file_path
+            full_path = project_root/file_path
             assert full_path.exists(), f"Required file missing: {file_path}"
 
 
     def test_requirements_file(self):
         """Verify requirements.txt is readable and contains dependencies."""
-        requirements_path = project_root / "requirements.txt"
+        requirements_path = project_root/"requirements.txt"
         assert requirements_path.exists(), "requirements.txt not found"
 
         with open(requirements_path, "r") as f:
@@ -40,14 +40,14 @@ class TestSystemIntegrity:
 
     def test_launch_script_exists(self):
         """Verify main launch script exists and is readable."""
-        launch_script = project_root / "launch_live.py"
+        launch_script = project_root/"launch_live.py"
         assert launch_script.exists(), "launch_live.py not found"
         assert launch_script.is_file(), "launch_live.py is not a file"
 
 
     def test_web_interface_exists(self):
         """Verify web interface files exist."""
-        index_html = project_root / "app" / "static" / "index.html"
+        index_html = project_root/"app"/"static"/"index.html"
         assert index_html.exists(), "Web interface index.html not found"
 
         with open(index_html, "r") as f:
@@ -57,11 +57,11 @@ class TestSystemIntegrity:
 
     def test_backend_structure(self):
         """Verify backend module structure."""
-        backend_dir = project_root / "backend"
+        backend_dir = project_root/"backend"
         assert backend_dir.exists(), "Backend directory not found"
         assert backend_dir.is_dir(), "Backend is not a directory"
 
-        init_file = backend_dir / "__init__.py"
+        init_file = backend_dir/"__init__.py"
         assert init_file.exists(), "Backend __init__.py not found"
 
 
@@ -85,8 +85,8 @@ class TestEnvironmentConfiguration:
                 ]
 
         main_files = [
-            project_root / "launch_live.py",
-                project_root / "app" / "static" / "index.html",
+            project_root/"launch_live.py",
+                project_root/"app"/"static"/"index.html",
                 ]
 
         for file_path in main_files:
@@ -94,8 +94,9 @@ class TestEnvironmentConfiguration:
                 with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                     content = f.read().lower()
                     for pattern in sensitive_patterns:
-                        # Allow pattern in comments or variable names, but flag suspicious values
-                        lines = content.split("\n")
+                        # Allow pattern in comments \
+    or variable names, but flag suspicious values
+                        lines = content.split("\\n")
                         for line in lines:
                             if (
                                 pattern in line
