@@ -32,7 +32,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:40Z"
+      "last_ok": "2025-09-14T07:53:12Z"
     },
     {
       "id": "wikimedia",
@@ -49,7 +49,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:40Z"
+      "last_ok": "2025-09-14T07:53:12Z"
     },
     {
       "id": "hackernews",
@@ -66,7 +66,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:41Z"
+      "last_ok": "2025-09-14T07:53:13Z"
     },
     {
       "id": "newsapi",
@@ -185,7 +185,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:41Z"
+      "last_ok": "2025-09-14T07:53:13Z"
     },
     {
       "id": "nominatim_osm",
@@ -202,7 +202,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:42Z"
+      "last_ok": "2025-09-14T07:53:14Z"
     },
     {
       "id": "opencage",
@@ -236,7 +236,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:42Z"
+      "last_ok": "2025-09-14T07:53:15Z"
     },
     {
       "id": "overpass_kumi",
@@ -253,7 +253,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:43Z"
+      "last_ok": "2025-09-14T07:53:15Z"
     },
     {
       "id": "overpass_fr",
@@ -270,7 +270,7 @@
       "last_error": null,
       "required_envs": null,
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:44Z"
+      "last_ok": "2025-09-14T07:53:16Z"
     },
     {
       "id": "foursquare",
@@ -406,7 +406,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:44Z"
+      "last_ok": "2025-09-14T07:53:16Z"
     },
     {
       "id": "nominatim",
@@ -423,7 +423,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:45Z"
+      "last_ok": "2025-09-14T07:53:17Z"
     },
     {
       "id": "openmeteo_geo",
@@ -440,7 +440,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:45Z"
+      "last_ok": "2025-09-14T07:53:17Z"
     },
     {
       "id": "geojs",
@@ -457,7 +457,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:45Z"
+      "last_ok": "2025-09-14T07:53:17Z"
     },
     {
       "id": "coingecko",
@@ -695,7 +695,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:46Z"
+      "last_ok": "2025-09-14T07:53:18Z"
     },
     {
       "id": "github",
@@ -712,7 +712,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:46Z"
+      "last_ok": "2025-09-14T07:53:18Z"
     },
     {
       "id": "producthunt",
@@ -763,7 +763,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:47Z"
+      "last_ok": "2025-09-14T07:53:18Z"
     },
     {
       "id": "petfinder",
@@ -800,7 +800,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:47Z"
+      "last_ok": "2025-09-14T07:53:19Z"
     },
     {
       "id": "thecatapi",
@@ -817,7 +817,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:47Z"
+      "last_ok": "2025-09-14T07:53:19Z"
     },
     {
       "id": "paperswithcode",
@@ -851,7 +851,7 @@
       "last_error": null,
       "required_envs": [],
       "health_url": null,
-      "last_ok": "2025-09-14T07:45:47Z"
+      "last_ok": "2025-09-14T07:53:19Z"
     }
   ]
 }

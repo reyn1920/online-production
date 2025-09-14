@@ -1402,8 +1402,7 @@ class RevenueTracker:
                                 .first()
                             )
                         else:
-                            # For records without transaction_id, check by platform \
-    and date
+                            # For records without transaction_id, check by platform and date
                             existing = (
                                 self.db_session.query(RevenueStream)
                                 .filter(
