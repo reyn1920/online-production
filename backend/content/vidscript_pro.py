@@ -301,8 +301,10 @@ Genre: {genre}
 """
 
             for trend in trending_topics[:4]:  # Top 4 trends for scripts
-                live_briefing += f"• {trend.get('topic', 'Unknown')}: {trend.get('momentum_score',
-    0):.2f} momentum\\n"
+                live_briefing += (
+                    f"• {trend.get('topic', 'Unknown')}: "
+                    f"{trend.get('momentum_score', 0):.2f} momentum\\n"
+                )
 
             live_briefing += "\\n--- RELEVANT HEADLINES ---\\n"
             for headline in topic_headlines[:6]:  # Top 6 headlines for scripts

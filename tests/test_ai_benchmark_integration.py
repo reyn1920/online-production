@@ -241,7 +241,7 @@ class TestAIBenchmarkIntegration:
         )
 
         # Should return default metrics on error
-            assert isinstance(metrics, QualityMetrics)
+        assert isinstance(metrics, QualityMetrics)
         assert metrics.overall_score == 0.0
         assert metrics.provider == "chatgpt"
 

@@ -94,8 +94,7 @@ class TestEnvironmentConfiguration:
                 with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
                     content = f.read().lower()
                     for pattern in sensitive_patterns:
-                        # Allow pattern in comments \
-    or variable names, but flag suspicious values
+                        # Allow pattern in comments or variable names, but flag suspicious values
                         lines = content.split("\\n")
                         for line in lines:
                             if (

@@ -51,7 +51,7 @@ for directory in [
 ]:
     directory.mkdir(parents=True, exist_ok=True)
 
-pytest_plugins = []
+# pytest_plugins removed - not needed in non-top-level conftest
 
 
 @pytest.fixture(scope="session")

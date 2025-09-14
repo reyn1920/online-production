@@ -238,28 +238,28 @@ class Rule1DeepScanner:
         """
         default_rules = {
             "version": "1.0.0",
-                "forbidden_terms": [
+            "forbidden_terms": [
                 "TODO",
-                    "FIXME",
-                    "HACK",
-                    "XXX",
-                    "BUG",
-                    "password123",
-                    "admin",
-                    "root",
-                    "secret",
-                    "api_key",
-                    "private_key",
-                    "access_token",
-                    ],
-                "forbidden_patterns": [
-                r"\\b(password|pwd)\\s*=\\s*['\\"][^'\\"]{1,}['\\"]"  # Password assignments
-                r"\\b(api[_-]?key|apikey)\\s*[=:]\\s*['\\"][^'\\"]{10,}['\\"]"  # API keys
-                r"\\b(secret|token)\\s*[=:]\\s*['\\"][^'\\"]{8,}['\\"]"  # Secrets/tokens
-                r"\\b\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}\\b"  # Credit card numbers
-                r"\\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\\.[A - Z|a - z]{2,}\\b"  # Email addresses (if sensitive)
+                "FIXME",
+                "HACK",
+                "XXX",
+                "BUG",
+                "password123",
+                "admin",
+                "root",
+                "secret",
+                "api_key",
+                "private_key",
+                "access_token",
             ],
-                "file_extensions": [
+            "forbidden_patterns": [
+                r"\\b(password|pwd)\\s*=\\s*['\\"]['\\"]{1,}['\\"]",  # Password assignments
+                r"\\b(api[_-]?key|apikey)\\s*[=:]\\s*['\\"]['\\"]{10,}['\\"]",  # API keys
+                r"\\b(secret|token)\\s*[=:]\\s*['\\"]['\\"]{8,}['\\"]",  # Secrets/tokens
+                r"\\b\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}\\b",  # Credit card numbers
+                r"\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",  # Email addresses (if sensitive)
+            ],
+            "file_extensions": [
                 ".py",
                     ".js",
                     ".ts",

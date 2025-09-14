@@ -1,0 +1,15 @@
+{
+  "include": ["backend", "app", "scripts", "tests"],
+  "exclude": [
+    "**/__pycache__",
+    ".venv*",
+    "node_modules",
+    "dist",
+    "build",
+    "rewritten",
+    "url_fix_backup",
+    "models/linly_talker",
+    "chat"
+  ],
+  "reportMissingImports": "warning"
+}

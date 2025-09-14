@@ -787,8 +787,11 @@ class PaymentProcessor:
 
         import random
 
-        attempt_id = f"att_{int(time.time() * 1000000)}_{hash(payment_id) % 10000}_{random.randint(1000,
-    9999)}"
+        attempt_id = (
+            f"att_{int(time.time()*1_000_000)}_"
+            f"{hash(payment_id) % 10000}_"
+            f"{random.randint(1000, 9999)}"
+        )
 
         cursor.execute(
             """

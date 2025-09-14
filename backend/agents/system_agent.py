@@ -1162,11 +1162,11 @@ class SystemAgent(BaseAgent):
 
         if task_type == "get_health":
             health = self.get_system_health()
-        return {
-            "success": True,
-            "health": asdict(health),
-            "health_score": health.overall_health_score(),
-        }
+            return {
+                "success": True,
+                "health": asdict(health),
+                "health_score": health.overall_health_score(),
+            }
 
         elif task_type == "run_diagnostics":
             results = self.run_diagnostics()
@@ -1189,16 +1189,14 @@ class SystemAgent(BaseAgent):
         """Run immediate synchronous health checks"""
         try:
             health = self.get_system_health()
-        except Exception as e:
-            pass
-        return {
-            "ok": True,
-            "health_score": health.overall_health_score(),
-            "cpu_usage": health.cpu_usage,
-            "memory_usage": health.memory_usage,
-            "disk_usage": health.disk_usage,
-            "timestamp": health.timestamp.isoformat(),
-        }
+            return {
+                "ok": True,
+                "health_score": health.overall_health_score(),
+                "cpu_usage": health.cpu_usage,
+                "memory_usage": health.memory_usage,
+                "disk_usage": health.disk_usage,
+                "timestamp": health.timestamp.isoformat(),
+            }
         except Exception as e:
             return {"ok": False, "error": str(e)}
 

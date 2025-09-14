@@ -23,10 +23,11 @@ try:
         print("✅ VidScriptPro initialized successfully")
         print(f"🤖 Model: {script_gen.model}")
         print(f"🌐 Base URL: {script_gen.base_url}")
-        print(
-            f"📊 Available methods: {[attr for attr in dir(script_gen) if not attr.startswith('_') \
-    and callable(getattr(script_gen, attr))]}"
-        )
+        available_methods = [
+            attr for attr in dir(script_gen) 
+            if not attr.startswith('_') and callable(getattr(script_gen, attr))
+        ]
+        print(f"📊 Available methods: {available_methods}")
 
     except Exception as e:
         print(f"❌ VidScriptPro initialization failed: {e}")

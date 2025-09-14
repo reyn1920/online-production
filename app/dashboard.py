@@ -359,8 +359,8 @@ class DashboardApp:
                 )
                 actions = raw.get("actions", raw) if isinstance(raw, dict) else raw
             self.logger.info(
-                f"[actions] manifest updated after agent registration: {
-                    len(actions)} actions"
+                f"[actions] manifest updated after agent registration: "
+                f"{len(actions)} actions"
             )
         except Exception as e:
             self.logger.warning(f"[actions] manifest update logging skipped: {e}")
