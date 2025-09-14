@@ -92,80 +92,80 @@ class SecurityScanner:
                 "dist",
                 "build",
                 ".DS_Store",
-                }
+            }
 
         # Secret patterns for detection
         self.secret_patterns = {
             "api_key": {
-                "pattern": r'(?i)(api[_-]?key|apikey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
-                    "severity": SeverityLevel.HIGH,
-                    },
-                "secret_key": {
-                "pattern": r'(?i)(secret[_-]?key|secretkey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
-                    "severity": SeverityLevel.CRITICAL,
-                    },
-                "password": {
-                "pattern": r'(?i)(password|passwd|pwd)\\s*[=:]\\s*["\\']([^"\\s]{8,})["\\']',
-                    "severity": SeverityLevel.HIGH,
-                    },
-                "token": {
-                "pattern": r'(?i)(token|auth[_-]?token)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
-                    "severity": SeverityLevel.HIGH,
-                    },
-                "private_key": {
+                "pattern": r'(?i)(api[_-]?key|apikey)\s*[=:]\s*["\']?([a-zA-Z0-9_-]{20,})["\']?',
+                "severity": SeverityLevel.HIGH,
+            },
+            "secret_key": {
+                "pattern": r'(?i)(secret[_-]?key|secretkey)\s*[=:]\s*["\']?([a-zA-Z0-9_-]{20,})["\']?',
+                "severity": SeverityLevel.CRITICAL,
+            },
+            "password": {
+                "pattern": r'(?i)(password|passwd|pwd)\s*[=:]\s*["\']([^"\s]{8,})["\']',
+                "severity": SeverityLevel.HIGH,
+            },
+            "token": {
+                "pattern": r'(?i)(token|auth[_-]?token)\s*[=:]\s*["\']?([a-zA-Z0-9_-]{20,})["\']?',
+                "severity": SeverityLevel.HIGH,
+            },
+            "private_key": {
                 "pattern": r"-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----",
-                    "severity": SeverityLevel.CRITICAL,
-                    },
-                "aws_access_key": {
-                "pattern": r"AKIA[0 - 9A - Z]{16}",
-                    "severity": SeverityLevel.CRITICAL,
-                    },
-                "github_token": {
-                "pattern": r"ghp_[a - zA - Z0 - 9]{36}",
-                    "severity": SeverityLevel.HIGH,
-                    },
-                "slack_token": {
-                "pattern": r"xox[baprs]-[0 - 9a - zA - Z]{10,48}",
-                    "severity": SeverityLevel.MEDIUM,
-                    },
-                "stripe_key": {
-                "pattern": r"sk_live_[0 - 9a - zA - Z]{24}",
-                    "severity": SeverityLevel.CRITICAL,
-                    },
-                "paypal_key": {
-                "pattern": r'(?i)(paypal[_-]?(client[_-]?)?secret)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
-                    "severity": SeverityLevel.HIGH,
-                    },
-                }
+                "severity": SeverityLevel.CRITICAL,
+            },
+            "aws_access_key": {
+                "pattern": r"AKIA[0-9A-Z]{16}",
+                "severity": SeverityLevel.CRITICAL,
+            },
+            "github_token": {
+                "pattern": r"ghp_[a-zA-Z0-9]{36}",
+                "severity": SeverityLevel.HIGH,
+            },
+            "slack_token": {
+                "pattern": r"xox[baprs]-[0-9a-zA-Z]{10,48}",
+                "severity": SeverityLevel.MEDIUM,
+            },
+            "stripe_key": {
+                "pattern": r"sk_live_[0-9a-zA-Z]{24}",
+                "severity": SeverityLevel.CRITICAL,
+            },
+            "paypal_key": {
+                "pattern": r'(?i)(paypal[_-]?(client[_-]?)?secret)\s*[=:]\s*["\']?([a-zA-Z0-9_-]{20,})["\']?',
+                "severity": SeverityLevel.HIGH,
+            },
+        }
 
         # Insecure code patterns
         self.insecure_patterns = {
             "sql_injection": {
-                "pattern": r'(?i)(execute|query)\\s*\\(\\s*["\\'][^"\\']*(\\+|%|format|f["\\'])',
-                    "severity": SeverityLevel.HIGH,
-                    "description": "Potential SQL injection vulnerability",
-                    },
-                "command_injection": {
-                "pattern": r"(?i)(os\\.system|subprocess\\.(call|run|Popen))\\s*\\([^)]*\\+",
-                    "severity": SeverityLevel.HIGH,
-                    "description": "Potential command injection vulnerability",
-                    },
-                "eval_usage": {
-                "pattern": r"\\beval\\s*\\(",
-                    "severity": SeverityLevel.MEDIUM,
-                    "description": "Use of eval() function can be dangerous",
-                    },
-                "debug_mode": {
-                "pattern": r"(?i)debug\\s*=\\s * true",
-                    "severity": SeverityLevel.MEDIUM,
-                    "description": "Debug mode enabled in production",
-                    },
-                "hardcoded_ip": {
-                "pattern": r"\\b(?:[0 - 9]{1,3}\\.){3}[0 - 9]{1,3}\\b",
-                    "severity": SeverityLevel.LOW,
-                    "description": "Hardcoded IP address found",
-                    },
-                }
+                "pattern": r'(?i)(execute|query)\s*\(\s*["\'][^"\']*(\+|%|format|f["\'])',
+                "severity": SeverityLevel.HIGH,
+                "description": "Potential SQL injection vulnerability",
+            },
+            "command_injection": {
+                "pattern": r"(?i)(os\.system|subprocess\.(call|run|Popen))\s*\([^)]*\+",
+                "severity": SeverityLevel.HIGH,
+                "description": "Potential command injection vulnerability",
+            },
+            "eval_usage": {
+                "pattern": r"\beval\s*\(",
+                "severity": SeverityLevel.MEDIUM,
+                "description": "Use of eval() function can be dangerous",
+            },
+            "debug_mode": {
+                "pattern": r"(?i)debug\s*=\s*true",
+                "severity": SeverityLevel.MEDIUM,
+                "description": "Debug mode enabled in production",
+            },
+            "hardcoded_ip": {
+                "pattern": r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b",
+                "severity": SeverityLevel.LOW,
+                "description": "Hardcoded IP address found",
+            },
+        }
 
         logger.info(f"🔒 Initializing security scanner for: {self.project_root}")
 
@@ -241,10 +241,7 @@ class SecurityScanner:
                         SecurityIssue(
                             type = IssueType.HARDCODED_SECRET,
                                 severity = severity,
-                                title = f"Hardcoded {
-                                secret_type.replace(
-                                    '_',
-                                        ' ').title()} Detected",
+                                title = f"Hardcoded {secret_type.replace('_', ' ').title()} Detected",
                                         description = f"Potential {secret_type} found in source code",
                                 file_path = str(file_path.relative_to(self.project_root)),
                                 line_number = line_num,
@@ -353,18 +350,12 @@ class SecurityScanner:
                     SecurityIssue(
                         type = IssueType.INSECURE_CODE,
                             severity = severity,
-                            title = f"Insecure Code Pattern: {
-                            pattern_name.replace(
-                                '_',
-                                    ' ').title()}",
+                            title = f"Insecure Code Pattern: {pattern_name.replace('_', ' ').title()}",
                                     description = description,
                             file_path = str(file_path.relative_to(self.project_root)),
                             line_number = line_num,
                             code_snippet = line.strip(),
-                            recommendation = f"Review and secure the {
-                            pattern_name.replace(
-                                '_',
-                                    ' ')} implementation",
+                            recommendation = f"Review and secure the {pattern_name.replace('_', ' ')} implementation",
                                     confidence = 0.8,
                             )
                 )
@@ -428,8 +419,7 @@ class SecurityScanner:
 
                 except Exception as e:
                     logger.debug(
-                        f"Could not check permissions for {file_path}: {
-                            str(e)}"
+                        f"Could not check permissions for {file_path}: {str(e)}"
                     )
 
 
@@ -645,9 +635,9 @@ class SecurityScanner:
 
         # Look for common endpoint patterns in source files
         endpoint_patterns = [
-            r'@app\\.route\\(["\\']([^"\\']*)["\\'\\)]',  # Flask routes
-            r'app\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Express routes
-            r'router\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Router patterns
+            r'@app\.route\(["\']([^"\']*)["\'\)]',  # Flask routes
+            r'app\.(get|post|put|delete)\(["\']([^"\']*)["\'\)]',  # Express routes
+            r'router\.(get|post|put|delete)\(["\']([^"\']*)["\'\)]',  # Router patterns
         ]
 
         for file_path in self._get_source_files():
@@ -962,13 +952,7 @@ if __name__ == "__main__":
                         "low": "🟢",
                         "info": "ℹ️",
                         }
-                print(
-                    f"\\n{i}. {
-                        severity_emoji.get(
-                            issue['severity'],
-                                '•')} {
-                                issue['title']}"
-                )
+                print(f"\\n{i}. {severity_emoji.get(issue['severity'], '•')} {issue['title']}")
                 print(f"   Severity: {issue['severity'].title()}")
                 print(f"   Description: {issue['description']}")
 
